@@ -2,23 +2,24 @@ import { moveInstrumentation, createElementFromHTML } from '../../scripts/script
 
 function createTeaserCard(cardRow, doc) {
   const cols = [...cardRow.children];
-  const [teaserBgImgDiv, teaserTitleDiv, teaserDescDiv, teaserButtonDiv] = cols;
-  const teaserBgImg = teaserBgImgDiv?.querySelector('picture') || teaserBgImgDiv?.querySelector('img');
-  const teaserTitle = teaserTitleDiv?.innerHTML?.trim();
-  const teaserDescription = teaserDescDiv?.innerHTML?.trim();
-  const teaserButton = teaserButtonDiv?.querySelector('a');
+  const [cardImgDiv, cardTitleDiv, cardDescDiv] = [cols[0], ...cols.slice(2)];
+  const cardImg = cardImgDiv?.querySelector('img');
+  const cardTitle = cardTitleDiv?.innerHTML?.trim();
+  const cardDescription = cardDescDiv?.innerHTML?.trim();
+
+  if (!cardImg && !cardTitle && !cardDescription) return null;
 
   const card = createElementFromHTML(
     '<div class="teaser-bg-image-card"></div>',
     doc,
   );
 
-  if (teaserBgImg) {
+  if (cardImg) {
     const imgWrapper = createElementFromHTML(
       '<div class="teaser-bg-image-card-image"></div>',
       doc,
     );
-    imgWrapper.appendChild(teaserBgImg.cloneNode(true));
+    imgWrapper.appendChild(cardImg.cloneNode(true));
     card.appendChild(imgWrapper);
   }
 
@@ -27,28 +28,22 @@ function createTeaserCard(cardRow, doc) {
     doc,
   );
 
-  if (teaserTitle) {
+  if (cardTitle) {
     body.appendChild(
       createElementFromHTML(
-        `<div class="teaser-bg-image-card-title">${teaserTitle}</div>`,
+        `<div class="teaser-bg-image-card-title">${cardTitle}</div>`,
         doc,
       ),
     );
   }
 
-  if (teaserDescription) {
+  if (cardDescription) {
     body.appendChild(
       createElementFromHTML(
-        `<div class="teaser-bg-image-card-description">${teaserDescription}</div>`,
+        `<div class="teaser-bg-image-card-description">${cardDescription}</div>`,
         doc,
       ),
     );
-  }
-
-  if (teaserButton) {
-    const cta = teaserButton.cloneNode(true);
-    cta.classList.add('teaser-bg-image-card-cta');
-    body.appendChild(cta);
   }
 
   card.appendChild(body);
@@ -57,43 +52,52 @@ function createTeaserCard(cardRow, doc) {
 
 export default function decorate(block) {
   const doc = block.ownerDocument;
-  const [cardBgImgRow, cardTitleRow, cardDescRow, ...cardRows] = [...block.children];
-  const cardBgPicture = cardBgImgRow?.querySelector('picture') || cardBgImgRow?.querySelector('img');
-  const cardTitle = cardTitleRow?.innerHTML?.trim();
-  const cardDescription = cardDescRow?.innerHTML?.trim();
+
+  const [
+    teaserBgImgRow,
+    teaserTitleRow,
+    teaserDescRow,
+    teaserButtonRow,
+    ...teaserRows
+  ] = [...block.children];
+
+  const teaserBgPicture = teaserBgImgRow?.querySelector('img');
+  const teaserTitle = teaserTitleRow?.innerHTML?.trim();
+  const teaserDescription = teaserDescRow?.innerHTML?.trim();
+  const teaserButton = teaserButtonRow?.querySelector('a');
 
   const wrapper = createElementFromHTML(
     '<div class="teaser-bg-image-wrapper"></div>',
     doc,
   );
 
-  if (cardBgPicture) {
+  if (teaserBgPicture) {
     const bgLayer = createElementFromHTML(
       '<div class="teaser-bg-image-bg" aria-hidden="true"></div>',
       doc,
     );
-    bgLayer.appendChild(cardBgPicture.cloneNode(true));
+    bgLayer.appendChild(teaserBgPicture.cloneNode(true));
     wrapper.appendChild(bgLayer);
   }
 
   const overlay = createElementFromHTML(
-    '<div class="teaser-bg-image-overlay"></div>',
+    '<div class="teaser-bg-image-overlay content"></div>',
     doc,
   );
 
-  if (cardTitle) {
+  if (teaserTitle) {
     overlay.appendChild(
       createElementFromHTML(
-        `<div class="teaser-bg-image-title">${cardTitle}</div>`,
+        `<div class="teaser-bg-image-title">${teaserTitle}</div>`,
         doc,
       ),
     );
   }
 
-  if (cardDescription) {
+  if (teaserDescription) {
     overlay.appendChild(
       createElementFromHTML(
-        `<div class="teaser-bg-image-description">${cardDescription}</div>`,
+        `<div class="teaser-bg-image-description pad-bot-30">${teaserDescription}</div>`,
         doc,
       ),
     );
@@ -101,19 +105,31 @@ export default function decorate(block) {
 
   wrapper.appendChild(overlay);
 
-  if (cardRows.length) {
+  if (teaserRows.length) {
     const cardsContainer = createElementFromHTML(
-      '<div class="teaser-bg-image-cards"></div>',
+      '<div class="teaser-bg-image-cards content"></div>',
       doc,
     );
 
-    cardRows.forEach((row) => {
+    teaserRows.forEach((row) => {
       const card = createTeaserCard(row, doc);
+      if (!card) return;
+
       moveInstrumentation(row, card);
       cardsContainer.appendChild(card);
     });
 
     wrapper.appendChild(cardsContainer);
+  }
+
+  if (teaserButton) {
+    teaserButton.classList.add('button-m');
+    wrapper.appendChild(
+      createElementFromHTML(
+        `<div class="teaser-bg-image-cta content">${teaserButton.outerHTML}</div>`,
+        doc,
+      ),
+    );
   }
 
   block.textContent = '';
