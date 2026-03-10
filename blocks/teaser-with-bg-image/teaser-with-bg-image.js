@@ -4,10 +4,8 @@ function createTeaserCard(cardRow, doc) {
   const cols = [...cardRow.children];
   const [cardImgDiv, cardTitleDiv, cardDescDiv] = [cols[0], ...cols.slice(2)];
   const cardImg = cardImgDiv?.querySelector('img');
-  const cardTitle = cardTitleDiv?.innerHTML?.trim();
-  const cardDescription = cardDescDiv?.innerHTML?.trim();
 
-  if (!cardImg && !cardTitle && !cardDescription) return null;
+  if (!cardImg && !cardTitleDiv && !cardDescDiv) return null;
 
   const card = createElementFromHTML(
     '<div class="teaser-bg-image-card"></div>',
@@ -28,22 +26,14 @@ function createTeaserCard(cardRow, doc) {
     doc,
   );
 
-  if (cardTitle) {
-    body.appendChild(
-      createElementFromHTML(
-        `<div class="teaser-bg-image-card-title">${cardTitle}</div>`,
-        doc,
-      ),
-    );
+  if (cardTitleDiv) {
+    cardTitleDiv.classList.add('teaser-bg-image-card-title');
+    body.appendChild(cardTitleDiv);
   }
 
-  if (cardDescription) {
-    body.appendChild(
-      createElementFromHTML(
-        `<div class="teaser-bg-image-card-description">${cardDescription}</div>`,
-        doc,
-      ),
-    );
+  if (cardDescDiv) {
+    cardDescDiv.classList.add('teaser-bg-image-card-description');
+    body.appendChild(cardDescDiv);
   }
 
   card.appendChild(body);
@@ -62,8 +52,6 @@ export default function decorate(block) {
   ] = [...block.children];
 
   const teaserBgPicture = teaserBgImgRow?.querySelector('img');
-  const teaserTitle = teaserTitleRow?.innerHTML?.trim();
-  const teaserDescription = teaserDescRow?.innerHTML?.trim();
   const teaserButton = teaserButtonRow?.querySelector('a');
 
   const wrapper = createElementFromHTML(
@@ -85,22 +73,14 @@ export default function decorate(block) {
     doc,
   );
 
-  if (teaserTitle) {
-    overlay.appendChild(
-      createElementFromHTML(
-        `<div class="teaser-bg-image-title">${teaserTitle}</div>`,
-        doc,
-      ),
-    );
+  if (teaserTitleRow) {
+    teaserTitleRow.classList.add('teaser-bg-image-title');
+    overlay.appendChild(teaserTitleRow);
   }
 
-  if (teaserDescription) {
-    overlay.appendChild(
-      createElementFromHTML(
-        `<div class="teaser-bg-image-description pad-bot-30">${teaserDescription}</div>`,
-        doc,
-      ),
-    );
+  if (teaserDescRow) {
+    teaserDescRow.classList.add('teaser-bg-image-description', 'pad-bot-30');
+    overlay.appendChild(teaserDescRow);
   }
 
   wrapper.appendChild(overlay);
