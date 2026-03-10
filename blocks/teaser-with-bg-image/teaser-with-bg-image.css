@@ -138,14 +138,18 @@
 
 .teaser-bg-image-cta {
     order: 3;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .teaser-bg-image-cta a {
     min-width: 8.75rem;
-    display: block;
-    width: 100%;
+    max-width: none;
+    display: flex;
     box-sizing: border-box;
+    width: 100%;
     text-align: center;
+    justify-content: center;
 }
 
 @media (width > 47.5rem) {
@@ -219,6 +223,7 @@
     .teaser-bg-image-cta a {
         display: inline-block;
         width: auto;
+        justify-content: initial;
     }
 }
 
