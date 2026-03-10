@@ -198,7 +198,7 @@
     .teaser-bg-image-cards {
         position: relative;
         z-index: 2;
-        flex-direction: row;
+        flex-flow: row wrap;
         padding-block: var(--bbl-space-250);
         align-items: stretch;
         justify-content: flex-start;
@@ -206,7 +206,7 @@
     }
 
     .teaser-bg-image-card {
-        width: 33.3333%;
+        width: calc(33.3333% - var(--bbl-space-500));
         margin: 0;
     }
 
@@ -273,6 +273,6 @@
 
 @media (width > 1199px) {
     .teaser-bg-image-card {
-        width: 25%;
+        width: calc(25% - var(--bbl-space-500));
     }
 }
