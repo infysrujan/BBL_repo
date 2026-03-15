@@ -180,7 +180,16 @@
         "component": "text",
         "name": "subnav-label",
         "label": "Sub Nav Title",
-        "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled."
+        "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled.",
+        "condition": {
+          "===": [
+            {
+              "var": "isSubNav",
+              "scope": "page"
+            },
+            true
+          ]
+        }
       },
       {
         "component": "multiselect",
@@ -7293,40 +7302,12 @@
         }
       },
       {
-        "component": "richtext",
-        "name": "content-1",
-        "label": "Tab Content 1",
-        "valueType": "string",
-        "condition": {
-          "===": [
-            {
-              "var": "classes"
-            },
-            "subnav-tab"
-          ]
-        }
-      },
-      {
         "component": "text",
         "name": "tab-name-2",
         "label": "Tab Name 2",
         "description": "Enter the name of the tab 2",
         "valueType": "string",
         "required": true,
-        "condition": {
-          "===": [
-            {
-              "var": "classes"
-            },
-            "subnav-tab"
-          ]
-        }
-      },
-      {
-        "component": "richtext",
-        "name": "content-2",
-        "label": "Tab Content 2",
-        "valueType": "string",
         "condition": {
           "===": [
             {

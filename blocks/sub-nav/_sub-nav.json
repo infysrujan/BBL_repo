@@ -37,7 +37,7 @@
 						},
 						{
 							"name": "Subnav with tab",
-							"value": "subnav-with-tab"
+							"value": "subnav-tab"
 						}
 					]
 				},
@@ -53,21 +53,7 @@
 							{
 								"var": "classes"
 							},
-							"subnav-with-tab"
-						]
-					}
-				},
-				{
-					"component": "richtext",
-					"name": "content-1",
-					"label": "Tab Content 1",
-					"valueType": "string",
-					"condition": {
-						"===": [
-							{
-								"var": "classes"
-							},
-							"subnav-with-tab"
+							"subnav-tab"
 						]
 					}
 				},
@@ -83,21 +69,7 @@
 							{
 								"var": "classes"
 							},
-							"subnav-with-tab"
-						]
-					}
-				},
-				{
-					"component": "richtext",
-					"name": "content-2",
-					"label": "Tab Content 2",
-					"valueType": "string",
-					"condition": {
-						"===": [
-							{
-								"var": "classes"
-							},
-							"subnav-with-tab"
+							"subnav-tab"
 						]
 					}
 				}
