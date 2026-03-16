@@ -487,6 +487,9 @@ function initializeAutoScroll(
 
 export default function decorate(block) {
   const rows = [...block.children];
+  const hasAuthoringAttrs = rows.some((row) => [...row.attributes]
+    .some(({ name }) => name.startsWith('data-aue-')));
+  const isAuthoring = hasAuthoringAttrs && window.self !== window.top;
 
   // Read configuration values from block rows
   const dotsAlignment = readDotsAlignment(rows[0]);
@@ -537,6 +540,10 @@ export default function decorate(block) {
   const slidesTextAnimation = slideEls.filter((s) => s.classList.contains('text-animation-variant')).length;
   const slidesCircularImage = slideEls.filter((s) => s.classList.contains('with-circular-image')).length;
   const slidesDefaultImage = slideEls.filter((s) => s.classList.contains('with-default-image')).length;
+  const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
+    && slidesWithImage === 0
+    && slidesWithoutImage === 0;
+  const shouldCloneHeroSlide = allHeroBanner && slideEls.length > 1 && !isAuthoring;
 
   if (
     slidesWithImage > 0
@@ -616,9 +623,7 @@ export default function decorate(block) {
     const isHeroVariant = block.classList.contains('all-hero-banner-image-carousel')
       || block.classList.contains('all-text-animation-variant');
 
-    const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
-      && slidesWithImage === 0
-      && slidesWithoutImage === 0;
+    const canUseCloneLoop = shouldCloneHeroSlide && allHeroBanner;
 
     const allWithoutImageTrack = slidesWithoutImage > 0
       && slidesWithImage === 0
@@ -657,7 +662,7 @@ export default function decorate(block) {
       if (trackWrapper) {
         const slideWidth = block.offsetWidth;
 
-        if (isLoopingForward) {
+        if (isLoopingForward && canUseCloneLoop) {
           if (isHeroVariant && !isFirstLoad) {
             const cloneSlide = trackWrapper.lastElementChild;
             triggerBgZoom(cloneSlide);
@@ -706,19 +711,18 @@ export default function decorate(block) {
     && slidesHeroBanner === 0
     && slidesTextAnimation === 0;
 
-  const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
-    && slidesWithImage === 0
-    && slidesWithoutImage === 0;
-
   const circularOrDefaultImage = slidesCircularImage > 0 || slidesDefaultImage > 0;
 
   if (allHeroBanner) {
-    // Hero/text-animation variants use a cloned first slide for seamless looping
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
-    const cloneFirst = slideEls[0].cloneNode(true);
-    cloneFirst.setAttribute('aria-hidden', 'true');
-    trackWrapper.replaceChildren(...slideEls, cloneFirst);
+    if (shouldCloneHeroSlide) {
+      const cloneFirst = slideEls[0].cloneNode(true);
+      cloneFirst.setAttribute('aria-hidden', 'true');
+      trackWrapper.replaceChildren(...slideEls, cloneFirst);
+    } else {
+      trackWrapper.replaceChildren(...slideEls);
+    }
     block.replaceChildren(trackWrapper);
   } else if (allWithoutImage) {
     // Without-image variant uses track wrapper for sliding, but NO clone (looping is disabled)
