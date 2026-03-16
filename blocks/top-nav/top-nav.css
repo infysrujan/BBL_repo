@@ -29,6 +29,10 @@
 	text-decoration: none;
 }
 
+.top-nav-icon picture {
+	display: flex;
+}
+
 .top-nav a img {
 	width: 1.3125rem;
 	height: 1.3125rem;

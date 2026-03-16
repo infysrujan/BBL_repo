@@ -1,0 +1,215 @@
+{
+  "definitions": [
+    {
+      "title": "Tab Section",
+      "id": "tab-section",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/section/v1/section",
+            "template": {
+              "name": "Tab Section",
+              "model": "tab-section",
+              "filter": "tab-section"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "tab-section",
+      "filter": "tab-section",
+      "contentTreeField": "tab-name",
+      "fields": [
+        {
+          "component": "text",
+          "name": "name",
+          "label": "Section Name",
+          "description": "The label shown for this section in the Content Tree",
+          "valueType": "string"
+        },
+        {
+          "component": "select",
+          "name": "tab-variant",
+          "label": "Tab Variant",
+          "description": "Choose the tab display variant",
+          "valueType": "string",
+          "required": true,
+          "options": [
+            {
+              "name": "Simple Tab",
+              "value": "simple-tab"
+            },
+            {
+              "name": "Tiled Tab",
+              "value": "tiled-tab"
+            },
+            {
+              "name": "Media Tab",
+              "value": "media-tab"
+            }
+          ]
+        },
+        {
+          "component": "reference",
+          "name": "tab-icon",
+          "label": "Tab Icon/Image",
+          "description": "Select the icon or image for the tab (Tiled Tab only)",
+          "valueType": "string",
+          "required": true,
+          "condition": {
+            "===": [
+              {
+                "var": "tab-variant"
+              },
+              "tiled-tab"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "tab-icon-alt-tiled",
+          "label": "Icon/Image Alt Text",
+          "description": "Enter alt text for the icon/image (Tiled Tab only)",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "tab-variant"
+              },
+              "tiled-tab"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "tab-name",
+          "label": "Tab Name",
+          "description": "Enter the name of the tab",
+          "valueType": "string",
+          "required": true
+        },
+        {
+          "component": "text",
+          "name": "tab-icon-alt-media",
+          "label": "Icon/Image Alt Text",
+          "description": "Enter alt text for the icon/image",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "tab-variant"
+              },
+              "media-tab"
+            ]
+          }
+        },
+        {
+          "component": "reference",
+          "name": "tab-icon-media",
+          "label": "Tab Icon/Image",
+          "description": "Select the icon or image for the tab",
+          "valueType": "string",
+          "required": true,
+          "condition": {
+            "===": [
+              {
+                "var": "tab-variant"
+              },
+              "media-tab"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "id",
+          "label": "Section ID",
+          "description": "Adds an HTML id attribute to the section",
+          "valueType": "string"
+        },
+        {
+          "component": "multiselect",
+          "name": "style",
+          "label": "Style",
+          "valueType": "string",
+          "required": false,
+          "options": [
+            {
+              "name": "Section type",
+              "children": [
+                {
+                  "name": "Central Aligned",
+                  "value": "central-aligned"
+                },
+                {
+                  "name": "Full Bleed Special",
+                  "value": "full-bleed-special"
+                },
+                {
+                  "name": "Full Bleed Background",
+                  "value": "full-bleed-bg"
+                }
+              ]
+            },
+            {
+              "name": "Background Color",
+              "children": [
+                {
+                  "name": "Truthful Blue",
+                  "value": "bg-truthful-blue"
+                },
+                {
+                  "name": "Ice Blue",
+                  "value": "bg-ice-blue"
+                },
+                {
+                  "name": "Grey 10",
+                  "value": "bg-grey-10"
+                },
+                {
+                  "name": "Grey 05",
+                  "value": "bg-grey-05"
+                },
+                {
+                  "name": "Grey 100",
+                  "value": "bg-grey-100"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "tab-section",
+      "components": [
+        "text",
+        "image",
+        "button",
+        "title",
+        "hero",
+        "cards",
+        "cards-product",
+        "columns",
+        "fragment",
+        "megamenu",
+        "carousel",
+        "story-card",
+        "warning-card",
+        "menu-cards",
+        "carousel-dotted",
+        "cross-banner",
+        "form",
+        "embed-adaptive-form",
+        "brand-logo",
+        "location",
+        "login",
+        "main-nav-item"
+      ]
+    }
+  ]
+}

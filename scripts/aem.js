@@ -559,9 +559,9 @@ function decorateSections(main) {
           section.dataset[toCamelCase(key)] = meta[key];
         }
 
-        if (key === 'id') {
-          section.id = toClassName(meta.id);
-        }
+        // if (key === 'id') {
+        //   section.id = toClassName(meta.id);
+        // }
       });
       sectionMeta.parentNode.remove();
     }

@@ -2,14 +2,14 @@ Please always provide the [GitHub issue(s)](../issues) your PR is for, as well a
 
 ## TICKET
 Fix #<gh-issue-id>
-https://adobe-japac-ps.atlassian.net/browse/BAM-<JIRA_TICKET_ID>
+https://dev.azure.com/BBLCloud/pwsm/_workitems/edit/<JIRA_TICKET_ID>
 
 ## SUMMARY
 Briefly describe the intent of the PR.
 
 Test URLs:
-- Before: https://main--bangkokbank-ue-eds--singhalgoru.aem.live/
-- After: https://<branch>--bangkokbank-ue-eds--singhalgoru.aem.live/
+- Before: https://dev--site-dev--singhalgoru.aem.live/
+- After: https://<branch>--site-dev--singhalgoru.aem.live/
 
 ## SCREENSHOTS/DEMO
 Screenshots or video demo if applicable.

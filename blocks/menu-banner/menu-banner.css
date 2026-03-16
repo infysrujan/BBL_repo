@@ -27,7 +27,6 @@
   position: relative;
   z-index: 2;
   max-width: 75rem;
-  margin: 0 auto;
   padding: var(--bbl-space-500) var(--bbl-space-container-xs);
 }
 

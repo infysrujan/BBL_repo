@@ -38,7 +38,7 @@ button,
   text-align: center;
   
   /* Layout */
-  border-radius: var(--bbl-radius-button);
+  border-radius: 0.4375rem;
   transition: all 0.2s ease-in-out;
   white-space: nowrap;
   
@@ -61,7 +61,7 @@ button,
 .button,
 .button-s {
   height: 3.125rem;
-  padding: 0 var(--bbl-space-200);
+  padding: 0 var(--bbl-space-250);
   font-size: 0.875rem;
   width: 6.25rem;
 }
@@ -85,7 +85,6 @@ button,
   button,
   .button {
     height: 44px;
-    padding: 0 var(--bbl-space-300);
     font-size: var(--bbl-body-b1-size);
   }
 }
