@@ -591,10 +591,6 @@
 }
 
 /* Default Image specific */
-.carousel-dotted .carousel-dotted-item.with-default-image {
-  background: var(--bbl-color-white);
-}
-
 .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb {
   background: var(--bbl-color-grey-10);
   display: flex;
