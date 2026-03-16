@@ -40,29 +40,11 @@ export default function decorate(block) {
     return;
   }
 
-  // Read block config from the table or dataset (depending on how you process block config)
-  // Common pattern: first row / first cell contains class row –
-  // but your model already sets `classes`
-  // If Crosswalk already applies classes from the `classes` field,
-  // you can also read them from block.classList.
+  // Read block config: classes from block model (subnav-dropdown | subnav-without-dropdown)
   const blockClasses = [...block.classList];
   const hasDropdownClass = blockClasses.includes('subnav-dropdown');
 
-  // If this sub-nav is configured as "without dropdown", do nothing (or render alternative UI)
-  if (!hasDropdownClass) {
-    // Optionally: you may want to strip table markup or render a static nav here.
-    return;
-  }
-
-  // Collect sections
-  const sections = collectSections();
-  if (!sections.length) {
-    // No sections to navigate to, keep the block empty/hidden
-    block.textContent = '';
-    return;
-  }
-
-  // Build UI: wrapper + back button + select
+  // Build UI: wrapper + back button (always)
   const wrapper = document.createElement('div');
   wrapper.className = 'wrapper content';
 
@@ -75,33 +57,46 @@ export default function decorate(block) {
     window.history.back();
   });
 
-  // Build dropdown links HTML (ul/li/a) for createGlobalDropdown
-  const linksHTML = `<ul>${sections.map(({ label: optLabel }, index) => `<li><a href="#" data-section-index="${index}" class="global-dropdown-link">${escapeHtml(optLabel)}</a></li>`).join('')}</ul>`;
-  const initialLabel = sections[0]?.label ?? 'Select';
-  const subNavSelect = createGlobalDropdown(initialLabel, linksHTML, document);
-  subNavSelect.classList.add('sub-nav-select');
+  if (hasDropdownClass) {
+    const sections = collectSections();
+    if (sections.length) {
+      const linksHTML = `<ul>${sections.map(({ label: optLabel }, index) => `<li><a href="#" data-section-index="${index}" class="global-dropdown-link">${escapeHtml(optLabel)}</a></li>`).join('')}</ul>`;
+      const initialLabel = sections[0]?.label ?? 'Select';
+      const subNavSelect = createGlobalDropdown(initialLabel, linksHTML, document);
+      subNavSelect.classList.add('sub-nav-select');
 
-  // Wire link clicks: scroll to section, update trigger label, close dropdown
-  subNavSelect.querySelectorAll('.global-dropdown-link').forEach((link) => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const sectionIndex = parseInt(link.dataset.sectionIndex, 10);
-      if (Number.isNaN(sectionIndex) || sectionIndex < 0 || sectionIndex >= sections.length) return;
+      subNavSelect.querySelectorAll('.global-dropdown-link').forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const sectionIndex = parseInt(link.dataset.sectionIndex, 10);
+          if (
+            Number.isNaN(sectionIndex)
+            || sectionIndex < 0
+            || sectionIndex >= sections.length
+          ) {
+            return;
+          }
 
-      const targetSection = sections[sectionIndex].element;
-      if (targetSection) {
-        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+          const targetSection = sections[sectionIndex].element;
+          if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
 
-      subNavSelect.querySelector('.global-dropdown-trigger').textContent = link.textContent;
-      subNavSelect.classList.remove('is-open');
-      subNavSelect.querySelector('.global-dropdown-trigger').setAttribute('aria-expanded', 'false');
-    });
-  });
+          subNavSelect.querySelector('.global-dropdown-trigger').textContent = link.textContent;
+          subNavSelect.classList.remove('is-open');
+          subNavSelect.querySelector('.global-dropdown-trigger').setAttribute('aria-expanded', 'false');
+        });
+      });
 
-  wrapper.append(backButton, subNavSelect);
+      wrapper.append(backButton, subNavSelect);
+    } else {
+      wrapper.append(backButton);
+    }
+  } else {
+    // only back button on the left, no dropdown on the right
+    wrapper.append(backButton);
+  }
 
-  // Clean up any existing table markup from authoring and inject our UI
   block.textContent = '';
   block.appendChild(wrapper);
 }
