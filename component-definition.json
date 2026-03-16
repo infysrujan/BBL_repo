@@ -167,7 +167,7 @@
                 "template": {
                   "name": "Carousel Dotted",
                   "model": "carousel-dotted",
-                  "filter": "carousel-dotted"
+                  "filter": "showDots"
                 }
               }
             }
@@ -182,7 +182,24 @@
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
                   "name": "Carousel Slide",
-                  "model": "carousel-dotted-slide"
+                  "model": "carousel-dotted-slide",
+                  "variant": "showDots"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Carousel Slide Arrows",
+          "id": "carousel-dotted-slide-arrows",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Carousel Slide Arrows",
+                  "model": "carousel-dotted-slide-arrows",
+                  "variant": "showArrowsDots"
                 }
               }
             }
@@ -941,6 +958,21 @@
           }
         },
         {
+          "title": "Quick Nav Item",
+          "id": "quick-nav-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Quick Nav Item",
+                  "model": "quick-nav-item"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Megamenu",
           "id": "megamenu",
           "plugins": {
@@ -1105,6 +1137,21 @@
                   "name": "Story Card",
                   "model": "story-card",
                   "filter": "story-card"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Sub Nav",
+          "id": "sub-nav",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Sub Nav",
+                  "model": "sub-nav"
                 }
               }
             }

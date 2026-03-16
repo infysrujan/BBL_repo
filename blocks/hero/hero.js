@@ -78,7 +78,6 @@ export default function decorate(block) {
       if (cell) contentGroup.innerHTML += cell.innerHTML;
     });
     decorateButtonsV1(contentGroup);
-    contentGroup.querySelector('a')?.classList.add('button-m');
 
     contentInner.append(contentGroup);
     const content = createElement('div', 'hero-banner-content', 'content');

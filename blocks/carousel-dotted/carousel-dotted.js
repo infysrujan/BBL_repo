@@ -3,13 +3,15 @@ import {
   readBoolean,
   readDotsAlignment,
   readPosition,
-  readArrowsAlignment,
 } from '../../scripts/utils/carousel-helpers.js';
 import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 
 /**
  * Build a slide WITH IMAGE variation
  * Structure: Badge Text | Image | Description | Link
+ * Cell layout (carousel-dotted-slide, slideType = withImage):
+ *   0: variant, 1: slideType, 2: badgeText, 3: image, 4: description,
+ *   5: link, 6: linkText, 7: linkTitle, 8: linkType
  */
 function buildSlideWithImage(row, index, cells) {
   const slide = document.createElement('div');
@@ -17,8 +19,8 @@ function buildSlideWithImage(row, index, cells) {
   slide.dataset.index = index;
   moveInstrumentation(row, slide);
 
-  // Create and append background image if it exists
-  const picture = cells[2]?.querySelector('picture');
+  // Background image (cell 3)
+  const picture = cells[3]?.querySelector('picture');
   if (picture) {
     const media = document.createElement('div');
     media.className = 'carousel-bg';
@@ -26,12 +28,12 @@ function buildSlideWithImage(row, index, cells) {
     slide.append(media);
   }
 
-  // Create content container
+  // Content container
   const content = document.createElement('div');
   content.className = 'carousel-dotted-content';
 
-  // Badge text (cell 1)
-  const badgeText = cells[1]?.textContent.trim();
+  // Badge text (cell 2)
+  const badgeText = cells[2]?.textContent.trim();
   if (badgeText) {
     const badge = document.createElement('div');
     badge.className = 'carousel-badge';
@@ -39,16 +41,16 @@ function buildSlideWithImage(row, index, cells) {
     content.append(badge);
   }
 
-  // Description (cell 3)
-  if (cells[3]) {
+  // Description (cell 4)
+  if (cells[4]) {
     const description = document.createElement('div');
     description.className = 'carousel-dotted-description';
-    while (cells[3].firstChild) description.append(cells[3].firstChild);
+    while (cells[4].firstChild) description.append(cells[4].firstChild);
     content.append(description);
   }
 
-  // Link/Button (cell 4)
-  const link = cells[4]?.querySelector('a');
+  // Link/Button (cell 5)
+  const link = cells[5]?.querySelector('a');
   if (link) {
     content.append(link);
   }
@@ -60,6 +62,11 @@ function buildSlideWithImage(row, index, cells) {
 /**
  * Build a slide WITHOUT IMAGE variation
  * Structure: Header Text | Default Text
+ * Cell layout (carousel-dotted-slide, slideType = withoutImage):
+ *   0: variant, 1: slideType,
+ *   2: badgeText (empty), 3: image (empty), 4: description (empty),
+ *   5: link group (merged, empty) — AEM UE merges link+linkText+linkTitle+linkType into 1 cell
+ *   6: headerText, 7: defaultText
  */
 function buildSlideWithoutImage(row, index, cells) {
   const slide = document.createElement('div');
@@ -67,11 +74,11 @@ function buildSlideWithoutImage(row, index, cells) {
   slide.dataset.index = index;
   moveInstrumentation(row, slide);
 
-  // Create content container
+  // Content container
   const content = document.createElement('div');
   content.className = 'carousel-dotted-content';
 
-  // Header text (cell 1)
+  // Header text (cell 6)
   const headerText = cells[6]?.textContent.trim();
   if (headerText) {
     const header = document.createElement('div');
@@ -80,7 +87,7 @@ function buildSlideWithoutImage(row, index, cells) {
     content.append(header);
   }
 
-  // Default text (cell 2)
+  // Default text (cell 7)
   if (cells[7]) {
     const defaultText = document.createElement('div');
     defaultText.className = 'carousel-default-text';
@@ -95,6 +102,12 @@ function buildSlideWithoutImage(row, index, cells) {
 /**
  * Build a slide HERO BANNER IMAGE CAROUSEL or TEXT ANIMATION VARIANT
  * Structure: Image | Image Alt | Title | Subtitle | Button
+ * Cell layout (carousel-dotted-slide, slideType = heroBannerImageCarousel / textAnimationVariant):
+ *   0: variant, 1: slideType,
+ *   2: badgeText (empty), 3: image (empty), 4: description (empty),
+ *   5: link group (merged, empty) — link+linkText+linkTitle+linkType merged into 1 cell
+ *   6: headerText (empty), 7: defaultText (empty),
+ *   8: heroImage, 9: imageAlt, 10: title, 11: subtitle, 12: heroLink (merged)
  */
 function buildSlideHeroVariant(row, index, cells, variant) {
   const slide = document.createElement('div');
@@ -102,7 +115,12 @@ function buildSlideHeroVariant(row, index, cells, variant) {
   slide.dataset.index = index;
   moveInstrumentation(row, slide);
 
-  const [heroImageCell, titleCell, subtitleCell, linkCell] = cells.slice(10, 14);
+  // heroImage (cell 8), title (cell 10), subtitle (cell 11), heroLink (cell 12)
+  const heroImageCell = cells[8];
+  const titleCell = cells[9];
+  const subtitleCell = cells[10];
+  const linkCell = cells[11];
+
   const picture = heroImageCell?.querySelector('picture');
   if (picture) {
     const media = document.createElement('div');
@@ -140,33 +158,159 @@ function buildSlideHeroVariant(row, index, cells, variant) {
 }
 
 /**
- * Build a slide - determines which variation to use and delegates
+ * Build a slide - determines which variation to use and delegates.
+ * Cell layout: cells[0] = variant (hidden), cells[1] = slideType (select)
+ * slideType values:
+ *  'withImage' | 'withoutImage' | 'heroBannerImageCarousel' | 'textAnimationVariant'
  */
 function buildSlide(row, index) {
   const cells = [...row.children];
 
-  const heroBannerImageCarousel = cells[8]?.textContent.trim().toLowerCase() === 'true';
-  const textAnimationVariant = cells[9]?.textContent.trim().toLowerCase() === 'true';
-  const withImageIndicator = cells[0]?.textContent.trim().toLowerCase();
-  const picture = cells[2]?.querySelector('picture');
+  // cells[1] is now a select with the slide type value
+  const slideType = cells[1]?.textContent.trim();
 
-  // Determine slide type priority
-  if (heroBannerImageCarousel) {
+  if (slideType === 'heroBannerImageCarousel') {
     return buildSlideHeroVariant(row, index, cells, 'hero-banner-image-carousel');
   }
 
-  if (textAnimationVariant) {
+  if (slideType === 'textAnimationVariant') {
     return buildSlideHeroVariant(row, index, cells, 'text-animation-variant');
   }
 
-  // Determine if this is a with-image slide:
-  // Either has "true" in cell 0 OR has a picture in cell 2
-  const hasImage = (withImageIndicator === 'true' || !!picture);
-
-  if (hasImage) {
+  if (slideType === 'withImage') {
     return buildSlideWithImage(row, index, cells);
   }
+
+  // Default: withoutImage
   return buildSlideWithoutImage(row, index, cells);
+}
+
+/**
+ * Build a slide for showArrowsDots variant.
+ * Cell layout (carousel-dotted-slide-arrows):
+ *  cells[0] = variant (hidden), cells[1] = slideType (select)
+ * slideType values:
+ *   withDefaultImage: 0:variant, 1:slideType, 2:defaultImage, 3:titleDefaultImage,
+ *                     4:step, 5:descriptionDefaultImage  (no link group → no merging)
+ *   withCircularImage: 0:variant, 1:slideType,
+ *                      2-5: withDefaultImage fields (reserved, empty),
+ *                      6:circularImage, 7:titleCircularImage, 8:descriptionCircularImage,
+ *                      9:link (merged — AEM UE merges link+linkText+linkTitle+linkType into 1 cell)
+ */
+function buildSlideArrowsandDots(row, index) {
+  const cells = [...row.children];
+  const slide = document.createElement('div');
+  slide.dataset.index = index;
+  moveInstrumentation(row, slide);
+
+  // cells[1] is now a select with the slide type value
+  const slideType = cells[1]?.textContent.trim();
+
+  if (slideType === 'withCircularImage') {
+    slide.className = 'carousel-dotted-item with-circular-image item';
+
+    // circularImage (cell 6), title (cell 7), description (cell 8), link (cell 9)
+    const circularImageCell = cells[6];
+    const titleCell = cells[7];
+    const descriptionCell = cells[8];
+    const linkCell = cells[9];
+
+    // image
+    const imageContainer = document.createElement('div');
+    imageContainer.className = 'circle-image';
+    const picture = circularImageCell?.querySelector('picture');
+    if (picture) imageContainer.append(picture);
+    slide.append(imageContainer);
+
+    // content container
+    const content = document.createElement('div');
+    content.className = 'caption';
+
+    if (titleCell && titleCell.textContent.trim()) {
+      const title = document.createElement('h3');
+      title.className = 'title-2';
+      title.innerHTML = titleCell.innerHTML;
+      content.append(title);
+    }
+
+    if (descriptionCell && descriptionCell.textContent.trim()) {
+      const description = document.createElement('div');
+      description.className = 'name text-brown text-default';
+      while (descriptionCell.firstChild) description.append(descriptionCell.firstChild);
+      content.append(description);
+    }
+
+    if (linkCell && linkCell.textContent.trim()) {
+      const linkWrap = document.createElement('div');
+      linkWrap.className = 'button-group';
+      const a = linkCell.querySelector('a');
+      if (a) {
+        a.className = 'sub-title-medium link-primary';
+        linkWrap.append(a);
+      } else {
+        while (linkCell.firstChild) linkWrap.append(linkCell.firstChild);
+      }
+      content.append(linkWrap);
+    }
+
+    slide.append(content);
+    return slide;
+  }
+
+  if (slideType === 'withDefaultImage') {
+    slide.className = 'carousel-dotted-item with-default-image item has-caption bgd-white';
+
+    // defaultImage (cell 2), title (cell 3), step (cell 4), description (cell 5)
+    const defaultImageCell = cells[2];
+    const titleCell = cells[3];
+    const stepCell = cells[4];
+    const descriptionCell = cells[5];
+
+    // image
+    const imageContainer = document.createElement('div');
+    imageContainer.className = 'img-thumb';
+    const picture = defaultImageCell?.querySelector('picture');
+    if (picture) imageContainer.append(picture);
+    slide.append(imageContainer);
+
+    // content container
+    const content = document.createElement('div');
+    content.className = 'caption editor';
+
+    if (titleCell && titleCell.textContent.trim()) {
+      const title = document.createElement('h3');
+      title.className = 'title-3';
+      title.innerHTML = titleCell.innerHTML;
+      content.append(title);
+    }
+
+    const hasTitle = titleCell && titleCell.textContent.trim();
+    const hasStep = stepCell && stepCell.textContent.trim();
+    const hasDesc = descriptionCell && descriptionCell.textContent.trim();
+
+    if (hasTitle || hasStep || hasDesc) {
+      const textWrap = document.createElement('div');
+      textWrap.className = 'text-default editor pad-bot';
+
+      if (hasStep) {
+        const step = document.createElement('p');
+        step.className = 'text-large text-light';
+        step.innerHTML = stepCell.innerHTML;
+        textWrap.append(step);
+      }
+
+      if (hasDesc) {
+        while (descriptionCell.firstChild) textWrap.append(descriptionCell.firstChild);
+      }
+      content.append(textWrap);
+    }
+
+    slide.append(content);
+    return slide;
+  }
+
+  slide.className = 'carousel-dotted-item';
+  return slide;
 }
 
 /**
@@ -343,46 +487,39 @@ function initializeAutoScroll(
 
 export default function decorate(block) {
   const rows = [...block.children];
+  const hasAuthoringAttrs = rows.some((row) => [...row.attributes]
+    .some(({ name }) => name.startsWith('data-aue-')));
+  const isAuthoring = hasAuthoringAttrs && window.self !== window.top;
 
   // Read configuration values from block rows
-  const showDots = readBoolean(rows[0]);
-  const dotsAlignment = readDotsAlignment(rows[1]);
-  const dotsPosition = readPosition(rows[2]);
-  const showArrows = readBoolean(rows[3]);
-  const arrowsAlignment = readArrowsAlignment(rows[4]);
-  const autoScroll = readBoolean(rows[5]);
-  const scrollTimeDelay = rows[6]?.textContent.trim() || '';
-  let nextIndex = 7;
-  let seeMoreLink = null;
+  const dotsAlignment = readDotsAlignment(rows[0]);
+  const dotsPosition = readPosition(rows[1]);
+  const showLinks = readBoolean(rows[2]);
+  const seeMoreLink = showLinks ? rows[3]?.querySelector('a') : null;
+  const autoScroll = readBoolean(rows[4]);
+  const scrollTimeDelay = rows[5]?.textContent.trim() || '';
 
-  while (nextIndex < rows.length) {
-    const row = rows[nextIndex];
-    const link = row?.querySelector('a');
-    const hasContent = row?.textContent.trim();
+  // Slides start at row 6, variant is in each slide's first cell
+  const nextIndex = 6;
+  const firstSlide = rows[nextIndex];
+  const variant = firstSlide?.children[0]?.textContent.trim() || '';
 
-    if (link) {
-      seeMoreLink = link;
-      nextIndex += 1;
-      break;
-    } else if (!hasContent) {
-      nextIndex += 1;
-    } else {
-      break;
-    }
-  }
+  const showDots = variant === 'showDots';
+  const showArrows = variant === 'showArrowsDots';
 
   const slides = rows.slice(nextIndex);
   block.className = 'carousel-dotted';
 
   if (showDots) {
     block.classList.add(`dots-${dotsAlignment}-${dotsPosition}`);
+  } else if (showArrows) {
+    block.classList.add('dots-center-outside-container');
   } else {
     block.classList.add('no-dots');
   }
 
   if (showArrows) {
-    block.classList.add('show-arrows');
-    block.classList.add(`arrows-${arrowsAlignment}`);
+    block.classList.add('show-arrows-dots');
   }
 
   if (autoScroll) {
@@ -393,18 +530,26 @@ export default function decorate(block) {
   block.setAttribute('role', 'region');
   block.setAttribute('aria-roledescription', 'carousel');
 
-  const slideEls = slides.map((row, index) => buildSlide(row, index));
+  const slideEls = slides.map((row, index) => (showArrows
+    ? buildSlideArrowsandDots(row, index)
+    : buildSlide(row, index)));
 
   const slidesWithImage = slideEls.filter((s) => s.classList.contains('with-image')).length;
   const slidesWithoutImage = slideEls.filter((s) => s.classList.contains('without-image')).length;
   const slidesHeroBanner = slideEls.filter((s) => s.classList.contains('hero-banner-image-carousel')).length;
   const slidesTextAnimation = slideEls.filter((s) => s.classList.contains('text-animation-variant')).length;
+  const slidesCircularImage = slideEls.filter((s) => s.classList.contains('with-circular-image')).length;
+  const slidesDefaultImage = slideEls.filter((s) => s.classList.contains('with-default-image')).length;
+  const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
+    && slidesWithImage === 0
+    && slidesWithoutImage === 0;
+  const shouldCloneHeroSlide = allHeroBanner && slideEls.length > 1 && !isAuthoring;
 
   if (
     slidesWithImage > 0
-  && slidesWithoutImage === 0
-  && slidesHeroBanner === 0
-  && slidesTextAnimation === 0
+    && slidesWithoutImage === 0
+    && slidesHeroBanner === 0
+    && slidesTextAnimation === 0
   ) {
     block.classList.add('all-with-image');
   } else if (
@@ -478,9 +623,7 @@ export default function decorate(block) {
     const isHeroVariant = block.classList.contains('all-hero-banner-image-carousel')
       || block.classList.contains('all-text-animation-variant');
 
-    const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
-      && slidesWithImage === 0
-      && slidesWithoutImage === 0;
+    const canUseCloneLoop = shouldCloneHeroSlide && allHeroBanner;
 
     const allWithoutImageTrack = slidesWithoutImage > 0
       && slidesWithImage === 0
@@ -519,7 +662,7 @@ export default function decorate(block) {
       if (trackWrapper) {
         const slideWidth = block.offsetWidth;
 
-        if (isLoopingForward) {
+        if (isLoopingForward && canUseCloneLoop) {
           if (isHeroVariant && !isFirstLoad) {
             const cloneSlide = trackWrapper.lastElementChild;
             triggerBgZoom(cloneSlide);
@@ -568,16 +711,29 @@ export default function decorate(block) {
     && slidesHeroBanner === 0
     && slidesTextAnimation === 0;
 
-  const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
-    && slidesWithImage === 0
-    && slidesWithoutImage === 0;
+  const circularOrDefaultImage = slidesCircularImage > 0 || slidesDefaultImage > 0;
 
-  if (allHeroBanner || allWithoutImage) {
+  if (allHeroBanner) {
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
-    const cloneFirst = slideEls[0].cloneNode(true);
-    cloneFirst.setAttribute('aria-hidden', 'true');
-    trackWrapper.replaceChildren(...slideEls, cloneFirst);
+    if (shouldCloneHeroSlide) {
+      const cloneFirst = slideEls[0].cloneNode(true);
+      cloneFirst.setAttribute('aria-hidden', 'true');
+      trackWrapper.replaceChildren(...slideEls, cloneFirst);
+    } else {
+      trackWrapper.replaceChildren(...slideEls);
+    }
+    block.replaceChildren(trackWrapper);
+  } else if (allWithoutImage) {
+    // Without-image variant uses track wrapper for sliding, but NO clone (looping is disabled)
+    const trackWrapper = document.createElement('div');
+    trackWrapper.className = 'carousel-track-wrapper';
+    trackWrapper.replaceChildren(...slideEls);
+    block.replaceChildren(trackWrapper);
+  } else if (circularOrDefaultImage) {
+    const trackWrapper = document.createElement('div');
+    trackWrapper.className = 'carousel-track-wrapper';
+    trackWrapper.replaceChildren(...slideEls);
     block.replaceChildren(trackWrapper);
   } else {
     block.replaceChildren(...slideEls);
@@ -586,7 +742,12 @@ export default function decorate(block) {
   if (showDots) {
     block.append(dots);
   } else if (showArrows) {
-    block.append(prevArrow, nextArrow);
+    if (circularOrDefaultImage) {
+      const trackWrapper = block.querySelector('.carousel-track-wrapper');
+      block.replaceChildren(prevArrow, trackWrapper, nextArrow, dots);
+    } else {
+      block.append(dots, prevArrow, nextArrow);
+    }
   }
 
   if (seeMoreLink) {
@@ -613,6 +774,10 @@ export default function decorate(block) {
   // Initialize drag/swipe functionality
   // Enable looping only if slides have images (like Grow Club section)
   // Disable looping for text-only slides (like News and Activities section)
-  const enableLooping = slidesWithImage > 0 || slidesHeroBanner > 0 || slidesTextAnimation > 0;
+  const enableLooping = slidesWithImage > 0
+    || slidesHeroBanner > 0
+    || slidesTextAnimation > 0
+    || slidesCircularImage > 0
+    || slidesDefaultImage > 0;
   initializeDragSwipe(block, slideEls, setActive, 50, enableLooping);
 }

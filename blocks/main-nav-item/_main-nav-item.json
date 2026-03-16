@@ -31,6 +31,21 @@
           }
         }
       }
+    },
+    {
+      "title": "Quick Nav Item",
+      "id": "quick-nav-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Quick Nav Item",
+              "model": "quick-nav-item"
+            }
+          }
+        }
+      }
     }
   ],
   "models": [
@@ -41,19 +56,17 @@
           "component": "text",
           "name": "mainNavItem",
           "label": "Main Nav Item Text",
-          "description": "Text for the main nav item (e.g., Personal Banking, Business Banking)",
-          "required": true
+          "description": "Text for the main nav item (e.g., Personal Banking, Business Banking)"
         },
         {
           "component": "text",
-          "name": "mainNavItemTitle",
-          "label": "Main Nav Item Title",
-          "description": "Title for the main nav item (e.g., Personal Home, Business Home)",
-          "required": true
+          "name": "mainNavItemGroup_label",
+          "label": "Main Nav Item Label",
+          "description": "Label for the main nav item (e.g., Personal Home, Business Home)"
         },
         {
           "component": "aem-content",
-          "name": "mainNavItemLink",
+          "name": "mainNavItemGroup_link",
           "label": "Main Nav Item Title Link",
           "description": "URL for the main nav item title (e.g. Personal Home Url, Business Home Url)"
         }
@@ -65,14 +78,14 @@
         {
           "component": "reference",
           "valueType": "string",
-          "name": "image",
+          "name": "image_src",
           "label": "Column Image",
           "description": "Image displayed at top of megamenu column",
           "multi": false
         },
         {
           "component": "text",
-          "name": "image-alt-text",
+          "name": "image_alt",
           "label": "Alternative Text for Accessibility 1",
           "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
           "valueType": "string",
@@ -87,13 +100,45 @@
           "valueType": "string"
         }
       ]
+    },
+    {
+      "id": "quick-nav-item",
+      "fields": [
+        {
+          "component": "text",
+          "name": "quickNav_label",
+          "label": "Quick Nav Label",
+          "description": "Label for the Quick Nav Item"
+        },
+        {
+          "component": "aem-content",
+          "name": "quickNav_link",
+          "label": "Quick Nav URL",
+          "description": "Destination URL"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "quickNav_image",
+          "label": "Icon Image",
+          "description": "Icon image shown next to link"
+        },
+        {
+          "component": "text",
+          "name": "quickNav_image_alt",
+          "label": "Alternative Text for Accessibility 1",
+          "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
+          "valueType": "string"
+        }
+      ]
     }
   ],
   "filters": [
     {
       "id": "main-nav-item",
       "components": [
-        "megamenu-column"
+        "megamenu-column",
+        "quick-nav-item"
       ]
     }
   ]

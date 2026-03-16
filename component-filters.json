@@ -33,7 +33,8 @@
       "content-insert-cards",
       "menu-card-actions",
       "download-file",
-      "teaser-with-bg-image"
+      "teaser-with-bg-image",
+      "sub-nav"
     ]
   },
   {
@@ -49,9 +50,15 @@
     ]
   },
   {
-    "id": "carousel-dotted",
+    "id": "showDots",
     "components": [
       "carousel-dotted-slide"
+    ]
+  },
+  {
+    "id": "showArrowsDots",
+    "components": [
+      "carousel-dotted-slide-arrows"
     ]
   },
   {
@@ -138,7 +145,8 @@
   {
     "id": "main-nav-item",
     "components": [
-      "megamenu-column"
+      "megamenu-column",
+      "quick-nav-item"
     ]
   },
   {
