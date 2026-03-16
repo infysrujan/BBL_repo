@@ -1,5 +1,6 @@
 .carousel {
     margin-bottom: var(--bbl-space-300);
+    padding-left: 16px;
 }
 
 .carousel-header {
@@ -7,6 +8,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+    padding-right: 16px;
 }
 
 .carousel-header h2 {
@@ -91,6 +93,10 @@
     border: 1px solid rgb(0 0 0 / 10%);
     scroll-snap-align: start;
     background-color: var(--bbl-color-white);
+}
+
+.carousel-item:last-child {
+    margin-right: 100px;
 }
 
 .carousel-item-link {
@@ -202,6 +208,14 @@
 }
 
 @media (width >= 761px) {
+    .carousel {
+        padding-left: 48px;
+    }
+
+    .carousel-header {
+        padding-right: 48px;
+    }
+
     .carousel-header h2 {
         font-size: 42px;
         line-height: 40.25px;
@@ -213,6 +227,10 @@
 
     .carousel-item { 
         width: calc((100vw - 128px) / 3);
+    }
+
+    .carousel-item:last-child {
+        margin-right: 300px;
     }
 
     .carousel-title { 
@@ -245,6 +263,14 @@
         position: relative;
     }
 
+    .carousel:has(.carousel-track .carousel-item:first-child.active) {
+        padding-left: 84px;
+    }
+
+    .carousel:not(:has(.carousel-track .carousel-item:first-child.active)) {
+        padding-left: 0;
+    }
+
     .carousel .carousel-wrapper {
         position: relative;
         overflow: hidden;
@@ -252,6 +278,11 @@
 
     .carousel-header {
         margin: 22px 0 var(--bbl-space-500);
+        padding-right: 84px;
+    }
+
+    .carousel-wrapper:has(.carousel-prev:enabled) .carousel-header {
+        padding-left: 84px;
     }
 
     .carousel-header h2 {
@@ -324,7 +355,7 @@
     }
 
     .carousel-prev {
-        left: -45px;
+        left: 28px;
     }
 
     .carousel-prev::before {
@@ -333,7 +364,7 @@
     }
 
     .carousel-next {
-        right: -45px;
+        right: 1.5%;
     }
 
 
@@ -436,7 +467,7 @@
     }
 
     .carousel-item:not(.active) {
-        width: 360px;
+        width: 30%;
         height: 490px;
     }
 
