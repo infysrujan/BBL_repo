@@ -68,7 +68,7 @@ export default function decorate(block) {
     // tab-name-1,
     // tab-name-2 → rows 0 and 2 are tab names
     const tabName1 = getRowValue(rows[0]);
-    const tabName2 = getRowValue(rows[2]);
+    const tabName2 = getRowValue(rows[1]);
     const tabNames = [tabName1, tabName2].filter(Boolean);
 
     if (tabNames.length) {
