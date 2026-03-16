@@ -159,7 +159,7 @@ function initCarousel(track) {
       offset -= (items[i].offsetWidth + gap);
     }
 
-    track.style.transform = `translateX(${offset}px)`;
+    track.style.transform = `translateX(${offset + 75 * (offset !== 0 ? 1 : 0)}px)`;
 
     // Update button states
     prevButton.disabled = currentIndex === 0;

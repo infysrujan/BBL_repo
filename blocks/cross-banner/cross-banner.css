@@ -1,5 +1,9 @@
+.section.full-bleed-special.cross-banner-container{
+  padding-inline: 0;
+}
+
 .section.full-bleed-bg.cross-banner-container .content {
-    padding: 0;
+  padding-inline: 0;
 }
 
 .cross-banner {
@@ -118,8 +122,8 @@ body.private
 }
 
 @media (width > 47.5rem) {
-    .section.full-bleed-bg.cross-banner-container .content{
-        padding: 0 var(--bbl-space-600);
+    .section:is(.full-bleed-bg, .full-bleed-special).cross-banner-container .content{
+        padding-inline: var(--bbl-space-600);
     }
 
     .cross-banner-image {
@@ -137,8 +141,8 @@ body.private
 }
 
 @media (width > 64rem) {
-    .section.full-bleed-bg.cross-banner-container .content {
-        padding: 0 var(--bbl-space-1050);
+    .section:is(.full-bleed-bg, .full-bleed-special).cross-banner-container .content{
+        padding-inline: var(--bbl-space-1050);
     }
 
     .cross-banner-image {
@@ -185,8 +189,8 @@ body.private
 }
 
 @media (width > 120rem) {
-    .section.full-bleed-bg.cross-banner-container .content {
-        padding: 0;
+    .section:is(.full-bleed-bg, .full-bleed-special).cross-banner-container .content{
+        padding-inline: 0;
     }
 
     .cross-banner-content {

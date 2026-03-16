@@ -9,10 +9,15 @@ function createMenuCardItem(cardElement, doc) {
     descDiv,
     actionTypeTextDiv,
     defaultButtonDiv,
-    downloadButtonDiv,
+    downloadButtonDivA,
+    downloadButtonDivB,
     dropdownLabletDiv,
     dropdownLinksDiv,
   ] = [...cardElement.children];
+
+  const downloadButtonDiv = downloadButtonDivA?.querySelector('a')
+    ? downloadButtonDivA
+    : downloadButtonDivB;
 
   const img = imageDiv?.querySelector('img');
   const title = titleDiv?.innerHTML?.trim();

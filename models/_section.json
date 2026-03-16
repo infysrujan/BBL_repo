@@ -27,9 +27,9 @@
         },
         {
           "component": "text",
-          "name": "id",
-          "label": "Section ID",
-          "description": "Adds an HTML id attribute to the section"
+          "name": "subnav-label",
+          "label": "Sub Nav Title",
+          "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled."
         },
         {
           "component": "multiselect",
@@ -134,6 +134,7 @@
         "content-insert-cards",
         "menu-card-actions",
         "download-file",
+        "sub-nav",
         "currency-converter"
       ]
     }

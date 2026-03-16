@@ -40,6 +40,12 @@
             "value": "wealth"
           }
         ]
+      },
+      {
+        "component": "boolean",
+        "label": "Enable Sub Navigation",
+        "name": "isSubNav",
+        "valueType": "boolean"
       }
     ]
   },
@@ -172,9 +178,9 @@
       },
       {
         "component": "text",
-        "name": "id",
-        "label": "Section ID",
-        "description": "Adds an HTML id attribute to the section"
+        "name": "subnav-label",
+        "label": "Sub Nav Title",
+        "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled."
       },
       {
         "component": "multiselect",
@@ -7292,6 +7298,28 @@
           {
             "name": "Image Right",
             "value": "image-right"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sub-nav",
+    "fields": [
+      {
+        "component": "select",
+        "name": "classes",
+        "value": "subnav-dropdown",
+        "label": "Subnav Type",
+        "description": "Select the type of subnav to display",
+        "options": [
+          {
+            "name": "Subnav with dropdown",
+            "value": "subnav-dropdown"
+          },
+          {
+            "name": "Subnav without dropdown",
+            "value": "subnav-without-dropdown"
           }
         ]
       }

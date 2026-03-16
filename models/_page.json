@@ -41,6 +41,12 @@
               "value": "wealth"
             }
           ]
+        },
+        {
+          "component": "boolean",
+          "label": "Enable Sub Navigation",
+          "name": "isSubNav",
+          "valueType": "boolean"
         }
       ]
     }

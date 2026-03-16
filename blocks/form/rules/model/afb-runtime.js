@@ -25,6 +25,7 @@
 import { propertyChange, ExecuteRule, Initialize, RemoveItem, Change, FormLoad, FieldChanged, ValidationComplete, Valid, Invalid, SubmitSuccess, CustomEvent, RequestSuccess, RequestFailure, SubmitError, Submit, Save, Reset, SubmitFailure, Focus, RemoveInstance, AddInstance, AddItem, Click } from './afb-events.js';
 import Formula from '../formula/index.js';
 import { format, parseDefaultDate, datetimeToNumber, parseDateSkeleton, numberToDatetime, formatDate, parseDate } from './afb-formatters.min.js';
+import { fetchCsrfToken, generatePayloadHash } from '../../functions.js';
 
 function __decorate(decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2899,7 +2900,7 @@ const getCustomEventName = (name) => {
     }
     return eName;
 };
-const request = async (context, uri, httpVerb, payload, success, error, headers) => {
+const request = async (context, uri, httpVerb, payload, success, error, headers = {}) => {
     const endpoint = uri;
     const requestOptions = {
         method: httpVerb
@@ -2922,6 +2923,16 @@ const request = async (context, uri, httpVerb, payload, success, error, headers)
         cryptoMetadata = payload.cryptoMetadata;
         inputPayload = payload;
     }
+    
+    // Always merge headers into requestOptions if they exist
+    const headerNames = Object.keys(headers);
+    if (headerNames.length > 0) {
+    requestOptions.headers = {
+      ...(requestOptions.headers || {}),
+      ...headers,
+    };
+  }
+    
     if (payload && payload instanceof FileObject && payload.data instanceof File) {
         const formData = new FormData();
         formData.append(payload.name, payload.data);
@@ -2931,15 +2942,12 @@ const request = async (context, uri, httpVerb, payload, success, error, headers)
         inputPayload = payload;
     }
     else if (payload && (typeof payload === 'string' || (typeof payload === 'object' && Object.keys(payload).length > 0))) {
-        const headerNames = Object.keys(headers);
-        if (headerNames.length > 0) {
-            requestOptions.headers = {
-                ...headers,
-                ...(headerNames.indexOf('Content-Type') === -1 ? { 'Content-Type': 'application/json' } : {})
-            };
+        // Only set Content-Type for non-FormData payloads
+        if (!requestOptions.headers) {
+            requestOptions.headers = {};
         }
-        else {
-            requestOptions.headers = { 'Content-Type': 'application/json' };
+        if (!requestOptions.headers['Content-Type']) {
+            requestOptions.headers['Content-Type'] = 'application/json';
         }
         const contentType = requestOptions?.headers?.['Content-Type'] || 'application/json';
         if (typeof payload === 'object') {
@@ -3055,9 +3063,19 @@ const submit = async (context, success, error, submitAs = 'multipart/form-data',
         formData = multipartFormData(submitDataAndMetaData, attachments);
         submitContentType = 'multipart/form-data';
     }
-    await request(context, endpoint, 'POST', formData, success, error, {
-        'Content-Type': submitContentType
-    });
+    // NEW: fetch CSRF token and payload hash
+    const csrfToken = await fetchCsrfToken();
+    const payloadHash = await generatePayloadHash(submitDataAndMetaData);
+
+    // NEW: build headers; do NOT set Content-Type for FormData here
+    const headers = {
+        ...(submitContentType && submitContentType !== 'multipart/form-data' && { 'Content-Type': submitContentType }),
+        ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
+        ...(payloadHash && { 'X-Payload-Hash': payloadHash }),
+    };
+
+    await request(context, endpoint, 'POST', formData, success, error, headers);
+
 };
 const multipartFormData = (data, attachments) => {
     const formData = new FormData();
