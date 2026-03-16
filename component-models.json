@@ -180,16 +180,7 @@
         "component": "text",
         "name": "subnav-label",
         "label": "Sub Nav Title",
-        "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled.",
-        "condition": {
-          "===": [
-            {
-              "var": "isSubNav",
-              "scope": "page"
-            },
-            true
-          ]
-        }
+        "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled."
       },
       {
         "component": "multiselect",

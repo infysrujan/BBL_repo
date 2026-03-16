@@ -581,6 +581,13 @@ export default async function decorate(block) {
 
   block.append(header);
 
+  const main = document.querySelector('main');
+  const headerBlock = document.querySelector('.header');
+  const firstMainChild = main?.firstElementChild;
+  if (!firstMainChild || !firstMainChild.classList.contains('hero-container')) {
+    headerBlock.classList.add('static-main-nav');
+  }
+
   isDesktop.addEventListener('change', () => {
     applyLayout(header, fragmentTemplate, isDesktop.matches);
   });

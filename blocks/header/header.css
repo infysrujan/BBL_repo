@@ -8,6 +8,11 @@
 	z-index: 100;
 }
 
+.header.static-main-nav {
+	position: static;
+	background-color: var(--bbl-color-truthful-blue);
+}
+
 /* MOBILE LAYOUT SPECIFIC SELECTORS */
 .header .mobile-top-bar {
 	display: flex;

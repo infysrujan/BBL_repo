@@ -89,3 +89,36 @@
     white-space: nowrap;
     text-transform: capitalize;
 }
+
+/* Sub-nav with tab: tab buttons on the right */
+.sub-nav .sub-nav-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.sub-nav .sub-nav-tab-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.4375rem;
+    border: 0.0625rem solid var(--bbl-color-white-alpha-50);
+    background: transparent;
+    color: var(--bbl-color-white);
+    font: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.sub-nav .sub-nav-tab-btn:hover {
+    background-color: var(--bbl-color-white-alpha-10);
+}
+
+.sub-nav .sub-nav-tab-btn.active {
+    background-color: var(--bbl-color-white-alpha-20);
+    border-color: var(--bbl-color-white);
+}
+
+.sub-nav .sub-nav-tab-btn:focus-visible {
+    outline: 0.125rem solid var(--bbl-color-white);
+    outline-offset: 0.125rem;
+}

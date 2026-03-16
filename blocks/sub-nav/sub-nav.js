@@ -40,10 +40,14 @@ export default function decorate(block) {
     return;
   }
 
-  // Read block config: classes from block model (subnav-dropdown | subnav-without-dropdown)
+  // Read block config:
+  // classes from block model (subnav-dropdown | subnav-without-dropdown | subnav-tab)
   const blockClasses = [...block.classList];
   const hasDropdownClass = blockClasses.includes('subnav-dropdown');
+  const hasTabClass = blockClasses.includes('subnav-tab');
 
+  // Helper: get value from a block row (second cell = value column)
+  const getRowValue = (row) => row?.children?.[0]?.textContent?.trim() ?? '';
   // Build UI: wrapper + back button (always)
   const wrapper = document.createElement('div');
   wrapper.className = 'wrapper content';
@@ -57,7 +61,43 @@ export default function decorate(block) {
     window.history.back();
   });
 
-  if (hasDropdownClass) {
+  if (hasTabClass) {
+    const rows = [...block.children];
+    // Model order:
+    // classes,
+    // tab-name-1,
+    // tab-name-2 → rows 0 and 2 are tab names
+    const tabName1 = getRowValue(rows[0]);
+    const tabName2 = getRowValue(rows[2]);
+    const tabNames = [tabName1, tabName2].filter(Boolean);
+
+    if (tabNames.length) {
+      const tabList = document.createElement('div');
+      tabList.className = 'sub-nav-tabs';
+      tabList.setAttribute('role', 'tablist');
+      const tabButtons = [];
+      tabNames.forEach((name, index) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `sub-nav-tab-btn${index === 0 ? ' active' : ''}`;
+        btn.setAttribute('role', 'tab');
+        btn.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+        btn.textContent = name;
+        btn.addEventListener('click', () => {
+          tabButtons.forEach((b) => {
+            const isActive = b === btn;
+            b.classList.toggle('active', isActive);
+            b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          });
+        });
+        tabButtons.push(btn);
+        tabList.appendChild(btn);
+      });
+      wrapper.append(backButton, tabList);
+    } else {
+      wrapper.append(backButton);
+    }
+  } else if (hasDropdownClass) {
     const sections = collectSections();
     if (sections.length) {
       const linksHTML = `<ul>${sections.map(({ label: optLabel }, index) => `<li><a href="#" data-section-index="${index}" class="global-dropdown-link">${escapeHtml(optLabel)}</a></li>`).join('')}</ul>`;
