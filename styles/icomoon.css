@@ -1,0 +1,124 @@
+@font-face {
+	font-family: icomoon;
+	src: url('../fonts/icomoon.woff');
+	src: url('../fonts/icomoon.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
+}
+
+[class^="icon-"]::before,
+[class*=" icon-"]::before {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: icomoon, sans-serif !important;
+	speak: never;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-convert::before {
+	content: "\e900";
+}
+
+.icon-arrow-left::before {
+	content: "\e901";
+}
+
+.icon-dropdown::before {
+	content: "\e902";
+}
+
+.icon-login::before {
+	content: "\e903";
+}
+
+.icon-search::before {
+	content: "\e904";
+}
+
+.icon-check::before {
+	content: "\e905";
+}
+
+.icon-username::before {
+	content: "\e906";
+}
+
+.icon-password::before {
+	content: "\e907";
+}
+
+.icon-cash-code::before {
+	content: "\e908";
+}
+
+.icon-mobile::before {
+	content: "\e909";
+}
+
+.icon-preview::before {
+	content: "\e910";
+}
+
+.icon-company::before {
+	content: "\e911";
+}
+
+.icon-calendar::before {
+	content: "\e912";
+}
+
+.icon-line::before {
+	content: "\e914";
+}
+
+.icon-tw::before {
+	content: "\e915";
+}
+
+.icon-edit::before {
+	content: "\e918";
+}
+
+.icon-email::before {
+	content: "\e919";
+}
+
+.icon-money::before {
+	content: "\e90a";
+}
+
+.icon-delete::before {
+	content: "\e90b";
+}
+
+.icon-minimize::before {
+	content: "\e90c";
+}
+
+.icon-settings::before {
+	content: "\e90d";
+}
+
+.icon-print::before {
+	content: "\e90e";
+}
+
+.icon-download::before {
+	content: "\e90f";
+}
+
+.icon-linkedin::before {
+	content: "\e91a";
+}
+
+.icon-fb::before {
+	content: "\ea90";
+}

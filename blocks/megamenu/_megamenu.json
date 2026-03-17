@@ -1,0 +1,118 @@
+{
+  "definitions": [
+    {
+      "title": "Megamenu",
+      "id": "megamenu",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Megamenu",
+              "filter": "megamenu"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Nav Item",
+      "id": "nav-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Nav Item",
+              "model": "nav-item",
+              "filter": "nav-item"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Menu Item",
+      "id": "menu-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Menu Item",
+              "model": "menu-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "nav-item",
+      "fields": [
+        {
+          "component": "select",
+          "name": "navName",
+          "label": "Nav Name",
+          "description": "Select a nav label",
+          "valueType": "string",
+          "value": "",
+          "options": [
+            {
+              "name": "Personal Banking",
+              "value": "personal-banking"
+            },
+            {
+              "name": "Business Banking",
+              "value": "business-banking"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "name": "navTitle",
+          "label": "Nav Title",
+          "description": "Title text for the nav item",
+          "valueType": "string"
+        },
+        {
+          "component": "aem-content",
+          "name": "link",
+          "label": "Link",
+          "description": "Destination URL for nav item"
+        }
+      ]
+    },
+    {
+      "id": "menu-item",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Image",
+          "multi": false
+        },
+        {
+          "component": "richtext",
+          "name": "text",
+          "value": "",
+          "label": "Text",
+          "valueType": "string"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "megamenu",
+      "components": ["nav-item"]
+    },
+    {
+      "id": "nav-item",
+      "components": ["menu-item"]
+    }
+  ]
+}
+

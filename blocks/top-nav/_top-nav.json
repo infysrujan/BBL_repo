@@ -1,0 +1,113 @@
+{
+	"definitions": [
+		{
+			"title": "Top Nav",
+			"id": "top-nav",
+			"plugins": {
+				"xwalk": {
+					"page": {
+						"resourceType": "core/franklin/components/block/v1/block",
+						"template": {
+							"name": "Top Nav",
+							"filter": "top-nav"
+						}
+					}
+				}
+			}
+		},
+		{
+			"title": "Top Nav Link",
+			"id": "top-nav-link",
+			"plugins": {
+				"xwalk": {
+					"page": {
+						"resourceType": "core/franklin/components/block/v1/block/item",
+						"template": {
+							"name": "Top Nav Link",
+							"model": "top-nav-link",
+							"classes": "link-only",
+							"label": "{{linkText}}"
+						}
+					}
+				}
+			}
+		}
+	],
+	"models": [
+		{
+			"id": "top-nav-link",
+			"fields": [
+				{
+					"component": "text",
+					"name": "linkText",
+					"label": "Link Text",
+					"description": "Text for the link",
+					"required": true
+				},
+				{
+					"component": "aem-content",
+					"name": "link",
+					"label": "Link URL",
+					"description": "Destination URL"
+				},
+				{
+					"component": "select",
+					"name": "classes",
+					"value": "link-only",
+					"label": "Link Type",
+					"description": "Style variant for the link",
+					"options": [
+						{
+							"name": "Link Only",
+							"value": "link-only"
+						},
+						{
+							"name": "Link with Icon/Logo",
+							"value": "link-logo"
+						}
+					]
+				},
+				{
+					"component": "reference",
+					"valueType": "string",
+					"name": "image",
+					"label": "Icon Image",
+					"description": "Icon/flag image shown next to link",
+					"value": "",
+					"condition": {
+						"===": [
+							{
+								"var": "classes"
+							},
+							"link-logo"
+						]
+					}
+				},
+				{
+					"component": "text",
+					"name": "icon-alt-text",
+					"label": "Alternative Text for Accessibility 1",
+					"description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
+					"valueType": "string",
+					"required": true,
+					"condition": {
+						"===": [
+							{
+								"var": "classes"
+							},
+							"link-logo"
+						]
+					}
+				}
+			]
+		}
+	],
+	"filters": [
+		{
+			"id": "top-nav",
+			"components": [
+				"top-nav-link"
+			]
+		}
+	]
+}

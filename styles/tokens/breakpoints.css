@@ -1,0 +1,24 @@
+/* ==========================================================================
+   BBL Design System - Breakpoint Tokens
+
+   Source: project breakpoint definition
+   - Small (Mobile): < 760px
+   - Large (Desktop): 1025px–1920px
+
+   Notes:
+   - CSS custom properties (var(--...)) cannot be used inside media query
+     conditions in browsers (without a build step), so these are primarily for:
+     - documentation / consistency
+     - JS usage (if needed)
+     - calculations inside CSS rules (not @media conditions)
+   ========================================================================== */
+
+:root {
+  --bbl-breakpoint-mobile-max: 759px;
+  --bbl-breakpoint-tablet-min: 760px;
+  --bbl-breakpoint-tablet-max: 1024px;
+  --bbl-breakpoint-desktop-min: 1025px;
+  --bbl-breakpoint-desktop-max: 1920px;
+}
+
+

@@ -1,0 +1,126 @@
+/* ==========================================================================
+   BBL Design System - Border Radius (Corner) Variables
+   Extracted from Figma: BBL - Adobe Shared Workspace
+   
+   To use radiuses consistently make sure you use the alias tokens.
+   
+   Corner tokens define the roundness of element corners, from sharp 
+   (0px) to fully rounded (50% pill shape).
+   ==========================================================================
+*/
+
+:root {
+  /* =========================================================================
+     BORDER RADIUS SCALE
+     Base values for corner rounding
+     ========================================================================= */
+  
+  /* --- None / Sharp --- */
+  --bbl-rounded-000: 0px;                 /* 0px - No rounding */
+  
+  /* --- Small --- */
+  --bbl-rounded-050: 0.25rem;             /* 4px - Small rounding */
+  
+  /* --- Medium --- */
+  --bbl-rounded-100: 0.5rem;              /* 8px - Medium rounding */
+  
+  /* --- Medium Large --- */
+  --bbl-rounded-150: 0.75rem;             /* 12px - Medium-large rounding */
+
+  /* --- Large --- */
+  --bbl-rounded-200: 1rem;                /* 16px - Large rounding */
+  
+  /* --- Extra Large --- */
+  --bbl-rounded-400: 2rem;                /* 32px - Extra large rounding */
+  
+  /* --- Full / Pill --- */
+  --bbl-rounded-full: 50%;                /* 50% - Fully rounded (pill shape) */
+
+  /* =========================================================================
+     SEMANTIC BORDER RADIUS ALIASES
+     Maps design tokens to common use cases
+     ========================================================================= */
+  
+  /* --- Sharp Corners --- */
+  --bbl-radius-none: var(--bbl-rounded-000);
+  /* Used when explicitly specifying that a design element shouldn't have 
+     rounded corners. */
+  
+  /* --- Small Rounded --- */
+  --bbl-radius-sm: var(--bbl-rounded-050);
+  /* Used for small tags. */
+  
+  /* --- Medium Rounded --- */
+  --bbl-radius-md: var(--bbl-rounded-100);
+  /* Used for data visualisation elements, tags, logos and toast components. */
+
+  /* --- 12px Rounded --- */
+  --bbl-radius-12: var(--bbl-rounded-150);
+  /* Used when design calls for 12px rounding (between 8px and 16px). */
+  
+  /* --- Default Rounded --- */
+  --bbl-radius-default: var(--bbl-rounded-200);
+  --bbl-radius-lg: var(--bbl-rounded-200);
+  /* Used in cards, popovers, notifications, headers, navigation bars and 
+     side drawers. */
+  
+  /* --- Extra Large Rounded --- */
+  --bbl-radius-xl: var(--bbl-rounded-400);
+  /* Used in modals and sheets. */
+  
+  /* --- Fully Rounded / Pill --- */
+  --bbl-radius-full: var(--bbl-rounded-full);
+  /* Used in toggles, extended FABs and buttons. Creates pill-shaped elements. */
+
+  /* =========================================================================
+     COMPONENT-SPECIFIC ALIASES
+     Direct mapping for specific components
+     ========================================================================= */
+  
+  /* --- Tags --- */
+  --bbl-radius-tag-small: var(--bbl-rounded-050);     /* 4px */
+  --bbl-radius-tag: var(--bbl-rounded-100);           /* 8px */
+  
+  /* --- Cards & Containers --- */
+  --bbl-radius-card: var(--bbl-rounded-200);          /* 16px */
+  --bbl-radius-popover: var(--bbl-rounded-200);       /* 16px */
+  --bbl-radius-notification: var(--bbl-rounded-200);  /* 16px */
+  
+  /* --- Navigation --- */
+  --bbl-radius-nav-bar: var(--bbl-rounded-200);       /* 16px */
+  --bbl-radius-header: var(--bbl-rounded-200);        /* 16px */
+  --bbl-radius-drawer: var(--bbl-rounded-200);        /* 16px */
+  
+  /* --- Overlays --- */
+  --bbl-radius-modal: var(--bbl-rounded-400);         /* 32px */
+  --bbl-radius-sheet: var(--bbl-rounded-400);         /* 32px */
+  
+  /* --- Data Visualization --- */
+  --bbl-radius-chart: var(--bbl-rounded-100);         /* 8px */
+  --bbl-radius-toast: var(--bbl-rounded-100);         /* 8px */
+  
+  /* --- Logos & Media --- */
+  --bbl-radius-logo: var(--bbl-rounded-100);          /* 8px */
+  --bbl-radius-avatar: var(--bbl-rounded-full);       /* 50% - circular */
+  
+  /* --- Buttons & Interactive --- */
+  --bbl-radius-button: var(--bbl-rounded-150);        /* 12px - button radius */
+  --bbl-radius-button-square: var(--bbl-rounded-150); /* 12px - square button radius */
+  --bbl-radius-fab: var(--bbl-rounded-full);          /* 50% - floating action button */
+  --bbl-radius-toggle: var(--bbl-rounded-full);       /* 50% - toggle switch */
+  
+  /* --- Input Fields --- */
+  --bbl-radius-input: var(--bbl-rounded-100);         /* 8px */
+  --bbl-radius-select: var(--bbl-rounded-100);        /* 8px */
+  --bbl-radius-textarea: var(--bbl-rounded-100);      /* 8px */
+  
+  /* --- Badges & Indicators --- */
+  --bbl-radius-badge: var(--bbl-rounded-full);        /* 50% - circular badge */
+  --bbl-radius-pill: var(--bbl-rounded-full);         /* 50% - pill badge */
+  
+  /* --- Images --- */
+  --bbl-radius-image-sm: var(--bbl-rounded-100);      /* 8px */
+  --bbl-radius-image-md: var(--bbl-rounded-200);      /* 16px */
+  --bbl-radius-image-lg: var(--bbl-rounded-400);      /* 32px */
+}
+

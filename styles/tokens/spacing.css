@@ -1,0 +1,134 @@
+/* ==========================================================================
+   BBL Design System - Spacing Variables
+   Extracted from Figma: BBL - Adobe Shared Workspace
+   
+   Base Unit: 8px (0.5rem)
+   System: Each token is a multiple of the base unit
+   
+   The 8px base unit forms the basis of our space token system, as the 
+   base unit space.100. Every space token is a multiple of this base unit, 
+   the number suffix representing the percentage of the base unit.
+   
+   For example, space.200 is 200% of the size of the base unit, therefore 
+   represents 16px.
+   
+   Each space token should be used in place of the raw pixel or REM values 
+   when adding space between components or objects on a page.
+   ==========================================================================
+*/
+
+:root {
+  /* =========================================================================
+     BASE UNIT
+     ========================================================================= */
+  
+  --bbl-space-base: 0.5rem;               /* 8px */
+
+  /* =========================================================================
+     SPACING SCALE
+     Multipliers of 8px base unit
+     ========================================================================= */
+  
+  /* --- Zero / None --- */
+  --bbl-space-000: 0rem;                  /* 0px - 0x base */
+  
+  /* --- Small Spacing (2px - 12px) --- */
+  --bbl-space-025: 0.125rem;              /* 2px - 0.25x base */
+  --bbl-space-050: 0.25rem;               /* 4px - 0.5x base */
+  --bbl-space-075: 0.375rem;              /* 6px - 0.75x base */
+  
+  /* --- Base Unit --- */
+  --bbl-space-100: 0.5rem;                /* 8px - 1x base */
+  
+  /* --- Medium Spacing (12px - 24px) --- */
+  --bbl-space-150: 0.75rem;               /* 12px - 1.5x base */
+  --bbl-space-200: 1rem;                  /* 16px - 2x base */
+  --bbl-space-250: 1.25rem;               /* 20px - 2.5x base */
+  --bbl-space-300: 1.5rem;                /* 24px - 3x base */
+  
+  /* --- Large Spacing (28px - 84px) --- */
+  --bbl-space-350: 1.75rem;               /* 28px - 3.5x base */
+  --bbl-space-400: 2rem;                  /* 32px - 4x base */
+  --bbl-space-500: 2.5rem;                /* 40px - 5x base */
+  --bbl-space-600: 3rem;                  /* 48px - 6x base */
+  --bbl-space-700: 3.5rem;                /* 56px - 7x base */
+  --bbl-space-800: 4rem;                  /* 64px - 8x base */
+  --bbl-space-900: 4.5rem;                /* 72px - 9x base */
+  --bbl-space-1000: 5rem;                 /* 80px - 10x base */
+  --bbl-space-1050: 5.25rem;              /* 84px - 10.5x base */
+
+  /* =========================================================================
+     SEMANTIC SPACING ALIASES
+     Maps design tokens to common use cases
+     ========================================================================= */
+  
+  /* --- Component Internal Spacing --- */
+  --bbl-space-component-xxs: var(--bbl-space-050);   /* 4px - tight internal */
+  --bbl-space-component-xs: var(--bbl-space-100);    /* 8px - small internal */
+  --bbl-space-component-sm: var(--bbl-space-150);    /* 12px - default internal */
+  --bbl-space-component-md: var(--bbl-space-200);    /* 16px - medium internal */
+  --bbl-space-component-lg: var(--bbl-space-300);    /* 24px - large internal */
+  --bbl-space-component-xl: var(--bbl-space-400);    /* 32px - extra large internal */
+  
+  /* --- Layout Spacing (Between Components) --- */
+  --bbl-space-layout-xs: var(--bbl-space-200);       /* 16px - tight layout */
+  --bbl-space-layout-sm: var(--bbl-space-300);       /* 24px - small layout */
+  --bbl-space-layout-md: var(--bbl-space-400);       /* 32px - default layout */
+  --bbl-space-layout-lg: var(--bbl-space-600);       /* 48px - large layout */
+  --bbl-space-layout-xl: var(--bbl-space-800);       /* 64px - extra large layout */
+  --bbl-space-layout-xxl: var(--bbl-space-1000);     /* 80px - section spacing */
+  
+  /* --- Stack/Flow Spacing (Vertical rhythm) --- */
+  --bbl-space-stack-xs: var(--bbl-space-100);        /* 8px - tight stack */
+  --bbl-space-stack-sm: var(--bbl-space-150);        /* 12px - small stack */
+  --bbl-space-stack-md: var(--bbl-space-200);        /* 16px - default stack */
+  --bbl-space-stack-lg: var(--bbl-space-300);        /* 24px - large stack */
+  --bbl-space-stack-xl: var(--bbl-space-400);        /* 32px - extra large stack */
+  
+  /* --- Inline Spacing (Horizontal rhythm) --- */
+  --bbl-space-inline-xs: var(--bbl-space-050);       /* 4px - tight inline */
+  --bbl-space-inline-sm: var(--bbl-space-100);       /* 8px - small inline */
+  --bbl-space-inline-md: var(--bbl-space-150);       /* 12px - default inline */
+  --bbl-space-inline-lg: var(--bbl-space-200);       /* 16px - large inline */
+  --bbl-space-inline-xl: var(--bbl-space-300);       /* 24px - extra large inline */
+  
+  /* --- Container Padding --- */
+  --bbl-space-container-xs: var(--bbl-space-200);    /* 16px - mobile padding */
+  --bbl-space-container-sm: var(--bbl-space-300);    /* 24px - small container */
+  --bbl-space-container-md: var(--bbl-space-400);    /* 32px - default container */
+  --bbl-space-container-lg: var(--bbl-space-600);    /* 48px - large container */
+  --bbl-space-container-xl: var(--bbl-space-800);    /* 64px - extra large container */
+  
+  /* --- Grid Gaps --- */
+  --bbl-space-gap-xs: var(--bbl-space-100);          /* 8px - tight gap */
+  --bbl-space-gap-sm: var(--bbl-space-150);          /* 12px - small gap */
+  --bbl-space-gap-md: var(--bbl-space-200);          /* 16px - default gap */
+  --bbl-space-gap-lg: var(--bbl-space-300);          /* 24px - large gap */
+  --bbl-space-gap-xl: var(--bbl-space-400);          /* 32px - extra large gap */
+  
+  /* --- Section Spacing --- */
+  --bbl-space-section-xs: var(--bbl-space-200);      /* 16px - extra small section */
+  --bbl-space-section-sm: var(--bbl-space-600);      /* 48px - small section */
+  --bbl-space-section-md: var(--bbl-space-800);      /* 64px - default section */
+  --bbl-space-section-lg: var(--bbl-space-1000);     /* 80px - large section */
+  --bbl-space-section-xl: var(--bbl-space-1050);     /* 84px - extra large section */
+}
+
+/* ==========================================================================
+   RESPONSIVE SPACING OVERRIDES
+   Breakpoint: >= 760px (Mobile-first approach) --bbl-breakpoint-tablet-min
+   
+   Note: Most spacing remains consistent, but container padding and section
+   spacing may increase on larger screens for better proportion.
+   ========================================================================== */
+
+@media (width >= 760px) {
+  :root {
+    /* Container padding increases on desktop */
+    --bbl-space-container-xs: var(--bbl-space-300);  /* 24px (up from 16px) */
+    --bbl-space-container-sm: var(--bbl-space-400);  /* 32px (up from 24px) */
+    --bbl-space-container-md: var(--bbl-space-600);  /* 48px (up from 32px) */
+    --bbl-space-container-lg: var(--bbl-space-800);  /* 64px (up from 48px) */
+  }
+}
+

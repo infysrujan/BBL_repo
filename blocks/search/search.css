@@ -1,0 +1,37 @@
+.search {
+	margin-top: 0.375rem;
+	margin-left: 0.3125rem;
+}
+
+.search a {
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+}
+
+.search .icon-search {
+	font-size: 1.125rem;
+	color: var(--bbl-color-black);
+}
+
+.search .search-placeholder {
+	margin-left: 1.875rem;
+	font: 1rem Muli-Bold, sans-serif;
+	color: var(--bbl-color-grey-130);
+}
+
+@media (width > 64rem) {
+	.search {
+		margin: 0;
+		margin-left: 0.875rem;
+	}
+
+	.search .icon-search {
+		color: var(--bbl-color-white);
+		font-weight: 600;
+	}
+
+	.search-placeholder {
+		display: none;
+	}
+}

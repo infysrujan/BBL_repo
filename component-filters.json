@@ -1,0 +1,178 @@
+[
+  {
+    "id": "main",
+    "components": [
+      "section",
+      "header-section"
+    ]
+  },
+  {
+    "id": "section",
+    "components": [
+      "text",
+      "image",
+      "button",
+      "title",
+      "hero",
+      "cards",
+      "cards-product",
+      "columns",
+      "fragment",
+      "header",
+      "megamenu",
+      "carousel",
+      "story-card",
+      "warning-card",
+      "menu-cards",
+      "carousel-dotted",
+      "menu-banner",
+      "cross-banner",
+      "form",
+      "embed-adaptive-form",
+      "content-insert-cards"
+    ]
+  },
+  {
+    "id": "cards-product",
+    "components": [
+      "product-card"
+    ]
+  },
+  {
+    "id": "cards",
+    "components": [
+      "card"
+    ]
+  },
+  {
+    "id": "carousel-dotted",
+    "components": [
+      "carousel-dotted-slide"
+    ]
+  },
+  {
+    "id": "carousel",
+    "components": [
+      "carousel-card"
+    ]
+  },
+  {
+    "id": "columns",
+    "components": [
+      "column"
+    ]
+  },
+  {
+    "id": "column",
+    "components": [
+      "text",
+      "image",
+      "button",
+      "title"
+    ]
+  },
+  {
+    "id": "content-insert-cards",
+    "components": [
+      "content-insert-card"
+    ]
+  },
+  {
+    "id": "form",
+    "components": [
+      "captcha",
+      "checkbox",
+      "checkbox-group",
+      "date-input",
+      "drop-down",
+      "email",
+      "file-input",
+      "form-accordion",
+      "form-button",
+      "form-fragment",
+      "form-image",
+      "form-modal",
+      "form-reset-button",
+      "form-submit-button",
+      "number-input",
+      "panel",
+      "password",
+      "plain-text",
+      "radio-group",
+      "rating",
+      "telephone-input",
+      "text-input",
+      "tnc",
+      "wizard",
+      "range"
+    ]
+  },
+  {
+    "id": "header-section",
+    "components": [
+      "top-nav",
+      "brand-logo",
+      "main-nav-item",
+      "login",
+      "location",
+      "search"
+    ]
+  },
+  {
+    "id": "hero",
+    "components": [
+      "hero-item"
+    ],
+    "maxItems": 8
+  },
+  {
+    "id": "login",
+    "components": [
+      "login-panel-section"
+    ]
+  },
+  {
+    "id": "main-nav-item",
+    "components": [
+      "megamenu-column"
+    ]
+  },
+  {
+    "id": "megamenu",
+    "components": [
+      "nav-item"
+    ]
+  },
+  {
+    "id": "nav-item",
+    "components": [
+      "menu-item"
+    ]
+  },
+  {
+    "id": "menu-banner",
+    "components": [
+      "menu-banner-card"
+    ],
+    "maxItems": 4
+  },
+  {
+    "id": "menu-cards",
+    "components": [
+      "menu-card"
+    ],
+    "maxItems": 6
+  },
+  {
+    "id": "story-card",
+    "components": [
+      "button"
+    ]
+  },
+  {
+    "id": "top-nav",
+    "components": [
+      "top-nav-link"
+    ]
+  }
+]

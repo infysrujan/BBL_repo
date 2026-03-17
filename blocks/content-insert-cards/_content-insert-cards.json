@@ -1,0 +1,76 @@
+{
+  "definitions": [
+    {
+      "title": "Content Insert Cards",
+      "id": "content-insert-cards",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Content Insert Cards",
+              "filter": "content-insert-cards"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Content Insert Card",
+      "id": "content-insert-card",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Content Insert Card",
+              "model": "content-insert-card"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "content-insert-card",
+      "fields": [
+       {
+          "component": "text",
+          "name": "promoTag",
+          "label": "Promo Tag",
+          "valueType": "string"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Background Image"
+        },
+        {
+          "component": "text",
+          "name": "title",
+          "label": "Title",
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "description",
+          "label": "Description",
+          "valueType": "string"
+        },
+        {
+          "...": "../../models/elements/_button-fields.json"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "content-insert-cards",
+      "components": [
+        "content-insert-card"
+      ]
+    }
+  ]
+}

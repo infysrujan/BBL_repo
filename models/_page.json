@@ -1,0 +1,48 @@
+{
+  "models": [
+    {
+      "id": "page-metadata",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "jcr:title",
+          "label": "Title"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "jcr:description",
+          "label": "Description"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "keywords",
+          "multi": true,
+          "label": "Keywords"
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "pageVariant",
+          "label": "Page Variant",
+          "options": [
+            {
+              "name": "Default",
+              "value": ""
+            },
+            {
+              "name": "Private",
+              "value": "private"
+            },
+            {
+              "name": "Wealth",
+              "value": "wealth"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "definitions": [
+    {
+      "title": "Warning Card",
+      "id": "warning-card",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Warning Card",
+              "model": "warning-card"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "warning-card",
+      "fields": [
+        {
+          "component": "reference",
+          "name": "icon",
+          "label": "Icon",
+          "description": "Icon for the announcement header",
+          "valueType": "string",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "name": "title",
+          "label": "Title",
+          "valueType": "string",
+          "required": true
+        },
+        {
+          "component": "richtext",
+          "name": "description",
+          "label": "Description",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "date-time",
+          "name": "startDateTime",
+          "label": "Start Date & Time",
+          "description": "Select the start date and time for publishing the content",
+          "valueType": "date-time",
+          "placeholder": "YYYY-MM-DD HH:mm",
+          "displayFormat": "YYYY-MM-DD HH:mm",
+          "valueFormat": "YYYY-MM-DDTHH:mm:ss.SSSZ",
+          "required": true,
+          "validation": {
+            "customErrorMsg": "Please enter a valid start date and time for publishing the content"
+          }
+        },
+        {
+          "component": "date-time",
+          "name": "endDateTime",
+          "label": "End Date & Time",
+          "description": "Select the end date and time for unpublishing the content",
+          "valueType": "date-time",
+          "placeholder": "YYYY-MM-DD HH:mm",
+          "displayFormat": "YYYY-MM-DD HH:mm",
+          "valueFormat": "YYYY-MM-DDTHH:mm:ss.SSSZ",
+          "required": true,
+          "validation": {
+            "customErrorMsg": "Please enter a valid end date and time for unpublishing the content"
+          }
+        }
+      ]
+    }
+  ],
+  "filters":[]
+}

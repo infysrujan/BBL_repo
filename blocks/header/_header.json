@@ -1,0 +1,46 @@
+{
+  "definitions": [
+    {
+      "title": "Header Section",
+      "id": "header-section",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/section/v1/section",
+            "template": {
+              "name": "Header Section",
+              "model": "header-section",
+              "filter": "header-section"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "header-section",
+      "fields": [
+        {
+          "component": "text",
+          "name": "name",
+          "label": "Section Name",
+          "description": "The label shown for this section in the Content Tree"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "header-section",
+      "components": [
+        "top-nav",
+        "brand-logo",
+        "main-nav-item",
+        "login",
+        "location",
+        "search"
+      ]
+    }
+  ]
+}

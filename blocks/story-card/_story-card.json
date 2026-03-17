@@ -1,0 +1,83 @@
+{
+	"definitions": [
+		{
+			"title": "Story Card",
+			"id": "story-card",
+			"plugins": {
+				"xwalk": {
+					"page": {
+						"resourceType": "core/franklin/components/block/v1/block",
+						"template": {
+							"name": "Story Card",
+							"model": "story-card",
+							"filter": "story-card"
+						}
+					}
+				}
+			}
+		}
+	],
+	"models": [
+		{
+			"id": "story-card",
+			"fields": [
+				{
+					"component": "reference",
+					"valueType": "string",
+					"name": "backgroundImage",
+					"label": "Background Image",
+					"multi": false
+				},
+				{
+					"component": "text",
+					"name": "backgroundImageAlt",
+					"label": "Background Image Alt",
+					"valueType": "string"
+				},
+				{
+					"component": "text",
+					"name": "eyebrow",
+					"label": "Eyebrow Text",
+					"valueType": "string"
+				},
+				{
+					"component": "text",
+					"name": "title",
+					"label": "Title Text",
+					"valueType": "string"
+				},
+				{
+					"component": "richtext",
+					"name": "description",
+					"label": "Description Text",
+					"valueType": "string"
+				},
+				{
+					"component": "select",
+					"name": "imagePosition",
+					"label": "Image Position",
+					"valueType": "string",
+					"value": "image-left",
+					"options": [
+						{
+							"name": "Image Left",
+							"value": "image-left"
+						},
+						{
+							"name": "Image Right",
+							"value": "image-right"
+						}
+					]
+				}
+			]
+		}
+	],
+	"filters": [
+		{
+			"id": "story-card",
+			"components": [
+				"button"
+			]
+		}
+	]
+}

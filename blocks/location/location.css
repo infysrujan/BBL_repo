@@ -1,0 +1,32 @@
+.location-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.location-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.location-link:hover {
+  opacity: 0.8;
+}
+
+.location-icon {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-image: url('../../icons/Location.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+@media (width > 1024px) {
+  .location-icon {
+    background-image: url('../../icons/Location_dark.svg');
+  }
+}

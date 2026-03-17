@@ -1,0 +1,330 @@
+/*
+ * Copyright 2020 Adobe. All rights reserved.
+ * This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy
+ * of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ * OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
+@import url('./tokens.css');
+@import url('./buttons.css');
+@import url('./background.css');
+@import url('./icomoon.css');
+
+
+:root {
+    /* site-level sizing */
+    --nav-height: 64px;
+    --bbl-layout-content-max-width-desktop: 1240px;
+    --bbl-layout-content-max-width-1920: 1752px;
+    --bbl-layout-central-aligned-max-width: 900px;
+}
+
+body {
+    display: none;
+    margin: 0;
+    background-color: var(--bbl-bg-primary);
+    color: var(--bbl-text-primary);
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--bbl-text-body-size);
+    line-height: var(--bbl-text-body-line-height);
+}
+
+body.appear {
+    display: block;
+}
+
+header .header,
+footer .footer {
+    visibility: hidden;
+}
+
+header .header[data-block-status="loaded"],
+footer .footer[data-block-status="loaded"] {
+    visibility: visible;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0.8em;
+  margin-bottom: 0.25em;
+  font-family: var(--bbl-font-family-medium);
+  scroll-margin: 40px;
+}
+
+h1 {
+    font-size: var(--bbl-heading-h1-size);
+    line-height: var(--bbl-heading-h1-line-height);
+    font-weight: var(--bbl-heading-h1-weight);
+}
+
+h2 {
+    font-size: var(--bbl-heading-h2-size);
+    line-height: var(--bbl-heading-h2-line-height);
+    font-weight: var(--bbl-heading-h2-weight);
+}
+
+h3 {
+    font-size: var(--bbl-heading-h3-size);
+    line-height: var(--bbl-heading-h3-line-height);
+    font-weight: var(--bbl-heading-h3-weight);
+}
+
+h4 {
+    font-size: var(--bbl-heading-h4-size);
+    line-height: var(--bbl-heading-h4-line-height);
+    font-weight: var(--bbl-heading-h4-weight);
+}
+
+h5 {
+    font-size: var(--bbl-heading-h5-size);
+    line-height: var(--bbl-heading-h5-line-height);
+    font-weight: var(--bbl-heading-h5-weight);
+}
+
+/* No dedicated H6 token yet; map to the smallest text token */
+h6 {
+    font-size: var(--bbl-text-body-small-size);
+    line-height: var(--bbl-text-body-small-line-height);
+    font-weight: var(--bbl-text-body-small-weight);
+}
+
+p,
+dl,
+ol,
+ul,
+pre,
+blockquote {
+    margin-top: 0.8em;
+    margin-bottom: 0.25em;
+}
+
+code,
+pre {
+    font-size: var(--bbl-text-body-small-size);
+}
+
+pre {
+    padding: 16px;
+    border-radius: 8px;
+    background-color: var(--bbl-bg-secondary);
+    overflow-x: auto;
+    white-space: pre;
+}
+
+main > div {
+    margin: 40px 16px;
+}
+
+input,
+textarea,
+select,
+button {
+    font: inherit;
+}
+
+/* links */
+a:any-link {
+    color: var(--bbl-text-link);
+    text-decoration: none;
+    overflow-wrap: break-word;
+}
+
+a:hover {
+    color: var(--bbl-text-link-hover);
+    text-decoration: underline;
+}
+
+main img {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+}
+
+.icon {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+}
+
+.icon img {
+    height: 100%;
+    width: 100%;
+}
+
+/* sections (default) */
+.section {
+    width: 100%;
+    padding-inline: var(--bbl-space-section-xs);
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+@media (width > 47.5rem) {
+    .section {
+        padding-inline: var(--bbl-space-section-sm);
+    }
+}
+
+@media (width > 64rem) {
+    .section {
+        padding-inline: var(--bbl-space-section-xl);
+    }
+}
+
+@media (width > 87.5rem) {
+    .section {
+        max-width: var(--bbl-layout-content-max-width-desktop);
+        padding-inline: 0;
+    }
+}
+
+/* sections (full-bleed-bg) */
+.section.full-bleed-bg {
+    max-width: 100%;
+    padding-inline: 0;
+    margin: 0 auto;
+}
+
+.section.full-bleed-bg .content {
+    padding-inline: var(--bbl-space-section-xs);
+    margin: 0 auto;
+}
+
+@media (width > 47.5rem) {
+    .section.full-bleed-bg .content {
+        padding-inline: var(--bbl-space-section-sm);
+    }
+}
+
+@media (width > 64rem) {
+    .section.full-bleed-bg .content {
+        padding-inline: var(--bbl-space-section-xl);
+    }
+}
+
+@media (width > 120rem) {
+    .section.full-bleed-bg .content {
+        max-width: var(--bbl-layout-content-max-width-1920);
+        padding-inline: 0;
+    }
+}
+
+.section.full-bleed-special {
+    width: 100%;
+    padding-inline: var(--bbl-space-section-xs);
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+@media (width > 47.5rem) {
+    .section.full-bleed-special {
+        padding-inline: var(--bbl-space-section-sm);
+    }
+}
+
+@media (width > 64rem) {
+    .section.full-bleed-special {
+        max-width: 100%;
+        padding-inline:  var(--bbl-space-section-xl);
+    }
+}
+
+@media (width > 120rem) {
+    .section.full-bleed-special {
+        max-width: var(--bbl-layout-content-max-width-1920);
+        padding-inline: 0;
+    }
+}
+
+/* section metadata: central-aligned-section */
+.section.central-aligned {
+    max-width: var(--bbl-layout-central-aligned-max-width);
+    margin: 0 auto;
+}
+
+/* =========================================================================
+   SPACING UTILITIES
+   These classes rely on the responsive tokens in `styles/tokens/spacing.css`.
+   ========================================================================= */
+
+.pad-container-xs {
+    padding-inline: var(--bbl-space-container-xs);
+    box-sizing: border-box;
+}
+
+.pad-container-sm {
+    padding-inline: var(--bbl-space-container-sm);
+    box-sizing: border-box;
+}
+
+.pad-container-md {
+    padding-inline: var(--bbl-space-container-md);
+    box-sizing: border-box;
+}
+
+.pad-container-lg {
+    padding-inline: var(--bbl-space-container-lg);
+    box-sizing: border-box;
+}
+
+.pad-container-xl {
+    padding-inline: var(--bbl-space-container-xl);
+    box-sizing: border-box;
+}
+
+/* =========================================================================
+   PAGE-LEVEL VARIANTS - Global Styles
+   ========================================================================= */
+
+body.private main :is(h1, h2, h3, h4, h5, h6, p) {
+    color: var(--bbl-color-white);
+}
+
+body.private main :is(.button-container .button, .button) {
+    background: var(--bbl-color-white);
+    color: var(--bbl-color-black);
+    border: 1px solid var(--bbl-color-white);
+
+    &:hover {
+        background: var(--bbl-color-active-blue);
+        border: 1px solid var(--bbl-color-active-blue);
+        color: var(--bbl-color-white);
+        box-shadow: none;
+    }
+}
+
+body.wealth main :is(h1, h2, h3, h4, h5, h6, p) {
+    color: var(--bbl-color-black);
+}
+
+body.wealth main :is(.button-container .button, .button) {
+    background: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
+    border: 1px solid var(--bbl-color-active-blue);
+
+    &:hover {
+        background: var(--bbl-color-blue-90);
+        border: 1px solid var(--bbl-color-blue-90);
+    }
+}
+
+/* =========================================================================
+   SECTION-LEVEL SPACING - Global Styles
+   ========================================================================= */
+
+.pad-top-30 {
+    padding-top: 1.875rem;
+}
+
+.pad-bot-30 {
+    padding-bottom: 1.875rem;
+}

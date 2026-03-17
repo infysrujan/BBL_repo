@@ -1,0 +1,129 @@
+{
+  "definitions": [
+    {
+      "title": "Section",
+      "id": "section",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/section/v1/section",
+            "template": {
+              "model": "section"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "section",
+      "fields": [
+        {
+          "component": "text",
+          "name": "name",
+          "label": "Section Name",
+          "description": "The label shown for this section in the Content Tree"
+        },
+        {
+          "component": "text",
+          "name": "id",
+          "label": "Section ID",
+          "description": "Adds an HTML id attribute to the section"
+        },
+        {
+          "component": "multiselect",
+          "name": "style",
+          "label": "Style",
+          "valueType": "string",
+          "required": false,
+          "options": [
+            {
+              "name": "Section type",
+              "children": [
+                {
+                  "name": "Central Aligned",
+                  "value": "central-aligned"
+                },
+                {
+                  "name": "Full Bleed Special",
+                  "value": "full-bleed-special"
+                },
+                {
+                  "name": "Full Bleed Background",
+                  "value": "full-bleed-bg"
+                }
+              ]
+            },
+            {
+              "name": "Background Color",
+              "children": [
+                {
+                  "name": "Truthful Blue",
+                  "value": "bg-truthful-blue"
+                },
+                {
+                  "name": "Ice Blue",
+                  "value": "bg-ice-blue"
+                },
+                {
+                  "name": "Grey 10",
+                  "value": "bg-grey-10"
+                },
+                {
+                  "name": "Grey 05",
+                  "value": "bg-grey-05"
+                },
+                {
+                  "name": "Grey 100",
+                  "value": "bg-grey-100"
+                }
+              ]
+            },
+            {
+              "name": "Padding",
+              "children": [
+                {
+                  "name": "Padding Top",
+                  "value": "pad-top-30"
+                },
+                {
+                  "name": "Padding Bottom",
+                  "value": "pad-bot-30"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "section",
+      "components": [
+        "text",
+        "image",
+        "button",
+        "title",
+        "hero",
+        "cards",
+        "cards-product",
+        "columns",
+        "fragment",
+        "header",
+        "megamenu",
+        "carousel",
+        "story-card",
+        "warning-card",
+        "menu-cards",
+        "carousel-dotted",
+        "menu-banner",
+        "cross-banner",
+        "form",
+        "embed-adaptive-form",
+        "content-insert-cards"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+/* Background utility classes */
+:root {
+  --bbl-color-grey-05: #f9f9f9;
+  --bbl-color-ice-blue: #e6eef4;
+}
+
+.bg-ice-blue {
+  background-color: var(--bbl-color-ice-blue);
+}
+
+.bg-grey-10 {
+  background-color: var(--bbl-color-grey-10);
+}
+
+.bg-grey-05 {
+  background-color: var(--bbl-color-grey-05);
+}
+
+.bg-grey-100 {
+  background-color: var(--bbl-color-grey-100);
+}
+
+.bg-truthful-blue {
+  background-color: var(--bbl-color-truthful-blue);
+}

@@ -1,0 +1,222 @@
+/* ==========================================================================
+   BBL Design System - Color Variables
+   Extracted from Figma: BBL - Adobe Shared Workspace
+   https://www.figma.com/design/VmQfUEVP9pCU7lkctJazt5/BBL---Adobe-Shared-Workspace
+   ========================================================================== */
+
+:root {
+  /* =========================================================================
+     PRIMARY COLORS
+     ========================================================================= */
+
+  /* Brand Core Colors */
+  --bbl-color-truthful-blue: #002850;      /* Primary dark blue */
+  --bbl-color-active-blue: #0064FF;        /* Primary bright blue */
+  --bbl-color-white: #FFFFFF;
+  --bbl-color-black: #000000;
+
+  /* =========================================================================
+     GREY SCALE (Neutrals)
+     ========================================================================= */
+
+  --bbl-color-grey-10: #F5F5F5;
+  --bbl-color-grey-20: #E3E3E5;
+  --bbl-color-grey-30: #DBDBDB;
+  --bbl-color-grey-40: #C8C8CC;
+  --bbl-color-grey-50: #A9A9AA;
+  --bbl-color-grey-60: #939399;
+  --bbl-color-grey-70: #78787D;
+  --bbl-color-grey-80: #5E5E66;
+  --bbl-color-grey-85: #4E4E4E;
+  --bbl-color-grey-90: #46464D;
+  --bbl-color-grey-100: #323238;
+  --bbl-color-grey-110: #28282D;
+  --bbl-color-grey-120: #17171A;
+  --bbl-color-grey-125: #CCC;
+  --bbl-color-grey-130: #2B2B2B;
+  --bbl-color-grey-140: #3F3F3F;
+  --bbl-color-grey-150: #9E9E9E;
+  --bbl-color-grey-160: #8A8A8A;
+
+  /* =========================================================================
+     BLUE SCALE
+     ========================================================================= */
+
+  --bbl-color-blue-10: #E8F1FF;
+  --bbl-color-blue-20: #D9E8FF;
+  --bbl-color-blue-30: #C9DEFF;
+  --bbl-color-blue-40: #A1C6FF;
+  --bbl-color-blue-50: #7DB0FF;
+  --bbl-color-blue-60: #5D99FF;
+  --bbl-color-blue-70: #357EF8;
+  /* Active Blue is at position ~75 */
+  --bbl-color-blue-90: #0048B7;
+  --bbl-color-blue-100: #003382;
+  /* Truthful Blue is at position ~110 */
+  --bbl-color-blue-120: #031D37;
+  --bbl-color-blue-130: #002087;
+  --bbl-color-blue-140: #4890ff;
+
+  /* =========================================================================
+     RED SCALE
+     ========================================================================= */
+
+  --bbl-color-red-10: #FCECE8;
+  --bbl-color-red-20: #FEDCD7;
+  --bbl-color-red-30: #FFCCC5;
+  --bbl-color-red-40: #F9A9A5;
+  --bbl-color-red-50: #F4878F;
+  --bbl-color-red-60: #F2667A;
+  --bbl-color-red-70: #EF3C67;
+  --bbl-color-red-80: #E21056;
+  --bbl-color-red-90: #A30C42;
+  --bbl-color-red-100: #7A0334;
+  --bbl-color-red-110: #440D23;
+  --bbl-color-red-120: #300919;
+
+  /* =========================================================================
+     GREEN SCALE
+     ========================================================================= */
+
+  --bbl-color-green-10: #E4F7E8;
+  --bbl-color-green-20: #D0F2DB;
+  --bbl-color-green-30: #BCEDCD;
+  --bbl-color-green-40: #8EDDB2;
+  --bbl-color-green-50: #61D09C;
+  --bbl-color-green-60: #3DBF87;
+  --bbl-color-green-70: #16A873;
+  --bbl-color-green-80: #067F5D;
+  --bbl-color-green-90: #09594A;
+  --bbl-color-green-100: #083D37;
+  --bbl-color-green-110: #062C29;
+  --bbl-color-green-120: #032120;
+
+  /* =========================================================================
+     PURPLE SCALE
+     ========================================================================= */
+
+  --bbl-color-purple-10: #F7EBFF;
+  --bbl-color-purple-20: #EDD9F9;
+  --bbl-color-purple-30: #EBCFFF;
+  --bbl-color-purple-40: #D6ADF2;
+  --bbl-color-purple-50: #C88EED;
+  --bbl-color-purple-60: #B273E0;
+  --bbl-color-purple-70: #9E50CC;
+  --bbl-color-purple-80: #8D29C1;
+  --bbl-color-purple-90: #622184;
+  --bbl-color-purple-100: #44195B;
+  --bbl-color-purple-110: #311142;
+  --bbl-color-purple-120: #270C35;
+
+  /* =========================================================================
+     YELLOW SCALE (Semantic Warning)
+     ========================================================================= */
+
+  --bbl-color-yellow-10: #FFF8D4;
+  --bbl-color-yellow-20: #FFF4B8;
+  --bbl-color-yellow-30: #FFEB77;
+  --bbl-color-yellow-40: #FCDE2D;
+  --bbl-color-yellow-50: #F6D200;
+  --bbl-color-yellow-60: #DFBF04;
+  --bbl-color-yellow-70: #C4A805;
+  --bbl-color-yellow-80: #AA9518;
+  --bbl-color-yellow-90: #7E6C09;
+  --bbl-color-yellow-100: #574A06;
+  --bbl-color-yellow-110: #2F2701;
+  --bbl-color-yellow-120: #1E1902;
+
+  /* =========================================================================
+     ORANGE SCALE (Supporting)
+     ========================================================================= */
+
+  --bbl-color-orange-10: #FFF1E8;
+  --bbl-color-orange-20: #FEE6D6;
+  --bbl-color-orange-30: #FEDBC5;
+  --bbl-color-orange-40: #FDC4A2;
+  --bbl-color-orange-50: #FCAF7F;
+  --bbl-color-orange-60: #FA995C;
+  --bbl-color-orange-70: #F98339;
+  --bbl-color-orange-80: #F86D16;
+  --bbl-color-orange-90: #BB4F10;
+  --bbl-color-orange-100: #7E330B;
+  --bbl-color-orange-110: #401906;
+  --bbl-color-orange-120: #2B0F05;
+
+  /* =========================================================================
+     SEMANTIC COLORS (System Feedback)
+     ========================================================================= */
+
+  /* Success */
+  --bbl-color-system-green: #2DCD73;
+  --bbl-color-system-green-light: #B2FF9C;
+
+  /* Error */
+  --bbl-color-system-red: #FF0000;
+  --bbl-color-system-red-light: #FFC5BD;
+
+  /* Warning */
+  --bbl-color-system-yellow: #FFEF5C;
+  --bbl-color-system-yellow-light: #FFF59C;
+
+  /* =========================================================================
+     TRANSPARENCY / ALPHA COLORS
+     ========================================================================= */
+
+  /* Black Transparencies */
+  --bbl-color-black-alpha-5: rgba(0, 0, 0, 0.05);
+  --bbl-color-black-alpha-10: rgba(0, 0, 0, 0.10);
+  --bbl-color-black-alpha-20: rgba(0, 0, 0, 0.20);
+  --bbl-color-black-alpha-30: rgba(0, 0, 0, 0.30);
+  --bbl-color-black-alpha-40: rgba(0, 0, 0, 0.40);
+  --bbl-color-black-alpha-60: rgba(0, 0, 0, 0.60);
+
+  /* White Transparencies */
+  --bbl-color-white-alpha-5: rgba(255, 255, 255, 0.05);
+  --bbl-color-white-alpha-10: rgba(255, 255, 255, 0.10);
+  --bbl-color-white-alpha-20: rgba(255, 255, 255, 0.20);
+  --bbl-color-white-alpha-30: rgba(255, 255, 255, 0.30);
+  --bbl-color-white-alpha-40: rgba(255, 255, 255, 0.40);
+  --bbl-color-white-alpha-60: rgba(255, 255, 255, 0.60);
+
+  /* =========================================================================
+     SEMANTIC ALIASES (For Easier Use)
+     ========================================================================= */
+
+  /* Text */
+  --bbl-text-primary: var(--bbl-color-grey-100);
+  --bbl-text-secondary: var(--bbl-color-grey-70);
+  --bbl-text-disabled: var(--bbl-color-grey-50);
+  --bbl-text-inverse: var(--bbl-color-white);
+  --bbl-text-link: var(--bbl-color-active-blue);
+  --bbl-text-link-hover: var(--bbl-color-truthful-blue);
+
+  /* Backgrounds */
+  --bbl-bg-primary: var(--bbl-color-white);
+  --bbl-bg-secondary: var(--bbl-color-grey-10);
+  --bbl-bg-tertiary: var(--bbl-color-grey-20);
+  --bbl-bg-brand: var(--bbl-color-truthful-blue);
+  --bbl-bg-brand-light: var(--bbl-color-blue-10);
+
+  /* Borders */
+  --bbl-border-default: var(--bbl-color-grey-40);
+  --bbl-border-light: var(--bbl-color-grey-20);
+  --bbl-border-focus: var(--bbl-color-active-blue);
+  --bbl-border-dots: var(--bbl-color-grey-125);
+
+  /* States */
+  --bbl-state-success: var(--bbl-color-system-green);
+  --bbl-state-success-bg: var(--bbl-color-system-green-light);
+  --bbl-state-error: var(--bbl-color-system-red);
+  --bbl-state-error-bg: var(--bbl-color-system-red-light);
+  --bbl-state-warning: var(--bbl-color-system-yellow);
+  --bbl-state-warning-bg: var(--bbl-color-system-yellow-light);
+
+  /* Private gradient colors */
+  --bbl-private-gold-50: #B8A588;
+  --bbl-private-gold-29: #F2E0C6;
+  --bbl-private-gold-68: #A39073;
+  --bbl-private-gold-86: #EBDCC6;
+  --bbl-red-overlay-strong: rgb(70.6% 2% 2% / 45%);
+  --bbl-red-overlay-light: rgb(100% 0% 0% / 15%);
+}
+

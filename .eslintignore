@@ -1,0 +1,10 @@
+helix-importer-ui
+dompurify.min.js
+component-models.json
+component-definition.json
+component-filters.json
+blocks/form/rules/formula/*
+blocks/form/rules/model/*
+blocks/form/rules/functions.js
+scripts/editor-support.js
+scripts/editor-support-rte.js

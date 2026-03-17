@@ -1,0 +1,280 @@
+/* ==========================================================================
+   Footer Block - Bangkok Bank Style
+   Mobile-first approach with accordion (<= 1024px) and multi-column (>= 1025px)
+   ========================================================================== */
+
+/* Base footer styles */
+.footer {
+  color: var(--bbl-color-white);
+  font-size: var(--bbl-text-footer-size);
+  line-height: var(--bbl-text-footer-line-height);
+}
+
+.footer > div {
+  margin: 0;
+  padding: 0;
+}
+
+/* Remove default margins */
+.footer p {
+  margin: 0;
+}
+
+.footer ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer li {
+  margin: 0;
+  padding: 0;
+}
+
+/* Links styling */
+.footer a {
+  color: var(--bbl-color-white);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.footer a:hover {
+  color: var(--bbl-color-active-blue);
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   MOBILE STYLES (Default - Mobile First)
+   < 761px: Accordion layout
+   ========================================================================== */
+
+.footer .footer-container {
+  width: 100%;
+}
+
+.footer .footer-inner {
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.footer .footer-row {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.footer .footer-column {
+  width: 100%;
+}
+
+.footer .footer-column:last-child {
+  border-bottom: none;
+}
+
+.footer .footer-group {
+  position: relative;
+}
+
+/* Footer title (accordion header on mobile) */
+.footer .footer-title {
+  margin: 0;
+  padding: var(--bbl-space-250) 0;
+  font-size: 15.4px;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: normal;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--bbl-color-white-alpha-20);
+}
+
+/* Toggle icon (+ / -) */
+.footer .footer-toggle-icon {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-left: var(--bbl-space-150);
+}
+
+.footer .footer-toggle-icon::before {
+  content: "+";
+  color: var(--bbl-color-white-alpha-60);
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 28px Muli-Light, sans-serif;
+  transition: transform 0.3s ease;
+}
+
+/* When accordion is active, show minus */
+.footer .footer-group.active .footer-toggle-icon::before {
+  content: "-";
+  font-size: 46px;
+  margin-top: -3px;
+}
+
+/* Links container (hidden by default on mobile) */
+.footer .footer-links {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.footer .footer-group.active .footer-links {
+  max-height: 500px;
+}
+
+.footer .footer-links ul {
+  display: flex;
+  flex-direction: column;
+  padding: var(--bbl-space-250) 0;
+  border-bottom: 1px solid var(--bbl-color-white-alpha-20);
+}
+
+.footer .footer-links li {
+  font-size: var(--bbl-text-footer-size);
+  line-height: normal;
+}
+
+/* Bottom bar (copyright, legal links) */
+.footer .footer-bottom {
+  padding: var(--bbl-space-300) 0 var(--bbl-space-350);
+}
+
+.footer .footer-bottom p {
+  font-size: 12.6px;
+  line-height: 1;
+  margin-bottom: var(--bbl-space-200);
+  color: var(--bbl-color-white-alpha-30);
+}
+
+.footer .footer-bottom p:nth-child(2) {
+  margin-top: var(--bbl-space-250);
+}
+
+.footer .footer-bottom p:last-child {
+  margin-bottom: 0;
+}
+
+.footer .footer-bottom a {
+  color: var(--bbl-color-white-alpha-30);
+  text-decoration: underline;
+  padding: 0 var(--bbl-space-150);
+}
+
+.footer .footer-bottom a:first-child {
+  padding-left: 0;
+}
+
+.footer .footer-bottom a:hover {
+  text-decoration: underline;
+  color: unset;
+}
+
+/* ==========================================================================
+   TABLET STYLES
+   761px - 1024px: Still accordion, but with adjusted spacing
+   ========================================================================== */
+
+@media (width >= 761px) {
+  .footer .footer-links li {
+    font-size: 15px;
+  }
+
+  .footer .footer-bottom p {
+    font-size: 13px;
+  }
+}
+
+/* ==========================================================================
+   DESKTOP STYLES
+   1025px+: Multi-column layout, no accordion
+   ========================================================================== */
+
+@media (width >= 1025px) {
+  .footer .footer-inner {
+    max-width: var(--bbl-layout-content-max-width-1920);
+    margin: auto;
+    border-bottom: 1px solid var(--bbl-color-white-alpha-10);
+  }
+
+  .footer .footer-row {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: var(--bbl-space-300) 0 var(--bbl-space-350);
+    gap: var(--bbl-space-500);
+  }
+
+  .footer .footer-column {
+    width: 100%;
+    flex: 1;
+    border-bottom: none;
+  }
+
+  /* Disable accordion behavior on desktop */
+  .footer .footer-title {
+    padding: var(--bbl-space-250) 0;
+    cursor: default;
+    font-size: 17.6px;
+    border: 0;
+  }
+
+  .footer .footer-toggle-icon {
+    display: none;
+
+    /* Hide +/- icon on desktop */
+  }
+
+  /* Always show links on desktop */
+  .footer .footer-links {
+    max-height: none;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .footer .footer-group.active .footer-links {
+    padding-bottom: 0;
+  }
+
+  .footer .footer-links li {
+    font-size: var(--bbl-font-size-b1);
+  }
+
+  .footer .footer-bottom {
+    padding: var(--bbl-space-300) 0 var(--bbl-space-200);
+    margin: auto;
+    max-width: var(--bbl-layout-content-max-width-1920);
+  }
+
+  .footer .footer-bottom .footer-inner {
+    display: inline-block;
+    border: 0;
+  }
+
+  .footer .footer-bottom p {
+    font-size: var(--bbl-text-footer-size);
+    margin-bottom: var(--bbl-space-100);
+    width: fit-content;
+    display: inline-block;
+    margin-right: var(--bbl-space-250);
+  }
+
+  .footer .footer-links ul {
+    padding: 0;
+    border: 0;
+  }
+
+  .footer .footer-bottom p:nth-child(2) {
+    margin: 0;
+  }
+
+   .footer .footer-bottom p:last-child {
+      display: block;
+   }
+}

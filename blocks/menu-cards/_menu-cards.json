@@ -1,0 +1,82 @@
+{
+    "definitions": [
+        {
+            "title": "Menu Cards",
+            "id": "menu-cards",
+            "plugins": {
+                "xwalk": {
+                    "page": {
+                        "resourceType": "core/franklin/components/block/v1/block",
+                        "template": {
+                            "name": "Menu Cards",
+                            "model": "menu-cards",
+                            "filter": "menu-cards"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "title": "Menu Card",
+            "id": "menu-card",
+            "plugins": {
+                "xwalk": {
+                    "page": {
+                        "resourceType": "core/franklin/components/block/v1/block/item",
+                        "template": {
+                            "name": "Menu Card",
+                            "model": "menu-card"
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    "models": [
+        {
+            "id": "menu-cards",
+            "fields": [
+                {
+                    "component": "text",
+                    "name": "title",
+                    "label": "Menu Cards Title",
+                    "valueType": "string"
+                }
+            ]
+        },
+        {
+            "id": "menu-card",
+            "fields": [
+                {
+                    "component": "text",
+                    "name": "title",
+                    "label": "Card Title",
+                    "valueType": "string",
+                    "required": true
+                },
+                {
+                    "component": "reference",
+                    "name": "icon",
+                    "label": "Icon Image",
+                    "valueType": "string",
+                    "required": true
+                },
+                {
+                    "component": "aem-content",
+                    "name": "link",
+                    "label": "Redirection Link",
+                    "valueType": "string"
+                }
+            ]
+        }
+    ],
+    "filters": [
+        {
+            "id": "menu-cards",
+            "components": [
+                "menu-card"
+            ],
+            "maxItems": 6
+        }
+    ]
+}

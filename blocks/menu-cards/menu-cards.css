@@ -1,0 +1,112 @@
+/* Base styles (mobile-first) */
+.menu-cards {
+  /* padding: 0 var(--bbl-space-container-xs); */
+}
+
+.menu-cards .tips-insight-quick-access {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: var(--bbl-space-100);
+  margin-top: var(--bbl-space-250);
+}
+
+.menu-cards .tips-insight-quick-access-item {
+  flex: 0 0 calc(33% - 1.5rem);
+  max-width: calc(33.333% - 1.5rem);
+  min-height: 8.125rem;
+  border: 1px solid rgb(0 0 0 / 10%);
+  background: var(--bbl-color-white);
+  border-radius: 0.4375rem;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 1;
+  position: relative;
+  padding: var(--bbl-space-100);
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+}
+
+.menu-cards .tips-insight-quick-access-title {
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-black);
+  font-size: 1.1375rem;
+  line-height: 1.2495rem;
+  overflow: hidden;
+  display: -webkit-box;
+}
+
+.menu-cards .tips-insight-quick-access-item a {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.menu-cards .tips-insight-quick-access-item img {
+  max-width: 1.875rem;
+  max-height: 1.875rem;
+  width: 100%;
+  margin: 0;
+  object-fit: contain;
+}
+
+.menu-cards .tips-insight-quick-access-item:hover {
+    border: 1px solid var(--bbl-color-active-blue);
+    box-shadow: 0.3125rem 0.3125rem 0 rgb(0 51 153 / 17%);
+}
+
+
+/* Tablet: width > 760px */
+@media (width > 47.5rem) {
+  .menu-cards {
+    /* padding: var(--bbl-space-600); */
+  }
+
+  .menu-cards .tips-insight-quick-access {
+    gap: var(--bbl-space-200);
+  }
+
+  .menu-cards .tips-insight-quick-access-item {
+    min-height: 12.5rem;
+    max-height: 13.4375rem;
+    flex: 0 0 calc(33.333% - 4rem);
+    max-width: calc(33.333% - 4rem);
+    padding: var(--bbl-space-300);
+  }
+
+  .menu-cards .tips-insight-quick-access-title {
+    font-size: 1.3125rem;
+    line-height: 1.4219rem;
+  }
+
+  .menu-cards .tips-insight-quick-access-item img {
+    max-width: var(--bbl-space-600);
+    max-height: var(--bbl-space-600);
+  }
+}
+
+/* Desktop: width > 1024px */
+@media (width > 64rem) {
+  .menu-cards .tips-insight-quick-access {
+    gap: var(--bbl-space-300);
+    justify-content: flex-end;
+  }
+
+  .menu-cards .tips-insight-quick-access-item {
+    flex: 0 0 calc(33.333% - 4rem);
+    max-width: calc(33.333% - 4rem);
+    min-height: 13.125rem;
+    padding: 1.4375rem;
+  }
+
+  .menu-cards .tips-insight-quick-access-title {
+    font-size: 1.3rem;
+    line-height: 2.0423rem;
+  }
+}
