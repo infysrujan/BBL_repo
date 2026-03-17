@@ -92,6 +92,19 @@
                   "value": "pad-bot-30"
                 }
               ]
+            },
+            {
+              "name": "Style",
+              "children": [
+                {
+                  "name": "Underline Title",
+                  "value": "underline-title"
+                },
+                {
+                  "name": "Center Title",
+                  "value": "center-title"
+                }
+              ]
             }
           ]
         }
