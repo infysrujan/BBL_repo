@@ -42,6 +42,14 @@
           "required": true
         },
         {
+          "component": "checkbox",
+          "name": "enableModal",
+          "label": "Enable Privacy Modal",
+          "description": "When enabled, the privacy notice pop-up will intercept external link clicks on this page.",
+          "valueType": "boolean",
+          "value": true
+        },
+        {
           "...": "../../models/elements/_button-fields.json"
         } 
       ]
