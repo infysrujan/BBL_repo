@@ -7229,15 +7229,6 @@
         "valueType": "string",
         "value": "Agree",
         "required": true
-      },
-      {
-        "component": "text",
-        "name": "cookieName",
-        "label": "Cookie Name",
-        "description": "Name of the cookie used to store user acceptance. Once accepted, the modal will not appear again for the configured duration (30 days).",
-        "valueType": "string",
-        "value": "privacy-modal-accepted",
-        "required": true
       }
     ]
   },
