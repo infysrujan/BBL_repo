@@ -7194,6 +7194,54 @@
     ]
   },
   {
+    "id": "privacy-modal",
+    "fields": [
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Modal Title",
+        "description": "Title displayed at the top of the privacy modal (e.g., Privacy Notice heading). Supports Thai and English text.",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "privacyText",
+        "label": "Privacy Notice Text",
+        "description": "Full privacy notice content displayed in the scrollable body of the modal. Users must scroll to the bottom before they can acknowledge.",
+        "valueType": "string",
+        "value": "",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "checkboxLabel",
+        "label": "Acknowledgement Checkbox Label",
+        "description": "Label displayed next to the acknowledgement checkbox (e.g., 'I acknowledge the purposes and details on collection, use and disclosure of personal data of the Bank stated above.').",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "Confirmation CTA Label",
+        "description": "Text for the confirmation button shown after the user checks the acknowledgement checkbox (e.g., 'Agree').",
+        "valueType": "string",
+        "value": "Agree",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "cookieName",
+        "label": "Cookie Name",
+        "description": "Name of the cookie used to store user acceptance. Once accepted, the modal will not appear again for the configured duration (30 days).",
+        "valueType": "string",
+        "value": "privacy-modal-accepted",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "search",
     "fields": [
       {
