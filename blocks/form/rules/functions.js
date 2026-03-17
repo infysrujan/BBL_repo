@@ -146,7 +146,36 @@ function defaultSubmitSuccessHandler(globals) {
  */
 function defaultSubmitErrorHandler(defaultSubmitErrorMessage, globals) {
   // view layer should send localized error message here
-  window.alert(defaultSubmitErrorMessage);
+  //window.alert(defaultSubmitErrorMessage);
+  const { form } = globals;
+  // Try to find the form container in the DOM
+  const formElement = document.getElementById(`${form.$id}`);
+  if (!formElement) {
+    // Fallback if form element not found
+    window.alert(defaultSubmitErrorMessage || 'An unknown error occurred.');
+    return;
+  }
+
+  // Remove any old error messages
+  formElement.querySelectorAll('.form-message.error-message').forEach((el) => el.remove());
+
+  // Create the error banner
+  let errorMessage = formElement.querySelector('.form-message.error-message');
+  if (!errorMessage) {
+    errorMessage = document.createElement('div');
+    errorMessage.className = 'form-message error-message';
+  }
+  errorMessage.innerHTML = defaultSubmitErrorMessage || 'Some error occurred while submitting the form.';
+
+  // Insert and scroll into view
+  formElement.prepend(errorMessage);
+  errorMessage.scrollIntoView({ behavior: 'smooth' });
+
+  // Re-enable the submit button and mark not submitting
+  formElement.setAttribute('data-submitting', 'false');
+  const submitButton = formElement.querySelector('button[type="submit"]');
+  if (submitButton) submitButton.disabled = false;
+  
 }
 
 /**
