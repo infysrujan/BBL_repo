@@ -8,6 +8,57 @@
   padding: var(--bbl-space-000);
 }
 
+.carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) {
+  position: relative;
+  width: 100%;
+  height: 28.125rem;
+  overflow: hidden;
+}
+
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) {
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+  animation: carouselFadeIn 600ms ease-out;
+}
+
+.carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) > .carousel-dotted {
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-dotted.all-without-image .carousel-track-wrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-track-wrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.carousel-dotted.show-arrows-dots .carousel-track-wrapper {
+  background: var(--bbl-color-white);
+  overflow: hidden;
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+}
+
+.carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel)
+> .carousel-dotted
+> .carousel-track-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
 .carousel-dotted.is-dragging * {
   pointer-events: none;
   user-select: none;
@@ -234,13 +285,6 @@
   overflow: hidden;
 }
 
-.carousel-dotted.all-without-image .carousel-track-wrapper {
-  position: relative;
-  display: flex;
-  width: 100%;
-  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
-}
 
 /* Override the generic display:none so all slides exist in the flex row */
 .carousel-dotted.all-without-image .carousel-dotted-item.without-image {
@@ -346,12 +390,6 @@
   display: none;
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) {
-  border: none;
-  border-radius: 0;
-  overflow: hidden;
-  animation: carouselFadeIn 600ms ease-out;
-}
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .slick-dots li.is-active button {
   width: 0.75rem;
@@ -359,14 +397,6 @@
   border: 3px solid var(--bbl-color-active-blue);
 }
 
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-track-wrapper {
-  position: relative;
-  display: flex;
-  width: 100%;
-  height: 100%;
-  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
-}
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-item:is(.hero-banner-image-carousel, .text-animation-variant) {
@@ -444,6 +474,13 @@
   height: 1.25rem;
 }
 
+.carousel-dotted.all-hero-banner-image-carousel .slick-dots {
+  bottom: 1.25rem;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-content.content {
   padding: 0 var(--bbl-space-250) var(--bbl-space-250);
   max-height: unset;
@@ -501,13 +538,6 @@
   background: transparent;
 }
 
-.carousel-dotted.show-arrows-dots .carousel-track-wrapper {
-  background: var(--bbl-color-white);
-  overflow: hidden;
-  grid-column: 2;
-  grid-row: 1;
-  position: relative;
-}
 
 .carousel-dotted.show-arrows-dots .carousel-dotted-item {
   position: relative;
@@ -842,6 +872,18 @@
   .carousel-dotted.all-hero-banner-image-carousel .slick-dots {
     bottom: 4.6875rem;
   }
+
+  .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) {
+    height: 100%;
+  }
+
+  /* .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) > .carousel-dotted,
+  .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel)
+  > .carousel-dotted
+  > .carousel-track-wrapper {
+    width: 100%;
+    height: 100%;
+  } */
 
   .carousel-dotted.all-text-animation-variant .carousel-item.text-animation-variant .carousel-bg {
     position: relative;
