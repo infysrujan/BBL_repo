@@ -785,7 +785,6 @@
     transition: transform 700ms cubic-bezier(0.4, 0, 0.4, 1);
   }
 
-
   /* Horizontal sliding track for without-image — tablet min-height only
   (flex layout + overflow is set globally above the media queries) */
   .carousel-dotted.all-without-image .carousel-dotted-item.without-image {
@@ -878,14 +877,12 @@
   }
 
   .carousel-dotted.all-hero-banner-image-carousel .slick-dots {
-    bottom: 4.6875rem;
+    bottom: var(--bbl-space-250);
   }
 
   .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) {
-    height: 100%;
+    height: 21.875rem;
   }
-
-
 
   .carousel-dotted.all-text-animation-variant .carousel-item.text-animation-variant .carousel-bg {
     position: relative;
@@ -1072,6 +1069,14 @@
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-subtitle p {
     font-size: 1.5rem;
     line-height: 1.625rem;
+  }
+
+  .carousel-dotted.all-hero-banner-image-carousel .slick-dots {
+    bottom: 4.6875rem;
+  }
+
+  .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) {
+    height: 53.125rem;
   }
 
   .carousel-dotted .button-tertiary.icon-arrow-left::before {
