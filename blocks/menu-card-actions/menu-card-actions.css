@@ -109,13 +109,13 @@
     border-radius: 0.4375rem;
     box-sizing: border-box;
     width: 100%;
+    padding: 0;
     display: block;
     text-align: center;
     line-height: 2.75rem;
     text-overflow: ellipsis;
     overflow: hidden;
     margin-top: calc(var(--bbl-space-250) - 0.9375rem);
-    border: 0.0625rem solid var( --bbl-color-active-blue);
 }
 
 .menu-card-action-inner .global-dropdown{
