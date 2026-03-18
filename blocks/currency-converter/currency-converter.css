@@ -19,7 +19,7 @@
 /* Convert Groups (From/To Sections) */
 .currency-converter .convert-group {
   position: relative;
-  border: 1px solid rgb(255 255 255 / 30%);
+  border: 0.0625rem solid rgb(255 255 255 / 30%);
   border-radius: 0.4375rem;
   padding: var(--bbl-space-300);
   margin-bottom: var(--bbl-space-300);
@@ -89,7 +89,7 @@
   left: 0;
   right: 0;
   margin: auto var(--bbl-space-300);
-  border-bottom: 1px solid var(--bbl-color-grey-125);
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-125);
   font-size: 3.4125rem;
   font-weight: 900;
   line-height: 4.875rem;
@@ -139,7 +139,7 @@
   border-radius: 0.5rem;
   background: var(--bbl-color-white);
   box-shadow: 0 0 0.25rem 0 rgb(0 0 0 / 5%), 0 0.125rem 0.5rem 0 rgb(0 0 0 / 50%);
-  border: solid 1px var(--bbl-color-gray-122);
+  border: solid 0.0625rem var(--bbl-color-gray-122);
   position: absolute;
   z-index: 10;
   top: 4.375rem;
@@ -204,17 +204,13 @@
   background-color: #e5edf4;
 }
 
-.currency-converter .currency-dropdown-list li[style*="display: none"] {
-  display: none !important;
-}
-
 /* Visually hidden text for button accessibility */
 .currency-converter .btn-convert span {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: 0.0625rem;
+  height: 0.0625rem;
   padding: 0;
-  margin: -1px;
+  margin: -0.0625rem;
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
