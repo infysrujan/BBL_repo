@@ -1,27 +1,3 @@
-/* ==========================================================================
-   Privacy Modal Block — privacy-modal.css
-   Matches the live Bangkok Bank site modal exactly.
-   Live site specs (inspected 2026-03-18):
-     - Container: 800px fixed width, white bg, 4px border-radius, position:relative
-     - Overlay/mask: fixed, z-index 9998, rgba(0,0,0,0.5)
-     - Scrollable body: background #EEEEF2, max-height 350px, overflow:auto
-     - Footer (checkbox + Agree): separate white div BELOW the scrollable area
-     - Close button: position absolute, top:-10px, right:-15px (outside container)
-   ========================================================================== */
-
-/* --------------------------------------------------------------------------
- * Body lock — prevents background scroll when modal is open
- * ----------------------------------------------------------------------- */
-
-body.privacy-modal-open {
-  overflow: hidden;
-}
-
-/* --------------------------------------------------------------------------
- * Overlay / Backdrop — fixed, covers entire viewport
- * Uses min-width/min-height so it never shrinks when DevTools opens.
- * ----------------------------------------------------------------------- */
-
 .privacy-modal-overlay {
   position: fixed;
   top: 0;
@@ -32,13 +8,11 @@ body.privacy-modal-open {
   min-height: 100vh;
   z-index: 9998;
   display: flex;
-  align-items: center;
+  align-items: safe center;
   justify-content: center;
-  background-color: rgb(0 0 0 / 50%);
-  padding: 20px;
+  background-color: var(--bbl-color-black-alpha-60);
+  padding: 0 var(--bbl-space-250) var(--bbl-space-250);
   box-sizing: border-box;
-
-  /* Entrance transition */
   opacity: 0;
   transition: opacity 0.25s ease;
 }
@@ -47,149 +21,102 @@ body.privacy-modal-open {
   opacity: 1;
 }
 
-/* --------------------------------------------------------------------------
- * Modal container
- * Live site: 800px fixed width, relative position, overflow visible
- * so the close button can protrude outside the top-right corner.
- * ----------------------------------------------------------------------- */
-
-.privacy-modal-container {
+.privacy-modal-dialog {
   position: relative;
-  width: 800px;
-  max-width: calc(100vw - 40px);
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 4px 16px rgb(0 0 0 / 30%);
-
-  /* overflow:visible lets the close button sit outside the container boundary */
-  overflow: visible;
-
-  /* Flex column so header / body / footer stack cleanly */
+  width: 100%;
+  max-width: 23.75rem;
+  background-color: var(--bbl-color-white);
+  border-radius: var(--bbl-rounded-050);
+  box-shadow: 0 var(--bbl-space-050) var(--bbl-space-200) var(--bbl-color-black-alpha-30);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-
-  /* Slide-up entrance */
   transform: translateY(1.5rem);
   transition: transform 0.25s ease;
 }
 
-.privacy-modal-overlay-visible .privacy-modal-container {
+.privacy-modal-overlay-visible .privacy-modal-dialog {
   transform: translateY(0);
 }
 
-/* --------------------------------------------------------------------------
- * Close button
- * Live site: absolute, top:-10px, right:-15px (outside the container)
- * ----------------------------------------------------------------------- */
-
 .privacy-modal-close {
   position: absolute;
-  top: -10px;
-  right: -15px;
-  z-index: 500;
-  width: 30px;
-  height: 30px;
+  top: var(--bbl-space-100);
+  right: var(--bbl-space-100);
+  z-index: 2;
+  width: 1.875rem;
+  height: 1.875rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #666;
+  background-color: var(--bbl-color-grey-80);
   border: none;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1.125rem;
   line-height: 1;
-  color: #fff;
+  color: var(--bbl-color-white);
   padding: 0;
-  border-radius: 50%;
+  border-radius: var(--bbl-rounded-full);
   transition: background-color 0.2s ease;
 }
 
 .privacy-modal-close:hover,
 .privacy-modal-close:focus-visible {
-  background-color: #444;
-  color: #fff;
+  background-color: var(--bbl-color-grey-90);
+  color: var(--bbl-color-white);
   outline: none;
 }
-
-/* --------------------------------------------------------------------------
- * Header — white background, centered title
- * ----------------------------------------------------------------------- */
 
 .privacy-modal-header {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 40px 16px;
-  background-color: #fff;
+  padding: var(--bbl-space-200) 2.75rem var(--bbl-space-150) var(--bbl-space-250);
+  background-color: var(--bbl-color-white);
   flex-shrink: 0;
-  border-radius: 4px 4px 0 0;
+  border-radius: var(--bbl-rounded-050) var(--bbl-rounded-050) 0 0;
 }
 
 .privacy-modal-title {
   margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 400;
   line-height: 1.4;
-
-  /* Live site title is dark charcoal, not blue */
-  color: #333;
+  color: var(--bbl-text-primary);
   text-align: center;
   flex: 1;
   white-space: normal;
+  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
 }
 
-/* --------------------------------------------------------------------------
- * Scroll hint — hidden (not present on live site)
- * ----------------------------------------------------------------------- */
+.privacy-modal-title p {
+  margin: 0;
+  text-indent: 0;
+}
 
 .privacy-modal-scroll-hint {
   display: none;
 }
 
-/* --------------------------------------------------------------------------
- * Scrollable body
- * Live site: background #EEEEF2 (blue-grey), max-height 350px, overflow:auto
- * ----------------------------------------------------------------------- */
-
 .privacy-modal-body {
   overflow: auto;
-  max-height: 350px;
-
-  /* Inset the grey box from the container walls — creates the white gap
-     visible on left/right in the live site (body is ~740px inside 800px container) */
-  margin: 0 30px;
-  padding: 3% 3% 5% 5%;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #333;
-
-  /* Live site exact background colour */
-  background-color: #eeeef2;
-
-  /* Custom scrollbar — matches live site narrow scrollbar */
-  scrollbar-width: thin;
-  scrollbar-color: #aaa transparent;
-  box-sizing: border-box;
   flex-shrink: 0;
+  max-height: 15rem;
+  margin: 0 var(--bbl-space-200);
+  padding: var(--bbl-space-200);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--bbl-text-primary);
+  background-color: #eeeef2;
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  box-sizing: content-box;
+  scrollbar-width: auto;
+  scrollbar-color: auto;
 }
 
-/* WebKit scrollbar */
-.privacy-modal-body::-webkit-scrollbar {
-  width: 6px;
-}
-
-.privacy-modal-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.privacy-modal-body::-webkit-scrollbar-thumb {
-  background-color: #aaa;
-  border-radius: 3px;
-}
-
-/* Rich-text content inside the body */
 .privacy-modal-body p {
   margin: 0 0 1em;
-  text-indent: 2em;
+  text-indent: 1.5em;
 }
 
 .privacy-modal-body p:last-child {
@@ -209,6 +136,7 @@ body.privacy-modal-open {
 .privacy-modal-body strong,
 .privacy-modal-body b {
   font-weight: 700;
+  font-family: Muli-Bold, sans-serif;
 }
 
 .privacy-modal-body a {
@@ -216,94 +144,107 @@ body.privacy-modal-open {
   text-decoration: none;
 }
 
-/* Section headings inside the body */
 .privacy-modal-body h3,
 .privacy-modal-body h4 {
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.4;
-  color: #333;
+  color: var(--bbl-text-primary);
   margin: 1em 0 0.5em;
   text-indent: 0;
 }
-
-/* --------------------------------------------------------------------------
- * Footer — checkbox + CTA
- * Live site: separate white div BELOW the scroll area, always visible.
- * Checkbox and Agree button are NOT inside the scrollable region.
- * ----------------------------------------------------------------------- */
 
 .privacy-modal-footer {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 20px 24px 24px;
-  background-color: #fff;
-  border-radius: 0 0 4px 4px;
+  gap: var(--bbl-space-150);
+  padding: var(--bbl-space-200) var(--bbl-space-250) var(--bbl-space-250);
+  background-color: var(--bbl-color-white);
+  border-radius: 0 0 var(--bbl-rounded-050) var(--bbl-rounded-050);
 }
 
-/* Checkbox row */
 .privacy-modal-checkbox-row {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.625rem;
+  text-align: center;
 }
 
 .privacy-modal-checkbox-row input[type='checkbox'] {
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  margin-top: 3px;
+  width: 0.8125rem;
+  height: 0.8125rem;
+  margin-top: 0.1875rem;
   cursor: pointer;
-  accent-color: #1b3a6b;
-  transition: opacity 0.2s ease;
+  appearance: none;
+  border: 2px solid var(--bbl-text-primary);
+  border-radius: 0.125rem;
+  background-color: var(--bbl-color-white);
+  position: relative;
+  transition: all 0.2s ease;
 }
 
 .privacy-modal-checkbox-row input[type='checkbox']:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  border-color: var(--bbl-text-primary);
+  opacity: 0.4;
+}
+
+.privacy-modal-checkbox-row input[type='checkbox']:checked::after {
+  content: '';
+  position: absolute;
+  left: 0.125rem;
+  top: -0.125rem;
+  width: 0.1875rem;
+  height: 0.4375rem;
+  border: solid var(--bbl-text-primary);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.privacy-modal-checkbox-row input[type='checkbox']:disabled:checked::after {
+  border-color: var(--bbl-text-primary);
 }
 
 .privacy-modal-checkbox-label {
-  font-size: 1rem;
+  font-size: 0.875rem;
   line-height: 1.5;
-  color: #333;
+  color: var(--bbl-text-primary);
   cursor: pointer;
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
 }
 
 .privacy-modal-checkbox-row input[type='checkbox']:disabled+.privacy-modal-checkbox-label {
   cursor: not-allowed;
 }
 
-/* Agree / CTA button — matches live site */
 .privacy-modal-cta {
   align-self: center;
-  height: 44px;
-  min-width: 120px;
-  padding: 0 24px;
-  font-size: 0.9rem;
+  height: 2.75rem;
+  min-width: 7.5rem;
+  padding: 0 var(--bbl-space-300);
+  font-size: 0.875rem;
   font-weight: 600;
-  line-height: 44px;
+  line-height: 2.75rem;
   text-align: center;
   white-space: nowrap;
   border: none;
-  border-radius: 7px;
+  border-radius: 0.4375rem;
   cursor: pointer;
   transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
-/* Disabled state — live site shows grey button */
 .privacy-modal-cta:disabled {
-  background-color: #d6d6d6;
-  color: #888;
+  background-color: var(--bbl-color-grey-30);
+  color: var(--bbl-color-grey-70);
   cursor: not-allowed;
 }
 
-/* Active (enabled) state */
 .privacy-modal-cta:not(:disabled) {
   background-color: #1b3a6b;
-  color: #fff;
+  color: var(--bbl-color-white);
 }
 
 .privacy-modal-cta:not(:disabled):hover {
@@ -316,45 +257,64 @@ body.privacy-modal-open {
 
 .privacy-modal-cta:not(:disabled):focus-visible {
   outline: 2px solid #1b3a6b;
-  outline-offset: 2px;
+  outline-offset: 0.125rem;
 }
 
-/* --------------------------------------------------------------------------
- * Mobile — full-width modal (< 760px)
- * ----------------------------------------------------------------------- */
-
-@media (width < 47.5rem) {
-  .privacy-modal-overlay {
-    padding: 0;
-    align-items: flex-start;
+@media (width >=47.5rem) {
+  .privacy-modal-dialog {
+    width: 50rem;
+    max-width: 50rem;
+    overflow: visible;
+    border-radius: var(--bbl-rounded-050);
   }
 
-  .privacy-modal-container {
-    width: 100%;
-    max-width: 100%;
-    border-radius: 0;
-    min-height: 100dvh;
-    overflow: hidden;
-  }
-
-  /* Close button stays inside on full-screen mobile */
   .privacy-modal-close {
-    top: 8px;
-    right: 8px;
+    top: -0.625rem;
+    right: -0.9375rem;
+    z-index: 500;
   }
 
   .privacy-modal-header {
-    padding: 16px 48px 12px 16px;
-    border-radius: 0;
+    padding: var(--bbl-space-250) var(--bbl-space-500) var(--bbl-space-200);
+  }
+
+  .privacy-modal-title {
+    font-size: 1rem;
   }
 
   .privacy-modal-body {
-    max-height: calc(100dvh - 280px);
-    padding: 12px 16px;
+    margin: 0 1.875rem;
+    padding: var(--bbl-space-250) 1.875rem;
+    max-height: 20rem;
+    font-size: 1rem;
   }
 
   .privacy-modal-footer {
-    padding: 16px;
-    border-radius: 0;
+    padding: var(--bbl-space-250) var(--bbl-space-300) var(--bbl-space-300);
+  }
+
+  .privacy-modal-checkbox-row {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: 0.625rem;
+    padding: 0 5% 0 4.5%;
+  }
+
+  .privacy-modal-checkbox-row input[type='checkbox'] {
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.1875rem;
+  }
+
+  .privacy-modal-checkbox-row input[type='checkbox']:checked::after {
+    left: 0.1875rem;
+    top: -0.0625rem;
+    width: 0.25rem;
+    height: 0.5625rem;
+  }
+
+  .privacy-modal-checkbox-label {
+    font-size: 1rem;
   }
 }

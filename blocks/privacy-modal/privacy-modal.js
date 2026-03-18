@@ -3,6 +3,8 @@
 
  */
 
+import { moveInstrumentation } from '../../scripts/scripts.js';
+
 const COOKIE_DURATION_DAYS = 30;
 const COOKIE_NAME = 'HRPRIVACY';
 
@@ -92,8 +94,8 @@ function buildModal({
     attrs: { role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'privacy-modal-title' },
   });
 
-  /* Modal container */
-  const modal = createElement('div', { className: 'privacy-modal-container' });
+  /* Modal dialog container */
+  const modal = createElement('div', { className: 'privacy-modal-dialog' });
 
   /* Header */
   const header = createElement('div', { className: 'privacy-modal-header' });
@@ -131,8 +133,8 @@ function buildModal({
     textContent: '↓ Please he scroll down to read the full notice',
   });
 
-  /* Footer */
-  const footer = createElement('div', { className: 'privacy-modal-footer' });
+  /* Modal footer section (bottom area with checkbox and button) */
+  const modalFooter = createElement('div', { className: 'privacy-modal-footer' });
 
   /* Checkbox row */
   const checkboxRow = createElement('div', { className: 'privacy-modal-checkbox-row' });
@@ -158,9 +160,9 @@ function buildModal({
     attrs: { type: 'button', disabled: 'true' },
   });
 
-  footer.append(checkboxRow, ctaBtn);
+  modalFooter.append(checkboxRow, ctaBtn);
   /* Close button appended directly to modal (not header) for correct absolute positioning */
-  modal.append(closeBtn, header, scrollBody, footer);
+  modal.append(closeBtn, header, scrollBody, modalFooter);
   overlay.append(modal);
 
   /* -----------------------------------------------------------------------
@@ -227,7 +229,6 @@ function openModal(overlay) {
   requestAnimationFrame(() => {
     overlay.classList.add('privacy-modal-overlay-visible');
   });
-  document.body.classList.add('privacy-modal-open');
   overlay.focus();
 }
 
@@ -237,7 +238,6 @@ function openModal(overlay) {
  */
 function closeModal(overlay) {
   overlay.classList.remove('privacy-modal-overlay-visible');
-  document.body.classList.remove('privacy-modal-open');
   overlay.addEventListener('transitionend', () => {
     overlay.remove();
   }, { once: true });
@@ -297,14 +297,25 @@ export default function decorate(block) {
   /* ctaLabel — Row 4 (linkText cell from _button-fields.json) */
   const ctaLabel = rows[4]?.textContent.trim() || 'Agree';
 
-  /* Hide the raw block content — the modal is rendered independently */
-  block.style.display = 'none';
+  /* Singleton guard — if another instance of this block has already created
+     the modal overlay (e.g. block placed in both main content and footer),
+     do nothing. Only the first instance on the page should run. */
+  if (document.querySelector('.privacy-modal-overlay')) {
+    block.remove();
+    return;
+  }
 
-  /* If modal is disabled by author, stop here */
-  if (!enableModal) return;
+  /* If modal is disabled by author, remove block and stop here */
+  if (!enableModal) {
+    block.remove();
+    return;
+  }
 
-  /* If the user already accepted (cookie present), skip the modal entirely */
-  if (getCookie(COOKIE_NAME) === 'true') return;
+  /* If the user already accepted (cookie present), remove block and skip the modal entirely */
+  if (getCookie(COOKIE_NAME) === 'true') {
+    block.remove();
+    return;
+  }
 
   /* ------------------------------------------------------------------
    * Build the modal once and cache it
@@ -334,6 +345,12 @@ export default function decorate(block) {
     onAgree: handleAgree,
     onClose: handleClose,
   });
+
+  /* Move instrumentation attributes from block to overlay for Universal Editor support */
+  moveInstrumentation(block, overlay);
+
+  /* Remove the original block element from DOM since modal is created */
+  block.remove();
 
   /* ------------------------------------------------------------------
    * Show modal on page load
