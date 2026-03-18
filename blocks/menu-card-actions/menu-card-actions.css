@@ -99,6 +99,7 @@
     font: 400 1.14rem/1.25rem var(--bbl-font-family-medium);
     margin-block: var(--bbl-space-250) 0.9375rem;
     padding-bottom: 0.9375rem;
+    box-sizing: border-box;
     min-height: 4.4375rem;
     position: relative;
     display: inline-block;
@@ -113,7 +114,12 @@
     line-height: 2.75rem;
     text-overflow: ellipsis;
     overflow: hidden;
-    margin-top: var(--bbl-space-250);
+    margin-top: calc(var(--bbl-space-250) - 0.9375rem);
+    border: 0.0625rem solid var( --bbl-color-active-blue);
+}
+
+.menu-card-action-inner .global-dropdown{
+    margin-top: calc(var(--bbl-space-250) - 0.9375rem);
 }
 
 .menu-card-action .menu-card-action-inner .button-tertiary::after {
@@ -125,6 +131,10 @@
     padding-right: 0.9375rem;
     margin-top: var(--bbl-space-250);
     font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-medium);
+}
+
+.menu-card-action-inner .menu-card-action-description ~ :is(.button.primary, .global-dropdown, .button-tertiary) {
+    margin-top: var(--bbl-space-250);
 }
 
 .menu-card-action .menu-card-action-inner .button-tertiary:hover {

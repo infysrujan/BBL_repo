@@ -67,7 +67,9 @@ function createMenuCardItem(cardElement, doc) {
 
   /* ---------------- ACTION DEFAULT ---------------- */
   if (actionTypeText === 'default' && defaultButton) {
-    inner.appendChild(defaultButton.cloneNode(true));
+    const defaultButtonClone = defaultButton.cloneNode(true);
+    defaultButtonClone.classList.add('button-m');
+    inner.appendChild(defaultButtonClone);
   }
 
   /* ---------------- ACTION : DOWNLOAD ---------------- */
