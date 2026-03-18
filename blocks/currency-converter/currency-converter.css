@@ -314,7 +314,7 @@
   background: var(--bbl-color-grey-50);
 }
 
-@media (width >= 48rem) {
+@media (width > 47.5rem) {
   .currency-converter .convert-group {
     height: 11.5rem;
   }

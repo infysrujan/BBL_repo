@@ -48,7 +48,7 @@ function parseCurrencyList(currencyListDiv) {
  * @param {string} searchPlaceholder - Placeholder text for search input
  * @returns {Element} - Dropdown element
  */
-function createCurrencyDropdown(currencies, searchPlaceholder = 'Type to Search...') {
+function createCurrencyDropdown(currencies, searchPlaceholder) {
   const dropdown = document.createElement('div');
   dropdown.className = 'currency-dropdown';
 
