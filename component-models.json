@@ -1685,6 +1685,34 @@
     ]
   },
   {
+    "id": "currency-converter-expanded",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "countryList",
+        "label": "Country List",
+        "valueType": "string",
+        "value": "",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "buttonTitle",
+        "label": "Button Title",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "valueType": "string",
+        "value": "",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "currency-converter",
     "fields": [
       {
