@@ -1,23 +1,6 @@
 /**
  * Privacy Modal Block
- *
- * Displays a privacy notice pop-up before redirecting the user to an
- * external or internal page. The modal includes:
- *  - A scrollable privacy text section (scroll is mandatory before acceptance)
- *  - An acknowledgement checkbox (enabled only after full scroll)
- *  - A confirmation CTA button (enabled only after checkbox is checked)
- *
- * Cookie behaviour:
- *  - On acceptance the cookie is stored for COOKIE_DURATION_DAYS days.
- *  - While the cookie is valid the modal will not reappear on the same page.
- *  - If the user closes or dismisses the modal without accepting, it will
- *    reappear on the next visit.
- *
- * External-host detection:
- *  - The block reads a data attribute (`data-external-hosts`) OR falls back
- *    to scanning the page for links whose hostname differs from the current
- *    origin. When a matching CTA is clicked the modal intercepts the
- *    navigation, shows itself, and — once the user agrees — redirects.
+
  */
 
 const COOKIE_DURATION_DAYS = 30;
