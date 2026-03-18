@@ -364,6 +364,6 @@ body.wealth main :is(.button-container .button, .button) {
     }
 }
 
-body.bangkok-bankm-card{
-    background-color: maroon;
+body.bangkok-bankm-card main {
+  background-color: maroon;
 }

@@ -15,6 +15,10 @@
   overflow: hidden;
 }
 
+.carousel-dotted.all-hero-banner-image-carousel {
+  background: transparent;
+}
+
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) {
   border: none;
   border-radius: 0;
@@ -865,8 +869,12 @@
   }
 
   .carousel-dotted.all-hero-banner-image-carousel {
-    min-height: 0;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: auto;
+    height: auto;
+  }
+
+  .carousel-dotted.all-hero-banner-image-carousel .carousel-bg {
+    position: relative;
   }
 
   .carousel-dotted.all-hero-banner-image-carousel .slick-dots {
@@ -877,13 +885,7 @@
     height: 100%;
   }
 
-  /* .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) > .carousel-dotted,
-  .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel)
-  > .carousel-dotted
-  > .carousel-track-wrapper {
-    width: 100%;
-    height: 100%;
-  } */
+
 
   .carousel-dotted.all-text-animation-variant .carousel-item.text-animation-variant .carousel-bg {
     position: relative;
@@ -1104,3 +1106,4 @@
     height: 2.5rem;
   }
 }
+
