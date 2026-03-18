@@ -310,14 +310,6 @@ function getMetadata(name, doc = document) {
 }
 
 /**
- * Gets the language from the HTML tag.
- * @returns {string} The language code (e.g., 'en', 'th')
- */
-function getLang() {
-  return document.documentElement.lang || 'en';
-}
-
-/**
  * Returns a picture element with webp and fallbacks
  * @param {string} src The image URL
  * @param {string} [alt] The image alternative text
@@ -760,7 +752,6 @@ export {
   decorateIcons,
   decorateSections,
   decorateTemplateAndTheme,
-  getLang,
   getMetadata,
   loadBlock,
   loadCSS,

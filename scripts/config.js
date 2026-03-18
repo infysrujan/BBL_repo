@@ -10,7 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
-import { getLang, toCamelCase } from './aem.js';
+import { toCamelCase } from './aem.js';
+import { getLang } from './scripts.js';
 
 /**
  * Gets configs object from config.json.
