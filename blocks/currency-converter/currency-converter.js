@@ -250,6 +250,10 @@ function createConvertGroup(label, currencies, type, searchPlaceholder) {
  */
 async function convertCurrency(amount, fromCurrency, toCurrency, apiBaseUrl) {
   try {
+    if (!apiBaseUrl) {
+      throw new Error('Exchange rate service URL not configured in config.json');
+    }
+
     // API endpoint for currency conversion
     const apiUrl = `${apiBaseUrl}${amount}/${fromCurrency}/${toCurrency}`;
 
@@ -282,7 +286,13 @@ export default async function decorate(block) {
   const configs = await fetchConfigs();
 
   const searchPlaceholder = placeholders?.searchInputPlaceholder || 'Type to Search...';
-  const apiBaseUrl = configs?.exchangeRateService || 'https://publish-p185039-e1938068.adobeaemcloud.com/api/exchangerateservice/FxCal/';
+  const apiBaseUrl = configs?.exchangeRateService || '';
+
+  if (!apiBaseUrl) {
+    // eslint-disable-next-line no-console
+    console.error('Exchange rate service URL not configured in config.json');
+  }
+
   const rows = Array.from(block.children);
 
   // Parse block content

@@ -10,20 +10,20 @@
  * governing permissions and limitations under the License.
  */
 
-import { toCamelCase } from './aem.js';
+import { getLang, toCamelCase } from './aem.js';
 
 /**
  * Gets configs object from config.json.
- * @param {string} [prefix] Location of config
  * @returns {Promise<object>} Window configs object
  */
 // eslint-disable-next-line import/prefer-default-export
-export async function fetchConfigs(prefix = 'default') {
+export async function fetchConfigs() {
+  const lang = getLang();
   window.configs = window.configs || {};
-  if (!window.configs[prefix]) {
-    window.configs[prefix] = new Promise((resolve) => {
+  if (!window.configs[lang]) {
+    window.configs[lang] = new Promise((resolve) => {
       // Check if config JSON exists in sessionStorage
-      const configKey = 'config';
+      const configKey = `config-${lang}`;
       const cachedConfigJSON = window.sessionStorage.getItem(configKey);
 
       if (cachedConfigJSON) {
@@ -35,7 +35,7 @@ export async function fetchConfigs(prefix = 'default') {
             .forEach((config) => {
               configs[toCamelCase(config.Key)] = config.Value;
             });
-          window.configs[prefix] = configs;
+          window.configs[lang] = configs;
           resolve(configs);
           return;
         } catch (e) {
@@ -46,7 +46,8 @@ export async function fetchConfigs(prefix = 'default') {
       }
 
       // Fetch from config.json if not in sessionStorage
-      fetch(`${prefix === 'default' ? '' : prefix}/config.json`)
+      const configPath = `/${lang}/config.json`;
+      fetch(configPath)
         .then((resp) => {
           if (resp.ok) {
             return resp.json();
@@ -68,14 +69,14 @@ export async function fetchConfigs(prefix = 'default') {
               configs[toCamelCase(config.Key)] = config.Value;
             });
 
-          window.configs[prefix] = configs;
-          resolve(window.configs[prefix]);
+          window.configs[lang] = configs;
+          resolve(window.configs[lang]);
         }).catch(() => {
           // error loading configs
-          window.configs[prefix] = {};
-          resolve(window.configs[prefix]);
+          window.configs[lang] = {};
+          resolve(window.configs[lang]);
         });
     });
   }
-  return window.configs[`${prefix}`];
+  return window.configs[lang];
 }
