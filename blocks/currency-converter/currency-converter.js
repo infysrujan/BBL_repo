@@ -296,8 +296,8 @@ export default async function decorate(block) {
   const rows = Array.from(block.children);
 
   // Parse block content
-  const fromLabel = rows[0]?.textContent.trim() || 'From';
-  const toLabel = rows[1]?.textContent.trim() || 'To';
+  const fromLabel = rows[0]?.textContent.trim() || placeholders?.fromLabel || 'From';
+  const toLabel = rows[1]?.textContent.trim() || placeholders?.toLabel || 'To';
   const converterIconDiv = rows[2]?.querySelector('picture') || rows[2]?.querySelector('img');
   const currencyListDiv = rows[3]?.querySelector('ul');
 
