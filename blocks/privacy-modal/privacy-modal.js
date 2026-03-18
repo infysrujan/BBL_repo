@@ -21,7 +21,7 @@
  */
 
 const COOKIE_DURATION_DAYS = 30;
-const COOKIE_NAME = 'privacy-modal-accepted';
+const COOKIE_NAME = 'HRPRIVACY';
 
 /* -------------------------------------------------------------------------
  * Cookie utilities
@@ -116,9 +116,15 @@ function buildModal({
   const header = createElement('div', { className: 'privacy-modal-header' });
   const titleEl = createElement('h2', {
     className: 'privacy-modal-title',
-    textContent: title,
     attrs: { id: 'privacy-modal-title' },
   });
+  /* Use innerHTML so richtext markup (e.g. <br>, <p>) renders correctly */
+  titleEl.innerHTML = title;
+  header.append(titleEl);
+
+  /* Close button — direct child of modal container so position:absolute is
+     relative to the container, allowing it to sit outside the top-right corner
+     exactly like the live site (top:-10px; right:-15px). */
   const closeBtn = createElement('button', {
     className: 'privacy-modal-close',
     attrs: {
@@ -128,7 +134,6 @@ function buildModal({
     },
   });
   closeBtn.innerHTML = '&times;';
-  header.append(titleEl, closeBtn);
 
   /* Scrollable body */
   const scrollBody = createElement('div', {
@@ -171,7 +176,8 @@ function buildModal({
   });
 
   footer.append(checkboxRow, ctaBtn);
-  modal.append(header, scrollHint, scrollBody, footer);
+  /* Close button appended directly to modal (not header) for correct absolute positioning */
+  modal.append(closeBtn, header, scrollBody, footer);
   overlay.append(modal);
 
   /* -----------------------------------------------------------------------
@@ -296,7 +302,8 @@ function isExternalUrl(href) {
 export default function decorate(block) {
   const rows = [...block.children];
 
-  const title = rows[0]?.textContent.trim() || '';
+  /* Title is richtext — use innerHTML to preserve <br> / <p> markup */
+  const title = rows[0]?.innerHTML.trim() || '';
   const privacyHTML = rows[1]?.innerHTML.trim() || '';
   const checkboxLabel = rows[2]?.textContent.trim() || 'I acknowledge the purposes and details on collection, use and disclosure of personal data of the Bank stated above.';
 
