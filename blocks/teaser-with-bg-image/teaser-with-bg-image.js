@@ -68,8 +68,13 @@ export default function decorate(block) {
     wrapper.appendChild(bgLayer);
   }
 
+  const contentContainer = createElementFromHTML(
+    '<div class="teaser-bg-image-content content"></div>',
+    doc,
+  );
+
   const overlay = createElementFromHTML(
-    '<div class="teaser-bg-image-overlay content"></div>',
+    '<div class="teaser-bg-image-overlay"></div>',
     doc,
   );
 
@@ -83,11 +88,11 @@ export default function decorate(block) {
     overlay.appendChild(teaserDescRow);
   }
 
-  wrapper.appendChild(overlay);
+  contentContainer.appendChild(overlay);
 
   if (teaserRows.length) {
     const cardsContainer = createElementFromHTML(
-      '<div class="teaser-bg-image-cards content"></div>',
+      '<div class="teaser-bg-image-cards"></div>',
       doc,
     );
 
@@ -99,18 +104,20 @@ export default function decorate(block) {
       cardsContainer.appendChild(card);
     });
 
-    wrapper.appendChild(cardsContainer);
+    contentContainer.appendChild(cardsContainer);
   }
 
   if (teaserButton) {
     teaserButton.classList.add('button-m');
-    wrapper.appendChild(
+    contentContainer.appendChild(
       createElementFromHTML(
-        `<div class="teaser-bg-image-cta content">${teaserButton.outerHTML}</div>`,
+        `<div class="teaser-bg-image-cta">${teaserButton.outerHTML}</div>`,
         doc,
       ),
     );
   }
+
+  wrapper.appendChild(contentContainer);
 
   block.textContent = '';
   block.appendChild(wrapper);
