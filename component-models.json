@@ -514,6 +514,64 @@
       },
       {
         "component": "boolean",
+        "name": "autoScroll",
+        "label": "Auto-Scroll",
+        "valueType": "boolean",
+        "value": false,
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "filter"
+                },
+                "showDots"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "filter"
+                },
+                "showArrowsDots"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "scrollTimeDelay",
+        "label": "Scroll Time Delay (milliseconds)",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "3 seconds",
+            "value": "3000"
+          },
+          {
+            "name": "5 seconds",
+            "value": "5000"
+          },
+          {
+            "name": "10 seconds",
+            "value": "10000"
+          }
+        ],
+        "condition": {
+          "and": [
+            {
+              "!!": [
+                {
+                  "var": "autoScroll"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "boolean",
         "name": "showLinks",
         "label": "Show Links",
         "valueType": "boolean",
@@ -642,43 +700,6 @@
               "!!": [
                 {
                   "var": "showLinks"
-                }
-              ]
-            }
-          ]
-        }
-      },
-      {
-        "component": "boolean",
-        "name": "autoScroll",
-        "label": "Auto-Scroll",
-        "valueType": "boolean"
-      },
-      {
-        "component": "select",
-        "name": "scrollTimeDelay",
-        "label": "Scroll Time Delay (milliseconds)",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "3 seconds",
-            "value": "3000"
-          },
-          {
-            "name": "5 seconds",
-            "value": "5000"
-          },
-          {
-            "name": "10 seconds",
-            "value": "10000"
-          }
-        ],
-        "condition": {
-          "and": [
-            {
-              "!!": [
-                {
-                  "var": "autoScroll"
                 }
               ]
             }
