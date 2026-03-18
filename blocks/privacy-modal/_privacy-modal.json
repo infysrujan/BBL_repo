@@ -21,7 +21,7 @@
       "id": "privacy-modal",
       "fields": [
         {
-          "component": "text",
+          "component": "richtext",
           "name": "title",
           "label": "Modal Title",
           "valueType": "string",
@@ -51,7 +51,7 @@
         },
         {
           "...": "../../models/elements/_button-fields.json"
-        } 
+        }
       ]
     }
   ],

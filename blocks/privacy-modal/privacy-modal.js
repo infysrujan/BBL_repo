@@ -140,7 +140,7 @@ function buildModal({
   /* Scroll hint */
   const scrollHint = createElement('div', {
     className: 'privacy-modal-scroll-hint',
-    textContent: '↓ Please scroll down to read the full notice',
+    textContent: '↓ Please he scroll down to read the full notice',
   });
 
   /* Footer */
@@ -214,11 +214,6 @@ function buildModal({
   /* Close button → dismiss */
   closeBtn.addEventListener('click', () => onClose());
 
-  /* Click outside modal container → dismiss */
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) onClose();
-  });
-
   /* Keyboard: Escape → dismiss */
   overlay.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') onClose();
@@ -266,12 +261,16 @@ function closeModal(overlay) {
 /**
  * Checks whether a given URL is considered external compared to the
  * current page's origin.
+ * Returns false for relative paths, hash links, and same-origin URLs.
  * @param {string} href
  * @returns {boolean}
  */
 function isExternalUrl(href) {
+  if (!href || href.startsWith('#') || href.startsWith('/') || href.startsWith('./') || href.startsWith('../')) {
+    return false;
+  }
   try {
-    const url = new URL(href, window.location.href);
+    const url = new URL(href);
     return url.hostname !== window.location.hostname;
   } catch {
     return false;
@@ -286,10 +285,11 @@ function isExternalUrl(href) {
  * Decorates the privacy-modal block.
  *
  * Block row layout (authored in Universal Editor / document):
- *   Row 0 → title         (text)
- *   Row 1 → privacyText   (richtext)
- *   Row 2 → checkboxLabel (text)
- *   Row 3 → ctaLabel      (text)
+ *   Row 0 → title          (text)
+ *   Row 1 → privacyText    (richtext)
+ *   Row 2 → checkboxLabel  (text)
+ *   Row 3 → enableModal    (checkbox / boolean)
+ *   Row 4 → linkText / ctaLabel  (from _button-fields.json)
  *
  * @param {HTMLElement} block
  */
@@ -299,10 +299,19 @@ export default function decorate(block) {
   const title = rows[0]?.textContent.trim() || '';
   const privacyHTML = rows[1]?.innerHTML.trim() || '';
   const checkboxLabel = rows[2]?.textContent.trim() || 'I acknowledge the purposes and details on collection, use and disclosure of personal data of the Bank stated above.';
-  const ctaLabel = rows[3]?.textContent.trim() || 'Agree';
+
+  /* enableModal checkbox — Row 3.  'on' / 'true' / 'checked' = enabled */
+  const enableModalText = rows[3]?.textContent.trim().toLowerCase() || '';
+  const enableModal = enableModalText === 'true' || enableModalText === 'on' || enableModalText === 'checked' || enableModalText === '';
+
+  /* ctaLabel — Row 4 (linkText cell from _button-fields.json) */
+  const ctaLabel = rows[4]?.textContent.trim() || 'Agree';
 
   /* Hide the raw block content — the modal is rendered independently */
   block.style.display = 'none';
+
+  /* If modal is disabled by author, stop here */
+  if (!enableModal) return;
 
   /* If the user already accepted (cookie present), skip the modal entirely */
   if (getCookie(COOKIE_NAME) === 'true') return;
@@ -337,6 +346,12 @@ export default function decorate(block) {
   });
 
   /* ------------------------------------------------------------------
+   * Show modal on page load
+   * ------------------------------------------------------------------ */
+  // Show the modal immediately on page load since no cookie exists
+  openModal(overlay);
+
+  /* ------------------------------------------------------------------
    * Intercept external-link clicks across the whole page
    * ------------------------------------------------------------------ */
   document.addEventListener('click', (e) => {
@@ -345,10 +360,7 @@ export default function decorate(block) {
     if (!anchor) return;
 
     const href = anchor.getAttribute('href');
-    const scriptPrefix = ['javascript', ':'].join('');
-    if (!href || href.startsWith('#') || href.startsWith(scriptPrefix)) return;
-
-    /* Only intercept external links */
+    /* isExternalUrl already handles #, relative paths, and same-origin */
     if (!isExternalUrl(href)) return;
 
     /* If cookie already set, let the link work normally */

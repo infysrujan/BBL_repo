@@ -7197,7 +7197,7 @@
     "id": "privacy-modal",
     "fields": [
       {
-        "component": "text",
+        "component": "richtext",
         "name": "title",
         "label": "Modal Title",
         "valueType": "string",
