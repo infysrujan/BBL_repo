@@ -149,7 +149,8 @@
         "download-file",
         "sub-nav",
         "currency-converter",
-        "popup-modal-card-offer"
+        "popup-modal-card-offer",
+        "currency-converter-expanded"
       ]
     }
   ]
