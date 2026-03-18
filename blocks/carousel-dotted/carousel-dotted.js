@@ -494,10 +494,10 @@ export default function decorate(block) {
   // Read configuration values from block rows
   const dotsAlignment = readDotsAlignment(rows[0]);
   const dotsPosition = readPosition(rows[1]);
-  const showLinks = readBoolean(rows[2]);
-  const seeMoreLink = showLinks ? rows[3]?.querySelector('a') : null;
-  const autoScroll = readBoolean(rows[4]);
-  const scrollTimeDelay = rows[5]?.textContent.trim() || '';
+  const autoScroll = readBoolean(rows[2]);
+  const scrollTimeDelay = rows[3]?.textContent.trim() || '';
+  const showLinks = readBoolean(rows[4]);
+  const seeMoreLink = showLinks ? rows[5]?.querySelector('a') : null;
 
   // Slides start at row 6, variant is in each slide's first cell
   const nextIndex = 6;
