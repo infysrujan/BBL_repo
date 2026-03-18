@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="23" height="23" viewBox="0 0 23 23">
+    <defs>
+        <circle id="a" cx="9.5" cy="9.5" r="9.5"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd" transform="translate(2 2)">
+        <mask id="b" fill="#fff">
+            <use xlink:href="#a"/>
+        </mask>
+        <use fill="#171F69" xlink:href="#a"/>
+        <circle cx="9.5" cy="9.5" r="10.25" stroke="#E1E1E1" stroke-width="1.5"/>
+        <path fill="#FFF" d="M-5.483 6.46h3.637l-3.637-1.825v-4.76h.071L6.248 5.69V-.124h6.568v5.813L24.477-.124h.112v4.748L20.91 6.46h3.678v6.59H20.91l3.678 1.836v4.749h-.112L12.816 13.82v5.814H6.249V13.82l-11.661 5.814h-.07v-4.761l3.636-1.825h-3.637V6.46" mask="url(#b)"/>
+        <path fill="#ED1B2D" d="M24.589.674L13.01 6.464h3.154l8.424-4.229V.675M24.589 17.279l-8.438-4.23h3.167l5.27 2.651v1.579M3.018 6.465l-8.5-4.243v1.58l5.319 2.663h3.18M2.99 13.05l-8.473 4.235v1.576L6.145 13.05H2.99" mask="url(#b)"/>
+        <path fill="#ED1B2D" d="M-5.483 7.827H7.648V-.124h3.858v7.951H24.59v3.858H11.506v7.95H7.648v-7.95h-13.13V7.827" mask="url(#b)"/>
+    </g>
+</svg>

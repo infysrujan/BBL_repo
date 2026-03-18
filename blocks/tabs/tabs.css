@@ -274,7 +274,7 @@
    ======================================================================== */
 
 /* Tablet (>= 768px) */
-@media (width >= 48rem) {
+@media (width > 47.5rem) {
   /* Show tabs navigation */
   .tabs-nav-wrapper .tabs-nav {
     display: table;
