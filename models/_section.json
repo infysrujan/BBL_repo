@@ -101,6 +101,19 @@
                   "value": "columns-3"
                 }
               ]
+            },
+            {
+              "name": "Style",
+              "children": [
+                {
+                  "name": "Underline Title",
+                  "value": "underline-title"
+                },
+                {
+                  "name": "Center Title",
+                  "value": "center-title"
+                }
+              ]
             }
           ]
         }
@@ -135,7 +148,8 @@
         "menu-card-actions",
         "download-file",
         "sub-nav",
-        "currency-converter"
+        "currency-converter",
+        "popup-modal-card-offer"
       ]
     }
   ]
