@@ -21,6 +21,14 @@ import {
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
 
 /**
+ * Gets the language from the HTML tag.
+ * @returns {string} The language code (e.g., 'en', 'th')
+ */
+export function getLang() {
+  return document.documentElement.lang || 'en';
+}
+
+/**
  * Moves all the attributes from a given elmenet to another given element.
  * @param {Element} from the element to copy attributes from
  * @param {Element} to the element to copy attributes to

@@ -112,7 +112,7 @@
    ======================================================================== */
 
 /* Tablet and above */
-@media (width >= 48rem) {
+@media (width > 47.5rem) {
   .story-card .thumb-full {
     flex-direction: row;
   }

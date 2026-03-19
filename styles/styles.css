@@ -178,6 +178,15 @@ main img {
     .section {
         padding-inline: var(--bbl-space-section-xl);
     }
+
+    .section.columns-3 {
+        display: flex;
+        gap: var(--bbl-space-layout-sm);
+    }
+
+    .section.columns-3  > * {
+        flex: 1;
+    }
 }
 
 @media (width > 87.5rem) {
@@ -362,4 +371,8 @@ body.wealth main :is(.button-container .button, .button) {
     .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
         padding-bottom: 1.875rem;
     }
+}
+
+body.bangkok-bankm-card main {
+  background-color: maroon;
 }

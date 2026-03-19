@@ -33,7 +33,10 @@
       "content-insert-cards",
       "menu-card-actions",
       "download-file",
+      "teaser-with-bg-image",
       "sub-nav",
+      "currency-converter",
+      "popup-modal-card-offer",
       "privacy-modal"
     ]
   },
@@ -212,6 +215,12 @@
       "location",
       "login",
       "main-nav-item"
+    ]
+  },
+  {
+    "id": "teaser-with-bg-image",
+    "components": [
+      "teaser-with-bg-image-card"
     ]
   },
   {
