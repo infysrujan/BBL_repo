@@ -54,31 +54,25 @@ function escapeHtml(value = '') {
 
 function getBlockConfig(rows) {
   return {
-    searchLabel: rows[0]?.textContent.trim() || '',
-    noResultsText: rows[1]?.textContent.trim() || '',
-    recentTitle: rows[2]?.textContent.trim() || '',
-    learnMoreLabel: rows[3]?.textContent.trim() || '',
-    placeholder: '',
+    searchLabel: rows[0]?.textContent.trim(),
+    noResultsText: rows[1]?.textContent.trim(),
+    recentTitle: rows[2]?.textContent.trim(),
+    learnMoreLabel: rows[3]?.textContent.trim(),
+    searchImage: rows[4]?.querySelector('img')?.outerHTML || '',
   };
-}
-
-function getPlaceholderValue(placeholders, keys, fallback) {
-  const matchingKey = keys.find((key) => placeholders?.[key]);
-  return matchingKey ? placeholders[matchingKey] : fallback;
 }
 
 function getSearchConfig(rows, placeholders = {}) {
   const blockConfig = getBlockConfig(rows);
 
   return {
-    placeholder: blockConfig.placeholder || getPlaceholderValue(placeholders, ['searchPlaceholderText', 'searchHere', 'searchPlaceholder', 'searchInputPlaceholder'], 'Search Here'),
-    searchLabel: blockConfig.searchLabel || getPlaceholderValue(placeholders, ['search', 'searchButtonLabel'], 'Search'),
-    noResultsText: blockConfig.noResultsText || getPlaceholderValue(placeholders, ['noResultsFound', 'searchNoResultsText'], 'No Results Found'),
-    recentTitle: blockConfig.recentTitle || getPlaceholderValue(placeholders, ['recentSearches', 'searchRecentTitle'], 'Recent Searches'),
-    loadMoreLabel: getPlaceholderValue(placeholders, ['loadMore', 'searchLoadMoreLabel'], 'Load More'),
-    loadingText: getPlaceholderValue(placeholders, ['searching', 'searchLoadingText'], 'Searching...'),
-    ariaLabel: getPlaceholderValue(placeholders, ['search', 'searchAriaLabel'], 'Search'),
-    learnMoreLabel: blockConfig.learnMoreLabel || getPlaceholderValue(placeholders, ['learnMore', 'learnMoreText'], 'Learn More'),
+    placeholder: placeholders.searchPlaceholderText,
+    searchLabel: blockConfig.searchLabel,
+    noResultsText: blockConfig.noResultsText,
+    recentTitle: blockConfig.recentTitle,
+    learnMoreLabel: blockConfig.learnMoreLabel,
+    ariaLabel: placeholders.ariaLableSearch,
+    searchImage: blockConfig.searchImage ?? placeholders.imageUrl,
   };
 }
 
@@ -162,10 +156,11 @@ export default async function decorate(block) {
   block.innerHTML = `
     <div class="search-modal search-modal-active">
       <div class="search-modal-top-block search-modal-top-block-background">
+        ${escapeHtml(config.searchImage)}
         <div class="search-modal-search-input inner-content">
           <input type="text" class="search-modal-input" placeholder="${escapeHtml(config.placeholder)}" autocomplete="off" aria-label="${escapeHtml(config.ariaLabel)}">
           <div class="inner-content search-modal-search-button">
-            <button type="button" class="button primary search-modal-submit-button" title="${escapeHtml(config.searchLabel)}">${escapeHtml(config.searchLabel)}</button>
+            <button type="button" class="button primary button-m search-modal-submit-button" title="${escapeHtml(config.searchLabel)}">${escapeHtml(config.searchLabel)}</button>
           </div>
         </div>
       </div>
@@ -297,7 +292,6 @@ export default async function decorate(block) {
         results: allResults,
         showLoadMore: data.showLoadMore,
       });
-
       updateUrl(normalized);
     } catch (error) {
       resultsList.innerHTML = '';
@@ -320,9 +314,7 @@ export default async function decorate(block) {
   });
 
   loadMoreButton.addEventListener('click', () => {
-    if (!loading && currentTerm) {
-      runSearch(currentTerm, currentPage + 1, true);
-    }
+    if (!loading && currentTerm) runSearch(currentTerm, currentPage + 1, true);
   });
 
   const initialTerm = new URLSearchParams(window.location.search).get('q');
