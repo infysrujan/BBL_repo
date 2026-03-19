@@ -19,22 +19,6 @@
     font-weight: var(--bbl-font-family-regular);
     line-height: 1.375rem;
     letter-spacing: -0.0125rem;
-    margin: 1.875rem 0;
-    padding-bottom: 1.875rem;
-    position: relative;
-}
-
-.menu-card-actions-container
-    .default-content-wrapper
-    :is(h1, h2, h3, h4, h5, h6)::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    height: 0.0625rem;
-    background: var(--bbl-color-grey-60);
-    margin-left: -2.5rem;
-    left: 50%;
-    width: 5rem;
 }
 
 .menu-card-actions-container
