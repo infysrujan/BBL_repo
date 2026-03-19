@@ -1,139 +1,130 @@
-import { fetchConfigs } from '../config.js';
-import { getLang } from '../scripts.js';
+const PAGE_SIZE = 8;
 
-const DEFAULT_QUERY_INDEX_URL = '/query-index.json';
-const RESULTS_PER_PAGE = 8;
-
-function getQueryIndexCacheKey(lang) {
-  return `query-index-${lang}`;
+// Normalizes search term: trim + collapse whitespace
+export function normalizeSearchTerm(term = '') {
+  return term.trim().replace(/\s+/g, ' ');
 }
 
-function normalizeSearchTerm(value = '') {
-  return value.replace(/\s+/g, ' ').trim();
+// Simple language detection from keyword string; adjust if needed
+function detectLanguage(keywords) {
+  const isThai = /[\u0E00-\u0E7F]/.test(keywords);
+  return isThai ? 'th' : 'en';
 }
 
-function normalizeForMatch(value = '') {
-  return normalizeSearchTerm(value).toLowerCase();
+// Generate a stable ItemID from path
+function generateItemId(path) {
+  let hash = 0;
+  const str = path || '';
+  for (let i = 0; i < str.length; i += 1) {
+    hash = ((hash * 31) + str.charCodeAt(i)) % 2147483647;
+  }
+  return `eds-${Math.abs(hash)}`;
 }
 
-function splitSearchTokens(value = '') {
-  return normalizeForMatch(value)
-    .split(' ')
-    .filter(Boolean);
+// Map EDS index record (helix-query.yaml output) -> search JSON for UI
+function toSearchResult(record) {
+  const baseUrl = 'https://www.bangkokbank.com'; // adjust if needed
+
+  const relPath = record.path || '';
+  const canonical = record.ogUrl || '';
+  const absUrl = canonical || (relPath.startsWith('http') ? relPath : `${baseUrl}${relPath}`);
+
+  return {
+    Title: record.metaTitle || record.ogTitle || '',
+    Description: record.metaDescription || record.ogDescription || '',
+    URL: relPath,
+    ItemID: generateItemId(record.path),
+    OGTitle: record.ogTitle || record.metaTitle || '',
+    OGDescription: record.ogDescription || record.metaDescription || '',
+    OGImage: record.ogImage || '',
+    OGURL: absUrl,
+  };
 }
 
-async function fetchFirstAvailableIndex(candidateUrls) {
-  const responses = await Promise.all(candidateUrls.map(async (url) => {
-    try {
-      const response = await fetch(url);
-      return response.ok ? response : null;
-    } catch {
-      return null;
-    }
-  }));
+// Fetch the EDS query index JSON (preview or live)
+async function fetchIndexJson() {
+  // Use .page for preview, .live for published site;
+  // you can make this configurable if needed.
+  const url = '/query-index.json?limit=-1';
 
-  return responses.find(Boolean) || null;
-}
-
-async function fetchQueryIndex() {
-  const lang = getLang();
-  window.queryIndex = window.queryIndex || {};
-
-  if (!window.queryIndex[lang]) {
-    window.queryIndex[lang] = (async () => {
-      const cacheKey = getQueryIndexCacheKey(lang);
-      const cachedIndexJSON = window.sessionStorage.getItem(cacheKey);
-
-      if (cachedIndexJSON) {
-        try {
-          const json = JSON.parse(cachedIndexJSON);
-          return Array.isArray(json?.data) ? json.data : [];
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.warn('Failed to parse cached query index, fetching fresh:', e);
-        }
-      }
-
-      const configs = await fetchConfigs();
-      const configuredIndexUrl = configs?.queryIndexUrl || '';
-      const candidateUrls = [
-        configuredIndexUrl,
-        `/${lang}/query-index.json`,
-        DEFAULT_QUERY_INDEX_URL,
-      ].filter(Boolean);
-
-      const response = await fetchFirstAvailableIndex(candidateUrls);
-      if (response) {
-        const json = await response.json();
-
-        try {
-          window.sessionStorage.setItem(cacheKey, JSON.stringify(json));
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.warn('Failed to store query index in sessionStorage:', e);
-        }
-
-        return Array.isArray(json?.data) ? json.data : [];
-      }
-
-      throw new Error('Query index fetch failed');
-    })();
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) {
+    throw new Error(`Index fetch failed: ${res.status}`);
   }
 
-  return window.queryIndex[lang];
+  const data = await res.json();
+  // Some setups wrap in { data: [...] }, handle both
+  return Array.isArray(data) ? data : (data.data || []);
 }
 
-function matchesTokens(item, tokens) {
-  if (!tokens.length) return true;
+// Filter + rank records according to keywords and language
+function filterAndRank(records, keywords, langHint) {
+  const term = normalizeSearchTerm(keywords).toLowerCase();
+  const tokens = term.split(' ').filter(Boolean);
+  const langPref = langHint || detectLanguage(keywords);
 
-  const searchableFields = [
-    item.title,
-    item.description,
-    item.keywords,
-    item.path,
-  ];
+  return records
+    .filter((r) => {
+      // Optional language field from index; if absent, infer from path
+      // We allow cross-language, but could prefer langPref in ranking
+      // For filtering, don't strictly enforce language; enforce tokens instead.
 
-  const haystack = normalizeForMatch(searchableFields.filter(Boolean).join(' '));
-  return tokens.every((token) => haystack.includes(token));
+      const textBlob = [
+        r.metaTitle,
+        r.metaDescription,
+        r.metaKeywords,
+        r.ogTitle,
+        r.ogDescription,
+        r.bodyText,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+
+      // All tokens must appear as substrings (exact match, no stemming)
+      return tokens.every((t) => textBlob.includes(t));
+    })
+    .map((r) => {
+      const path = r.path || '';
+      const langFromPath = path.startsWith('/th/') ? 'th' : 'en';
+      const pageLang = r.language || langFromPath;
+      const langScore = pageLang === langPref ? 1 : 0;
+      return { ...r, langScore };
+    })
+    .sort((a, b) => b.langScore - a.langScore);
 }
 
-function mapResult(item) {
+/**
+ * Main function used by search-modal block.
+ *
+ * @param {Object} params
+ * @param {string} params.keywords   Search term from user
+ * @param {number} params.pageNumber 1-based page number
+ * @param {string} params.pageLanguage Language inferred from URL (en, th)
+ *
+ * @returns {Promise<{searchResults: any[], showLoadMore: boolean, noResultsMessage?: string}>}
+ */
+export async function getSiteSearchResults({ keywords, pageNumber = 1, pageLanguage }) {
+  const normalized = normalizeSearchTerm(keywords);
+  if (!normalized) {
+    return { searchResults: [], showLoadMore: false };
+  }
+
+  const allRecords = await fetchIndexJson();
+
+  // Filter and rank
+  const matches = filterAndRank(allRecords, normalized, pageLanguage);
+
+  const total = matches.length;
+  const offset = (pageNumber - 1) * PAGE_SIZE;
+  const pageRecords = matches.slice(offset, offset + PAGE_SIZE);
+  const showLoadMore = offset + PAGE_SIZE < total;
+
+  const searchResults = pageRecords.map(toSearchResult);
+
   return {
-    Title: item.title || '',
-    Description: item.description || '',
-    URL: item.path || '#',
-    OGTitle: item.title || '',
-    OGDescription: item.description || '',
-    OGURL: item.path || '#',
-    OGImage: item.image || '',
-    Keywords: item.keywords || '',
+    searchResults,
+    showLoadMore,
+    noResultsMessage: total === 0 ? 'No results found' : undefined,
   };
 }
-
-export async function getSiteSearchResults({
-  keywords,
-  pageNumber = 1,
-  pageLanguage = 'en',
-}) {
-  const normalizedKeywords = normalizeSearchTerm(keywords);
-  const tokens = splitSearchTokens(normalizedKeywords);
-  const rows = await fetchQueryIndex();
-
-  const filteredResults = rows
-    .filter((item) => item?.path)
-    .filter((item) => matchesTokens(item, tokens))
-    .map((item) => mapResult(item, pageLanguage));
-
-  const startIndex = (pageNumber - 1) * RESULTS_PER_PAGE;
-  const endIndex = startIndex + RESULTS_PER_PAGE;
-  const pagedResults = filteredResults.slice(startIndex, endIndex);
-
-  return {
-    totalRecord: filteredResults.length,
-    showLoadMore: endIndex < filteredResults.length,
-    noResultsMessage: 'No Results Found',
-    searchResults: pagedResults,
-  };
-}
-
-export { normalizeSearchTerm };
