@@ -5,16 +5,26 @@
 .search-modal .search-modal-top-block {
     position: relative;
     flex-shrink: 0;
-    background: var(--bbl-color-truthful-blue);
+    background: #fff;
     padding: 30px;
     margin-bottom: 20px;
     min-height: 220px;
     box-sizing: border-box;
 }
 
+.search-modal .search-modal-top-block-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
 .search-modal .search-modal-search-input {
     position: relative;
     display: flex;
+    z-index: 1;
     flex-direction: column;
     gap: 25px;
     margin: 100px auto 0;
@@ -38,6 +48,10 @@
 
 .search-modal .search-modal-input::placeholder {
     color: rgb(255 255 255 / 70%);
+}
+
+.search-modal .search-modal-message {
+    display: none;
 }
 
 .search-modal .search-modal-search-button {

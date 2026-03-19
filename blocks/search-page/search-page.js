@@ -53,12 +53,14 @@ function escapeHtml(value = '') {
 }
 
 function getBlockConfig(rows) {
+  const searchBackground = rows[4]?.querySelector('img');
   return {
     searchLabel: rows[0]?.textContent.trim(),
     noResultsText: rows[1]?.textContent.trim(),
     recentTitle: rows[2]?.textContent.trim(),
     learnMoreLabel: rows[3]?.textContent.trim(),
-    searchImage: rows[4]?.querySelector('img')?.outerHTML || '',
+    searchImage: searchBackground?.src || '',
+    searchImageAlt: searchBackground?.alt || '',
   };
 }
 
@@ -72,7 +74,8 @@ function getSearchConfig(rows, placeholders = {}) {
     recentTitle: blockConfig.recentTitle,
     learnMoreLabel: blockConfig.learnMoreLabel,
     ariaLabel: placeholders.ariaLableSearch,
-    searchImage: blockConfig.searchImage ?? placeholders.imageUrl,
+    searchImage: blockConfig.searchImage,
+    searchImageAlt: blockConfig.searchImageAlt,
   };
 }
 
@@ -156,7 +159,7 @@ export default async function decorate(block) {
   block.innerHTML = `
     <div class="search-modal search-modal-active">
       <div class="search-modal-top-block search-modal-top-block-background">
-        ${escapeHtml(config.searchImage)}
+       ${config.searchImage ? `<img class="search-modal-top-block-image" src="${config.searchImage}" alt="${escapeHtml(config.searchImageAlt)}" loading="lazy">` : ''}
         <div class="search-modal-search-input inner-content">
           <input type="text" class="search-modal-input" placeholder="${escapeHtml(config.placeholder)}" autocomplete="off" aria-label="${escapeHtml(config.ariaLabel)}">
           <div class="inner-content search-modal-search-button">
@@ -216,7 +219,13 @@ export default async function decorate(block) {
   }
 
   function showMessage(text) {
-    messageContainer.innerHTML = text ? `<div class="inner-content"><p class="search-modal-message-text">${text}</p></div>` : '';
+    if (text) {
+      messageContainer.innerHTML = `<div class="inner-content"><p class="search-modal-message-text">${text}</p></div>`;
+      messageContainer.style.display = 'block';
+    } else {
+      messageContainer.innerHTML = '';
+      messageContainer.style.display = 'none';
+    }
   }
 
   function showRecentSearches(onSearch) {
