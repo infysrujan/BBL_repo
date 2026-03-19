@@ -372,3 +372,7 @@ body.wealth main :is(.button-container .button, .button) {
         padding-bottom: 1.875rem;
     }
 }
+
+body.bangkok-bankm-card main {
+  background-color: maroon;
+}

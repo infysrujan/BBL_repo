@@ -38,6 +38,10 @@
           {
             "name": "Wealth",
             "value": "wealth"
+          },
+          {
+            "name": "Bangkok Bankm Card",
+            "value": "bangkok-bankm-card"
           }
         ]
       },
