@@ -1,3 +1,5 @@
+import { getSubmitBaseUrl } from './constant.js';
+
 /**
  * Get Full Name
  * @name getFullName Concats first name and last name
@@ -81,8 +83,9 @@ async function generatePayloadHash(payload) {
  */
 async function fetchCsrfToken() {
   try {
+    const baseUrl = getSubmitBaseUrl();
     const response = await fetch(
-      'https://pwsdevenvironment.azure-api.net/api/FormSubmissionService/forms/csrf/token',
+      `${baseUrl}/api/FormSubmissionService/forms/csrf/token`,
       {
         method: 'GET',
         headers: {
