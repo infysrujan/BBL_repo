@@ -53,25 +53,11 @@ function escapeHtml(value = '') {
 }
 
 function getBlockConfig(rows) {
-  const searchLink = rows[0]?.querySelector('a');
-  const learnMoreLink = rows[7]?.querySelector('a');
-
   return {
-    searchLink: searchLink?.href || '',
-    searchLabel: rows[1]?.textContent.trim() || '',
-    searchTitle: rows[2]?.textContent.trim() || '',
-    searchType: rows[3]?.textContent.trim().toLowerCase() || 'primary',
-    searchTargetBlank: rows[4]?.textContent.trim().toLowerCase() === 'true',
-    noResultsText: rows[5]?.textContent.trim() || '',
-    recentTitle: rows[6]?.textContent.trim() || '',
-    learnMoreLink: learnMoreLink?.href || '',
-    learnMoreLabel: rows[8]?.textContent.trim() || '',
-    learnMoreTitle: rows[9]?.textContent.trim() || '',
-    learnMoreType: rows[10]?.textContent.trim().toLowerCase() || 'primary',
-    learnMoreTargetBlank: rows[11]?.textContent.trim().toLowerCase() === 'true',
-    loadMoreLabel: '',
-    loadingText: '',
-    ariaLabel: '',
+    searchLabel: rows[0]?.textContent.trim() || '',
+    noResultsText: rows[1]?.textContent.trim() || '',
+    recentTitle: rows[2]?.textContent.trim() || '',
+    learnMoreLabel: rows[3]?.textContent.trim() || '',
   };
 }
 
@@ -86,22 +72,13 @@ function getSearchConfig(rows, placeholders = {}) {
   return {
     placeholder: blockConfig.placeholder || getPlaceholderValue(placeholders, ['searchPlaceholderText', 'searchHere', 'searchPlaceholder', 'searchInputPlaceholder'], 'Search Here'),
     searchLabel: blockConfig.searchLabel || getPlaceholderValue(placeholders, ['search', 'searchButtonLabel'], 'Search'),
-    searchTitle: blockConfig.searchTitle || blockConfig.searchLabel || getPlaceholderValue(placeholders, ['search', 'searchButtonLabel'], 'Search'),
-    searchType: blockConfig.searchType || 'primary',
     noResultsText: blockConfig.noResultsText || getPlaceholderValue(placeholders, ['noResultsFound', 'searchNoResultsText'], 'No Results Found'),
     recentTitle: blockConfig.recentTitle || getPlaceholderValue(placeholders, ['recentSearches', 'searchRecentTitle'], 'Recent Searches'),
-    loadMoreLabel: blockConfig.loadMoreLabel || getPlaceholderValue(placeholders, ['loadMore', 'searchLoadMoreLabel'], 'Load More'),
-    loadingText: blockConfig.loadingText || getPlaceholderValue(placeholders, ['searching', 'searchLoadingText'], 'Searching...'),
-    ariaLabel: blockConfig.ariaLabel || getPlaceholderValue(placeholders, ['search', 'searchAriaLabel'], 'Search'),
+    loadMoreLabel: getPlaceholderValue(placeholders, ['loadMore', 'searchLoadMoreLabel'], 'Load More'),
+    loadingText: getPlaceholderValue(placeholders, ['searching', 'searchLoadingText'], 'Searching...'),
+    ariaLabel: getPlaceholderValue(placeholders, ['search', 'searchAriaLabel'], 'Search'),
     learnMoreLabel: blockConfig.learnMoreLabel || getPlaceholderValue(placeholders, ['learnMore', 'learnMoreText'], 'Learn More'),
-    learnMoreTitle: blockConfig.learnMoreTitle || getPlaceholderValue(placeholders, ['learnMore', 'learnMoreText'], 'Learn More'),
-    learnMoreType: blockConfig.learnMoreType || 'primary',
-    learnMoreTargetBlank: blockConfig.learnMoreTargetBlank,
   };
-}
-
-function getButtonVariantClass(type) {
-  return ['primary', 'secondary', 'tertiary'].includes(type) ? type : 'primary';
 }
 
 function buildSearchPanel(item, config) {
@@ -109,13 +86,11 @@ function buildSearchPanel(item, config) {
   const title = item.Title || item.OGTitle || '';
   const description = item.Description || item.OGDescription || '';
   const url = item.URL || item.OGURL || '#';
-  const learnMoreTitle = config.learnMoreTitle || config.learnMoreLabel;
-  const learnMoreTarget = config.learnMoreTargetBlank ? '_blank' : '_self';
 
   return `
     <div class="col-md-3 col-sm-6 col-xs-12 search-modal-panel">
       <div class="search-modal-panel-inner">
-        <a class="text-small search-modal-panel-link" href="${escapeHtml(url)}" target="${learnMoreTarget}">
+        <a class="text-small search-modal-panel-link" href="${escapeHtml(url)}">
           ${image ? `
             <div class="search-modal-panel-thumb">
               <img class="search-modal-panel-image" src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy">
@@ -127,7 +102,7 @@ function buildSearchPanel(item, config) {
             <h3 class="search-modal-panel-title">${escapeHtml(title)}</h3>
             <div class="search-modal-panel-description">${description}</div>
           </div>
-          <a class="button ${getButtonVariantClass(config.learnMoreType)} search-modal-panel-cta" href="${escapeHtml(url)}" title="${escapeHtml(learnMoreTitle)}" target="${learnMoreTarget}">${escapeHtml(config.learnMoreLabel)}</a>
+          <a class="button primary search-modal-panel-cta" href="${escapeHtml(url)}" title="${escapeHtml(config.learnMoreLabel)}">${escapeHtml(config.learnMoreLabel)}</a>
         </div>
       </div>
     </div>
@@ -189,7 +164,7 @@ export default async function decorate(block) {
         <div class="search-modal-search-input inner-content">
           <input type="text" class="search-modal-input" placeholder="${escapeHtml(config.placeholder)}" autocomplete="off" aria-label="${escapeHtml(config.ariaLabel)}">
           <div class="inner-content search-modal-search-button">
-            <button type="button" class="button ${getButtonVariantClass(config.searchType)} search-modal-submit-button" title="${escapeHtml(config.searchTitle)}">${escapeHtml(config.searchLabel)}</button>
+            <button type="button" class="button primary search-modal-submit-button" title="${escapeHtml(config.searchLabel)}">${escapeHtml(config.searchLabel)}</button>
           </div>
         </div>
       </div>
