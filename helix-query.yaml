@@ -14,10 +14,6 @@ indices:
       robots:
         select: head > meta[name="robots"]
         value: attribute(el, "content")
-
-      path:
-        select: path
-
       metaTitle:
         select: head > meta[name="title"], head > title
         value: |

@@ -58,6 +58,7 @@ function getBlockConfig(rows) {
     noResultsText: rows[1]?.textContent.trim() || '',
     recentTitle: rows[2]?.textContent.trim() || '',
     learnMoreLabel: rows[3]?.textContent.trim() || '',
+    placeholder: '',
   };
 }
 
