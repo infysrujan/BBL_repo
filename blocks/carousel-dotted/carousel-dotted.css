@@ -398,7 +398,7 @@
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .slick-dots li.is-active button {
   width: 0.75rem;
   height: 0.75rem;
-  border: 3px solid var(--bbl-color-active-blue);
+  border: 0.1875rem solid var(--bbl-color-active-blue);
 }
 
 
