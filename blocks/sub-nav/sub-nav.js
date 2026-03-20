@@ -44,7 +44,7 @@ function bindLocateUsContainersToTabs(tabButtons) {
   let activeIndex = 0;
 
   const syncPanels = () => {
-    const containers = [...document.querySelectorAll('.sub-nav-container ~ .section:not(.sub-nav-container + .section)')];
+    const containers = [...document.querySelectorAll('.locate-us-container')];
     containers.forEach((panel, index) => {
       if (!panel.id) panel.id = `sub-nav-locate-panel-${index}`;
       panel.setAttribute('role', 'tabpanel');
