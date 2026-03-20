@@ -29,6 +29,54 @@ function collectSections() {
 }
 
 /**
+ * Pair each `.locate-us-container` with a sub-nav tab by DOM order: first container
+ * with tab 1 (tab-name-1), second with tab 2 (tab-name-2), etc.
+ * Re-queries the document on each sync so containers still work if they appear after
+ * this block decorates.
+ */
+function bindLocateUsContainersToTabs(tabButtons) {
+  if (!tabButtons.length) return;
+
+  tabButtons.forEach((btn, index) => {
+    if (!btn.id) btn.id = `sub-nav-tab-${index}`;
+  });
+
+  let activeIndex = 0;
+
+  const syncPanels = () => {
+    const containers = [...document.querySelectorAll('.sub-nav-container ~ .section:not(.sub-nav-container + .section)')];
+    containers.forEach((panel, index) => {
+      if (!panel.id) panel.id = `sub-nav-locate-panel-${index}`;
+      panel.setAttribute('role', 'tabpanel');
+      const tab = tabButtons[index];
+      if (tab) {
+        tab.setAttribute('aria-controls', panel.id);
+        panel.setAttribute('aria-labelledby', tab.id);
+      }
+    });
+    tabButtons.forEach((btn, i) => {
+      const on = i === activeIndex;
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    containers.forEach((panel, i) => {
+      const paired = i < tabButtons.length;
+      panel.hidden = !paired || i !== activeIndex;
+    });
+  };
+
+  tabButtons.forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+      activeIndex = index;
+      syncPanels();
+    });
+  });
+
+  syncPanels();
+  requestAnimationFrame(syncPanels);
+}
+
+/**
  * Main decorate function for the sub-nav block.
  * Will turn the block into a dropdown that navigates between sections.
  */
@@ -83,16 +131,10 @@ export default function decorate(block) {
         btn.setAttribute('role', 'tab');
         btn.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
         btn.textContent = name;
-        btn.addEventListener('click', () => {
-          tabButtons.forEach((b) => {
-            const isActive = b === btn;
-            b.classList.toggle('active', isActive);
-            b.setAttribute('aria-selected', isActive ? 'true' : 'false');
-          });
-        });
         tabButtons.push(btn);
         tabList.appendChild(btn);
       });
+      bindLocateUsContainersToTabs(tabButtons);
       wrapper.append(backButton, tabList);
     } else {
       wrapper.append(backButton);
