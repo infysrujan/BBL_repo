@@ -37,7 +37,8 @@
       "sub-nav",
       "currency-converter",
       "popup-modal-card-offer",
-      "privacy-modal"
+      "privacy-modal",
+      "external-redirect-popup"
     ]
   },
   {
