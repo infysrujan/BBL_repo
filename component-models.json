@@ -1887,27 +1887,27 @@
       },
       {
         "component": "aem-content",
-        "name": "secondaryButtonLink",
-        "label": "Secondary Button Link",
-        "description": "Destination URL for the secondary button"
+        "name": "secondButtonLink",
+        "label": "Second Button Link",
+        "description": "Destination URL for the second button"
       },
       {
         "component": "text",
-        "name": "secondaryButtonText",
-        "label": "Secondary Button Text",
+        "name": "secondButtonText",
+        "label": "Second Button Text",
         "description": "Secondary button label text",
         "required": false
       },
       {
         "component": "text",
-        "name": "secondaryButtonTitle",
-        "label": "Secondary Button Title",
-        "description": "Accessibility title attribute for secondary button (optional)"
+        "name": "secondButtonTitle",
+        "label": "Second Button Title",
+        "description": "Accessibility title attribute for second button (optional)"
       },
       {
         "component": "select",
-        "name": "secondaryButtonType",
-        "label": "Secondary Button Type",
+        "name": "secondButtonType",
+        "label": "Second Button Type",
         "description": "Secondary button style variant",
         "valueType": "string",
         "value": "secondary",

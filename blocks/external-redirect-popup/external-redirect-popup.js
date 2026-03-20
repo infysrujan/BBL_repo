@@ -1,7 +1,6 @@
 import { createElementFromHTML } from '../../scripts/scripts.js';
 
-function buildPopupElement(config, doc) {
-  const wrapper = createElementFromHTML('<div class="external-redirect-popup"></div>', doc);
+function buildPopupInner(config, doc) {
   const inner = createElementFromHTML('<div class="external-redirect-popup-inner"></div>', doc);
 
   inner.appendChild(
@@ -58,46 +57,77 @@ function buildPopupElement(config, doc) {
     inner.appendChild(config.linkElement2);
   }
 
-  wrapper.appendChild(inner);
-  return wrapper;
+  return inner;
 }
 
 export default function decorate(block) {
   const doc = block.ownerDocument;
+  const rows = [...block.children];
+
+  // Row layout:
+  // 0: image, 1: title, 2: description
+  // 3: accept link URL, 4: accept label, 5: accept id, 6: accept variant
+  // 7: cancel link URL, 8: cancel label, 9: cancel id, 10: cancel variant
   const [
     imageDiv,
     titleDiv,
     descriptionDiv,
-    primaryButtonDiv,
-    secondaryButtonDiv,
-  ] = [...block.children];
+    acceptLinkDiv,
+    acceptLabelDiv, , , // skip accept id and accept variant
+    cancelLinkDiv,
+    cancelLabelDiv,
+  ] = rows;
 
-  const linkElement1 = primaryButtonDiv?.querySelector('a') || null;
-  const linkElement2 = secondaryButtonDiv?.querySelector('a') || null;
+  // Build Accept button from the link element + label text
+  const acceptAnchor = acceptLinkDiv?.querySelector('a') || null;
+  const acceptLabel = acceptLabelDiv?.querySelector('div')?.textContent?.trim() || 'Accept';
+  if (acceptAnchor && acceptLabel) {
+    acceptAnchor.textContent = acceptLabel;
+  }
+
+  // Build Cancel button — uses the link href if present, falls back to closing the popup
+  const cancelHref = cancelLinkDiv?.querySelector('a')?.href || null;
+  const cancelLabel = cancelLabelDiv?.querySelector('div')?.textContent?.trim() || 'Cancel';
+  const cancelAnchor = doc.createElement('a');
+  cancelAnchor.textContent = cancelLabel;
+  if (cancelHref) {
+    cancelAnchor.href = cancelHref;
+  } else {
+    cancelAnchor.href = '#';
+  }
 
   const config = {
     image: imageDiv?.querySelector('img'),
     title: titleDiv?.querySelector('div')?.innerHTML || '',
     description: descriptionDiv?.querySelector('div')?.innerHTML || '',
-    linkElement1,
-    linkElement2,
+    linkElement1: acceptAnchor,
+    linkElement2: cancelAnchor,
   };
 
   if (!config.title && !config.linkElement1 && !config.linkElement2) return;
 
-  const popupEl = buildPopupElement(config, doc);
-  block.replaceChildren(popupEl);
+  const inner = buildPopupInner(config, doc);
+  block.replaceChildren(inner);
 
   const show = () => {
-    requestAnimationFrame(() => popupEl.classList.add('external-redirect-popup-visible'));
+    requestAnimationFrame(() => block.classList.add('external-redirect-popup-visible'));
 
     const closePopup = () => {
-      popupEl.classList.remove('external-redirect-popup-visible');
+      block.classList.remove('external-redirect-popup-visible');
     };
 
-    popupEl.querySelector('.external-redirect-popup-close')?.addEventListener('click', closePopup);
+    block.querySelector('.external-redirect-popup-close')?.addEventListener('click', closePopup);
 
-    popupEl.addEventListener('click', (e) => {
+    // Cancel button (second <a>) closes the popup
+    const cancelBtn = block.querySelectorAll('.external-redirect-popup-inner > a.button')[1];
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        closePopup();
+      });
+    }
+
+    block.addEventListener('click', (e) => {
       if (!e.target.closest('.external-redirect-popup-inner')) {
         closePopup();
       }
