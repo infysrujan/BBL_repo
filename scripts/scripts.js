@@ -215,16 +215,12 @@ function addLinkClickHandler() {
       const isExcluded = matchesFullUrl(href, excludedUrlArray);
 
       if (!isExcluded) {
-        // CASE 2: Show alert (temporary redirect message)
+        // CASE 2: Show external redirect popup
         // eslint-disable-next-line no-console
-        console.log('Case 2: URL not in config and not excluded - Showing redirect alert');
-        // eslint-disable-next-line no-alert
-        alert(`Redirect Notice\n\nYou are about to leave Bangkok Bank website.\n\nDestination: ${href}\n\nNote: This is a temporary alert. A proper redirect modal will be implemented.`);
-
-        // Optionally proceed to the URL after alert
-        // Uncomment the next line if you want to redirect after alert
-        // window.location.href = href;
-
+        console.log('Case 2: URL not in config and not excluded - Showing redirect popup');
+        if (typeof window.showExternalRedirectPopup === 'function') {
+          window.showExternalRedirectPopup(href);
+        }
         return;
       }
 

@@ -78,22 +78,84 @@
           "value": ""
         },
         {
-          "component": "container",
-          "name": "primaryButton",
-          "label": "Primary Button",
-          "fields": [
+          "component": "aem-content",
+          "name": "primaryButtonLink",
+          "label": "Primary Button Link",
+          "description": "Destination URL for the primary button"
+        },
+        {
+          "component": "text",
+          "name": "primaryButtonText",
+          "label": "Primary Button Text",
+          "description": "Primary button label text",
+          "required": false
+        },
+        {
+          "component": "text",
+          "name": "primaryButtonTitle",
+          "label": "Primary Button Title",
+          "description": "Accessibility title attribute for primary button (optional)"
+        },
+        {
+          "component": "select",
+          "name": "primaryButtonType",
+          "label": "Primary Button Type",
+          "description": "Primary button style variant",
+          "valueType": "string",
+          "value": "primary",
+          "options": [
             {
-              "...": "../../models/elements/_button-fields.json"
+              "name": "Primary",
+              "value": "primary"
+            },
+            {
+              "name": "Secondary",
+              "value": "secondary"
+            },
+            {
+              "name": "Tertiary",
+              "value": "tertiary"
             }
           ]
         },
         {
-          "component": "container",
-          "name": "secondaryButton",
-          "label": "Secondary Button",
-          "fields": [
+          "component": "aem-content",
+          "name": "secondaryButtonLink",
+          "label": "Secondary Button Link",
+          "description": "Destination URL for the secondary button"
+        },
+        {
+          "component": "text",
+          "name": "secondaryButtonText",
+          "label": "Secondary Button Text",
+          "description": "Secondary button label text",
+          "required": false
+        },
+        {
+          "component": "text",
+          "name": "secondaryButtonTitle",
+          "label": "Secondary Button Title",
+          "description": "Accessibility title attribute for secondary button (optional)"
+        },
+        {
+          "component": "select",
+          "name": "secondaryButtonType",
+          "label": "Secondary Button Type",
+          "description": "Secondary button style variant",
+          "valueType": "string",
+          "value": "secondary",
+          "options": [
             {
-              "...": "../../models/elements/_button-fields.json"
+              "name": "Primary",
+              "value": "primary"
+            },
+            {
+              "name": "Secondary",
+              "value": "secondary"
+            },
+            {
+              "name": "Tertiary",
+              "value": "tertiary"
             }
           ]
         }

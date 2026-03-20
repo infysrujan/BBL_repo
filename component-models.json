@@ -1845,128 +1845,84 @@
         "value": ""
       },
       {
-        "component": "container",
-        "name": "primaryButton",
-        "label": "Primary Button",
-        "fields": [
+        "component": "aem-content",
+        "name": "primaryButtonLink",
+        "label": "Primary Button Link",
+        "description": "Destination URL for the primary button"
+      },
+      {
+        "component": "text",
+        "name": "primaryButtonText",
+        "label": "Primary Button Text",
+        "description": "Primary button label text",
+        "required": false
+      },
+      {
+        "component": "text",
+        "name": "primaryButtonTitle",
+        "label": "Primary Button Title",
+        "description": "Accessibility title attribute for primary button (optional)"
+      },
+      {
+        "component": "select",
+        "name": "primaryButtonType",
+        "label": "Primary Button Type",
+        "description": "Primary button style variant",
+        "valueType": "string",
+        "value": "primary",
+        "options": [
           {
-            "component": "aem-content",
-            "name": "link",
-            "label": "Link",
-            "description": "Destination URL for the button"
+            "name": "Primary",
+            "value": "primary"
           },
           {
-            "component": "text",
-            "name": "linkText",
-            "label": "Text",
-            "description": "Button label text",
-            "required": true
+            "name": "Secondary",
+            "value": "secondary"
           },
           {
-            "component": "text",
-            "name": "linkTitle",
-            "label": "Title",
-            "description": "Accessibility title attribute (optional)"
-          },
-          {
-            "component": "select",
-            "name": "linkType",
-            "label": "Type",
-            "description": "Button style variant",
-            "valueType": "string",
-            "value": "",
-            "options": [
-              {
-                "name": "Primary",
-                "value": "primary"
-              },
-              {
-                "name": "Secondary",
-                "value": "secondary"
-              },
-              {
-                "name": "Tertiary",
-                "value": "tertiary"
-              }
-            ]
-          },
-          {
-            "component": "container",
-            "name": "targetSettings",
-            "label": "Target settings",
-            "fields": [
-              {
-                "component": "boolean",
-                "name": "targetLink",
-                "label": "Open link in new tab",
-                "description": "Enable to open the button link in a new browser tab",
-                "valueType": "boolean",
-                "value": false
-              }
-            ]
+            "name": "Tertiary",
+            "value": "tertiary"
           }
         ]
       },
       {
-        "component": "container",
-        "name": "secondaryButton",
-        "label": "Secondary Button",
-        "fields": [
+        "component": "aem-content",
+        "name": "secondaryButtonLink",
+        "label": "Secondary Button Link",
+        "description": "Destination URL for the secondary button"
+      },
+      {
+        "component": "text",
+        "name": "secondaryButtonText",
+        "label": "Secondary Button Text",
+        "description": "Secondary button label text",
+        "required": false
+      },
+      {
+        "component": "text",
+        "name": "secondaryButtonTitle",
+        "label": "Secondary Button Title",
+        "description": "Accessibility title attribute for secondary button (optional)"
+      },
+      {
+        "component": "select",
+        "name": "secondaryButtonType",
+        "label": "Secondary Button Type",
+        "description": "Secondary button style variant",
+        "valueType": "string",
+        "value": "secondary",
+        "options": [
           {
-            "component": "aem-content",
-            "name": "link",
-            "label": "Link",
-            "description": "Destination URL for the button"
+            "name": "Primary",
+            "value": "primary"
           },
           {
-            "component": "text",
-            "name": "linkText",
-            "label": "Text",
-            "description": "Button label text",
-            "required": true
+            "name": "Secondary",
+            "value": "secondary"
           },
           {
-            "component": "text",
-            "name": "linkTitle",
-            "label": "Title",
-            "description": "Accessibility title attribute (optional)"
-          },
-          {
-            "component": "select",
-            "name": "linkType",
-            "label": "Type",
-            "description": "Button style variant",
-            "valueType": "string",
-            "value": "",
-            "options": [
-              {
-                "name": "Primary",
-                "value": "primary"
-              },
-              {
-                "name": "Secondary",
-                "value": "secondary"
-              },
-              {
-                "name": "Tertiary",
-                "value": "tertiary"
-              }
-            ]
-          },
-          {
-            "component": "container",
-            "name": "targetSettings",
-            "label": "Target settings",
-            "fields": [
-              {
-                "component": "boolean",
-                "name": "targetLink",
-                "label": "Open link in new tab",
-                "description": "Enable to open the button link in a new browser tab",
-                "valueType": "boolean",
-                "value": false
-              }
-            ]
+            "name": "Tertiary",
+            "value": "tertiary"
           }
         ]
       }
