@@ -38,6 +38,10 @@
           {
             "name": "Wealth",
             "value": "wealth"
+          },
+          {
+            "name": "Bangkok Bankm Card",
+            "value": "bangkok-bankm-card"
           }
         ]
       },
@@ -241,6 +245,28 @@
               {
                 "name": "Padding Bottom",
                 "value": "pad-bot-30"
+              }
+            ]
+          },
+          {
+            "name": "Layout",
+            "children": [
+              {
+                "name": "Columns 3",
+                "value": "columns-3"
+              }
+            ]
+          },
+          {
+            "name": "Style",
+            "children": [
+              {
+                "name": "Underline Title",
+                "value": "underline-title"
+              },
+              {
+                "name": "Center Title",
+                "value": "center-title"
               }
             ]
           }
@@ -492,6 +518,64 @@
       },
       {
         "component": "boolean",
+        "name": "autoScroll",
+        "label": "Auto-Scroll",
+        "valueType": "boolean",
+        "value": false,
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "filter"
+                },
+                "showDots"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "filter"
+                },
+                "showArrowsDots"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "scrollTimeDelay",
+        "label": "Scroll Time Delay (milliseconds)",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "3 seconds",
+            "value": "3000"
+          },
+          {
+            "name": "5 seconds",
+            "value": "5000"
+          },
+          {
+            "name": "10 seconds",
+            "value": "10000"
+          }
+        ],
+        "condition": {
+          "and": [
+            {
+              "!!": [
+                {
+                  "var": "autoScroll"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "boolean",
         "name": "showLinks",
         "label": "Show Links",
         "valueType": "boolean",
@@ -620,43 +704,6 @@
               "!!": [
                 {
                   "var": "showLinks"
-                }
-              ]
-            }
-          ]
-        }
-      },
-      {
-        "component": "boolean",
-        "name": "autoScroll",
-        "label": "Auto-Scroll",
-        "valueType": "boolean"
-      },
-      {
-        "component": "select",
-        "name": "scrollTimeDelay",
-        "label": "Scroll Time Delay (milliseconds)",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "3 seconds",
-            "value": "3000"
-          },
-          {
-            "name": "5 seconds",
-            "value": "5000"
-          },
-          {
-            "name": "10 seconds",
-            "value": "10000"
-          }
-        ],
-        "condition": {
-          "and": [
-            {
-              "!!": [
-                {
-                  "var": "autoScroll"
                 }
               ]
             }
@@ -1638,6 +1685,48 @@
             "value": false
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "currency-converter",
+    "fields": [
+      {
+        "component": "text",
+        "name": "fromLabel",
+        "label": "From Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "toLabel",
+        "label": "To Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "reference",
+        "name": "converterIcon",
+        "label": "Converter Icon",
+        "description": "Icon or image for the currency converter",
+        "valueType": "string",
+        "multi": false,
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "converterIconAlt",
+        "label": "Converter Icon Alt Text",
+        "valueType": "string",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "name": "currencyList",
+        "label": "Currency List",
+        "valueType": "string",
+        "required": true
       }
     ]
   },
@@ -7181,6 +7270,142 @@
     ]
   },
   {
+    "id": "popup-modal-card-offer",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "popupImage",
+        "label": "Card Image",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "popupImageAlt",
+        "label": "Card Image Alt",
+        "valueType": "string",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "select",
+        "name": "titleType",
+        "label": "Title Type",
+        "options": [
+          {
+            "name": "h1",
+            "value": "h1"
+          },
+          {
+            "name": "h2",
+            "value": "h2"
+          },
+          {
+            "name": "h3",
+            "value": "h3"
+          },
+          {
+            "name": "h4",
+            "value": "h4"
+          },
+          {
+            "name": "h5",
+            "value": "h5"
+          },
+          {
+            "name": "h6",
+            "value": "h6"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "label": "Description Text",
+        "valueType": "string",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Link",
+        "description": "Destination URL for the button"
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "linkTitle",
+        "label": "Title",
+        "description": "Accessibility title attribute (optional)"
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      },
+      {
+        "component": "number",
+        "name": "delaySeconds",
+        "label": "Popup Delay Timer (seconds)",
+        "description": "Leave empty or 0 to show on page load. Maximum 30 seconds.",
+        "valueType": "number",
+        "value": 0,
+        "minimum": 0,
+        "maximum": 30
+      },
+      {
+        "component": "boolean",
+        "name": "reopenOnRevisit",
+        "label": "Re-show popup on revisit",
+        "description": "If enabled, closing the popup will not suppress it on later visits to this page.",
+        "valueType": "boolean",
+        "value": true
+      }
+    ]
+  },
+  {
     "id": "search",
     "fields": [
       {
@@ -7471,6 +7696,186 @@
             ]
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "teaser-with-bg-image",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "teaserBgImage",
+        "label": "Teaser Bg Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "teaserBgImageAlt",
+        "label": "Alt",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "select",
+        "name": "titleType",
+        "label": "Title Type",
+        "options": [
+          {
+            "name": "h1",
+            "value": "h1"
+          },
+          {
+            "name": "h2",
+            "value": "h2"
+          },
+          {
+            "name": "h3",
+            "value": "h3"
+          },
+          {
+            "name": "h4",
+            "value": "h4"
+          },
+          {
+            "name": "h5",
+            "value": "h5"
+          },
+          {
+            "name": "h6",
+            "value": "h6"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "value": "",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Link",
+        "description": "Destination URL for the button"
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "linkTitle",
+        "label": "Title",
+        "description": "Accessibility title attribute (optional)"
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "teaser-with-bg-image-card",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "teaserCardImage",
+        "label": "Teaser Card Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "TeaserCardImageAlt",
+        "label": "Alt",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "select",
+        "name": "titleType",
+        "label": "Title Type",
+        "options": [
+          {
+            "name": "h1",
+            "value": "h1"
+          },
+          {
+            "name": "h2",
+            "value": "h2"
+          },
+          {
+            "name": "h3",
+            "value": "h3"
+          },
+          {
+            "name": "h4",
+            "value": "h4"
+          },
+          {
+            "name": "h5",
+            "value": "h5"
+          },
+          {
+            "name": "h6",
+            "value": "h6"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "value": "",
+        "label": "Description",
+        "valueType": "string"
       }
     ]
   },
