@@ -11,6 +11,7 @@
  */
 
 import { toCamelCase } from './aem.js';
+// eslint-disable-next-line import/no-cycle
 import { getLang } from './scripts.js';
 
 /**

@@ -1,0 +1,104 @@
+{
+  "definitions": [
+    {
+      "title": "External Redirect Popup",
+      "id": "external-redirect-popup",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "External Redirect Popup",
+              "model": "external-redirect-popup"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "external-redirect-popup",
+      "fields": [
+        {
+          "component": "reference",
+          "name": "popupImage",
+          "label": "Card Image",
+          "valueType": "string",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "name": "popupImageAlt",
+          "label": "Card Image Alt",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "name": "title",
+          "label": "Title"
+        },
+        {
+          "component": "select",
+          "name": "titleType",
+          "label": "Title Type",
+          "options": [
+            {
+              "name": "h1",
+              "value": "h1"
+            },
+            {
+              "name": "h2",
+              "value": "h2"
+            },
+            {
+              "name": "h3",
+              "value": "h3"
+            },
+            {
+              "name": "h4",
+              "value": "h4"
+            },
+            {
+              "name": "h5",
+              "value": "h5"
+            },
+            {
+              "name": "h6",
+              "value": "h6"
+            }
+          ]
+        },
+        {
+          "component": "richtext",
+          "name": "description",
+          "label": "Description Text",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "container",
+          "name": "primaryButton",
+          "label": "Primary Button",
+          "fields": [
+            {
+              "...": "../../models/elements/_button-fields.json"
+            }
+          ]
+        },
+        {
+          "component": "container",
+          "name": "secondaryButton",
+          "label": "Secondary Button",
+          "fields": [
+            {
+              "...": "../../models/elements/_button-fields.json"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

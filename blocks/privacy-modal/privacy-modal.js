@@ -251,11 +251,10 @@ function closeModal(overlay) {
  * Checks whether a given URL is considered external compared to the
  * current page's origin.
  * Returns false for relative paths, hash links, and same-origin URLs.
- * @param {string} href
- * @returns {boolean}
  */
-function isExternalUrl(href) {
-  if (!href || href.startsWith('#') || href.startsWith('/') || href.startsWith('./') || href.startsWith('../')) {
+/* function isExternalUrl(href) {
+  if (!href || href.startsWith('#') || href.startsWith('/') || href.startsWith('./') ||
+   href.startsWith('../')) {
     return false;
   }
   try {
@@ -264,7 +263,7 @@ function isExternalUrl(href) {
   } catch {
     return false;
   }
-}
+} */
 
 /* -------------------------------------------------------------------------
  * Main decorate function
@@ -320,21 +319,22 @@ export default function decorate(block) {
   /* ------------------------------------------------------------------
    * Build the modal once and cache it
    * ------------------------------------------------------------------ */
-  let pendingHref = null;
-
   function handleAgree() {
     setCookie(COOKIE_NAME, 'true', COOKIE_DURATION_DAYS);
     closeModal(overlay); // eslint-disable-line no-use-before-define
 
+    // Check for pending URL at the time of agreement
+    const pendingHref = window.pendingNavigationUrl;
     if (pendingHref) {
+      console.log('Redirecting to:', pendingHref);
+      window.pendingNavigationUrl = null;
       window.location.href = pendingHref;
-      pendingHref = null;
     }
   }
 
   function handleClose() {
     closeModal(overlay); // eslint-disable-line no-use-before-define
-    pendingHref = null;
+    window.pendingNavigationUrl = null;
   }
 
   const { overlay } = buildModal({
@@ -353,30 +353,20 @@ export default function decorate(block) {
   block.remove();
 
   /* ------------------------------------------------------------------
-   * Show modal on page load
+   * Show modal on page load or when triggered by URL validation
    * ------------------------------------------------------------------ */
-  // Show the modal immediately on page load since no cookie exists
-  openModal(overlay);
+  // Only show modal immediately on page load if no pending URL (backward compatibility)
+  // When triggered by URL validation in scripts.js, the modal is loaded with a pending URL
+  if (!window.pendingNavigationUrl) {
+    openModal(overlay);
+  } else {
+    // Modal was triggered by click handler, show it immediately
+    openModal(overlay);
+  }
 
   /* ------------------------------------------------------------------
-   * Intercept external-link clicks across the whole page
+   * Note: External link interception is now handled in scripts.js
+   * by the addLinkClickHandler function, which validates URLs against
+   * config and loads this modal as needed.
    * ------------------------------------------------------------------ */
-  document.addEventListener('click', (e) => {
-    /* Only intercept anchor tags */
-    const anchor = e.target.closest('a[href]');
-    if (!anchor) return;
-
-    const href = anchor.getAttribute('href');
-    /* isExternalUrl already handles #, relative paths, and same-origin */
-    if (!isExternalUrl(href)) return;
-
-    /* If cookie already set, let the link work normally */
-    if (getCookie(COOKIE_NAME) === 'true') return;
-
-    /* Show modal and remember the destination */
-    e.preventDefault();
-    pendingHref = href;
-
-    openModal(overlay);
-  }, true /* capture phase so we intercept before other handlers */);
 }
