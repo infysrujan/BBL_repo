@@ -353,20 +353,16 @@ export default function decorate(block) {
   block.remove();
 
   /* ------------------------------------------------------------------
-   * Show modal on page load or when triggered by URL validation
+   * Expose a global show function so scripts.js can re-open the modal
+   * on subsequent clicks without re-loading the fragment.
    * ------------------------------------------------------------------ */
-  // Only show modal immediately on page load if no pending URL (backward compatibility)
-  // When triggered by URL validation in scripts.js, the modal is loaded with a pending URL
-  if (!window.pendingNavigationUrl) {
+  window.showPrivacyModal = (pendingUrl) => {
+    window.pendingNavigationUrl = pendingUrl || null;
     openModal(overlay);
-  } else {
-    // Modal was triggered by click handler, show it immediately
-    openModal(overlay);
-  }
+  };
 
   /* ------------------------------------------------------------------
-   * Note: External link interception is now handled in scripts.js
-   * by the addLinkClickHandler function, which validates URLs against
-   * config and loads this modal as needed.
+   * Show modal immediately (page-load trigger or first click trigger)
    * ------------------------------------------------------------------ */
+  openModal(overlay);
 }

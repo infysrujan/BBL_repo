@@ -125,20 +125,21 @@ function matchesFullUrl(url, urlList) {
 }
 
 /**
- * Load privacy modal fragment and set pending URL for navigation after agreement
+ * Load privacy modal fragment (once) then show it for the given URL.
+ * The block's decorate() registers window.showPrivacyModal after loading.
  * @param {string} pendingUrl - The URL to navigate to after user agrees
  */
 async function loadPrivacyModal(pendingUrl) {
   try {
-    // Load the privacy modal fragment
-    const fragment = await loadFragment('/en/modals/privacy-modal');
-
-    if (fragment) {
-      // Store the pending URL globally so the privacy modal can access it
-      window.pendingNavigationUrl = pendingUrl;
-
-      // The fragment should contain the privacy-modal block which will auto-initialize
-      document.body.appendChild(fragment);
+    if (typeof window.showPrivacyModal !== 'function') {
+      const langPrefix = `/${document.documentElement.lang || 'en'}`;
+      const fragment = await loadFragment(`${langPrefix}/modals/privacy-modal`);
+      if (fragment) {
+        document.body.appendChild(fragment);
+      }
+    }
+    if (typeof window.showPrivacyModal === 'function') {
+      window.showPrivacyModal(pendingUrl);
     }
   } catch (error) {
     // eslint-disable-next-line no-console
