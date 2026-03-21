@@ -125,12 +125,28 @@ function matchesFullUrl(url, urlList) {
 }
 
 /**
+ * Check if the HRPRIVACY cookie is already accepted.
+ * @returns {boolean}
+ */
+function isPrivacyAccepted() {
+  const key = encodeURIComponent('HRPRIVACY');
+  const match = document.cookie.split('; ').find((row) => row.startsWith(`${key}=`));
+  return match ? decodeURIComponent(match.split('=')[1]) === 'true' : false;
+}
+
+/**
  * Load privacy modal fragment (once) then show it for the given URL.
- * The block's decorate() registers window.showPrivacyModal after loading.
+ * If the user already accepted (cookie set), navigate directly without the modal.
  * @param {string} pendingUrl - The URL to navigate to after user agrees
  */
 async function loadPrivacyModal(pendingUrl) {
   try {
+    // Cookie already accepted — skip the modal and navigate directly
+    if (isPrivacyAccepted()) {
+      window.open(pendingUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
     if (typeof window.showPrivacyModal !== 'function') {
       const langPrefix = `/${document.documentElement.lang || 'en'}`;
       const fragment = await loadFragment(`${langPrefix}/modals/privacy-modal`);
@@ -138,6 +154,7 @@ async function loadPrivacyModal(pendingUrl) {
         document.body.appendChild(fragment);
       }
     }
+
     if (typeof window.showPrivacyModal === 'function') {
       window.showPrivacyModal(pendingUrl);
     }

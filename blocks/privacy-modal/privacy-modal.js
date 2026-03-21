@@ -353,16 +353,12 @@ export default function decorate(block) {
   block.remove();
 
   /* ------------------------------------------------------------------
-   * Expose a global show function so scripts.js can re-open the modal
-   * on subsequent clicks without re-loading the fragment.
+   * Expose a global show function so scripts.js can trigger the modal.
+   * scripts.js sets pendingNavigationUrl before calling this, so
+   * handleAgree() will always have the correct URL.
    * ------------------------------------------------------------------ */
   window.showPrivacyModal = (pendingUrl) => {
     window.pendingNavigationUrl = pendingUrl || null;
     openModal(overlay);
   };
-
-  /* ------------------------------------------------------------------
-   * Show modal immediately (page-load trigger or first click trigger)
-   * ------------------------------------------------------------------ */
-  openModal(overlay);
 }
