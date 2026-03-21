@@ -10,7 +10,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgb(0 0 0 / 40%);
+    background: rgb(0 0 0 / 50%);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -21,10 +21,7 @@
     pointer-events: auto;
 }
 
-/* ── Dialog card ──
-   Inner has: [close button (abs)] [cardBody (full row)] [a Accept] [a Cancel]
-   Use flex-wrap so cardBody takes full width, then the two <a> share the next row.
-*/
+/* ── Dialog card ── */
 .external-redirect-popup-inner {
     position: relative;
     display: flex;
@@ -33,15 +30,11 @@
     width: 90%;
     max-width: 37.5rem;
     padding: 2rem;
+    padding-top: 1.5rem;
     border-radius: 1rem;
-    background: linear-gradient(
-        135deg,
-        var(--bbl-color-white, #fff) 0%,
-        rgb(255 255 255 / 85%) 100%
-    );
-    box-shadow: 0 8px 32px rgb(0 0 0 / 15%);
-    backdrop-filter: blur(1.25rem);
-    border: 1px solid rgb(255 255 255 / 80%);
+    background: var(--bbl-color-white, #fff);
+    box-shadow: 0 4px 24px rgb(0 0 0 / 18%);
+    overflow: visible;
     transform: translateY(1rem);
     transition: transform 0.35s ease;
 }
@@ -50,13 +43,13 @@
     transform: translateY(0);
 }
 
-/* ── Close button ── */
+/* ── Close button — top-right corner, partially outside card ── */
 .external-redirect-popup-close {
     position: absolute;
-    right: 1rem;
-    top: 1rem;
-    width: 2.5rem;
-    height: 2.5rem;
+    right: -0.75rem;
+    top: -0.75rem;
+    width: 2.25rem;
+    height: 2.25rem;
     padding: 0;
     border: 0.125rem solid #ccc;
     border-radius: 50%;
@@ -85,20 +78,22 @@
     transform: rotate(-45deg);
 }
 
-/* ── Card body (image + text) — full width row ── */
+/* ── Card body (image + text) — full width row, left-aligned ── */
 .external-redirect-popup-body {
     flex-basis: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin-bottom: 0.5rem;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
 }
 
+/* Image overflows the top of the card */
 .external-redirect-popup-body img {
     height: auto;
     max-height: 7rem;
     object-fit: contain;
-    margin-bottom: 0.5rem;
+    margin-top: -4rem;
+    margin-bottom: 1rem;
 }
 
 /* ── Text content ── */
@@ -120,50 +115,79 @@
     font-size: 0.9375rem;
     font-weight: 400;
     line-height: 1.5;
-    color: var(--bbl-color-truthful-blue, #003087);
+    color: var(--bbl-color-truthful-blue, #002850);
 }
 
-/* ── Buttons — both <a> share one row, side by side ── */
-.external-redirect-popup-inner > a.button {
+.external-redirect-popup-url {
+    font-weight: 600;
+    color: var(--bbl-color-truthful-blue, #002850);
+    word-break: break-all;
+}
+
+/* ── Button row — flex container ── */
+.external-redirect-popup-btn-row {
+    flex-basis: 100%;
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* ── Buttons — both share the row, equal width ── */
+.external-redirect-popup-btn {
     flex: 1;
+    appearance: none;
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    margin-top: 1.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 2rem;
+    height: 44px;
+    padding: 0 1.5rem;
+    border-radius: 6.25rem;
     font-size: 1rem;
     font-weight: 600;
-    text-decoration: none;
+    font-family: var(--bbl-font-family-primary, sans-serif);
+    line-height: 1;
+    white-space: nowrap;
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-/* Accept button (first <a>) — filled blue */
-.external-redirect-popup-inner > a.button:first-of-type {
-    margin-right: 0.5rem;
-    background: var(--bbl-color-bb-blue, #1a6fe6);
+/* Accept — filled #0064FF */
+.external-redirect-popup-btn-accept {
+    background: #0064ff;
     color: #fff;
-    border: 2px solid var(--bbl-color-bb-blue, #1a6fe6);
+    border: 2px solid #0064ff;
 }
 
-/* Cancel button (second <a>) — white with blue border */
-.external-redirect-popup-inner > a.button:last-of-type {
-    margin-left: 0.5rem;
+.external-redirect-popup-btn-accept:hover {
+    background: #0048b7;
+    border-color: #0048b7;
+    color: #fff;
+}
+
+.external-redirect-popup-btn-accept:active {
+    background: #003382;
+    border-color: #003382;
+    color: #fff;
+}
+
+/* Cancel — white background, #0064FF border + text */
+.external-redirect-popup-btn-cancel {
     background: #fff;
-    color: var(--bbl-color-bb-blue, #1a6fe6);
-    border: 2px solid var(--bbl-color-bb-blue, #1a6fe6);
+    color: #0064ff;
+    border: 2px solid #0064ff;
 }
 
-.external-redirect-popup-inner > a.button:last-of-type:hover {
-    background: var(--bbl-color-bb-blue, #1a6fe6);
-    color: #fff;
+.external-redirect-popup-btn-cancel:hover {
+    background: #e8f1ff;
+    border-color: #0048b7;
+    color: #0048b7;
 }
 
-.external-redirect-popup-inner > a.button:first-of-type:hover {
-    background: var(--bbl-color-truthful-blue, #003087);
-    border-color: var(--bbl-color-truthful-blue, #003087);
+.external-redirect-popup-btn-cancel:active {
+    background: #d9e8ff;
+    border-color: #003382;
+    color: #003382;
 }
 
 @media (width > 47.5rem) {

@@ -1,138 +1,146 @@
-import { createElementFromHTML } from '../../scripts/scripts.js';
-
-function buildPopupInner(config, doc) {
-  const inner = createElementFromHTML('<div class="external-redirect-popup-inner"></div>', doc);
-
-  inner.appendChild(
-    createElementFromHTML(
-      '<button class="external-redirect-popup-close" aria-label="Close popup"></button>',
-      doc,
-    ),
-  );
-
-  const cardBody = createElementFromHTML(
-    '<div class="external-redirect-popup-body"></div>',
-    doc,
-  );
-
-  if (config.image) {
-    cardBody.appendChild(config.image);
-  }
-
-  const content = createElementFromHTML(
-    '<div class="external-redirect-popup-content"></div>',
-    doc,
-  );
-
-  if (config.title) {
-    content.appendChild(
-      createElementFromHTML(
-        `<div class="external-redirect-popup-title">${config.title}</div>`,
-        doc,
-      ),
-    );
-  }
-
-  if (config.description) {
-    content.appendChild(
-      createElementFromHTML(
-        `<div class="external-redirect-popup-description">${config.description}</div>`,
-        doc,
-      ),
-    );
-  }
-
-  cardBody.appendChild(content);
-  inner.appendChild(cardBody);
-
-  // Add first link
-  if (config.linkElement1) {
-    config.linkElement1.classList.add('button-m');
-    inner.appendChild(config.linkElement1);
-  }
-
-  // Add second link
-  if (config.linkElement2) {
-    config.linkElement2.classList.add('button-m');
-    inner.appendChild(config.linkElement2);
-  }
-
-  return inner;
-}
-
 export default function decorate(block) {
   const doc = block.ownerDocument;
   const rows = [...block.children];
 
-  // Row layout:
-  // 0: image, 1: title, 2: description
-  // 3: accept link URL, 4: accept label, 5: accept id, 6: accept variant
-  // 7: cancel link URL, 8: cancel label, 9: cancel id, 10: cancel variant
-  const [
-    imageDiv,
-    titleDiv,
-    descriptionDiv,
-    acceptLinkDiv,
-    acceptLabelDiv, , , // skip accept id and accept variant
-    cancelLinkDiv,
-    cancelLabelDiv,
-  ] = rows;
+  // Row layout (from HTML authoring table):
+  // 0: image
+  // 1: title
+  // 2: description prefix ("and entering")
+  // 3: accept link placeholder  (unused — actual URL comes from the clicked link)
+  // 4: accept label             ("Accept")
+  // 5: accept id                (unused)
+  // 6: accept variant           (unused)
+  // 7: cancel link              (unused — cancel just closes the popup)
+  // 8: cancel label             ("Cancel")
+  // 9: cancel id                (unused)
+  // 10: cancel variant          (unused)
+  const [imageDiv, titleDiv, descriptionDiv, , acceptLabelDiv, , , , cancelLabelDiv] = rows;
 
-  // Build Accept button from the link element + label text
-  const acceptAnchor = acceptLinkDiv?.querySelector('a') || null;
   const acceptLabel = acceptLabelDiv?.querySelector('div')?.textContent?.trim() || 'Accept';
-  if (acceptAnchor && acceptLabel) {
-    acceptAnchor.textContent = acceptLabel;
-  }
-
-  // Build Cancel button — uses the link href if present, falls back to closing the popup
-  const cancelHref = cancelLinkDiv?.querySelector('a')?.href || null;
   const cancelLabel = cancelLabelDiv?.querySelector('div')?.textContent?.trim() || 'Cancel';
-  const cancelAnchor = doc.createElement('a');
-  cancelAnchor.textContent = cancelLabel;
-  if (cancelHref) {
-    cancelAnchor.href = cancelHref;
-  } else {
-    cancelAnchor.href = '#';
+  const descPrefix = descriptionDiv?.querySelector('div')?.textContent?.trim() || 'and entering';
+  const img = imageDiv?.querySelector('img') ?? null;
+  const titleEl = titleDiv?.querySelector(':is(h1,h2,h3,h4,h5,h6)');
+  const titleHTML = titleEl ? titleEl.outerHTML : (titleDiv?.querySelector('div')?.innerHTML || '');
+
+  // ── Build DOM ──────────────────────────────────────────────────────────────
+  block.innerHTML = '';
+
+  // White card container
+  const inner = doc.createElement('div');
+  inner.className = 'external-redirect-popup-inner';
+  block.appendChild(inner);
+
+  // Close (×) button — top-right corner of card
+  const closeBtn = doc.createElement('button');
+  closeBtn.className = 'external-redirect-popup-close';
+  closeBtn.setAttribute('aria-label', 'Close popup');
+  inner.appendChild(closeBtn);
+
+  // Card body: image + text
+  const body = doc.createElement('div');
+  body.className = 'external-redirect-popup-body';
+
+  if (img) {
+    img.removeAttribute('loading'); // show immediately when popup opens
+    body.appendChild(img);
   }
 
-  const config = {
-    image: imageDiv?.querySelector('img'),
-    title: titleDiv?.querySelector('div')?.innerHTML || '',
-    description: descriptionDiv?.querySelector('div')?.innerHTML || '',
-    linkElement1: acceptAnchor,
-    linkElement2: cancelAnchor,
+  const content = doc.createElement('div');
+  content.className = 'external-redirect-popup-content';
+
+  if (titleHTML) {
+    const titleWrapper = doc.createElement('div');
+    titleWrapper.className = 'external-redirect-popup-title';
+    titleWrapper.innerHTML = titleHTML;
+    content.appendChild(titleWrapper);
+  }
+
+  // Description: "and entering <strong>"URL"</strong>"
+  const descEl = doc.createElement('div');
+  descEl.className = 'external-redirect-popup-description';
+  const descP = doc.createElement('p');
+  descP.textContent = `${descPrefix} `;
+  const urlSpan = doc.createElement('strong');
+  urlSpan.className = 'external-redirect-popup-url';
+  descP.appendChild(urlSpan);
+  descEl.appendChild(descP);
+  content.appendChild(descEl);
+
+  body.appendChild(content);
+  inner.appendChild(body);
+
+  // Button row
+  const btnRow = doc.createElement('div');
+  btnRow.className = 'external-redirect-popup-btn-row';
+
+  const acceptBtn = doc.createElement('button');
+  acceptBtn.type = 'button';
+  acceptBtn.className = 'external-redirect-popup-btn external-redirect-popup-btn-accept';
+  acceptBtn.textContent = acceptLabel;
+
+  const cancelBtn = doc.createElement('button');
+  cancelBtn.type = 'button';
+  cancelBtn.className = 'external-redirect-popup-btn external-redirect-popup-btn-cancel';
+  cancelBtn.textContent = cancelLabel;
+
+  btnRow.appendChild(acceptBtn);
+  btnRow.appendChild(cancelBtn);
+  inner.appendChild(btnRow);
+
+  // ── State & helpers ────────────────────────────────────────────────────────
+  let targetUrl = '';
+
+  const closePopup = () => {
+    block.classList.remove('external-redirect-popup-visible');
+    targetUrl = '';
   };
 
-  if (!config.title && !config.linkElement1 && !config.linkElement2) return;
-
-  const inner = buildPopupInner(config, doc);
-  block.replaceChildren(inner);
-
-  const show = () => {
+  const openPopup = (url) => {
+    targetUrl = url;
+    urlSpan.textContent = `"${url}"`;
     requestAnimationFrame(() => block.classList.add('external-redirect-popup-visible'));
+  };
 
-    const closePopup = () => {
-      block.classList.remove('external-redirect-popup-visible');
-    };
+  // ── Event listeners ────────────────────────────────────────────────────────
+  closeBtn.addEventListener('click', closePopup);
 
-    block.querySelector('.external-redirect-popup-close')?.addEventListener('click', closePopup);
+  cancelBtn.addEventListener('click', closePopup);
 
-    // Cancel button (second <a>) closes the popup
-    const cancelBtn = block.querySelectorAll('.external-redirect-popup-inner > a.button')[1];
-    if (cancelBtn) {
-      cancelBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        closePopup();
-      });
+  acceptBtn.addEventListener('click', () => {
+    const url = targetUrl;
+    closePopup();
+    if (url) window.open(url, '_blank', 'noopener,noreferrer');
+  });
+
+  // Click on the dark overlay (outside the card) also closes
+  block.addEventListener('click', (e) => {
+    if (!e.target.closest('.external-redirect-popup-inner')) closePopup();
+  });
+
+  // ── Intercept external link clicks across the whole page ───────────────────
+  const currentHostname = doc.defaultView.location.hostname;
+
+  doc.addEventListener('click', (e) => {
+    const anchor = e.target.closest('a[href]');
+    if (!anchor) return;
+
+    // Ignore links inside the popup itself
+    if (anchor.closest('.external-redirect-popup')) return;
+
+    let parsed;
+    try {
+      parsed = new URL(anchor.href, doc.defaultView.location.href);
+    } catch {
+      return;
     }
 
-    block.addEventListener('click', (e) => {
-      if (!e.target.closest('.external-redirect-popup-inner')) {
-        closePopup();
-      }
-    });
-  };
+    // Only intercept http/https links pointing to a different hostname
+    if (!['http:', 'https:'].includes(parsed.protocol)) return;
+    if (parsed.hostname === currentHostname) return;
 
-  show();
+    e.preventDefault();
+    e.stopPropagation();
+    openPopup(anchor.href);
+  }, true); // capture phase — fires before any other click handler
 }
