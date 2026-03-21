@@ -377,6 +377,11 @@ body.bangkok-bankm-card main {
   background-color: maroon;
 }
 
-.section.bg-truthful-blue  * {
+.section.bg-truthful-blue  *,
+.section.bg-truthful-dark-blue  *{
     color: var(--bbl-color-white);
+}
+
+.section.center-content .default-content-wrapper * {
+    text-align: center;
 }

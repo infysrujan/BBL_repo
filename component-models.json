@@ -218,6 +218,10 @@
                 "value": "bg-truthful-blue"
               },
               {
+                "name": "Truthful Dark Blue",
+                "value": "bg-truthful-dark-blue"
+              },
+              {
                 "name": "Ice Blue",
                 "value": "bg-ice-blue"
               },
@@ -267,6 +271,10 @@
               {
                 "name": "Center Title",
                 "value": "center-title"
+              },
+              {
+                "name": "Center Content",
+                "value": "center-content"
               }
             ]
           }
