@@ -118,29 +118,6 @@ export default function decorate(block) {
     if (!e.target.closest('.external-redirect-popup-inner')) closePopup();
   });
 
-  // ── Intercept external link clicks across the whole page ───────────────────
-  const currentHostname = doc.defaultView.location.hostname;
-
-  doc.addEventListener('click', (e) => {
-    const anchor = e.target.closest('a[href]');
-    if (!anchor) return;
-
-    // Ignore links inside the popup itself
-    if (anchor.closest('.external-redirect-popup')) return;
-
-    let parsed;
-    try {
-      parsed = new URL(anchor.href, doc.defaultView.location.href);
-    } catch {
-      return;
-    }
-
-    // Only intercept http/https links pointing to a different hostname
-    if (!['http:', 'https:'].includes(parsed.protocol)) return;
-    if (parsed.hostname === currentHostname) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-    openPopup(anchor.href);
-  }, true); // capture phase — fires before any other click handler
+  // Expose openPopup globally so scripts.js can call it after loading this fragment
+  window.showExternalRedirectPopup = openPopup;
 }

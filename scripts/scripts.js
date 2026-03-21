@@ -147,6 +147,29 @@ async function loadPrivacyModal(pendingUrl) {
 }
 
 /**
+ * Load external redirect popup fragment (once) then show it for the given URL.
+ * The block's decorate() registers window.showExternalRedirectPopup after loading.
+ * @param {string} url - The external URL the user clicked
+ */
+async function loadAndShowExternalRedirectPopup(url) {
+  try {
+    if (typeof window.showExternalRedirectPopup !== 'function') {
+      const langPrefix = `/${document.documentElement.lang || 'en'}`;
+      const fragment = await loadFragment(`${langPrefix}/modals/external-popup`);
+      if (fragment) {
+        document.body.appendChild(fragment);
+      }
+    }
+    if (typeof window.showExternalRedirectPopup === 'function') {
+      window.showExternalRedirectPopup(url);
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to load external redirect popup:', error);
+  }
+}
+
+/**
  * Add global link click tracking and URL validation
  */
 function addLinkClickHandler() {
@@ -218,9 +241,7 @@ function addLinkClickHandler() {
         // CASE 2: Show external redirect popup
         // eslint-disable-next-line no-console
         console.log('Case 2: URL not in config and not excluded - Showing redirect popup');
-        if (typeof window.showExternalRedirectPopup === 'function') {
-          window.showExternalRedirectPopup(href);
-        }
+        await loadAndShowExternalRedirectPopup(href);
         return;
       }
 
