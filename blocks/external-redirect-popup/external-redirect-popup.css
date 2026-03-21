@@ -4,214 +4,203 @@
 
 /* ── Overlay ── */
 .external-redirect-popup {
+    display: none;
     position: fixed;
-    inset: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
     z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgb(0 0 0 / 50%);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+    background-color: var(--bbl-color-black-alpha-40);
+    overflow: visible;
 }
 
 .external-redirect-popup-visible {
-    opacity: 1;
-    pointer-events: auto;
+    display: block;
 }
 
-/* ── Dialog card ── */
+/* ── Dialog card — mobile-first base ── */
 .external-redirect-popup-inner {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0;
-    width: 90%;
-    max-width: 37.5rem;
-    padding: 2rem;
-    padding-top: 1.5rem;
-    border-radius: 1rem;
-    background: var(--bbl-color-white, #fff);
-    box-shadow: 0 4px 24px rgb(0 0 0 / 18%);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    width: 91.6667%; /* col-xs-11 — mobile default */
+    padding: 0 var(--bbl-space-250) var(--bbl-space-250);
+    border-radius: 0.625rem; /* 10px — no exact token */
+    background: linear-gradient(
+        115.36deg,
+        var(--bbl-color-white) 4.06%,
+        var(--bbl-color-white-alpha-30) 60%
+    );
+    box-shadow: 7px 8px 10px var(--bbl-color-black-alpha-10);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--bbl-color-white);
     overflow: visible;
-    transform: translateY(1rem);
-    transition: transform 0.35s ease;
+    line-height: 130%;
 }
 
-.external-redirect-popup-visible .external-redirect-popup-inner {
-    transform: translateY(0);
-}
-
-/* ── Close button — top-right corner, partially outside card ── */
+/* ── Close button ── */
 .external-redirect-popup-close {
     position: absolute;
     right: -0.75rem;
-    top: -0.75rem;
-    width: 2.25rem;
-    height: 2.25rem;
+    top: -1.3125rem;
+    width: var(--bbl-space-500);   /* 40px */
+    height: var(--bbl-space-500);  /* 40px */
     padding: 0;
-    border: 0.125rem solid #ccc;
-    border-radius: 50%;
-    background: var(--bbl-color-white, #fff);
+    border: 2px solid var(--bbl-color-grey-150);
+    border-radius: 1.625rem; /* 26px — no exact token */
+    background: var(--bbl-color-white);
     cursor: pointer;
-    z-index: 1;
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: opacity 0.15s ease;
+    font-size: 1.25rem;
+    color: var(--bbl-color-gray-142);
+    line-height: 1;
 }
 
-.external-redirect-popup-close::before,
-.external-redirect-popup-close::after {
-    content: "";
-    position: absolute;
-    height: 1rem;
-    width: 0.125rem;
-    background: #555;
+.external-redirect-popup-close:hover {
+    opacity: 0.85;
 }
 
-.external-redirect-popup-close::before {
-    transform: rotate(45deg);
-}
-
-.external-redirect-popup-close::after {
-    transform: rotate(-45deg);
-}
-
-/* ── Card body (image + text) — full width row, left-aligned ── */
+/* ── Card body (image + text) ── */
 .external-redirect-popup-body {
-    flex-basis: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 0.75rem;
+    line-height: 130%;
 }
 
-/* Image overflows the top of the card */
+/* Icon */
 .external-redirect-popup-body img {
+    display: block;
+    width: 6.25rem; /* 100px */
     height: auto;
-    max-height: 7rem;
-    object-fit: contain;
-    margin-top: -4rem;
-    margin-bottom: 1rem;
+    margin-top: -1.25rem; /* -20px */
 }
 
 /* ── Text content ── */
 .external-redirect-popup-content {
-    width: 100%;
-    color: var(--bbl-color-truthful-blue, #003087);
+    margin-top: var(--bbl-space-250); /* 20px */
 }
 
+/* Title — same size at all breakpoints per design */
 .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6) {
-    margin: 0 0 0.5rem;
-    font-size: 1.25rem;
+    margin: 0;
+    font-family: BangkokBank-Bold, 'BBL Sans', BangkokBank-Regular, sans-serif;
+    font-size: 1.5rem;
+    line-height: 1.625rem;
+    color: var(--bbl-color-truthful-blue);
     font-weight: 700;
-    line-height: 1.4;
-    color: var(--bbl-color-truthful-blue, #003087);
 }
 
+/* Description — mobile-first: smaller base, larger on tablet+ */
 .external-redirect-popup-description p {
-    margin: 0;
-    font-size: 0.9375rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: var(--bbl-color-truthful-blue, #002850);
+    margin-block: 0.625rem 0; /* 10px — no exact token */
+    font-family: var(--bbl-font-family-medium);
+    font-size: var(--bbl-body-b1-size); /* 0.875rem mobile → 1rem tablet+ via token */
+    line-height: 1.5rem;
+    color: var(--bbl-color-truthful-blue);
+    font-weight: var(--bbl-font-weight-medium);
 }
 
 .external-redirect-popup-url {
-    font-weight: 600;
-    color: var(--bbl-color-truthful-blue, #002850);
     word-break: break-all;
 }
 
-/* ── Button row — flex container ── */
+/* ── Button row — mobile-first: stacked ── */
 .external-redirect-popup-btn-row {
-    flex-basis: 100%;
     display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
+    flex-direction: column;
+    gap: var(--bbl-space-150); /* 12px */
+    margin-top: 1.875rem; /* 30px — no exact token */
 }
 
-/* ── Buttons — both share the row, equal width ── */
+/* ── Buttons — mobile-first: full width ── */
 .external-redirect-popup-btn {
-    flex: 1;
     appearance: none;
     box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 44px;
-    padding: 0 1.5rem;
-    border-radius: 6.25rem;
-    font-size: 1rem;
-    font-weight: 600;
-    font-family: var(--bbl-font-family-primary, sans-serif);
-    line-height: 1;
+    width: 100%;
+    min-width: unset;
+    height: 2.75rem; /* 44px */
+    padding: 0 var(--bbl-space-200);
+    border-radius: 0.4375rem; /* 7px — no exact token */
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--bbl-font-size-b1);
+    font-weight: var(--bbl-font-weight-regular);
+    line-height: 1.375;
     white-space: nowrap;
     cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    transition: all 0.3s;
 }
 
-/* Accept — filled #0064FF */
+/* Accept */
 .external-redirect-popup-btn-accept {
-    background: #0064ff;
-    color: #fff;
-    border: 2px solid #0064ff;
+    background: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
+    border: 1px solid var(--bbl-color-active-blue);
 }
 
 .external-redirect-popup-btn-accept:hover {
-    background: #0048b7;
-    border-color: #0048b7;
-    color: #fff;
+    background: var(--bbl-color-blue-90);
+    border-color: var(--bbl-color-blue-90);
+    color: var(--bbl-color-white);
 }
 
 .external-redirect-popup-btn-accept:active {
-    background: #003382;
-    border-color: #003382;
-    color: #fff;
+    background: var(--bbl-color-active-blue);
+    border-color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
 }
 
-/* Cancel — white background, #0064FF border + text */
+/* Cancel — mobile-first: no left margin (stacked layout) */
 .external-redirect-popup-btn-cancel {
-    background: #fff;
-    color: #0064ff;
-    border: 2px solid #0064ff;
+    background: var(--bbl-color-white);
+    color: var(--bbl-color-active-blue);
+    border: 1px solid var(--bbl-color-active-blue);
+    margin-left: 0;
 }
 
 .external-redirect-popup-btn-cancel:hover {
-    background: #e8f1ff;
-    border-color: #0048b7;
-    color: #0048b7;
+    background: var(--bbl-color-active-blue);
+    border-color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
 }
 
 .external-redirect-popup-btn-cancel:active {
-    background: #d9e8ff;
-    border-color: #003382;
-    color: #003382;
+    background: var(--bbl-color-active-blue);
+    border-color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
 }
 
-@media (width > 47.5rem) {
+/* ── Tablet (≥ 760px) ── */
+@media (width >= 47.5rem) {
     .external-redirect-popup-inner {
-        width: 40%;
-        max-width: 37.5rem;
+        width: 75%; /* col-sm-9 */
     }
 
-    .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6) {
-        font-size: 1.3125rem;
+    .external-redirect-popup-btn-row {
+        flex-direction: row;
+        gap: 0;
     }
 
-    .external-redirect-popup-description p {
-        font-size: var(--bbl-font-size-b2, 0.875rem);
+    .external-redirect-popup-btn {
+        width: auto;
+        min-width: 9.6875rem; /* 155px */
+    }
+
+    .external-redirect-popup-btn-cancel {
+        margin-left: 0.9375rem; /* 15px — no exact token */
     }
 }
 
-@media (width > 64rem) {
+/* ── Desktop (≥ 1025px) ── */
+@media (width >= 64.0625rem) {
     .external-redirect-popup-inner {
-        width: 35%;
-    }
-
-    .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6) {
-        font-size: 1.5rem;
-        line-height: 1.875rem;
+        width: 41.6667%; /* col-md-5 */
     }
 }

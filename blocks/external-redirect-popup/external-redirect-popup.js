@@ -23,18 +23,24 @@ export default function decorate(block) {
   const titleEl = titleDiv?.querySelector(':is(h1,h2,h3,h4,h5,h6)');
   const titleHTML = titleEl ? titleEl.outerHTML : (titleDiv?.querySelector('div')?.innerHTML || '');
 
-  // ── Build DOM ──────────────────────────────────────────────────────────────
-  block.innerHTML = '';
+  // ── Build a standalone overlay element appended directly to <body> ─────────
+  // The block is loaded via loadFragment() which embeds it inside EDS section
+  // wrappers. Those wrappers override position:fixed and max-width, so we
+  // create a fresh overlay div, move it to document.body, and remove the
+  // original block from the DOM — exactly as privacy-modal does.
+  const overlay = doc.createElement('div');
+  overlay.className = 'external-redirect-popup';
 
   // White card container
   const inner = doc.createElement('div');
   inner.className = 'external-redirect-popup-inner';
-  block.appendChild(inner);
+  overlay.appendChild(inner);
 
   // Close (×) button — top-right corner of card
   const closeBtn = doc.createElement('button');
   closeBtn.className = 'external-redirect-popup-close';
   closeBtn.setAttribute('aria-label', 'Close popup');
+  closeBtn.innerHTML = '&times;';
   inner.appendChild(closeBtn);
 
   // Card body: image + text
@@ -56,12 +62,12 @@ export default function decorate(block) {
     content.appendChild(titleWrapper);
   }
 
-  // Description: "and entering <strong>"URL"</strong>"
+  // Description: "and entering <span>"URL"</span>"
   const descEl = doc.createElement('div');
   descEl.className = 'external-redirect-popup-description';
   const descP = doc.createElement('p');
   descP.textContent = `${descPrefix} `;
-  const urlSpan = doc.createElement('strong');
+  const urlSpan = doc.createElement('span');
   urlSpan.className = 'external-redirect-popup-url';
   descP.appendChild(urlSpan);
   descEl.appendChild(descP);
@@ -88,18 +94,23 @@ export default function decorate(block) {
   btnRow.appendChild(cancelBtn);
   inner.appendChild(btnRow);
 
+  // Append overlay directly to body so position:fixed works correctly,
+  // then remove the original block (and its EDS section wrapper) from the DOM.
+  doc.body.appendChild(overlay);
+  block.remove();
+
   // ── State & helpers ────────────────────────────────────────────────────────
   let targetUrl = '';
 
   const closePopup = () => {
-    block.classList.remove('external-redirect-popup-visible');
+    overlay.classList.remove('external-redirect-popup-visible');
     targetUrl = '';
   };
 
   const openPopup = (url) => {
     targetUrl = url;
     urlSpan.textContent = `"${url}"`;
-    requestAnimationFrame(() => block.classList.add('external-redirect-popup-visible'));
+    requestAnimationFrame(() => overlay.classList.add('external-redirect-popup-visible'));
   };
 
   // ── Event listeners ────────────────────────────────────────────────────────
@@ -111,11 +122,6 @@ export default function decorate(block) {
     const url = targetUrl;
     closePopup();
     if (url) window.open(url, '_blank', 'noopener,noreferrer');
-  });
-
-  // Click on the dark overlay (outside the card) also closes
-  block.addEventListener('click', (e) => {
-    if (!e.target.closest('.external-redirect-popup-inner')) closePopup();
   });
 
   // Expose openPopup globally so scripts.js can call it after loading this fragment
