@@ -181,10 +181,24 @@
         "description": "The label shown for this section in the Content Tree"
       },
       {
+        "component": "boolean",
+        "label": "Enable this section to be a part of sub-navigation",
+        "name": "isSubNavSection",
+        "valueType": "boolean"
+      },
+      {
         "component": "text",
         "name": "subnav-label",
-        "label": "Sub Nav Title",
-        "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled."
+        "label": "Sub Navigation Title",
+        "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled.",
+        "condition": {
+          "===": [
+            {
+              "var": "isSubNavSection"
+            },
+            true
+          ]
+        }
       },
       {
         "component": "multiselect",
