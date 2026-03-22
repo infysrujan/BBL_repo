@@ -1,5 +1,6 @@
 .header {
   --nav-height: 5.25rem;
+
   position: absolute;
   top: 0;
   left: 0;
@@ -209,7 +210,6 @@ Mobile slide-out menu
 }
 
 @media (width > 64rem) {
-
   /* Top nav - hides on scroll */
   .header-nav>.top-nav {
     transition: transform 0.3s ease, opacity 0.3s ease;
@@ -262,8 +262,8 @@ Mobile slide-out menu
   }
 
   header.is-not-overlapped~main {
-    padding-top: var(--header-height, 7.8125rem);
     /* matches header height */
+    padding-top: var(--header-height, 7.8125rem);
   }
 
   .header .megamenu-panel .megamenu-inner .megamenu-column-links {
