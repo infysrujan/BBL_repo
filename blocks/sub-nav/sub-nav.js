@@ -8,8 +8,7 @@ function escapeHtml(text) {
 }
 
 /**
- * Collect all sections on the page that have a sub-nav label.
- * Adjust the selector if your sections live somewhere else.
+ * Collect sections marked in the section model as sub-nav targets (is-subnav-section).
  */
 function collectSections() {
   // For your decorateSections, sections are direct children of main: main > div.section
@@ -17,6 +16,7 @@ function collectSections() {
 
   return sections
     .map((section) => {
+      if (section.dataset.isSubnavSection !== 'true') return null;
       // Label to show in dropdown:
       // 1) use section's Sub Nav Title (subnavLabel) from section model
       // 2) fallback to first heading text

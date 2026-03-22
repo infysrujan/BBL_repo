@@ -183,7 +183,7 @@
       {
         "component": "boolean",
         "label": "Enable this section to be a part of sub-navigation",
-        "name": "isSubNavSection",
+        "name": "is-subnav-section",
         "valueType": "boolean"
       },
       {
@@ -194,7 +194,7 @@
         "condition": {
           "===": [
             {
-              "var": "isSubNavSection"
+              "var": "is-subnav-section"
             },
             true
           ]
