@@ -47,13 +47,14 @@ function parseCurrencyList(currencyListDiv) {
  * Create currency dropdown
  * @param {Array} currencies - Array of currency objects
  * @param {string} searchPlaceholder - Placeholder text for search input
+ * @param {number} activeIndex - Index of currency to set as active (default 0)
  * @returns {Element} - Dropdown element
  */
-function createCurrencyDropdown(currencies, searchPlaceholder) {
+function createCurrencyDropdown(currencies, searchPlaceholder, activeIndex = 0) {
   const currencyItems = currencies.map((currency, index) => `
     <li data-currency-code="${currency?.code ?? ''}" 
         data-description="${currency?.name ?? ''}" 
-        class="${index === 0 ? 'active' : ''}">
+        class="${index === activeIndex ? 'active' : ''}">
       <span class="currency-flag">
         <img src="${currency?.icon ?? ''}" 
              alt="${currency?.code ?? ''}" 
@@ -104,11 +105,12 @@ function createCurrencyDropdown(currencies, searchPlaceholder) {
  * @param {Array} currencies - Array of currency objects
  * @param {string} type - 'input' or 'output'
  * @param {string} searchPlaceholder - Placeholder text for search input
+ * @param {number} activeIndex - Index of currency to set as active (default 0)
  * @returns {Element} - Convert group element
  */
-function createConvertGroup(label, currencies, type, searchPlaceholder) {
-  // Default to first currency (THB)
-  const defaultCurrency = currencies[0] || { code: 'THB', icon: '', name: 'THB' };
+function createConvertGroup(label, currencies, type, searchPlaceholder, activeIndex = 0) {
+  // Use the specified currency index
+  const defaultCurrency = currencies[activeIndex] || currencies[0] || { code: 'THB', icon: '', name: 'THB' };
 
   const groupHTML = `
     <div class="convert-group" id="currency${type === 'input' ? '1' : '2'}">
@@ -128,7 +130,7 @@ function createConvertGroup(label, currencies, type, searchPlaceholder) {
   const code = group.querySelector('.code');
 
   // Insert dropdown after country-select
-  const dropdown = createCurrencyDropdown(currencies, searchPlaceholder);
+  const dropdown = createCurrencyDropdown(currencies, searchPlaceholder, activeIndex);
   group.insertBefore(dropdown, dropdownIcon);
 
   // Toggle dropdown
@@ -343,9 +345,9 @@ export default async function decorate(block) {
   const converter = mainContainer.querySelector('.converter');
   const calculateBtn = mainContainer.querySelector('#convert-btn');
 
-  // Create From and To groups
-  const fromGroup = createConvertGroup(convertFromLabel, currencies, 'input', searchPlaceholder);
-  const toGroup = createConvertGroup(convertToLabel, currencies, 'output', searchPlaceholder);
+  // Create From and To groups (From uses first currency, To uses second currency)
+  const fromGroup = createConvertGroup(convertFromLabel, currencies, 'input', searchPlaceholder, 0);
+  const toGroup = createConvertGroup(convertToLabel, currencies, 'output', searchPlaceholder, 1);
 
   // Create Amount group with template
   const amountHTML = `
