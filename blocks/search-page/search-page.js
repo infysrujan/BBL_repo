@@ -1,5 +1,4 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { fetchConfigs } from '../../scripts/config.js';
 import { getSiteSearchResults, normalizeSearchTerm } from '../../scripts/utils/searchApi.js';
 
 const MIN_SEARCH_LENGTH = 3;
@@ -165,11 +164,7 @@ function renderRecentSearches(container, recentTitle, onSearch) {
 export default async function decorate(block) {
   const rows = [...block.children];
   const placeholders = await fetchPlaceholders();
-  const configs = await fetchConfigs();
   const config = getSearchConfig(rows, placeholders);
-  const pageLanguage = getLanguageFromPath();
-  const apiUrl = configs?.getSearchResult || '';
-  const baseUrl = configs?.bblBaseUrl || '';
 
   block.innerHTML = `
     <div class="search-modal search-modal-active">
@@ -217,17 +212,6 @@ export default async function decorate(block) {
     loading = isLoading;
     searchButton.disabled = isLoading;
     searchButton.textContent = isLoading ? 'Searching...' : config.searchLabel;
-  }
-
-  function updateUrl(term) {
-    const url = new URL(window.location.href);
-    if (term) {
-      url.searchParams.set('q', term);
-      window.history.pushState({}, '', url);
-    } else {
-      url.searchParams.delete('q');
-      window.history.replaceState({}, '', url);
-    }
   }
 
   function renderResults(items, term = '') {
@@ -296,11 +280,8 @@ export default async function decorate(block) {
 
     try {
       const data = await getSiteSearchResults({
-        apiUrl,
-        baseUrl,
         keywords: normalized,
         pageNumber: page,
-        pageLanguage,
       });
 
       currentTerm = normalized;
@@ -321,7 +302,6 @@ export default async function decorate(block) {
         results: allResults,
         showLoadMore: data.showLoadMore,
       });
-      updateUrl();
     } catch (error) {
       resultsList.innerHTML = '';
       searchResult.style.display = 'block';
@@ -348,7 +328,6 @@ export default async function decorate(block) {
 
   // Always clear on page load/refresh
   clearLastResults();
-  updateUrl('');
   input.value = '';
   showRecentSearches((recentTerm) => {
     input.value = recentTerm;
@@ -363,7 +342,6 @@ export default async function decorate(block) {
     allResults = [];
     resultsList.innerHTML = '';
     showMessage('');
-    updateUrl('');
     showRecentSearches((recentTerm) => {
       input.value = recentTerm;
       runSearch(recentTerm, 1, false);

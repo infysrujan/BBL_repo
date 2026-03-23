@@ -1,83 +1,95 @@
+const PAGE_SIZE = 8;
+const BBL_BASE_URL = 'https://www.bangkokbank.com';
+
 export function normalizeSearchTerm(term = '') {
   return term.trim().replace(/\s+/g, ' ');
 }
 
-function toAbsoluteUrl(baseUrl, path = '') {
+async function fetchQueryIndex() {
+  const initialRes = await fetch('/query-index.json?limit=100&offset=0', { cache: 'no-store' });
+  if (!initialRes.ok) throw new Error(`Index fetch failed: ${initialRes.status}`);
+  const initialData = await initialRes.json();
+
+  const sheet = initialData['query-index'] || initialData;
+  const total = sheet.total || 0;
+  const limit = sheet.limit || 100;
+  let allData = Array.isArray(sheet.data) ? [...sheet.data] : [];
+
+  const requests = [];
+  for (let offset = limit; offset < total; offset += limit) {
+    requests.push(
+      fetch(`/query-index.json?limit=${limit}&offset=${offset}`, { cache: 'no-store' })
+        .then((res) => res.json())
+        .then((data) => {
+          const s = data['query-index'] || data;
+          return Array.isArray(s.data) ? s.data : [];
+        }),
+    );
+  }
+
+  const pages = await Promise.all(requests);
+  pages.forEach((page) => { allData = [...allData, ...page]; });
+
+  return allData;
+}
+
+function filterQueryIndex(records, keywords) {
+  const tokens = normalizeSearchTerm(keywords).toLowerCase().split(' ').filter(Boolean);
+
+  return records.filter((r) => {
+    const blob = [
+      r.ogTitle,
+      r.ogDescription,
+      r.title,
+      r.description,
+      r.keywords,
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+
+    return tokens.every((t) => blob.includes(t));
+  });
+}
+
+function toAbsoluteUrl(path = '') {
   const clean = path.replace(/["\\]/g, '').trim();
   if (!clean) return '';
   if (clean.startsWith('http')) return clean;
-  return `${baseUrl}${clean}`;
+  return `${BBL_BASE_URL}${clean}`;
 }
 
-async function getResultsFromApi({
-  apiUrl,
-  baseUrl,
-  keywords,
-  pageNumber = 1,
-  pageLanguage,
-}) {
-  if (!apiUrl) {
-    throw new Error('Search API URL is not configured. Please set getSearchResult in config.json');
-  }
-
-  const formData = new FormData();
-  formData.append('keywords', keywords);
-  formData.append('pageNumber', pageNumber);
-  formData.append('pageLanguage', pageLanguage);
-
-  const res = await fetch(apiUrl, { method: 'POST', body: formData });
-  if (!res.ok) throw new Error(`Search API failed: ${res.status}`);
-
-  const data = await res.json();
-
-  let rawResults = [];
-  if (typeof data.SearchResults === 'string' && data.SearchResults) {
-    try {
-      rawResults = JSON.parse(data.SearchResults);
-    } catch (parseError) {
-      rawResults = [];
-    }
-  } else if (Array.isArray(data.SearchResults)) {
-    rawResults = data.SearchResults;
-  }
-
-  rawResults = rawResults.map((item) => ({
-    Title: item.Title || item.OGTitle || '',
-    Description: item.Description || item.OGDescription || '',
-    URL: item.URL || '',
-    ItemID: item.ItemID || item.URL || '',
-    OGTitle: item.OGTitle || '',
-    OGDescription: item.OGDescription || '',
-    OGImage: toAbsoluteUrl(baseUrl, item.OGImage || ''),
-    OGURL: toAbsoluteUrl(baseUrl, item.OGURL || item.URL || ''),
-  }));
-
-  const showLoadMore = data.ShowLoadMore === '1' || data.ShowLoadMore === true;
+function mapQueryIndexToResult(record) {
+  const relPath = (record.path || '').replace(/["\\]/g, '').trim();
+  const absUrl = record.ogUrl ? toAbsoluteUrl(record.ogUrl) : toAbsoluteUrl(relPath);
 
   return {
-    searchResults: rawResults,
-    showLoadMore,
-    noResultsMessage: rawResults.length === 0
-      ? (data.NoResultsMessage || 'No Results Found')
-      : undefined,
+    Title: (record.title || record.ogTitle || '').trim(),
+    Description: (record.description || record.ogDescription || '').trim(),
+    URL: relPath,
+    ItemID: relPath,
+    OGTitle: (record.ogTitle || '').trim(),
+    OGDescription: (record.ogDescription || '').trim(),
+    OGImage: toAbsoluteUrl(record.ogImage || ''),
+    OGURL: absUrl,
   };
 }
 
-export async function getSiteSearchResults({
-  apiUrl,
-  baseUrl,
-  keywords,
-  pageNumber = 1,
-  pageLanguage,
-}) {
+export async function getSiteSearchResults({ keywords, pageNumber = 1 }) {
   const normalized = normalizeSearchTerm(keywords);
   if (!normalized) return { searchResults: [], showLoadMore: false };
 
-  return getResultsFromApi({
-    apiUrl,
-    baseUrl,
-    keywords: normalized,
-    pageNumber,
-    pageLanguage,
-  });
+  const allRecords = await fetchQueryIndex();
+  const matches = filterQueryIndex(allRecords, normalized);
+
+  const total = matches.length;
+  const offset = (pageNumber - 1) * PAGE_SIZE;
+  const pageRecords = matches.slice(offset, offset + PAGE_SIZE);
+  const showLoadMore = offset + PAGE_SIZE < total;
+
+  return {
+    searchResults: pageRecords.map(mapQueryIndexToResult),
+    showLoadMore,
+    noResultsMessage: total === 0 ? 'No Results Found' : undefined,
+  };
 }
