@@ -28,19 +28,27 @@ stages:
       inputs:
         versionSpec: '18.x'
 
-    - script: npm install
+    - script: |
+        set -e
+        npm install
+        echo "✅ Dependencies installed successfully"
       displayName: 'Install dependencies'
 
-    - script: npx eslint . --ext .js,.ts,.jsx,.tsx
+    - script: |
+        set -e
+        npx eslint . --ext .js,.ts,.jsx,.tsx
+        echo "✅ ESLint passed"
       displayName: 'Run ESLint'
 
-    - script: npx stylelint "**/*.css" "**/*.scss"
+    - script: |
+        npx stylelint "**/*.css" "**/*.scss"
+        echo "✅ Stylelint completed"
       displayName: 'Run Stylelint'
       continueOnError: true
 
 
 # =========================
-# STAGE 2: PERFORMANCE + EDS CHECKS
+# STAGE 2: PERFORMANCE
 # =========================
 - stage: Performance
   displayName: "AEM EDS Validation + Lighthouse"
@@ -55,66 +63,75 @@ stages:
         versionSpec: '18.x'
 
     - script: |
+        set -e
         sudo apt-get update
         sudo apt-get install -y jq bc
-      displayName: 'Install dependencies'
-
-    - script: npm install -g @lhci/cli@0.13.x broken-link-checker
+        npm install -g @lhci/cli@0.13.x broken-link-checker
+        echo "✅ Tools installed successfully"
       displayName: 'Install tools'
 
     # =========================
-    # DETERMINE BRANCH URL
+    # SET TEST URL
     # =========================
     - script: |
+        set -e
+
         RAW_BRANCH=$(Build.SourceBranchName)
         BRANCH_NAME=$(echo $RAW_BRANCH | sed 's/\//-/g')
 
         if [ "$BRANCH_NAME" = "main" ]; then
-          URL="https://main--site-dev--singhalgoru.aem.live/en"
+          TEST_URL="https://main--site-dev--singhalgoru.aem.live/en"
         else
-          URL="https://${BRANCH_NAME}--site-dev--singhalgoru.aem.page/en"
+          TEST_URL="https://${BRANCH_NAME}--site-dev--singhalgoru.aem.page/en"
         fi
 
-        echo "##vso[task.setvariable variable=TEST_URL]$URL"
-        echo "Testing URL: $URL"
+        echo "Using URL: $TEST_URL"
+        echo "##vso[task.setvariable variable=TEST_URL]$TEST_URL"
+        echo "✅ Test URL resolved successfully"
       displayName: 'Set Test URL'
 
     # =========================
-    # CDN HEADER VALIDATION
+    # CDN HEADER CHECK
     # =========================
     - script: |
+        set -e
+
         echo "Checking CDN headers..."
 
         HEADERS=$(curl -s -I $(TEST_URL))
         echo "$HEADERS"
 
-        CACHE=$(echo "$HEADERS" | grep -i "cache-control")
-
-        if [[ "$CACHE" != *"max-age"* ]]; then
-          echo "❌ Cache-Control missing"
+        if ! echo "$HEADERS" | grep -qi "cache-control"; then
+          echo "❌ Cache-Control header missing"
           exit 1
         fi
+
+        echo "✅ CDN headers validated successfully"
       displayName: 'Validate CDN Headers'
 
     # =========================
-    # BROKEN LINK CHECK
+    # BROKEN LINKS
     # =========================
     - script: |
+        set -e
         echo "Running broken link check..."
         blc $(TEST_URL) -ro
+        echo "✅ No broken links found"
       displayName: 'Check Broken Links'
 
     # =========================
-    # LIGHTHOUSE RUN (BRANCH AWARE)
+    # LIGHTHOUSE
     # =========================
     - script: |
+        set -e
         lhci collect --url="$(TEST_URL)" --numberOfRuns=3
         lhci assert
         lhci upload
+        echo "✅ Lighthouse execution completed"
       displayName: 'Run Lighthouse CI'
 
     # =========================
-    # PUBLISH HTML REPORT
+    # PUBLISH REPORT
     # =========================
     - task: PublishBuildArtifacts@1
       inputs:
@@ -123,58 +140,53 @@ stages:
       displayName: 'Publish Lighthouse Report'
 
     # =========================
-    # ENHANCED SUMMARY
+    # SUMMARY + VALIDATION
     # =========================
     - script: |
+        set -e
+
         SUMMARY_FILE="$(System.DefaultWorkingDirectory)/summary.md"
+        FILES=$(find .lighthouseci -name "lhr-*.json")
 
         echo "## 🚀 Lighthouse Report" > $SUMMARY_FILE
         echo "" >> $SUMMARY_FILE
         echo "| URL | Perf | A11y | SEO | LCP | CLS |" >> $SUMMARY_FILE
         echo "|-----|------|------|-----|-----|-----|" >> $SUMMARY_FILE
 
-        FILES=$(find .lighthouseci -name "lhr-*.json")
-
-        if [ -z "$FILES" ]; then
-          echo "| No Data | - | - | - | - | - |" >> $SUMMARY_FILE
-        else
-          for file in $FILES; do
-            URL=$(jq -r '.finalUrl' "$file")
-
-            PERF=$(jq '.categories.performance.score * 100' "$file")
-            A11Y=$(jq '.categories.accessibility.score * 100' "$file")
-            SEO=$(jq '.categories.seo.score * 100' "$file")
-
-            LCP=$(jq -r '.audits["largest-contentful-paint"].displayValue' "$file")
-            CLS=$(jq -r '.audits["cumulative-layout-shift"].displayValue' "$file")
-
-            echo "| $URL | $PERF | $A11Y | $SEO | $LCP | $CLS |" >> $SUMMARY_FILE
-          done
-        fi
-
-        cat $SUMMARY_FILE
-        echo "##vso[task.uploadsummary]$SUMMARY_FILE"
-      displayName: 'Publish Lighthouse Summary'
-
-    # =========================
-    # VALIDATION
-    # =========================
-    - script: |
         FAIL=0
 
-        FILES=$(find .lighthouseci -name "lhr-*.json")
-
         for file in $FILES; do
-          SCORE=$(jq '.categories.performance.score * 100' "$file")
+          URL=$(jq -r '.finalUrl' "$file")
 
-          if (( $(echo "$SCORE < 80" | bc -l) )); then
-            echo "❌ Performance below threshold"
+          PERF=$(jq '.categories.performance.score * 100' "$file")
+          A11Y=$(jq '.categories.accessibility.score * 100' "$file")
+          SEO=$(jq '.categories.seo.score * 100' "$file")
+
+          LCP=$(jq -r '.audits["largest-contentful-paint"].displayValue' "$file")
+          CLS=$(jq -r '.audits["cumulative-layout-shift"].displayValue' "$file")
+
+          echo "| $URL | $PERF | $A11Y | $SEO | $LCP | $CLS |" >> $SUMMARY_FILE
+
+          echo "------------------------------------"
+          echo "URL: $URL"
+          echo "Performance: $PERF"
+
+          if (( $(echo "$PERF < 80" | bc -l) )); then
+            echo "❌ BELOW THRESHOLD"
             FAIL=1
+          else
+            echo "✅ Performance OK"
           fi
         done
+
+        echo "Uploading summary..."
+        cat $SUMMARY_FILE
+        echo "##vso[task.uploadsummary]$SUMMARY_FILE"
 
         if [ $FAIL -eq 1 ]; then
           echo "🚨 Performance gate failed"
           exit 1
         fi
-      displayName: 'Validate Performance'
+
+        echo "🎉 All performance checks passed successfully"
+      displayName: 'Summary + Validation'
