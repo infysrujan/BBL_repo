@@ -983,10 +983,10 @@
   /* Fix tablet spacing and align arrows automatically to content size */
   .carousel-dotted.show-arrows-dots {
     display: grid;
-    grid-template-columns: 2rem 1fr 2rem;
+    grid-template-columns: 2.5rem 1fr 2.5rem;
     grid-template-rows: auto auto;
     gap: 0;
-    column-gap: 0.5rem;
+    column-gap: 1.25rem;
     min-height: unset;
   }
 
