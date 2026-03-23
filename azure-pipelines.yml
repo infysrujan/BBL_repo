@@ -1,15 +1,32 @@
 trigger:
-- main
+  branches:
+    include:
+      - main
+      - dev
+      - feature/*
+
+pr:
+  branches:
+    include:
+      - main
+      - dev
 
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+# 1. Install Node.js
 - task: NodeTool@0
   inputs:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
+# 2. Install Lighthouse CI
 - script: |
     npm install -g @lhci/cli@0.13.x
   displayName: 'Install Lighthouse CI'
+
+# 3. Run Lighthouse CI
+- script: |
+    lhci autorun
+  displayName: 'Run Lighthouse CI'
