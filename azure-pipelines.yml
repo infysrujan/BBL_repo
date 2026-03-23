@@ -26,7 +26,41 @@ steps:
     npm install -g @lhci/cli@0.13.x
   displayName: 'Install Lighthouse CI'
 
-# 3. Run Lighthouse CI
+# 3. Install jq (for JSON parsing)
 - script: |
-    lhci autorun
-  displayName: 'Run Lighthouse CI'
+    sudo apt-get update
+    sudo apt-get install -y jq
+  displayName: 'Install jq'
+
+# 4. Run Lighthouse and print scores
+- script: |
+    lhci collect --numberOfRuns=1
+
+    echo "===================================="
+    echo " Lighthouse Scores per URL"
+    echo "===================================="
+
+    FAIL=0
+
+    for file in .lighthouseci/lhr-*.json; do
+      URL=$(jq -r '.finalUrl' $file)
+      SCORE=$(jq '.categories.performance.score * 100' $file)
+
+      echo "------------------------------------"
+      echo "URL: $URL"
+      echo "Performance Score: $SCORE"
+
+      # Optional: fail if score < 80
+      if (( $(echo "$SCORE < 80" | bc -l) )); then
+        echo "❌ Performance below threshold (80)"
+        FAIL=1
+      fi
+    done
+
+    echo "===================================="
+
+    if [ $FAIL -eq 1 ]; then
+      echo "🚨 Lighthouse performance check failed"
+      exit 1
+    fi
+  displayName: 'Run Lighthouse & Print Scores'
