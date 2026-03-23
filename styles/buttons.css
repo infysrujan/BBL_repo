@@ -68,9 +68,60 @@ button,
 
 /* --- Medium (Desktop) - 44px height --- */
 .button-m {
-  height: 44px;
-  padding: 0 var(--bbl-space-300);
-  font-size: var(--bbl-body-b1-size);
+  max-height: 2.75rem;
+  min-width: 7.5rem;
+  padding: 1rem 0.5rem;
+  font-size: 1rem;
+  text-align: center;
+  line-height: 1.375rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  display: block;
+  font-family: var(--bbl-font-family-medium);
+}
+
+.button-m.primary {
+  color: var(--bbl-color-white);
+  background: var(--bbl-color-active-blue);
+  text-decoration: none;
+}
+
+.button-m.primary[aria-disabled="true"],
+.button-m.primary.disabled,
+.button-m.primary:disabled {
+  background: var(--bbl-color-grey-20);
+  color: var(--bbl-color-grey-60);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.button-m.primary:hover {
+  background: var(--bbl-color-blue-90);
+  text-decoration: none;
+  color: var(--bbl-color-white);
+}
+
+.button-m.secondary {
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
+  border: 0.125rem solid var(--bbl-color-active-blue);
+  font-style: normal;
+}
+
+.button-m.secondary[aria-disabled="true"],
+.button-m.secondary.disabled,
+.button-m.secondary:disabled {
+  border-color: var(--bbl-color-grey-20);
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-grey-60);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.button-m.secondary:hover {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  text-decoration: none;
 }
 
 /* --- Large (Hero Banner) - 52px height --- */
