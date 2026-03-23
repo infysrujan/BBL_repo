@@ -1,0 +1,225 @@
+{
+  "definitions": [
+    {
+      "title": "Teaser With Bg Image",
+      "id": "teaser-with-bg-image",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Teaser With Bg Image",
+              "model": "teaser-with-bg-image",
+              "filter": "teaser-with-bg-image"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Teaser With Bg Image Card",
+      "id": "teaser-with-bg-image-card",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Teaser With Bg Image Card",
+              "model": "teaser-with-bg-image-card"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "teaser-with-bg-image",
+      "fields": [
+         {
+          "component": "reference",
+          "valueType": "string",
+          "name": "teaserBgImage",
+          "label": "Teaser Bg Image",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "teaserBgImageAlt",
+          "label": "Alt",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "name": "title",
+          "label": "Title"
+        },
+        {
+          "component": "select",
+          "name": "titleType",
+          "label": "Title Type",
+          "options": [
+            {
+              "name": "h1",
+              "value": "h1"
+            },
+            {
+              "name": "h2",
+              "value": "h2"
+            },
+            {
+              "name": "h3",
+              "value": "h3"
+            },
+            {
+              "name": "h4",
+              "value": "h4"
+            },
+            {
+              "name": "h5",
+              "value": "h5"
+            },
+            {
+              "name": "h6",
+              "value": "h6"
+            }
+          ]
+        },
+        {
+          "component": "richtext",
+          "name": "description",
+          "value": "",
+          "label": "Description",
+          "valueType": "string"
+        },
+        {
+          "component": "aem-content",
+          "name": "link",
+          "label": "Link",
+          "description": "Destination URL for the button"
+        },
+        {
+          "component": "text",
+          "name": "linkText",
+          "label": "Text",
+          "description": "Button label text",
+          "required": true
+        },
+        {
+          "component": "text",
+          "name": "linkTitle",
+          "label": "Title",
+          "description": "Accessibility title attribute (optional)"
+        },
+        {
+          "component": "select",
+          "name": "linkType",
+          "label": "Type",
+          "description": "Button style variant",
+          "valueType": "string",
+          "value": "",
+          "options": [
+            {
+              "name": "Primary",
+              "value": "primary"
+            },
+            {
+              "name": "Secondary",
+              "value": "secondary"
+            },
+            {
+              "name": "Tertiary",
+              "value": "tertiary"
+            }
+          ]
+        },
+        {
+          "component": "container",
+          "name": "targetSettings",
+          "label": "Target settings",
+          "fields": [
+            {
+              "component": "boolean",
+              "name": "targetLink",
+              "label": "Open link in new tab",
+              "description": "Enable to open the button link in a new browser tab",
+              "valueType": "boolean",
+              "value": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "teaser-with-bg-image-card",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "teaserCardImage",
+          "label": "Teaser Card Image",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "TeaserCardImageAlt",
+          "label": "Alt",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "name": "title",
+          "label": "Title"
+        },
+        {
+          "component": "select",
+          "name": "titleType",
+          "label": "Title Type",
+          "options": [
+            {
+              "name": "h1",
+              "value": "h1"
+            },
+            {
+              "name": "h2",
+              "value": "h2"
+            },
+            {
+              "name": "h3",
+              "value": "h3"
+            },
+            {
+              "name": "h4",
+              "value": "h4"
+            },
+            {
+              "name": "h5",
+              "value": "h5"
+            },
+            {
+              "name": "h6",
+              "value": "h6"
+            }
+          ]
+        },
+        {
+          "component": "richtext",
+          "name": "description",
+          "value": "",
+          "label": "Description",
+          "valueType": "string"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "teaser-with-bg-image",
+      "components": [
+        "teaser-with-bg-image-card"
+      ]
+    }
+  ]
+}

@@ -460,7 +460,7 @@ a.link-inverted[aria-disabled="true"] {
 
 .global-dropdown-trigger {
     width: 100%;
-    min-height: 2.75rem;
+    max-height: 2.75rem;
     padding-inline: var(--bbl-space-250) 2.1875rem;
     position: relative;
     box-sizing: border-box;

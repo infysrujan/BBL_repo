@@ -94,6 +94,15 @@
               ]
             },
             {
+              "name": "Layout",
+              "children": [
+                {
+                  "name": "Columns 3",
+                  "value": "columns-3"
+                }
+              ]
+            },
+            {
               "name": "Style",
               "children": [
                 {
@@ -138,7 +147,10 @@
         "content-insert-cards",
         "menu-card-actions",
         "download-file",
-        "sub-nav"
+        "teaser-with-bg-image",
+        "sub-nav",
+        "currency-converter",
+        "popup-modal-card-offer"
       ]
     }
   ]
