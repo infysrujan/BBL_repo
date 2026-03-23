@@ -211,6 +211,10 @@ Mobile slide-out menu
   opacity: 0;
 }
 
+header.is-not-overlapped .mobile-top-bar {
+  background-color: var(--bbl-color-truthful-blue);
+}
+
 header.is-not-overlapped ~ main {
   /* matches header height */
   padding-top: var(--header-m-height, 5rem);
