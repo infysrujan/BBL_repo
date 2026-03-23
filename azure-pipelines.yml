@@ -1,15 +1,15 @@
 trigger:
   branches:
     include:
-      - main
       - dev
+      - main
       - feature/*
 
 pr:
   branches:
     include:
-      - main
       - dev
+      - main
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -26,31 +26,41 @@ steps:
     npm install -g @lhci/cli@0.13.x
   displayName: 'Install Lighthouse CI'
 
-# 3. Install jq (for JSON parsing)
+# 3. Install dependencies (jq + bc)
 - script: |
     sudo apt-get update
-    sudo apt-get install -y jq
-  displayName: 'Install jq'
+    sudo apt-get install -y jq bc
+  displayName: 'Install dependencies'
 
-# 4. Run Lighthouse and print scores
+# 4. Run Lighthouse CI (uses lighthouserc.json)
 - script: |
-    lhci collect --numberOfRuns=1
+    lhci autorun
+  displayName: 'Run Lighthouse CI'
 
+# 5. Extract and print scores
+- script: |
     echo "===================================="
     echo " Lighthouse Scores per URL"
     echo "===================================="
 
     FAIL=0
 
-    for file in .lighthouseci/lhr-*.json; do
-      URL=$(jq -r '.finalUrl' $file)
-      SCORE=$(jq '.categories.performance.score * 100' $file)
+    FILES=$(find .lighthouseci -name "lhr-*.json")
+
+    if [ -z "$FILES" ]; then
+      echo "❌ No Lighthouse reports found!"
+      exit 1
+    fi
+
+    for file in $FILES; do
+      URL=$(jq -r '.finalUrl' "$file")
+      SCORE=$(jq '.categories.performance.score * 100' "$file")
 
       echo "------------------------------------"
       echo "URL: $URL"
       echo "Performance Score: $SCORE"
 
-      # Optional: fail if score < 80
+      # Fail if score < 80
       if (( $(echo "$SCORE < 80" | bc -l) )); then
         echo "❌ Performance below threshold (80)"
         FAIL=1
@@ -63,4 +73,4 @@ steps:
       echo "🚨 Lighthouse performance check failed"
       exit 1
     fi
-  displayName: 'Run Lighthouse & Print Scores'
+  displayName: 'Extract & Validate Scores'
