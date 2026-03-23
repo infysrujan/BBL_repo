@@ -172,9 +172,9 @@
 }
 
 .currency-converter .search-currency::placeholder {
-  color: var(--bbl-color-grey-50);
+  color: var(--bbl-color-grey-70);
   font-size: 1rem;
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-primary);
 }
 
 /* Dropdown List */
