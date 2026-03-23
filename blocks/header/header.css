@@ -1,5 +1,7 @@
 .header {
   --nav-height: 5.25rem;
+  --header-m-height: 5rem;
+  --header-d-height: 7.8125rem;
 
   position: absolute;
   top: 0;
@@ -209,6 +211,11 @@ Mobile slide-out menu
   opacity: 0;
 }
 
+header.is-not-overlapped ~ main {
+  /* matches header height */
+  padding-top: var(--header-m-height, 5rem);
+}
+
 @media (width > 64rem) {
   /* Top nav - hides on scroll */
   .header-nav>.top-nav {
@@ -261,9 +268,9 @@ Mobile slide-out menu
     background-color: transparent;
   }
 
-  header.is-not-overlapped~main {
+  header.is-not-overlapped ~ main {
     /* matches header height */
-    padding-top: var(--header-height, 7.8125rem);
+    padding-top: var(--header-d-height, 7.8125rem);
   }
 
   .header .megamenu-panel .megamenu-inner .megamenu-column-links {

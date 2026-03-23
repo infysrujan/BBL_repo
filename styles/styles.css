@@ -18,7 +18,6 @@
 
 :root {
     /* site-level sizing */
-    --header-height: 125px;
     --nav-height: 64px;
     --bbl-layout-content-max-width-desktop: 1240px;
     --bbl-layout-content-max-width-1920: 1752px;
