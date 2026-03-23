@@ -18,16 +18,16 @@ function getLastResultsKey() {
 
 function getRecentSearches() {
   try {
-    return JSON.parse(localStorage.getItem(getRecentSearchesKey())) || [];
+    const data = JSON.parse(localStorage.getItem(getRecentSearchesKey())) || [];
+    return data.map((item) => (typeof item === 'string' ? { term: item, results: [] } : item));
   } catch {
     return [];
   }
 }
 
-function saveRecentSearch(term) {
-  const current = getRecentSearches().filter((item) => item !== term);
-  current.unshift(term);
-  localStorage.setItem(getRecentSearchesKey(), JSON.stringify(current.slice(0, 5)));
+function saveRecentSearch(term, results) {
+  const data = [{ term, results: results.slice(0, 4) }];
+  localStorage.setItem(getRecentSearchesKey(), JSON.stringify(data));
 }
 
 function getLastResults() {
@@ -52,6 +52,13 @@ function escapeHtml(value = '') {
   return div.innerHTML;
 }
 
+function highlightTerm(text = '', term = '') {
+  if (!term || !text) return escapeHtml(text);
+  const escaped = escapeHtml(text);
+  const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return escaped.replace(new RegExp(`(${escapedTerm})`, 'gi'), '<b>$1</b>');
+}
+
 function getBlockConfig(rows) {
   const searchBackground = rows[4]?.querySelector('img');
   return {
@@ -73,20 +80,22 @@ function getSearchConfig(rows, placeholders = {}) {
     noResultsText: blockConfig.noResultsText,
     recentTitle: blockConfig.recentTitle,
     learnMoreLabel: blockConfig.learnMoreLabel,
+    loadMoreLabel: blockConfig.learnMoreLabel || 'Learn More',
+    loadingText: 'Searching...',
     ariaLabel: placeholders.ariaLableSearch,
     searchImage: blockConfig.searchImage,
     searchImageAlt: blockConfig.searchImageAlt,
   };
 }
 
-function buildSearchPanel(item, config) {
+function buildSearchPanel(item, term = '') {
   const image = item.OGImage || '';
   const title = item.Title || item.OGTitle || '';
   const description = item.Description || item.OGDescription || '';
   const url = item.URL || item.OGURL || '#';
 
   return `
-    <div class="col-md-3 col-sm-6 col-xs-12 search-modal-panel">
+    <div class="search-modal-panel">
       <div class="search-modal-panel-inner">
         <a class="text-small search-modal-panel-link" href="${escapeHtml(url)}">
           ${image ? `
@@ -94,14 +103,13 @@ function buildSearchPanel(item, config) {
               <img class="search-modal-panel-image" src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy">
             </div>
           ` : ''}
-        </a>
-        <div class="search-modal-panel-body">
-          <div class="search-modal-panel-caption">
-            <h3 class="search-modal-panel-title">${escapeHtml(title)}</h3>
-            <div class="search-modal-panel-description">${description}</div>
+          <div class="search-modal-panel-body">
+            <div class="search-modal-panel-caption">
+              <h3 class="search-modal-panel-title">${highlightTerm(title, term)}</h3>
+              <div class="search-modal-panel-description">${highlightTerm(description, term)}</div>
+            </div>
           </div>
-          <a class="button primary search-modal-panel-cta" href="${escapeHtml(url)}" title="${escapeHtml(config.learnMoreLabel)}">${escapeHtml(config.learnMoreLabel)}</a>
-        </div>
+        </a>
       </div>
     </div>
   `;
@@ -119,25 +127,29 @@ function renderRecentSearches(container, recentTitle, onSearch) {
   container.style.display = 'block';
   container.innerHTML = `
     <div class="search-modal-history-section">
-      <div class="inner-content">
+      <div class="search-modal-history-title">
         <h3 class="search-modal-section-title">${escapeHtml(recentTitle)}</h3>
-        <div class="search-modal-results-grid">
-          <div class="search-modal-results-list">
-            ${searches.map((term) => `
-              <div class="col-md-3 col-sm-6 col-xs-12 search-modal-panel">
-                <a class="text-small search-modal-history-term" href="#" data-term="${escapeHtml(term)}">
-                  <div class="search-modal-panel-inner">
-                    <div class="search-modal-panel-body">
-                      <div class="search-modal-panel-caption">
-                        <h3 class="search-modal-panel-title">${escapeHtml(term)}</h3>
+        ${searches.map(({ term, results }) => `
+          <div class="search-modal-recent-group">
+            <div class="search-modal-results-grid">
+              <div class="search-modal-results-list">
+                ${results.length ? results.map((item) => buildSearchPanel(item, term)).join('') : `
+                  <div class="col-md-3 col-sm-6 col-xs-12 search-modal-panel">
+                    <a class="text-small search-modal-history-term" href="#" data-term="${escapeHtml(term)}">
+                      <div class="search-modal-panel-inner">
+                        <div class="search-modal-panel-body">
+                          <div class="search-modal-panel-caption">
+                            <h3 class="search-modal-panel-title">${escapeHtml(term)}</h3>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    </a>
                   </div>
-                </a>
+                `}
               </div>
-            `).join('')}
+            </div>
           </div>
-        </div>
+        `).join('')}
       </div>
     </div>
   `;
@@ -167,7 +179,7 @@ export default async function decorate(block) {
           </div>
         </div>
       </div>
-      <div class="search-modal-pre-block">
+      <div class="search-modal-pre-block content">
         <div class="search-modal-container search-modal-results-section" style="display:none;">
           <div class="inner-content">
             <div class="search-modal-results-grid">
@@ -175,7 +187,7 @@ export default async function decorate(block) {
             </div>
           </div>
           <div class="search-modal-load-more" style="display:none;">
-            <button class="btn-default min-size search-modal-load-more-button">${escapeHtml(config.loadMoreLabel)}</button>
+            <button class="search-modal-load-more-button secondary">${escapeHtml(config.loadMoreLabel)}</button>
           </div>
         </div>
         <div class="search-modal-container search-modal-message"></div>
@@ -214,8 +226,8 @@ export default async function decorate(block) {
     window.history.replaceState({}, '', url);
   }
 
-  function renderResults(items) {
-    resultsList.innerHTML = items.map((item) => buildSearchPanel(item, config)).join('');
+  function renderResults(items, term = '') {
+    resultsList.innerHTML = items.map((item) => buildSearchPanel(item, term)).join('');
   }
 
   function showMessage(text) {
@@ -241,7 +253,7 @@ export default async function decorate(block) {
       currentPage = lastResults.page || 1;
       allResults = lastResults.results;
       input.value = currentTerm;
-      renderResults(allResults);
+      renderResults(allResults, currentTerm);
       searchResult.style.display = 'block';
       searchHistory.style.display = 'none';
       divLoadMore.style.display = lastResults.showLoadMore ? 'block' : 'none';
@@ -289,12 +301,14 @@ export default async function decorate(block) {
       currentPage = page;
       allResults = append ? [...allResults, ...data.searchResults] : data.searchResults;
 
-      renderResults(allResults);
+      renderResults(allResults, normalized);
       searchResult.style.display = 'block';
       divLoadMore.style.display = data.showLoadMore ? 'block' : 'none';
       showMessage(!allResults.length ? (data.noResultsMessage || config.noResultsText) : '');
 
-      saveRecentSearch(normalized);
+      if (allResults.length) {
+        saveRecentSearch(normalized, allResults);
+      }
       saveLastResults({
         term: normalized,
         page: currentPage,
@@ -326,16 +340,14 @@ export default async function decorate(block) {
     if (!loading && currentTerm) runSearch(currentTerm, currentPage + 1, true);
   });
 
-  const initialTerm = new URLSearchParams(window.location.search).get('q');
-  if (initialTerm) {
-    input.value = initialTerm;
-    runSearch(initialTerm, 1, false);
-  } else if (!restoreLastResults()) {
-    showRecentSearches((recentTerm) => {
-      input.value = recentTerm;
-      runSearch(recentTerm, 1, false);
-    });
-  }
+  // Always clear on page load/refresh
+  clearLastResults();
+  updateUrl('');
+  input.value = '';
+  showRecentSearches((recentTerm) => {
+    input.value = recentTerm;
+    runSearch(recentTerm, 1, false);
+  });
 
   block.addEventListener('site-search:clear', () => {
     clearLastResults();
