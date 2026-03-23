@@ -14,63 +14,117 @@ pr:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-# 1. Install Node.js
-- task: NodeTool@0
-  inputs:
-    versionSpec: '18.x'
-  displayName: 'Install Node.js'
+stages:
 
-# 2. Install Lighthouse CI
-- script: |
-    npm install -g @lhci/cli@0.13.x
-  displayName: 'Install Lighthouse CI'
+# =========================
+# STAGE 1: LINT
+# =========================
+- stage: Lint
+  displayName: "Code Quality Checks"
+  jobs:
+  - job: LintJob
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
 
-# 3. Install dependencies (jq + bc)
-- script: |
-    sudo apt-get update
-    sudo apt-get install -y jq bc
-  displayName: 'Install dependencies'
+    - script: npm install
+      displayName: 'Install dependencies'
 
-# 4. Run Lighthouse CI (uses lighthouserc.json)
-- script: |
-    lhci autorun
-  displayName: 'Run Lighthouse CI'
+    - script: npx eslint . --ext .js,.ts,.jsx,.tsx
+      displayName: 'Run ESLint'
 
-# 5. Extract and print scores
-- script: |
-    echo "===================================="
-    echo " Lighthouse Scores per URL"
-    echo "===================================="
+    - script: npx stylelint "**/*.css" "**/*.scss"
+      displayName: 'Run Stylelint'
+      continueOnError: true   # optional
 
-    FAIL=0
 
-    FILES=$(find .lighthouseci -name "lhr-*.json")
+# =========================
+# STAGE 2: BUILD
+# =========================
+- stage: Build
+  displayName: "Build Application"
+  dependsOn: Lint
+  condition: succeeded()
+  jobs:
+  - job: BuildJob
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
 
-    if [ -z "$FILES" ]; then
-      echo "❌ No Lighthouse reports found!"
-      exit 1
-    fi
+    - script: npm install
+      displayName: 'Install dependencies'
 
-    for file in $FILES; do
-      URL=$(jq -r '.finalUrl' "$file")
-      SCORE=$(jq '.categories.performance.score * 100' "$file")
+    - script: npm run build
+      displayName: 'Build project'
 
-      echo "------------------------------------"
-      echo "URL: $URL"
-      echo "Performance Score: $SCORE"
+    # Publish build artifacts (useful for AEM frontend or SPA)
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: 'dist'
+        artifactName: 'build-output'
 
-      # Fail if score < 80
-      if (( $(echo "$SCORE < 80" | bc -l) )); then
-        echo "❌ Performance below threshold (80)"
-        FAIL=1
-      fi
-    done
 
-    echo "===================================="
+# =========================
+# STAGE 3: PERFORMANCE (LIGHTHOUSE)
+# =========================
+- stage: Performance
+  displayName: "Lighthouse Performance Checks"
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - job: LighthouseJob
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
 
-    if [ $FAIL -eq 1 ]; then
-      echo "🚨 Lighthouse performance check failed"
-      exit 1
-    fi
-  displayName: 'Extract & Validate Scores'
+    - script: npm install -g @lhci/cli@0.13.x
+      displayName: 'Install Lighthouse CI'
+
+    - script: |
+        sudo apt-get update
+        sudo apt-get install -y jq bc
+      displayName: 'Install dependencies'
+
+    # Run Lighthouse using your lighthouserc.json
+    - script: lhci autorun
+      displayName: 'Run Lighthouse CI'
+
+    # Extract and validate scores
+    - script: |
+        echo "===================================="
+        echo " Lighthouse Scores per URL"
+        echo "===================================="
+
+        FAIL=0
+
+        FILES=$(find .lighthouseci -name "lhr-*.json")
+
+        if [ -z "$FILES" ]; then
+          echo "❌ No Lighthouse reports found!"
+          exit 1
+        fi
+
+        for file in $FILES; do
+          URL=$(jq -r '.finalUrl' "$file")
+          SCORE=$(jq '.categories.performance.score * 100' "$file")
+
+          echo "------------------------------------"
+          echo "URL: $URL"
+          echo "Performance Score: $SCORE"
+
+          if (( $(echo "$SCORE < 80" | bc -l) )); then
+            echo "❌ Performance below threshold"
+            FAIL=1
+          fi
+        done
+
+        echo "===================================="
+
+        if [ $FAIL -eq 1 ]; then
+          echo "🚨 Performance gate failed"
+          exit 1
+        fi
+      displayName: 'Validate Lighthouse Scores'
