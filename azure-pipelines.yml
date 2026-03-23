@@ -40,38 +40,11 @@ stages:
 
 
 # =========================
-# STAGE 2: BUILD
-# =========================
-- stage: Build
-  displayName: "Build Application"
-  dependsOn: Lint
-  condition: succeeded()
-  jobs:
-  - job: BuildJob
-    steps:
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '18.x'
-
-    - script: npm install
-      displayName: 'Install dependencies'
-
-    - script: npm run build
-      displayName: 'Build project'
-
-    # Publish build artifacts (useful for AEM frontend or SPA)
-    - task: PublishBuildArtifacts@1
-      inputs:
-        pathToPublish: 'dist'
-        artifactName: 'build-output'
-
-
-# =========================
-# STAGE 3: PERFORMANCE (LIGHTHOUSE)
+# STAGE 2: PERFORMANCE
 # =========================
 - stage: Performance
   displayName: "Lighthouse Performance Checks"
-  dependsOn: Build
+  dependsOn: Lint
   condition: succeeded()
   jobs:
   - job: LighthouseJob
@@ -88,11 +61,11 @@ stages:
         sudo apt-get install -y jq bc
       displayName: 'Install dependencies'
 
-    # Run Lighthouse using your lighthouserc.json
+    # Run Lighthouse (uses your lighthouserc.json with all AEM URLs)
     - script: lhci autorun
       displayName: 'Run Lighthouse CI'
 
-    # Extract and validate scores
+    # Extract + validate scores
     - script: |
         echo "===================================="
         echo " Lighthouse Scores per URL"
@@ -115,8 +88,9 @@ stages:
           echo "URL: $URL"
           echo "Performance Score: $SCORE"
 
+          # Fail threshold
           if (( $(echo "$SCORE < 80" | bc -l) )); then
-            echo "❌ Performance below threshold"
+            echo "❌ Performance below threshold (80)"
             FAIL=1
           fi
         done
