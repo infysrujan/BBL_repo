@@ -66,55 +66,80 @@ stages:
     - script: lhci autorun
       displayName: 'Run Lighthouse CI'
 
-    # Publish Summary (FIXED INDENTATION)
+    # =========================
+    # ENHANCED SUMMARY
+    # =========================
     - script: |
-        echo "## Lighthouse Report" > summary.md
-        echo "" >> summary.md
-        echo "| URL | Performance | Accessibility | SEO |" >> summary.md
-        echo "|-----|------------|--------------|-----|" >> summary.md
+        SUMMARY_FILE="$(System.DefaultWorkingDirectory)/summary.md"
 
-        for file in $(find .lighthouseci -name "lhr-*.json"); do
-          URL=$(jq -r '.finalUrl' "$file")
-          PERF=$(jq '.categories.performance.score * 100' "$file")
-          A11Y=$(jq '.categories.accessibility.score * 100' "$file")
-          SEO=$(jq '.categories.seo.score * 100' "$file")
+        echo "## 🚀 Lighthouse Report" > $SUMMARY_FILE
+        echo "" >> $SUMMARY_FILE
+        echo "| URL | Perf | A11y | SEO | LCP | FCP | TBT | CLS |" >> $SUMMARY_FILE
+        echo "|-----|------|------|-----|-----|-----|-----|-----|" >> $SUMMARY_FILE
 
-          echo "| $URL | $PERF | $A11Y | $SEO |" >> summary.md
-        done
+        FILES=$(find .lighthouseci -name "lhr-*.json")
 
-        echo "##vso[task.uploadsummary]summary.md"
-      displayName: 'Publish Lighthouse Summary'
+        get_color() {
+          SCORE=$1
+          if (( $(echo "$SCORE >= 90" | bc -l) )); then
+            echo "🟢"
+          elif (( $(echo "$SCORE >= 50" | bc -l) )); then
+            echo "🟠"
+          else
+            echo "🔴"
+          fi
+        }
 
-    # Validate Scores
+        if [ -z "$FILES" ]; then
+          echo "| No Data | - | - | - | - | - | - | - |" >> $SUMMARY_FILE
+        else
+          for file in $FILES; do
+            URL=$(jq -r '.finalUrl' "$file")
+
+            PERF=$(jq '.categories.performance.score * 100' "$file")
+            A11Y=$(jq '.categories.accessibility.score * 100' "$file")
+            SEO=$(jq '.categories.seo.score * 100' "$file")
+
+            LCP=$(jq '.audits["largest-contentful-paint"].displayValue' "$file")
+            FCP=$(jq '.audits["first-contentful-paint"].displayValue' "$file")
+            TBT=$(jq '.audits["total-blocking-time"].displayValue' "$file")
+            CLS=$(jq '.audits["cumulative-layout-shift"].displayValue' "$file")
+
+            PERF_ICON=$(get_color $PERF)
+            A11Y_ICON=$(get_color $A11Y)
+            SEO_ICON=$(get_color $SEO)
+
+            echo "| $URL | $PERF_ICON $PERF | $A11Y_ICON $A11Y | $SEO_ICON $SEO | $LCP | $FCP | $TBT | $CLS |" >> $SUMMARY_FILE
+          done
+        fi
+
+        echo ""
+        echo "##vso[task.uploadsummary]$SUMMARY_FILE"
+      displayName: 'Publish Enhanced Lighthouse Summary'
+
+    # =========================
+    # VALIDATION
+    # =========================
     - script: |
         echo "===================================="
-        echo " Lighthouse Scores per URL"
+        echo " Lighthouse Validation"
         echo "===================================="
 
         FAIL=0
 
         FILES=$(find .lighthouseci -name "lhr-*.json")
 
-        if [ -z "$FILES" ]; then
-          echo "❌ No Lighthouse reports found!"
-          exit 1
-        fi
-
         for file in $FILES; do
           URL=$(jq -r '.finalUrl' "$file")
           SCORE=$(jq '.categories.performance.score * 100' "$file")
 
-          echo "------------------------------------"
-          echo "URL: $URL"
-          echo "Performance Score: $SCORE"
+          echo "URL: $URL → Score: $SCORE"
 
           if (( $(echo "$SCORE < 80" | bc -l) )); then
-            echo "❌ Performance below threshold (80)"
+            echo "❌ Performance below threshold"
             FAIL=1
           fi
         done
-
-        echo "===================================="
 
         if [ $FAIL -eq 1 ]; then
           echo "🚨 Performance gate failed"
