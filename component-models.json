@@ -181,10 +181,24 @@
         "description": "The label shown for this section in the Content Tree"
       },
       {
+        "component": "boolean",
+        "label": "Enable this section to be a part of sub-navigation",
+        "name": "is-subnav-section",
+        "valueType": "boolean"
+      },
+      {
         "component": "text",
         "name": "subnav-label",
-        "label": "Sub Nav Title",
-        "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled."
+        "label": "Sub Navigation Title",
+        "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled.",
+        "condition": {
+          "===": [
+            {
+              "var": "is-subnav-section"
+            },
+            true
+          ]
+        }
       },
       {
         "component": "multiselect",
@@ -7530,8 +7544,44 @@
           {
             "name": "Subnav without dropdown",
             "value": "subnav-without-dropdown"
+          },
+          {
+            "name": "Subnav with tab for locate us page",
+            "value": "subnav-tab"
           }
         ]
+      },
+      {
+        "component": "text",
+        "name": "tab-name-1",
+        "label": "Tab Name 1",
+        "description": "Enter the name of the tab 1",
+        "valueType": "string",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "subnav-tab"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "tab-name-2",
+        "label": "Tab Name 2",
+        "description": "Enter the name of the tab 2",
+        "valueType": "string",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "subnav-tab"
+          ]
+        }
       }
     ]
   },
