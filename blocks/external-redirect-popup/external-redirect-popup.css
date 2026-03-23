@@ -199,7 +199,7 @@
 }
 
 /* ── Desktop (≥ 1025px) ── */
-@media (width >= 64.0625rem) {
+@media (width >= 64rem) {
     .external-redirect-popup-inner {
         width: 41.6667%; /* col-md-5 */
     }
