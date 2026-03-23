@@ -1,4 +1,5 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { fetchConfigs } from '../../scripts/config.js';
 import { getSiteSearchResults, normalizeSearchTerm } from '../../scripts/utils/searchApi.js';
 
 const MIN_SEARCH_LENGTH = 3;
@@ -81,7 +82,6 @@ function getSearchConfig(rows, placeholders = {}) {
     recentTitle: blockConfig.recentTitle,
     learnMoreLabel: blockConfig.learnMoreLabel,
     loadMoreLabel: blockConfig.learnMoreLabel || 'Learn More',
-    loadingText: 'Searching...',
     ariaLabel: placeholders.ariaLableSearch,
     searchImage: blockConfig.searchImage,
     searchImageAlt: blockConfig.searchImageAlt,
@@ -106,7 +106,7 @@ function buildSearchPanel(item, term = '') {
           <div class="search-modal-panel-body">
             <div class="search-modal-panel-caption">
               <h3 class="search-modal-panel-title">${highlightTerm(title, term)}</h3>
-              <div class="search-modal-panel-description">${highlightTerm(description, term)}</div>
+              <div class="search-modal-panel-description">${description}</div>
             </div>
           </div>
         </a>
@@ -165,8 +165,11 @@ function renderRecentSearches(container, recentTitle, onSearch) {
 export default async function decorate(block) {
   const rows = [...block.children];
   const placeholders = await fetchPlaceholders();
+  const configs = await fetchConfigs();
   const config = getSearchConfig(rows, placeholders);
   const pageLanguage = getLanguageFromPath();
+  const apiUrl = configs?.getSearchResult || '';
+  const baseUrl = configs?.bblBaseUrl || '';
 
   block.innerHTML = `
     <div class="search-modal search-modal-active">
@@ -213,17 +216,18 @@ export default async function decorate(block) {
   function setLoading(isLoading) {
     loading = isLoading;
     searchButton.disabled = isLoading;
-    searchButton.textContent = isLoading ? config.loadingText : config.searchLabel;
+    searchButton.textContent = isLoading ? 'Searching...' : config.searchLabel;
   }
 
   function updateUrl(term) {
     const url = new URL(window.location.href);
     if (term) {
       url.searchParams.set('q', term);
+      window.history.pushState({}, '', url);
     } else {
       url.searchParams.delete('q');
+      window.history.replaceState({}, '', url);
     }
-    window.history.replaceState({}, '', url);
   }
 
   function renderResults(items, term = '') {
@@ -292,6 +296,8 @@ export default async function decorate(block) {
 
     try {
       const data = await getSiteSearchResults({
+        apiUrl,
+        baseUrl,
         keywords: normalized,
         pageNumber: page,
         pageLanguage,
@@ -315,7 +321,7 @@ export default async function decorate(block) {
         results: allResults,
         showLoadMore: data.showLoadMore,
       });
-      updateUrl(normalized);
+      updateUrl();
     } catch (error) {
       resultsList.innerHTML = '';
       searchResult.style.display = 'block';
