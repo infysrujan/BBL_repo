@@ -244,43 +244,9 @@ function closeModal(overlay) {
 }
 
 /* -------------------------------------------------------------------------
- * External-host detection
- * ---------------------------------------------------------------------- */
-
-/**
- * Checks whether a given URL is considered external compared to the
- * current page's origin.
- * Returns false for relative paths, hash links, and same-origin URLs.
- */
-/* function isExternalUrl(href) {
-  if (!href || href.startsWith('#') || href.startsWith('/') || href.startsWith('./') ||
-   href.startsWith('../')) {
-    return false;
-  }
-  try {
-    const url = new URL(href);
-    return url.hostname !== window.location.hostname;
-  } catch {
-    return false;
-  }
-} */
-
-/* -------------------------------------------------------------------------
  * Main decorate function
  * ---------------------------------------------------------------------- */
 
-/**
- * Decorates the privacy-modal block.
- *
- * Block row layout (authored in Universal Editor / document):
- *   Row 0 → title          (text)
- *   Row 1 → privacyText    (richtext)
- *   Row 2 → checkboxLabel  (text)
- *   Row 3 → enableModal    (checkbox / boolean)
- *   Row 4 → linkText / ctaLabel  (from _button-fields.json)
- *
- * @param {HTMLElement} block
- */
 export default function decorate(block) {
   const rows = [...block.children];
 
@@ -296,9 +262,6 @@ export default function decorate(block) {
   /* ctaLabel — Row 4 (linkText cell from _button-fields.json) */
   const ctaLabel = rows[4]?.textContent.trim() || 'Agree';
 
-  /* Singleton guard — if another instance of this block has already created
-     the modal overlay (e.g. block placed in both main content and footer),
-     do nothing. Only the first instance on the page should run. */
   if (document.querySelector('.privacy-modal-overlay')) {
     block.remove();
     return;
@@ -326,7 +289,6 @@ export default function decorate(block) {
     // Check for pending URL at the time of agreement
     const pendingHref = window.pendingNavigationUrl;
     if (pendingHref) {
-      console.log('Redirecting to:', pendingHref);
       window.pendingNavigationUrl = null;
       window.location.href = pendingHref;
     }
