@@ -26,10 +26,24 @@
           "description": "The label shown for this section in the Content Tree"
         },
         {
+          "component": "boolean",
+          "label": "Enable this section to be a part of sub-navigation",
+          "name": "is-subnav-section",
+          "valueType": "boolean"
+        },
+        {
           "component": "text",
           "name": "subnav-label",
-          "label": "Sub Nav Title",
-          "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled."
+          "label": "Sub Navigation Title",
+          "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled.",
+          "condition": {
+            "===": [
+              {
+                "var": "is-subnav-section"
+              },
+              true
+            ]
+          }
         },
         {
           "component": "multiselect",
@@ -150,7 +164,8 @@
         "teaser-with-bg-image",
         "sub-nav",
         "currency-converter",
-        "popup-modal-card-offer"
+        "popup-modal-card-offer",
+        "locate-us"
       ]
     }
   ]
