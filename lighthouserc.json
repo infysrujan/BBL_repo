@@ -3,6 +3,7 @@
     "collect": {
       "url": [
         "https://dev--site-dev--bbl-pweb-site.aem.live",
+        "https://dev--site-dev--singhalgoru.aem.page/en",
         "https://qa--site-qa--bbl-pweb-site.aem.live",
         "https://stage--site-stage--bbl-pweb-site.aem.live",
         "https://main--site-prod--bbl-pweb-site.aem.live"
