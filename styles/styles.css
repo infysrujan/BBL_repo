@@ -342,6 +342,10 @@ body.wealth main :is(.button-container .button, .button) {
    SECTION-LEVEL  - Global Styles
    ========================================================================= */
 
+.section > .default-content-wrapper {
+    display: flow-root;
+}
+
 .section.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
     text-align: center;
 }
