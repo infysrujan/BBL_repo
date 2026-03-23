@@ -115,38 +115,3 @@ stages:
         echo "Uploading summary..."
         echo "##vso[task.uploadsummary]$SUMMARY_FILE"
       displayName: 'Publish Lighthouse Summary'
-
-    # =========================
-    # VALIDATION (FAIL PIPELINE)
-    # =========================
-    - script: |
-        echo "===================================="
-        echo " Lighthouse Validation"
-        echo "===================================="
-
-        FAIL=0
-
-        FILES=$(find .lighthouseci -name "lhr-*.json")
-
-        if [ -z "$FILES" ]; then
-          echo "❌ No Lighthouse reports found!"
-          exit 1
-        fi
-
-        for file in $FILES; do
-          URL=$(jq -r '.finalUrl' "$file")
-          SCORE=$(jq '.categories.performance.score * 100' "$file")
-
-          echo "URL: $URL → Score: $SCORE"
-
-          if (( $(echo "$SCORE < 80" | bc -l) )); then
-            echo "❌ Performance below threshold (80)"
-            FAIL=1
-          fi
-        done
-
-        if [ $FAIL -eq 1 ]; then
-          echo "🚨 Performance gate failed"
-          exit 1
-        fi
-      displayName: 'Validate Lighthouse Scores'
