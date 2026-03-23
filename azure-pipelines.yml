@@ -36,7 +36,7 @@ stages:
 
     - script: npx stylelint "**/*.css" "**/*.scss"
       displayName: 'Run Stylelint'
-      continueOnError: true   # optional
+      continueOnError: true
 
 
 # =========================
@@ -49,6 +49,7 @@ stages:
   jobs:
   - job: LighthouseJob
     steps:
+
     - task: NodeTool@0
       inputs:
         versionSpec: '18.x'
@@ -61,11 +62,30 @@ stages:
         sudo apt-get install -y jq bc
       displayName: 'Install dependencies'
 
-    # Run Lighthouse (uses your lighthouserc.json with all AEM URLs)
+    # Run Lighthouse
     - script: lhci autorun
       displayName: 'Run Lighthouse CI'
 
-    # Extract + validate scores
+    # Publish Summary (FIXED INDENTATION)
+    - script: |
+        echo "## Lighthouse Report" > summary.md
+        echo "" >> summary.md
+        echo "| URL | Performance | Accessibility | SEO |" >> summary.md
+        echo "|-----|------------|--------------|-----|" >> summary.md
+
+        for file in $(find .lighthouseci -name "lhr-*.json"); do
+          URL=$(jq -r '.finalUrl' "$file")
+          PERF=$(jq '.categories.performance.score * 100' "$file")
+          A11Y=$(jq '.categories.accessibility.score * 100' "$file")
+          SEO=$(jq '.categories.seo.score * 100' "$file")
+
+          echo "| $URL | $PERF | $A11Y | $SEO |" >> summary.md
+        done
+
+        echo "##vso[task.uploadsummary]summary.md"
+      displayName: 'Publish Lighthouse Summary'
+
+    # Validate Scores
     - script: |
         echo "===================================="
         echo " Lighthouse Scores per URL"
@@ -88,7 +108,6 @@ stages:
           echo "URL: $URL"
           echo "Performance Score: $SCORE"
 
-          # Fail threshold
           if (( $(echo "$SCORE < 80" | bc -l) )); then
             echo "❌ Performance below threshold (80)"
             FAIL=1
