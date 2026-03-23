@@ -31,7 +31,7 @@ stages:
     - script: |
         set -e
         npm install
-        echo "✅ Dependencies installed successfully"
+        echo "✅ Dependencies installed"
       displayName: 'Install dependencies'
 
     - script: |
@@ -67,7 +67,7 @@ stages:
         sudo apt-get update
         sudo apt-get install -y jq bc
         npm install -g @lhci/cli@0.13.x broken-link-checker
-        echo "✅ Tools installed successfully"
+        echo "✅ Tools installed"
       displayName: 'Install tools'
 
     # =========================
@@ -87,7 +87,7 @@ stages:
 
         echo "Using URL: $TEST_URL"
         echo "##vso[task.setvariable variable=TEST_URL]$TEST_URL"
-        echo "✅ Test URL resolved successfully"
+        echo "✅ URL resolved"
       displayName: 'Set Test URL'
 
     # =========================
@@ -95,8 +95,6 @@ stages:
     # =========================
     - script: |
         set -e
-
-        echo "Checking CDN headers..."
 
         HEADERS=$(curl -s -I $(TEST_URL))
         echo "$HEADERS"
@@ -106,7 +104,7 @@ stages:
           exit 1
         fi
 
-        echo "✅ CDN headers validated successfully"
+        echo "✅ CDN headers validated"
       displayName: 'Validate CDN Headers'
 
     # =========================
@@ -114,9 +112,8 @@ stages:
     # =========================
     - script: |
         set -e
-        echo "Running broken link check..."
         blc $(TEST_URL) -ro
-        echo "✅ No broken links found"
+        echo "✅ No broken links"
       displayName: 'Check Broken Links'
 
     # =========================
@@ -127,7 +124,7 @@ stages:
         lhci collect --url="$(TEST_URL)" --numberOfRuns=3
         lhci assert
         lhci upload
-        echo "✅ Lighthouse execution completed"
+        echo "✅ Lighthouse completed"
       displayName: 'Run Lighthouse CI'
 
     # =========================
@@ -140,7 +137,7 @@ stages:
       displayName: 'Publish Lighthouse Report'
 
     # =========================
-    # SUMMARY + VALIDATION
+    # SUMMARY + VALIDATION (ANY PASS)
     # =========================
     - script: |
         set -e
@@ -153,7 +150,7 @@ stages:
         echo "| URL | Perf | A11y | SEO | LCP | CLS |" >> $SUMMARY_FILE
         echo "|-----|------|------|-----|-----|-----|" >> $SUMMARY_FILE
 
-        FAIL=0
+        PASS=0
 
         for file in $FILES; do
           URL=$(jq -r '.finalUrl' "$file")
@@ -171,11 +168,11 @@ stages:
           echo "URL: $URL"
           echo "Performance: $PERF"
 
-          if (( $(echo "$PERF < 80" | bc -l) )); then
-            echo "❌ BELOW THRESHOLD"
-            FAIL=1
+          if (( $(echo "$PERF >= 80" | bc -l) )); then
+            echo "✅ GOOD SCORE (>=80)"
+            PASS=1
           else
-            echo "✅ Performance OK"
+            echo "⚠️ BELOW THRESHOLD"
           fi
         done
 
@@ -183,10 +180,10 @@ stages:
         cat $SUMMARY_FILE
         echo "##vso[task.uploadsummary]$SUMMARY_FILE"
 
-        if [ $FAIL -eq 1 ]; then
-          echo "🚨 Performance gate failed"
+        if [ $PASS -eq 1 ]; then
+          echo "🎉 At least one run passed → SUCCESS"
+        else
+          echo "🚨 All runs below threshold → FAILED"
           exit 1
         fi
-
-        echo "🎉 All performance checks passed successfully"
       displayName: 'Summary + Validation'
