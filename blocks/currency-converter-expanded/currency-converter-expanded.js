@@ -461,7 +461,21 @@ export default async function decorate(block) {
         // Line 3: As of date at time
         if (dateTimeData && resultLine3) {
           const formattedDate = formatDate(dateTimeData?.day ?? '');
-          resultLine3.innerHTML = `${asOfLabel} <span class="date-convert">${formattedDate}</span> ${atLabel} <span class="time-convert">${dateTimeData?.time ?? ''}</span>`;
+          // Build with DOM nodes to prevent XSS from API response
+          resultLine3.textContent = ''; // Clear existing content
+          resultLine3.appendChild(document.createTextNode(`${asOfLabel} `));
+
+          const dateSpan = document.createElement('span');
+          dateSpan.className = 'date-convert';
+          dateSpan.textContent = formattedDate;
+          resultLine3.appendChild(dateSpan);
+
+          resultLine3.appendChild(document.createTextNode(` ${atLabel} `));
+
+          const timeSpan = document.createElement('span');
+          timeSpan.className = 'time-convert';
+          timeSpan.textContent = dateTimeData?.time ?? '';
+          resultLine3.appendChild(timeSpan);
         } else if (resultLine3) {
           resultLine3.textContent = '';
         }
