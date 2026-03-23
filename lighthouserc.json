@@ -1,0 +1,23 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "https://dev--site-dev--bbl-pweb-site.aem.live",
+        "https://qa--site-qa--bbl-pweb-site.aem.live",
+        "https://stage--site-stage--bbl-pweb-site.aem.live",
+        "https://main--site-prod--bbl-pweb-site.aem.live"
+
+      ],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", {"minScore": 0.8}],
+        "categories:accessibility": ["warn", {"minScore": 0.9}]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}
