@@ -5,8 +5,16 @@ export function normalizeSearchTerm(term = '') {
   return term.trim().replace(/\s+/g, ' ');
 }
 
+function getQueryIndexUrl() {
+  const [, lang] = window.location.pathname.split('/');
+  const prefix = lang ? `/${lang}` : '/en';
+  return `${prefix}/query-index.json`;
+}
+
 async function fetchQueryIndex() {
-  const initialRes = await fetch('/query-index.json?limit=100&offset=0', { cache: 'no-store' });
+  const baseUrl = getQueryIndexUrl();
+
+  const initialRes = await fetch(`${baseUrl}?limit=100&offset=0`, { cache: 'no-store' });
   if (!initialRes.ok) throw new Error(`Index fetch failed: ${initialRes.status}`);
   const initialData = await initialRes.json();
 
@@ -18,7 +26,7 @@ async function fetchQueryIndex() {
   const requests = [];
   for (let offset = limit; offset < total; offset += limit) {
     requests.push(
-      fetch(`/query-index.json?limit=${limit}&offset=${offset}`, { cache: 'no-store' })
+      fetch(`${baseUrl}?limit=${limit}&offset=${offset}`, { cache: 'no-store' })
         .then((res) => res.json())
         .then((data) => {
           const s = data['query-index'] || data;

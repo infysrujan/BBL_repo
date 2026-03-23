@@ -1,50 +1,62 @@
 version: 1
 
 indices:
-  pages:
+  site-en: &base-site
     include:
-      - '/**'
+      - "/en/**"
     exclude:
-      - '/**.json'
-    target: /query-index.json
+      - "/*.json"
+      - "/**/*.json"
+    target: /en/query-index.json
     properties:
-      lastModified:
-        select: none
-        value: parseTimestamp(headers["last-modified"], "ddd, DD MMM YYYY hh:mm:ss GMT")
-      robots:
-        select: head > meta[name="robots"]
-        value: attribute(el, "content")
-      metaTitle:
-        select: head > meta[name="title"], head > title
+      title:
+        select: head > meta[property="og:title"], head > title
         value: |
-          attribute(el, 'content') || text(el)
-
-      metaDescription:
+          attribute(el, 'content') || textContent(el)
+      description:
         select: head > meta[name="description"]
         value: |
           attribute(el, 'content')
-
-      metaKeywords:
-        select: head > meta[name="keywords"]
-        value: |
-          attribute(el, 'content')
-
       ogTitle:
         select: head > meta[property="og:title"]
         value: |
           attribute(el, 'content')
-
       ogDescription:
         select: head > meta[property="og:description"]
         value: |
           attribute(el, 'content')
-
       ogImage:
         select: head > meta[property="og:image"]
         value: |
-          attribute(el, 'content')
-
+          match(attribute(el, 'content'), 'https://[^/]+(/.*)')
       ogUrl:
         select: head > meta[property="og:url"], head > link[rel="canonical"]
         value: |
           attribute(el, 'content') || attribute(el, 'href')
+      keywords:
+        select: head > meta[name="keywords"]
+        value: |
+          attribute(el, 'content')
+      theme:
+        select: head > meta[name="theme"]
+        value: |
+          attribute(el, 'content')
+      robots:
+        select: head > meta[name="robots"]
+        value: attribute(el, "content")
+      lastModified:
+        select: head > meta[name="last-update"]
+        value: |
+          parseTimestamp(attribute(el, "content"), 'ddd MMM DD YYYY hh:mm:ss GMT')
+      lastContentModified:
+        select: none
+        value: parseTimestamp(headers["last-modified"], "ddd, DD MMM YYYY hh:mm:ss GMT")
+
+  site-th:
+    <<: *base-site
+    include:
+      - "/th-TH/**"
+    exclude:
+      - "/*.json"
+      - "/**/*.json"
+    target: /th-TH/query-index.json

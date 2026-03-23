@@ -105,7 +105,9 @@ function buildSearchPanel(item, term = '') {
           <div class="search-modal-panel-body">
             <div class="search-modal-panel-caption">
               <h3 class="search-modal-panel-title">${highlightTerm(title, term)}</h3>
-              <div class="search-modal-panel-description">${description}</div>
+              <div class="search-modal-panel-description">
+                ${highlightTerm(description, term)}
+              </div>
             </div>
           </div>
         </a>
@@ -256,6 +258,7 @@ export default async function decorate(block) {
 
     if (normalized.length < MIN_SEARCH_LENGTH) {
       if (!normalized) {
+        // Empty input: try restoring last results; if none, show recent searches
         if (!restoreLastResults()) {
           resultsList.innerHTML = '';
           showMessage('');
@@ -326,13 +329,14 @@ export default async function decorate(block) {
     if (!loading && currentTerm) runSearch(currentTerm, currentPage + 1, true);
   });
 
-  // Always clear on page load/refresh
-  clearLastResults();
+  // On page load: restore last results if present; otherwise show recent searches
   input.value = '';
-  showRecentSearches((recentTerm) => {
-    input.value = recentTerm;
-    runSearch(recentTerm, 1, false);
-  });
+  if (!restoreLastResults()) {
+    showRecentSearches((recentTerm) => {
+      input.value = recentTerm;
+      runSearch(recentTerm, 1, false);
+    });
+  }
 
   block.addEventListener('site-search:clear', () => {
     clearLastResults();
