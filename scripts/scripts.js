@@ -16,10 +16,9 @@ import {
 import {
   decorateSvgWithAltText,
   decorateTerritoryButtons,
-  decorateButtonsV1,
 } from './bbl-decorators.js';
 
-import decorateTabs from '../blocks/tabs/tabs-helper.js';
+// import decorateTabs from '../blocks/tabs/tabs-helper.js';
 
 /**
  * Gets the language from the HTML tag.
@@ -119,9 +118,9 @@ async function loadFonts() {
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
-function buildAutoBlocks(main) {
+function buildAutoBlocks() {
   try {
-    decorateTabs(main);
+    // decorateTabs(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -141,7 +140,6 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateTerritoryButtons(main);
-  decorateButtonsV1(main);
   decorateSvgWithAltText(main);
   setExternalLinksTarget(main);
 
