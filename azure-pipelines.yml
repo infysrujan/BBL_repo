@@ -1,0 +1,189 @@
+trigger:
+  branches:
+    include:
+      - dev
+      - main
+      - feature/*
+
+pr:
+  branches:
+    include:
+      - dev
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+
+# =========================
+# STAGE 1: LINT
+# =========================
+- stage: Lint
+  displayName: "Code Quality Checks"
+  jobs:
+  - job: LintJob
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+
+    - script: |
+        set -e
+        npm install
+        echo "✅ Dependencies installed"
+      displayName: 'Install dependencies'
+
+    - script: |
+        set -e
+        npx eslint . --ext .js,.ts,.jsx,.tsx
+        echo "✅ ESLint passed"
+      displayName: 'Run ESLint'
+
+    - script: |
+        npx stylelint "**/*.css" "**/*.scss"
+        echo "✅ Stylelint completed"
+      displayName: 'Run Stylelint'
+      continueOnError: true
+
+
+# =========================
+# STAGE 2: PERFORMANCE
+# =========================
+- stage: Performance
+  displayName: "AEM EDS Validation + Lighthouse"
+  dependsOn: Lint
+  condition: succeeded()
+  jobs:
+  - job: LighthouseJob
+    steps:
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+
+    - script: |
+        set -e
+        sudo apt-get update
+        sudo apt-get install -y jq bc
+        npm install -g @lhci/cli@0.13.x broken-link-checker
+        echo "✅ Tools installed"
+      displayName: 'Install tools'
+
+    # =========================
+    # SET TEST URL
+    # =========================
+    - script: |
+        set -e
+
+        RAW_BRANCH=$(Build.SourceBranchName)
+        BRANCH_NAME=$(echo $RAW_BRANCH | sed 's/\//-/g')
+
+        if [ "$BRANCH_NAME" = "main" ]; then
+          TEST_URL="https://main--site-dev--singhalgoru.aem.live/en"
+        else
+          TEST_URL="https://${BRANCH_NAME}--site-dev--singhalgoru.aem.page/en"
+        fi
+
+        echo "Using URL: $TEST_URL"
+        echo "##vso[task.setvariable variable=TEST_URL]$TEST_URL"
+        echo "✅ URL resolved"
+      displayName: 'Set Test URL'
+
+    # =========================
+    # CDN HEADER CHECK
+    # =========================
+    - script: |
+        set -e
+
+        HEADERS=$(curl -s -I $(TEST_URL))
+        echo "$HEADERS"
+
+        if ! echo "$HEADERS" | grep -qi "cache-control"; then
+          echo "❌ Cache-Control header missing"
+          exit 1
+        fi
+
+        echo "✅ CDN headers validated"
+      displayName: 'Validate CDN Headers'
+
+    # =========================
+    # BROKEN LINKS
+    # =========================
+    - script: |
+        set -e
+        blc $(TEST_URL) -ro
+        echo "✅ No broken links"
+      displayName: 'Check Broken Links'
+
+    # =========================
+    # LIGHTHOUSE
+    # =========================
+    - script: |
+        set -e
+        lhci collect --url="$(TEST_URL)" --numberOfRuns=3
+        lhci assert
+        lhci upload
+        echo "✅ Lighthouse completed"
+      displayName: 'Run Lighthouse CI'
+
+    # =========================
+    # PUBLISH REPORT
+    # =========================
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: '.lighthouseci'
+        artifactName: 'lighthouse-report'
+      displayName: 'Publish Lighthouse Report'
+
+    # =========================
+    # SUMMARY + VALIDATION (ANY PASS)
+    # =========================
+    - script: |
+        set -e
+
+        SUMMARY_FILE="$(System.DefaultWorkingDirectory)/summary.md"
+        FILES=$(find .lighthouseci -name "lhr-*.json")
+
+        echo "## 🚀 Lighthouse Report" > $SUMMARY_FILE
+        echo "" >> $SUMMARY_FILE
+        echo "| URL | Perf | A11y | SEO | LCP | CLS |" >> $SUMMARY_FILE
+        echo "|-----|------|------|-----|-----|-----|" >> $SUMMARY_FILE
+
+        PASS=0
+
+        for file in $FILES; do
+          URL=$(jq -r '.finalUrl' "$file")
+
+          PERF=$(jq '.categories.performance.score * 100' "$file")
+          A11Y=$(jq '.categories.accessibility.score * 100' "$file")
+          SEO=$(jq '.categories.seo.score * 100' "$file")
+
+          LCP=$(jq -r '.audits["largest-contentful-paint"].displayValue' "$file")
+          CLS=$(jq -r '.audits["cumulative-layout-shift"].displayValue' "$file")
+
+          echo "| $URL | $PERF | $A11Y | $SEO | $LCP | $CLS |" >> $SUMMARY_FILE
+
+          echo "------------------------------------"
+          echo "URL: $URL"
+          echo "Performance: $PERF"
+
+          if (( $(echo "$PERF >= 80" | bc -l) )); then
+            echo "✅ GOOD SCORE (>=80)"
+            PASS=1
+          else
+            echo "⚠️ BELOW THRESHOLD"
+          fi
+        done
+
+        echo "Uploading summary..."
+        cat $SUMMARY_FILE
+        echo "##vso[task.uploadsummary]$SUMMARY_FILE"
+
+        if [ $PASS -eq 1 ]; then
+          echo "🎉 At least one run passed → SUCCESS"
+        else
+          echo "🚨 All runs below threshold → FAILED"
+          exit 1
+        fi
+      displayName: 'Summary + Validation'
