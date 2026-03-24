@@ -135,7 +135,7 @@ function renderRecentSearches(container, recentTitle, onSearch) {
             <div class="search-modal-results-grid">
               <div class="search-modal-results-list">
                 ${results.length ? results.map((item) => buildSearchPanel(item, term)).join('') : `
-                  <div class="col-md-3 col-sm-6 col-xs-12 search-modal-panel">
+                  <div class="search-modal-panel">
                     <a class="text-small search-modal-history-term" href="#" data-term="${escapeHtml(term)}">
                       <div class="search-modal-panel-inner">
                         <div class="search-modal-panel-body">

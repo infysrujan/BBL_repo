@@ -1,23 +1,20 @@
+import { getLang } from '../scripts.js';
+
 const PAGE_SIZE = 8;
-const DEFAULT_LANGUAGE = 'en';
 const QUERY_INDEX_FILE = 'query-index.json';
 
 export function normalizeSearchTerm(term = '') {
   return term.trim().replace(/\s+/g, ' ');
 }
 
-function getLang() {
-  const [, lang] = window.location.pathname.split('/');
-  return lang || DEFAULT_LANGUAGE;
-}
-
-function getQueryIndexUrl(lang) {
+function getQueryIndexUrl() {
+  const lang = getLang();
   return `/${lang}/${QUERY_INDEX_FILE}`;
 }
 
 async function fetchQueryIndex(keywords, pageNumber, indexErrorMessage = 'Index fetch failed') {
   const lang = getLang();
-  const baseUrl = getQueryIndexUrl(lang);
+  const baseUrl = getQueryIndexUrl();
 
   const initialRes = await fetch(
     `${baseUrl}?keywords=${encodeURIComponent(keywords)}&pageNumber=${pageNumber}&pageLanguage=${lang}`,
@@ -85,11 +82,10 @@ export async function getSiteSearchResults({ keywords, pageNumber = 1, placehold
   const total = matches.length;
   const offset = (pageNumber - 1) * PAGE_SIZE;
   const pageRecords = matches.slice(offset, offset + PAGE_SIZE);
-  const showLoadMore = offset + PAGE_SIZE < total;
 
   return {
     searchResults: pageRecords.map(mapQueryIndexToResult),
-    showLoadMore,
+    showLoadMore: offset + PAGE_SIZE < total,
     noResultsMessage: total === 0 ? placeholders.noResultsFound : undefined,
   };
 }
