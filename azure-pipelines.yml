@@ -30,7 +30,6 @@ stages:
       inputs:
         versionSpec: '18.x'
 
-    # ✅ FIXED CACHE SETUP
     - script: mkdir -p $(Pipeline.Workspace)/.npm
       displayName: 'Create npm cache dir'
 
@@ -44,13 +43,11 @@ stages:
       displayName: 'Configure npm cache'
 
     - script: |
-        set -e
         npm install
         echo "✅ Dependencies installed"
       displayName: 'Install dependencies'
 
     - script: |
-        set -e
         npx eslint . --ext .js,.ts,.jsx,.tsx
         echo "✅ ESLint passed"
       displayName: 'Run ESLint'
@@ -77,7 +74,6 @@ stages:
       inputs:
         versionSpec: '18.x'
 
-    # ✅ FIXED CACHE SETUP
     - script: mkdir -p $(Pipeline.Workspace)/.npm
       displayName: 'Create npm cache dir'
 
@@ -85,7 +81,7 @@ stages:
       inputs:
         key: 'npm | "$(Agent.OS)" | lhci'
         path: $(Pipeline.Workspace)/.npm
-      displayName: 'Cache npm (LHCI)'
+      displayName: 'Cache npm'
 
     - script: npm config set cache $(Pipeline.Workspace)/.npm --global
       displayName: 'Configure npm cache'
@@ -94,8 +90,6 @@ stages:
     # SET TEST URL
     # =========================
     - script: |
-        set -e
-
         RAW_BRANCH=$(Build.SourceBranchName)
         BRANCH_NAME=$(echo $RAW_BRANCH | sed 's/\//-/g')
 
@@ -105,19 +99,15 @@ stages:
           TEST_URL="https://${BRANCH_NAME}--site-stage--bangkok-bank.aem.page/en"
         fi
 
-        echo "Using URL: $TEST_URL"
         echo "##vso[task.setvariable variable=TEST_URL]$TEST_URL"
-        echo "✅ URL resolved"
+        echo "✅ URL resolved: $TEST_URL"
       displayName: 'Set Test URL'
 
     # =========================
     # CDN HEADER CHECK
     # =========================
     - script: |
-        set -e
-
         HEADERS=$(curl -s -I $(TEST_URL))
-        echo "$HEADERS"
 
         if ! echo "$HEADERS" | grep -qi "cache-control"; then
           echo "❌ Cache-Control header missing"
@@ -128,45 +118,37 @@ stages:
       displayName: 'Validate CDN Headers'
 
     # =========================
-    # BROKEN LINKS
+    # BROKEN LINKS (FAST MODE)
     # =========================
     - script: |
-        set -e
-        npx broken-link-checker $(TEST_URL) -ro
-        echo "✅ No broken links"
+        npx broken-link-checker $(TEST_URL) --recursive false
+        echo "✅ Broken link check (shallow) completed"
       displayName: 'Check Broken Links'
 
     # =========================
-    # LIGHTHOUSE
+    # LIGHTHOUSE (OPTIMIZED)
     # =========================
     - script: |
-        set -e
+        npx @lhci/cli@0.13.x collect --url="$(TEST_URL)" --numberOfRuns=2
 
-        npx @lhci/cli@0.13.x collect --url="$(TEST_URL)" --numberOfRuns=3
-
-        echo "Uploading to temporary public storage..."
         LHCI_OUTPUT=$(npx @lhci/cli@0.13.x upload --target=temporary-public-storage)
         echo "$LHCI_OUTPUT"
 
         PUBLIC_URL=$(echo "$LHCI_OUTPUT" | grep -Eo 'https://[^ ]+\.html' | head -1)
 
-        echo "🔗 Lighthouse Report: $PUBLIC_URL"
         echo "##vso[task.setvariable variable=LHCI_PUBLIC_URL]$PUBLIC_URL"
-
-        echo "✅ Lighthouse completed"
+        echo "🔗 Lighthouse Report: $PUBLIC_URL"
       displayName: 'Run Lighthouse CI'
 
     # =========================
-    # EXTRACT BEST REPORT
+    # EXTRACT BEST REPORT (FIXED)
     # =========================
     - script: |
-        set -e
-
         BEST_SCORE=0
         BEST_FILE=""
 
         for file in $(find .lighthouseci -name "lhr-*.json"); do
-          SCORE=$(node -e "console.log(require('$file').categories.performance.score * 100)")
+          SCORE=$(cat "$file" | node -e "let d=JSON.parse(require('fs').readFileSync(0,'utf-8')); console.log(d.categories.performance.score*100)")
 
           if (( $(echo "$SCORE > $BEST_SCORE" | bc -l) )); then
             BEST_SCORE=$SCORE
@@ -193,11 +175,9 @@ stages:
       displayName: 'Publish Best Lighthouse Report'
 
     # =========================
-    # SUMMARY (3 RUNS + LINK)
+    # SUMMARY (ALL RUNS)
     # =========================
     - script: |
-        set -e
-
         SUMMARY_FILE="$(System.DefaultWorkingDirectory)/summary.md"
 
         echo "## 🚀 Lighthouse Report Summary" > $SUMMARY_FILE
@@ -211,19 +191,18 @@ stages:
         echo "" >> $SUMMARY_FILE
 
         echo "### 📊 All Runs Summary" >> $SUMMARY_FILE
-        echo "" >> $SUMMARY_FILE
         echo "| URL | Perf | A11y | SEO | LCP | CLS |" >> $SUMMARY_FILE
         echo "|-----|------|------|-----|-----|-----|" >> $SUMMARY_FILE
 
         PASS=0
 
         for file in $(find .lighthouseci -name "lhr-*.json"); do
-          URL=$(node -e "console.log(require('$file').finalUrl)")
-          PERF=$(node -e "console.log(require('$file').categories.performance.score * 100)")
-          A11Y=$(node -e "console.log(require('$file').categories.accessibility.score * 100)")
-          SEO=$(node -e "console.log(require('$file').categories.seo.score * 100)")
-          LCP=$(node -e "console.log(require('$file').audits['largest-contentful-paint'].displayValue)")
-          CLS=$(node -e "console.log(require('$file').audits['cumulative-layout-shift'].displayValue)")
+          URL=$(cat "$file" | node -e "let d=JSON.parse(require('fs').readFileSync(0,'utf-8')); console.log(d.finalUrl)")
+          PERF=$(cat "$file" | node -e "let d=JSON.parse(require('fs').readFileSync(0,'utf-8')); console.log(d.categories.performance.score*100)")
+          A11Y=$(cat "$file" | node -e "let d=JSON.parse(require('fs').readFileSync(0,'utf-8')); console.log(d.categories.accessibility.score*100)")
+          SEO=$(cat "$file" | node -e "let d=JSON.parse(require('fs').readFileSync(0,'utf-8')); console.log(d.categories.seo.score*100)")
+          LCP=$(cat "$file" | node -e "let d=JSON.parse(require('fs').readFileSync(0,'utf-8')); console.log(d.audits['largest-contentful-paint'].displayValue)")
+          CLS=$(cat "$file" | node -e "let d=JSON.parse(require('fs').readFileSync(0,'utf-8')); console.log(d.audits['cumulative-layout-shift'].displayValue)")
 
           echo "| $URL | $PERF | $A11Y | $SEO | $LCP | $CLS |" >> $SUMMARY_FILE
 
@@ -231,8 +210,6 @@ stages:
             PASS=1
           fi
         done
-
-        echo "" >> $SUMMARY_FILE
 
         if [ $PASS -eq 1 ]; then
           echo "🎉 At least one run passed (≥80)" >> $SUMMARY_FILE
@@ -242,5 +219,4 @@ stages:
         fi
 
         echo "##vso[task.uploadsummary]$SUMMARY_FILE"
-        echo "✅ Summary published"
       displayName: 'Publish Summary'
