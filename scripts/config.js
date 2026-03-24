@@ -11,8 +11,6 @@
  */
 
 import { toCamelCase } from './aem.js';
-// eslint-disable-next-line import/no-cycle
-import { getLang } from './scripts.js';
 
 /**
  * Gets configs object from config.json.
@@ -20,7 +18,7 @@ import { getLang } from './scripts.js';
  */
 // eslint-disable-next-line import/prefer-default-export
 export async function fetchConfigs() {
-  const lang = getLang();
+  const lang = document.documentElement.lang || 'en';
   window.configs = window.configs || {};
   if (!window.configs[lang]) {
     window.configs[lang] = new Promise((resolve) => {
