@@ -1,3 +1,5 @@
+import { moveInstrumentation } from '../../scripts/scripts.js';
+
 export default function decorate(block) {
   const doc = block.ownerDocument;
   const rows = [...block.children];
@@ -97,6 +99,10 @@ export default function decorate(block) {
   // Append overlay directly to body so position:fixed works correctly,
   // then remove the original block (and its EDS section wrapper) from the DOM.
   doc.body.appendChild(overlay);
+
+  // Move instrumentation attributes from block to overlay for Universal Editor support
+  moveInstrumentation(block, overlay);
+
   block.remove();
 
   // ── State & helpers ────────────────────────────────────────────────────────
