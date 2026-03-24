@@ -123,16 +123,19 @@ stages:
     # =========================
     - script: |
         set -e
+
         lhci collect --url="$(TEST_URL)" --numberOfRuns=3
 
         echo "Uploading to temporary public storage..."
         LHCI_OUTPUT=$(lhci upload --target=temporary-public-storage)
         echo "$LHCI_OUTPUT"
 
-        # Extract public URL
-        PUBLIC_URL=$(echo "$LHCI_OUTPUT" | grep -o 'https://[^ ]*')
+        # Extract correct HTML report URL
+        PUBLIC_URL=$(echo "$LHCI_OUTPUT" | grep -Eo 'https://[^ ]+\.html' | head -1)
 
+        echo "🔗 Lighthouse Report: $PUBLIC_URL"
         echo "##vso[task.setvariable variable=LHCI_PUBLIC_URL]$PUBLIC_URL"
+
         echo "✅ Lighthouse completed"
       displayName: 'Run Lighthouse CI'
 
@@ -159,11 +162,12 @@ stages:
         mkdir best-report
         cp "$BEST_HTML" best-report/lighthouse-best.html
 
+        echo "🏆 Best Score: $BEST_SCORE"
+
         echo "##vso[task.setvariable variable=BEST_SCORE]$BEST_SCORE"
         echo "##vso[task.setvariable variable=BEST_HTML]best-report/lighthouse-best.html"
 
-        echo "🏆 Best Score: $BEST_SCORE"
-        echo "✅ Best report ready"
+        echo "✅ Best report prepared"
       displayName: 'Extract Best Report'
 
     # =========================
@@ -189,12 +193,12 @@ stages:
         echo "**Best Performance Score:** $(BEST_SCORE)" >> $SUMMARY_FILE
         echo "" >> $SUMMARY_FILE
 
-        echo "### 🔗 View Full Report (Public)" >> $SUMMARY_FILE
-        echo "$(LHCI_PUBLIC_URL)" >> $SUMMARY_FILE
+        echo "### 🔗 View Full Report" >> $SUMMARY_FILE
+        echo "[Open Lighthouse Report]($(LHCI_PUBLIC_URL))" >> $SUMMARY_FILE
         echo "" >> $SUMMARY_FILE
 
         echo "### 📦 Download Best Report" >> $SUMMARY_FILE
-        echo "Go to Artifacts → lighthouse-report → lighthouse-best.html" >> $SUMMARY_FILE
+        echo "Artifacts → lighthouse-report → lighthouse-best.html" >> $SUMMARY_FILE
 
         echo "##vso[task.uploadsummary]$SUMMARY_FILE"
 
