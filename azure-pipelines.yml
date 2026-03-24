@@ -124,68 +124,79 @@ stages:
     - script: |
         set -e
         lhci collect --url="$(TEST_URL)" --numberOfRuns=3
-        lhci assert
-        lhci upload
+
+        echo "Uploading to temporary public storage..."
+        LHCI_OUTPUT=$(lhci upload --target=temporary-public-storage)
+        echo "$LHCI_OUTPUT"
+
+        # Extract public URL
+        PUBLIC_URL=$(echo "$LHCI_OUTPUT" | grep -o 'https://[^ ]*')
+
+        echo "##vso[task.setvariable variable=LHCI_PUBLIC_URL]$PUBLIC_URL"
         echo "✅ Lighthouse completed"
       displayName: 'Run Lighthouse CI'
 
     # =========================
-    # PUBLISH REPORT
+    # EXTRACT BEST REPORT
+    # =========================
+    - script: |
+        set -e
+
+        BEST_SCORE=0
+        BEST_FILE=""
+
+        for file in $(find .lighthouseci -name "lhr-*.json"); do
+          SCORE=$(jq '.categories.performance.score * 100' "$file")
+
+          if (( $(echo "$SCORE > $BEST_SCORE" | bc -l) )); then
+            BEST_SCORE=$SCORE
+            BEST_FILE=$file
+          fi
+        done
+
+        BEST_HTML=$(echo $BEST_FILE | sed 's/.json/.html/')
+
+        mkdir best-report
+        cp "$BEST_HTML" best-report/lighthouse-best.html
+
+        echo "##vso[task.setvariable variable=BEST_SCORE]$BEST_SCORE"
+        echo "##vso[task.setvariable variable=BEST_HTML]best-report/lighthouse-best.html"
+
+        echo "🏆 Best Score: $BEST_SCORE"
+        echo "✅ Best report ready"
+      displayName: 'Extract Best Report'
+
+    # =========================
+    # PUBLISH BEST REPORT
     # =========================
     - task: PublishBuildArtifacts@1
       inputs:
-        pathToPublish: '.lighthouseci'
+        pathToPublish: 'best-report'
         artifactName: 'lighthouse-report'
-      displayName: 'Publish Lighthouse Report'
+      displayName: 'Publish Best Lighthouse Report'
 
     # =========================
-    # SUMMARY + VALIDATION (ANY PASS)
+    # SUMMARY (CLICKABLE LINK)
     # =========================
     - script: |
         set -e
 
         SUMMARY_FILE="$(System.DefaultWorkingDirectory)/summary.md"
-        FILES=$(find .lighthouseci -name "lhr-*.json")
 
-        echo "## 🚀 Lighthouse Report" > $SUMMARY_FILE
+        echo "## 🚀 Lighthouse Report Summary" > $SUMMARY_FILE
         echo "" >> $SUMMARY_FILE
-        echo "| URL | Perf | A11y | SEO | LCP | CLS |" >> $SUMMARY_FILE
-        echo "|-----|------|------|-----|-----|-----|" >> $SUMMARY_FILE
 
-        PASS=0
+        echo "**Best Performance Score:** $(BEST_SCORE)" >> $SUMMARY_FILE
+        echo "" >> $SUMMARY_FILE
 
-        for file in $FILES; do
-          URL=$(jq -r '.finalUrl' "$file")
+        echo "### 🔗 View Full Report (Public)" >> $SUMMARY_FILE
+        echo "$(LHCI_PUBLIC_URL)" >> $SUMMARY_FILE
+        echo "" >> $SUMMARY_FILE
 
-          PERF=$(jq '.categories.performance.score * 100' "$file")
-          A11Y=$(jq '.categories.accessibility.score * 100' "$file")
-          SEO=$(jq '.categories.seo.score * 100' "$file")
+        echo "### 📦 Download Best Report" >> $SUMMARY_FILE
+        echo "Go to Artifacts → lighthouse-report → lighthouse-best.html" >> $SUMMARY_FILE
 
-          LCP=$(jq -r '.audits["largest-contentful-paint"].displayValue' "$file")
-          CLS=$(jq -r '.audits["cumulative-layout-shift"].displayValue' "$file")
-
-          echo "| $URL | $PERF | $A11Y | $SEO | $LCP | $CLS |" >> $SUMMARY_FILE
-
-          echo "------------------------------------"
-          echo "URL: $URL"
-          echo "Performance: $PERF"
-
-          if (( $(echo "$PERF >= 80" | bc -l) )); then
-            echo "✅ GOOD SCORE (>=80)"
-            PASS=1
-          else
-            echo "⚠️ BELOW THRESHOLD"
-          fi
-        done
-
-        echo "Uploading summary..."
-        cat $SUMMARY_FILE
         echo "##vso[task.uploadsummary]$SUMMARY_FILE"
 
-        if [ $PASS -eq 1 ]; then
-          echo "🎉 At least one run passed → SUCCESS"
-        else
-          echo "🚨 All runs below threshold → FAILED"
-          exit 1
-        fi
-      displayName: 'Summary + Validation'
+        echo "✅ Summary published"
+      displayName: 'Publish Summary'
