@@ -80,10 +80,10 @@ function getSearchConfig(rows, placeholders = {}) {
     noResultsText: blockConfig.noResultsText,
     recentTitle: blockConfig.recentTitle,
     learnMoreLabel: blockConfig.learnMoreLabel,
-    loadMoreLabel: blockConfig.learnMoreLabel || 'Learn More',
+    loadMoreLabel: blockConfig.learnMoreLabel,
     ariaLabel: placeholders.ariaLableSearch,
-    searchImage: blockConfig.searchImage,
-    searchImageAlt: blockConfig.searchImageAlt,
+    searchImage: placeholders.imageUrl ? blockConfig.searchImage : ' ',
+    searchImageAlt: placeholders.imageAltText || blockConfig.searchImageAlt,
   };
 }
 
@@ -210,6 +210,11 @@ export default async function decorate(block) {
   let allResults = [];
   let loading = false;
 
+  const messagePlaceholders = {
+    minSearchLength: (placeholders.minSearchLengthMessage || '').replace(/\$\{MIN_SEARCH_LENGTH\}/, MIN_SEARCH_LENGTH),
+    somethingWrong: placeholders.somethingWrongMessage,
+  };
+
   function setLoading(isLoading) {
     loading = isLoading;
     searchButton.disabled = isLoading;
@@ -258,7 +263,6 @@ export default async function decorate(block) {
 
     if (normalized.length < MIN_SEARCH_LENGTH) {
       if (!normalized) {
-        // Empty input: try restoring last results; if none, show recent searches
         if (!restoreLastResults()) {
           resultsList.innerHTML = '';
           showMessage('');
@@ -272,7 +276,7 @@ export default async function decorate(block) {
         searchResult.style.display = 'block';
         searchHistory.style.display = 'none';
         divLoadMore.style.display = 'none';
-        showMessage(`Please enter at least ${MIN_SEARCH_LENGTH} characters.`);
+        showMessage(messagePlaceholders.minSearchLength);
       }
       return;
     }
@@ -285,6 +289,7 @@ export default async function decorate(block) {
       const data = await getSiteSearchResults({
         keywords: normalized,
         pageNumber: page,
+        placeholders,
       });
 
       currentTerm = normalized;
@@ -309,8 +314,7 @@ export default async function decorate(block) {
       resultsList.innerHTML = '';
       searchResult.style.display = 'block';
       divLoadMore.style.display = 'none';
-      showMessage('Something went wrong. Please try again.');
-      // eslint-disable-next-line no-console
+      showMessage(messagePlaceholders.somethingWrong);
       console.error(error);
     } finally {
       setLoading(false);
@@ -329,14 +333,12 @@ export default async function decorate(block) {
     if (!loading && currentTerm) runSearch(currentTerm, currentPage + 1, true);
   });
 
-  // On page load: restore last results if present; otherwise show recent searches
+  clearLastResults();
   input.value = '';
-  if (!restoreLastResults()) {
-    showRecentSearches((recentTerm) => {
-      input.value = recentTerm;
-      runSearch(recentTerm, 1, false);
-    });
-  }
+  showRecentSearches((recentTerm) => {
+    input.value = recentTerm;
+    runSearch(recentTerm, 1, false);
+  });
 
   block.addEventListener('site-search:clear', () => {
     clearLastResults();

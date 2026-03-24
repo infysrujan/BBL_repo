@@ -1,21 +1,22 @@
 const PAGE_SIZE = 8;
-const BBL_BASE_URL = 'https://www.bangkokbank.com';
 
 export function normalizeSearchTerm(term = '') {
   return term.trim().replace(/\s+/g, ' ');
 }
 
-function getQueryIndexUrl() {
+function getLang() {
   const [, lang] = window.location.pathname.split('/');
-  const prefix = lang ? `/${lang}` : '/en';
-  return `${prefix}/query-index.json`;
+  return lang || 'en';
 }
 
-async function fetchQueryIndex() {
-  const baseUrl = getQueryIndexUrl();
+function getQueryIndexUrl() {
+  return `/${getLang()}/query-index.json`;
+}
 
+async function fetchQueryIndex(indexErrorMessage = 'Index fetch failed') {
+  const baseUrl = getQueryIndexUrl();
   const initialRes = await fetch(`${baseUrl}?limit=100&offset=0`, { cache: 'no-store' });
-  if (!initialRes.ok) throw new Error(`Index fetch failed: ${initialRes.status}`);
+  if (!initialRes.ok) throw new Error(`${indexErrorMessage}: ${initialRes.status}`);
   const initialData = await initialRes.json();
 
   const sheet = initialData['query-index'] || initialData;
@@ -60,16 +61,8 @@ function filterQueryIndex(records, keywords) {
   });
 }
 
-function toAbsoluteUrl(path = '') {
-  const clean = path.replace(/["\\]/g, '').trim();
-  if (!clean) return '';
-  if (clean.startsWith('http')) return clean;
-  return `${BBL_BASE_URL}${clean}`;
-}
-
 function mapQueryIndexToResult(record) {
   const relPath = (record.path || '').replace(/["\\]/g, '').trim();
-  const absUrl = record.ogUrl ? toAbsoluteUrl(record.ogUrl) : toAbsoluteUrl(relPath);
 
   return {
     Title: (record.title || record.ogTitle || '').trim(),
@@ -78,16 +71,16 @@ function mapQueryIndexToResult(record) {
     ItemID: relPath,
     OGTitle: (record.ogTitle || '').trim(),
     OGDescription: (record.ogDescription || '').trim(),
-    OGImage: toAbsoluteUrl(record.ogImage || ''),
-    OGURL: absUrl,
+    OGImage: record.ogImage || record.image || '',
+    OGURL: record.ogUrl || relPath,
   };
 }
 
-export async function getSiteSearchResults({ keywords, pageNumber = 1 }) {
+export async function getSiteSearchResults({ keywords, pageNumber = 1, placeholders = {} }) {
   const normalized = normalizeSearchTerm(keywords);
   if (!normalized) return { searchResults: [], showLoadMore: false };
 
-  const allRecords = await fetchQueryIndex();
+  const allRecords = await fetchQueryIndex(placeholders.indexFetchFailed);
   const matches = filterQueryIndex(allRecords, normalized);
 
   const total = matches.length;
@@ -98,6 +91,6 @@ export async function getSiteSearchResults({ keywords, pageNumber = 1 }) {
   return {
     searchResults: pageRecords.map(mapQueryIndexToResult),
     showLoadMore,
-    noResultsMessage: total === 0 ? 'No Results Found' : undefined,
+    noResultsMessage: total === 0 ? placeholders.noResultsFound : undefined,
   };
 }
