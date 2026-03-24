@@ -19,7 +19,7 @@ import {
   decorateButtonsV1,
 } from './bbl-decorators.js';
 
-// import decorateTabs from '../blocks/tabs/tabs-helper.js';
+import decorateTabs from '../blocks/tabs/tabs-helper.js';
 
 /**
  * Gets the language from the HTML tag.
@@ -119,9 +119,9 @@ async function loadFonts() {
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
-function buildAutoBlocks() {
+function buildAutoBlocks(main) {
   try {
-    // decorateTabs(main);
+    decorateTabs(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
