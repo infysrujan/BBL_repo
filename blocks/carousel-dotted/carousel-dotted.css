@@ -49,7 +49,6 @@
 }
 
 .carousel-dotted.show-arrows-dots .carousel-track-wrapper {
-  background: var(--bbl-color-white);
   overflow: hidden;
   grid-column: 2;
   grid-row: 1;
