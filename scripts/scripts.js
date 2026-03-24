@@ -16,6 +16,7 @@ import {
 import {
   decorateSvgWithAltText,
   decorateTerritoryButtons,
+  decorateButtonsV1,
 } from './bbl-decorators.js';
 
 // eslint-disable-next-line import/no-cycle
@@ -344,6 +345,7 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateTerritoryButtons(main);
+  decorateButtonsV1(main);
   decorateSvgWithAltText(main);
   setExternalLinksTarget(main);
 
