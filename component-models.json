@@ -232,6 +232,10 @@
                 "value": "bg-truthful-blue"
               },
               {
+                "name": "Truthful Dark Blue",
+                "value": "bg-truthful-dark-blue"
+              },
+              {
                 "name": "Ice Blue",
                 "value": "bg-ice-blue"
               },
@@ -281,6 +285,10 @@
               {
                 "name": "Center Title",
                 "value": "center-title"
+              },
+              {
+                "name": "Center Content",
+                "value": "center-content"
               }
             ]
           }
@@ -1699,6 +1707,34 @@
             "value": false
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "currency-converter-expanded",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "countryList",
+        "label": "Country List",
+        "valueType": "string",
+        "value": "",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "buttonTitle",
+        "label": "Button Title",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "valueType": "string",
+        "value": "",
+        "required": true
       }
     ]
   },
