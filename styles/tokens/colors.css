@@ -12,6 +12,7 @@
   /* Brand Core Colors */
   --bbl-color-truthful-blue: #002850;      /* Primary dark blue */
   --bbl-color-active-blue: #0064FF;        /* Primary bright blue */
+   --bbl-color-truthful-dark-blue: #233a58; /* Primary dark blue variant */
   --bbl-color-white: #FFFFFF;
   --bbl-color-black: #000000;
 
@@ -40,6 +41,7 @@
   --bbl-color-gray-121: #171717;
   --bbl-color-gray-122: #e8e8e8;
   --bbl-color-gray-142: #606060;
+  --bbl-color-gray-143: #6b6b6b;
 
   /* =========================================================================
      BLUE SCALE
