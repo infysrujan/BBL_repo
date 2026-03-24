@@ -78,6 +78,7 @@ button,
   font-weight: 500;
   display: block;
   font-family: var(--bbl-font-family-medium);
+  max-width: fit-content;
 }
 
 .button-m.primary {
