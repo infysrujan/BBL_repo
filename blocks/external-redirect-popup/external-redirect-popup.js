@@ -1,6 +1,7 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const doc = block.ownerDocument;
   const rows = [...block.children];
 
@@ -18,9 +19,15 @@ export default function decorate(block) {
   // 10: cancel variant          (unused)
   const [imageDiv, titleDiv, descriptionDiv, , acceptLabelDiv, , , , cancelLabelDiv] = rows;
 
-  const acceptLabel = acceptLabelDiv?.querySelector('div')?.textContent?.trim() || 'Accept';
-  const cancelLabel = cancelLabelDiv?.querySelector('div')?.textContent?.trim() || 'Cancel';
-  const descPrefix = descriptionDiv?.querySelector('div')?.textContent?.trim() || 'and entering';
+  const placeholders = await fetchPlaceholders();
+
+  const acceptLabelPlaceholder = placeholders?.acceptLabelTextforRedirectPopup;
+  const cancelLabelPlaceholder = placeholders?.cancelLabelTextforRedirectPopup;
+  const descPlaceholder = placeholders?.descPrefixforRedirectPopup;
+
+  const acceptLabel = acceptLabelDiv?.querySelector('div')?.textContent?.trim() || acceptLabelPlaceholder || 'Accept';
+  const cancelLabel = cancelLabelDiv?.querySelector('div')?.textContent?.trim() || cancelLabelPlaceholder || 'Cancel';
+  const descPrefix = descriptionDiv?.querySelector('div')?.textContent?.trim() || descPlaceholder || 'and entering';
   const img = imageDiv?.querySelector('img') ?? null;
   const titleEl = titleDiv?.querySelector(':is(h1,h2,h3,h4,h5,h6)');
   const titleHTML = titleEl ? titleEl.outerHTML : (titleDiv?.querySelector('div')?.innerHTML || '');
