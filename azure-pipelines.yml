@@ -30,11 +30,18 @@ stages:
       inputs:
         versionSpec: '18.x'
 
+    # ✅ FIXED CACHE SETUP
+    - script: mkdir -p $(Pipeline.Workspace)/.npm
+      displayName: 'Create npm cache dir'
+
     - task: Cache@2
       inputs:
         key: 'npm | "$(Agent.OS)" | package-lock.json'
-        path: ~/.npm
+        path: $(Pipeline.Workspace)/.npm
       displayName: 'Cache npm'
+
+    - script: npm config set cache $(Pipeline.Workspace)/.npm --global
+      displayName: 'Configure npm cache'
 
     - script: |
         set -e
@@ -70,11 +77,18 @@ stages:
       inputs:
         versionSpec: '18.x'
 
+    # ✅ FIXED CACHE SETUP
+    - script: mkdir -p $(Pipeline.Workspace)/.npm
+      displayName: 'Create npm cache dir'
+
     - task: Cache@2
       inputs:
         key: 'npm | "$(Agent.OS)" | lhci'
-        path: ~/.npm
+        path: $(Pipeline.Workspace)/.npm
       displayName: 'Cache npm (LHCI)'
+
+    - script: npm config set cache $(Pipeline.Workspace)/.npm --global
+      displayName: 'Configure npm cache'
 
     # =========================
     # SET TEST URL
