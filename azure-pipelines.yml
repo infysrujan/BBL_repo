@@ -30,6 +30,12 @@ stages:
       inputs:
         versionSpec: '18.x'
 
+    - task: Cache@2
+      inputs:
+        key: 'npm | "$(Agent.OS)" | package-lock.json'
+        path: ~/.npm
+      displayName: 'Cache npm'
+
     - script: |
         set -e
         npm install
@@ -64,13 +70,11 @@ stages:
       inputs:
         versionSpec: '18.x'
 
-    - script: |
-        set -e
-        sudo apt-get update
-        sudo apt-get install -y jq bc
-        npm install -g @lhci/cli@0.13.x broken-link-checker
-        echo "✅ Tools installed"
-      displayName: 'Install tools'
+    - task: Cache@2
+      inputs:
+        key: 'npm | "$(Agent.OS)" | lhci'
+        path: ~/.npm
+      displayName: 'Cache npm (LHCI)'
 
     # =========================
     # SET TEST URL
@@ -114,7 +118,7 @@ stages:
     # =========================
     - script: |
         set -e
-        blc $(TEST_URL) -ro
+        npx broken-link-checker $(TEST_URL) -ro
         echo "✅ No broken links"
       displayName: 'Check Broken Links'
 
@@ -124,10 +128,10 @@ stages:
     - script: |
         set -e
 
-        lhci collect --url="$(TEST_URL)" --numberOfRuns=3
+        npx @lhci/cli@0.13.x collect --url="$(TEST_URL)" --numberOfRuns=3
 
         echo "Uploading to temporary public storage..."
-        LHCI_OUTPUT=$(lhci upload --target=temporary-public-storage)
+        LHCI_OUTPUT=$(npx @lhci/cli@0.13.x upload --target=temporary-public-storage)
         echo "$LHCI_OUTPUT"
 
         PUBLIC_URL=$(echo "$LHCI_OUTPUT" | grep -Eo 'https://[^ ]+\.html' | head -1)
@@ -148,7 +152,7 @@ stages:
         BEST_FILE=""
 
         for file in $(find .lighthouseci -name "lhr-*.json"); do
-          SCORE=$(jq '.categories.performance.score * 100' "$file")
+          SCORE=$(node -e "console.log(require('$file').categories.performance.score * 100)")
 
           if (( $(echo "$SCORE > $BEST_SCORE" | bc -l) )); then
             BEST_SCORE=$SCORE
@@ -162,8 +166,6 @@ stages:
         cp "$BEST_HTML" best-report/lighthouse-best.html
 
         echo "##vso[task.setvariable variable=BEST_SCORE]$BEST_SCORE"
-        echo "##vso[task.setvariable variable=BEST_HTML]best-report/lighthouse-best.html"
-
         echo "🏆 Best Score: $BEST_SCORE"
       displayName: 'Extract Best Report'
 
@@ -202,14 +204,12 @@ stages:
         PASS=0
 
         for file in $(find .lighthouseci -name "lhr-*.json"); do
-          URL=$(jq -r '.finalUrl' "$file')
-
-          PERF=$(jq '.categories.performance.score * 100' "$file")
-          A11Y=$(jq '.categories.accessibility.score * 100' "$file")
-          SEO=$(jq '.categories.seo.score * 100' "$file")
-
-          LCP=$(jq -r '.audits["largest-contentful-paint"].displayValue' "$file")
-          CLS=$(jq -r '.audits["cumulative-layout-shift"].displayValue' "$file")
+          URL=$(node -e "console.log(require('$file').finalUrl)")
+          PERF=$(node -e "console.log(require('$file').categories.performance.score * 100)")
+          A11Y=$(node -e "console.log(require('$file').categories.accessibility.score * 100)")
+          SEO=$(node -e "console.log(require('$file').categories.seo.score * 100)")
+          LCP=$(node -e "console.log(require('$file').audits['largest-contentful-paint'].displayValue)")
+          CLS=$(node -e "console.log(require('$file').audits['cumulative-layout-shift'].displayValue)")
 
           echo "| $URL | $PERF | $A11Y | $SEO | $LCP | $CLS |" >> $SUMMARY_FILE
 
@@ -228,6 +228,5 @@ stages:
         fi
 
         echo "##vso[task.uploadsummary]$SUMMARY_FILE"
-
         echo "✅ Summary published"
       displayName: 'Publish Summary'
