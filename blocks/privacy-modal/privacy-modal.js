@@ -94,7 +94,7 @@ function buildModal({
 
   /* Header */
   const header = createElement('div', { className: 'privacy-modal-header' });
-  const titleEl = createElement('h2', {
+  const titleEl = createElement('div', {
     className: 'privacy-modal-title',
     attrs: { id: 'privacy-modal-title' },
   });
