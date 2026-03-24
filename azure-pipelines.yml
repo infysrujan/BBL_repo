@@ -3,12 +3,14 @@ trigger:
     include:
       - dev
       - main
+      - stage
       - feature/*
 
 pr:
   branches:
     include:
       - dev
+      - stage
       - main
 
 pool:
@@ -82,7 +84,7 @@ stages:
         if [ "$BRANCH_NAME" = "main" ]; then
           TEST_URL="https://main--site-dev--singhalgoru.aem.live/en"
         else
-          TEST_URL="https://${BRANCH_NAME}--site-dev--singhalgoru.aem.page/en"
+          TEST_URL="https://${BRANCH_NAME}--site-stage--bangkok-bank.aem.page/en"
         fi
 
         echo "Using URL: $TEST_URL"
