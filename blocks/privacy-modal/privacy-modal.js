@@ -1,8 +1,3 @@
-/**
- * Privacy Modal Block
-
- */
-
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 const COOKIE_DURATION_DAYS = 30;
@@ -263,19 +258,25 @@ export default function decorate(block) {
   const ctaLabel = rows[4]?.textContent.trim() || 'Agree';
 
   if (document.querySelector('.privacy-modal-overlay')) {
-    block.remove();
+    const placeholder = createElement('div', { className: 'privacy-modal-placeholder' });
+    moveInstrumentation(block, placeholder);
+    block.replaceWith(placeholder);
     return;
   }
 
   /* If modal is disabled by author, remove block and stop here */
   if (!enableModal) {
-    block.remove();
+    const placeholder = createElement('div', { className: 'privacy-modal-placeholder' });
+    moveInstrumentation(block, placeholder);
+    block.replaceWith(placeholder);
     return;
   }
 
   /* If the user already accepted (cookie present), remove block and skip the modal entirely */
   if (getCookie(COOKIE_NAME) === 'true') {
-    block.remove();
+    const placeholder = createElement('div', { className: 'privacy-modal-placeholder' });
+    moveInstrumentation(block, placeholder);
+    block.replaceWith(placeholder);
     return;
   }
 
@@ -308,17 +309,14 @@ export default function decorate(block) {
     onClose: handleClose,
   });
 
-  /* Move instrumentation attributes from block to overlay for Universal Editor support */
-  moveInstrumentation(block, overlay);
+  /* Create a hidden placeholder to maintain Universal Editor instrumentation */
+  const placeholder = createElement('div', { className: 'privacy-modal-placeholder' });
 
-  /* Remove the original block element from DOM since modal is created */
-  block.remove();
+  /* Move instrumentation attributes from block to placeholder for Universal Editor support */
+  moveInstrumentation(block, placeholder);
 
-  /* ------------------------------------------------------------------
-   * Expose a global show function so scripts.js can trigger the modal.
-   * scripts.js sets pendingNavigationUrl before calling this, so
-   * handleAgree() will always have the correct URL.
-   * ------------------------------------------------------------------ */
+  /* Replace the original block element with placeholder to keep instrumentation in DOM */
+  block.replaceWith(placeholder);
   window.showPrivacyModal = (pendingUrl) => {
     window.pendingNavigationUrl = pendingUrl || null;
     openModal(overlay);
