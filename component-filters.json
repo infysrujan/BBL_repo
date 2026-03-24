@@ -185,6 +185,12 @@
     "maxItems": 6
   },
   {
+    "id": "rate-card",
+    "components": [
+      "rate-card-item"
+    ]
+  },
+  {
     "id": "story-card",
     "components": [
       "button"
