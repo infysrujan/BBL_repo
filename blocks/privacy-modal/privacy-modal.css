@@ -90,7 +90,7 @@
   border-radius: var(--bbl-rounded-050) var(--bbl-rounded-050) 0 0;
 }
 
-.privacy-modal-title {
+.privacy-modal-title :is(p, h1, h2, h3, h4, h5, h6) {
   margin: 0;
   font-size: 0.875rem;
   font-weight: 400;
@@ -100,10 +100,6 @@
   flex: 1;
   white-space: normal;
   font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
-}
-
-.privacy-modal-title p {
-  margin: 0;
   text-indent: 0;
 }
 
@@ -120,7 +116,7 @@
   font-size: 0.875rem;
   line-height: 1.5;
   color: var(--bbl-text-primary);
-  background-color: #eeeef2;
+  background-color: var(--bbl-bg-secondary);
   font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   box-sizing: content-box;
   scrollbar-width: auto;
@@ -207,8 +203,8 @@
 }
 
 .privacy-modal-checkbox-row input[type='checkbox']:checked {
-  background-color: #0064ff;
-  border-color: #0064ff;
+  background-color: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
 }
 
 .privacy-modal-checkbox-row input[type='checkbox']:checked::after {
@@ -219,13 +215,13 @@
   width: 0.2rem;
   height: 0.42rem;
   border: solid var(--bbl-color-white);
-  border-width: 0 2px 2px 0;
+  border-width: 0 0.125rem 0.125rem 0;
   transform: rotate(45deg);
 }
 
 .privacy-modal-checkbox-row input[type='checkbox']:disabled:checked {
-  background-color: #0064ff;
-  border-color: #0064ff;
+  background-color: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
 }
 
 .privacy-modal-checkbox-row input[type='checkbox']:disabled:checked::after {
@@ -267,12 +263,12 @@
 }
 
 .privacy-modal-cta:not(:disabled) {
-  background-color: #0064ff;
+  background-color: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
 }
 
 .privacy-modal-cta:not(:disabled):hover {
-  background-color: #0052d6;
+  background-color: var(--bbl-color-blue-90);
 }
 
 .privacy-modal-cta:not(:disabled):active {
@@ -280,11 +276,11 @@
 }
 
 .privacy-modal-cta:not(:disabled):focus-visible {
-  outline: 2px solid #0064ff;
+  outline: 0.125rem solid var(--bbl-color-active-blue);
   outline-offset: 0.125rem;
 }
 
-@media (width >= 47.5rem) {
+@media (width >=47.5rem) {
   .privacy-modal-dialog {
     width: 50rem;
     max-width: 50rem;
@@ -302,8 +298,10 @@
     padding: var(--bbl-space-250) var(--bbl-space-500) var(--bbl-space-200);
   }
 
-  .privacy-modal-title {
+  .privacy-modal-title :is(p, h1, h2, h3, h4, h5, h6) {
     font-size: 1rem;
+    margin: 0;
+    text-indent: 0;
   }
 
   .privacy-modal-body {
