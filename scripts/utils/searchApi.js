@@ -1,4 +1,6 @@
 const PAGE_SIZE = 8;
+const DEFAULT_LANGUAGE = 'en';
+const QUERY_INDEX_FILE = 'query-index.json';
 
 export function normalizeSearchTerm(term = '') {
   return term.trim().replace(/\s+/g, ' ');
@@ -6,58 +8,47 @@ export function normalizeSearchTerm(term = '') {
 
 function getLang() {
   const [, lang] = window.location.pathname.split('/');
-  return lang || 'en';
+  return lang || DEFAULT_LANGUAGE;
 }
 
-function getQueryIndexUrl() {
-  return `/${getLang()}/query-index.json`;
+function getQueryIndexUrl(lang) {
+  return `/${lang}/${QUERY_INDEX_FILE}`;
 }
 
-async function fetchQueryIndex(indexErrorMessage = 'Index fetch failed') {
-  const baseUrl = getQueryIndexUrl();
-  const initialRes = await fetch(`${baseUrl}?limit=100&offset=0`, { cache: 'no-store' });
+async function fetchQueryIndex(keywords, pageNumber, indexErrorMessage = 'Index fetch failed') {
+  const lang = getLang();
+  const baseUrl = getQueryIndexUrl(lang);
+
+  const initialRes = await fetch(
+    `${baseUrl}?keywords=${encodeURIComponent(keywords)}&pageNumber=${pageNumber}&pageLanguage=${lang}`,
+    { cache: 'no-store' },
+  );
+
   if (!initialRes.ok) throw new Error(`${indexErrorMessage}: ${initialRes.status}`);
   const initialData = await initialRes.json();
 
   const sheet = initialData['query-index'] || initialData;
-  const total = sheet.total || 0;
-  const limit = sheet.limit || 100;
-  let allData = Array.isArray(sheet.data) ? [...sheet.data] : [];
+  return Array.isArray(sheet.data) ? [...sheet.data] : [];
+}
 
-  const requests = [];
-  for (let offset = limit; offset < total; offset += limit) {
-    requests.push(
-      fetch(`${baseUrl}?limit=${limit}&offset=${offset}`, { cache: 'no-store' })
-        .then((res) => res.json())
-        .then((data) => {
-          const s = data['query-index'] || data;
-          return Array.isArray(s.data) ? s.data : [];
-        }),
-    );
-  }
-
-  const pages = await Promise.all(requests);
-  pages.forEach((page) => { allData = [...allData, ...page]; });
-
-  return allData;
+function buildSearchBlob(record) {
+  return [
+    record.ogTitle,
+    record.ogDescription,
+    record.title,
+    record.description,
+    record.keywords,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
 }
 
 function filterQueryIndex(records, keywords) {
   const tokens = normalizeSearchTerm(keywords).toLowerCase().split(' ').filter(Boolean);
-
   return records.filter((r) => {
-    const blob = [
-      r.ogTitle,
-      r.ogDescription,
-      r.title,
-      r.description,
-      r.keywords,
-    ]
-      .filter(Boolean)
-      .join(' ')
-      .toLowerCase();
-
-    return tokens.every((t) => blob.includes(t));
+    const searchBlob = buildSearchBlob(r);
+    return tokens.every((t) => searchBlob.includes(t));
   });
 }
 
@@ -78,9 +69,17 @@ function mapQueryIndexToResult(record) {
 
 export async function getSiteSearchResults({ keywords, pageNumber = 1, placeholders = {} }) {
   const normalized = normalizeSearchTerm(keywords);
-  if (!normalized) return { searchResults: [], showLoadMore: false };
 
-  const allRecords = await fetchQueryIndex(placeholders.indexFetchFailed);
+  if (!normalized) {
+    return { searchResults: [], showLoadMore: false };
+  }
+
+  const allRecords = await fetchQueryIndex(
+    normalized,
+    pageNumber,
+    placeholders.indexFetchFailed,
+  );
+
   const matches = filterQueryIndex(allRecords, normalized);
 
   const total = matches.length;

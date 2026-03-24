@@ -167,7 +167,6 @@
     display: flex;
     flex: 1;
     height: auto;
-    max-height: 12.1875rem;
     flex-direction: column;
     align-items: flex-start;
 }
@@ -264,7 +263,7 @@
 
     .search-modal .search-modal-panel-body {
         padding: var(--bbl-space-250);
-        height: 100vh;
+        height: auto;
     }
 
     .search-modal .search-modal-results-list {
