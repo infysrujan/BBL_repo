@@ -41,6 +41,7 @@
   --bbl-color-gray-122: #e8e8e8;
   --bbl-color-gray-142: #606060;
   --bbl-color-gray-143: #6b6b6b;
+  --bbl-color-gray-144: #F9F9F9;
 
   /* =========================================================================
      BLUE SCALE
@@ -173,6 +174,7 @@
   --bbl-color-black-alpha-30: rgba(0, 0, 0, 0.30);
   --bbl-color-black-alpha-40: rgba(0, 0, 0, 0.40);
   --bbl-color-black-alpha-60: rgba(0, 0, 0, 0.60);
+  --bbl-color-black-alpha-17: rgba(0, 100, 255, 0.17);
 
   /* White Transparencies */
   --bbl-color-white-alpha-5: rgba(255, 255, 255, 0.05);

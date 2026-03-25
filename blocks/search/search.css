@@ -34,4 +34,15 @@
 	.search-placeholder {
 		display: none;
 	}
+
+	.search-link:hover {
+		background: var(--bbl-color-blue-90);
+		width: 2.875rem;
+		height: 2.875rem;
+		border-radius: 50%;
+		text-align: center;
+		display: inline-block;
+		font-size: 1rem;
+		line-height: 2.875rem;
+	}
 }
