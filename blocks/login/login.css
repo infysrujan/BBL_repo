@@ -165,7 +165,7 @@ a.login-link:hover {
     padding: 1.875rem 6.5625rem 1.875rem 3.125rem;
     text-align: right;
   }
-  
+
   .login-panel-title {
     display: none;
   }
@@ -180,7 +180,6 @@ a.login-link:hover {
 
   button.login-button.primary:hover {
     background: var(--bbl-color-blue-90);
-    border: 0.0625rem solid var(--bbl-color-blue-90);
   }
 
   .login .icon-login::before,
