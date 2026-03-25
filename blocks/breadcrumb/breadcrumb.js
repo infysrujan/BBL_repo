@@ -6,76 +6,27 @@ import { getMetadata } from '../../scripts/aem.js';
  * @returns {Promise<Object>} Map of path to page title
  */
 async function fetchBreadcrumbData() {
-  const AEM_AUTHOR_BASE = 'https://author-p185039-e1939903.adobeaemcloud.com';
-  const USE_MOCK_DATA = true; // Set to false to use real API
-
-  // Mock API data for testing
-  const mockData = {
-    currentPage: {
-      pageTitle: 'First Jobber',
-      jcrTitle: 'First Jobber',
-      jcrUuid: 'e0874af1-5fcb-4b91-8c91-17f371aea0b8',
-      pagePath: '/content/bangkokbank/en/personal/grow-club/first-jobber',
-      pageDepth: 6,
-      hidebreadcrumb: false,
-      parent: null,
-    },
-    parent: {
-      pageTitle: 'Grow Club',
-      jcrTitle: 'Grow Club',
-      jcrUuid: '',
-      pagePath: '/content/bangkokbank/en/personal/grow-club',
-      pageDepth: 5,
-      hidebreadcrumb: false,
-      parent: {
-        pageTitle: 'Personal',
-        jcrTitle: 'Personal',
-        jcrUuid: 'cfdb7dae-3c97-4d8f-a0f5-50a651ed8a20',
-        pagePath: '/content/bangkokbank/en/personal',
-        pageDepth: 4,
-        hidebreadcrumb: false,
-        parent: {
-          pageTitle: 'Homepage - Bangkok Bank',
-          jcrTitle: 'Homepage - Bangkok Bank',
-          jcrUuid: '30405b91-f59c-4d8e-8586-5d2e0d758211',
-          pagePath: '/content/bangkokbank/en',
-          pageDepth: 3,
-          hidebreadcrumb: false,
-          parent: {
-            pageTitle: 'Bangkok Bank',
-            jcrTitle: 'Bangkok Bank',
-            jcrUuid: 'c742b8c2-e52a-4133-9aab-2b8d19e0fa73',
-            pagePath: '/content/bangkokbank',
-            pageDepth: 2,
-            hidebreadcrumb: false,
-            parent: null,
-          },
-        },
-      },
-    },
-  };
+  const AEM_BASE_URL = 'https://publish-p185039-e1939903.adobeaemcloud.com';
 
   try {
-    let data;
-
-    if (USE_MOCK_DATA) {
-      // Use mock data for testing
-      // eslint-disable-next-line no-console
-      console.log('Using mock breadcrumb data for testing');
-      data = mockData;
-    } else {
-      // Real API call
-      const { pathname } = window.location;
-      const apiUrl = `${AEM_AUTHOR_BASE}/content/bangkokbank${pathname}.pageinfo.parent.json`;
-      const response = await fetch(apiUrl);
-      if (!response.ok) {
-        throw new Error(`API returned status ${response.status}`);
-      }
-      data = await response.json();
+    const { pathname } = window.location;
+    const apiUrl = `${AEM_BASE_URL}/content/bangkokbank${pathname}.pageinfo.json`;
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      throw new Error(`API returned status ${response.status}`);
     }
+    const data = await response.json();
 
     // Build a path-to-title map from the returned parent pages
     const titleMap = {};
+
+    // Add current page to titleMap first
+    if (data.currentPage) {
+      const { pagePath, pageTitle, jcrTitle } = data.currentPage;
+      if (pagePath && (pageTitle || jcrTitle)) {
+        titleMap[pagePath] = pageTitle || jcrTitle;
+      }
+    }
 
     // Helper function to traverse nested parent structure and collect pages
     const collectPages = (page, pages = []) => {
