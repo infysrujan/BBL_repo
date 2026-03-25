@@ -20,6 +20,7 @@ import {
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
+import { setMainDecorator } from '../blocks/fragment/fragment.js';
 
 /**
  * Gets the language from the HTML tag.
@@ -140,6 +141,7 @@ export function decorateMain(main) {
     document.body.classList.add(`${pageVariant}`);
   }
 }
+setMainDecorator(decorateMain);
 
 /**
  * Loads everything needed to get to LCP.

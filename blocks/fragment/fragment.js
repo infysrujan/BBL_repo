@@ -4,14 +4,12 @@
  * https://www.aem.live/developer/block-collection/fragment
  */
 
-// eslint-disable-next-line import/no-cycle
-import {
-  decorateMain,
-} from '../../scripts/scripts.js';
-
 import {
   loadSections,
 } from '../../scripts/aem.js';
+
+let mainDecorator = () => {};
+export function setMainDecorator(fn) { mainDecorator = fn; }
 
 /**
  * Loads a fragment.
@@ -36,7 +34,7 @@ export async function loadFragment(path) {
       resetAttributeBase('img', 'src');
       resetAttributeBase('source', 'srcset');
 
-      decorateMain(main);
+      mainDecorator(main);
       await loadSections(main);
       return main;
     }
