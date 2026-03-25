@@ -1,0 +1,442 @@
+/* ==========================================================================
+   Rate Card Block — Mobile-First CSS
+   Breakpoints (from tokens/breakpoints.css):
+  - Mobile:  < 47.5rem
+  - Tablet:  > 47.5rem and <= 64rem
+  - Desktop: > 64rem
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   BASE / MOBILE STYLES (default)
+   -------------------------------------------------------------------------- */
+
+/* Block container — reset EDS defaults */
+.rate-card {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+/* Article wrapper — the visible card */
+.rate-card .currency-info {
+  max-width: 100%;
+  padding: 1.5rem;
+  border-radius: 0.4375rem;
+  background: var(--bbl-color-grey-10);
+  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
+  min-height: auto;
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-color-gray-121);
+}
+
+/* --------------------------------------------------------------------------
+   TAB HEADER
+   -------------------------------------------------------------------------- */
+.rate-card .tab-header {
+  list-style: none;
+  padding: 0 0 1.25rem;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-color-black);
+}
+
+.rate-card .tab-header li {
+  width: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.rate-card .tab-header a,
+.rate-card .tab-header a:any-link {
+  color: var(--bbl-color-gray-121);
+  font-size: 0.7875rem;
+  padding: 0.5rem 0.625rem;
+  font-weight: 400;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0.9844rem;
+  cursor: pointer;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.rate-card .tab-header a.active,
+.rate-card .tab-header a.active:any-link {
+  background: var(--bbl-color-white);
+  position: relative;
+  border-radius: 2rem;
+  color: var(--bbl-color-gray-121);
+  text-decoration: none;
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.rate-card .tab-header a:hover,
+.rate-card .tab-header a.active:hover {
+  color: var(--bbl-color-gray-121);
+  text-decoration: none;
+}
+
+/* Only show outline for keyboard navigation */
+.rate-card .tab-header a:focus-visible {
+  outline: 0.125rem solid var(--bbl-color-active-blue);
+  outline-offset: 0.125rem;
+}
+
+/* --------------------------------------------------------------------------
+   TAB CONTENT SECTION
+   -------------------------------------------------------------------------- */
+.rate-card section {
+  width: 100%;
+}
+
+.rate-card section > div {
+  display: none;
+}
+
+.rate-card .currency-list {
+  padding: 1.5625rem 0;
+  position: relative;
+  margin-bottom: 0;
+}
+
+.rate-card section > div.active {
+  display: block;
+}
+
+/* Inner container */
+.rate-card .inner {
+  width: 100%;
+}
+
+.rate-card .currency-list:last-child {
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   TABLE STYLES
+   -------------------------------------------------------------------------- */
+.rate-card table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+}
+
+.rate-card table thead {
+  background: transparent;
+}
+
+.rate-card table thead tr {
+  position: relative;
+  border-bottom: 0.0625rem solid #e5e5e7;
+}
+
+.rate-card table thead th {
+  color: var(--bbl-color-black);
+  padding: 0 0 0.625rem;
+  text-align: left;
+  font-weight: 400;
+  font-size: 0.875rem;
+  font-family: var(--bbl-font-family-primary);
+  background: transparent;
+}
+
+/* Right-align Buy/Sell/Rate/NAV columns */
+.rate-card table thead th:not(:first-child) {
+  text-align: right;
+}
+
+.rate-card table tbody td {
+  padding: 0.3125rem 0;
+  font-size: 0.875rem;
+  color: var(--bbl-color-gray-121);
+  font-family: var(--bbl-font-family-medium);
+  font-weight: 400;
+  background: transparent;
+  height: 2.25rem;
+}
+
+.rate-card table tbody td.text-right {
+  text-align: right;
+}
+
+/* Values in the rate columns (Buy/Sell/Rate/NAV) — bold & larger */
+.rate-card table tbody td:not(:first-child) {
+  text-align: right;
+  font-size: 1.3125rem;
+}
+
+/* --------------------------------------------------------------------------
+   COUNTRY FLAG + LABEL
+   -------------------------------------------------------------------------- */
+.rate-card .country-select {
+  display: flex;
+  align-items: center;
+  gap: 0.9375rem;
+  height: 2.25rem;
+}
+
+.rate-card .country-select img {
+  width: 1.1875rem;
+  height: 1.1875rem;
+  object-fit: contain;
+  display: block;
+  border-radius: 50%;
+}
+
+.rate-card .country-select span {
+  color: var(--bbl-color-black);
+  font-size: 0.875rem;
+  line-height: 1.2031rem;
+}
+
+/* --------------------------------------------------------------------------
+   PERCENT STYLING (Deposit / Loan rates)
+   -------------------------------------------------------------------------- */
+.rate-card .percent {
+  font-size: 1.3125rem;
+  color: var(--bbl-color-gray-121);
+}
+
+/* --------------------------------------------------------------------------
+   DEFAULT WRAP — date + "See more" row
+   -------------------------------------------------------------------------- */
+.rate-card .default-wrap {
+  left: 0;
+  right: 0;
+  bottom: initial;
+  margin-top: 1.5rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   DATE UPDATE STYLING
+   -------------------------------------------------------------------------- */
+.rate-card .text-x-small {
+  font-size: 0.75rem;
+  color: var(--bbl-color-grey-70);
+  font-family: var(--bbl-font-family-medium);
+}
+
+.rate-card .date-update {
+  color: var(--bbl-color-black);
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+}
+
+.rate-card .date-update::before {
+  content: '';
+  background: green;
+  width: 0.5rem;
+  height: 0.5rem;
+  display: inline-block;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Hide empty date updates (match BBL) */
+.rate-card .date-update:empty::before {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   "SEE MORE" LINK
+   Match BBL: simple text link with arrow, NOT a bordered button.
+   -------------------------------------------------------------------------- */
+.rate-card .link-primary,
+.rate-card .link-primary:any-link,
+.rate-card a.link-primary {
+  color: var(--bbl-color-active-blue);
+  font-family: var(--bbl-font-family-medium);
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  font-size: 0.9rem;
+  line-height: 1.375rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+  background: transparent;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  height: auto;
+  width: auto;
+  min-height: 0;
+}
+
+.rate-card .link-primary::after {
+  content: '\e901';
+  font-family: icomoon, sans-serif;
+  position: absolute;
+  font-size: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+  transition: all 0.3s;
+}
+
+.rate-card .link-primary:hover,
+.rate-card a.link-primary:hover {
+  color: var(--bbl-color-blue-90);
+  text-decoration: none;
+}
+
+.rate-card a.link-primary:hover::after {
+  right: -0.3125rem;
+}
+
+.rate-card .link-primary.pull-right {
+  margin-left: auto;
+}
+
+/* Override any EDS-level button classes that may add unwanted borders */
+.rate-card .link-primary.white,
+.rate-card .button-tertiary,
+.rate-card .button-primary,
+.rate-card .button-secondary {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--bbl-color-active-blue);
+  font-size: 0.7rem;
+  line-height: 1.2031rem;
+  padding: 0 0.9375rem 0 0;
+}
+
+.rate-card .button-tertiary:hover,
+.rate-card .button-primary:hover,
+.rate-card .button-secondary:hover {
+  background: transparent;
+  border: none;
+  color: var(--bbl-color-blue-90);
+}
+
+/* --------------------------------------------------------------------------
+   NO-DATA STATE
+   -------------------------------------------------------------------------- */
+.rate-card .no-data {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--bbl-color-grey-70);
+  font-style: italic;
+  font-family: var(--bbl-font-family-medium);
+}
+
+/* --------------------------------------------------------------------------
+   ACCESSIBILITY
+   -------------------------------------------------------------------------- */
+
+/* Tab focus handled above via :focus-visible */
+
+.rate-card .link-primary:focus-visible {
+  outline: 0.125rem solid var(--bbl-color-active-blue);
+  outline-offset: 0.125rem;
+}
+
+/* ==========================================================================
+   TABLET (> 47.5rem)
+   ========================================================================== */
+@media (width > 47.5rem) {
+  .rate-card .currency-info {
+    padding: 1.5rem;
+    border-radius: 0.4375rem;
+    min-height: auto;
+  }
+
+  .rate-card .tab-header a, .rate-card .tab-header a:any-link {
+    padding: 0.4375rem 1rem 0.3125rem;
+  }
+
+  .rate-card .default-wrap {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 1.5rem;
+  }
+
+  .rate-card .link-primary.pull-right {
+    margin-left: auto;
+    width: auto;
+    text-align: right;
+  }
+}
+
+/* ==========================================================================
+   DESKTOP (> 64rem)
+   ========================================================================== */
+@media (width > 64rem) {
+	.rate-card {
+    padding-top: 1.25rem;
+	}
+
+  .rate-card .currency-info {
+    max-width: 100%;
+    padding: 1.5rem;
+    min-height: 27.8125rem;
+  }
+
+  .rate-card .tab-header a, 
+	.rate-card .tab-header a:any-link {
+    font-size: 0.9rem;
+    padding: 0.4375rem 1rem 0.3125rem;
+  }
+
+  .rate-card .country-select span,
+  .rate-card table thead th,
+  .rate-card table tbody td {
+    font-size: 1rem;
+  }
+
+  .rate-card .currency-list table tbody td {
+    height: 2.5625rem;
+  }
+
+  .rate-card table tbody td:not(:first-child) {
+    font-size: 1.5rem;
+  }
+
+  .rate-card .percent {
+    font-size: 1.5rem;
+  }
+
+	.rate-card .link-primary.pull-right {
+    font-size: 0.8rem;
+	}
+
+}
+
+/* --------------------------------------------------------------------------
+   PRINT STYLES
+   -------------------------------------------------------------------------- */
+@media print {
+  .rate-card .tab-header {
+    display: none;
+  }
+
+  .rate-card .inner {
+    break-inside: avoid;
+  }
+
+  .rate-card table {
+    break-inside: avoid;
+  }
+}

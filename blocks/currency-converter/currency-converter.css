@@ -314,6 +314,10 @@
   background: var(--bbl-color-grey-50);
 }
 
+.section:has(.rate-card .tab-header li:first-child .active) .currency-converter {
+  display: none;
+}
+
 @media (width > 47.5rem) {
   .currency-converter .convert-group {
     height: 11.5rem;
@@ -344,4 +348,10 @@
     100% {
         margin-top: 0
     }
+}
+
+@media (width > 64rem) {
+  .section:has(.rate-card .tab-header li:first-child .active) .currency-converter {
+    display: block;
+  }
 }
