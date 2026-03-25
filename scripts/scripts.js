@@ -141,7 +141,6 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateTerritoryButtons(main);
-  decorateButtonsV1(main);
   decorateSvgWithAltText(main);
   setExternalLinksTarget(main);
 
@@ -182,6 +181,10 @@ async function loadEager(doc) {
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
+
+  // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
+  decorateButtonsV1(main);
+  decorateSvgWithAltText(main);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;

@@ -7456,6 +7456,51 @@
     ]
   },
   {
+    "id": "search-page",
+    "fields": [
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "noResultsText",
+        "label": "No Results Text",
+        "value": "No Results Found"
+      },
+      {
+        "component": "text",
+        "name": "recentTitle",
+        "label": "Recent Searches Title",
+        "value": "Recent Searches"
+      },
+      {
+        "component": "text",
+        "name": "learnMoreLinkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Alt",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "search",
     "fields": [
       {
