@@ -178,6 +178,15 @@ main img {
     .section {
         padding-inline: var(--bbl-space-section-xl);
     }
+
+    .section.columns-3 {
+        display: flex;
+        gap: var(--bbl-space-layout-sm);
+    }
+
+    .section.columns-3  > * {
+        flex: 1;
+    }
 }
 
 @media (width > 87.5rem) {
@@ -327,4 +336,56 @@ body.wealth main :is(.button-container .button, .button) {
 
 .pad-bot-30 {
     padding-bottom: 1.875rem;
+}
+
+/* =========================================================================
+   SECTION-LEVEL  - Global Styles
+   ========================================================================= */
+
+.section > .default-content-wrapper {
+    display: flow-root;
+}
+
+.section.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+    text-align: center;
+}
+
+.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+    position: relative;
+    padding-bottom: var(--bbl-space-250);
+    margin: 1.875rem 0;
+}
+
+.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: var(--bbl-space-1000);
+    height: 0.0625rem;
+    background-color: var(--bbl-color-grey-150);
+}
+
+.section.underline-title.center-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@media (width > 47.5rem) {
+    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+        padding-bottom: 1.875rem;
+    }
+}
+
+body.bangkok-bankm-card main {
+  background-color: maroon;
+}
+
+.section.bg-truthful-blue  *,
+.section.bg-truthful-dark-blue  *{
+    color: var(--bbl-color-white);
+}
+
+.section.center-content .default-content-wrapper * {
+    text-align: center;
 }

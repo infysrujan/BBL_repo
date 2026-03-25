@@ -33,7 +33,13 @@
       "content-insert-cards",
       "menu-card-actions",
       "download-file",
+      "teaser-with-bg-image",
       "sub-nav",
+      "search-page",
+      "currency-converter",
+      "popup-modal-card-offer",
+      "currency-converter-expanded",
+      "locate-us",
       "social-icons"
     ]
   },
@@ -219,6 +225,12 @@
       "location",
       "login",
       "main-nav-item"
+    ]
+  },
+  {
+    "id": "teaser-with-bg-image",
+    "components": [
+      "teaser-with-bg-image-card"
     ]
   },
   {
