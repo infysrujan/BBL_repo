@@ -83,7 +83,7 @@ async function loadPrivacyModal(pendingUrl) {
     if (typeof window.showPrivacyModal !== 'function') {
       const langPrefix = `/${document.documentElement.lang || 'en'}`;
       const { loadFragment } = await import('../blocks/fragment/fragment.js');
-      const fragment = await loadFragment(`${langPrefix}/modals/privacy-modal`);
+      const fragment = await loadFragment(`${langPrefix}/fragments/modals/privacy-modal`);
       if (fragment) {
         document.body.appendChild(fragment);
       }
@@ -108,7 +108,7 @@ async function loadAndShowExternalRedirectPopup(url) {
     if (typeof window.showExternalRedirectPopup !== 'function') {
       const langPrefix = `/${document.documentElement.lang || 'en'}`;
       const { loadFragment } = await import('../blocks/fragment/fragment.js');
-      const fragment = await loadFragment(`${langPrefix}/modals/external-popup`);
+      const fragment = await loadFragment(`${langPrefix}/fragments/modals/external-popup`);
       if (fragment) {
         document.body.appendChild(fragment);
       }
