@@ -378,6 +378,9 @@ a.megamenu-link {
   .quick-nav-item {
     width: 25%;
     justify-content: center;
+  }
+
+  .quick-nav-item:hover {
     border: 0.0625rem solid var(--bbl-color-active-blue);
     box-shadow: 0.1875rem 0.1875rem 0 var(--bbl-color-black-alpha-17);
   }
