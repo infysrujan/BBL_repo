@@ -135,7 +135,6 @@ function createButtonHTML(buttonData) {
     link,
     linkText,
     linkTitle,
-    linkType = 'tertiary',
     targetLink,
   } = buttonData;
 
@@ -143,12 +142,11 @@ function createButtonHTML(buttonData) {
     return '';
   }
 
-  const buttonClass = linkType ? `button-${linkType}` : 'button-tertiary';
   const target = targetLink ? 'target="_blank"' : 'target="_self"';
   const title = linkTitle ? `title="${linkTitle}"` : `title="${linkText}"`;
 
   return `
-    <a class="link-primary white pull-right ${buttonClass}" href="${link}" ${title} ${target}>
+    <a class="link-primary white pull-right" href="${link}" ${title} ${target}>
       ${linkText}
     </a>
   `;
