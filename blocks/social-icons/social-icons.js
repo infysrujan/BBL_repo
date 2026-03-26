@@ -1,3 +1,5 @@
+import { moveInstrumentation } from '../../scripts/scripts.js';
+
 /**
  * Social Icons Block – Bangkok Bank style
  */
@@ -67,6 +69,9 @@ export default function decorate(block) {
   });
 
   iconsContainer.appendChild(ul);
+
+  // Move instrumentation from block to iconsContainer for Universal Editor tracking
+  moveInstrumentation(block, iconsContainer);
 
   const shareBtn = document.createElement('div');
   shareBtn.className = 'btn-share';

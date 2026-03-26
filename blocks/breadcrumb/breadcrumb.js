@@ -1,5 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { fetchConfigs } from '../../scripts/config.js';
 
 /**
  * Fetches breadcrumb (parent page) data from the AEM pageinfo endpoint.
@@ -7,11 +8,12 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * @returns {Promise<Object>} Map of path to page title
  */
 async function fetchBreadcrumbData() {
-  const AEM_BASE_URL = 'https://publish-p185039-e1939903.adobeaemcloud.com';
+  const configs = await fetchConfigs();
+  const AEM_BASE_URL_FOR_BREADCRUMB = configs.aemBaseUrlForBreadcrumb || 'https://publish-p185039-e1939903.adobeaemcloud.com';
 
   try {
     const { pathname } = window.location;
-    const apiUrl = `${AEM_BASE_URL}/content/bangkokbank${pathname}.pageinfo.json`;
+    const apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}/content/bangkokbank${pathname}.pageinfo.json`;
     const response = await fetch(apiUrl);
     if (!response.ok) {
       throw new Error(`API returned status ${response.status}`);
@@ -83,6 +85,21 @@ async function fetchBreadcrumbData() {
  * @param {Element} block The breadcrumb block element
  */
 export default async function decorate(block) {
+  const breadcrumb = getMetadata('breadcrumb');
+  console.warn("Breadcrumb value is : ", breadcrumb);
+
+  // Hide breadcrumb block if metadata value is 'false'
+  if (breadcrumb === 'false') {
+    block.style.display = 'none';
+
+    // Also hide social-icons block if it exists
+    const socialIconsBlock = document.querySelector('.social-icons.block');
+    if (socialIconsBlock) {
+      socialIconsBlock.style.display = 'none';
+    }
+    return;
+  }
+
   const shortTitle = getMetadata('short-title');
   const { title: pageTitle } = document;
 
