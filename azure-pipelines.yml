@@ -13,8 +13,7 @@ pr:
 
 pool:
   name: PWSM-NPRD
-  demands:
-    - test -equals true   # ✅ ensures only agents with test=true are used
+  
 
 stages:
 
