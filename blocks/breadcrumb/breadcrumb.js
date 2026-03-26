@@ -86,7 +86,6 @@ async function fetchBreadcrumbData() {
  */
 export default async function decorate(block) {
   const breadcrumb = getMetadata('breadcrumb');
-  console.warn("Breadcrumb value is : ", breadcrumb);
 
   // Hide breadcrumb block if metadata value is 'false'
   if (breadcrumb === 'false') {
