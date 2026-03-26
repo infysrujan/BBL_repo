@@ -65,8 +65,6 @@ stages:
 
     - script: |
         set -e
-        sudo apt-get update || true
-        sudo apt-get install -y jq bc || true
         npm install -g @lhci/cli@0.13.x broken-link-checker
         echo "✅ Tools installed"
       displayName: 'Install tools'
