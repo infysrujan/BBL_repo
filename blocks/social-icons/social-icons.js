@@ -70,23 +70,28 @@ export default function decorate(block) {
 
   iconsContainer.appendChild(ul);
 
-  // Move instrumentation from block to iconsContainer for Universal Editor tracking
-  moveInstrumentation(block, iconsContainer);
-
   const shareBtn = document.createElement('div');
   shareBtn.className = 'btn-share';
   shareBtn.setAttribute('role', 'button');
   shareBtn.setAttribute('tabindex', '0');
   shareBtn.setAttribute('aria-label', 'Share');
 
-  block.innerHTML = '';
+  // Hide original content but keep it in DOM for Universal Editor
+  [...block.children].forEach((child) => {
+    child.style.display = 'none';
+  });
+
+  // Move instrumentation from block to iconsContainer for Universal Editor tracking
+  moveInstrumentation(block, iconsContainer);
+
+  // Append new elements without removing original content
   block.append(closeIcon, iconsContainer, shareBtn);
 
   /* -----------------------------
      Viewport direction handling
   ------------------------------ */
   function setViewportMode() {
-    if (window.matchMedia('(min-width: 900px)').matches) {
+    if (window.matchMedia('(min-width: 760px)').matches) {
       block.classList.add('desktop');
       block.classList.remove('mobile');
     } else {

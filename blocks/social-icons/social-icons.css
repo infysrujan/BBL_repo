@@ -1,12 +1,8 @@
-/* =========================================
-   SOCIAL ICONS – BASE
-========================================= */
-
 .social-icons {
   display: flex;
   align-items: center;
-  width: 43px;
-  height: 43px;
+  width: 2.625rem;
+  height: 2.625rem;
   border: 1px solid var(--bbl-color-active-blue);
   border-radius: var(--bbl-radius-full);
   background: var(--bbl-bg-primary);
@@ -17,20 +13,15 @@
     border-radius 0.3s ease;
 }
 
-/* Expanded state */
 .social-icons.active {
   width: fit-content;
   padding: 0 var(--bbl-space-050);
   border-radius: var(--bbl-radius-md);
 }
 
-/* =========================================
-   SHARE BUTTON
-========================================= */
-
 .social-icons .btn-share {
-  width: 42px;
-  height: 42px;
+  width: 2.625rem;
+  height: 2.625rem;
   background: url('../../icons/btn-share.svg') no-repeat center;
   background-size: var(--bbl-space-500);
   flex-shrink: 0;
@@ -48,10 +39,6 @@
   opacity: 0;
 }
 
-/* =========================================
-   CLOSE ICON
-========================================= */
-
 .social-icons .icon-close {
   width: 0;
   height: var(--bbl-space-500);
@@ -62,19 +49,14 @@
   transition: all 0.3s ease;
 }
 
-
 .social-icons .icon-close:hover {
   opacity: 0.9;
 }
 
 .social-icons.active .icon-close {
-  width: 35px;
+  width: 2.1875rem;
   opacity: 1;
 }
-
-/* =========================================
-   SHARE ICONS CONTAINER
-========================================= */
 
 .social-icons .icons-container {
   display: flex;
@@ -86,7 +68,7 @@
 }
 
 .social-icons.active .icons-container {
-  max-width: 180px;
+  max-width: 11.25rem;
   opacity: 1;
   margin: 0 var(--bbl-space-050);
 }
@@ -105,8 +87,8 @@
 }
 
 .social-icons .icons-container li a {
-  width: 36px;
-  height: 36px;
+  width: 2.1875rem;
+  height: 2.1875rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -119,13 +101,13 @@
 
 .social-icons .icons-container img,
 .social-icons .icons-container picture img {
-  width: var(--bbl-space-350);
-  height: var(--bbl-space-350);
+  width: var(--bbl-space-300);
+  height: var(--bbl-space-300);
   object-fit: contain;
   display: block;
 }
 
-.social-icons .social-icons.mobile {
+.social-icons.mobile {
   flex-direction: row;
 }
 
@@ -142,8 +124,8 @@
 }
 
 
-@media (width >= 1025px) {
-.social-icons.desktop {
+@media (width >= 760px) {
+  .social-icons.desktop {
     flex-direction: row;
     margin-left: auto;
   }
@@ -158,6 +140,6 @@
 
   .social-icons.desktop .icon-close {
     order: 3;
-    margin-right: 10px;
+    margin-right: 0.625rem;
   }
 }
