@@ -1,4 +1,5 @@
 import { getMetadata } from '../../scripts/aem.js';
+import { moveInstrumentation } from '../../scripts/scripts.js';
 
 /**
  * Fetches breadcrumb (parent page) data from the AEM pageinfo endpoint.
@@ -89,6 +90,10 @@ export default async function decorate(block) {
   const breadcrumbTitleMap = await fetchBreadcrumbData();
 
   const ol = document.createElement('ol');
+
+  // Move instrumentation from block to ol for Universal Editor tracking
+  moveInstrumentation(block, ol);
+
   block.appendChild(ol);
 
   const pathSegments = window.location.pathname
