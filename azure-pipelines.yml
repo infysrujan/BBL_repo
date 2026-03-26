@@ -14,7 +14,7 @@ pr:
       - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'PWSM-NPRD'
 
 stages:
 
