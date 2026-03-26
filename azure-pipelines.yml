@@ -12,6 +12,7 @@ pr:
       - dev
       - stage
       - main
+      
 
 pool:
   name: 'PWSM-NPRD'
