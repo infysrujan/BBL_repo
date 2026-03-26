@@ -35,10 +35,12 @@
       "download-file",
       "teaser-with-bg-image",
       "sub-nav",
+      "search-page",
       "currency-converter",
       "popup-modal-card-offer",
       "locate-us",
-      "rate-card"
+      "rate-card",
+      "currency-converter-expanded"
     ]
   },
   {
