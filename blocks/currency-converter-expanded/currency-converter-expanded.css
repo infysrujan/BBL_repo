@@ -398,6 +398,11 @@
   font-family: var(--bbl-font-family-medium);
 }
 
+.currency-converter-expanded .converter-expanded-result-content .converter-expanded-result-rate .from-currency,
+.currency-converter-expanded .converter-expanded-result-content .converter-expanded-result-rate .to-currency {
+  padding: 0 0.3125rem;
+}
+
 .currency-converter-expanded .converter-expanded-result-content .converter-expanded-result-timestamp,
 .currency-converter-expanded .converter-expanded-result-content .converter-expanded-result-timestamp .date-convert,
 .currency-converter-expanded .converter-expanded-result-content .converter-expanded-result-timestamp .time-convert {
