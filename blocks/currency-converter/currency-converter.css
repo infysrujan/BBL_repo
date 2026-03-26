@@ -13,7 +13,6 @@
 .currency-converter .converter {
   width: 100%;
   position: relative;
-  padding: 1.25rem 0;
 }
 
 /* Convert Groups (From/To Sections) */
@@ -315,7 +314,7 @@
   background: var(--bbl-color-grey-50);
 }
 
-.section:has(.rate-card .tab-header li:first-child .active) .currency-converter {
+.section:has(.rate-card .tab-header li:not(:first-child) .active) .currency-converter {
   display: none;
 }
 
@@ -352,8 +351,12 @@
 }
 
 @media (width > 64rem) {
-  .section:has(.rate-card .tab-header li:first-child .active) .currency-converter {
+  .section:has(.rate-card .tab-header li:not(:first-child) .active) .currency-converter {
     display: block;
+  }
+
+  .currency-converter .converter {
+    padding: 1.25rem 0;
   }
   
   .currency-converter .currency-title-from, 

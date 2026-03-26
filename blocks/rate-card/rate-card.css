@@ -385,7 +385,7 @@
    ========================================================================== */
 @media (width > 64rem) {
 	.rate-card {
-    padding-top: 1.25rem;
+    padding: 1.25rem 0;
 	}
 
   .rate-card .currency-info {
@@ -421,7 +421,6 @@
 	.rate-card .link-primary.pull-right {
     font-size: 0.8rem;
 	}
-
 }
 
 /* --------------------------------------------------------------------------
