@@ -13,6 +13,8 @@ pr:
 
 pool:
   name: PWSM-NPRD   # self-hosted agent pool
+  demands:
+    - test -equals true
 
 stages:
 
