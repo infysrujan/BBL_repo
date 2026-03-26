@@ -171,12 +171,18 @@ export default async function decorate(block) {
     const { loadFragment } = await import('../fragment/fragment.js');
     const fragment = await loadFragment(`${langPrefix}/fragments/social-icons`);
     if (fragment) {
-      // Find the social-icons block in the fragment
-      const socialIconsBlock = fragment.querySelector('.social-icons.block');
+      // Pick the social-icons block with the most child rows (handles orphaned items
+      // that AEM may group into a second block at section level)
+      const allSocialBlocks = [...fragment.querySelectorAll('.social-icons.block')];
+      const socialIconsBlock = allSocialBlocks.reduce((best, current) => (
+        current.children.length > (best?.children.length ?? -1) ? current : best
+      ), null);
       if (socialIconsBlock) {
         const socialWrapper = socialIconsBlock.parentElement;
         if (socialWrapper) {
-          block.appendChild(socialWrapper);
+          // Append as sibling of the breadcrumb block (not inside it) so that
+          // the CSS rule `.breadcrumb + .social-icons-wrapper` can match
+          block.parentElement.appendChild(socialWrapper);
         }
       }
     }

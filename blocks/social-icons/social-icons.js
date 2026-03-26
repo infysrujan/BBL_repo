@@ -1,26 +1,23 @@
-import { moveInstrumentation } from '../../scripts/scripts.js';
-
 /**
  * Social Icons Block – Bangkok Bank style
  */
 
 export default function decorate(block) {
-  // Check if we have at least one valid row
+  // Check if we have at least one row with a platform and icon
   const validRows = [...block.children].filter((row) => {
     const cells = [...row.children];
-    if (cells.length < 3) {
-      return false;
-    }
-
+    if (cells.length < 2) return false;
     const platform = cells[0].textContent.trim();
     const icon = cells[1].querySelector('picture, img');
-    const link = cells[2].querySelector('a');
-    const urlText = cells[2].textContent.trim();
-    const isValid = platform && icon && (link?.href || urlText);
-    return isValid;
+    return platform && icon;
   });
 
-  // Return early if no valid rows
+  // Hide original content (keep in DOM for Universal Editor)
+  [...block.children].forEach((child) => {
+    child.style.display = 'none';
+  });
+
+  // Return early if no valid rows — block is unconfigured
   if (validRows.length === 0) {
     return;
   }
@@ -37,33 +34,50 @@ export default function decorate(block) {
 
   [...block.children].forEach((row) => {
     const cells = [...row.children];
-    if (cells.length < 3) return;
+    if (cells.length < 2) return;
 
     const platform = cells[0].textContent.trim().toLowerCase();
     const icon = cells[1].querySelector('picture, img');
-    const link = cells[2].querySelector('a');
-    const urlText = cells[2].textContent.trim();
 
-    // Skip if no icon or no URL
-    if (!icon || (!link?.href && !urlText)) return;
+    // Skip if no icon
+    if (!icon) return;
 
-    const li = document.createElement('li');
-    const a = document.createElement('a');
-
-    // Use link href if available, otherwise use URL text
-    let url = link?.href || urlText;
-    // Ensure URL has protocol
+    // URL is optional — read from cell[2] if present
+    let url = null;
+    if (cells.length >= 3) {
+      const link = cells[2].querySelector('a');
+      const urlText = cells[2].textContent.trim();
+      url = link?.href || urlText || null;
+    }
     if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
       url = `https://${url}`;
     }
 
-    a.href = url;
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+
+    if (url) {
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    } else {
+      a.href = '#';
+    }
     a.className = `icon-${platform}`;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
     a.setAttribute('aria-label', `Share on ${platform}`);
 
-    a.appendChild(icon.cloneNode(true));
+    const clonedIcon = icon.cloneNode(true);
+    clonedIcon.querySelectorAll('img').forEach((img) => {
+      // eslint-disable-next-line no-param-reassign
+      img.loading = 'eager';
+      // Remove UE instrumentation from clones — the originals in the hidden rows
+      // already carry these attrs; duplicates confuse the UE content tree
+      img.removeAttribute('data-aue-prop');
+      img.removeAttribute('data-aue-type');
+      img.removeAttribute('data-aue-label');
+      img.removeAttribute('data-aue-resource');
+    });
+    a.appendChild(clonedIcon);
     li.appendChild(a);
     ul.appendChild(li);
   });
@@ -76,13 +90,8 @@ export default function decorate(block) {
   shareBtn.setAttribute('tabindex', '0');
   shareBtn.setAttribute('aria-label', 'Share');
 
-  // Hide original content but keep it in DOM for Universal Editor
-  [...block.children].forEach((child) => {
-    child.style.display = 'none';
-  });
-
-  // Move instrumentation from block to iconsContainer for Universal Editor tracking
-  moveInstrumentation(block, iconsContainer);
+  // NOTE: do NOT move block instrumentation away from the block element — UE needs
+  // data-aue-resource + data-aue-filter on the block itself to correctly add child items
 
   // Append new elements without removing original content
   block.append(closeIcon, iconsContainer, shareBtn);
