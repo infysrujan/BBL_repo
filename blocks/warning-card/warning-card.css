@@ -74,7 +74,7 @@
 	color: var(--bbl-color-grey-85);
 }
 
-@media (width >=47.5rem) {
+@media (width > 47.5rem) {
   .warning-card-inner-container {
     max-width: 48rem;
   }
@@ -94,7 +94,7 @@
   }
 }
 
-@media (width >=64rem) {
+@media (width > 64rem) {
   .warning-card-inner-container {
     max-width: 77.5rem;
     gap: var(--bbl-space-300);
@@ -118,12 +118,5 @@
   .warning-card-icon {
     position: relative;
     left: 0.9375rem;
-  }
-}
-
-@media (width >=80rem) {
-  .warning-card-title {
-    font-size: var(--bbl-heading-h5-size);
-    line-height: 1.625rem;
   }
 }
