@@ -67,6 +67,11 @@
   outline: none;
   transition: all 0.3s ease;
   white-space: nowrap;
+	border-radius: 2rem;
+}
+
+.rate-card .tab-header a:focus {
+	margin-right: 0.4375rem;
 }
 
 .rate-card .tab-header a.active,
@@ -76,7 +81,6 @@
   border-radius: 2rem;
   color: var(--bbl-color-gray-121);
   text-decoration: none;
-  outline: none;
   border: none;
   box-shadow: none;
 }
