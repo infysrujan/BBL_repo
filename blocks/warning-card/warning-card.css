@@ -9,7 +9,7 @@
   align-items: flex-start;
   gap: var(--bbl-space-200);
   box-sizing: border-box;
- padding-block: 1.875rem var(--bbl-space-500);
+  padding-block: 1.875rem var(--bbl-space-500);
 }
 
 .warning-card-icon {
@@ -67,11 +67,10 @@
   margin-bottom: var(--bbl-space-100);
 }
 
-.warning-card-description strong a
-{
-    font-family: Muli-Bold, sans-serif;
-    font-size: var(--bbl-font-size-base);
-	color: var(--bbl-color-grey-85);
+.warning-card-description strong a {
+  font-family: Muli-Bold, sans-serif;
+  font-size: var(--bbl-font-size-base);
+  color: var(--bbl-color-grey-85);
 }
 
 @media (width > 47.5rem) {
