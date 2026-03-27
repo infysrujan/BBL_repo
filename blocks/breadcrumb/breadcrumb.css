@@ -29,14 +29,7 @@
 }
 
 .breadcrumb ol>li::before {
-  content: "\e901";
-  font-family: icomoon, sans-serif;
-  color: var(--bbl-text-link);
-  font-size: 0.625rem;
-  margin: 0 var(--bbl-space-075) 0 0;
-  line-height: 1.35;
-  float: left;
-  transform: rotate(180deg);
+  content: ".";
   display: inline-block;
 }
 
@@ -133,10 +126,6 @@
 }
 
 @media (width > 64rem) {
-  .breadcrumb-wrapper {
-    padding: 0;
-  }
-
   .breadcrumb {
     padding: var(--bbl-space-250) 0;
   }
