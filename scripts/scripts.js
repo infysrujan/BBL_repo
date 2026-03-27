@@ -20,6 +20,7 @@ import {
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
+import { setMainDecorator } from '../blocks/fragment/fragment.js';
 
 /**
  * Gets the language from the HTML tag.
@@ -76,31 +77,21 @@ export function createElementFromHTML(html, doc) {
 }
 
 /**
- * Check if a URL is external (different domain from current site)
- * @param {string} url - The URL to check
- * @returns {boolean} True if URL is external
- */
-export function isExternalUrl(url) {
-  try {
-    const urlObj = new URL(url, window.location.href);
-    return urlObj.hostname !== window.location.hostname;
-  } catch {
-    return false;
-  }
-}
-
-/**
  * Set target="_blank" on external links in a container
- * @param {Element} container - The container element to process
+ * Note: Links will be validated by addLinkClickHandler, so we don't set target="_blank"
+ * to prevent unwanted new tab behavior before validation
  */
-export function setExternalLinksTarget(container) {
-  const links = container.querySelectorAll('a[href]');
-  links.forEach((link) => {
-    if (isExternalUrl(link.href)) {
-      link.setAttribute('target', '_blank');
-      link.setAttribute('rel', 'noopener noreferrer');
-    }
-  });
+export function setExternalLinksTarget() {
+  // Commenting out automatic target="_blank" setting since we handle external links
+  // with URL validation logic that shows modals before navigation
+  //
+  // const links = container.querySelectorAll('a[href]');
+  // links.forEach((link) => {
+  //   if (isExternalUrl(link.href)) {
+  //     link.setAttribute('target', '_blank');
+  //     link.setAttribute('rel', 'noopener noreferrer');
+  //   }
+  // });
 }
 
 /**
@@ -149,6 +140,7 @@ export function decorateMain(main) {
     document.body.classList.add(`${pageVariant}`);
   }
 }
+setMainDecorator(decorateMain);
 
 /**
  * Resolves html lang from URL path (locale segment after host, e.g. bangkokbank.com/en/...).
@@ -207,6 +199,10 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  // Add link click handler for URL validation
+  const { addLinkClickHandler } = await import('./bbl-decorators.js');
+  addLinkClickHandler();
 }
 
 /**
