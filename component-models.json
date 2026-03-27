@@ -50,6 +50,19 @@
         "label": "Enable Sub Navigation",
         "name": "isSubNav",
         "valueType": "boolean"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "short-title",
+        "label": "Short Page Title"
+      },
+      {
+        "component": "boolean",
+        "name": "breadcrumb",
+        "value": "",
+        "label": "Breadcrumb",
+        "valueType": "boolean"
       }
     ]
   },
@@ -7718,6 +7731,46 @@
         "label": "Accessibility Label",
         "description": "Screen reader label (defaults to 'Search')",
         "value": "Search"
+      }
+    ]
+  },
+  {
+    "id": "social-icon",
+    "fields": [
+      {
+        "component": "select",
+        "name": "platform",
+        "label": "Platform",
+        "valueType": "string",
+        "required": true,
+        "options": [
+          {
+            "name": "Facebook",
+            "value": "facebook"
+          },
+          {
+            "name": "X",
+            "value": "x"
+          },
+          {
+            "name": "Line",
+            "value": "line"
+          }
+        ]
+      },
+      {
+        "component": "reference",
+        "name": "icon",
+        "label": "Icon",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "url",
+        "label": "URL",
+        "valueType": "string",
+        "required": true
       }
     ]
   },

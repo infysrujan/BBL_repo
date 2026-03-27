@@ -11,6 +11,9 @@ import {
   loadSections,
   loadCSS,
   getMetadata,
+  buildBlock,
+  decorateBlock,
+  loadBlock,
 } from './aem.js';
 
 import {
@@ -205,6 +208,22 @@ async function loadLazy(doc) {
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
 
+  // Add breadcrumb above footer if enabled
+  const breadcrumbsMeta = getMetadata('breadcrumbs') || 'true';
+  if (breadcrumbsMeta.toLowerCase() === 'true') {
+    const footer = doc.querySelector('footer');
+    if (footer) {
+      const breadcrumbWrapper = document.createElement('div');
+      breadcrumbWrapper.className = 'breadcrumb-wrapper';
+      breadcrumbWrapper.setAttribute('aria-label', 'Breadcrumb');
+      footer.parentNode.insertBefore(breadcrumbWrapper, footer);
+
+      const breadcrumbBlock = buildBlock('breadcrumb', '');
+      breadcrumbWrapper.append(breadcrumbBlock);
+      decorateBlock(breadcrumbBlock);
+      await loadBlock(breadcrumbBlock);
+    }
+  }
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 }
