@@ -75,28 +75,6 @@ button.login-button.primary {
   transform: translateX(100%);
 }
 
-/* Overlay - hidden by default */
-.login-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgb(0 0 0 / 50%);
-  z-index: 99;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-/* Show overlay when active */
-.login-overlay.is-active {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Body scroll lock when login panel is open */
-body.login-panel-open {
-  overflow: hidden;
-}
-
 .login-section-title {
   font-size: 1.5rem !important;
   line-height: 1.625rem !important;

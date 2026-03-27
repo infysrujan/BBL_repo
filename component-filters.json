@@ -38,8 +38,9 @@
       "search-page",
       "currency-converter",
       "popup-modal-card-offer",
-      "currency-converter-expanded",
-      "locate-us"
+      "locate-us",
+      "rate-card",
+      "currency-converter-expanded"
     ]
   },
   {
@@ -185,6 +186,12 @@
       "menu-card"
     ],
     "maxItems": 6
+  },
+  {
+    "id": "rate-card",
+    "components": [
+      "rate-card-item"
+    ]
   },
   {
     "id": "story-card",

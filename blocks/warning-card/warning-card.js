@@ -72,7 +72,7 @@ export default function decorate(block) {
 
   // Create inner container wrapper for layout consistency
   const innerContainer = document.createElement('div');
-  innerContainer.className = 'warning-card-inner-container';
+  innerContainer.className = 'warning-card-inner-container content';
 
   // Add icon if present
   if (icon) {
