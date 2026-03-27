@@ -4,12 +4,16 @@ trigger:
       - dev
       - main
       - feature/*
+      - stage
+      - qa
 
 pr:
   branches:
     include:
       - dev
       - main
+      - stage
+      - qa
 
 pool:
   name: PWSM-NPRD
