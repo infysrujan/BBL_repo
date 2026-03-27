@@ -3,6 +3,8 @@ trigger:
     include:
       - dev
       - main
+      - stage
+      - qa
       - feature/*
 
 pr:
@@ -10,6 +12,8 @@ pr:
     include:
       - dev
       - main
+      - stage
+      - qa
 
 pool:
   name: PWSM-NPRD
