@@ -12,7 +12,7 @@
   width: 100%;
   text-align: left;
   border-radius: 0;
-  border-top: 1px solid var(--bbl-color-black-alpha-10);
+  border-top: 0.0625rem solid var(--bbl-color-black-alpha-10);
   display: block;
   padding: 1.25rem 0;
   height: auto;
@@ -45,12 +45,11 @@
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
-  pointer-events: auto;
 }
 
 .megamenu-home-link {
-  padding: 25px 0;
-  border-bottom: 1px solid rgb(0 0 0 / 10%);
+  padding: 1.5625rem 0;
+  border-bottom: 0.0625rem solid rgb(0 0 0 / 10%);
 }
 
 .megamenu-home-link p {
@@ -107,7 +106,7 @@
   width: 2.375rem;
   height: 2.375rem;
   padding: 0;
-  border: 1px solid rgb(158 158 158 / 70%);
+  border: 0.0625rem solid rgb(158 158 158 / 70%);
   border-radius: 50%;
   background: var(--bbl-bg-primary);
   box-shadow: 0 0 0.25rem 0 transparent;
@@ -136,6 +135,7 @@
 .megamenu-carousel-arrow-prev::before {
   transform: scaleX(-1);
   color: var(--bbl-color-grey-160);
+  font-size: 0.875rem;
 }
 
 .megamenu-carousel-arrow-next::before {
@@ -146,6 +146,10 @@
   margin-bottom: 1rem;
 }
 
+.megamenu-column-image p {
+  margin-block: 0;
+}
+
 .megamenu-column-image img {
   height: 5rem;
   width: 11.4375rem;
@@ -153,7 +157,7 @@
 
 .megamenu-link-item {
   padding: 1.5625rem 0;
-  border-bottom: 1px solid rgb(0 0 0 / 10%);
+  border-bottom: 0.0625rem solid rgb(0 0 0 / 10%);
 }
 
 .megamenu-category-title {
@@ -194,7 +198,7 @@ a.megamenu-link {
 }
 
 .megamenu-link:hover {
-  text-decoration: underline;
+  color: var(--bbl-color-blue-90);
 }
 
 .quick-nav-items {
@@ -206,7 +210,7 @@ a.megamenu-link {
 
 .quick-nav-item {
   border-radius: 0.4375rem;
-  border: 1px solid var(--bbl-color-black-alpha-10);
+  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   height: 4.5625rem;
   display: flex;
   align-items: center;
@@ -228,15 +232,28 @@ a.megamenu-link {
 .quick-nav-item a {
   text-decoration: none;
   color: var(--bbl-color-grey-150);
+  display: inline-flex;
+  align-items: end;
+  justify-content: flex-start;
+  width: 100%;
+  text-align: center;
+  gap: 0.625rem;
 }
 
-.quick-nav-item a:hover {
-  text-decoration: underline;
+.quick-nav-item a picture {
+  display: flex;
+  align-items: center;
+  line-height: 0;
+  flex-shrink: 0;
+}
+
+.quick-nav-item a picture img {
+  display: block;
 }
 
 .quick-nav-item span,
 .quick-nav-item .quick-nav-label {
-  margin-left: 0.625rem;
+  margin-left: 0;
   color: var(--bbl-color-black);
   font: 0.875rem BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
 }
@@ -244,10 +261,6 @@ a.megamenu-link {
 @media (width > 64rem) {
   .main-nav-item {
     margin-right: 1.625rem;
-  }
-
-  .main-nav-item-wrapper {
-    position: relative;
   }
 
   .main-nav-trigger {
@@ -271,7 +284,8 @@ a.megamenu-link {
     line-height: 1.375;
   }
 
-  .main-nav-trigger-text:hover {
+  .main-nav-trigger:hover .main-nav-trigger-text,
+  .main-nav-trigger:hover::before {
     color: var(--bbl-text-link);
   }
 
@@ -297,20 +311,19 @@ a.megamenu-link {
   }
 
   .megamenu-panel {
-    position: fixed;
-    top: var(--nav-height, 5.25rem);
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    background: var(--bbl-bg-primary);
     box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 15%);
     opacity: 0;
     visibility: hidden;
-
-    /* transform: translateY(-0.625rem);
-    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease; */
-    pointer-events: none;
     padding: 0 1.25rem;
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    top: var(--nav-height);
+    background: var(--bbl-bg-primary);
+    transform: translate3d(0, 0, 0);
+    max-height: calc(100vh - var(--nav-height));
+    overflow: auto;
   }
 
   .megamenu-inner {
@@ -330,6 +343,7 @@ a.megamenu-link {
   .megamenu-columns {
     display: flex;
     gap: 1.25rem;
+    padding-bottom: 1.25rem;
   }
 
   .megamenu-link-item {
@@ -365,6 +379,10 @@ a.megamenu-link {
     text-decoration: none;
   }
 
+  .quick-nav-item a {
+    justify-content: center;
+  }
+
   .megamenu-category-title a:hover {
     color: var(--bbl-color-blue-90);
     text-decoration: none;
@@ -379,6 +397,11 @@ a.megamenu-link {
   .quick-nav-item {
     width: 25%;
     justify-content: center;
+  }
+
+  .quick-nav-item:hover {
+    border: 0.0625rem solid var(--bbl-color-active-blue);
+    box-shadow: 0.1875rem 0.1875rem 0 var(--bbl-color-black-alpha-17);
   }
 
   .quick-nav-item span,

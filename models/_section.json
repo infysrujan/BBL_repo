@@ -26,10 +26,24 @@
           "description": "The label shown for this section in the Content Tree"
         },
         {
+          "component": "boolean",
+          "label": "Enable this section to be a part of sub-navigation",
+          "name": "is-subnav-section",
+          "valueType": "boolean"
+        },
+        {
           "component": "text",
           "name": "subnav-label",
-          "label": "Sub Nav Title",
-          "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled."
+          "label": "Sub Navigation Title",
+          "description": "This title will be displayed in the sub-navigation if the page has sub-navigation enabled.",
+          "condition": {
+            "===": [
+              {
+                "var": "is-subnav-section"
+              },
+              true
+            ]
+          }
         },
         {
           "component": "multiselect",
@@ -63,6 +77,10 @@
                   "value": "bg-truthful-blue"
                 },
                 {
+                  "name": "Truthful Dark Blue",
+                  "value": "bg-truthful-dark-blue"
+                },
+                {
                   "name": "Ice Blue",
                   "value": "bg-ice-blue"
                 },
@@ -94,6 +112,15 @@
               ]
             },
             {
+              "name": "Layout",
+              "children": [
+                {
+                  "name": "Columns 3",
+                  "value": "columns-3"
+                }
+              ]
+            },
+            {
               "name": "Style",
               "children": [
                 {
@@ -103,6 +130,10 @@
                 {
                   "name": "Center Title",
                   "value": "center-title"
+                },
+                {
+                  "name": "Center Content",
+                  "value": "center-content"
                 }
               ]
             }
@@ -138,7 +169,14 @@
         "content-insert-cards",
         "menu-card-actions",
         "download-file",
-        "sub-nav"
+        "teaser-with-bg-image",
+        "sub-nav",
+        "search-page",
+        "currency-converter",
+        "popup-modal-card-offer",
+        "locate-us",
+        "rate-card",
+        "currency-converter-expanded"
       ]
     }
   ]

@@ -42,6 +42,7 @@ function normalizeOptions(options = {}) {
 export function slideDown(element, options = {}) {
   const { duration, easing, onComplete } = normalizeOptions(options);
   const prevOverflow = element.style.overflow;
+  const prevMaxHeight = element.style.maxHeight;
   element.style.overflow = 'hidden';
   element.style.maxHeight = 'none';
   const endHeight = element.scrollHeight;
@@ -55,7 +56,7 @@ export function slideDown(element, options = {}) {
   );
   animation.finished.then(() => {
     animation.cancel();
-    element.style.maxHeight = 'none';
+    element.style.maxHeight = prevMaxHeight || '';
     element.style.overflow = prevOverflow || '';
   });
   if (typeof onComplete === 'function') {
@@ -73,6 +74,7 @@ export function slideDown(element, options = {}) {
 export function slideUp(element, options = {}) {
   const { duration, easing, onComplete } = normalizeOptions(options);
   const prevOverflow = element.style.overflow;
+  const prevMaxHeight = element.style.maxHeight;
   element.style.overflow = 'hidden';
   const startHeight = element.scrollHeight;
   const animation = element.animate(
@@ -84,7 +86,7 @@ export function slideUp(element, options = {}) {
   );
   animation.finished.then(() => {
     animation.cancel();
-    element.style.maxHeight = 'none';
+    element.style.maxHeight = prevMaxHeight || '';
     element.style.overflow = prevOverflow || '';
   });
   if (typeof onComplete === 'function') {
@@ -102,6 +104,7 @@ export function slideUp(element, options = {}) {
 export function slideLeft(element, options = {}) {
   const { duration, easing, onComplete } = normalizeOptions(options);
   const prevOverflow = element.style.overflow;
+  const prevMaxWidth = element.style.maxWidth;
   element.style.overflow = 'hidden';
   const startWidth = element.scrollWidth;
   const animation = element.animate(
@@ -113,7 +116,7 @@ export function slideLeft(element, options = {}) {
   );
   animation.finished.then(() => {
     animation.cancel();
-    element.style.maxWidth = 'none';
+    element.style.maxWidth = prevMaxWidth || '';
     element.style.overflow = prevOverflow || '';
   });
   if (typeof onComplete === 'function') {
@@ -131,6 +134,7 @@ export function slideLeft(element, options = {}) {
 export function slideRight(element, options = {}) {
   const { duration, easing, onComplete } = normalizeOptions(options);
   const prevOverflow = element.style.overflow;
+  const prevMaxWidth = element.style.maxWidth;
   element.style.overflow = 'hidden';
   element.style.maxWidth = 'none';
   const endWidth = element.scrollWidth;
@@ -144,7 +148,7 @@ export function slideRight(element, options = {}) {
   );
   animation.finished.then(() => {
     animation.cancel();
-    element.style.maxWidth = 'none';
+    element.style.maxWidth = prevMaxWidth || '';
     element.style.overflow = prevOverflow || '';
   });
   if (typeof onComplete === 'function') {
