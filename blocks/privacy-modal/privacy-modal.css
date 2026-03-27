@@ -280,7 +280,7 @@
   outline-offset: 0.125rem;
 }
 
-@media (width >=47.5rem) {
+@media (width > 47.5rem) {
   .privacy-modal-dialog {
     width: 50rem;
     max-width: 50rem;

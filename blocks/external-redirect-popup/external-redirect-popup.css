@@ -175,8 +175,7 @@
     color: var(--bbl-color-white);
 }
 
-/* ── Tablet (≥ 761px) ── */
-@media (width >=47.5rem) {
+@media (width > 47.5rem) {
     .external-redirect-popup-inner {
         width: 75%;
     }
@@ -186,8 +185,7 @@
     }
 }
 
-/* ── Desktop (≥ 1024px) ── */
-@media (width >=64rem) {
+@media (width > 64rem) {
     .external-redirect-popup-inner {
         width: 41.6667%;
     }
