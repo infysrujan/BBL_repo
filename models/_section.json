@@ -174,8 +174,9 @@
         "search-page",
         "currency-converter",
         "popup-modal-card-offer",
-        "currency-converter-expanded",
-        "locate-us"
+        "locate-us",
+        "rate-card",
+        "currency-converter-expanded"
       ]
     }
   ]

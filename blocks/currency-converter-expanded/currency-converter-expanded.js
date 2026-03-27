@@ -457,7 +457,7 @@ export default async function decorate(block) {
         const rateRounded = rate.toFixed(2);
         const formattedRate = formatNumberWithCommas(rateRounded);
         if (resultLine2) {
-          resultLine2.innerHTML = `1 ${fromCode} ${equalsToLabel} <span>${formattedRate}</span> ${toCode}`;
+          resultLine2.innerHTML = `1<span class="from-currency"> ${fromCode} </span>${equalsToLabel}<span class="to-currency"> ${formattedRate} ${toCode}</span>`;
         }
 
         // Line 3: As of date at time
