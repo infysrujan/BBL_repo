@@ -82,7 +82,7 @@ stages:
           TEST_URL="https://main--site-prod--bangkok-bank.aem.live/en"
       
         else
-          TEST_URL="https://${BRANCH_NAME}--site-prod--bangkok-bank.aem.page/en"
+          TEST_URL="https://${BRANCH_NAME}--site-stage--bangkok-bank.aem.page/en"
         fi
 
         echo "Using URL: $TEST_URL"
