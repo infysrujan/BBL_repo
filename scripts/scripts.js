@@ -16,9 +16,18 @@ import {
 import {
   decorateSvgWithAltText,
   decorateTerritoryButtons,
+  decorateButtonsV1,
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
+
+/**
+ * Gets the language from the HTML tag.
+ * @returns {string} The language code (e.g., 'en', 'th')
+ */
+export function getLang() {
+  return document.documentElement.lang || 'en';
+}
 
 /**
  * Moves all the attributes from a given elmenet to another given element.
@@ -142,11 +151,23 @@ export function decorateMain(main) {
 }
 
 /**
+ * Resolves html lang from URL path (locale segment after host, e.g. bangkokbank.com/en/...).
+ * @param {string} pathname - `window.location.pathname`
+ * @returns {'en'|'th'}
+ */
+function getDocumentLangFromPath(pathname) {
+  const first = pathname.split('/').filter(Boolean)[0];
+  if (first === 'en') return 'en';
+  if (first === 'th') return 'th';
+  return 'th';
+}
+
+/**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  document.documentElement.lang = 'en';
+  document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
@@ -172,6 +193,10 @@ async function loadEager(doc) {
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
+
+  // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
+  decorateButtonsV1(main);
+  decorateSvgWithAltText(main);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;

@@ -1,263 +1,287 @@
 .header {
-	--nav-height: 5.25rem;
+  --header-m-height: 5rem;
+  --header-d-height: 7.8125rem;
+  --nav-height: 5.375rem;
 
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	z-index: 100;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 /* MOBILE LAYOUT SPECIFIC SELECTORS */
 .header .mobile-top-bar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	position: relative;
-	height: 2.5rem;
-	padding: 1.25rem 1rem;
-	transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  height: 2.5rem;
+  padding: 1.25rem 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .header .mobile-top-bar.is-scrolled {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	background-color: var(--bbl-bg-brand);
-	z-index: 101;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--bbl-bg-brand);
+  z-index: 101;
 }
 
 .header .hamburger-icon {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	width: 1.5rem;
-	height: 1.125rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 1.5rem;
+  height: 1.125rem;
 }
 
 .header .hamburger-icon span {
-	display: block;
-	height: 0.125rem;
-	width: 100%;
-	background-color: var(--bbl-bg-primary);
-	transition: transform 0.3s ease, opacity 0.3s ease;
+  display: block;
+  height: 0.125rem;
+  width: 100%;
+  background-color: var(--bbl-bg-primary);
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .header .mob-megamenu-back-btn span {
-	display: block;
-	width: 2.375rem;
-	height: 2.375rem;
-	position: relative;
-	border: 0.0625rem solid var(--bbl-color-grey-150);
-	border-radius: 50%;
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  position: relative;
+  border: 0.0625rem solid var(--bbl-color-grey-150);
+  border-radius: 50%;
 }
 
 .header .hamburger-icon span:nth-child(2) {
-	width: 80%;
+  width: 80%;
 }
 
-/* Mobile nav overlay - behind menu when hamburger is open */
-.header .mobile-nav-overlay {
-	position: fixed;
-	inset: 0;
-	background-color: rgb(0 0 0 / 40%);
-	z-index: 999;
-	opacity: 0;
-	visibility: hidden;
-	pointer-events: none;
-	transition: opacity 0.3s ease, visibility 0.3s ease;
+/* Shared dim layer inside .header-nav: desktop megamenu + mobile drawer */
+.header .header-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgb(0 0 0 / 40%);
+  z-index: 99;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.header .mobile-nav-overlay.is-visible {
-	opacity: 1;
-	visibility: visible;
-	pointer-events: auto;
+.header .header-backdrop.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 /* Mobile nav menu */
 .header .mobile-nav-menu {
-	position: fixed;
-	top: 0;
-	left: -20rem;
-	width: 20rem;
-	height: 100vh;
-	background-color: var(--bbl-bg-primary);
-	z-index: 1000;
-	overflow-y: auto;
-	padding-top: 0;
-	transition: left 0.3s ease;
-	box-shadow: 0.125rem 0 0.5rem rgb(0 0 0 / 15%);
+  position: fixed;
+  top: 0;
+  left: -20rem;
+  width: 20rem;
+  height: 100vh;
+  background-color: var(--bbl-bg-primary);
+  z-index: 1000;
+  overflow-y: auto;
+  padding-top: 0;
+  transition: left 0.3s ease;
+  box-shadow: 0.125rem 0 0.5rem rgb(0 0 0 / 15%);
 }
 
 .header .mobile-nav-menu.is-open {
-	left: 0;
+  left: 0;
 }
 
 /* Mobile nav content wrapper 
 Mobile slide-out menu
 */
 .header .mobile-nav-content {
-	height: 100%;
-	padding: 1.25rem 1.25rem 0;
-	position: relative;
+  height: 100%;
+  padding: 1.25rem 1.25rem 0;
+  position: relative;
 }
 
 /* Mobile menu top row - location (left) and search (right) */
 .header .mobile-menu-top-row {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 0.4375rem 0 1.5625rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4375rem 0 1.5625rem;
 }
 
 .header .mob-megamenu-back-btn {
-	position: absolute;
-	z-index: 2;
-	display: none;
-	top: 1.25rem
+  position: absolute;
+  z-index: 2;
+  display: none;
+  top: 1.25rem
 }
 
 .header .mob-megamenu-back-btn.active {
-	opacity: 1;
-	display: block;
+  opacity: 1;
+  display: block;
 }
 
 .header .megamenu-panel .megamenu-inner .megamenu-column-links {
-	display: none;
+  display: none;
 }
 
 .header .megamenu-panel .megamenu-inner {
-	display: none;
+  display: none;
 }
 
 .header .megamenu-panel.active {
-	display: block;
-	position: absolute;
-	z-index: 1;
-	height: auto;
-	background-color: var(--bbl-bg-primary);
-	top: 0;
-	width: calc(100% - 2.5rem);
-	padding-top: 3.75rem;
+  display: block;
+  position: absolute;
+  z-index: 1;
+  height: auto;
+  background-color: var(--bbl-bg-primary);
+  top: 0;
+  width: calc(100% - 2.5rem);
+  padding-top: 3.75rem;
 }
 
 .header .megamenu-panel.active .megamenu-inner .megamenu-column.active {
-	display: block;
-	position: absolute;
-	z-index: 1;
-	height: 100vh;
-	background-color: var(--bbl-bg-primary);
-	top: 0;
-	width: 100%;
-	padding-top: 3.75rem;
+  display: block;
+  position: absolute;
+  z-index: 1;
+  height: 100vh;
+  background-color: var(--bbl-bg-primary);
+  top: 0;
+  width: 100%;
+  padding-top: 3.75rem;
 }
 
 /* Level 2 menu open: grey background for nav, panel and column */
 .header .mobile-nav-menu.is-open:has(.megamenu-column.active),
 .header .mobile-nav-menu.is-open:has(.megamenu-column.active) .megamenu-panel.active,
 .header .mobile-nav-menu.is-open:has(.megamenu-column.active) .megamenu-column.active {
-	background-color: var(--bbl-color-grey-05);
+  background-color: var(--bbl-color-grey-05);
 }
 
 .header .megamenu-panel.active .megamenu-inner {
-	margin-top: 1.875rem;
-	display: block;
+  margin-top: 1.875rem;
+  display: block;
 }
 
 .header .megamenu-column.active .megamenu-column-links {
-	margin-top: 1.875rem;
+  margin-top: 1.875rem;
 }
 
 .header .megamenu-panel.active .megamenu-inner .megamenu-column-links {
-	display: block;
+  display: block;
 }
 
 .header .megamenu-panel.active .megamenu-inner .megamenu-columns {
-	flex-direction: column;
+  flex-direction: column;
 }
 
 .header .megamenu-panel.active .megamenu-inner .megamenu-column .megamenu-column-image {
-	display: none;
+  display: none;
 }
 
 .header .megamenu-panel.active .megamenu-inner .megamenu-column-links .megamenu-link-item {
-	display: none;
+  display: none;
 }
 
 .header .megamenu-panel.active .megamenu-inner .megamenu-column-links .megamenu-link-item.megamenu-category {
-	display: block;
+  display: block;
 }
 
 .header .megamenu-panel.active .megamenu-inner .megamenu-column.active .megamenu-link-item.megamenu-category {
-	display: none;
+  display: none;
 }
 
 .header .megamenu-panel.active .megamenu-inner .megamenu-column.active .megamenu-link-item {
-	display: block;
+  display: block;
 }
 
 .header .mob-megamenu-back-btn .icon-arrow-left::before {
-	position: absolute;
-	top: 49%;
-	right: 44%;
-	transform: translateY(-50%) rotate(180deg);
-	font-size: 0.625rem;
+  position: absolute;
+  top: 49%;
+  right: 44%;
+  transform: translateY(-50%) rotate(180deg);
+  font-size: 0.625rem;
 }
 
 .header .top-nav.block.is-hidden {
-	opacity: 0;
+  opacity: 0;
+}
+
+header.is-not-overlapped .mobile-top-bar {
+  background-color: var(--bbl-color-truthful-blue);
+}
+
+header.is-not-overlapped ~ main {
+  /* matches header height */
+  padding-top: var(--header-m-height, 5rem);
 }
 
 @media (width > 64rem) {
-	/* Top nav - hides on scroll */
-	.header-nav>.top-nav {
-		transition: transform 0.3s ease, opacity 0.3s ease;
-	}
+  /* Top nav - hides on scroll */
+  .header-nav>.top-nav {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
 
-	.header-nav>.top-nav.is-hidden {
-		transform: translateY(-100%);
-		opacity: 0;
-		pointer-events: none;
-	}
+  .header-nav>.top-nav.is-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
 
-	/* Main nav - transparent, overlaps banner */
-	.header .main-nav-desktop {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 1.25rem 5.25rem;
-		background-color: transparent;
-		transition: background-color 0.3s ease, position 0.3s ease;
-	}
+  /* Main nav - transparent, overlaps banner */
+  .header .main-nav-desktop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 5.25rem;
+    background-color: transparent;
+    transition: background-color 0.3s ease, position 0.3s ease;
+  }
 
-	/* Main nav - scrolled state: fixed with dark background */
-	.header .main-nav-desktop.is-scrolled {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		background-color: var(--bbl-color-truthful-blue);
-		z-index: 101;
-	}
+  /* Main nav - scrolled state: fixed with dark background */
+  .header .main-nav-desktop.is-scrolled {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--bbl-color-truthful-blue);
+    z-index: 101;
+  }
 
-	.header .main-nav-right {
-		display: flex;
-		align-items: center;
-		gap: 0.625rem;
-	}
+  header.is-not-overlapped .main-nav-desktop {
+    background-color: var(--bbl-color-truthful-blue);
+  }
 
-	/* desktop styles LOGIN */
-	.header .is-scrolled .login-button {
-		transition: all .5s;
-		background-color: transparent;
-	}
+  .header .main-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
 
-	.header .megamenu-panel .megamenu-inner .megamenu-column-links {
-		display: block;
-	}
+  /* desktop styles LOGIN */
+  .header .is-scrolled .login-button {
+    transition: all .5s;
+    background-color: transparent;
+  }
 
-	.header .megamenu-panel .megamenu-inner {
-		display: block;
-	}
+  header.is-not-overlapped .login-button.primary {
+    background-color: transparent;
+  }
+
+  header.is-not-overlapped ~ main {
+    /* matches header height */
+    padding-top: var(--header-d-height, 7.8125rem);
+  }
+
+  .header .megamenu-panel .megamenu-inner .megamenu-column-links {
+    display: block;
+  }
+
+  .header .megamenu-panel .megamenu-inner {
+    display: block;
+  }
 }

@@ -33,7 +33,14 @@
       "content-insert-cards",
       "menu-card-actions",
       "download-file",
-      "sub-nav"
+      "teaser-with-bg-image",
+      "sub-nav",
+      "search-page",
+      "currency-converter",
+      "popup-modal-card-offer",
+      "locate-us",
+      "rate-card",
+      "currency-converter-expanded"
     ]
   },
   {
@@ -181,6 +188,12 @@
     "maxItems": 6
   },
   {
+    "id": "rate-card",
+    "components": [
+      "rate-card-item"
+    ]
+  },
+  {
     "id": "story-card",
     "components": [
       "button"
@@ -211,6 +224,12 @@
       "location",
       "login",
       "main-nav-item"
+    ]
+  },
+  {
+    "id": "teaser-with-bg-image",
+    "components": [
+      "teaser-with-bg-image-card"
     ]
   },
   {

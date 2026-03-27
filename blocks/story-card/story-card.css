@@ -48,7 +48,7 @@
   padding: 2.5rem 0;
 }
 
-.story-card .content {
+.story-card .story-card-content {
   color: var(--bbl-color-black);
   font-family: var(--bbl-font-family-primary);
 }
@@ -112,7 +112,7 @@
    ======================================================================== */
 
 /* Tablet and above */
-@media (width >= 48rem) {
+@media (width > 47.5rem) {
   .story-card .thumb-full {
     flex-direction: row;
   }
