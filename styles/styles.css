@@ -209,7 +209,7 @@ main img {
 }
 
 .section.central-aligned .block {
-    margin-inline: 16px;
+    margin-inline: 1rem;
 }
 
 @media (width > 47.5rem) {
@@ -244,7 +244,7 @@ main img {
     }
 
     .section.central-aligned .block {
-        margin-inline: 48px;
+        margin-inline: 3rem;
     }
 }
 
