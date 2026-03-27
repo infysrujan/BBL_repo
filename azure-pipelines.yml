@@ -2,6 +2,8 @@ trigger:
   branches:
     include:
       - dev
+      - qa
+      - stage
       - main
       - feature/*
 
@@ -10,6 +12,8 @@ pr:
     include:
       - dev
       - main
+      - stage
+      - qa
 
 pool:
   name: PWSM-NPRD
