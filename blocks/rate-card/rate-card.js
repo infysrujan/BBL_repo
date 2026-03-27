@@ -148,6 +148,7 @@ function createButtonHTML(buttonData) {
   return `
     <a class="link-primary white pull-right" href="${link}" ${title} ${target}>
       ${linkText}
+      <span class="icon-arrow-left"></span>
     </a>
   `;
 }

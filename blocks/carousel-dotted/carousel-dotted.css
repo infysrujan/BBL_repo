@@ -751,7 +751,7 @@
   height: auto;
 }
 
-@media (width >=47.5rem) {
+@media (width > 47.5rem) {
   .carousel-dotted.show-arrows-dots {
     display: grid;
     grid-template-columns: 2.5rem 1fr 2.5rem;
@@ -983,7 +983,7 @@
   }
 }
 
-@media (width >=47.5rem) and (width < 64rem) {
+@media (width > 47.5rem) and (width <= 64rem) {
   /* Fix tablet spacing and align arrows automatically to content size */
   .carousel-dotted.show-arrows-dots {
     display: grid;
@@ -1006,7 +1006,7 @@
 }
 
 
-@media (width >=64rem) {
+@media (width > 64rem) {
   .carousel-dotted.all-without-image {
     margin-top: 1.25rem;
     min-height: 30.9375rem;

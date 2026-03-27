@@ -284,52 +284,33 @@
   min-height: 0;
 }
 
-.rate-card .link-primary::after {
-  content: '\e901';
-  font-family: icomoon, sans-serif;
-  position: absolute;
-  font-size: 0.625rem;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 0;
-  transition: all 0.3s;
-}
-
 .rate-card .link-primary:hover,
 .rate-card a.link-primary:hover {
   color: var(--bbl-color-blue-90);
   text-decoration: none;
 }
 
-.rate-card a.link-primary:hover::after {
-  right: -0.3125rem;
-}
-
 .rate-card .link-primary.pull-right {
   margin-left: auto;
 }
 
-/* Override any EDS-level button classes that may add unwanted borders */
-.rate-card .link-primary.white,
-.rate-card .button-tertiary,
-.rate-card .button-primary,
-.rate-card .button-secondary {
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  color: var(--bbl-color-active-blue);
-  font-size: 0.7rem;
-  line-height: 1.2031rem;
-  padding: 0 0.9375rem 0 0;
+/* Icon styles */
+.rate-card .icon-arrow-left {
+  font-size: 0.625rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding-left: 0.25rem;
+  transition: transform 0.3s ease;
+  vertical-align: middle;
 }
 
-.rate-card .button-tertiary:hover,
-.rate-card .button-primary:hover,
-.rate-card .button-secondary:hover {
-  background: transparent;
-  border: none;
-  color: var(--bbl-color-blue-90);
+.rate-card .link-primary:hover .icon-arrow-left {
+  transform: translateX(0.1875rem);
 }
+
+
 
 /* --------------------------------------------------------------------------
    NO-DATA STATE
