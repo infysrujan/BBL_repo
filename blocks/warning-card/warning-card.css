@@ -1,7 +1,7 @@
 /* Mobile-first base styles */
 .warning-card {
   background: var(--bbl-color-white);
-  box-shadow: 0 0.125rem 0.5rem 0 rgb(221 221 221 / 50%);
+  box-shadow: 0 0.125rem 0.5rem 0 var(--bbl-color-gray-145);
 }
 
 .warning-card-inner-container {
