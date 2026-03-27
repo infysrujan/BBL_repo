@@ -208,10 +208,6 @@ main img {
     margin: 0 auto;
 }
 
-.section.central-aligned .block {
-    margin-inline: 1rem;
-}
-
 @media (width > 47.5rem) {
     .section.full-bleed-bg .content {
         padding-inline: var(--bbl-space-section-sm);
@@ -231,6 +227,7 @@ main img {
     }
 }
 
+/* sections (full-bleed-special) */
 .section.full-bleed-special {
     width: 100%;
     padding-inline: var(--bbl-space-section-xs);
@@ -242,21 +239,12 @@ main img {
     .section.full-bleed-special {
         padding-inline: var(--bbl-space-section-sm);
     }
-
-    .section.central-aligned .block {
-        margin-inline: 3rem;
-    }
 }
 
 @media (width > 64rem) {
     .section.full-bleed-special {
         max-width: 100%;
         padding-inline:  var(--bbl-space-section-xl);
-    }
-
-    .section.central-aligned .block {
-        max-width: var(--bbl-layout-central-aligned-max-width);
-        margin: 0 auto;
     }
 }
 
@@ -266,6 +254,25 @@ main img {
         padding-inline: 0;
     }
 }
+
+/* sections (central-aligned) */
+.section.central-aligned .block {
+    margin-inline: 1rem;
+}
+
+@media (width > 47.5rem) {
+    .section.central-aligned .block {
+        margin-inline: 3rem;
+    }
+}
+
+@media (width > 64rem) {
+    .section.central-aligned .block {
+        max-width: var(--bbl-layout-central-aligned-max-width);
+        margin: 0 auto;
+    }
+}
+
 
 /* =========================================================================
    SPACING UTILITIES
