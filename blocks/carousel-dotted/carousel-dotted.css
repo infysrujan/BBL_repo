@@ -15,6 +15,10 @@
   overflow: hidden;
 }
 
+.section:has(.rate-card) .carousel-dotted-wrapper:has(.carousel-dotted.all-without-image) {
+  order: 3;
+}
+
 .carousel-dotted.all-hero-banner-image-carousel {
   background: transparent;
 }
@@ -49,7 +53,6 @@
 }
 
 .carousel-dotted.show-arrows-dots .carousel-track-wrapper {
-  background: var(--bbl-color-white);
   overflow: hidden;
   grid-column: 2;
   grid-row: 1;
@@ -747,7 +750,7 @@
   height: auto;
 }
 
-@media (width >=47.5rem) {
+@media (width > 47.5rem) {
   .carousel-dotted.show-arrows-dots {
     display: grid;
     grid-template-columns: 2.5rem 1fr 2.5rem;
@@ -979,14 +982,14 @@
   }
 }
 
-@media (width >=47.5rem) and (width < 64rem) {
+@media (width > 47.5rem) and (width <= 64rem) {
   /* Fix tablet spacing and align arrows automatically to content size */
   .carousel-dotted.show-arrows-dots {
     display: grid;
-    grid-template-columns: 2rem 1fr 2rem;
+    grid-template-columns: 2.5rem 1fr 2.5rem;
     grid-template-rows: auto auto;
     gap: 0;
-    column-gap: 0.5rem;
+    column-gap: 1.25rem;
     min-height: unset;
   }
 
@@ -1002,7 +1005,20 @@
 }
 
 
-@media (width >=64rem) {
+@media (width > 64rem) {
+  .carousel-dotted.all-without-image {
+    margin-top: 1.25rem;
+    min-height: 30.9375rem;
+  }
+
+  .section:has(.rate-card .tab-header li:not(:first-child) .active) .carousel-dotted.all-without-image {
+    min-height: 50.3125rem;
+  }
+
+  .section:has(.rate-card .tab-header li:last-child .active) .carousel-dotted.all-without-image {
+    min-height: 49.25rem;
+  }
+
   /* Dot positioning variants */
   .carousel-dotted.all-with-image .slick-dots,
   .carousel-dotted.all-without-image .slick-dots {
@@ -1073,6 +1089,10 @@
 
   .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) {
     height: 53.125rem;
+  }
+
+  .section:has(.rate-card) .carousel-dotted-wrapper:has(.carousel-dotted.all-without-image) {
+    order: unset;
   }
 
   .carousel-dotted .button-tertiary.icon-arrow-left::before {

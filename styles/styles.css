@@ -168,6 +168,12 @@ main img {
     box-sizing: border-box;
 }
 
+.section.columns-3 {
+    display: flex;
+    gap: var(--bbl-space-layout-sm);
+    flex-direction: column;
+}
+
 @media (width > 47.5rem) {
     .section {
         padding-inline: var(--bbl-space-section-sm);
@@ -179,12 +185,12 @@ main img {
         padding-inline: var(--bbl-space-section-xl);
     }
 
-    .section.columns-3 {
-        display: flex;
-        gap: var(--bbl-space-layout-sm);
+    .section.columns-3 { 
+        flex-direction: row;
     }
 
     .section.columns-3  > * {
+        width: 33%;
         flex: 1;
     }
 }
@@ -227,6 +233,7 @@ main img {
     }
 }
 
+/* sections (full-bleed-special) */
 .section.full-bleed-special {
     width: 100%;
     padding-inline: var(--bbl-space-section-xs);
@@ -254,11 +261,24 @@ main img {
     }
 }
 
-/* section metadata: central-aligned-section */
-.section.central-aligned {
-    max-width: var(--bbl-layout-central-aligned-max-width);
-    margin: 0 auto;
+/* sections (central-aligned) */
+.section.central-aligned .block {
+    margin-inline: 1rem;
 }
+
+@media (width > 47.5rem) {
+    .section.central-aligned .block {
+        margin-inline: 3rem;
+    }
+}
+
+@media (width > 64rem) {
+    .section.central-aligned .block {
+        max-width: var(--bbl-layout-central-aligned-max-width);
+        margin: 0 auto;
+    }
+}
+
 
 /* =========================================================================
    SPACING UTILITIES

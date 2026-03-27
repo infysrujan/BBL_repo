@@ -7690,6 +7690,253 @@
     ]
   },
   {
+    "id": "rate-card-item",
+    "fields": [
+      {
+        "component": "text",
+        "name": "cardName",
+        "label": "Card Name",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "select",
+        "name": "tableCount",
+        "label": "Number of Tables",
+        "description": "Select how many tables to display",
+        "valueType": "string",
+        "value": "1",
+        "options": [
+          {
+            "name": "1 Table",
+            "value": "1"
+          },
+          {
+            "name": "2 Tables",
+            "value": "2"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "table1ColumnNames",
+        "label": "Table 1 Column Names",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "table1Link",
+        "label": "Table 1 Link",
+        "description": "Destination URL for the button"
+      },
+      {
+        "component": "text",
+        "name": "table1LinkText",
+        "label": "Table 1 Button Text",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "table1LinkTitle",
+        "label": "Table 1 Button Title",
+        "description": "Accessibility title attribute (optional)"
+      },
+      {
+        "component": "select",
+        "name": "table1LinkType",
+        "label": "Table 1 Button Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "name": "table1TargetSettings",
+        "label": "Table 1 Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "table1TargetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "table2ColumnNames",
+        "label": "Table 2 Column Names",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "tableCount"
+            },
+            "2"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "table2Link",
+        "label": "Table 2 Link",
+        "description": "Destination URL for the button",
+        "condition": {
+          "===": [
+            {
+              "var": "tableCount"
+            },
+            "2"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "table2LinkText",
+        "label": "Table 2 Button Text",
+        "description": "Button label text",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "tableCount"
+            },
+            "2"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "table2LinkTitle",
+        "label": "Table 2 Button Title",
+        "description": "Accessibility title attribute (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "tableCount"
+            },
+            "2"
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "table2LinkType",
+        "label": "Table 2 Button Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "tableCount"
+            },
+            "2"
+          ]
+        }
+      },
+      {
+        "component": "container",
+        "name": "table2TargetSettings",
+        "label": "Table 2 Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "table2TargetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "tableCount"
+            },
+            "2"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "search-page",
+    "fields": [
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "noResultsText",
+        "label": "No Results Text",
+        "value": "No Results Found"
+      },
+      {
+        "component": "text",
+        "name": "recentTitle",
+        "label": "Recent Searches Title",
+        "value": "Recent Searches"
+      },
+      {
+        "component": "text",
+        "name": "learnMoreLinkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Alt",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "search",
     "fields": [
       {

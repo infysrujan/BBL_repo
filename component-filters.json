@@ -35,10 +35,12 @@
       "download-file",
       "teaser-with-bg-image",
       "sub-nav",
+      "search-page",
       "currency-converter",
       "popup-modal-card-offer",
-      "currency-converter-expanded",
       "locate-us",
+      "rate-card",
+      "currency-converter-expanded",
       "privacy-modal",
       "external-redirect-popup"
     ]
@@ -186,6 +188,12 @@
       "menu-card"
     ],
     "maxItems": 6
+  },
+  {
+    "id": "rate-card",
+    "components": [
+      "rate-card-item"
+    ]
   },
   {
     "id": "story-card",
