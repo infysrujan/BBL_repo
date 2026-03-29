@@ -44,6 +44,15 @@
     ]
   },
   {
+    "id": "accordion-section",
+    "components": [
+      "text",
+      "image",
+      "fragment",
+      "download-file"
+    ]
+  },
+  {
     "id": "cards-product",
     "components": [
       "product-card"

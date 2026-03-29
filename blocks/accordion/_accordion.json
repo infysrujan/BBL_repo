@@ -1,0 +1,62 @@
+{
+    "definitions": [
+      {
+        "title": "Accordion Section",
+        "id": "accordion-section",
+        "plugins": {
+          "xwalk": {
+            "page": {
+              "resourceType": "core/franklin/components/section/v1/section",
+              "template": {
+                "name": "Accordion Section",
+                "filter": "accordion-section",
+                "model": "accordion-section"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "models": [
+      {
+        "id": "accordion-section",
+        "fields": [
+          {
+            "component": "text",
+            "name": "accordionId",
+            "label": "Accordion ID",
+            "description": "Logical group ID. All panels with the same ID belong to the same accordion instance.",
+            "valueType": "string",
+            "value": "accordion-1"
+          },
+          {
+            "component": "text",
+            "name": "title",
+            "label": "Panel title",
+            "description": "Header text that will be used as the accordion item label.",
+            "valueType": "string",
+            "value": "Accordion item title"
+          },
+          {
+            "component": "boolean",
+            "name": "expandedByDefault",
+            "label": "Expanded by default?",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      }
+    ],
+    "filters": [
+      {
+        "id": "accordion-section",
+        "components": [
+          "text",
+          "image",
+          "fragment",
+          "download-file"
+        ]
+      }
+    ]
+  }
+  
