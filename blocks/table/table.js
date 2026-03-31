@@ -205,7 +205,10 @@ export default async function decorate(block) {
 
   applyVariationClasses(parentTable, parentStyles);
 
-  const nestedTables = getNestedTables(rows.slice(2));
+  const nestedRows = rows.slice(2);
+  if (nestedRows.length > 0 && block.hasAttribute('data-aue-resource')) return;
+
+  const nestedTables = getNestedTables(nestedRows);
   if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
   replaceNestedTablePlaceholders(parentTable, nestedTables);
 
