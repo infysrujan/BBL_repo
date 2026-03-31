@@ -7901,6 +7901,10 @@
                 "value": "cells-center-aligned"
               },
               {
+                "name": "Cells Center Aligned Except First",
+                "value": "cells-center-aligned-except-first"
+              },
+              {
                 "name": "Dash Cell Highlight",
                 "value": "dash-cell-highlight"
               }
@@ -8042,6 +8046,10 @@
               {
                 "name": "Cells Center Aligned",
                 "value": "cells-center-aligned"
+              },
+              {
+                "name": "Cells Center Aligned Except First",
+                "value": "cells-center-aligned-except-first"
               },
               {
                 "name": "Dash Cell Highlight",

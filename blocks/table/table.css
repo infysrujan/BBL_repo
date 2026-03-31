@@ -152,6 +152,12 @@
   vertical-align: middle;
 }
 
+/* Cells Center Aligned (exclude first column) */
+.table table.cells-center-aligned-except-first tr:not(.header-row) td:not(:first-child) {
+  text-align: center;
+  vertical-align: middle;
+}
+
 /* Dash Cell Highlight — #d9d9d9 background for cells containing only "-" */
 .table table.dash-cell-highlight td.cell-dash {
   background: #d9d9d9;

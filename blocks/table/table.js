@@ -54,6 +54,15 @@ function getNestedTables(rows) {
   return nestedTables;
 }
 
+function hasUnresolvedPlaceholders(table, nestedTables) {
+  const walker = document.createTreeWalker(table, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) {
+    const match = /\{\{\s*([-\w]+)\s*\}\}/.exec(walker.currentNode.textContent);
+    if (match && !nestedTables.has(match[1])) return true;
+  }
+  return false;
+}
+
 function replaceNestedTablePlaceholders(parentTable, nestedTables) {
   const usageCount = new Map();
   const walker = document.createTreeWalker(parentTable, NodeFilter.SHOW_TEXT);
@@ -197,6 +206,7 @@ export default async function decorate(block) {
   applyVariationClasses(parentTable, parentStyles);
 
   const nestedTables = getNestedTables(rows.slice(2));
+  if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
   replaceNestedTablePlaceholders(parentTable, nestedTables);
 
   await transformDownloadMarkers(parentTable);
