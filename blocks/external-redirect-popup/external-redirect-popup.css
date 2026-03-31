@@ -33,7 +33,7 @@
             var(--bbl-color-white) 4.06%,
             var(--bbl-color-white-alpha-30) 60%);
     box-shadow: 0.4375rem 0.5rem 0.625rem var(--bbl-color-black-alpha-10);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(1.25rem);
     border: 0.0625rem solid var(--bbl-color-white);
     overflow: visible;
     line-height: 130%;
