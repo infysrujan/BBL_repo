@@ -44,7 +44,7 @@
 					"required": false,
 					"options": [
 						{
-							"name": "Border",
+							"name": "Border Type",
 							"children": [
 								{
 									"name": "No Border",
@@ -57,7 +57,12 @@
 								{
 									"name": "Border Bottom",
 									"value": "border-bottom"
-								},
+								}
+							]
+						},
+						{
+							"name": "Border Color",
+							"children": [
 								{
 									"name": "Border Black",
 									"value": "border-black"
@@ -182,7 +187,7 @@
 					"required": false,
 					"options": [
 						{
-							"name": "Border",
+							"name": "Border Type",
 							"children": [
 								{
 									"name": "No Border",
@@ -195,7 +200,12 @@
 								{
 									"name": "Border Bottom",
 									"value": "border-bottom"
-								},
+								}
+							]
+						},
+						{
+							"name": "Border Color",
+							"children": [
 								{
 									"name": "Border Black",
 									"value": "border-black"
