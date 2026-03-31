@@ -83,16 +83,16 @@
       "id": "blocks",
       "components": [
         {
-          "title": "Accordion Section",
-          "id": "accordion-section",
+          "title": "Accordion Panel",
+          "id": "accordion-panel",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/section/v1/section",
                 "template": {
-                  "name": "Accordion Section",
-                  "filter": "accordion-section",
-                  "model": "accordion-section"
+                  "name": "Accordion Panel",
+                  "filter": "accordion-panel",
+                  "model": "accordion-panel"
                 }
               }
             }

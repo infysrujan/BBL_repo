@@ -3,15 +3,15 @@
  *
  * Assumes:
  *  - Each accordion item is its own <section> element.
- *  - The section is created with the "Accordion Section" template/model.
+ *  - The section is created with the "Accordion Panel" template/model.
  *  - The section element carries data attributes:
  *      data-accordion-id="accordion-1"
  *      data-accordion-title="Panel title"
  *      data-accordion-expanded-by-default="true" | "false"
  *
  * Usage:
- *  - Import and call initAccordionSections() from scripts.js after the page is decorated.
- *  - Or just inline this file's contents into scripts.js and call initAccordionSections().
+ *  - Import and call initAccordionPanels() from scripts.js after the page is decorated.
+ *  - Or just inline this file's contents into scripts.js and call initAccordionPanels().
  */
 
 // set to false if you want multiple panels open within one accordionId
@@ -45,25 +45,25 @@ function getSectionMeta(section) {
  * @param {HTMLElement} section
  * @param {string} accordionId
  */
-function toggleAccordionSection(section, accordionId) {
-  const isCollapsed = section.classList.contains('accordion-section--collapsed');
+function toggleAccordionPanel(section, accordionId) {
+  const isCollapsed = section.classList.contains('accordion-panel--collapsed');
   const newExpanded = isCollapsed;
 
   if (SINGLE_OPEN_PER_GROUP && newExpanded) {
     // Close other sections in the same accordion group
     const allInGroup = document.querySelectorAll(
-      `.accordion-section[data-accordion-id="${CSS.escape(accordionId)}"]`,
+      `.accordion-panel[data-accordion-id="${CSS.escape(accordionId)}"]`,
     );
     allInGroup.forEach((s) => {
       if (s !== section) {
-        s.classList.add('accordion-section--collapsed');
+        s.classList.add('accordion-panel--collapsed');
         const header = s.querySelector('.accordion-header');
         if (header) header.setAttribute('aria-expanded', 'false');
       }
     });
   }
 
-  section.classList.toggle('accordion-section--collapsed', !newExpanded);
+  section.classList.toggle('accordion-panel--collapsed', !newExpanded);
   const header = section.querySelector('.accordion-header');
   if (header) {
     header.setAttribute('aria-expanded', newExpanded ? 'true' : 'false');
@@ -77,8 +77,8 @@ function toggleAccordionSection(section, accordionId) {
  * @param {HTMLElement} section
  * @param {{accordionId:string, title:string, expandedByDefault:boolean}} meta
  */
-function decorateAccordionSection(section, meta) {
-  section.classList.add('accordion-section');
+function decorateAccordionPanel(section, meta) {
+  section.classList.add('accordion-panel');
   section.setAttribute('data-accordion-id', meta.accordionId);
 
   // Create header button
@@ -121,31 +121,31 @@ function decorateAccordionSection(section, meta) {
 
   // Initial state: collapsed or expanded
   if (!meta.expandedByDefault) {
-    section.classList.add('accordion-section--collapsed');
+    section.classList.add('accordion-panel--collapsed');
   }
 
   headerBtn.addEventListener('click', () => {
-    toggleAccordionSection(section, meta.accordionId);
+    toggleAccordionPanel(section, meta.accordionId);
   });
 }
 
 /**
- * Initializes all accordion sections on the page.
+ * Initializes all accordion panels on the page.
  * Call this once after the page/blocks are decorated.
  *
  * @param {HTMLElement|Document} [root=document]
  */
-export function initAccordionSections(root = document) {
+export function initAccordionPanels(root = document) {
   const sections = root.querySelectorAll('main .section');
 
   sections.forEach((section) => {
     const meta = getSectionMeta(section);
-    if (!meta) return; // not an accordion section
+    if (!meta) return; // not an accordion panel
 
     // Avoid double-decorating (e.g. in case of re-init)
-    if (section.classList.contains('accordion-section')) return;
+    if (section.classList.contains('accordion-panel')) return;
 
-    decorateAccordionSection(section, meta);
+    decorateAccordionPanel(section, meta);
   });
 }
 
@@ -161,10 +161,10 @@ function initUniversalEditorIntegration() {
     const { target } = event.detail || {};
     if (!target) return;
 
-    const section = target.closest('.accordion-section');
+    const section = target.closest('.accordion-panel');
     if (!section) return;
 
-    section.classList.remove('accordion-section--collapsed');
+    section.classList.remove('accordion-panel--collapsed');
     const header = section.querySelector('.accordion-header');
     if (header) {
       header.setAttribute('aria-expanded', 'true');
@@ -175,9 +175,11 @@ function initUniversalEditorIntegration() {
 // Auto-init on DOMContentLoaded (browser only)
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    initAccordionSections(document);
+    initAccordionPanels(document);
     initUniversalEditorIntegration();
   });
 }
 
-export default initAccordionSections;
+// Backward-compatible named export during rename transition.
+export const initAccordionSections = initAccordionPanels;
+export default initAccordionPanels;

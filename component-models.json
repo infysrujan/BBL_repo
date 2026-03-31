@@ -297,7 +297,7 @@
     ]
   },
   {
-    "id": "accordion-section",
+    "id": "accordion-panel",
     "fields": [
       {
         "component": "text",

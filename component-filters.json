@@ -45,7 +45,7 @@
     ]
   },
   {
-    "id": "accordion-section",
+    "id": "accordion-panel",
     "components": [
       "text",
       "image",
