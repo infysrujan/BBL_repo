@@ -1,0 +1,227 @@
+/* ==========================================================================
+   Table Block — Mobile-First CSS
+   Breakpoints (from tokens/breakpoints.css):
+  - Mobile:  < 47.5rem  (760px)
+  - Tablet:  > 47.5rem  (760px–1024px)
+  - Desktop: > 64rem    (1024px+)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   BASE / MOBILE STYLES (default — 14px = 0.875rem)
+   -------------------------------------------------------------------------- */
+
+/* Block container — scroll wrapper for responsive tables */
+.table {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0.01%;
+  padding: 0;
+  margin: 0;
+}
+
+/* Table element */
+.table table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  background: transparent;
+  font-family: var(--bbl-font-family-primary);
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-85);
+}
+
+/* --------------------------------------------------------------------------
+   BORDERS (default on all cells)
+   -------------------------------------------------------------------------- */
+.table table th,
+.table table td {
+  border: 0.0625rem solid var(--bbl-color-grey-30);
+}
+
+/* --------------------------------------------------------------------------
+   THEAD
+   -------------------------------------------------------------------------- */
+.table table thead {
+  background: transparent;
+}
+
+.table table thead th {
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  font-weight: 400;
+  font-size: 0.875rem;
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-color-grey-85);
+  vertical-align: top;
+  background: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   TBODY
+   -------------------------------------------------------------------------- */
+.table table tbody td {
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-85);
+  font-family: var(--bbl-font-family-primary);
+  font-weight: 400;
+  vertical-align: top;
+  background: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   TFOOT
+   -------------------------------------------------------------------------- */
+.table table tfoot td {
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-85);
+  font-family: var(--bbl-font-family-medium);
+  vertical-align: top;
+  background: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: STRIPED
+   -------------------------------------------------------------------------- */
+.table table.striped tbody tr:nth-child(even) {
+  background: var(--bbl-color-grey-10);
+}
+
+/* --------------------------------------------------------------------------
+   VARIANT: COMPACT
+   -------------------------------------------------------------------------- */
+.table table.compact th,
+.table table.compact td {
+  padding: 0.3125rem 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   BORDER VARIANTS
+   -------------------------------------------------------------------------- */
+
+/* No Border — remove all borders */
+.table table.no-border th,
+.table table.no-border td {
+  border: none;
+}
+
+/* Outline Border — border only on the outer edge of the table */
+.table table.outline-border {
+  border: 0.0625rem solid var(--bbl-color-grey-30);
+}
+
+.table table.outline-border th,
+.table table.outline-border td {
+  border: none;
+}
+
+/* Border Bottom — only bottom border on each row */
+.table table.border-bottom th,
+.table table.border-bottom td {
+  border: none;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
+}
+
+/* --------------------------------------------------------------------------
+   HEADER VARIANTS
+   -------------------------------------------------------------------------- */
+
+/* Center Aligned header */
+.table table.header-center-aligned thead th {
+  text-align: center;
+}
+
+/* Header Blue — #deeaf6 background */
+.table table.header-blue thead th {
+  background: #deeaf6;
+}
+
+/* Header Light Blue — #e6eef4 background */
+.table table.header-light-blue thead th {
+  background: #e6eef4;
+}
+
+/* --------------------------------------------------------------------------
+   CELL VARIANTS
+   -------------------------------------------------------------------------- */
+
+/* Cells Center Aligned */
+.table table.cells-center-aligned tbody td {
+  text-align: center;
+}
+
+/* Dash Cell Highlight — #d9d9d9 background for cells containing only "-" */
+.table table.dash-cell-highlight td.cell-dash {
+  background: #d9d9d9;
+}
+
+/* --------------------------------------------------------------------------
+   NESTED TABLES
+   -------------------------------------------------------------------------- */
+.table table table {
+  margin: 0.5rem 0;
+}
+
+/* --------------------------------------------------------------------------
+   MOBILE RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (width <= 47.5rem) {
+  .table table th:first-child,
+  .table table td:first-child {
+    border-left: 0;
+  }
+
+  .table table th:last-child,
+  .table table td:last-child {
+    border-right: 0;
+  }
+
+  .table table tbody tr:last-child td,
+  .table table tfoot tr:last-child td {
+    border-bottom: 0;
+  }
+}
+
+/* ==========================================================================
+   TABLET (> 47.5rem)
+   ========================================================================== */
+@media (width > 47.5rem) {
+  .table {
+    overflow-x: visible;
+  }
+}
+
+/* ==========================================================================
+   DESKTOP (> 64rem) — 16px = 1rem
+   ========================================================================== */
+@media (width > 64rem) {
+  .table table {
+    font-size: 1rem;
+  }
+
+  .table table thead th {
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+
+  .table table tbody td,
+  .table table tfoot td {
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   PRINT STYLES
+   -------------------------------------------------------------------------- */
+@media print {
+  .table {
+    overflow: visible;
+  }
+
+  .table table {
+    break-inside: avoid;
+  }
+}

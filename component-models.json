@@ -7843,16 +7843,55 @@
         "required": false,
         "options": [
           {
-            "name": "Style Options",
+            "name": "Border",
             "children": [
               {
-                "name": "Default",
-                "value": "default"
+                "name": "No Border",
+                "value": "no-border"
               },
               {
-                "name": "Bordered",
-                "value": "bordered"
+                "name": "Outline Border",
+                "value": "outline-border"
               },
+              {
+                "name": "Border Bottom",
+                "value": "border-bottom"
+              }
+            ]
+          },
+          {
+            "name": "Header",
+            "children": [
+              {
+                "name": "Center Aligned",
+                "value": "header-center-aligned"
+              },
+              {
+                "name": "Header Blue",
+                "value": "header-blue"
+              },
+              {
+                "name": "Header Light Blue",
+                "value": "header-light-blue"
+              }
+            ]
+          },
+          {
+            "name": "Cells",
+            "children": [
+              {
+                "name": "Cells Center Aligned",
+                "value": "cells-center-aligned"
+              },
+              {
+                "name": "Dash Cell Highlight",
+                "value": "dash-cell-highlight"
+              }
+            ]
+          },
+          {
+            "name": "Other",
+            "children": [
               {
                 "name": "Striped",
                 "value": "striped"
@@ -7930,16 +7969,55 @@
         "required": false,
         "options": [
           {
-            "name": "Style Options",
+            "name": "Border",
             "children": [
               {
-                "name": "Default",
-                "value": "default"
+                "name": "No Border",
+                "value": "no-border"
               },
               {
-                "name": "Bordered",
-                "value": "bordered"
+                "name": "Outline Border",
+                "value": "outline-border"
               },
+              {
+                "name": "Border Bottom",
+                "value": "border-bottom"
+              }
+            ]
+          },
+          {
+            "name": "Header",
+            "children": [
+              {
+                "name": "Center Aligned",
+                "value": "header-center-aligned"
+              },
+              {
+                "name": "Header Blue",
+                "value": "header-blue"
+              },
+              {
+                "name": "Header Light Blue",
+                "value": "header-light-blue"
+              }
+            ]
+          },
+          {
+            "name": "Cells",
+            "children": [
+              {
+                "name": "Cells Center Aligned",
+                "value": "cells-center-aligned"
+              },
+              {
+                "name": "Dash Cell Highlight",
+                "value": "dash-cell-highlight"
+              }
+            ]
+          },
+          {
+            "name": "Other",
+            "children": [
               {
                 "name": "Striped",
                 "value": "striped"

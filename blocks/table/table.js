@@ -114,8 +114,11 @@ function findAnchorAfterMarker(markerNode) {
       const tagName = next.tagName.toLowerCase();
       if (tagName === 'br') {
         next = next.nextSibling;
+      } else if (tagName === 'a') {
+        return next;
       } else {
-        return tagName === 'a' ? next : null;
+        const nested = next.querySelector('a');
+        return nested || null;
       }
     } else {
       next = next.nextSibling;
@@ -158,6 +161,15 @@ async function transformDownloadMarkers(root) {
   await Promise.all(downloadBlocks.map((downloadBlock) => loadBlock(downloadBlock)));
 }
 
+function highlightDashCells(table) {
+  if (!table.classList.contains('dash-cell-highlight')) return;
+  table.querySelectorAll('td').forEach((td) => {
+    if (td.textContent.trim() === '-') {
+      td.classList.add('cell-dash');
+    }
+  });
+}
+
 export default async function decorate(block) {
   const rows = [...block.children];
   if (rows.length < 2) return;
@@ -172,6 +184,8 @@ export default async function decorate(block) {
   replaceNestedTablePlaceholders(parentTable, nestedTables);
 
   await transformDownloadMarkers(parentTable);
+
+  highlightDashCells(parentTable);
 
   block.textContent = '';
   block.append(parentTable);
