@@ -170,6 +170,21 @@ function highlightDashCells(table) {
   });
 }
 
+function markHeaderRows(table) {
+  const rows = [...table.querySelectorAll('tr')];
+  if (!rows.length) return;
+
+  const firstRow = rows[0];
+  const maxRowspan = [...firstRow.querySelectorAll('td')].reduce(
+    (max, td) => Math.max(max, td.rowSpan || 1),
+    1,
+  );
+
+  for (let i = 0; i < maxRowspan && i < rows.length; i += 1) {
+    rows[i].classList.add('header-row');
+  }
+}
+
 export default async function decorate(block) {
   const rows = [...block.children];
   if (rows.length < 2) return;
@@ -185,6 +200,7 @@ export default async function decorate(block) {
 
   await transformDownloadMarkers(parentTable);
 
+  markHeaderRows(parentTable);
   highlightDashCells(parentTable);
 
   block.textContent = '';

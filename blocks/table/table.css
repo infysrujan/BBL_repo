@@ -89,23 +89,23 @@
 }
 
 /* --------------------------------------------------------------------------
-   HEADER ROW (first row acts as header — no thead/th in markup)
+   HEADER ROWS (marked via JS based on first-row rowspan)
    -------------------------------------------------------------------------- */
-.table table tr:first-child td {
+.table table tr.header-row td {
   padding: 0.625rem 0.75rem;
   text-align: left;
   font-weight: 400;
   font-size: 0.875rem;
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-primary);
   color: var(--bbl-color-grey-85);
   vertical-align: top;
   background: transparent;
 }
 
 /* --------------------------------------------------------------------------
-   BODY CELLS (all rows except the first)
+   BODY CELLS (all rows not in header)
    -------------------------------------------------------------------------- */
-.table table tr:not(:first-child) td {
+.table table tr:not(.header-row) td {
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
   color: var(--bbl-color-grey-85);
@@ -127,17 +127,18 @@
    -------------------------------------------------------------------------- */
 
 /* Center Aligned header */
-.table table.header-center-aligned tr:first-child td {
+.table table.header-center-aligned tr.header-row td {
   text-align: center;
+  vertical-align: middle;
 }
 
 /* Header Blue — #deeaf6 background */
-.table table.header-blue tr:first-child td {
+.table table.header-blue tr.header-row td {
   background: #deeaf6;
 }
 
 /* Header Light Blue — #e6eef4 background */
-.table table.header-light-blue tr:first-child td {
+.table table.header-light-blue tr.header-row td {
   background: #e6eef4;
 }
 
@@ -146,8 +147,9 @@
    -------------------------------------------------------------------------- */
 
 /* Cells Center Aligned */
-.table table.cells-center-aligned tr:not(:first-child) td {
+.table table.cells-center-aligned tr:not(.header-row) td {
   text-align: center;
+  vertical-align: middle;
 }
 
 /* Dash Cell Highlight — #d9d9d9 background for cells containing only "-" */
@@ -196,12 +198,12 @@
     font-size: 1rem;
   }
 
-  .table table tr:first-child td {
+  .table table tr.header-row td {
     font-size: 1rem;
     padding: 0.75rem;
   }
 
-  .table table tr:not(:first-child) td {
+  .table table tr:not(.header-row) td {
     font-size: 1rem;
     padding: 0.75rem;
   }
