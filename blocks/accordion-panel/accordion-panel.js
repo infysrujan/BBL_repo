@@ -1,185 +1,180 @@
 /**
- * Section-based accordion behavior for AEM+UE Crosswalk.
+ * Section-based accordion controller for Crosswalk.
  *
  * Assumes:
- *  - Each accordion item is its own <section> element.
- *  - The section is created with the "Accordion Panel" template/model.
- *  - The section element carries data attributes:
- *      data-accordion-id="accordion-1"
- *      data-accordion-title="Panel title"
- *      data-accordion-expanded-by-default="true" | "false"
+ * - You have "Accordion Section" templates that render as <section> elements
+ *   with these data attributes:
+ *   - data-accordion-id
+ *   - data-accordion-title
+ *   - data-accordion-expanded-by-default="true|false"
  *
- * Usage:
- *  - Import and call initAccordionPanels() from scripts.js after the page is decorated.
- *  - Or just inline this file's contents into scripts.js and call initAccordionPanels().
+ * - This script is wired as a standard EDS block:
+ *   blocks/accordion/accordion.js
+ *   and is invoked as `decorate(block)` when the "accordion" block is on the page.
+ *
+ * The block itself is just a controller; the visible UI is built inside the sections.
  */
 
-// set to false if you want multiple panels open within one accordionId
-const SINGLE_OPEN_PER_GROUP = true;
-
-/**
- * Extracts accordion metadata from a section element.
- * Adjust this method if your attributes differ.
- *
- * @param {HTMLElement} section
- * @returns {{accordionId:string, title:string, expandedByDefault:boolean} | null}
- */
 function getSectionMeta(section) {
-  if (!section || !(section instanceof HTMLElement)) return null;
+  const { accordionId, accordionTitle, accordionExpandedByDefault } = section.dataset;
 
-  const accordionId = section.dataset.accordionId || '';
-  const title = section.dataset.accordionTitle || '';
-  const expandedRaw = section.dataset.accordionExpandedByDefault || 'false';
-  const expandedByDefault = String(expandedRaw).toLowerCase() === 'true';
-
-  if (!accordionId || !title) {
-    return null;
-  }
-
-  return { accordionId, title, expandedByDefault };
+  return {
+    id: accordionId || null,
+    title: accordionTitle || '',
+    expandedByDefault: accordionExpandedByDefault === 'true',
+  };
 }
 
 /**
- * Toggles a single section, optionally closing siblings in the same group.
- *
- * @param {HTMLElement} section
- * @param {string} accordionId
+ * Returns all sections that:
+ * - have a data-accordion-id
+ * - appear after the accordion block in the DOM
  */
-function toggleAccordionPanel(section, accordionId) {
-  const isCollapsed = section.classList.contains('accordion-panel--collapsed');
-  const newExpanded = isCollapsed;
+function getAccordionSections(block) {
+  const main = block.closest('main') || document;
+  const allSections = [...main.querySelectorAll('.section[data-accordion-id]')];
 
-  if (SINGLE_OPEN_PER_GROUP && newExpanded) {
-    // Close other sections in the same accordion group
-    const allInGroup = document.querySelectorAll(
-      `.accordion-panel[data-accordion-id="${CSS.escape(accordionId)}"]`,
-    );
-    allInGroup.forEach((s) => {
-      if (s !== section) {
-        s.classList.add('accordion-panel--collapsed');
-        const header = s.querySelector('.accordion-header');
-        if (header) header.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
+  return allSections.filter((section) => {
+    // Only handle sections that appear after the block
+    const position = block.compareDocumentPosition(section);
+    /* eslint-disable no-bitwise -- Node.compareDocumentPosition returns a bitmask (MDN) */
+    const hasFollowing = (position & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+    const hasContainedBy = (position & Node.DOCUMENT_POSITION_CONTAINED_BY) !== 0;
+    /* eslint-enable no-bitwise */
+    const isAfter = hasFollowing && !hasContainedBy;
 
-  section.classList.toggle('accordion-panel--collapsed', !newExpanded);
-  const header = section.querySelector('.accordion-header');
-  if (header) {
-    header.setAttribute('aria-expanded', newExpanded ? 'true' : 'false');
-  }
+    return isAfter;
+  });
 }
 
-/**
- * Builds the header + body structure inside a section to turn it into
- * an accordion item, and wires up the toggle behavior.
- *
- * @param {HTMLElement} section
- * @param {{accordionId:string, title:string, expandedByDefault:boolean}} meta
- */
-function decorateAccordionPanel(section, meta) {
-  section.classList.add('accordion-panel');
-  section.setAttribute('data-accordion-id', meta.accordionId);
+function createHeaderElement(section, meta) {
+  const header = document.createElement('button');
+  header.type = 'button';
+  header.classList.add('accordion-header');
+  header.setAttribute('aria-expanded', meta.expandedByDefault ? 'true' : 'false');
 
-  // Create header button
-  const headerBtn = document.createElement('button');
-  headerBtn.type = 'button';
-  headerBtn.classList.add('accordion-header');
-  headerBtn.setAttribute('data-accordion-header', '');
-  headerBtn.setAttribute('aria-expanded', meta.expandedByDefault ? 'true' : 'false');
+  // You can tweak heading level & structure here if needed
+  const label = document.createElement('span');
+  label.classList.add('accordion-header-title');
+  label.textContent = meta.title || 'Accordion item';
+  header.appendChild(label);
 
-  // Generate unique IDs for ARIA
-  const uid = `${meta.accordionId}-${Math.random().toString(36).slice(2, 10)}`;
-  const headerId = `accordion-header-${uid}`;
-  const bodyId = `accordion-body-${uid}`;
+  return header;
+}
 
-  headerBtn.id = headerId;
-  headerBtn.setAttribute('aria-controls', bodyId);
-
-  const titleSpan = document.createElement('span');
-  titleSpan.classList.add('accordion-title');
-  titleSpan.textContent = meta.title;
-  headerBtn.appendChild(titleSpan);
-
-  // Insert header at the top of the section
-  section.insertBefore(headerBtn, section.firstChild);
-
-  // Create body wrapper and move all siblings after header into it
-  const bodyWrapper = document.createElement('div');
-  bodyWrapper.classList.add('accordion-body');
-  bodyWrapper.id = bodyId;
-  bodyWrapper.setAttribute('role', 'region');
-  bodyWrapper.setAttribute('aria-labelledby', headerId);
-
-  let sib = headerBtn.nextSibling;
-  while (sib) {
-    const next = sib.nextSibling;
-    bodyWrapper.appendChild(sib);
-    sib = next;
+function wrapSectionContentAsAccordionItem(section, meta) {
+  if (section.dataset.accordionEnhanced === 'true') {
+    return; // avoid double enhancement
   }
-  section.appendChild(bodyWrapper);
 
-  // Initial state: collapsed or expanded
+  section.dataset.accordionEnhanced = 'true';
+  section.classList.add('accordion-section-item');
+
+  // Create item wrapper, header, and body
+  const item = document.createElement('div');
+  item.classList.add('accordion-item');
+  item.dataset.accordionId = meta.id || '';
+
+  const header = createHeaderElement(section, meta);
+  const body = document.createElement('div');
+  body.classList.add('accordion-body');
+
+  // Move all existing children of the section into the body
+  // NOTE: This keeps inner blocks intact; we only reparent them.
+  while (section.firstChild) {
+    const child = section.firstChild;
+    body.appendChild(child);
+  }
+
+  item.appendChild(header);
+  item.appendChild(body);
+
+  // Insert the item back into the section
+  section.appendChild(item);
+
+  // Set initial collapsed/expanded state
   if (!meta.expandedByDefault) {
-    section.classList.add('accordion-panel--collapsed');
+    section.classList.add('accordion-collapsed');
+    body.hidden = true;
+  } else {
+    section.classList.remove('accordion-collapsed');
+    body.hidden = false;
   }
+}
 
-  headerBtn.addEventListener('click', () => {
-    toggleAccordionPanel(section, meta.accordionId);
+function setupInteractions(sectionsByGroup) {
+  sectionsByGroup.forEach((sections) => {
+    // Single-open behavior per group
+    sections.forEach((section) => {
+      const header = section.querySelector('.accordion-header');
+      const body = section.querySelector('.accordion-body');
+      if (!header || !body) return;
+
+      header.addEventListener('click', () => {
+        const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+        if (isExpanded) {
+          // Collapse this one
+          header.setAttribute('aria-expanded', 'false');
+          section.classList.add('accordion-collapsed');
+          body.hidden = true;
+        } else {
+          // Collapse others in the same group
+          sections.forEach((sibling) => {
+            if (sibling === section) return;
+            const siblingHeader = sibling.querySelector('.accordion-header');
+            const siblingBody = sibling.querySelector('.accordion-body');
+            if (!siblingHeader || !siblingBody) return;
+
+            siblingHeader.setAttribute('aria-expanded', 'false');
+            sibling.classList.add('accordion-collapsed');
+            siblingBody.hidden = true;
+          });
+
+          // Expand this one
+          header.setAttribute('aria-expanded', 'true');
+          section.classList.remove('accordion-collapsed');
+          body.hidden = false;
+        }
+      });
+    });
   });
 }
 
 /**
- * Initializes all accordion panels on the page.
- * Call this once after the page/blocks are decorated.
- *
- * @param {HTMLElement|Document} [root=document]
+ * EDS block entry point.
+ * `block` is the "accordion" controller block.
  */
-export function initAccordionPanels(root = document) {
-  const sections = root.querySelectorAll('main .section');
+export default function decorate(block) {
+  // Find all accordion sections after this block
+  const sections = getAccordionSections(block);
+  if (!sections.length) {
+    // Nothing to do; controller is on a page with no accordion sections
+    return;
+  }
+
+  // Decorate each section as an accordion item
+  const groups = new Map(); // id -> [sections]
 
   sections.forEach((section) => {
     const meta = getSectionMeta(section);
-    if (!meta) return; // not an accordion panel
-
-    // Avoid double-decorating (e.g. in case of re-init)
-    if (section.classList.contains('accordion-panel')) return;
-
-    decorateAccordionPanel(section, meta);
-  });
-}
-
-/**
- * Optional: Universal Editor integration
- * - Ensure that selecting content inside a collapsed accordion item
- *   automatically expands that section in the editor.
- */
-function initUniversalEditorIntegration() {
-  if (typeof window === 'undefined') return;
-
-  document.addEventListener('aue:ui-select', (event) => {
-    const { target } = event.detail || {};
-    if (!target) return;
-
-    const section = target.closest('.accordion-panel');
-    if (!section) return;
-
-    section.classList.remove('accordion-panel--collapsed');
-    const header = section.querySelector('.accordion-header');
-    if (header) {
-      header.setAttribute('aria-expanded', 'true');
+    if (!meta.id) {
+      // If there's no ID, treat it as its own group using a unique key per section
+      meta.id = `__accordion-${Math.random().toString(36).slice(2)}`;
     }
-  });
-}
 
-// Auto-init on DOMContentLoaded (browser only)
-if (typeof window !== 'undefined') {
-  window.addEventListener('DOMContentLoaded', () => {
-    initAccordionPanels(document);
-    initUniversalEditorIntegration();
-  });
-}
+    wrapSectionContentAsAccordionItem(section, meta);
 
-// Backward-compatible named export during rename transition.
-export const initAccordionSections = initAccordionPanels;
-export default initAccordionPanels;
+    if (!groups.has(meta.id)) {
+      groups.set(meta.id, []);
+    }
+    groups.get(meta.id).push(section);
+  });
+
+  // Setup interactions per group
+  setupInteractions([...groups.values()]);
+
+  // Optionally, hide the controller block itself (it has done its job)
+  block.classList.add('accordion-controller');
+  block.style.display = 'none';
+}
