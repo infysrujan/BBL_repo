@@ -65,6 +65,10 @@
 								{
 									"name": "Border Light Gray",
 									"value": "border-light-gray"
+								},
+								{
+									"name": "Border Gray",
+									"value": "border-gray"
 								}
 							]
 						},
@@ -199,6 +203,10 @@
 								{
 									"name": "Border Light Gray",
 									"value": "border-light-gray"
+								},
+								{
+									"name": "Border Gray",
+									"value": "border-gray"
 								}
 							]
 						},

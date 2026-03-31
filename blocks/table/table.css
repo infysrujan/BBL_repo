@@ -79,6 +79,11 @@
   border: 0.0625rem solid lightgray;
 }
 
+/* Border Gray — 1px solid #cacaca */
+.table table.border-gray td {
+  border: 0.0625rem solid #cacaca;
+}
+
 /* --------------------------------------------------------------------------
    HEADER ROW (first row acts as header — no thead/th in markup)
    -------------------------------------------------------------------------- */
