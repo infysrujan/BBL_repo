@@ -4,6 +4,7 @@ import {
   loadBlock,
   toClassName,
 } from '../../scripts/aem.js';
+import { moveInstrumentation } from '../../scripts/scripts.js';
 
 function getCellText(cell) {
   if (!cell) return '';
@@ -202,6 +203,8 @@ export default async function decorate(block) {
 
   markHeaderRows(parentTable);
   highlightDashCells(parentTable);
+
+  moveInstrumentation(rows[1], parentTable);
 
   block.textContent = '';
   block.append(parentTable);
