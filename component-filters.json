@@ -40,7 +40,8 @@
       "popup-modal-card-offer",
       "locate-us",
       "rate-card",
-      "currency-converter-expanded"
+      "currency-converter-expanded",
+      "table"
     ]
   },
   {
@@ -197,6 +198,12 @@
     "id": "story-card",
     "components": [
       "button"
+    ]
+  },
+  {
+    "id": "table",
+    "components": [
+      "nested-table"
     ]
   },
   {
