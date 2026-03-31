@@ -34,19 +34,55 @@
 /* --------------------------------------------------------------------------
    BORDERS (default on all cells)
    -------------------------------------------------------------------------- */
-.table table th,
 .table table td {
   border: 0.0625rem solid var(--bbl-color-grey-30);
 }
 
 /* --------------------------------------------------------------------------
-   THEAD
+   VARIANT: COMPACT
    -------------------------------------------------------------------------- */
-.table table thead {
-  background: transparent;
+.table table.compact td {
+  padding: 0.3125rem 0.5rem;
 }
 
-.table table thead th {
+/* --------------------------------------------------------------------------
+   BORDER VARIANTS
+   -------------------------------------------------------------------------- */
+
+/* No Border — remove all borders */
+.table table.no-border td {
+  border: none;
+}
+
+/* Outline Border — border only on the outer edge of the table */
+.table table.outline-border {
+  border: 0.0625rem solid var(--bbl-color-grey-30);
+}
+
+.table table.outline-border td {
+  border: none;
+}
+
+/* Border Bottom — only bottom border on each row */
+.table table.border-bottom td {
+  border: none;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
+}
+
+/* Border Black — 1px solid #000 */
+.table table.border-black td {
+  border: 0.0625rem solid #000;
+}
+
+/* Border Light Gray — 1px solid lightgray */
+.table table.border-light-gray td {
+  border: 0.0625rem solid lightgray;
+}
+
+/* --------------------------------------------------------------------------
+   HEADER ROW (first row acts as header — no thead/th in markup)
+   -------------------------------------------------------------------------- */
+.table table tr:first-child td {
   padding: 0.625rem 0.75rem;
   text-align: left;
   font-weight: 400;
@@ -58,9 +94,9 @@
 }
 
 /* --------------------------------------------------------------------------
-   TBODY
+   BODY CELLS (all rows except the first)
    -------------------------------------------------------------------------- */
-.table table tbody td {
+.table table tr:not(:first-child) td {
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
   color: var(--bbl-color-grey-85);
@@ -71,57 +107,10 @@
 }
 
 /* --------------------------------------------------------------------------
-   TFOOT
-   -------------------------------------------------------------------------- */
-.table table tfoot td {
-  padding: 0.625rem 0.75rem;
-  font-size: 0.875rem;
-  color: var(--bbl-color-grey-85);
-  font-family: var(--bbl-font-family-medium);
-  vertical-align: top;
-  background: transparent;
-}
-
-/* --------------------------------------------------------------------------
    VARIANT: STRIPED
    -------------------------------------------------------------------------- */
-.table table.striped tbody tr:nth-child(even) {
+.table table.striped tr:nth-child(even) {
   background: var(--bbl-color-grey-10);
-}
-
-/* --------------------------------------------------------------------------
-   VARIANT: COMPACT
-   -------------------------------------------------------------------------- */
-.table table.compact th,
-.table table.compact td {
-  padding: 0.3125rem 0.5rem;
-}
-
-/* --------------------------------------------------------------------------
-   BORDER VARIANTS
-   -------------------------------------------------------------------------- */
-
-/* No Border — remove all borders */
-.table table.no-border th,
-.table table.no-border td {
-  border: none;
-}
-
-/* Outline Border — border only on the outer edge of the table */
-.table table.outline-border {
-  border: 0.0625rem solid var(--bbl-color-grey-30);
-}
-
-.table table.outline-border th,
-.table table.outline-border td {
-  border: none;
-}
-
-/* Border Bottom — only bottom border on each row */
-.table table.border-bottom th,
-.table table.border-bottom td {
-  border: none;
-  border-bottom: 0.0625rem solid var(--bbl-color-grey-30);
 }
 
 /* --------------------------------------------------------------------------
@@ -129,17 +118,17 @@
    -------------------------------------------------------------------------- */
 
 /* Center Aligned header */
-.table table.header-center-aligned thead th {
+.table table.header-center-aligned tr:first-child td {
   text-align: center;
 }
 
 /* Header Blue — #deeaf6 background */
-.table table.header-blue thead th {
+.table table.header-blue tr:first-child td {
   background: #deeaf6;
 }
 
 /* Header Light Blue — #e6eef4 background */
-.table table.header-light-blue thead th {
+.table table.header-light-blue tr:first-child td {
   background: #e6eef4;
 }
 
@@ -148,7 +137,7 @@
    -------------------------------------------------------------------------- */
 
 /* Cells Center Aligned */
-.table table.cells-center-aligned tbody td {
+.table table.cells-center-aligned tr:not(:first-child) td {
   text-align: center;
 }
 
@@ -168,18 +157,15 @@
    MOBILE RESPONSIVE
    -------------------------------------------------------------------------- */
 @media (width <= 47.5rem) {
-  .table table th:first-child,
   .table table td:first-child {
     border-left: 0;
   }
 
-  .table table th:last-child,
   .table table td:last-child {
     border-right: 0;
   }
 
-  .table table tbody tr:last-child td,
-  .table table tfoot tr:last-child td {
+  .table table tr:last-child td {
     border-bottom: 0;
   }
 }
@@ -201,13 +187,12 @@
     font-size: 1rem;
   }
 
-  .table table thead th {
+  .table table tr:first-child td {
     font-size: 1rem;
     padding: 0.75rem;
   }
 
-  .table table tbody td,
-  .table table tfoot td {
+  .table table tr:not(:first-child) td {
     font-size: 1rem;
     padding: 0.75rem;
   }

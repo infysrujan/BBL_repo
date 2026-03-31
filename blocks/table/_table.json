@@ -57,6 +57,14 @@
 								{
 									"name": "Border Bottom",
 									"value": "border-bottom"
+								},
+								{
+									"name": "Border Black",
+									"value": "border-black"
+								},
+								{
+									"name": "Border Light Gray",
+									"value": "border-light-gray"
 								}
 							]
 						},
@@ -183,6 +191,14 @@
 								{
 									"name": "Border Bottom",
 									"value": "border-bottom"
+								},
+								{
+									"name": "Border Black",
+									"value": "border-black"
+								},
+								{
+									"name": "Border Light Gray",
+									"value": "border-light-gray"
 								}
 							]
 						},
