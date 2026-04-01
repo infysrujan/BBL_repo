@@ -83,14 +83,14 @@
       "id": "blocks",
       "components": [
         {
-          "title": "Accordion",
-          "id": "accordion",
+          "title": "Accordion Block",
+          "id": "accordion-block",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
-                  "name": "Accordion",
+                  "name": "Accordion Block",
                   "model": "accordion-block"
                 }
               }
