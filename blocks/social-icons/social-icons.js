@@ -2,6 +2,8 @@
  * Social Icons Block – Bangkok Bank style
  */
 
+import { moveInstrumentation } from '../../scripts/scripts.js';
+
 export default function decorate(block) {
   // Check if we have at least one row with a platform and icon
   const validRows = [...block.children].filter((row) => {
@@ -54,6 +56,7 @@ export default function decorate(block) {
     }
 
     const li = document.createElement('li');
+    moveInstrumentation(row, li);
     const a = document.createElement('a');
 
     if (url) {
