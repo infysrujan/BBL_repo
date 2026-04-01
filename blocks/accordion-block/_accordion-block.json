@@ -21,29 +21,30 @@
       "id": "accordion-block",
       "fields": [
         {
-          "id": "items",
+          "component": "container",
+          "name": "items",
           "label": "Accordion items",
-          "type": "collection",
+          "multi": true,
           "itemLabel": "{{title}}",
-          "minItems": 1,
-          "itemFields": [
+          "fields": [
             {
-              "id": "title",
+              "component": "text",
+              "name": "title",
               "label": "Title",
-              "type": "text",
+              "valueType": "string",
               "required": true
             },
             {
-              "id": "hideTitle",
+              "component": "boolean",
+              "name": "hideTitle",
               "label": "Hide title",
-              "type": "boolean",
-              "required": false
+              "valueType": "boolean"
             },
             {
-              "id": "fragmentPath",
+              "component": "reference",
+              "name": "fragmentPath",
               "label": "Fragment path",
-              "type": "path",
-              "required": true,
+              "valueType": "string",
               "config": {
                 "rootPath": "/",
                 "allowFolders": false
