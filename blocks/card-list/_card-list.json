@@ -116,6 +116,12 @@
         },
         {
           "component": "text",
+          "name": "promoTag",
+          "label": "Promo Tag",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
           "name": "title",
           "label": "Title"
         },

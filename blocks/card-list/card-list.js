@@ -1,4 +1,48 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
+import { loadFragment } from '../fragment/fragment.js';
+
+function createModal(doc) {
+  if (doc.querySelector('.cards-list-modal')) return doc.querySelector('.cards-list-modal');
+
+  const modal = createElementFromHTML(`
+    <div class="cards-list-modal" aria-hidden="true">
+      <div class="cards-list-modal-overlay"></div>
+      <div class="cards-list-modal-content" role="dialog" aria-modal="true">
+        <button class="cards-list-modal-close" type="button" aria-label="Close modal">&times;</button>
+        <div class="section central-aligned cards-list-modal-body"></div>
+      </div>
+    </div>`, doc);
+
+  const closeModal = () => {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    doc.body.classList.remove('cards-list-modal-open');
+  };
+
+  modal.querySelector('.cards-list-modal-close')?.addEventListener('click', closeModal);
+  modal.querySelector('.cards-list-modal-overlay')?.addEventListener('click', closeModal);
+  doc.addEventListener('keydown', (e) => e.key === 'Escape' && modal.classList.contains('active') && closeModal());
+
+  return doc.body.appendChild(modal);
+}
+
+async function openModal(doc, fragmentPath) {
+  const modal = createModal(doc);
+  const modalBody = modal.querySelector('.cards-list-modal-body');
+  if (!modalBody) return;
+
+  try {
+    const fragment = await loadFragment(fragmentPath);
+    if (!fragment) throw new Error(`Unable to load fragment: ${fragmentPath}`);
+
+    modalBody.replaceChildren(...fragment.children);
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    doc.body.classList.add('cards-list-modal-open');
+  } catch (error) {
+    console.error('Failed to load modal content', error);
+  }
+}
 
 function getTextValue(value) {
   return value?.toString().trim() || '';
@@ -31,6 +75,7 @@ function createCardListItem(cardElement, doc) {
   const cells = [...cardElement.children];
   const [
     imageDiv,
+    promoTagDiv,
     titleDiv,
     descDiv,
     remarkDiv,
@@ -44,6 +89,7 @@ function createCardListItem(cardElement, doc) {
   ] = cells;
 
   const img = imageDiv?.querySelector('img');
+  const promoTag = promoTagDiv?.textContent?.trim();
   const title = titleDiv?.innerHTML?.trim();
   const description = descDiv?.innerHTML;
   const remark = remarkDiv?.innerHTML;
@@ -70,6 +116,15 @@ function createCardListItem(cardElement, doc) {
     );
     imageWrapper.appendChild(newImg);
     inner.appendChild(imageWrapper);
+  }
+
+  if (promoTag) {
+    content.appendChild(
+      createElementFromHTML(
+        `<div class="cards-list-promo-tag"><p>${promoTag}</p></div>`,
+        doc,
+      ),
+    );
   }
 
   if (title) {
@@ -154,4 +209,16 @@ export default function decorate(block) {
 
   block.textContent = '';
   block.appendChild(container);
+
+  block.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-modal]');
+    if (!trigger || !block.contains(trigger)) return;
+
+    event.preventDefault();
+
+    const fragmentPath = trigger.getAttribute('data-modal');
+    if (fragmentPath) {
+      openModal(doc, fragmentPath);
+    }
+  });
 }
