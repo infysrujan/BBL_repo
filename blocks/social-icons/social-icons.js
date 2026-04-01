@@ -66,7 +66,7 @@ export default function decorate(block) {
     } else {
       a.href = '#';
     }
-    a.className = `icon-${platform}`;
+    a.className = `platform-${platform}`;
     a.setAttribute('aria-label', `Share on ${platform}`);
 
     const clonedIcon = icon.cloneNode(true);
