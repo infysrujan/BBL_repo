@@ -1,0 +1,136 @@
+.accordion-group {
+  margin: 32px 0;
+  font-family: inherit;
+}
+
+/* Header */
+
+.accordion-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.accordion-group-title-wrapper {
+  flex: 1 1 auto;
+}
+
+.accordion-group-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.accordion-group-underline {
+  width: 56px;
+  height: 2px;
+  margin-top: 8px;
+  background-color: #000;
+}
+
+.accordion-group-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.accordion-group-btn {
+  border: none;
+  background: none;
+  padding: 4px 0;
+  font: inherit;
+  color: #333;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.accordion-group-btn:hover {
+  text-decoration: underline;
+}
+
+/* Items */
+
+.accordion-group-items {
+  border-top: 1px solid #ddd;
+}
+
+.accordion-item {
+  border-bottom: 1px solid #ddd;
+  background-color: #fff;
+}
+
+.accordion-item-header {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.accordion-item-label {
+  flex: 1 1 auto;
+}
+
+.accordion-item-icon {
+  width: 16px;
+  height: 16px;
+  border-right: 2px solid #000;
+  border-bottom: 2px solid #000;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  margin-left: 12px;
+}
+
+.accordion-item.is-open .accordion-item-icon {
+  transform: rotate(-135deg);
+}
+
+.accordion-item-body {
+  padding: 0 0 16px;
+}
+
+.accordion-item-body-inner {
+  padding: 0 0 8px;
+}
+
+/* Let nested blocks inside items breathe */
+
+.accordion-item-body-inner>.block {
+  margin-top: 16px;
+}
+
+.accordion-item-body-inner>.block:first-child {
+  margin-top: 0;
+}
+
+/* Print-friendly: ensure everything is visible */
+
+@media print {
+  .accordion-group-btn {
+    display: none;
+  }
+
+  .accordion-item-body {
+    display: block !important;
+    padding-bottom: 12px;
+  }
+
+  .accordion-item-header {
+    cursor: default;
+  }
+
+  .accordion-item-icon {
+    display: none;
+  }
+}

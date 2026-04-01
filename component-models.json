@@ -293,34 +293,67 @@
             ]
           }
         ]
+      },
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "accordionGroupId",
+        "value": "",
+        "label": "Accordion Group ID",
+        "description": "Tie this section to an Accordion Group block (must match the block's Group ID)."
+      },
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "accordionTitle",
+        "value": "",
+        "label": "Accordion item title",
+        "description": "Label shown for this accordion item."
+      },
+      {
+        "component": "checkbox",
+        "valueType": "boolean",
+        "name": "accordionOpen",
+        "value": false,
+        "label": "Open by default",
+        "description": "If checked, this item is expanded when the page loads."
       }
     ]
   },
   {
-    "id": "accordion-panel",
+    "id": "accordion-group",
     "fields": [
       {
-        "component": "text",
-        "name": "accordionId",
-        "label": "Accordion ID",
-        "description": "Logical group ID. All panels with the same ID belong to the same accordion instance.",
+        "component": "text-input",
         "valueType": "string",
-        "value": "accordion-1"
-      },
-      {
-        "component": "text",
         "name": "title",
-        "label": "Panel title",
-        "description": "Header text that will be used as the accordion item label.",
-        "valueType": "string",
-        "value": "Accordion item title"
+        "value": "Additional Information",
+        "label": "Accordion title",
+        "description": "Main title shown above the accordion items."
       },
       {
-        "component": "boolean",
-        "name": "expandedByDefault",
-        "label": "Expanded by default?",
+        "component": "text-input",
+        "valueType": "string",
+        "name": "groupId",
+        "value": "additional-info",
+        "label": "Group ID",
+        "description": "Identifier used to match item sections (section.accordionGroupId)."
+      },
+      {
+        "component": "checkbox",
         "valueType": "boolean",
-        "value": false
+        "name": "showExpandAll",
+        "value": true,
+        "label": "Show Expand All",
+        "description": "Show an Expand All / Collapse All toggle in the header."
+      },
+      {
+        "component": "checkbox",
+        "valueType": "boolean",
+        "name": "showPrint",
+        "value": true,
+        "label": "Show Print",
+        "description": "Show a Print button that expands all items before printing."
       }
     ]
   },
