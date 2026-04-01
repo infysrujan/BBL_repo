@@ -100,7 +100,7 @@ export default function decorate(block) {
      Viewport direction handling
   ------------------------------ */
   function setViewportMode() {
-    if (window.matchMedia('(min-width: 760px)').matches) {
+    if (window.matchMedia('(width > 47.5rem)').matches) {
       block.classList.add('desktop');
       block.classList.remove('mobile');
     } else {
