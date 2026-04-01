@@ -83,19 +83,16 @@
       "id": "blocks",
       "components": [
         {
-          "title": "Accordion Group",
-          "id": "accordion-group",
+          "title": "Accordion Panel",
+          "id": "accordion-panel",
           "plugins": {
             "xwalk": {
               "page": {
-                "resourceType": "core/franklin/components/block/v1/block",
+                "resourceType": "core/franklin/components/section/v1/section",
                 "template": {
-                  "name": "Accordion Group",
-                  "model": "accordion-group",
-                  "title": "Additional Information",
-                  "groupId": "additional-info",
-                  "showExpandAll": true,
-                  "showPrint": true
+                  "name": "Accordion Panel",
+                  "filter": "accordion-panel",
+                  "model": "accordion-panel"
                 }
               }
             }

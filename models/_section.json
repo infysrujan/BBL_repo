@@ -138,30 +138,6 @@
               ]
             }
           ]
-        },
-        {
-          "component": "text-input",
-          "valueType": "string",
-          "name": "accordionGroupId",
-          "value": "",
-          "label": "Accordion Group ID",
-          "description": "Tie this section to an Accordion Group block (must match the block's Group ID)."
-        },
-        {
-          "component": "text-input",
-          "valueType": "string",
-          "name": "accordionTitle",
-          "value": "",
-          "label": "Accordion item title",
-          "description": "Label shown for this accordion item."
-        },
-        {
-          "component": "checkbox",
-          "valueType": "boolean",
-          "name": "accordionOpen",
-          "value": false,
-          "label": "Open by default",
-          "description": "If checked, this item is expanded when the page loads."
         }
       ]
     }
@@ -200,8 +176,7 @@
         "popup-modal-card-offer",
         "locate-us",
         "rate-card",
-        "currency-converter-expanded",
-        "accordion-group"
+        "currency-converter-expanded"
       ]
     }
   ]

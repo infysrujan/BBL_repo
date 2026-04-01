@@ -4,7 +4,8 @@
     "components": [
       "section",
       "header-section",
-      "tab-section"
+      "tab-section",
+      "accordion-panel"
     ]
   },
   {
@@ -40,8 +41,16 @@
       "popup-modal-card-offer",
       "locate-us",
       "rate-card",
-      "currency-converter-expanded",
-      "accordion-group"
+      "currency-converter-expanded"
+    ]
+  },
+  {
+    "id": "accordion-panel",
+    "components": [
+      "text",
+      "image",
+      "fragment",
+      "download-file"
     ]
   },
   {
