@@ -143,3 +143,10 @@
     margin-right: 0.625rem;
   }
 }
+
+/* Hide social-icons when it appears as a standalone section in main.
+   The breadcrumb-loaded version lives inside .breadcrumb-wrapper (one level deeper),
+   so this selector does not affect it. */
+main > div > .social-icons-wrapper {
+  display: none;
+}

@@ -165,12 +165,7 @@ export default async function decorate(block) {
     ol.appendChild(li);
   }
 
-  // Load social-icons block through fragments, but only if one isn't already in the DOM
-  // (e.g. when authoring the social-icons fragment page itself, the block is already present)
-  if (document.querySelector('.social-icons.block')) {
-    return;
-  }
-
+  // Load social-icons block through fragments
   try {
     const langPrefix = `/${document.documentElement.lang || 'en'}`;
     const { loadFragment } = await import('../fragment/fragment.js');
