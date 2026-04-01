@@ -136,6 +136,19 @@
                   "value": "center-content"
                 }
               ]
+            },
+            {
+              "name": "Theme",
+              "children": [
+                {
+                  "name": "Background Wealth",
+                  "value": "background-wealth"
+                },
+                {
+                  "name": "Background Private Banking",
+                  "value": "background-privatebanking"
+                }
+              ]
             }
           ]
         }
