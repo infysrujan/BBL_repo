@@ -75,7 +75,7 @@
 
 /* Border Black — #000 */
 .table table.border-black td {
-  border-color: #000;
+  border-color: var(--bbl-color-black);
 }
 
 /* Border Light Gray — lightgray */
@@ -176,11 +176,15 @@
    DOWNLOAD FILE BLOCK
    -------------------------------------------------------------------------- */
 .table table td .download-file {
-  width: 80%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .table table td .download-file a {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* --------------------------------------------------------------------------
@@ -199,24 +203,7 @@ td .icon img {
 }
 
 td .icon {
-  margin-right: 15px;
-}
-
-/* --------------------------------------------------------------------------
-   MOBILE RESPONSIVE
-   -------------------------------------------------------------------------- */
-@media (width <= 47.5rem) {
-  .table table td:first-child {
-    border-left: 0;
-  }
-
-  .table table td:last-child {
-    border-right: 0;
-  }
-
-  .table table tr:last-child td {
-    border-bottom: 0;
-  }
+  margin-right: 0.9375rem;
 }
 
 /* ==========================================================================
