@@ -206,6 +206,52 @@ function markHeaderRows(table) {
   }
 }
 
+function isAuthoringInstance(block) {
+  const section = block.closest('.section');
+  const hasAueAttrs = [block, section]
+    .filter(Boolean)
+    .some((el) => [...el.attributes].some(({ name }) => name.startsWith('data-aue-')));
+
+  return hasAueAttrs && window.self !== window.top;
+}
+
+function appendRows(targetTable, sourceTable) {
+  const targetBody = targetTable.tBodies[0] || targetTable;
+  const sourceRows = [...sourceTable.querySelectorAll('tr')];
+  sourceRows.forEach((row) => targetBody.append(row));
+}
+
+function mergeTablesInSection(block) {
+  const section = block.closest('.section');
+  if (!section) return;
+
+  const mergeCandidates = [...section.querySelectorAll('.table table.merge-tables')];
+  if (mergeCandidates.length < 2) return;
+
+  const targetTable = mergeCandidates[0];
+
+  mergeCandidates.slice(1).forEach((sourceTable) => {
+    [...sourceTable.classList].forEach((cls) => targetTable.classList.add(cls));
+    appendRows(targetTable, sourceTable);
+    sourceTable.closest('.table')?.remove();
+  });
+
+  markHeaderRows(targetTable);
+  applyMixedBlueHeader(targetTable);
+  highlightDashCells(targetTable);
+}
+
+function scheduleMergeTables(block, parentTable) {
+  if (!parentTable.classList.contains('merge-tables')) return;
+  if (isAuthoringInstance(block)) return;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      mergeTablesInSection(block);
+    });
+  });
+}
+
 export default async function decorate(block) {
   const rows = [...block.children];
   if (rows.length < 2) return;
@@ -233,4 +279,6 @@ export default async function decorate(block) {
 
   block.textContent = '';
   block.append(parentTable);
+
+  scheduleMergeTables(block, parentTable);
 }

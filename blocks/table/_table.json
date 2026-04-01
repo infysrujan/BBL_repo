@@ -125,6 +125,10 @@
 								{
 									"name": "Compact",
 									"value": "compact"
+								},
+								{
+									"name": "Merge Tables",
+									"value": "merge-tables"
 								}
 							]
 						}
@@ -276,6 +280,10 @@
 								{
 									"name": "Compact",
 									"value": "compact"
+								},
+								{
+									"name": "Merge Tables",
+									"value": "merge-tables"
 								}
 							]
 						}
