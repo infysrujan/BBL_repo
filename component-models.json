@@ -297,7 +297,7 @@
     ]
   },
   {
-    "id": "accordion",
+    "id": "accordion-block",
     "fields": [
       {
         "id": "items",
