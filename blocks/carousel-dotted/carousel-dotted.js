@@ -91,7 +91,7 @@ function buildSlideWithoutImage(row, index, cells) {
   if (cells[7]) {
     const defaultText = document.createElement('div');
     defaultText.className = 'carousel-default-text';
-    while (cells[8].firstChild) defaultText.append(cells[8].firstChild);
+    while (cells[7].firstChild) defaultText.append(cells[7].firstChild);
     content.append(defaultText);
   }
 
@@ -773,8 +773,13 @@ export default function decorate(block) {
   if (seeMoreLink) {
     const moreWrap = document.createElement('div');
     moreWrap.className = 'carousel-dotted-more';
-    seeMoreLink.classList.add('icon-arrow-left');
-    moreWrap.append(seeMoreLink);
+    seeMoreLink.classList.add('button-tertiary', 'icon-arrow-left');
+    // Wrap in span so decorateButtonsV1 (runs after loadSections) does not
+    // overwrite the link's className — it only re-classifies direct children of P/DIV.
+    const span = document.createElement('span');
+    span.className = 'button-container';
+    span.append(seeMoreLink);
+    moreWrap.append(span);
     block.append(moreWrap);
   }
 
