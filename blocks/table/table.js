@@ -180,6 +180,17 @@ function highlightDashCells(table) {
   });
 }
 
+function applyMixedBlueHeader(table) {
+  if (!table.classList.contains('header-mixed-blue')) return;
+  table.querySelectorAll('tr.header-row').forEach((row) => {
+    const cells = [...row.querySelectorAll('td')];
+    const mid = Math.ceil(cells.length / 2);
+    cells.forEach((td, i) => {
+      td.classList.add(i < mid ? 'mixed-blue-light' : 'mixed-blue-dark');
+    });
+  });
+}
+
 function markHeaderRows(table) {
   const rows = [...table.querySelectorAll('tr')];
   if (!rows.length) return;
@@ -215,6 +226,7 @@ export default async function decorate(block) {
   await transformDownloadMarkers(parentTable);
 
   markHeaderRows(parentTable);
+  applyMixedBlueHeader(parentTable);
   highlightDashCells(parentTable);
 
   moveInstrumentation(rows[1], parentTable);

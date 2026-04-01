@@ -142,6 +142,15 @@
   background: #e6eef4;
 }
 
+/* Header Mixed Blue — first half light blue, second half dark blue */
+.table table.header-mixed-blue tr.header-row td.mixed-blue-light {
+  background: #e6eef4;
+}
+
+.table table.header-mixed-blue tr.header-row td.mixed-blue-dark {
+  background: #deeaf6;
+}
+
 /* --------------------------------------------------------------------------
    CELL VARIANTS
    -------------------------------------------------------------------------- */

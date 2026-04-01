@@ -7890,6 +7890,10 @@
               {
                 "name": "Header Light Blue",
                 "value": "header-light-blue"
+              },
+              {
+                "name": "Header Mixed Blue",
+                "value": "header-mixed-blue"
               }
             ]
           },
@@ -8037,6 +8041,10 @@
               {
                 "name": "Header Light Blue",
                 "value": "header-light-blue"
+              },
+              {
+                "name": "Header Mixed Blue",
+                "value": "header-mixed-blue"
               }
             ]
           },
