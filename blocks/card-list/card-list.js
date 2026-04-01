@@ -16,14 +16,12 @@ function createCardListItem(cardElement, doc) {
     descDiv,
     remarkDiv,
     buttonDiv,
-    // eslint-disable-next-line no-unused-vars
-    targetAudienceDiv,
     imageLayoutDiv,
     enableTitleUnderlineDiv,
     isCardClickableDiv,
     cardLinkDiv,
-    enableOverlayModalDiv,
     overlayLinkDiv,
+    enableOverlayModalDiv,
   ] = cells;
 
   const img = imageDiv?.querySelector('img');
@@ -34,7 +32,7 @@ function createCardListItem(cardElement, doc) {
   const imageLayout = imageLayoutDiv?.textContent?.trim() || 'default';
   const enableTitleUnderline = enableTitleUnderlineDiv?.textContent?.trim();
   const isCardClickable = isCardClickableDiv?.textContent?.trim();
-  const enableOverlayModal = enableOverlayModalDiv?.textContent?.trim();
+  const enableOverlayModal = enableOverlayModalDiv?.textContent?.trim() || 'true';
   const overlayHref = overlayLinkDiv?.querySelector('a')?.getAttribute('href')?.trim()
     || overlayLinkDiv?.textContent?.trim()
     || '';
@@ -57,7 +55,7 @@ function createCardListItem(cardElement, doc) {
 
   if (title) {
     const titleClasses = ['cards-list-title'];
-    if (enableTitleUnderline === 'true') titleClasses.push('has-title-underline');
+    if (enableTitleUnderline) titleClasses.push('has-title-underline');
     content.appendChild(
       createElementFromHTML(`<div class="${titleClasses.join(' ')}">${title}</div>`, doc),
     );
@@ -82,7 +80,7 @@ function createCardListItem(cardElement, doc) {
 
   if (buttonEl) {
     let buttonHTML;
-    if (enableOverlayModal === 'true' && overlayHref) {
+    if (enableOverlayModal && overlayHref) {
       const titleAttr = buttonEl.title ? ` title="${buttonEl.title}"` : '';
       buttonHTML = `<a data-modal="${overlayHref}"${titleAttr}>${buttonEl.innerHTML}</a>`;
     } else {
@@ -93,7 +91,7 @@ function createCardListItem(cardElement, doc) {
     );
   }
 
-  if (isCardClickable === 'true' && cardLinkConfig) {
+  if (isCardClickable && cardLinkConfig) {
     const titleAttr = cardLinkConfig.title ? ` title="${cardLinkConfig.title}"` : '';
     const targetAttr = cardLinkConfig.target ? ` target="${cardLinkConfig.target}"` : '';
     const relAttr = cardLinkConfig.target === '_blank' ? ' rel="noopener noreferrer"' : '';
