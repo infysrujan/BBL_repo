@@ -313,6 +313,12 @@
             "required": true
           },
           {
+            "id": "hideTitle",
+            "label": "Hide title",
+            "type": "boolean",
+            "required": false
+          },
+          {
             "id": "fragmentPath",
             "label": "Fragment path",
             "type": "path",
