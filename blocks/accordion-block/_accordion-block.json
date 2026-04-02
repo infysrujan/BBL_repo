@@ -28,7 +28,7 @@
           "required": true
         },
         {
-          "component": "checkbox",
+          "component": "boolean",
           "valueType": "boolean",
           "name": "showExpandAll",
           "value": true,
@@ -36,7 +36,7 @@
           "description": "Show an Expand All / Collapse All toggle in the header."
         },
         {
-          "component": "checkbox",
+          "component": "boolean",
           "valueType": "boolean",
           "name": "showPrint",
           "value": true,
