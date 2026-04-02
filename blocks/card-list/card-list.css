@@ -21,6 +21,10 @@
     margin-block: 0 0.625rem;
 }
 
+.cards-list-promo-tag p {
+    margin: 0;
+}
+
 .card-list-container .default-content-wrapper p {
     line-height: 1.124rem;
     margin: 0;
@@ -175,6 +179,7 @@
     font-size: 0.7875rem;
     line-height: 0.9844rem;
     font-weight: 500;
+    max-width: max-content;
     background: var(--bbl-color-blue-140);
     display: inline-block;
     padding: var(--bbl-space-050) 0.4375rem;
