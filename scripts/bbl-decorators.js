@@ -80,20 +80,24 @@ async function loadPrivacyModal(pendingUrl) {
       return;
     }
 
-    if (typeof window.showPrivacyModal !== 'function') {
-      // Emit event to load fragment — breaks cyclic dependency
-      const langPrefix = `/${document.documentElement.lang || 'en'}`;
-      document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
-        detail: {
-          path: `${langPrefix}/fragments/modals/privacy-modal`,
-          callbackName: 'showPrivacyModal',
-        },
-      }));
-    }
-
     if (typeof window.showPrivacyModal === 'function') {
       window.showPrivacyModal(pendingUrl);
+      return;
     }
+
+    // Fragment not loaded yet — dispatch with callback so it opens once ready
+    const langPrefix = `/${document.documentElement.lang || 'en'}`;
+    document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
+      detail: {
+        path: `${langPrefix}/fragments/modals/privacy-modal`,
+        callbackName: 'showPrivacyModal',
+        callback: () => {
+          if (typeof window.showPrivacyModal === 'function') {
+            window.showPrivacyModal(pendingUrl);
+          }
+        },
+      },
+    }));
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Failed to load privacy modal:', error);
@@ -107,19 +111,24 @@ async function loadPrivacyModal(pendingUrl) {
  */
 async function loadAndShowExternalRedirectPopup(url) {
   try {
-    if (typeof window.showExternalRedirectPopup !== 'function') {
-      // Emit event to load fragment — breaks cyclic dependency
-      const langPrefix = `/${document.documentElement.lang || 'en'}`;
-      document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
-        detail: {
-          path: `${langPrefix}/fragments/modals/external-popup`,
-          callbackName: 'showExternalRedirectPopup',
-        },
-      }));
-    }
     if (typeof window.showExternalRedirectPopup === 'function') {
       window.showExternalRedirectPopup(url);
+      return;
     }
+
+    // Fragment not loaded yet — dispatch with callback so it opens once ready
+    const langPrefix = `/${document.documentElement.lang || 'en'}`;
+    document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
+      detail: {
+        path: `${langPrefix}/fragments/modals/external-popup`,
+        callbackName: 'showExternalRedirectPopup',
+        callback: () => {
+          if (typeof window.showExternalRedirectPopup === 'function') {
+            window.showExternalRedirectPopup(url);
+          }
+        },
+      },
+    }));
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Failed to load external redirect popup:', error);

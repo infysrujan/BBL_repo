@@ -50,13 +50,16 @@ export async function loadFragment(path) {
  * @listens bbl:load-fragment
  */
 document.addEventListener('bbl:load-fragment', async (e) => {
-  const { path } = e.detail;
+  const { path, callback } = e.detail;
   if (!path) return;
 
   try {
     const fragment = await loadFragment(path);
     if (fragment) {
       document.body.appendChild(fragment);
+    }
+    if (typeof callback === 'function') {
+      callback();
     }
   } catch (error) {
     // eslint-disable-next-line no-console
