@@ -81,12 +81,14 @@ async function loadPrivacyModal(pendingUrl) {
     }
 
     if (typeof window.showPrivacyModal !== 'function') {
+      // Emit event to load fragment — breaks cyclic dependency
       const langPrefix = `/${document.documentElement.lang || 'en'}`;
-      const { loadFragment } = await import('../blocks/fragment/fragment.js');
-      const fragment = await loadFragment(`${langPrefix}/fragments/modals/privacy-modal`);
-      if (fragment) {
-        document.body.appendChild(fragment);
-      }
+      document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
+        detail: {
+          path: `${langPrefix}/fragments/modals/privacy-modal`,
+          callbackName: 'showPrivacyModal',
+        },
+      }));
     }
 
     if (typeof window.showPrivacyModal === 'function') {
@@ -106,12 +108,14 @@ async function loadPrivacyModal(pendingUrl) {
 async function loadAndShowExternalRedirectPopup(url) {
   try {
     if (typeof window.showExternalRedirectPopup !== 'function') {
+      // Emit event to load fragment — breaks cyclic dependency
       const langPrefix = `/${document.documentElement.lang || 'en'}`;
-      const { loadFragment } = await import('../blocks/fragment/fragment.js');
-      const fragment = await loadFragment(`${langPrefix}/fragments/modals/external-popup`);
-      if (fragment) {
-        document.body.appendChild(fragment);
-      }
+      document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
+        detail: {
+          path: `${langPrefix}/fragments/modals/external-popup`,
+          callbackName: 'showExternalRedirectPopup',
+        },
+      }));
     }
     if (typeof window.showExternalRedirectPopup === 'function') {
       window.showExternalRedirectPopup(url);
