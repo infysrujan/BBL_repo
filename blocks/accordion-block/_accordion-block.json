@@ -41,12 +41,12 @@
               "valueType": "boolean"
             },
             {
-              "component": "reference",
+              "component": "aem-content",
               "name": "fragmentPath",
               "label": "Fragment path",
               "valueType": "string",
               "config": {
-                "rootPath": "/",
+                "rootPath": "/en/fragments/accordions",
                 "allowFolders": false
               }
             }
