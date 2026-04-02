@@ -106,26 +106,10 @@
     max-height: 100%;
 }
 
-/* overlay modal styles */
-.cards-list-modal-body,
-.cards-list-modal-body picture,
-.cards-list-modal-body img {
+.card-list-modal-media img {
+    width: auto;
     max-width: 100%;
-    box-sizing: border-box;
-}
-
-.cards-list-modal-body picture,
-.cards-list-modal-body img {
-    display: block;
-}
-
-.cards-list-modal-body picture {
-    width: 100%;
-}
-
-.cards-list-modal-body img {
-    width: 100%;
-    height: auto;
+    margin-inline: auto;
 }
 
 .cards-list-image.cards-list-image-x-small img {
@@ -164,6 +148,16 @@
     height: calc(100vw);
 }
 
+.card-list-modal-media picture {
+    width: auto;
+    max-width: 100%;
+}
+
+.card-list-modal-text + .card-list-modal-media picture,
+.card-list-modal-text + .card-list-modal-media img {
+    margin-inline: auto;
+}
+
 .cards-list-image.cards-list-image-x-small img:hover {
     transform: translate3d(0, 0, 0);
 }
@@ -178,7 +172,7 @@
 .cards-list-promo-tag {
     font-size: 0.7875rem;
     line-height: 0.9844rem;
-    font-weight: 500;
+    font-weight: var(--bbl-font-family-medium);
     max-width: max-content;
     background: var(--bbl-color-blue-140);
     display: inline-block;
@@ -256,61 +250,70 @@
     height: 0.125rem;
 }
 
-/* overlay modal styles */
-.cards-list-modal-open {
-    overflow: hidden;
+.card-list-modal-media {
+    margin: 0 auto;
 }
 
-.cards-list-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 999;
-    display: none;
-    overflow-y: auto;
+.card-list-modal-title {
+    font-size: 1.4rem;
+    font-weight: var(--bbl-font-family-regular);
+    letter-spacing: -0.0125rem;
+    line-height: 1.375rem;
 }
 
-.cards-list-modal.active {
-    display: block;
+.card-list-modal-subtitle {
+    margin-block: 0 1.875rem;
+    line-height: 1.2495rem;
+    font-size: 1.1375rem;
+    font-weight: var(--bbl-font-family-regular);
 }
 
-.cards-list-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--bbl-color-white);
+.card-list-modal-last-title {
+    margin: 0;
+    font-size: 1.1375rem;
+    line-height: 1.2495rem;
+    font-weight: var(--bbl-font-family-regular);
 }
 
-.cards-list-modal-content {
-    position: relative;
-    z-index: 1;
-    padding: var(--bbl-space-1000) var(--bbl-space-250);
-    background: var(--bbl-color-white);
-    overflow-x: hidden;
-    box-sizing: border-box;
+.card-list-modal-text {
+    color: var(--bbl-color-grey-85);
 }
 
-.cards-list-modal-close {
-    top: 0.9375rem;
-    right: 0.9375rem;
-    color: var(--bbl-color-gray-600);
-    width: 2.5rem;
-    height: 2.5rem;
+.download-file-wrapper:has(+ :is(.card-list-modal-subtitle, .card-list-modal-last-title))
+    .download-button-wrapper {
+    padding-bottom: 1.875rem;
+}
+
+.card-list-modal-last-title + .card-list-modal-text {
+    margin-block: var(--bbl-space-250) 0;
+    line-height: 1.1375rem;
+    font-weight: var(--bbl-font-family-regular);
+}
+
+.card-list-modal-last-title + .card-list-modal-text a {
+    text-decoration: underline;
+    color: var(--bbl-color-grey-85);
+}
+
+.card-list-modal-title + .card-list-modal-text {
+    margin: 0;
     text-align: center;
-    font-size: 1.125rem;
-    line-height: 2.25rem;
-    font-weight: 100;
-    background: var(--bbl-color-white);
-    border: solid 0.0313rem var(--bbl-color-gray-300);
-    position: absolute;
-    z-index: 10;
-    border-radius: 50%;
-    cursor: pointer;
-    box-sizing: border-box;
-    transition: all 0.3s;
+    padding-bottom: 3.078rem;
+    line-height: 1.124rem;
 }
 
-.cards-list-modal-close:hover {
-    box-shadow: 0.0625rem 0.0625rem 0.375rem 0 var(--bbl-color-black-alpha-30);
-    transform: scale(1.02);
+.card-list-modal-text + .card-list-modal-media {
+    text-align: center;
+}
+
+.card-list-modal-media + .card-list-modal-text {
+    margin-block: 1.203rem 0;
+    line-height: 1.203rem;
+    font-weight: var(--bbl-font-family-regular);
+}
+
+.modal-body .section.central-aligned .block {
+    margin-inline: 0;
 }
 
 @media (width > 47.5rem) {
@@ -333,7 +336,7 @@
         align-items: stretch;
     }
 
-    .cards-list:is(.cards-3, .cards-4) .cards-list-item {
+    .cards-list:is(.cards-1, .cards-3, .cards-4) .cards-list-item {
         margin-bottom: var(--bbl-space-500);
         display: flex;
     }
@@ -342,7 +345,8 @@
         flex: 0 0 calc((100% - 2.5rem) / 3);
     }
 
-    .cards-list.cards-4 .cards-list-item {
+    .cards-list.cards-4 .cards-list-item,
+    .cards-list.cards-1 .cards-list-item {
         flex: 0 0 calc((100% - 3.75rem) / 3);
     }
 
@@ -383,9 +387,22 @@
         line-height: 1.4219rem;
     }
 
-    .cards-list-modal-close {
-        top: 1.875rem;
-        right: 1.875rem;
+    .card-list-modal-title + .card-list-modal-text {
+        font-size: 0.875rem;
+    }
+
+    .card-list-modal-subtitle,
+    .card-list-modal-last-title {
+        line-height: 1.422rem;
+        font-size: 1.3125rem;
+    }
+
+    .card-list-modal-media + .card-list-modal-text {
+        font-size: var(--bbl-font-size-b2);
+    }
+
+    .card-list-modal-last-title + .card-list-modal-text {
+        font-size: var(--bbl-font-size-b2);
     }
 }
 
@@ -445,11 +462,13 @@
         flex: 0 0 30.22%;
     }
 
-    .cards-list.cards-4 .cards-list-item {
+    .cards-list.cards-4 .cards-list-item,
+    .cards-list.cards-1 .cards-list-item {
         flex: 0 0 21.27%;
     }
 
-    .cards-list.scrollable.cards-4 .cards-list-item {
+    .cards-list.scrollable.cards-4 .cards-list-item,
+    .cards-list.scrollable.cards-1 .cards-list-item {
         flex: 0 0 21.27%;
     }
 
@@ -480,5 +499,32 @@
     .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
         font-size: var(--bbl-font-size-h5-desktop);
         line-height: 1.625rem;
+    }
+
+    .card-list-modal-title {
+        font-size: var(--bbl-font-size-h3-desktop);
+        line-height: 2.875rem;
+    }
+
+    .card-list-modal-title + .card-list-modal-text {
+        font-size: var(--bbl-font-size-b1);
+        line-height: 1.375rem;
+    }
+
+    .card-list-modal-subtitle,
+    .card-list-modal-last-title {
+        line-height: 1.625rem;
+        font-size: 1.5rem;
+    }
+
+    .card-list-modal-media + .card-list-modal-text {
+        margin-block: 1.375rem 0;
+        font-size: var(--bbl-font-size-b1);
+        line-height: 1.375rem;
+    }
+
+    .card-list-modal-last-title + .card-list-modal-text {
+        font-size: var(--bbl-font-size-b1);
+        line-height: 1.3rem;
     }
 }

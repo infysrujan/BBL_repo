@@ -1,26 +1,79 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import { loadFragment } from '../fragment/fragment.js';
 
+function decorateModalContent(modalBody) {
+  let hasTitle = false;
+  const wrappers = [...modalBody.querySelectorAll('.default-content-wrapper')];
+  const [firstWrapper] = wrappers;
+  const headings = wrappers.flatMap((wrapper) => [...wrapper.querySelectorAll('h1, h2, h3, h4, h5, h6')]);
+  const lastHeading = headings.at(-1);
+
+  if (firstWrapper) {
+    firstWrapper.classList.add('card-list-modal-content');
+  }
+
+  wrappers.forEach((wrapper) => {
+    let textIndex = 0;
+
+    [...wrapper.children].forEach((el, index) => {
+      if (el.matches('h1, h2, h3, h4, h5, h6')) {
+        if (!hasTitle) {
+          el.classList.add('card-list-modal-title');
+          hasTitle = true;
+        } else if (el === lastHeading) {
+          el.classList.add('card-list-modal-last-title');
+        } else {
+          el.classList.add('card-list-modal-subtitle');
+        }
+        return;
+      }
+
+      if (!el.matches('p')) return;
+
+      const isMedia = !!el.querySelector('picture, img');
+      const classes = [
+        'card-list-modal-paragraph',
+        `card-list-modal-paragraph-${index + 1}`,
+        isMedia ? 'card-list-modal-media' : 'card-list-modal-text',
+      ];
+
+      if (!isMedia) {
+        textIndex += 1;
+        classes.push(
+          `card-list-modal-text-${textIndex}`,
+          textIndex === 1 ? 'card-list-modal-intro' : 'card-list-modal-description',
+        );
+      }
+
+      el.classList.add(...classes);
+    });
+  });
+
+  wrappers.slice(1).forEach((wrapper) => {
+    wrapper.replaceWith(...wrapper.childNodes);
+  });
+}
+
 function createModal(doc) {
-  if (doc.querySelector('.cards-list-modal')) return doc.querySelector('.cards-list-modal');
+  if (doc.querySelector('.custom-modal')) return doc.querySelector('.custom-modal');
 
   const modal = createElementFromHTML(`
-    <div class="cards-list-modal" aria-hidden="true">
-      <div class="cards-list-modal-overlay"></div>
-      <div class="cards-list-modal-content" role="dialog" aria-modal="true">
-        <button class="cards-list-modal-close" type="button" aria-label="Close modal">&times;</button>
-        <div class="section central-aligned cards-list-modal-body"></div>
+    <div class="custom-modal" aria-hidden="true">
+      <div class="modal-overlay"></div>
+      <div class="modal-content" role="dialog" aria-modal="true">
+        <button class="modal-close" type="button" aria-label="Close modal">&times;</button>
+        <div class="modal-body card-list-modal-body"></div>
       </div>
     </div>`, doc);
 
   const closeModal = () => {
     modal.classList.remove('active');
     modal.setAttribute('aria-hidden', 'true');
-    doc.body.classList.remove('cards-list-modal-open');
+    doc.body.classList.remove('modal-open');
   };
 
-  modal.querySelector('.cards-list-modal-close')?.addEventListener('click', closeModal);
-  modal.querySelector('.cards-list-modal-overlay')?.addEventListener('click', closeModal);
+  modal.querySelector('.modal-close')?.addEventListener('click', closeModal);
+  modal.querySelector('.modal-overlay')?.addEventListener('click', closeModal);
   doc.addEventListener('keydown', (e) => e.key === 'Escape' && modal.classList.contains('active') && closeModal());
 
   return doc.body.appendChild(modal);
@@ -28,7 +81,7 @@ function createModal(doc) {
 
 async function openModal(doc, fragmentPath) {
   const modal = createModal(doc);
-  const modalBody = modal.querySelector('.cards-list-modal-body');
+  const modalBody = modal.querySelector('.modal-body');
   if (!modalBody) return;
 
   try {
@@ -36,9 +89,10 @@ async function openModal(doc, fragmentPath) {
     if (!fragment) throw new Error(`Unable to load fragment: ${fragmentPath}`);
 
     modalBody.replaceChildren(...fragment.children);
+    decorateModalContent(modalBody);
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
-    doc.body.classList.add('cards-list-modal-open');
+    doc.body.classList.add('modal-open');
   } catch (error) {
     console.error('Failed to load modal content', error);
   }
