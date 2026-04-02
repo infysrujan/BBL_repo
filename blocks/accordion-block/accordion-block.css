@@ -2,8 +2,32 @@
   border-top: 1px solid var(--hlx-color-border, #ddd);
 }
 
+.accordion-block-intro {
+  padding: 0 1.25rem 1rem;
+}
+
+.accordion-block-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.accordion-block-description {
+  margin: 0 0 0.5rem;
+  font: inherit;
+}
+
+.accordion-block-description :where(p):last-child {
+  margin-bottom: 0;
+}
+
 .accordion-item {
   border-bottom: 1px solid var(--hlx-color-border, #ddd);
+}
+
+.accordion-heading {
+  margin: 0;
+  font: inherit;
 }
 
 .accordion-header {
