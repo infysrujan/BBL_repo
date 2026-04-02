@@ -5,6 +5,7 @@ import {
   readPosition,
 } from '../../scripts/utils/carousel-helpers.js';
 import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
+import buildContentCardsSlide from './build-content-cards-slide.js';
 
 /**
  * Build a slide WITH IMAGE variation
@@ -179,6 +180,10 @@ function buildSlide(row, index) {
 
   if (slideType === 'withImage') {
     return buildSlideWithImage(row, index, cells);
+  }
+
+  if (slideType === 'contentInsertCarouselCards') {
+    return buildContentCardsSlide(row, index, cells);
   }
 
   // Default: withoutImage
