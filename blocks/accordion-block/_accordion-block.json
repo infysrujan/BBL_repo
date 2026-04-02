@@ -21,36 +21,21 @@
       "id": "accordion-block",
       "fields": [
         {
-          "component": "container",
-          "name": "items",
-          "label": "Accordion items",
-          "multi": true,
-          "itemLabel": "{{title}}",
-          "fields": [
-            {
-              "component": "text",
-              "name": "title",
-              "label": "Title",
-              "valueType": "string",
-              "required": true
-            },
-            {
-              "component": "boolean",
-              "name": "hideTitle",
-              "label": "Hide title",
-              "valueType": "boolean"
-            },
-            {
-              "component": "aem-content",
-              "name": "fragmentPath",
-              "label": "Fragment path",
-              "valueType": "string",
-              "config": {
-                "rootPath": "/en/fragments/accordions",
-                "allowFolders": false
-              }
-            }
-          ]
+          "component": "text",
+          "name": "title",
+          "label": "Title",
+          "valueType": "string",
+          "required": true
+        },
+        {
+          "component": "aem-content",
+          "name": "fragmentPath",
+          "label": "Fragment path",
+          "valueType": "string",
+          "config": {
+            "rootPath": "/en/fragments/accordions",
+            "allowFolders": false
+          }
         }
       ]
     }
