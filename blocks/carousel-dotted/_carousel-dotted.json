@@ -795,7 +795,7 @@
         },
         {
           "component": "aem-content",
-          "name": "link",
+          "name": "cardLink",
           "label": "Link",
           "description": "Destination URL for the button",
           "condition": {
@@ -809,7 +809,7 @@
         },
         {
           "component": "text",
-          "name": "linkText",
+          "name": "cardLinkText",
           "label": "Text",
           "description": "Button label text",
           "required": true,
@@ -824,7 +824,7 @@
         },
         {
           "component": "text",
-          "name": "linkTitle",
+          "name": "cardLinkTitle",
           "label": "Title",
           "description": "Accessibility title attribute (optional)",
           "condition": {
@@ -838,7 +838,7 @@
         },
         {
           "component": "select",
-          "name": "linkType",
+          "name": "cardLinkType",
           "label": "Type",
           "description": "Button style variant",
           "valueType": "string",

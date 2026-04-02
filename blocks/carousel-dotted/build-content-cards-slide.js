@@ -8,7 +8,7 @@ import createCard from '../content-insert-cards/create-cards-helper.js';
  * Cell layout (carousel-dotted-slide, slideType = contentInsertCarouselCards):
  *   0: variant (hidden), 1: slideType (select),
  *   2: promoTag (category), 3: cardImage, 4: cardTitle,
- *   5: cardDescription, 6: button (merged — link+linkText+linkTitle+linkType)
+ *   5: cardDescription, 6: button (merged — cardLink+cardLinkText+cardLinkTitle+cardLinkType)
  *
  * @param {HTMLElement} row - Original row element from the block
  * @param {number} index - Slide index
