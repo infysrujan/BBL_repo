@@ -28,6 +28,12 @@
           "required": true
         },
         {
+          "component": "richtext",
+          "name": "description",
+          "label": "Description Text",
+          "valueType": "string"
+        },
+        {
           "component": "boolean",
           "valueType": "boolean",
           "name": "showExpandAll",
@@ -42,12 +48,6 @@
           "value": true,
           "label": "Show Print",
           "description": "Show a Print button that expands all items before printing in a new tab and open the print dialog."
-        },
-        {
-          "component": "richtext",
-          "name": "description",
-          "label": "Description Text",
-          "valueType": "string"
         },
         {
           "component": "aem-content",
