@@ -797,20 +797,44 @@
           "component": "aem-content",
           "name": "link",
           "label": "Link",
-          "description": "Destination URL for the button"
+          "description": "Destination URL for the button",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
         },
         {
           "component": "text",
           "name": "linkText",
           "label": "Text",
           "description": "Button label text",
-          "required": true
+          "required": true,
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
         },
         {
           "component": "text",
           "name": "linkTitle",
           "label": "Title",
-          "description": "Accessibility title attribute (optional)"
+          "description": "Accessibility title attribute (optional)",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
         },
         {
           "component": "select",
@@ -832,7 +856,15 @@
               "name": "Tertiary",
               "value": "tertiary"
             }
-          ]
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
         },
         {
           "component": "container",
@@ -847,7 +879,15 @@
               "valueType": "boolean",
               "value": false
             }
-          ]
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "contentInsertCarouselCards"
+            ]
+          }
         }
       ]
     },
