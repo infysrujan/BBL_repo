@@ -1,6 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
-export function createCard(cardItem) {
+export default function createCard(cardItem) {
   // Get all rows from the card item
   const rows = [...cardItem.children];
 

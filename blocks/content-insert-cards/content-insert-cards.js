@@ -1,5 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { createCard } from './create-cards-helper.js';
+import createCard from './create-cards-helper.js';
 
 export default function decorate(block) {
   // Get all card items (direct children divs)
