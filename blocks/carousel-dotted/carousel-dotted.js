@@ -545,6 +545,7 @@ export default function decorate(block) {
   const slidesTextAnimation = slideEls.filter((s) => s.classList.contains('text-animation-variant')).length;
   const slidesCircularImage = slideEls.filter((s) => s.classList.contains('with-circular-image')).length;
   const slidesDefaultImage = slideEls.filter((s) => s.classList.contains('with-default-image')).length;
+  const slidesContentCards = slideEls.filter((s) => s.classList.contains('content-cards')).length;
   const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
     && slidesWithImage === 0
     && slidesWithoutImage === 0;
@@ -578,6 +579,14 @@ export default function decorate(block) {
     && slidesHeroBanner === 0
   ) {
     block.classList.add('all-text-animation-variant');
+  } else if (
+    slidesContentCards > 0
+    && slidesWithImage === 0
+    && slidesWithoutImage === 0
+    && slidesHeroBanner === 0
+    && slidesTextAnimation === 0
+  ) {
+    block.classList.add('all-content-cards');
   } else {
     block.classList.add('mixed-image-slides');
   }
@@ -765,6 +774,8 @@ export default function decorate(block) {
   }
 
   if (showDots) {
+    block.append(dots);
+  } else if (slidesContentCards > 0) {
     block.append(dots);
   } else if (showArrows) {
     if (circularOrDefaultImage) {

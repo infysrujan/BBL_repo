@@ -1005,6 +1005,39 @@
 }
 
 
+/* Content insert cards carousel variant */
+.carousel-dotted.all-content-cards {
+  overflow: visible;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.carousel-dotted.all-content-cards .slick-dots {
+  position: static;
+  display: flex;
+  justify-content: center;
+  margin-top: var(--bbl-space-200);
+  width: auto;
+  height: auto;
+}
+
+@media (width > 47.5rem) {
+  .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards {
+    position: relative;
+    inset: unset;
+    display: none;
+    opacity: 1;
+    transition: none;
+  }
+
+  .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards.is-active {
+    display: block;
+    opacity: 1;
+  }
+}
+
 @media (width > 64rem) {
   .carousel-dotted.all-without-image {
     margin-top: 1.25rem;
