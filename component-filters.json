@@ -202,6 +202,29 @@
   },
   {
     "id": "table",
+    "rte": {
+      "toolbar": {
+        "format": [
+          "bold",
+          "italic",
+          "underline",
+          "strike"
+        ],
+        "insert": [
+          "link",
+          "unlink",
+          "table"
+        ],
+        "editor": [
+          "removeformat"
+        ],
+        "sections": [
+          "format",
+          "insert",
+          "editor"
+        ]
+      }
+    },
     "components": [
       "nested-table"
     ]
