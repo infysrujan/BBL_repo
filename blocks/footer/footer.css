@@ -176,7 +176,7 @@
 
 .footer .footer-bottom a:hover {
   text-decoration: underline;
-  color: unset;
+  color: var(--bbl-color-active-blue);
 }
 
 /* ==========================================================================
