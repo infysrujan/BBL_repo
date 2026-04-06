@@ -42,6 +42,16 @@ function parseBooleanField(raw) {
 }
 
 /**
+ * @param {Element | undefined} fragmentRow
+ * @returns {string}
+ */
+function extractFragmentHrefFromRow(fragmentRow) {
+  if (!fragmentRow) return '';
+  const link = fragmentRow.querySelector('a');
+  return link?.getAttribute('href') || link?.href || fragmentRow.textContent.trim();
+}
+
+/**
  * @param {HTMLElement} el
  * @param {string} value
  */
@@ -80,18 +90,15 @@ function getAccordionBlockConfig(block) {
 
   const rows = [...block.querySelectorAll(':scope > div')];
 
+  // Single-column rows follow _accordion-block.json field order:
+  // title, description, showExpandAll, showPrint, fragmentPath
   if (rows.length >= 5) {
     const title = rows[0]?.children[0]?.textContent.trim() || '';
-    const showExpandAll = parseBooleanField(rows[1]?.children[0]?.textContent);
-    const showPrint = parseBooleanField(rows[2]?.children[0]?.textContent);
-    const descCell = rows[3]?.children[0];
+    const descCell = rows[1]?.children[0];
     const descriptionHtml = descCell?.innerHTML?.trim() || '';
-    const fragmentRow = rows[4];
-    let rawPath = '';
-    if (fragmentRow) {
-      const link = fragmentRow.querySelector('a');
-      rawPath = link?.getAttribute('href') || link?.href || fragmentRow.textContent.trim();
-    }
+    const showExpandAll = parseBooleanField(rows[2]?.children[0]?.textContent);
+    const showPrint = parseBooleanField(rows[3]?.children[0]?.textContent);
+    const rawPath = extractFragmentHrefFromRow(rows[4]);
     return {
       title,
       descriptionHtml,
@@ -103,12 +110,7 @@ function getAccordionBlockConfig(block) {
 
   const titleCell = rows[0]?.children[0];
   const title = titleCell ? titleCell.textContent.trim() : '';
-  const fragmentRow = rows[1];
-  let rawPath = '';
-  if (fragmentRow) {
-    const link = fragmentRow.querySelector('a');
-    rawPath = link?.getAttribute('href') || link?.href || fragmentRow.textContent.trim();
-  }
+  const rawPath = extractFragmentHrefFromRow(rows[1]);
   return {
     title,
     descriptionHtml: '',
@@ -194,6 +196,292 @@ function wireAccordionHeader(header, panel) {
   });
 }
 
+function accordionIconUrl(filename) {
+  const base = window.hlx?.codeBasePath || '';
+  return `${base}/icons/${encodeURIComponent(filename)}`;
+}
+
+/**
+ * @param {Element} block
+ * @returns {boolean}
+ */
+function allAccordionPanelsExpanded(block) {
+  const headers = [...block.querySelectorAll(':scope > .accordion-item .accordion-header')];
+  if (!headers.length) return false;
+  return headers.every((h) => h.getAttribute('aria-expanded') === 'true');
+}
+
+/**
+ * @param {Element} block
+ * @param {boolean} expand
+ */
+function setAllAccordionPanels(block, expand) {
+  block.querySelectorAll(':scope > .accordion-item').forEach((item) => {
+    const header = item.querySelector('.accordion-header');
+    const panel = item.querySelector('.accordion-panel');
+    if (!header || !panel) return;
+    header.setAttribute('aria-expanded', expand ? 'true' : 'false');
+    panel.hidden = !expand;
+  });
+}
+
+/**
+ * @param {HTMLButtonElement} expandBtn
+ * @param {Element} block
+ */
+function syncExpandAllToolbarButton(expandBtn, block) {
+  const expanded = allAccordionPanelsExpanded(block);
+  const label = expandBtn.querySelector('.accordion-toolbar-label');
+  const icon = expandBtn.querySelector('.accordion-toolbar-icon');
+  if (label) {
+    label.textContent = expanded ? 'Collapse All' : 'Expand All';
+  }
+  expandBtn.setAttribute('aria-pressed', expanded ? 'true' : 'false');
+  expandBtn.setAttribute(
+    'aria-label',
+    expanded ? 'Collapse all accordion sections' : 'Expand all accordion sections',
+  );
+  if (icon) {
+    icon.className = expanded ? 'accordion-toolbar-icon icon-close' : 'accordion-toolbar-icon icon-expand';
+    icon.src = expanded
+      ? accordionIconUrl('icon-close.svg')
+      : accordionIconUrl('icon-expand.svg');
+  }
+}
+
+/**
+ * @param {string} s
+ */
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/**
+ * Snapshot panel open state, expand all, build HTML, restore.
+ * @param {Element} block
+ */
+function buildAccordionPrintDocument(block) {
+  const items = [...block.querySelectorAll(':scope > .accordion-item')];
+  const states = items.map((item) => {
+    const header = item.querySelector('.accordion-header');
+    const panel = item.querySelector('.accordion-panel');
+    return {
+      expanded: header?.getAttribute('aria-expanded') === 'true',
+      hidden: panel?.hidden ?? true,
+    };
+  });
+
+  setAllAccordionPanels(block, true);
+
+  const clone = block.cloneNode(true);
+  clone.querySelectorAll('.accordion-block-toolbar').forEach((el) => el.remove());
+
+  clone.querySelectorAll('.accordion-item').forEach((item) => {
+    const headingWrap = item.querySelector('.accordion-heading');
+    const btn = item.querySelector('.accordion-header');
+    const titleText = btn?.querySelector('.accordion-header-title')?.textContent?.trim() || '';
+    const panel = item.querySelector('.accordion-panel');
+    headingWrap?.remove();
+    const h3 = document.createElement('h3');
+    h3.className = 'accordion-print-heading';
+    h3.textContent = titleText;
+    item.insertBefore(h3, item.firstChild);
+    if (panel) {
+      panel.hidden = false;
+      panel.removeAttribute('hidden');
+    }
+  });
+
+  const wrapper = block.closest('.accordion-block-wrapper');
+  const container = wrapper?.parentElement?.classList.contains('accordion-block-container')
+    ? wrapper.parentElement
+    : null;
+  const wrapperIsDirectChild = Boolean(
+    container && [...container.children].includes(wrapper),
+  );
+
+  let bodyHtml;
+  if (wrapperIsDirectChild) {
+    const shell = document.createElement('div');
+    [...container.children].forEach((child) => {
+      if (child === wrapper) {
+        shell.appendChild(clone);
+      } else {
+        shell.appendChild(child.cloneNode(true));
+      }
+    });
+    bodyHtml = shell.innerHTML;
+  } else {
+    bodyHtml = clone.outerHTML;
+  }
+
+  items.forEach((item, i) => {
+    const header = item.querySelector('.accordion-header');
+    const panel = item.querySelector('.accordion-panel');
+    const s = states[i];
+    if (!header || !panel || !s) return;
+    header.setAttribute('aria-expanded', s.expanded ? 'true' : 'false');
+    panel.hidden = s.hidden;
+  });
+
+  const docTitle = block.querySelector('.accordion-block-title')?.textContent?.trim()
+    || document.querySelector('title')?.textContent
+    || 'Print';
+
+  const printCss = `
+    body { font-family: system-ui, -apple-system, sans-serif; padding: 1.5rem; color: #111; }
+    .accordion { border: 0; }
+    .accordion-block-intro { padding: 0 0 1rem; }
+    .accordion-block-title { font-size: 1.5rem; margin: 0 0 0.5rem; }
+    .accordion-item { border-bottom: 1px solid #ddd; padding-bottom: 1rem; margin-bottom: 1rem; }
+    .accordion-print-heading { font-size: 1.125rem; margin: 0 0 0.5rem; }
+    .accordion-panel { display: block !important; padding: 0; }
+    .accordion-header { display: none; }
+    .accordion-heading { display: none; }
+  `;
+
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>${escapeHtml(docTitle)}</title><style>${printCss}</style></head><body>${bodyHtml}</body></html>`;
+}
+
+/**
+ * @param {Element} block
+ */
+function openAccordionPrintWindow(block) {
+  const html = buildAccordionPrintDocument(block);
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  // Do not use noopener: many browsers return null from window.open, so the tab stays blank.
+  const win = window.open(url, '_blank');
+  if (!win) {
+    URL.revokeObjectURL(url);
+    return;
+  }
+
+  const revokeSoon = () => URL.revokeObjectURL(url);
+  win.addEventListener('afterprint', revokeSoon, { once: true });
+  setTimeout(revokeSoon, 120_000);
+
+  const runPrint = () => {
+    win.focus();
+    win.print();
+  };
+
+  if (win.document.readyState === 'complete') {
+    requestAnimationFrame(runPrint);
+  } else {
+    win.addEventListener('load', runPrint);
+  }
+}
+
+/**
+ * @param {Element} block
+ * @param {string} baseId
+ * @param {{ showExpandAll: boolean, showPrint: boolean }} options
+ * @returns {{ expandBtn: HTMLButtonElement | null, printBtn: HTMLButtonElement | null }}
+ */
+function renderAccordionToolbar(block, baseId, { showExpandAll, showPrint }) {
+  if (!showExpandAll && !showPrint) {
+    return { expandBtn: null, printBtn: null };
+  }
+
+  const toolbar = document.createElement('div');
+  toolbar.className = 'accordion-block-toolbar';
+  toolbar.setAttribute('role', 'toolbar');
+  toolbar.setAttribute('aria-label', 'Accordion actions');
+  toolbar.id = `${baseId}-toolbar`;
+
+  const inner = document.createElement('div');
+  inner.className = 'accordion-block-toolbar-inner';
+
+  let expandBtn = null;
+  if (showExpandAll) {
+    expandBtn = document.createElement('button');
+    expandBtn.type = 'button';
+    expandBtn.className = 'accordion-toolbar-button accordion-toolbar-expand';
+    expandBtn.id = `${baseId}-expand-all`;
+    expandBtn.setAttribute('aria-pressed', 'false');
+    expandBtn.setAttribute('aria-label', 'Expand all accordion sections');
+
+    const label = document.createElement('span');
+    label.className = 'accordion-toolbar-label';
+    label.textContent = 'Expand All';
+
+    const icon = document.createElement('img');
+    icon.className = 'accordion-toolbar-icon';
+    icon.src = accordionIconUrl('icon-expand.svg');
+    icon.alt = '';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.width = 20;
+    icon.height = 20;
+
+    expandBtn.append(label, icon);
+    inner.appendChild(expandBtn);
+  }
+
+  let printBtn = null;
+  if (showPrint) {
+    printBtn = document.createElement('button');
+    printBtn.type = 'button';
+    printBtn.className = 'accordion-toolbar-button accordion-toolbar-print';
+    printBtn.id = `${baseId}-print`;
+    printBtn.setAttribute('aria-label', 'Print accordion content');
+
+    const label = document.createElement('span');
+    label.className = 'accordion-toolbar-label';
+    label.textContent = 'Print';
+
+    const icon = document.createElement('span');
+    icon.className = 'accordion-toolbar-icon icon-print';
+    // icon.src = accordionIconUrl('Print.sv');
+    icon.alt = '';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.width = 20;
+    icon.height = 20;
+
+    printBtn.append(label, icon);
+    inner.appendChild(printBtn);
+  }
+
+  toolbar.appendChild(inner);
+  block.appendChild(toolbar);
+
+  return { expandBtn, printBtn };
+}
+
+/**
+ * @param {Element} block
+ * @param {{ expandBtn: HTMLButtonElement | null, printBtn: HTMLButtonElement | null }} buttons
+ */
+function wireAccordionToolbar(block, { expandBtn, printBtn }) {
+  if (expandBtn) {
+    expandBtn.addEventListener('click', () => {
+      if (allAccordionPanelsExpanded(block)) {
+        setAllAccordionPanels(block, false);
+      } else {
+        setAllAccordionPanels(block, true);
+      }
+      syncExpandAllToolbarButton(expandBtn, block);
+    });
+
+    block.addEventListener('click', (e) => {
+      if (!e.target.closest('.accordion-header')) return;
+      queueMicrotask(() => syncExpandAllToolbarButton(expandBtn, block));
+    });
+
+    syncExpandAllToolbarButton(expandBtn, block);
+  }
+
+  if (printBtn) {
+    printBtn.addEventListener('click', () => {
+      openAccordionPrintWindow(block);
+    });
+  }
+}
+
 /**
  * WAI-ARIA APG accordion: Arrow/Home/End move focus between header buttons.
  * @param {Element} block
@@ -223,52 +511,10 @@ function wireAccordionGroupNavigation(block) {
 }
 
 /**
- * @param {Element} block
  * @param {string} baseId
- * @param {string} itemTitle
- * @param {DocumentFragment} contentFrag
- * @param {number} index
- */
-function appendAccordionItem(block, baseId, itemTitle, contentFrag, index) {
-  const panelId = `${baseId}-panel-${index}`;
-
-  const item = document.createElement('div');
-  item.classList.add('accordion-item');
-
-  const heading = document.createElement('h3');
-  heading.classList.add('accordion-heading');
-
-  const header = document.createElement('button');
-  header.type = 'button';
-  header.classList.add('accordion-header');
-  header.id = `${panelId}-toggle`;
-  header.setAttribute('aria-expanded', 'false');
-  header.setAttribute('aria-controls', panelId);
-
-  const label = document.createElement('span');
-  label.classList.add('accordion-header-title');
-  label.textContent = itemTitle || `Item ${index + 1}`;
-  header.appendChild(label);
-
-  heading.appendChild(header);
-
-  const panel = document.createElement('div');
-  panel.id = panelId;
-  panel.classList.add('accordion-panel');
-  panel.hidden = true;
-  panel.setAttribute('role', 'region');
-  panel.setAttribute('aria-labelledby', header.id);
-
-  panel.appendChild(contentFrag);
-
-  item.appendChild(heading);
-  item.appendChild(panel);
-  block.appendChild(item);
-
-  wireAccordionHeader(header, panel);
-}
-
-/**
+ * @param {number} itemIndex
+ * @param {string} titleText
+ * @param {string} fallbackTitle
  * @returns {{
  *   item: HTMLDivElement,
  *   header: HTMLButtonElement,
@@ -276,13 +522,15 @@ function appendAccordionItem(block, baseId, itemTitle, contentFrag, index) {
  *   label: HTMLSpanElement,
  * }}
  */
-function createAccordionItemElements(baseId, itemIndex, itemLabel) {
+function createAccordionItemElements(baseId, itemIndex, titleText, fallbackTitle) {
   const panelId = `${baseId}-panel-${itemIndex}`;
+  const trimmed = titleText != null ? String(titleText).trim() : '';
+  const labelText = trimmed || fallbackTitle;
 
   const item = document.createElement('div');
   item.classList.add('accordion-item');
 
-  const heading = document.createElement('h3');
+  const heading = document.createElement('div');
   heading.classList.add('accordion-heading');
 
   const header = document.createElement('button');
@@ -294,7 +542,7 @@ function createAccordionItemElements(baseId, itemIndex, itemLabel) {
 
   const label = document.createElement('span');
   label.classList.add('accordion-header-title');
-  label.textContent = itemLabel || 'Accordion';
+  label.textContent = labelText;
   header.appendChild(label);
 
   heading.appendChild(header);
@@ -318,11 +566,44 @@ function createAccordionItemElements(baseId, itemIndex, itemLabel) {
 }
 
 /**
+ * @param {Element} block
+ * @param {string} baseId
+ * @param {string} itemTitle
+ * @param {DocumentFragment} contentFrag
+ * @param {number} index
+ */
+function appendAccordionItem(block, baseId, itemTitle, contentFrag, index) {
+  const { item, header, panel } = createAccordionItemElements(
+    baseId,
+    index,
+    itemTitle,
+    `Item ${index + 1}`,
+  );
+  panel.appendChild(contentFrag);
+  block.appendChild(item);
+  wireAccordionHeader(header, panel);
+}
+
+/**
  * Label for the single placeholder row when the main block title is already shown as h2.
  * @param {string} blockTitle
  */
 function singleItemButtonLabel(blockTitle) {
   return blockTitle?.trim() ? 'Details' : 'Accordion';
+}
+
+/**
+ * @param {Element} block
+ * @param {{
+ *   expandBtn: HTMLButtonElement | null,
+ *   printBtn: HTMLButtonElement | null,
+ * }} toolbarButtons
+ */
+function wireAccordionToolbarAndNavigation(block, toolbarButtons) {
+  if (toolbarButtons.expandBtn || toolbarButtons.printBtn) {
+    wireAccordionToolbar(block, toolbarButtons);
+  }
+  wireAccordionGroupNavigation(block);
 }
 
 /**
@@ -337,6 +618,8 @@ export default async function decorate(block) {
     title,
     descriptionHtml,
     fragmentPath,
+    showExpandAll,
+    showPrint,
   } = config;
 
   block.textContent = '';
@@ -346,15 +629,21 @@ export default async function decorate(block) {
 
   renderAccordionIntro(block, { title, descriptionHtml }, baseId);
 
+  const toolbarButtons = renderAccordionToolbar(block, baseId, {
+    showExpandAll,
+    showPrint,
+  });
+
   if (!fragmentPath) {
     const { item, header, panel } = createAccordionItemElements(
       baseId,
       0,
       singleItemButtonLabel(title),
+      'Accordion',
     );
     block.appendChild(item);
     wireAccordionHeader(header, panel);
-    wireAccordionGroupNavigation(block);
+    wireAccordionToolbarAndNavigation(block, toolbarButtons);
     return;
   }
 
@@ -369,6 +658,7 @@ export default async function decorate(block) {
   }
 
   if (!fragment) {
+    block.querySelector('.accordion-block-toolbar')?.remove();
     const status = document.createElement('p');
     status.className = 'accordion-load-error';
     status.setAttribute('role', 'status');
@@ -385,7 +675,7 @@ export default async function decorate(block) {
       appendAccordionItem(block, baseId, titleText, contentFrag, index);
     });
     block.classList.add('accordion-panel-loaded');
-    wireAccordionGroupNavigation(block);
+    wireAccordionToolbarAndNavigation(block, toolbarButtons);
     return;
   }
 
@@ -398,6 +688,7 @@ export default async function decorate(block) {
     baseId,
     0,
     singleItemButtonLabel(title),
+    'Accordion',
   );
   block.appendChild(item);
   wireAccordionHeader(header, panel);
@@ -413,5 +704,5 @@ export default async function decorate(block) {
     panel.appendChild(contentFrag);
   }
   block.classList.add('accordion-panel-loaded');
-  wireAccordionGroupNavigation(block);
+  wireAccordionToolbarAndNavigation(block, toolbarButtons);
 }

@@ -98,22 +98,6 @@
           }
         },
         {
-          "title": "Accordion Panel",
-          "id": "accordion-panel",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/section/v1/section",
-                "template": {
-                  "name": "Accordion Panel",
-                  "filter": "accordion-panel",
-                  "model": "accordion-panel"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "Brand Logo",
           "id": "brand-logo",
           "plugins": {

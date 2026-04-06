@@ -4,8 +4,7 @@
     "components": [
       "section",
       "header-section",
-      "tab-section",
-      "accordion-panel"
+      "tab-section"
     ]
   },
   {

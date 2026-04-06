@@ -300,19 +300,6 @@
     "id": "accordion-block",
     "fields": [
       {
-        "component": "text",
-        "name": "title",
-        "label": "Title",
-        "valueType": "string",
-        "required": true
-      },
-      {
-        "component": "richtext",
-        "name": "description",
-        "label": "Description Text",
-        "valueType": "string"
-      },
-      {
         "component": "boolean",
         "valueType": "boolean",
         "name": "showExpandAll",
@@ -337,34 +324,6 @@
           "rootPath": "/en/fragments/accordions",
           "allowFolders": false
         }
-      }
-    ]
-  },
-  {
-    "id": "accordion-panel",
-    "fields": [
-      {
-        "component": "text",
-        "name": "accordionId",
-        "label": "Accordion ID",
-        "description": "Logical group ID. All panels with the same ID belong to the same accordion instance.",
-        "valueType": "string",
-        "value": "accordion-1"
-      },
-      {
-        "component": "text",
-        "name": "title",
-        "label": "Panel title",
-        "description": "Header text that will be used as the accordion item label.",
-        "valueType": "string",
-        "value": "Accordion item title"
-      },
-      {
-        "component": "boolean",
-        "name": "expandedByDefault",
-        "label": "Expanded by default?",
-        "valueType": "boolean",
-        "value": false
       }
     ]
   },

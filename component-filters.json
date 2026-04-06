@@ -4,8 +4,7 @@
     "components": [
       "section",
       "header-section",
-      "tab-section",
-      "accordion-panel"
+      "tab-section"
     ]
   },
   {
@@ -43,15 +42,6 @@
       "rate-card",
       "currency-converter-expanded",
       "accordion-block"
-    ]
-  },
-  {
-    "id": "accordion-panel",
-    "components": [
-      "text",
-      "image",
-      "fragment",
-      "download-file"
     ]
   },
   {

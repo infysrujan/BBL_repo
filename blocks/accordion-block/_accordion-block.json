@@ -21,19 +21,6 @@
       "id": "accordion-block",
       "fields": [
         {
-          "component": "text",
-          "name": "title",
-          "label": "Title",
-          "valueType": "string",
-          "required": true
-        },
-        {
-          "component": "richtext",
-          "name": "description",
-          "label": "Description Text",
-          "valueType": "string"
-        },
-        {
           "component": "boolean",
           "valueType": "boolean",
           "name": "showExpandAll",
