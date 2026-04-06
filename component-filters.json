@@ -40,7 +40,9 @@
       "popup-modal-card-offer",
       "locate-us",
       "rate-card",
-      "currency-converter-expanded"
+      "currency-converter-expanded",
+      "privacy-modal",
+      "external-redirect-popup"
     ]
   },
   {
