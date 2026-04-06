@@ -1,11 +1,15 @@
 .carousel-dotted {
   position: relative;
-  overflow: hidden;
   height: auto;
   border-radius: var(--bbl-rounded-100);
   background: var(--bbl-color-white);
   border: 1px solid var(--bbl-color-black-alpha-10);
   padding: var(--bbl-space-000);
+}
+
+.carousel-dotted .carousel-track-wrapper,
+.carousel-dotted .carousel-bg {
+  overflow: hidden;
 }
 
 .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) {
@@ -268,6 +272,14 @@
   border-radius: 50%;
 }
 
+.carousel-dotted.all-content-cards .slick-dots button {
+  width: 0.5rem;
+  height: 0.5rem;
+  min-width: 0.5rem;
+  min-height: 0.5rem;
+  border: 1px solid var(--bbl-color-grey-40);
+}
+
 .carousel-dotted .slick-dots li.is-active button {
   width: 0.6875rem;
   height: 0.6875rem;
@@ -276,6 +288,13 @@
 }
 
 .carousel-dotted.show-arrows-dots .slick-dots li.is-active button {
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+.carousel-dotted.all-content-cards .slick-dots li.is-active button {
   width: 0.625rem;
   height: 0.625rem;
   background: var(--bbl-color-active-blue);
@@ -1015,10 +1034,10 @@
 }
 
 .carousel-dotted.all-content-cards .slick-dots {
-  position: static;
-  display: flex;
-  justify-content: center;
-  margin-top: var(--bbl-space-200);
+  bottom: var(--bbl-space-200);
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
   width: auto;
   height: auto;
 }
