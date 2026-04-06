@@ -494,10 +494,10 @@ export default function decorate(block) {
   // Read configuration values from block rows
   const dotsAlignment = readDotsAlignment(rows[0]);
   const dotsPosition = readPosition(rows[1]);
-  const showLinks = readBoolean(rows[2]);
-  const seeMoreLink = showLinks ? rows[3]?.querySelector('a') : null;
-  const autoScroll = readBoolean(rows[4]);
-  const scrollTimeDelay = rows[5]?.textContent.trim() || '';
+  const autoScroll = readBoolean(rows[2]);
+  const scrollTimeDelay = rows[3]?.textContent.trim() || '';
+  const showLinks = readBoolean(rows[4]);
+  const seeMoreLink = showLinks ? rows[5]?.querySelector('a') : null;
 
   // Slides start at row 6, variant is in each slide's first cell
   const nextIndex = 6;
@@ -508,7 +508,7 @@ export default function decorate(block) {
   const showArrows = variant === 'showArrowsDots';
 
   const slides = rows.slice(nextIndex);
-  block.className = 'carousel-dotted';
+  block.className = 'carousel-dotted content';
 
   if (showDots) {
     block.classList.add(`dots-${dotsAlignment}-${dotsPosition}`);
@@ -595,6 +595,9 @@ export default function decorate(block) {
 
   const zoomTimers = new Map();
 
+  // Determine if we have circular or default image slides (needed for circular navigation)
+  const circularOrDefaultImage = slidesCircularImage > 0 || slidesDefaultImage > 0;
+
   function triggerBgZoom(slideEl) {
     const bg = slideEl.querySelector('.carousel-bg');
     if (!bg) return;
@@ -654,8 +657,15 @@ export default function decorate(block) {
       button.tabIndex = active ? 0 : -1;
     });
 
-    prevArrow.disabled = index === 0;
-    nextArrow.disabled = index === slideEls.length - 1;
+    // Disable arrow buttons only when not in circular navigation mode
+    if (showArrows && circularOrDefaultImage) {
+      // Keep arrows enabled for circular navigation
+      prevArrow.disabled = false;
+      nextArrow.disabled = false;
+    } else {
+      prevArrow.disabled = index === 0;
+      nextArrow.disabled = index === slideEls.length - 1;
+    }
 
     if (allHeroBanner || allWithoutImageTrack) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
@@ -686,12 +696,24 @@ export default function decorate(block) {
 
   prevArrow.addEventListener('click', () => {
     const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
-    if (currentIndex > 0) setActive(currentIndex - 1);
+    if (showArrows && circularOrDefaultImage) {
+      // Enable circular navigation for showArrowsDots variant
+      const prevIndex = currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1;
+      setActive(prevIndex);
+    } else if (currentIndex > 0) {
+      setActive(currentIndex - 1);
+    }
   });
 
   nextArrow.addEventListener('click', () => {
     const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
-    if (currentIndex < slideEls.length - 1) setActive(currentIndex + 1);
+    if (showArrows && circularOrDefaultImage) {
+      // Enable circular navigation for showArrowsDots variant
+      const nextSlideIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0;
+      setActive(nextSlideIndex);
+    } else if (currentIndex < slideEls.length - 1) {
+      setActive(currentIndex + 1);
+    }
   });
   dotButtons = slideEls.map((slide, index) => {
     const li = document.createElement('li');
@@ -710,8 +732,6 @@ export default function decorate(block) {
     && slidesWithImage === 0
     && slidesHeroBanner === 0
     && slidesTextAnimation === 0;
-
-  const circularOrDefaultImage = slidesCircularImage > 0 || slidesDefaultImage > 0;
 
   if (allHeroBanner) {
     const trackWrapper = document.createElement('div');

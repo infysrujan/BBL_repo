@@ -1,5 +1,11 @@
 import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
 
+let formPlaceholders = {};
+
+export function setFormPlaceholders(placeholders) {
+  formPlaceholders = placeholders;
+}
+
 export function submitSuccess(e, form) {
   const { payload } = e;
   const redirectUrl = form.dataset.redirectUrl || payload?.body?.redirectUrl;
@@ -24,12 +30,14 @@ export function submitSuccess(e, form) {
 }
 
 export function submitFailure(e, form) {
+  const defaultErrorMsg = 'Some error occured while submitting the form';
+  const errorMsg = formPlaceholders?.formSubmissionErrorMessage || defaultErrorMsg;
   let errorMessage = form.querySelector('.form-message.error-message');
   if (!errorMessage) {
     errorMessage = document.createElement('div');
     errorMessage.className = 'form-message error-message';
   }
-  errorMessage.innerHTML = 'Some error occured while submitting the form'; // TODO: translation
+  errorMessage.innerHTML = errorMsg;
   form.prepend(errorMessage);
   errorMessage.scrollIntoView({ behavior: 'smooth' });
   form.setAttribute('data-submitting', 'false');
