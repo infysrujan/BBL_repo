@@ -210,17 +210,58 @@
           "underline",
           "strike"
         ],
+        "alignment": [
+          "left",
+          "center",
+          "right",
+          "justify"
+        ],
+        "direction": [
+          "rtl",
+          "ltr"
+        ],
+        "indentation": [
+          "indent",
+          "outdent"
+        ],
+        "blocks": [
+          "paragraph",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6",
+          "code_block"
+        ],
+        "list": [
+          "bullet_list",
+          "ordered_list"
+        ],
         "insert": [
           "link",
           "unlink",
-          "table"
+          "image",
+          "table",
+          "special_characters"
+        ],
+        "sr_script": [
+          "superscript",
+          "subscript"
         ],
         "editor": [
-          "removeformat"
+          "removeformat",
+          "paste_text"
         ],
         "sections": [
           "format",
+          "alignment",
+          "direction",
+          "indentation",
+          "blocks",
+          "list",
           "insert",
+          "sr_script",
           "editor"
         ]
       }
