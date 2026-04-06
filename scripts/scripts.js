@@ -76,24 +76,6 @@ export function createElementFromHTML(html, doc) {
 }
 
 /**
- * Set target="_blank" on external links in a container
- * Note: Links will be validated by addLinkClickHandler, so we don't set target="_blank"
- * to prevent unwanted new tab behavior before validation
- */
-export function setExternalLinksTarget() {
-  // Commenting out automatic target="_blank" setting since we handle external links
-  // with URL validation logic that shows modals before navigation
-  //
-  // const links = container.querySelectorAll('a[href]');
-  // links.forEach((link) => {
-  //   if (isExternalUrl(link.href)) {
-  //     link.setAttribute('target', '_blank');
-  //     link.setAttribute('rel', 'noopener noreferrer');
-  //   }
-  // });
-}
-
-/**
  * load fonts.css and set a session storage flag
  */
 async function loadFonts() {
@@ -132,7 +114,6 @@ export function decorateMain(main) {
   decorateBlocks(main);
   decorateTerritoryButtons(main);
   decorateSvgWithAltText(main);
-  setExternalLinksTarget(main);
 
   const pageVariant = getMetadata('pagevariant');
   if (pageVariant) {
@@ -199,8 +180,10 @@ async function loadLazy(doc) {
   loadFonts();
 
   // Add link click handler for URL validation
-  const { addLinkClickHandler } = await import('./bbl-decorators.js');
-  addLinkClickHandler();
+  setTimeout(() => {
+    document.dispatchEvent(new Event('lazy-phase'));
+    Window.LAZY_PHASE = true;
+  }, 150);
 }
 
 /**

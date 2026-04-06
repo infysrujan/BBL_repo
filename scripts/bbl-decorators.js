@@ -138,7 +138,7 @@ async function loadAndShowExternalRedirectPopup(url) {
 /**
  * Add global link click tracking and URL validation
  */
-function addLinkClickHandler() {
+function handleGlobalLinkClicks() {
   document.addEventListener('click', async (e) => {
     const link = e.target.closest('a[href]');
 
@@ -315,9 +315,16 @@ function decorateSvgWithAltText(element) {
   });
 }
 
+if (Window.LAZY_PHASE) {
+  handleGlobalLinkClicks();
+} else {
+  document.addEventListener('lazy-phase', () => {
+    handleGlobalLinkClicks();
+  });
+}
+
 export {
   decorateTerritoryButtons,
   decorateButtonsV1,
   decorateSvgWithAltText,
-  addLinkClickHandler,
 };
