@@ -5,8 +5,16 @@ import {
   openPanel,
   closePanel,
   closeOtherLoginPanels,
+  closeAllLoginPanels,
 } from '../login/login-panel.js';
 import { slideUp, slideDown } from '../../scripts/animation.js';
+import {
+  ensureHeaderNavBackdrop,
+  acquireHeaderNavBackdrop,
+  releaseHeaderNavBackdrop,
+  NAV_BACKDROP_MOBILE,
+  NAV_BACKDROP_MEGAMENU,
+} from '../../scripts/utils/header-backdrop.js';
 
 // media query match that indicates desktop width
 const isDesktop = window.matchMedia('(min-width: 1025px)');
@@ -35,16 +43,21 @@ function getNavBlocks(fragment) {
 }
 
 /**
- * Binds login panel events (button click, overlay click, Escape, Enter/Space).
+ * Binds login panel events (button click, backdrop click, Escape, Enter/Space).
  * Call after appending the login block to the header.
- * @param {Element|null} loginBlock The login block element
+ * @param {Element|null} loginBlock
+ * The login block element
+ * @param {{ closeMegamenu?: () => void }} [options]
+ * Desktop only: closes megamenu before opening login
  */
-function setupLoginPanelEvents(loginBlock) {
+function setupLoginPanelEvents(loginBlock, options = {}) {
   if (!loginBlock) return;
+  const { closeMegamenu } = options;
   const wrapper = loginBlock.querySelector('.login-wrapper');
   const state = getLoginState(wrapper);
   if (!state) return;
-  const { button, overlay } = state;
+  const { button } = state;
+  const headerNav = loginBlock.closest('.header-nav');
 
   button.addEventListener('click', (e) => {
     e.preventDefault();
@@ -55,11 +68,18 @@ function setupLoginPanelEvents(loginBlock) {
     if (isExpanded) {
       closePanel(state);
     } else {
+      if (typeof closeMegamenu === 'function') closeMegamenu();
       openPanel(state);
     }
   });
 
-  overlay.addEventListener('click', () => closePanel(state));
+  if (headerNav) {
+    ensureHeaderNavBackdrop(headerNav).addEventListener('click', () => {
+      if (button.getAttribute('aria-expanded') === 'true') {
+        closePanel(state);
+      }
+    });
+  }
 
   const keydownHandler = (e) => {
     if (e.key === 'Escape' && button.getAttribute('aria-expanded') === 'true') {
@@ -119,8 +139,16 @@ function setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, getIsNavItemAct
  * @param {NodeListOf<Element>} mainNavBlocks
  * @param {Element|null} topNavBlock
  * @param {{ isNavItemActive: boolean }} desktopState
+ * @param {HTMLElement} headerNav
+ * @returns {() => void} closeMegamenu — idempotent; safe when megamenu already closed
  */
-function setupDesktopMegamenuBehavior(mainNavDesktop, mainNavBlocks, topNavBlock, desktopState) {
+function setupDesktopMegamenuBehavior(
+  mainNavDesktop,
+  mainNavBlocks,
+  topNavBlock,
+  desktopState,
+  headerNav,
+) {
   let topNavHeight = 0;
 
   const getTopNavHeight = () => {
@@ -133,7 +161,14 @@ function setupDesktopMegamenuBehavior(mainNavDesktop, mainNavBlocks, topNavBlock
   const closeMegamenu = () => {
     getTopNavHeight();
     mainNavBlocks.forEach((block) => block.classList.remove('is-active'));
+    document.querySelectorAll('.main-nav-trigger[aria-expanded="true"]').forEach((trigger) => {
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.closest('.main-nav-item-wrapper')
+        ?.querySelector('.megamenu-panel')
+        ?.setAttribute('aria-hidden', 'true');
+    });
     desktopState.isNavItemActive = false;
+    releaseHeaderNavBackdrop(headerNav, NAV_BACKDROP_MEGAMENU);
     if (window.scrollY <= topNavHeight) {
       mainNavDesktop.classList.remove('is-scrolled');
     }
@@ -149,6 +184,8 @@ function setupDesktopMegamenuBehavior(mainNavDesktop, mainNavBlocks, topNavBlock
 
       e.stopPropagation();
 
+      closeAllLoginPanels();
+
       const isAlreadyActive = navBlock.classList.contains('is-active');
       mainNavBlocks.forEach((block) => block.classList.remove('is-active'));
 
@@ -156,6 +193,7 @@ function setupDesktopMegamenuBehavior(mainNavDesktop, mainNavBlocks, topNavBlock
         navBlock.classList.add('is-active');
         desktopState.isNavItemActive = true;
         mainNavDesktop.classList.add('is-scrolled');
+        acquireHeaderNavBackdrop(headerNav, NAV_BACKDROP_MEGAMENU);
         slideDown(megamenuPanel, { duration: 1000 });
       } else {
         slideUp(megamenuPanel, { duration: 200, onComplete: () => closeMegamenu() });
@@ -209,6 +247,12 @@ function setupDesktopMegamenuBehavior(mainNavDesktop, mainNavBlocks, topNavBlock
   document.addEventListener('click', () => {
     if (desktopState.isNavItemActive) closeMegamenu();
   });
+
+  ensureHeaderNavBackdrop(headerNav).addEventListener('click', () => {
+    if (desktopState.isNavItemActive) closeMegamenu();
+  });
+
+  return closeMegamenu;
 }
 
 /**
@@ -293,20 +337,26 @@ function buildDesktopLayout(header, blocks) {
   mainNavRight.className = 'main-nav-right';
 
   mainNavBlocks.forEach((navBlock) => mainNavRight.appendChild(navBlock));
-  if (loginBlock) {
-    mainNavRight.appendChild(loginBlock);
-    setupLoginPanelEvents(loginBlock);
-  }
+  if (loginBlock) mainNavRight.appendChild(loginBlock);
   if (locationBlock) mainNavRight.appendChild(locationBlock);
   if (searchBlock) mainNavRight.appendChild(searchBlock);
 
   mainNavDesktop.appendChild(mainNavRight);
   header.appendChild(mainNavDesktop);
 
+  ensureHeaderNavBackdrop(header);
+
   const desktopState = { isNavItemActive: false };
   setupDesktopScrollBehavior(topNavBlock, mainNavDesktop, () => desktopState.isNavItemActive);
-  setupDesktopMegamenuBehavior(mainNavDesktop, mainNavBlocks, topNavBlock, desktopState);
+  const closeMegamenu = setupDesktopMegamenuBehavior(
+    mainNavDesktop,
+    mainNavBlocks,
+    topNavBlock,
+    desktopState,
+    header,
+  );
   setupMegamenuColumnsCarousel(header);
+  if (loginBlock) setupLoginPanelEvents(loginBlock, { closeMegamenu });
 }
 
 /**
@@ -354,6 +404,7 @@ function buildMobileMainNavItems(mobileNavContent, mainNavBlocks, topNavBlock) {
     triggerButton.classList.add('icon-arrow-left');
 
     triggerButton.addEventListener('click', () => {
+      closeAllLoginPanels();
       const menuPanel = navBlock.querySelector('.megamenu-panel');
       menuPanel.classList.add('active');
       backButtonEventStack.push(menuPanel);
@@ -403,21 +454,19 @@ function resetBackButtonEventStack(blocks) {
 }
 
 /**
- * Wires hamburger open/close, overlay click, document click, escape.
+ * Wires hamburger open/close, shared header-backdrop, document click, escape.
+ * @param {HTMLElement} headerNav
  * @param {HTMLButtonElement} hamburger
  * @param {HTMLElement} mobileNavMenu
- * @param {HTMLElement} mobileNavOverlay
  */
-function setupMobileMenuBehavior(hamburger, mobileNavMenu, mobileNavOverlay, blocks) {
+function setupMobileMenuBehavior(headerNav, hamburger, mobileNavMenu, blocks) {
   const closeMobileMenu = () => {
     hamburger.setAttribute('aria-expanded', 'false');
     hamburger.setAttribute('aria-label', 'Open navigation');
     hamburger.classList.remove('is-hidden');
     mobileNavMenu.setAttribute('aria-hidden', 'true');
     mobileNavMenu.classList.remove('is-open');
-    mobileNavOverlay.setAttribute('aria-hidden', 'true');
-    mobileNavOverlay.classList.remove('is-visible');
-    document.body.style.overflowY = '';
+    releaseHeaderNavBackdrop(headerNav, NAV_BACKDROP_MOBILE);
   };
 
   const openMobileMenu = () => {
@@ -426,9 +475,7 @@ function setupMobileMenuBehavior(hamburger, mobileNavMenu, mobileNavOverlay, blo
     hamburger.classList.add('is-hidden');
     mobileNavMenu.setAttribute('aria-hidden', 'false');
     mobileNavMenu.classList.add('is-open');
-    mobileNavOverlay.setAttribute('aria-hidden', 'false');
-    mobileNavOverlay.classList.add('is-visible');
-    document.body.style.overflowY = 'hidden';
+    acquireHeaderNavBackdrop(headerNav, NAV_BACKDROP_MOBILE);
   };
 
   hamburger.addEventListener('click', (e) => {
@@ -438,7 +485,8 @@ function setupMobileMenuBehavior(hamburger, mobileNavMenu, mobileNavOverlay, blo
     }
   });
 
-  mobileNavOverlay.addEventListener('click', () => {
+  ensureHeaderNavBackdrop(headerNav).addEventListener('click', () => {
+    if (!mobileNavMenu.classList.contains('is-open')) return;
     closeMobileMenu();
     resetBackButtonEventStack(blocks);
   });
@@ -462,7 +510,7 @@ function setupMobileMenuBehavior(hamburger, mobileNavMenu, mobileNavOverlay, blo
 
 /**
  * Builds mobile header: top bar (hamburger, brand, login) + nav menu
- * (search, location, main-nav, top-nav) + overlay.
+ * (search, location, main-nav, top-nav) + shared header backdrop.
  * @param {HTMLElement} header
  * @param {ReturnType<getNavBlocks>} blocks
  */
@@ -493,7 +541,6 @@ function buildMobileLayout(header, blocks) {
   if (loginBlock) {
     loginBlock.classList.add('mobile-login');
     mobileTopBar.appendChild(loginBlock);
-    setupLoginPanelEvents(loginBlock);
   }
 
   const mobileNavMenu = document.createElement('div');
@@ -515,15 +562,14 @@ function buildMobileLayout(header, blocks) {
 
   mobileNavMenu.appendChild(mobileNavContent);
 
-  const mobileNavOverlay = document.createElement('div');
-  mobileNavOverlay.className = 'mobile-nav-overlay';
-  mobileNavOverlay.setAttribute('aria-hidden', 'true');
+  ensureHeaderNavBackdrop(header);
 
   header.appendChild(mobileTopBar);
-  header.appendChild(mobileNavOverlay);
   header.appendChild(mobileNavMenu);
 
-  setupMobileMenuBehavior(hamburger, mobileNavMenu, mobileNavOverlay, blocks);
+  if (loginBlock) setupLoginPanelEvents(loginBlock);
+
+  setupMobileMenuBehavior(header, hamburger, mobileNavMenu, blocks);
   setupMobileScrollBehavior(header, mobileTopBar);
 }
 
@@ -537,12 +583,10 @@ function buildMobileLayout(header, blocks) {
 function applyLayout(header, fragmentTemplate, desktop) {
   // Reset body overflow in case we're switching away from mobile with menu open
   document.body.style.overflowY = '';
-  // Remove overlays and document keydown listeners from the current layout's login wrappers
+  delete header.navBackdropReasons;
+  delete header.bodyOverflowBeforeNavBackdrop;
+  // Remove document keydown listeners from the current layout's login wrappers
   header.querySelectorAll('.login-wrapper').forEach((wrapper) => {
-    if (wrapper.loginOverlay?.parentNode) {
-      wrapper.loginOverlay.remove();
-    }
-    wrapper.loginOverlay = undefined;
     if (wrapper.loginKeydownHandler) {
       document.removeEventListener('keydown', wrapper.loginKeydownHandler);
       wrapper.loginKeydownHandler = undefined;
@@ -580,6 +624,13 @@ export default async function decorate(block) {
   applyLayout(header, fragmentTemplate, isDesktop.matches);
 
   block.append(header);
+
+  const main = document.querySelector('main');
+  const headerSection = document.querySelector('header');
+  const firstMainChild = main?.firstElementChild;
+  if (!firstMainChild || !firstMainChild.classList.contains('hero-container')) {
+    headerSection.classList.add('is-not-overlapped');
+  }
 
   isDesktop.addEventListener('change', () => {
     applyLayout(header, fragmentTemplate, isDesktop.matches);

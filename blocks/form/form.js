@@ -3,8 +3,9 @@ import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './co
 import { emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE } from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
-import { handleSubmit } from './submit.js';
+import { handleSubmit, setFormPlaceholders } from './submit.js';
 import DocBasedFormToAF from './transform.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import {
   checkValidation,
   createButton,
@@ -508,6 +509,9 @@ function loadFormCustomStyles(formDef) {
 }
 
 export default async function decorate(block) {
+  // Load placeholders early for form error messages
+  const placeholders = await fetchPlaceholders();
+  setFormPlaceholders(placeholders);
   let container = block.querySelector('a[href]');
   let formDef;
   let pathname;
