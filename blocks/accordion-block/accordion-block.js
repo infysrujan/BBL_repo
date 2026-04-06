@@ -615,8 +615,6 @@ function wireAccordionToolbarAndNavigation(block, toolbarButtons) {
 export default async function decorate(block) {
   const config = getAccordionBlockConfig(block);
   const {
-    title,
-    descriptionHtml,
     fragmentPath,
     showExpandAll,
     showPrint,
