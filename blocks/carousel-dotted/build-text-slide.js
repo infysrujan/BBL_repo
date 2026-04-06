@@ -32,7 +32,7 @@ export default function buildSlideWithoutImage(row, index, cells) {
   if (cells[7]) {
     const defaultText = document.createElement('div');
     defaultText.className = 'carousel-default-text';
-    while (cells[8].firstChild) defaultText.append(cells[8].firstChild);
+    while (cells[7].firstChild) defaultText.append(cells[7].firstChild);
     content.append(defaultText);
   }
 
