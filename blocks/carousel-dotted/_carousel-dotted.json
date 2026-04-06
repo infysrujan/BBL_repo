@@ -334,7 +334,7 @@
           "name": "variant",
           "label": "Variant",
           "valueType": "string",
-          "hidden": true
+          "hidden": false
         },
         {
           "component": "select",
