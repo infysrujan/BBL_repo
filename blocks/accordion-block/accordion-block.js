@@ -52,20 +52,6 @@ function extractFragmentHrefFromRow(fragmentRow) {
 }
 
 /**
- * @param {HTMLElement} el
- * @param {string} value
- */
-function setRichTextContent(el, value) {
-  const str = String(value ?? '').trim();
-  if (!str) return;
-  if (/<[a-z][\s\S]*>/i.test(str)) {
-    el.innerHTML = str;
-  } else {
-    el.textContent = str;
-  }
-}
-
-/**
  * EDS / Crosswalk: one cell per row in model field order (see _accordion-block.json).
  * Classic Franklin: two columns label | value.
  * @param {Element} block
@@ -76,12 +62,7 @@ function getAccordionBlockConfig(block) {
 
   if (isKeyValueRows) {
     const c = readBlockConfig(block);
-    const title = (c.title || '').trim();
-    const descRaw = c.description || c['description-text'] || '';
-    const descriptionHtml = Array.isArray(descRaw) ? descRaw.join('') : String(descRaw || '').trim();
     return {
-      title,
-      descriptionHtml,
       showExpandAll: parseBooleanField(c['show-expand-all'] ?? c.showexpandall ?? true),
       showPrint: parseBooleanField(c['show-print'] ?? c.showprint ?? true),
       fragmentPath: normalizeFragmentPath(firstHref(c['fragment-path'] || c.fragmentpath)),
@@ -90,71 +71,53 @@ function getAccordionBlockConfig(block) {
 
   const rows = [...block.querySelectorAll(':scope > div')];
 
-  // Single-column rows follow _accordion-block.json field order:
-  // title, description, showExpandAll, showPrint, fragmentPath
+  // Legacy single-column: title, description, showExpandAll, showPrint, fragmentPath
   if (rows.length >= 5) {
-    const title = rows[0]?.children[0]?.textContent.trim() || '';
-    const descCell = rows[1]?.children[0];
-    const descriptionHtml = descCell?.innerHTML?.trim() || '';
     const showExpandAll = parseBooleanField(rows[2]?.children[0]?.textContent);
     const showPrint = parseBooleanField(rows[3]?.children[0]?.textContent);
     const rawPath = extractFragmentHrefFromRow(rows[4]);
     return {
-      title,
-      descriptionHtml,
       showExpandAll,
       showPrint,
       fragmentPath: normalizeFragmentPath(rawPath),
     };
   }
 
-  const titleCell = rows[0]?.children[0];
-  const title = titleCell ? titleCell.textContent.trim() : '';
-  const rawPath = extractFragmentHrefFromRow(rows[1]);
+  // Single-column field order: showExpandAll, showPrint, fragmentPath
+  if (rows.length >= 3) {
+    const showExpandAll = parseBooleanField(rows[0]?.children[0]?.textContent);
+    const showPrint = parseBooleanField(rows[1]?.children[0]?.textContent);
+    const rawPath = extractFragmentHrefFromRow(rows[2]);
+    return {
+      showExpandAll,
+      showPrint,
+      fragmentPath: normalizeFragmentPath(rawPath),
+    };
+  }
+
+  if (rows.length === 2) {
+    const rawPath = extractFragmentHrefFromRow(rows[1]);
+    return {
+      showExpandAll: true,
+      showPrint: true,
+      fragmentPath: normalizeFragmentPath(rawPath),
+    };
+  }
+
+  if (rows.length === 1) {
+    const rawPath = extractFragmentHrefFromRow(rows[0]);
+    return {
+      showExpandAll: true,
+      showPrint: true,
+      fragmentPath: normalizeFragmentPath(rawPath),
+    };
+  }
+
   return {
-    title,
-    descriptionHtml: '',
     showExpandAll: true,
     showPrint: true,
-    fragmentPath: normalizeFragmentPath(rawPath),
+    fragmentPath: '',
   };
-}
-
-/**
- * Block-level title (h2) and description (richtext) from the accordion-block model.
- * @param {Element} block
- * @param {{ title: string, descriptionHtml: string }} config
- * @param {string} baseId
- */
-function renderAccordionIntro(block, { title, descriptionHtml }, baseId) {
-  const hasTitle = Boolean(title?.trim());
-  const hasDesc = Boolean(descriptionHtml?.trim());
-  if (!hasTitle && !hasDesc) return;
-
-  const intro = document.createElement('div');
-  intro.className = 'accordion-block-intro';
-
-  if (hasTitle) {
-    const h2 = document.createElement('h2');
-    h2.className = 'accordion-block-title';
-    h2.id = `${baseId}-main-title`;
-    h2.textContent = title.trim();
-    intro.appendChild(h2);
-    block.setAttribute('aria-labelledby', h2.id);
-  }
-
-  if (hasDesc) {
-    const desc = document.createElement('div');
-    desc.className = 'accordion-block-description';
-    desc.id = `${baseId}-main-desc`;
-    setRichTextContent(desc, descriptionHtml);
-    intro.appendChild(desc);
-    if (hasTitle) {
-      block.setAttribute('aria-describedby', desc.id);
-    }
-  }
-
-  block.appendChild(intro);
 }
 
 /**
@@ -585,14 +548,6 @@ function appendAccordionItem(block, baseId, itemTitle, contentFrag, index) {
 }
 
 /**
- * Label for the single placeholder row when the main block title is already shown as h2.
- * @param {string} blockTitle
- */
-function singleItemButtonLabel(blockTitle) {
-  return blockTitle?.trim() ? 'Details' : 'Accordion';
-}
-
-/**
  * @param {Element} block
  * @param {{
  *   expandBtn: HTMLButtonElement | null,
@@ -609,23 +564,16 @@ function wireAccordionToolbarAndNavigation(block, toolbarButtons) {
 /**
  * Accordion block: optional fragmentPath loads a page whose top-level sections
  * each become one item.
- * Block model title + description render above items.
  * @param {Element} block
  */
 export default async function decorate(block) {
   const config = getAccordionBlockConfig(block);
-  const {
-    fragmentPath,
-    showExpandAll,
-    showPrint,
-  } = config;
+  const { fragmentPath, showExpandAll, showPrint } = config;
 
   block.textContent = '';
   block.classList.add('accordion');
 
   const baseId = block.id || `accordion-${crypto.randomUUID().slice(0, 8)}`;
-
-  renderAccordionIntro(block, { title, descriptionHtml }, baseId);
 
   const toolbarButtons = renderAccordionToolbar(block, baseId, {
     showExpandAll,
@@ -636,7 +584,7 @@ export default async function decorate(block) {
     const { item, header, panel } = createAccordionItemElements(
       baseId,
       0,
-      singleItemButtonLabel(title),
+      'Accordion',
       'Accordion',
     );
     block.appendChild(item);
@@ -685,7 +633,7 @@ export default async function decorate(block) {
   } = createAccordionItemElements(
     baseId,
     0,
-    singleItemButtonLabel(title),
+    'Accordion',
     'Accordion',
   );
   block.appendChild(item);
