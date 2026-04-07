@@ -1,5 +1,5 @@
 import { getMetadata } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
 /**
@@ -170,7 +170,7 @@ export default async function decorate(block) {
 
   // Load social-icons block through fragments
   try {
-    const langPrefix = `/${document.documentElement.lang || 'en'}`;
+    const langPrefix = `/${getLang()}`;
     const { loadFragment } = await import('../fragment/fragment.js');
     const fragment = await loadFragment(`${langPrefix}/fragments/social-icons`);
     if (fragment) {

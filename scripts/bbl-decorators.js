@@ -1,3 +1,28 @@
+import {
+  getMetadata,
+  buildBlock,
+  decorateBlock,
+  loadBlock,
+} from './aem.js';
+
+async function loadBreadcrumb(doc) {
+  const breadcrumbsMeta = getMetadata('breadcrumbs') || 'true';
+  if (breadcrumbsMeta.toLowerCase() === 'true') {
+    const footer = doc.querySelector('footer');
+    if (footer) {
+      const breadcrumbWrapper = document.createElement('div');
+      breadcrumbWrapper.className = 'breadcrumb-wrapper';
+      breadcrumbWrapper.setAttribute('aria-label', 'Breadcrumb');
+      footer.parentNode.insertBefore(breadcrumbWrapper, footer);
+
+      const breadcrumbBlock = buildBlock('breadcrumb', '');
+      breadcrumbWrapper.append(breadcrumbBlock);
+      decorateBlock(breadcrumbBlock);
+      await loadBlock(breadcrumbBlock);
+    }
+  }
+}
+
 function decorateButtonsV1(element) {
   element.querySelectorAll('a').forEach((a) => {
     a.title = a.title || a.textContent;
@@ -93,4 +118,5 @@ export {
   decorateTerritoryButtons,
   decorateButtonsV1,
   decorateSvgWithAltText,
+  loadBreadcrumb,
 };

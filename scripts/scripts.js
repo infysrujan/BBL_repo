@@ -11,15 +11,13 @@ import {
   loadSections,
   loadCSS,
   getMetadata,
-  buildBlock,
-  decorateBlock,
-  loadBlock,
 } from './aem.js';
 
 import {
   decorateSvgWithAltText,
   decorateTerritoryButtons,
   decorateButtonsV1,
+  loadBreadcrumb,
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
@@ -208,22 +206,7 @@ async function loadLazy(doc) {
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
 
-  // Add breadcrumb above footer if enabled
-  const breadcrumbsMeta = getMetadata('breadcrumbs') || 'true';
-  if (breadcrumbsMeta.toLowerCase() === 'true') {
-    const footer = doc.querySelector('footer');
-    if (footer) {
-      const breadcrumbWrapper = document.createElement('div');
-      breadcrumbWrapper.className = 'breadcrumb-wrapper';
-      breadcrumbWrapper.setAttribute('aria-label', 'Breadcrumb');
-      footer.parentNode.insertBefore(breadcrumbWrapper, footer);
-
-      const breadcrumbBlock = buildBlock('breadcrumb', '');
-      breadcrumbWrapper.append(breadcrumbBlock);
-      decorateBlock(breadcrumbBlock);
-      await loadBlock(breadcrumbBlock);
-    }
-  }
+  await loadBreadcrumb(doc);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 }
