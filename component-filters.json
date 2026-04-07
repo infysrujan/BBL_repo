@@ -40,7 +40,9 @@
       "popup-modal-card-offer",
       "currency-converter-expanded",
       "locate-us",
-      "social-icons"
+      "social-icons",
+      "privacy-modal",
+      "external-redirect-popup"
     ]
   },
   {
@@ -186,6 +188,12 @@
       "menu-card"
     ],
     "maxItems": 6
+  },
+  {
+    "id": "rate-card",
+    "components": [
+      "rate-card-item"
+    ]
   },
   {
     "id": "social-icons",
