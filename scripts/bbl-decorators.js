@@ -1,5 +1,11 @@
 import { fetchConfigs } from './config.js';
 
+import {
+  getMetadata,
+  buildBlock,
+  decorateBlock,
+  loadBlock,
+} from './aem.js';
 /**
  * Helper function to parse comma-separated URL strings from config
  * @param {string} urlString - Comma-separated URL string
@@ -224,6 +230,28 @@ function handleGlobalLinkClicks() {
   }, true); // Use capture phase
 }
 
+async function loadBreadcrumb(doc) {
+  const breadcrumbsMeta = getMetadata('breadcrumbs') || 'true';
+  if (breadcrumbsMeta.toLowerCase() === 'true') {
+    const footer = doc.querySelector('footer');
+    if (footer) {
+      const breadcrumbSection = document.createElement('div');
+      breadcrumbSection.className = 'section full-bleed-special';
+
+      const breadcrumbWrapper = document.createElement('div');
+      breadcrumbWrapper.className = 'breadcrumb-wrapper';
+      breadcrumbWrapper.setAttribute('aria-label', 'Breadcrumb');
+      breadcrumbSection.appendChild(breadcrumbWrapper);
+      footer.parentNode.insertBefore(breadcrumbSection, footer);
+
+      const breadcrumbBlock = buildBlock('breadcrumb', '');
+      breadcrumbWrapper.append(breadcrumbBlock);
+      decorateBlock(breadcrumbBlock);
+      await loadBlock(breadcrumbBlock);
+    }
+  }
+}
+
 function decorateButtonsV1(element) {
   element.querySelectorAll('a').forEach((a) => {
     a.title = a.title || a.textContent;
@@ -327,4 +355,5 @@ export {
   decorateTerritoryButtons,
   decorateButtonsV1,
   decorateSvgWithAltText,
+  loadBreadcrumb,
 };

@@ -17,6 +17,7 @@ import {
   decorateSvgWithAltText,
   decorateTerritoryButtons,
   decorateButtonsV1,
+  loadBreadcrumb,
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
@@ -176,6 +177,7 @@ async function loadLazy(doc) {
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
 
+  await loadBreadcrumb(doc);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
