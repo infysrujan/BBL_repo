@@ -116,19 +116,15 @@
 							]
 						},
 						{
-							"name": "Other",
+							"name": "Functional",
 							"children": [
-								{
-									"name": "Striped",
-									"value": "striped"
-								},
-								{
-									"name": "Compact",
-									"value": "compact"
-								},
 								{
 									"name": "Merge Tables",
 									"value": "merge-tables"
+								},
+								{
+									"name": "Scroll",
+									"value": "scroll"
 								}
 							]
 						}
@@ -271,19 +267,15 @@
 							]
 						},
 						{
-							"name": "Other",
+							"name": "Functional",
 							"children": [
-								{
-									"name": "Striped",
-									"value": "striped"
-								},
-								{
-									"name": "Compact",
-									"value": "compact"
-								},
 								{
 									"name": "Merge Tables",
 									"value": "merge-tables"
+								},
+								{
+									"name": "Scroll",
+									"value": "scroll"
 								}
 							]
 						}

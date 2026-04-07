@@ -257,6 +257,9 @@ export default async function decorate(block) {
   if (rows.length < 2) return;
 
   const parentStyles = parseVariationClasses(rows[0].children[0]);
+  if (parentStyles.includes('scroll')) {
+    block.classList.add('scroll');
+  }
   const parentTable = rows[1].querySelector('table');
   if (!parentTable) return;
 

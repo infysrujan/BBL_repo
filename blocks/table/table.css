@@ -20,6 +20,11 @@
   margin: 0;
 }
 
+/* Scroll variant: force horizontal scrollbar and prevent vertical scrolling */
+.table.scroll {
+  overflow: scroll hidden;
+}
+
 /* Table element */
 .table table {
   width: 100%;
@@ -194,6 +199,11 @@
   margin: 0.5rem 0;
 }
 
+/* Scroll variant: minimum table width for horizontal overflow */
+.table.scroll table {
+  min-width: 500px;
+}
+
 /* --------------------------------------------------------------------------
    ICON STYLES
    -------------------------------------------------------------------------- */
@@ -212,6 +222,10 @@ td .icon {
 @media (width > 47.5rem) {
   .table {
     overflow-x: visible;
+  }
+
+  .table.scroll {
+    overflow: scroll hidden;
   }
 }
 
