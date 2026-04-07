@@ -192,7 +192,9 @@
         "currency-converter-expanded",
         "card-list",
         "privacy-modal",
-        "external-redirect-popup"
+        "external-redirect-popup",
+        "cookie-alert",
+        "cookie-modal"
       ]
     }
   ]
