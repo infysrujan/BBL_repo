@@ -1,5 +1,8 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
+
+let placeholders = {};
 
 /**
  * @param {string|string[]|undefined} raw
@@ -197,12 +200,12 @@ function syncExpandAllToolbarButton(expandBtn, block) {
   const label = expandBtn.querySelector('.accordion-toolbar-label');
   const icon = expandBtn.querySelector('.accordion-toolbar-icon');
   if (label) {
-    label.textContent = expanded ? 'Collapse All' : 'Expand All';
+    label.textContent = expanded ? placeholders.collapseAllLabel : placeholders.expandAllLabel;
   }
   expandBtn.setAttribute('aria-pressed', expanded ? 'true' : 'false');
   expandBtn.setAttribute(
     'aria-label',
-    expanded ? 'Collapse all accordion sections' : 'Expand all accordion sections',
+    expanded ? placeholders.ariaLabelCollapseAll : placeholders.ariaLabelExpandAll,
   );
   if (icon) {
     icon.className = expanded ? 'accordion-toolbar-icon icon-close' : 'accordion-toolbar-icon icon-expand';
@@ -293,7 +296,7 @@ function buildAccordionPrintDocument(block) {
 
   const docTitle = block.querySelector('.accordion-block-title')?.textContent?.trim()
     || document.querySelector('title')?.textContent
-    || 'Print';
+    || placeholders.printLabel;
 
   const printCss = `
     body { font-family: system-ui, -apple-system, sans-serif; padding: 1.5rem; color: #111; }
@@ -354,7 +357,7 @@ function renderAccordionToolbar(block, baseId, { showExpandAll, showPrint }) {
   const toolbar = document.createElement('div');
   toolbar.className = 'accordion-block-toolbar';
   toolbar.setAttribute('role', 'toolbar');
-  toolbar.setAttribute('aria-label', 'Accordion actions');
+  toolbar.setAttribute('aria-label', placeholders.ariaLabelToolbar);
   toolbar.id = `${baseId}-toolbar`;
 
   const inner = document.createElement('div');
@@ -367,11 +370,11 @@ function renderAccordionToolbar(block, baseId, { showExpandAll, showPrint }) {
     expandBtn.className = 'accordion-toolbar-button accordion-toolbar-expand';
     expandBtn.id = `${baseId}-expand-all`;
     expandBtn.setAttribute('aria-pressed', 'false');
-    expandBtn.setAttribute('aria-label', 'Expand all accordion sections');
+    expandBtn.setAttribute('aria-label', placeholders.ariaLabelExpandAll);
 
     const label = document.createElement('span');
     label.className = 'accordion-toolbar-label';
-    label.textContent = 'Expand All';
+    label.textContent = placeholders.expandAllLabel;
 
     const icon = document.createElement('img');
     icon.className = 'accordion-toolbar-icon';
@@ -391,11 +394,11 @@ function renderAccordionToolbar(block, baseId, { showExpandAll, showPrint }) {
     printBtn.type = 'button';
     printBtn.className = 'accordion-toolbar-button accordion-toolbar-print';
     printBtn.id = `${baseId}-print`;
-    printBtn.setAttribute('aria-label', 'Print accordion content');
+    printBtn.setAttribute('aria-label', placeholders.ariaLabelPrint);
 
     const label = document.createElement('span');
     label.className = 'accordion-toolbar-label';
-    label.textContent = 'Print';
+    label.textContent = placeholders.printLabel;
 
     const icon = document.createElement('span');
     icon.className = 'accordion-toolbar-icon icon-print';
@@ -570,6 +573,22 @@ export default async function decorate(block) {
   const config = getAccordionBlockConfig(block);
   const { fragmentPath, showExpandAll, showPrint } = config;
 
+  const placeholder = await fetchPlaceholders();
+  if (!placeholder || Object.keys(placeholder).length === 0) return;
+
+  // Populate module-level placeholders with fallbacks
+  placeholders = {
+    collapseAllLabel: placeholder.accordionCollapseAll,
+    expandAllLabel: placeholder.accordionExpandAll,
+    printLabel: placeholder.accordionPrint,
+    ariaLabelExpandAll: placeholder.accordionAriaLabelExpandAll,
+    ariaLabelCollapseAll: placeholder.accordionAriaLabelCollapseAll,
+    ariaLabelToolbar: placeholder.accordionAriaLabelToolbar,
+    ariaLabelPrint: placeholder.accordionAriaLabelPrint,
+    fragmentErrorText: placeholder.accordionFragmentErrorText,
+    accordionPlaceholder: placeholder.accordionPlaceholder,
+  };
+
   block.textContent = '';
   block.classList.add('accordion');
 
@@ -584,8 +603,8 @@ export default async function decorate(block) {
     const { item, header, panel } = createAccordionItemElements(
       baseId,
       0,
-      'Accordion',
-      'Accordion',
+      placeholders.accordionPlaceholder,
+      placeholders.accordionPlaceholder,
     );
     block.appendChild(item);
     wireAccordionHeader(header, panel);
@@ -608,7 +627,7 @@ export default async function decorate(block) {
     const status = document.createElement('p');
     status.className = 'accordion-load-error';
     status.setAttribute('role', 'status');
-    status.textContent = 'Content could not be loaded.';
+    status.textContent = placeholders.fragmentErrorText;
     block.appendChild(status);
     return;
   }
@@ -633,8 +652,8 @@ export default async function decorate(block) {
   } = createAccordionItemElements(
     baseId,
     0,
-    'Accordion',
-    'Accordion',
+    placeholders.accordionPlaceholder,
+    placeholders.accordionPlaceholder,
   );
   block.appendChild(item);
   wireAccordionHeader(header, panel);

@@ -79,17 +79,19 @@
 
 .accordion-header {
   width: 100%;
-  padding: 0.563rem 0;
+  padding: 0.844rem 0;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   line-height: 1;
   height: auto;
 
   /* Override global button rule (styles/buttons.css) so long titles can wrap */
   white-space: normal;
   text-align: start;
+  border-radius: 0;
+  border-bottom-color: var(--bbl-color-gray-146);
 }
 
 .accordion-header[aria-expanded="true"] {
