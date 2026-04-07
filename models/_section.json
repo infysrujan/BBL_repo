@@ -136,6 +136,19 @@
                   "value": "center-content"
                 }
               ]
+            },
+            {
+              "name": "Theme",
+              "children": [
+                {
+                  "name": "Background Wealth",
+                  "value": "background-wealth"
+                },
+                {
+                  "name": "Background Private Banking",
+                  "value": "background-privatebanking"
+                }
+              ]
             }
           ]
         }
@@ -177,7 +190,9 @@
         "locate-us",
         "rate-card",
         "currency-converter-expanded",
-        "card-list"
+        "card-list",
+        "privacy-modal",
+        "external-redirect-popup"
       ]
     }
   ]
