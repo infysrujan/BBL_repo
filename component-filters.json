@@ -41,8 +41,15 @@
       "currency-converter-expanded",
       "locate-us",
       "social-icons",
+      "card-list",
       "privacy-modal",
       "external-redirect-popup"
+    ]
+  },
+  {
+    "id": "card-list",
+    "components": [
+      "card-list-item"
     ]
   },
   {
