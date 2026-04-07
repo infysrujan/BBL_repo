@@ -89,21 +89,8 @@ export default function createCard(cardItem) {
   // Process button (fifth row) - only if it exists
   if (buttonRow) {
     const buttonContainer = buttonRow.querySelector('.button-container');
-    const link = buttonContainer?.querySelector('a') || buttonRow.querySelector('a');
-
-    if (link) {
-      const buttonGroup = document.createElement('div');
-      buttonGroup.className = 'button-group';
-
-      // Create new button with proper classes
-      const button = document.createElement('a');
-      button.className = 'btn-primary';
-      button.href = link.href;
-      button.textContent = link.textContent || 'Read More';
-      button.title = link.title || 'read-more';
-
-      buttonGroup.appendChild(button);
-      figcaption.appendChild(buttonGroup);
+    if (buttonContainer) {
+      figcaption.appendChild(buttonContainer);
     }
   }
 
