@@ -9,8 +9,12 @@ import { fetchConfigs } from '../../scripts/config.js';
  */
 async function fetchBreadcrumbData() {
   const configs = await fetchConfigs();
-  const AEM_BASE_URL_FOR_BREADCRUMB = configs.aemBaseUrlForBreadcrumb || 'https://publish-p185039-e1939903.adobeaemcloud.com';
-
+  const AEM_BASE_URL_FOR_BREADCRUMB = configs.aemBaseUrlForBreadcrumb;
+  if (!AEM_BASE_URL_FOR_BREADCRUMB) {
+    // eslint-disable-next-line no-console
+    console.log('No Breadcrumb data');
+    return { titleMap: {}, currentPageData: null };
+  }
   try {
     const { pathname } = window.location;
     const apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}/content/bangkokbank${pathname}.pageinfo.json`;
