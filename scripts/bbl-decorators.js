@@ -235,10 +235,14 @@ async function loadBreadcrumb(doc) {
   if (breadcrumbsMeta.toLowerCase() === 'true') {
     const footer = doc.querySelector('footer');
     if (footer) {
+      const breadcrumbSection = document.createElement('div');
+      breadcrumbSection.className = 'section full-bleed-special';
+
       const breadcrumbWrapper = document.createElement('div');
       breadcrumbWrapper.className = 'breadcrumb-wrapper';
       breadcrumbWrapper.setAttribute('aria-label', 'Breadcrumb');
-      footer.parentNode.insertBefore(breadcrumbWrapper, footer);
+      breadcrumbSection.appendChild(breadcrumbWrapper);
+      footer.parentNode.insertBefore(breadcrumbSection, footer);
 
       const breadcrumbBlock = buildBlock('breadcrumb', '');
       breadcrumbWrapper.append(breadcrumbBlock);

@@ -109,12 +109,16 @@ export default async function decorate(block) {
   // Fetch parent page titles from AEM to use as breadcrumb labels
   const { titleMap: breadcrumbTitleMap, currentPageData } = await fetchBreadcrumbData();
 
+  const innerContainer = document.createElement('div');
+  innerContainer.className = 'inner-container content';
+
   const ol = document.createElement('ol');
 
   // Move instrumentation from block to ol for Universal Editor tracking
   moveInstrumentation(block, ol);
 
-  block.appendChild(ol);
+  innerContainer.appendChild(ol);
+  block.appendChild(innerContainer);
 
   // Homepage check using API pageDepth
   if (currentPageData?.pageDepth === 3) {
