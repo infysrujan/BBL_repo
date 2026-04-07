@@ -41,8 +41,15 @@
       "locate-us",
       "rate-card",
       "currency-converter-expanded",
+      "card-list",
       "privacy-modal",
       "external-redirect-popup"
+    ]
+  },
+  {
+    "id": "card-list",
+    "components": [
+      "card-list-item"
     ]
   },
   {
