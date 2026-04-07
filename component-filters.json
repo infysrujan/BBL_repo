@@ -104,6 +104,12 @@
     ]
   },
   {
+    "id": "cookie-modal",
+    "components": [
+      "cookie-modal-accordion-item"
+    ]
+  },
+  {
     "id": "form",
     "components": [
       "captcha",

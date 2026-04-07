@@ -313,15 +313,45 @@
           }
         },
         {
-          "title": "Cookie Modal",
+          "title": "Cookie Alert",
+          "id": "cookie-alert",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Cookie Alert",
+                  "model": "cookie-alert"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Cookie Modal Content",
           "id": "cookie-modal",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
-                  "name": "Cookie Modal",
-                  "model": "cookie-modal"
+                  "name": "Cookie Modal Content",
+                  "filter": "cookie-modal"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Cookie Modal Accordion Item",
+          "id": "cookie-modal-accordion-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Cookie Modal Accordion Item",
+                  "model": "cookie-modal-accordion-item"
                 }
               }
             }
