@@ -272,11 +272,10 @@ export default async function decorate(block) {
   const nestedTables = getNestedTables(nestedRows);
 
   if (isAuthoring) {
-    // In authoring: copy nested tables to placeholders, keep nested structure visible
-    if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
+    // In authoring: copy nested tables to placeholders, keep nested structure outside
     replaceNestedTablePlaceholders(parentTable, nestedTables, true);
   } else {
-    // In dev site: remove nested rows and replace placeholders
+    // In dev site: don't process if nested rows exist, they should be in placeholders only
     if (nestedRows.length > 0) return;
     if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
     replaceNestedTablePlaceholders(parentTable, nestedTables, false);
