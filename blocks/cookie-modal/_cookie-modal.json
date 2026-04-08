@@ -9,7 +9,7 @@
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
               "name": "Cookie Modal",
-              "filter": "cookie-modal"
+              "model": "cookie-modal"
             }
           }
         }
@@ -41,8 +41,7 @@
           "label": "Modal Title",
           "description": "Title for the cookie settings modal",
           "valueType": "string",
-          "value": "Cookie Setting",
-          "required": true
+          "value": "Cookie Setting"
         },
         {
           "component": "richtext",
@@ -50,32 +49,15 @@
           "label": "Description Text",
           "description": "Main description text about cookie usage",
           "valueType": "string",
-          "value": "The Bank uses Strictly Necessary Cookies in order that you can access information and use the Bank's website safely, and uses Functional Cookies to facilitate you when you revisit the website. In addition, the Bank uses other type of Cookies, namely Analytic Cookies and Advertising Cookies, where disabling these Cookies may cause you inconvenience when using website as follows.",
-          "required": true
+          "value": "The Bank uses Strictly Necessary Cookies in order that you can access information and use the Bank's website safely, and uses Functional Cookies to facilitate you when you revisit the website. In addition, the Bank uses other type of Cookies, namely Analytic Cookies and Advertising Cookies, where disabling these Cookies may cause you inconvenience when using website as follows."
         },
         {
-          "component": "container",
-          "name": "ctaButton",
-          "label": "Call to Action Button",
-          "fields": [
-            {
-              "component": "text",
-              "name": "ctaText",
-              "label": "CTA Button Text",
-              "description": "Text for the save and close button",
-              "valueType": "string",
-              "value": "Save and Close",
-              "required": true
-            },
-            {
-              "component": "text",
-              "name": "ctaTitle",
-              "label": "CTA Button Title",
-              "description": "Accessibility title attribute for the CTA button",
-              "valueType": "string",
-              "value": "Save cookie preferences and close modal"
-            }
-          ]
+          "component": "text",
+          "name": "saveButtonText",
+          "label": "Save Button Text",
+          "description": "Text for the save and close button",
+          "valueType": "string",
+          "value": "Save and Close"
         }
       ]
     },
@@ -84,25 +66,23 @@
       "fields": [
         {
           "component": "text",
-          "name": "title",
-          "label": "Accordion Title",
-          "description": "Title for the accordion section",
-          "valueType": "string",
-          "required": true
+          "name": "cookieType",
+          "label": "Cookie Type",
+          "description": "Name of the cookie category (e.g., 'Analytic Cookies', 'Advertising Cookies')",
+          "valueType": "string"
         },
         {
           "component": "richtext",
-          "name": "details",
-          "label": "Accordion Details",
+          "name": "description",
+          "label": "Cookie Description",
           "description": "Detailed explanation for this cookie type",
-          "valueType": "string",
-          "required": true
+          "valueType": "string"
         },
         {
           "component": "boolean",
-          "name": "enabled",
-          "label": "Enable Cookies",
-          "description": "Toggle to enable or disable this cookie category",
+          "name": "defaultEnabled",
+          "label": "Default Enabled",
+          "description": "Whether this cookie category is enabled by default",
           "valueType": "boolean",
           "value": true
         }
