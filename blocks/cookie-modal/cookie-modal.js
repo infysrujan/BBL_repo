@@ -190,6 +190,14 @@ function closeModal(overlay) {
 }
 
 export default function decorate(block) {
+  // Detect authoring mode - check if any element has data-aue attributes
+  const isAuthoringMode = [...block.querySelectorAll('*')].some((element) => [...element.attributes].some((attr) => attr.name.startsWith('data-aue-')));
+
+  // In authoring mode, don't process the block to allow proper content authoring
+  if (isAuthoringMode) {
+    return;
+  }
+
   const rows = [...block.children];
   const titleSource = rows[0]?.firstElementChild || rows[0];
   const descSource = rows[1]?.firstElementChild || rows[1];
