@@ -63,7 +63,7 @@ function hasUnresolvedPlaceholders(table, nestedTables) {
   return false;
 }
 
-function replaceNestedTablePlaceholders(parentTable, nestedTables) {
+function replaceNestedTablePlaceholders(parentTable, nestedTables, cloneAll = false) {
   const usageCount = new Map();
   const walker = document.createTreeWalker(parentTable, NodeFilter.SHOW_TEXT);
   const textNodes = [];
@@ -92,55 +92,8 @@ function replaceNestedTablePlaceholders(parentTable, nestedTables) {
       const table = nestedTables.get(nestedId);
       if (table) {
         const used = usageCount.get(nestedId) || 0;
-        const tableToInsert = used === 0 ? table : table.cloneNode(true);
-        usageCount.set(nestedId, used + 1);
-        fragment.append(tableToInsert);
-      } else {
-        fragment.append(document.createTextNode(token));
-      }
-
-      cursor = match.index + token.length;
-      match = matcher.exec(text);
-    }
-
-    const after = text.slice(cursor);
-    if (after) fragment.append(document.createTextNode(after));
-
-    textNode.replaceWith(fragment);
-  });
-}
-
-function copyNestedTablePlaceholders(parentTable, nestedTables) {
-  const usageCount = new Map();
-  const walker = document.createTreeWalker(parentTable, NodeFilter.SHOW_TEXT);
-  const textNodes = [];
-
-  while (walker.nextNode()) {
-    if (/\{\{\s*[-\w]+\s*\}\}/.test(walker.currentNode.textContent)) {
-      textNodes.push(walker.currentNode);
-    }
-  }
-
-  textNodes.forEach((textNode) => {
-    const text = textNode.textContent;
-    const matcher = /\{\{\s*([-\w]+)\s*\}\}/g;
-    let match = matcher.exec(text);
-
-    if (!match) return;
-
-    const fragment = document.createDocumentFragment();
-    let cursor = 0;
-
-    while (match) {
-      const [token, nestedId] = match;
-      const before = text.slice(cursor, match.index);
-      if (before) fragment.append(document.createTextNode(before));
-
-      const table = nestedTables.get(nestedId);
-      if (table) {
-        const used = usageCount.get(nestedId) || 0;
-        // Always clone for authoring to keep original nested table structure intact
-        const tableToInsert = table.cloneNode(true);
+        // In authoring (cloneAll=true), always clone. In dev, use first instance directly
+        const tableToInsert = cloneAll || used > 0 ? table.cloneNode(true) : table;
         usageCount.set(nestedId, used + 1);
         fragment.append(tableToInsert);
       } else {
@@ -319,14 +272,14 @@ export default async function decorate(block) {
   const nestedTables = getNestedTables(nestedRows);
 
   if (isAuthoring) {
-    // In authoring: copy nested tables where placeholders exist, keep nested structure
+    // In authoring: copy nested tables to placeholders, keep nested structure visible
     if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
-    copyNestedTablePlaceholders(parentTable, nestedTables);
+    replaceNestedTablePlaceholders(parentTable, nestedTables, true);
   } else {
-    // In dev site: replace placeholders and remove nested table structure
+    // In dev site: remove nested rows and replace placeholders
     if (nestedRows.length > 0) return;
     if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
-    replaceNestedTablePlaceholders(parentTable, nestedTables);
+    replaceNestedTablePlaceholders(parentTable, nestedTables, false);
   }
 
   await transformDownloadMarkers(parentTable);
@@ -339,6 +292,13 @@ export default async function decorate(block) {
 
   block.textContent = '';
   block.append(parentTable);
+
+  // In authoring mode, preserve and display nested table rows
+  if (isAuthoring && nestedRows.length > 0) {
+    nestedRows.forEach((row) => {
+      block.append(row);
+    });
+  }
 
   scheduleMergeTables(block, parentTable);
 }
