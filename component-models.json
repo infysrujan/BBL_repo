@@ -503,6 +503,10 @@
     ]
   },
   {
+    "id": "card-list-wealth-item",
+    "fields": []
+  },
+  {
     "id": "card-list",
     "fields": [
       {
