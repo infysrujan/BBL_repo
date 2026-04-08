@@ -241,24 +241,6 @@ function mergeTablesInSection(block) {
   highlightDashCells(targetTable);
 }
 
-function addNestedTablesToParentForAuthoring(parentTable, nestedTables) {
-  if (!nestedTables.size) return;
-
-  const tbody = parentTable.tBodies[0] || parentTable;
-
-  nestedTables.forEach((nestedTable) => {
-    const row = document.createElement('tr');
-    const cell = document.createElement('td');
-
-    // Clone the nested table and append it to the cell
-    const clonedTable = nestedTable.cloneNode(true);
-    cell.append(clonedTable);
-
-    row.append(cell);
-    tbody.append(row);
-  });
-}
-
 function scheduleMergeTables(block, parentTable) {
   if (!parentTable.classList.contains('merge-tables')) return;
   if (isAuthoringInstance(block)) return;
@@ -284,18 +266,10 @@ export default async function decorate(block) {
   applyVariationClasses(parentTable, parentStyles);
 
   const nestedRows = rows.slice(2);
-  const isAuthoring = block.hasAttribute('data-aue-resource');
 
   const nestedTables = getNestedTables(nestedRows);
-
-  if (isAuthoring) {
-    // In authoring instances, add nested tables to the parent table
-    addNestedTablesToParentForAuthoring(parentTable, nestedTables);
-  } else {
-    // In non-authoring, replace placeholders with nested tables
-    if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
-    replaceNestedTablePlaceholders(parentTable, nestedTables);
-  }
+  if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
+  replaceNestedTablePlaceholders(parentTable, nestedTables);
 
   await transformDownloadMarkers(parentTable);
 
