@@ -36,8 +36,7 @@ stages:
     steps:
     - task: NodeTool@1
       inputs:
-        versionSpec: '18.x'
-        checkLatest: true
+        version: '18.x'
 
     - script: |
         set -e
@@ -71,8 +70,7 @@ stages:
 
     - task: NodeTool@1
       inputs:
-        versionSpec: '18.x'
-        checkLatest: true
+        version: '18.x'
 
     - script: |
         set -e
