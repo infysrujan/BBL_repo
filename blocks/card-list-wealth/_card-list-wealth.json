@@ -35,6 +35,10 @@
   "models": [
     {
       "id": "card-list-wealth",
+      "fields": []
+    },
+    {
+      "id": "card-list-wealth-item",
       "fields": [
         {
           "component": "reference",
@@ -101,10 +105,6 @@
           "...": "../../models/elements/_button-fields.json"
         }
       ]
-    },
-    {
-      "id": "card-list-wealth-item",
-      "fields": []
     }
   ],
   "filters": [

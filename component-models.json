@@ -382,6 +382,10 @@
   },
   {
     "id": "card-list-wealth",
+    "fields": []
+  },
+  {
+    "id": "card-list-wealth-item",
     "fields": [
       {
         "component": "reference",
@@ -501,10 +505,6 @@
         ]
       }
     ]
-  },
-  {
-    "id": "card-list-wealth-item",
-    "fields": []
   },
   {
     "id": "card-list",
