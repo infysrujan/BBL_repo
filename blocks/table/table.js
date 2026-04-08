@@ -275,8 +275,7 @@ export default async function decorate(block) {
     // In authoring: copy nested tables to placeholders, keep nested structure outside
     replaceNestedTablePlaceholders(parentTable, nestedTables, true);
   } else {
-    // In dev site: don't process if nested rows exist, they should be in placeholders only
-    if (nestedRows.length > 0) return;
+    // In dev site: process normally like before
     if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
     replaceNestedTablePlaceholders(parentTable, nestedTables, false);
   }
