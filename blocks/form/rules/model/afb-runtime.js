@@ -25,7 +25,7 @@
 import { propertyChange, ExecuteRule, Initialize, RemoveItem, Change, FormLoad, FieldChanged, ValidationComplete, Valid, Invalid, SubmitSuccess, CustomEvent, RequestSuccess, RequestFailure, SubmitError, Submit, Save, Reset, SubmitFailure, Focus, RemoveInstance, AddInstance, AddItem, Click } from './afb-events.js';
 import Formula from '../formula/index.js';
 import { format, parseDefaultDate, datetimeToNumber, parseDateSkeleton, numberToDatetime, formatDate, parseDate } from './afb-formatters.min.js';
-import { fetchCsrfToken, generatePayloadHash } from '../../functions.js';
+import { generatePayloadHash } from '../../functions.js';
 
 function __decorate(decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3057,28 +3057,26 @@ const submit = async (context, success, error, submitAs = 'multipart/form-data',
         data = context.form.exportData(attachments);
     }
     let submitContentType = submitAs;
-    const submitDataAndMetaData = { 'data': data, ...metadata };
     
-    // Generate payload hash and add to body
-    const payloadHash = await generatePayloadHash(submitDataAndMetaData);
-    const bodyWithHash = {
-        ...submitDataAndMetaData,
+    // Generate payload hash only for data
+    const payloadHash = await generatePayloadHash(data);
+    
+    // Structure: data contains payload and payload-hash
+    const dataWithHash = {
+        'payload': data,
         ...(payloadHash && { 'payload-hash': payloadHash })
     };
     
-    let formData = bodyWithHash;
+    const submitDataAndMetaData = { 'data': dataWithHash, ...metadata };
+    let formData = submitDataAndMetaData;
     if (Object.keys(attachments).length > 0 || submitAs === 'multipart/form-data') {
-        formData = multipartFormData(bodyWithHash, attachments);
+        formData = multipartFormData(submitDataAndMetaData, attachments);
         submitContentType = 'multipart/form-data';
     }
     
-    // Fetch CSRF token for headers
-    const csrfToken = await fetchCsrfToken();
-
     // Build headers; do NOT set Content-Type for FormData here
     const headers = {
-        ...(submitContentType && submitContentType !== 'multipart/form-data' && { 'Content-Type': submitContentType }),
-        ...(csrfToken && { 'X-CSRF-Token': csrfToken })
+        ...(submitContentType && submitContentType !== 'multipart/form-data' && { 'Content-Type': submitContentType })
     };
 
     await request(context, endpoint, 'POST', formData, success, error, headers);
