@@ -3058,20 +3058,27 @@ const submit = async (context, success, error, submitAs = 'multipart/form-data',
     }
     let submitContentType = submitAs;
     const submitDataAndMetaData = { 'data': data, ...metadata };
-    let formData = submitDataAndMetaData;
+    
+    // Generate payload hash and add to body
+    const payloadHash = await generatePayloadHash(submitDataAndMetaData);
+    const bodyWithHash = {
+        ...submitDataAndMetaData,
+        ...(payloadHash && { 'payload-hash': payloadHash })
+    };
+    
+    let formData = bodyWithHash;
     if (Object.keys(attachments).length > 0 || submitAs === 'multipart/form-data') {
-        formData = multipartFormData(submitDataAndMetaData, attachments);
+        formData = multipartFormData(bodyWithHash, attachments);
         submitContentType = 'multipart/form-data';
     }
-    // NEW: fetch CSRF token and payload hash
+    
+    // Fetch CSRF token for headers
     const csrfToken = await fetchCsrfToken();
-    const payloadHash = await generatePayloadHash(submitDataAndMetaData);
 
-    // NEW: build headers; do NOT set Content-Type for FormData here
+    // Build headers; do NOT set Content-Type for FormData here
     const headers = {
         ...(submitContentType && submitContentType !== 'multipart/form-data' && { 'Content-Type': submitContentType }),
-        ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
-        ...(payloadHash && { 'X-Payload-Hash': payloadHash }),
+        ...(csrfToken && { 'X-CSRF-Token': csrfToken })
     };
 
     await request(context, endpoint, 'POST', formData, success, error, headers);
