@@ -70,10 +70,6 @@
 	border-radius: 2rem;
 }
 
-.rate-card .tab-header a:focus {
-	margin-right: 0.4375rem;
-}
-
 .rate-card .tab-header a.active,
 .rate-card .tab-header a.active:any-link {
   background: var(--bbl-color-white);
@@ -142,7 +138,7 @@
 
 .rate-card table thead tr {
   position: relative;
-  border-bottom: 0.0625rem solid #e5e5e7;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-22);
 }
 
 .rate-card table thead th {
@@ -158,6 +154,7 @@
 /* Right-align Buy/Sell/Rate/NAV columns */
 .rate-card table thead th:not(:first-child) {
   text-align: right;
+  width: var(--bbl-space-1000);
 }
 
 .rate-card table tbody td {
@@ -178,6 +175,12 @@
 .rate-card table tbody td:not(:first-child) {
   text-align: right;
   font-size: 1.3125rem;
+}
+
+/* If the header has exactly 3 columns, align the second column to the left */
+.rate-card table:has(thead tr > th:nth-child(3):last-child) thead th:nth-child(2),
+.rate-card table:has(thead tr > th:nth-child(3):last-child) tbody td:nth-child(2) {
+  text-align: left;
 }
 
 /* --------------------------------------------------------------------------
@@ -296,6 +299,7 @@
 
 .rate-card .link-primary.pull-right {
   margin-left: auto;
+  font-size: 0.7rem;
 }
 
 /* Icon styles */
@@ -395,8 +399,17 @@
     height: 2.5625rem;
   }
 
+  .rate-card table thead th:not(:first-child) {
+    width: 4.375rem;
+  }
+
   .rate-card table tbody td:not(:first-child) {
     font-size: 1.5rem;
+  }
+
+  .rate-card section > .inner:first-child .default-wrap{
+    position: absolute;
+    bottom: -20%;
   }
 
   .rate-card .percent {
