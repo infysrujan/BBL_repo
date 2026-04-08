@@ -336,7 +336,8 @@
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
                   "name": "Cookie Modal",
-                  "model": "cookie-modal"
+                  "model": "cookie-modal",
+                  "filter": "cookie-modal"
                 }
               }
             }
