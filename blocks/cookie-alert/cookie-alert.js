@@ -117,7 +117,7 @@ export default async function decorate(block) {
   [...block.children].forEach((row) => {
     const content = row.firstElementChild || row;
 
-    // Check if it's a button container
+    // Check if it's a button container or not
     if (row.querySelector('.button-container') || row.querySelector('a')) {
       const anchor = row.querySelector('a');
       if (anchor) {
