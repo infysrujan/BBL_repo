@@ -110,6 +110,54 @@ function replaceNestedTablePlaceholders(parentTable, nestedTables) {
   });
 }
 
+function copyNestedTablePlaceholders(parentTable, nestedTables) {
+  const usageCount = new Map();
+  const walker = document.createTreeWalker(parentTable, NodeFilter.SHOW_TEXT);
+  const textNodes = [];
+
+  while (walker.nextNode()) {
+    if (/\{\{\s*[-\w]+\s*\}\}/.test(walker.currentNode.textContent)) {
+      textNodes.push(walker.currentNode);
+    }
+  }
+
+  textNodes.forEach((textNode) => {
+    const text = textNode.textContent;
+    const matcher = /\{\{\s*([-\w]+)\s*\}\}/g;
+    let match = matcher.exec(text);
+
+    if (!match) return;
+
+    const fragment = document.createDocumentFragment();
+    let cursor = 0;
+
+    while (match) {
+      const [token, nestedId] = match;
+      const before = text.slice(cursor, match.index);
+      if (before) fragment.append(document.createTextNode(before));
+
+      const table = nestedTables.get(nestedId);
+      if (table) {
+        const used = usageCount.get(nestedId) || 0;
+        // Always clone for authoring to keep original nested table structure intact
+        const tableToInsert = table.cloneNode(true);
+        usageCount.set(nestedId, used + 1);
+        fragment.append(tableToInsert);
+      } else {
+        fragment.append(document.createTextNode(token));
+      }
+
+      cursor = match.index + token.length;
+      match = matcher.exec(text);
+    }
+
+    const after = text.slice(cursor);
+    if (after) fragment.append(document.createTextNode(after));
+
+    textNode.replaceWith(fragment);
+  });
+}
+
 function findAnchorAfterMarker(markerNode) {
   let next = markerNode.nextSibling;
 
@@ -266,10 +314,20 @@ export default async function decorate(block) {
   applyVariationClasses(parentTable, parentStyles);
 
   const nestedRows = rows.slice(2);
+  const isAuthoring = block.hasAttribute('data-aue-resource');
 
   const nestedTables = getNestedTables(nestedRows);
-  if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
-  replaceNestedTablePlaceholders(parentTable, nestedTables);
+
+  if (isAuthoring) {
+    // In authoring: copy nested tables where placeholders exist, keep nested structure
+    if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
+    copyNestedTablePlaceholders(parentTable, nestedTables);
+  } else {
+    // In dev site: replace placeholders and remove nested table structure
+    if (nestedRows.length > 0) return;
+    if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
+    replaceNestedTablePlaceholders(parentTable, nestedTables);
+  }
 
   await transformDownloadMarkers(parentTable);
 
