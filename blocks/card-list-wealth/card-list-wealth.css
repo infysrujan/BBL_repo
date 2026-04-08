@@ -1,0 +1,134 @@
+/* Card List Wealth Block */
+.card-list-wealth {
+  display: flex;
+  overflow-x: auto;
+}
+
+.card-list-wealth-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 33.333%;
+  min-width: 280px;
+}
+
+/* ── Logo area ─────────────────────────────────────────── */
+.card-logo {
+  height: 80px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.card-theme-default .card-logo {
+  background: #f5f5f5;
+}
+
+.card-theme-featured-dark .card-logo {
+  background: #323238;
+}
+
+.card-theme-featured .card-logo {
+  background: #002850;
+}
+
+.card-logo img {
+  width: 160px;
+  height: 40px;
+  object-fit: contain;
+}
+
+/* ── Card body ─────────────────────────────────────────── */
+.card-body {
+  flex: 1;
+  padding: 20px;
+  background: #fff;
+}
+
+.card-title {
+  font-size: 2rem;
+  line-height: 2rem;
+  margin: 0 0 20px;
+}
+
+.card-description {
+  font-size: 1rem;
+  line-height: 1.375rem;
+  margin: 0 0 20px;
+}
+
+.card-eyebrow {
+  margin: 20px 0;
+}
+
+/* ── Benefits list ─────────────────────────────────────── */
+.card-benefit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #c8c8cc;
+  font-size: 1rem;
+  line-height: 1.375;
+}
+
+.card-benefit svg {
+  flex-shrink: 0;
+}
+
+/* ── CTA ───────────────────────────────────────────────── */
+.card-cta {
+  padding: 20px;
+  background: #fff;
+}
+
+.card-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #0064ff;
+  border: 1px solid #0064ff;
+  background: #fff;
+  font-size: 1rem;
+  line-height: 1.375;
+  height: 44px;
+  min-width: 155px;
+  padding: 0 20px;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.card-btn:hover {
+  color: #fff;
+  background: #0064ff;
+  border-color: #0064ff;
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+@media (width <= 64rem) {
+  .card-list-wealth-card {
+    flex: 1 1 33.333%;
+    min-width: auto;
+  }
+}
+
+@media (width <= 47.5rem) {
+  .card-list-wealth {
+    flex-direction: column;
+    overflow-x: unset;
+  }
+
+  .card-list-wealth-card {
+    flex: 1 1 100%;
+    min-width: unset;
+  }
+
+  .card-title {
+    font-size: 2rem;
+    line-height: 2rem;
+  }
+
+  .card-description {
+    font-size: 1rem;
+    line-height: 1.375rem;
+  }
+}
