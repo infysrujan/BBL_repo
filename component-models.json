@@ -2147,8 +2147,7 @@
             "label": "CTA Button Text",
             "description": "Text for the save and close button",
             "valueType": "string",
-            "value": "Save and Close",
-            "required": true
+            "value": "Save and Close"
           },
           {
             "component": "text",
