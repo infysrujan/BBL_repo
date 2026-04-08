@@ -2182,6 +2182,14 @@
         "description": "Detailed explanation for this cookie type",
         "valueType": "string",
         "required": true
+      },
+      {
+        "component": "boolean",
+        "name": "enabled",
+        "label": "Enable Cookies",
+        "description": "Toggle to enable or disable this cookie category",
+        "valueType": "boolean",
+        "value": true
       }
     ]
   },
