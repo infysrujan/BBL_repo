@@ -436,12 +436,7 @@
         "name": "eyebrow",
         "label": "Eyebrow",
         "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "card-list-wealth-item",
-    "fields": [
+      },
       {
         "component": "richtext",
         "name": "listItems",
