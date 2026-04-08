@@ -52,12 +52,28 @@
           "value": "The Bank uses Strictly Necessary Cookies in order that you can access information and use the Bank's website safely, and uses Functional Cookies to facilitate you when you revisit the website. In addition, the Bank uses other type of Cookies, namely Analytic Cookies and Advertising Cookies, where disabling these Cookies may cause you inconvenience when using website as follows."
         },
         {
-          "component": "text",
-          "name": "saveButtonText",
-          "label": "Save Button Text",
-          "description": "Text for the save and close button",
-          "valueType": "string",
-          "value": "Save and Close"
+          "component": "container",
+          "name": "ctaButton",
+          "label": "Call to Action Button",
+          "fields": [
+            {
+              "component": "text",
+              "name": "ctaText",
+              "label": "CTA Button Text",
+              "description": "Text for the save and close button",
+              "valueType": "string",
+              "value": "Save and Close",
+              "required": true
+            },
+            {
+              "component": "text",
+              "name": "ctaTitle",
+              "label": "CTA Button Title",
+              "description": "Accessibility title attribute for the CTA button",
+              "valueType": "string",
+              "value": "Save cookie preferences and close modal"
+            }
+          ]
         }
       ]
     },
