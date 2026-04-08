@@ -34,9 +34,10 @@ stages:
   jobs:
   - job: LintJob
     steps:
-    - task: NodeTool@0
+    - task: NodeTool@1
       inputs:
         versionSpec: '18.x'
+        checkLatest: true
 
     - script: |
         set -e
@@ -68,9 +69,10 @@ stages:
   - job: LighthouseJob
     steps:
 
-    - task: NodeTool@0
+    - task: NodeTool@1
       inputs:
         versionSpec: '18.x'
+        checkLatest: true
 
     - script: |
         set -e
