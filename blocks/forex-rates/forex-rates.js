@@ -94,12 +94,12 @@ function renderDatepicker(state, monthLabels, dayLabels, buddhistYearOffset) {
 
   return `<div class="forex-rates-datepicker">
     <div class="forex-rates-datepicker-header">
-      <button type="button" class="forex-rates-datepicker-nav forex-rates-datepicker-prev" aria-label="Previous month">Prev</button>
+      <button type="button" class="forex-rates-datepicker-nav forex-rates-datepicker-prev" aria-label="Previous month"><i class="icon-arrow-left" aria-hidden="true"></i></button>
       <div class="forex-rates-datepicker-title">
         <span class="forex-rates-datepicker-month">${escapeHtml(monthLabels[state.viewMonth - 1] || '')}</span>
         <span class="forex-rates-datepicker-year">${state.viewYear + buddhistYearOffset}</span>
       </div>
-      <button type="button" class="forex-rates-datepicker-nav forex-rates-datepicker-next${nextDisabled ? ' is-disabled' : ''}" aria-label="Next month"${nextDisabled ? ' disabled' : ''}>Next</button>
+      <button type="button" class="forex-rates-datepicker-nav forex-rates-datepicker-next${nextDisabled ? ' is-disabled' : ''}" aria-label="Next month"${nextDisabled ? ' disabled' : ''}><i class="icon-arrow-left" aria-hidden="true"></i></button>
     </div>
     <table class="forex-rates-datepicker-calendar">
       <thead><tr>${daysHeader}</tr></thead>
@@ -129,20 +129,24 @@ function renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYe
     <td class="is-right">${escapeHtml(rate.billDdTt)}</td>
   </tr>`).join('');
 
-  const headings = authoring.columns.map((heading) => `<th>${escapeHtml(heading)}</th>`).join('');
+  const columnWidths = ['30%', '70%', '12%', '12%', '19%', '19%', '19%'];
+  const headings = authoring.columns.map((heading, i) => `<th width="${columnWidths[i] || 'auto'}">${heading}</th>`).join('');
 
   block.innerHTML = `<section class="forex-rates-content">
     <div class="forex-rates-controls">
       <div class="forex-rates-control-row">
         <span class="forex-rates-calendar-label">${escapeHtml(authoring.calendarLabel)}</span>
         <div class="forex-rates-date-group">
-          <input id="forex-rates-date-text-input" class="forex-rates-date-text-input" type="text" inputmode="numeric" placeholder="DD MMM YYYY" value="${escapeHtml(state.typedDate)}" aria-label="${escapeHtml(authoring.calendarLabel)} date">
+          <input id="forex-rates-date-text-input" class="forex-rates-date-text-input" type="text" inputmode="text" placeholder="DD MMM YYYY" value="${escapeHtml(state.typedDate)}" aria-label="${escapeHtml(authoring.calendarLabel)} date">
           <button type="button" class="forex-rates-date-trigger icon-calendar" title="Open calendar" aria-label="Open calendar"></button>
           ${renderDatepicker(state, monthLabels, dayLabels, buddhistYearOffset)}
         </div>
-        <select class="forex-rates-time-select"${state.updates.length ? '' : ' disabled'}>${options}</select>
+        <div class="forex-rates-time-wrap">
+          <select id="forex-rates-time-select" class="forex-rates-time-select"${state.updates.length ? '' : ' disabled'}>${options}</select>
+          <i class="icon-dropdown forex-rates-time-chevron" aria-hidden="true"></i>
+        </div>
         <button type="button" class="forex-rates-go-btn"${(!state.selectedDate || !state.selectedUpdate || state.loading) ? ' disabled' : ''}>${escapeHtml(authoring.ctaLabel)}</button>
-        <button type="button" class="forex-rates-print-btn">${escapeHtml(authoring.printCtaLabel)}</button>
+        <button type="button" class="forex-rates-print-btn">${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i></button>
       </div>
     </div>
     <div class="forex-rates-table-wrap">
@@ -185,9 +189,15 @@ export default async function decorate(block) {
   };
 
   let outsideClickHandler = null;
+  let calendarFocusLock = false;
 
   const render = () => {
-    renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYearOffset);
+    try {
+      renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYearOffset);
+    } catch (e) {
+      setTimeout(render, 0);
+      return;
+    }
 
     const dateGroup = block.querySelector('.forex-rates-date-group');
     const dateInput = block.querySelector('.forex-rates-date-text-input');
@@ -407,7 +417,9 @@ export default async function decorate(block) {
           return;
         }
 
-        applyDateSelection(parsed.iso);
+        if (parsed.iso !== state.selectedDate) {
+          applyDateSelection(parsed.iso);
+        }
       });
 
       dateInput.addEventListener('keydown', (event) => {
@@ -417,30 +429,43 @@ export default async function decorate(block) {
       });
     }
 
-    if (dateTrigger) {
-      dateTrigger.addEventListener('click', async () => {
-        const parsed = parseIsoDate(state.selectedDate);
-        if (parsed) {
-          state.viewYear = Number(parsed.year);
-          state.viewMonth = Number(parsed.month);
+    const openCalendar = () => {
+      if (calendarFocusLock) return;
+      const parsed = parseIsoDate(state.selectedDate);
+      if (parsed) {
+        state.viewYear = Number(parsed.year);
+        state.viewMonth = Number(parsed.month);
+      }
 
-          const monthKey = getMonthKey(parsed.year, parsed.month);
-          if (!state.enabledDaysByMonth[monthKey]) {
-            try {
-              state.enabledDaysByMonth[monthKey] = await getEnabledDays(
-                endpoints,
-                parsed.year,
-                parsed.month,
-              );
-            } catch (e) {
+      state.calendarOpen = true;
+      render();
+
+      // Restore focus to the new input so the user can type
+      calendarFocusLock = true;
+      block.querySelector('.forex-rates-date-text-input')?.focus();
+      calendarFocusLock = false;
+
+      if (parsed) {
+        const monthKey = getMonthKey(parsed.year, parsed.month);
+        if (!state.enabledDaysByMonth[monthKey]) {
+          getEnabledDays(endpoints, parsed.year, parsed.month)
+            .then((days) => {
+              state.enabledDaysByMonth[monthKey] = days;
+              if (state.calendarOpen) render();
+            })
+            .catch(() => {
               state.enabledDaysByMonth[monthKey] = [];
-            }
-          }
+            });
         }
+      }
+    };
 
-        state.calendarOpen = !state.calendarOpen;
-        render();
-      });
+    if (dateInput) {
+      dateInput.addEventListener('focus', openCalendar);
+    }
+
+    if (dateTrigger) {
+      dateTrigger.addEventListener('click', openCalendar);
     }
 
     if (prevMonth) {
@@ -503,10 +528,9 @@ export default async function decorate(block) {
     });
 
     if (timeSelect) {
-      timeSelect.addEventListener('input', () => {
+      timeSelect.addEventListener('change', () => {
         state.selectedUpdate = timeSelect.value;
         render();
-
         if (state.selectedDate && state.selectedUpdate && isValidSelectedDay(state)) {
           loadRates(state.selectedDate, state.selectedUpdate);
         }

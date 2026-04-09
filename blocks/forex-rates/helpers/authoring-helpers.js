@@ -1,7 +1,7 @@
 function parseColumns(listElement) {
   if (!listElement) return [];
   return [...listElement.querySelectorAll('li')]
-    .map((li) => li.textContent.replace(/\s+/g, ' ').trim())
+    .map((li) => li.innerHTML.trim())
     .filter(Boolean);
 }
 
