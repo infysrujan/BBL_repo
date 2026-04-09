@@ -71,6 +71,7 @@ body.cookie-modal-open .header {
   width: var(--bbl-space-300);
   height: var(--bbl-space-300);
   display: block;
+  filter: invert(20%) sepia(95%) saturate(5000%) hue-rotate(210deg) brightness(102%) contrast(104%);
 }
 
 .cookie-modal-close:hover,
