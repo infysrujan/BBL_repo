@@ -46,7 +46,8 @@
       "social-icons",
       "card-list",
       "privacy-modal",
-      "external-redirect-popup"
+      "external-redirect-popup",
+      "forex-rates"
     ]
   },
   {
@@ -312,7 +313,8 @@
       "brand-logo",
       "location",
       "login",
-      "main-nav-item"
+      "main-nav-item",
+      "forex-rates"
     ]
   },
   {
