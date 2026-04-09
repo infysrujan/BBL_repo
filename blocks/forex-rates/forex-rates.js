@@ -620,5 +620,3 @@ export default async function decorate(block) {
 
   await init();
 }
-
-// Test commit
