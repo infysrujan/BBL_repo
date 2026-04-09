@@ -2476,6 +2476,46 @@
     ]
   },
   {
+    "id": "forex-rates",
+    "fields": [
+      {
+        "component": "text",
+        "name": "calendarLabel",
+        "label": "Calendar Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "CTA Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "printCtaLabel",
+        "label": "Print CTA Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "forexColumnHeadings",
+        "label": "Forex Column Headings",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "form",
     "fields": [
       {
@@ -2486,11 +2526,11 @@
         "collapsible": false,
         "fields": [
           {
-              "component": "text",
-              "name": "title",
-              "label": "Form Title",
-              "valueType": "string"
-            },
+            "component": "text",
+            "name": "title",
+            "label": "Form Title",
+            "valueType": "string"
+          },
           {
             "component": "text",
             "name": "style",

@@ -418,6 +418,21 @@
           }
         },
         {
+          "title": "Forex Rates",
+          "id": "forex-rates",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Forex Rates",
+                  "model": "forex-rates"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Adaptive Form",
           "id": "form",
           "plugins": {
