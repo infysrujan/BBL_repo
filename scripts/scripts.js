@@ -17,6 +17,7 @@ import {
   decorateSvgWithAltText,
   decorateTerritoryButtons,
   decorateButtonsV1,
+  loadBreadcrumb,
   buildCookieAlert,
 } from './bbl-decorators.js';
 
@@ -178,6 +179,7 @@ async function loadLazy(doc) {
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
 
+  await loadBreadcrumb(doc);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
