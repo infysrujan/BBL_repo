@@ -389,17 +389,20 @@ async function buildCookieAlert(main) {
   const fragmentPath = `/${lang}/fragments/cookie-alert`;
 
   try {
-    // Use event-based fragment loading to avoid circular dependency
+    // Use event-based fragment loading to avoid circular dependency.
+    // The listener is registered early in scripts.js so it is always available.
     document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
       detail: {
         path: fragmentPath,
         callback: (fragment) => {
-          if (fragment) {
-            // Append the entire fragment to main - it should contain a cookie-alert block
-            const section = document.createElement('div');
-            section.innerHTML = fragment.outerHTML;
-            main.append(section);
+          if (!fragment) {
+            // eslint-disable-next-line no-console
+            console.warn('[cookie-alert] Fragment not found at', fragmentPath);
+            return;
           }
+          // Move the decorated sections directly (preserves event listeners).
+          // Do NOT use innerHTML/outerHTML — that strips all JS event listeners.
+          [...fragment.querySelectorAll(':scope > .section')].forEach((s) => main.append(s));
         },
       },
     }));

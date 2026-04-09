@@ -72,20 +72,29 @@ function buildToggle(cookieName, defaultChecked) {
   return { label, input };
 }
 
-function buildAccordionItem(cookieName, labelText, descriptionHTML, isChecked) {
+function buildAccordionItem(cookieName, labelText, descriptionHTML, isChecked, startOpen = false) {
   const contentId = `cookie-accordion-content-${sanitizeId(cookieName)}`;
-  const item = el('div', { className: 'cookie-accordion-item' });
+  const item = el('div', { className: `cookie-accordion-item ${startOpen ? 'open-cookie' : 'close-cookie'}` });
   const heading = el('div', {
     className: 'cookie-accordion-heading',
     attrs: {
       role: 'button',
       'aria-controls': contentId,
-      'aria-expanded': 'true',
+      'aria-expanded': String(startOpen),
       tabindex: '0',
     },
   });
-  const icon = el('span', { className: 'cookie-accordion-icon', text: '−' });
+  const icon = el('span', { className: 'cookie-accordion-icon' });
   icon.setAttribute('aria-hidden', 'true');
+  const iconImg = el('img', {
+    attrs: {
+      src: startOpen ? '/icons/24_Minus.svg' : '/icons/24_Add.svg',
+      alt: '',
+      width: '24',
+      height: '24',
+    },
+  });
+  icon.append(iconImg);
 
   const nameText = el('span', { className: 'cookie-accordion-name', text: labelText });
   const { label: toggleLabel, input: toggleInput } = buildToggle(cookieName, isChecked);
@@ -108,7 +117,7 @@ function buildAccordionItem(cookieName, labelText, descriptionHTML, isChecked) {
     const isOpen = item.classList.contains('open-cookie');
     item.classList.toggle('open-cookie', !isOpen);
     item.classList.toggle('close-cookie', isOpen);
-    icon.textContent = isOpen ? '+' : '−';
+    iconImg.src = isOpen ? '/icons/24_Add.svg' : '/icons/24_Minus.svg';
     heading.setAttribute('aria-expanded', String(!isOpen));
   }
 
@@ -190,15 +199,18 @@ function closeModal(overlay) {
 }
 
 export default function decorate(block) {
-  // Detect authoring mode - check if any element has data-aue attributes
-  const isAuthoringMode = [...block.querySelectorAll('*')].some((element) => [...element.attributes].some((attr) => attr.name.startsWith('data-aue-')));
+  // Detect authoring mode - check the block wrapper itself for data-aue-resource
+  // (block.querySelectorAll only checks descendants, missing the wrapper itself)
+  const rows = [...block.children];
+  const hasAuthoringAttrs = block.hasAttribute('data-aue-resource')
+    || rows.some((row) => [...row.attributes].some(({ name }) => name.startsWith('data-aue-')));
+  const isAuthoringMode = hasAuthoringAttrs && window.self !== window.top;
 
   // In authoring mode, don't process the block to allow proper content authoring
   if (isAuthoringMode) {
     return;
   }
 
-  const rows = [...block.children];
   const titleSource = rows[0]?.firstElementChild || rows[0];
   const descSource = rows[1]?.firstElementChild || rows[1];
   const saveRow = rows.find((row, index) => index > 1
@@ -252,7 +264,15 @@ export default function decorate(block) {
       'aria-label': 'Close cookie settings',
     },
   });
-  closeBtn.innerHTML = '&times;';
+  const closeBtnImg = el('img', {
+    attrs: {
+      src: '/icons/Cancel.svg',
+      alt: '',
+      width: '24',
+      height: '24',
+    },
+  });
+  closeBtn.append(closeBtnImg);
 
   const header = el('div', { className: 'cookie-modal-header' });
   const titleEl = el('h2', {
@@ -277,8 +297,10 @@ export default function decorate(block) {
     descriptionHTML,
     cookieName,
     isChecked,
-  }) => {
-    const { item, input } = buildAccordionItem(cookieName, labelText, descriptionHTML, isChecked);
+  }, index) => {
+    // Only first item starts expanded (matches live site)
+    // eslint-disable-next-line max-len
+    const { item, input } = buildAccordionItem(cookieName, labelText, descriptionHTML, isChecked, index === 0);
     body.append(item);
     toggleInputs.push({ cookieName, input });
   });
@@ -330,4 +352,6 @@ export default function decorate(block) {
   block.innerHTML = '';
   block.classList.add('cookie-modal-initialized');
   window.showCookieModal = (trigger) => openModal(overlay, trigger);
+  // eslint-disable-next-line no-console
+  console.log('[cookie-modal] window.showCookieModal registered successfully');
 }

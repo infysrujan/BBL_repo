@@ -2,56 +2,46 @@
    Cookie Alert Banner
    ========================================================================== */
 
-.cookie-alert-container {
-  position: fixed;
-  inset: auto 0 0;
-  width: 100%;
-  z-index: 9000;
-}
-
-.cookie-alert-wrapper .cookie-alert {
-  position: fixed;
-  inset: auto 0 0;
-  width: 100%;
-  z-index: 9000;
-  background: #fff;
-  box-shadow: 0 -4px 10px 0 rgb(0 0 0 / 20%);
-  opacity: 0.96;
-}
-
 .cookie-alert-banner {
-  width: 100%;
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 10;
+  background: var(--bbl-color-white);
+  box-shadow: 0 -0.25rem 0.625rem 0 var(--bbl-color-black-alpha-20);
+  opacity: 0.96;
+  overflow: hidden;
 }
 
 .cookie-alert-inner {
-  max-width: 1440px;
+  max-width: 90rem;
   margin: 0 auto;
-  padding: 28px 16px 32px;
+  padding: var(--bbl-space-350) var(--bbl-space-200) var(--bbl-space-400);
 }
 
 .cookie-alert-text {
   width: 100%;
-  color: #000;
-  font-size: 0.875rem;
+  color: var(--bbl-color-black);
+  font-size: var(--bbl-font-size-base);
   line-height: 1.4;
   text-align: left;
 }
 
 .cookie-alert-text p {
   margin: 0;
-  color: #000;
+  color: var(--bbl-color-black);
 }
 
 .cookie-alert-policy-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-  color: var(--bbl-color-active-blue, #0064ff);
-  font-size: 0.875rem;
+  gap: var(--bbl-space-100);
+  margin-top: var(--bbl-space-050);
+  color: var(--bbl-color-active-blue);
+  font-size: var(--bbl-font-size-base);
   font-weight: 700;
   line-height: 1.5rem;
   text-decoration: none;
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif ;
 }
 
 .cookie-alert-policy-link:hover,
@@ -62,30 +52,31 @@
 
 .cookie-alert-policy-link::after {
   content: '';
-  width: 24px;
-  height: 24px;
+  width: var(--bbl-space-300);
+  height: var(--bbl-space-300);
   flex-shrink: 0;
   background: center / contain no-repeat url('../../icons/Arrow-right.svg');
+  filter: invert(20%) sepia(95%) saturate(5000%) hue-rotate(210deg) brightness(102%) contrast(104%);
 }
 
 .cookie-alert-buttons {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  gap: 0.9375rem;
   flex-wrap: wrap;
-  margin-top: 24px;
+  margin-top: var(--bbl-space-300);
 }
 
 .cookie-alert-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 150px;
+  min-width: 9.375rem;
   padding: 0.625rem 1rem;
-  border: 1px solid var(--bbl-color-active-blue, #0064ff);
+  border: 1px solid var(--bbl-color-active-blue);
   border-radius: 0.5rem;
-  font-family: var(--bbl-font-family-primary, inherit);
+  font-family: var(--bbl-font-family-primary);
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.375rem;
@@ -98,48 +89,48 @@
 }
 
 .cookie-alert-btn:focus-visible {
-  outline: 2px solid var(--bbl-color-active-blue, #0064ff);
+  outline: 2px solid var(--bbl-color-active-blue);
   outline-offset: 2px;
 }
 
 .cookie-alert-btn-secondary {
-  background: #fff;
-  color: var(--bbl-color-active-blue, #0064ff);
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
 }
 
 .cookie-alert-btn-secondary:hover,
 .cookie-alert-btn-secondary:focus-visible {
-  background: var(--bbl-color-active-blue, #0064ff);
-  color: #fff;
-  border-color: var(--bbl-color-active-blue, #0064ff);
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border-color: var(--bbl-color-active-blue);
 }
 
 .cookie-alert-btn-primary {
-  background: var(--bbl-color-active-blue, #0064ff);
-  color: #fff;
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
 }
 
 .cookie-alert-btn-primary:hover,
 .cookie-alert-btn-primary:focus-visible {
-  background: #0048b7;
-  border-color: #0048b7;
+  background: var(--bbl-color-blue-90);
+  border-color: var(--bbl-color-blue-90);
 }
 
-@media (width >= 47.5rem) {
+@media (width > 47.5rem) {
   .cookie-alert-inner {
-    padding: 40px 80px 48px;
+    padding: var(--bbl-space-500) var(--bbl-space-1000) var(--bbl-space-600);
   }
 
   .cookie-alert-buttons {
-    gap: 20px;
+    gap: var(--bbl-space-250);
   }
 }
 
-@media (width >= 64rem) {
+@media (width > 64rem) {
   .cookie-alert-btn {
-    min-width: 123px;
-    padding-left: 0.625rem;
-    padding-right: 0.625rem;
-    font-size: 0.875rem;
+    min-width: 9.375rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 1rem;
   }
 }
