@@ -48,11 +48,9 @@ function acceptAll(section) {
     [COOKIE_ADVERTISING]: true,
   };
 
-  Object.entries(preferences).forEach(([cookieName, enabled]) => {
-    setCookie(cookieName, String(enabled), COOKIE_DURATION_DAYS);
-  });
-
-  setCookie(COOKIE_CONSENT, 'true', COOKIE_DURATION_DAYS);
+  setCookie(COOKIE_ANALYTIC, 'Analysis', COOKIE_DURATION_DAYS);
+  setCookie(COOKIE_ADVERTISING, 'Advertising', COOKIE_DURATION_DAYS);
+  setCookie(COOKIE_CONSENT, 'ALERT', COOKIE_DURATION_DAYS);
   dispatchConsentSaved(preferences);
   section?.remove();
 }
@@ -102,7 +100,7 @@ async function ensureCookieModal(fragmentPath) {
 }
 
 export default async function decorate(block) {
-  if (getCookie(COOKIE_CONSENT) === 'true') {
+  if (getCookie(COOKIE_CONSENT) === 'ALERT') {
     block.closest('.section')?.remove();
     return;
   }

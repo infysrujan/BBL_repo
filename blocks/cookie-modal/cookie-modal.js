@@ -23,6 +23,11 @@ const COOKIE_NAME_MAP = {
   'advertising cookies': 'AdvertisingCookie',
 };
 
+const COOKIE_VALUE_MAP = {
+  AnalysisCookie: 'Analysis',
+  AdvertisingCookie: 'Advertising',
+};
+
 function setCookie(name, value, days) {
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
   document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; `
@@ -233,7 +238,7 @@ export default function decorate(block) {
     const defaultEnabled = cols[2]?.textContent?.trim().toLowerCase() !== 'false';
     const cookieName = COOKIE_NAME_MAP[labelText.toLowerCase()] || labelText;
     const stored = getCookie(cookieName);
-    const isChecked = stored !== null ? stored === 'true' : defaultEnabled;
+    const isChecked = stored !== null ? true : defaultEnabled;
 
     return {
       labelText,
@@ -339,10 +344,12 @@ export default function decorate(block) {
 
     toggleInputs.forEach(({ cookieName, input }) => {
       preferences[cookieName] = input.checked;
-      setCookie(cookieName, String(input.checked), COOKIE_DURATION_DAYS);
+      if (input.checked) {
+        setCookie(cookieName, COOKIE_VALUE_MAP[cookieName] || cookieName, COOKIE_DURATION_DAYS);
+      }
     });
 
-    setCookie(COOKIE_CONSENT, 'true', COOKIE_DURATION_DAYS);
+    setCookie(COOKIE_CONSENT, 'ALERT', COOKIE_DURATION_DAYS);
     closeModal(overlay);
     document.dispatchEvent(new CustomEvent(CONSENT_SAVED_EVENT, {
       detail: { preferences },
