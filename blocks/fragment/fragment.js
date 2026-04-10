@@ -4,14 +4,24 @@
  * https://www.aem.live/developer/block-collection/fragment
  */
 
-// eslint-disable-next-line import/no-cycle
-import {
-  decorateMain,
-} from '../../scripts/scripts.js';
-
 import {
   loadSections,
 } from '../../scripts/aem.js';
+
+/**
+ * Dispatches a 'bbl:decorate-main' event and waits for scripts.js to call
+ * decorateMain() on the element. This avoids a direct import of scripts.js
+ * which would create a circular dependency.
+ * @param {HTMLElement} main
+ * @returns {Promise<void>}
+ */
+function requestDecorateMain(main) {
+  return new Promise((resolve) => {
+    document.dispatchEvent(new CustomEvent('bbl:decorate-main', {
+      detail: { main, resolve },
+    }));
+  });
+}
 
 /**
  * Loads a fragment.
@@ -36,7 +46,7 @@ export async function loadFragment(path) {
       resetAttributeBase('img', 'src');
       resetAttributeBase('source', 'srcset');
 
-      await decorateMain(main);
+      await requestDecorateMain(main);
       await loadSections(main);
       return main;
     }

@@ -6,6 +6,27 @@ import {
   decorateBlock,
   loadBlock,
 } from './aem.js';
+
+// Register early (module is imported before loadPage runs) so the event is
+// caught before any block modules are loaded. Dynamic import breaks the static
+// cycle with fragment.js → scripts.js.
+document.addEventListener('bbl:load-fragment', async (e) => {
+  const { path, callback } = e.detail;
+  if (!path) return;
+  try {
+    const { loadFragment } = await import('../blocks/fragment/fragment.js');
+    const fragment = await loadFragment(path);
+    if (fragment) {
+      document.body.appendChild(fragment);
+    }
+    if (typeof callback === 'function') {
+      callback(fragment);
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`[bbl-decorators] Failed to load fragment from event: ${path}`, error);
+  }
+});
 /**
  * Helper function to parse comma-separated URL strings from config
  * @param {string} urlString - Comma-separated URL string

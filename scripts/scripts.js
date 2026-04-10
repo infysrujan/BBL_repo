@@ -23,29 +23,6 @@ import {
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
 
-// Register early so the event is caught before any block modules are loaded.
-// fragment.js also registers this listener, but it loads too late when triggered
-// from buildCookieAlert (which runs before decorateBlocks).
-// Dynamic import breaks the static cycle with fragment.js → scripts.js.
-document.addEventListener('bbl:load-fragment', async (e) => {
-  const { path, callback } = e.detail;
-  if (!path) return;
-  try {
-    // eslint-disable-next-line import/no-cycle
-    const { loadFragment } = await import('../blocks/fragment/fragment.js');
-    const fragment = await loadFragment(path);
-    if (fragment) {
-      document.body.appendChild(fragment);
-    }
-    if (typeof callback === 'function') {
-      callback(fragment);
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`[scripts] Failed to load fragment from event: ${path}`, error);
-  }
-});
-
 /**
  * Gets the language from the HTML tag.
  * @returns {string} The language code (e.g., 'en', 'th')
@@ -146,6 +123,15 @@ export async function decorateMain(main) {
     document.body.classList.add(`${pageVariant}`);
   }
 }
+
+// Handles decoration requests from fragment.js via event to avoid a circular
+// import (fragment.js → scripts.js → bbl-decorators.js → fragment.js).
+// Registered at module level so it is ready before any fragment block runs.
+document.addEventListener('bbl:decorate-main', async (e) => {
+  const { main, resolve } = e.detail;
+  await decorateMain(main);
+  resolve();
+});
 
 /**
  * Resolves html lang from URL path (locale segment after host, e.g. bangkokbank.com/en/...).
