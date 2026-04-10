@@ -236,7 +236,7 @@ export default function decorate(block) {
   const showArrows = variant === 'showArrowsDots';
 
   const slides = rows.slice(nextIndex);
-  block.className = 'carousel-dotted content';
+  block.classList.add('content');
 
   if (showDots) {
     block.classList.add(`dots-${dotsAlignment}-${dotsPosition}`);
