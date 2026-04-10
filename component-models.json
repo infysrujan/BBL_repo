@@ -2476,6 +2476,39 @@
     ]
   },
   {
+    "id": "forex-graph",
+    "fields": [
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "CTA Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "printLabel",
+        "label": "Print Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "downloadLabel",
+        "label": "Download Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "forex-rates",
     "fields": [
       {
