@@ -1,0 +1,33 @@
+{
+  "imagePickerFields": [
+    {
+      "...": "#/_imagePickerField"
+    },
+    {
+      "...": "#/_imagePickerMimeTypeField"
+    },
+    {
+      "...": "#/_imagePickerAltField"
+    }
+  ],
+  "_imagePickerField": {
+    "component": "custom-asset-namespace:custom-asset",
+    "name": "imagePicker",
+    "label": "Image",
+    "description": "Select an Image",
+    "configUrl": "/content/dam/image.config.json",
+    "valueType": "string"
+  },
+  "_imagePickerMimeTypeField": {
+    "component": "custom-asset-namespace:custom-asset-mimetype",
+    "valueType": "string",
+    "name": "imagePickerMimeType"
+  },
+  "_imagePickerAltField": {
+    "component": "text",
+    "valueType": "string",
+    "name": "imagePickerAlt",
+    "label": "Alternative text for accessibility",
+    "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+  }
+}

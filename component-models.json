@@ -357,12 +357,24 @@
     "id": "brand-logo",
     "fields": [
       {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePicker",
         "label": "Image",
-        "multi": false,
-        "required": true
+        "description": "Select an Image",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerMimeType"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
       },
       {
         "component": "aem-content",
@@ -2486,11 +2498,11 @@
         "collapsible": false,
         "fields": [
           {
-              "component": "text",
-              "name": "title",
-              "label": "Form Title",
-              "valueType": "string"
-            },
+            "component": "text",
+            "name": "title",
+            "label": "Form Title",
+            "valueType": "string"
+          },
           {
             "component": "text",
             "name": "style",
