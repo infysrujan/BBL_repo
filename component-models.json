@@ -357,24 +357,12 @@
     "id": "brand-logo",
     "fields": [
       {
-        "component": "custom-asset-namespace:custom-asset",
-        "name": "imagePicker",
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
         "label": "Image",
-        "description": "Select an Image",
-        "configUrl": "/content/dam/image.config.json",
-        "valueType": "string"
-      },
-      {
-        "component": "custom-asset-namespace:custom-asset-mimetype",
-        "valueType": "string",
-        "name": "imagePickerMimeType"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imagePickerAlt",
-        "label": "Alternative text for accessibility",
-        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+        "multi": false,
+        "required": true
       },
       {
         "component": "aem-content",
@@ -8514,17 +8502,24 @@
     "id": "story-card",
     "fields": [
       {
-        "component": "reference",
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePicker",
+        "label": "Image",
+        "description": "Select an Image",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "backgroundImage",
-        "label": "Background Image",
-        "multi": false
+        "name": "imagePickerMimeType"
       },
       {
         "component": "text",
-        "name": "backgroundImageAlt",
-        "label": "Background Image Alt",
-        "valueType": "string"
+        "valueType": "string",
+        "name": "imagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
       },
       {
         "component": "text",

@@ -21,7 +21,12 @@
       "id": "brand-logo",
       "fields": [
         {
-          "...": "../../models/elements/_image-picker.json#/imagePickerFields"
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Image",
+          "multi": false,
+          "required": true
         },
         {
           "component": "aem-content",

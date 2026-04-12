@@ -22,17 +22,7 @@
 			"id": "story-card",
 			"fields": [
 				{
-					"component": "reference",
-					"valueType": "string",
-					"name": "backgroundImage",
-					"label": "Background Image",
-					"multi": false
-				},
-				{
-					"component": "text",
-					"name": "backgroundImageAlt",
-					"label": "Background Image Alt",
-					"valueType": "string"
+					"...": "../../models/elements/_image-picker.json#/imagePickerFields"
 				},
 				{
 					"component": "text",
