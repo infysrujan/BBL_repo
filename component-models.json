@@ -8506,7 +8506,7 @@
         "name": "imagePicker",
         "label": "Image",
         "description": "Select an Image",
-        "configUrl": "/content/dam/image.config.json",
+        "configUrl": "https://smartcrop-20864--site-dev--bangkok-bank.aem.page/image.config.json",
         "valueType": "string"
       },
       {
