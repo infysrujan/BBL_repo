@@ -107,6 +107,12 @@
     ]
   },
   {
+    "id": "credit-card-selector",
+    "components": [
+      "credit-card-section"
+    ]
+  },
+  {
     "id": "form",
     "components": [
       "captcha",
