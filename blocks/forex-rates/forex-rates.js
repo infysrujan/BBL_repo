@@ -109,12 +109,23 @@ function renderDatepicker(state, monthLabels, dayLabels, buddhistYearOffset) {
 }
 
 function renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYearOffset) {
-  const options = state.updates.map((item) => {
+  const selectedUpdateObj = state.updates.find(
+    (item) => trimValue(item.Update) === state.selectedUpdate,
+  );
+  const selectedLabel = selectedUpdateObj
+    ? `${trimValue(selectedUpdateObj.Update)}: ${trimValue(selectedUpdateObj.Time)}`
+    : (state.selectedUpdate || '');
+
+  const timeItems = state.updates.map((item) => {
     const update = trimValue(item.Update);
     const time = trimValue(item.Time);
-    const selected = update === state.selectedUpdate ? ' selected' : '';
-    return `<option value="${escapeHtml(update)}"${selected}>${escapeHtml(`${update}: ${time}`)}</option>`;
+    const label = `${update}: ${time}`;
+    const isActive = update === state.selectedUpdate;
+    return `<li class="forex-rates-time-item${isActive ? ' is-active' : ''}" role="option" aria-selected="${isActive}" data-value="${escapeHtml(update)}">${escapeHtml(label)}</li>`;
   }).join('');
+
+  const timeDropdownOpen = state.timeDropdownOpen ? ' is-open' : '';
+  const timeDisabled = !state.updates.length ? ' is-disabled' : '';
 
   const rows = state.rates.map((rate) => `<tr>
     <td class="forex-rates-currency">
@@ -142,8 +153,13 @@ function renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYe
           ${renderDatepicker(state, monthLabels, dayLabels, buddhistYearOffset)}
         </div>
         <div class="forex-rates-time-wrap">
-          <select id="forex-rates-time-select" class="forex-rates-time-select"${state.updates.length ? '' : ' disabled'}>${options}</select>
-          <i class="icon-dropdown forex-rates-time-chevron" aria-hidden="true"></i>
+          <div class="forex-rates-time-dropdown${timeDropdownOpen}${timeDisabled}" role="combobox" aria-expanded="${state.timeDropdownOpen}" aria-haspopup="listbox">
+            <button type="button" class="forex-rates-time-trigger" aria-label="Select time" ${state.updates.length ? '' : 'disabled'}>
+              <span class="forex-rates-time-label">${escapeHtml(selectedLabel)}</span>
+              <i class="icon-dropdown forex-rates-time-chevron" aria-hidden="true"></i>
+            </button>
+            <ul class="forex-rates-time-list" role="listbox">${timeItems}</ul>
+          </div>
         </div>
         <button type="button" class="forex-rates-go-btn"${(!state.selectedDate || !state.selectedUpdate || state.loading) ? ' disabled' : ''}>${escapeHtml(authoring.ctaLabel)}</button>
         <button type="button" class="forex-rates-print-btn">${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i></button>
@@ -183,6 +199,7 @@ export default async function decorate(block) {
     loading: false,
     typedDate: '',
     calendarOpen: false,
+    timeDropdownOpen: false,
     viewMonth: 1,
     viewYear: 1970,
     maxSelectableMonth: null,
@@ -205,7 +222,8 @@ export default async function decorate(block) {
     const prevMonth = block.querySelector('.forex-rates-datepicker-prev');
     const nextMonth = block.querySelector('.forex-rates-datepicker-next');
     const dayButtons = block.querySelectorAll('.forex-rates-datepicker-day-btn');
-    const timeSelect = block.querySelector('.forex-rates-time-select');
+    const timeDropdownEl = block.querySelector('.forex-rates-time-dropdown');
+    const timeTrigger = block.querySelector('.forex-rates-time-trigger');
     const goButton = block.querySelector('.forex-rates-go-btn');
     const printButton = block.querySelector('.forex-rates-print-btn');
 
@@ -527,15 +545,49 @@ export default async function decorate(block) {
       });
     });
 
-    if (timeSelect) {
-      timeSelect.addEventListener('change', () => {
-        state.selectedUpdate = timeSelect.value;
-        render();
-        if (state.selectedDate && state.selectedUpdate && isValidSelectedDay(state)) {
-          loadRates(state.selectedDate, state.selectedUpdate);
+    const toggleTimeDropdown = (open) => {
+      state.timeDropdownOpen = open;
+      if (timeDropdownEl) timeDropdownEl.classList.toggle('is-open', open);
+    };
+
+    if (timeTrigger) {
+      timeTrigger.addEventListener('click', () => {
+        const next = !state.timeDropdownOpen;
+        toggleTimeDropdown(next);
+        if (next) {
+          document.addEventListener('mousedown', function closeTime(e) {
+            if (!timeDropdownEl || !timeDropdownEl.contains(e.target)) {
+              toggleTimeDropdown(false);
+            }
+            document.removeEventListener('mousedown', closeTime);
+          });
         }
       });
     }
+
+    block.querySelectorAll('.forex-rates-time-item').forEach((item) => {
+      item.addEventListener('click', () => {
+        const prev = state.selectedUpdate;
+        state.selectedUpdate = item.dataset.value;
+        toggleTimeDropdown(false);
+        if (prev !== state.selectedUpdate) {
+          const labelEl = block.querySelector('.forex-rates-time-label');
+          const selectedObj = state.updates.find(
+            (u) => trimValue(u.Update) === state.selectedUpdate,
+          );
+          if (labelEl && selectedObj) {
+            labelEl.textContent = `${trimValue(selectedObj.Update)}: ${trimValue(selectedObj.Time)}`;
+          }
+          block.querySelectorAll('.forex-rates-time-item').forEach((li) => {
+            li.classList.toggle('is-active', li.dataset.value === state.selectedUpdate);
+            li.setAttribute('aria-selected', li.dataset.value === state.selectedUpdate);
+          });
+          if (state.selectedDate && state.selectedUpdate && isValidSelectedDay(state)) {
+            loadRates(state.selectedDate, state.selectedUpdate);
+          }
+        }
+      });
+    });
 
     if (goButton) {
       goButton.addEventListener('click', () => {
