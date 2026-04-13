@@ -708,7 +708,7 @@ export default async function decorate(block) {
           // Create anchor without appending to DOM to avoid bbl-decorators interception
           const anchor = document.createElement('a');
           anchor.href = objectUrl;
-          anchor.download = 'FxData.csv';
+          anchor.download = placeholders.forexGraphDownloadFilename || 'FxData.csv';
           anchor.dispatchEvent(new MouseEvent('click', { bubbles: false }));
           URL.revokeObjectURL(objectUrl);
         } catch (e) {
