@@ -2126,130 +2126,102 @@
         "required": true
       },
       {
-        "component": "container",
-        "name": "primaryButton",
-        "label": "Primary Button",
-        "fields": [
+        "component": "aem-content",
+        "name": "applyButtonLink",
+        "label": "Apply Button Link",
+        "description": "Destination URL for the Apply button"
+      },
+      {
+        "component": "text",
+        "name": "applyButtonText",
+        "label": "Apply Button Text",
+        "description": "Apply button label text (default: Apply)",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "applyButtonTitle",
+        "label": "Apply Button Title",
+        "description": "Accessibility title attribute for Apply button (optional)"
+      },
+      {
+        "component": "select",
+        "name": "applyButtonType",
+        "label": "Apply Button Type",
+        "description": "Apply button style variant",
+        "valueType": "string",
+        "value": "primary",
+        "options": [
           {
-            "component": "aem-content",
-            "name": "link",
-            "label": "Link",
-            "description": "Destination URL for the primary button"
+            "name": "Primary",
+            "value": "primary"
           },
           {
-            "component": "text",
-            "name": "linkText",
-            "label": "Text",
-            "description": "Primary button label text (e.g., Apply)",
-            "required": true
+            "name": "Secondary",
+            "value": "secondary"
           },
           {
-            "component": "text",
-            "name": "linkTitle",
-            "label": "Title",
-            "description": "Accessibility title attribute (optional)"
-          },
-          {
-            "component": "select",
-            "name": "linkType",
-            "label": "Type",
-            "description": "Button style variant",
-            "valueType": "string",
-            "value": "primary",
-            "options": [
-              {
-                "name": "Primary",
-                "value": "primary"
-              },
-              {
-                "name": "Secondary",
-                "value": "secondary"
-              },
-              {
-                "name": "Tertiary",
-                "value": "tertiary"
-              }
-            ]
-          },
-          {
-            "component": "container",
-            "name": "targetSettings",
-            "label": "Target settings",
-            "fields": [
-              {
-                "component": "boolean",
-                "name": "targetLink",
-                "label": "Open link in new tab",
-                "description": "Enable to open the button link in a new browser tab",
-                "valueType": "boolean",
-                "value": false
-              }
-            ]
+            "name": "Tertiary",
+            "value": "tertiary"
           }
         ]
       },
       {
-        "component": "container",
-        "name": "secondaryButton",
-        "label": "Secondary Button",
-        "fields": [
+        "component": "boolean",
+        "name": "applyButtonTargetLink",
+        "label": "Open Apply button link in new tab",
+        "description": "Enable to open the Apply button link in a new browser tab",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "aem-content",
+        "name": "startOverButtonLink",
+        "label": "Start Over Button Link",
+        "description": "Destination URL for the Start Over button"
+      },
+      {
+        "component": "text",
+        "name": "startOverButtonText",
+        "label": "Start Over Button Text",
+        "description": "Start Over button label text (default: Start Over)",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "startOverButtonTitle",
+        "label": "Start Over Button Title",
+        "description": "Accessibility title attribute for Start Over button (optional)"
+      },
+      {
+        "component": "select",
+        "name": "startOverButtonType",
+        "label": "Start Over Button Type",
+        "description": "Start Over button style variant",
+        "valueType": "string",
+        "value": "secondary",
+        "options": [
           {
-            "component": "aem-content",
-            "name": "link",
-            "label": "Link",
-            "description": "Destination URL for the secondary button"
+            "name": "Primary",
+            "value": "primary"
           },
           {
-            "component": "text",
-            "name": "linkText",
-            "label": "Text",
-            "description": "Secondary button label text (e.g., Start Over)",
-            "required": true
+            "name": "Secondary",
+            "value": "secondary"
           },
           {
-            "component": "text",
-            "name": "linkTitle",
-            "label": "Title",
-            "description": "Accessibility title attribute (optional)"
-          },
-          {
-            "component": "select",
-            "name": "linkType",
-            "label": "Type",
-            "description": "Button style variant",
-            "valueType": "string",
-            "value": "secondary",
-            "options": [
-              {
-                "name": "Primary",
-                "value": "primary"
-              },
-              {
-                "name": "Secondary",
-                "value": "secondary"
-              },
-              {
-                "name": "Tertiary",
-                "value": "tertiary"
-              }
-            ]
-          },
-          {
-            "component": "container",
-            "name": "targetSettings",
-            "label": "Target settings",
-            "fields": [
-              {
-                "component": "boolean",
-                "name": "targetLink",
-                "label": "Open link in new tab",
-                "description": "Enable to open the button link in a new browser tab",
-                "valueType": "boolean",
-                "value": false
-              }
-            ]
+            "name": "Tertiary",
+            "value": "tertiary"
           }
         ]
+      },
+      {
+        "component": "boolean",
+        "name": "startOverButtonTargetLink",
+        "label": "Open Start Over button link in new tab",
+        "description": "Enable to open the Start Over button link in a new browser tab",
+        "valueType": "boolean",
+        "value": false
       }
     ]
   },
