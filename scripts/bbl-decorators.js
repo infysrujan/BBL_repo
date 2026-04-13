@@ -207,22 +207,11 @@ function handleGlobalLinkClicks() {
       const excludedUrlArray = parseUrlString(configData.excludedurl || '');
       const fullUrlArray = parseUrlString(configData.fullurl || '');
 
-      // eslint-disable-next-line no-console
-      console.log('URL Check:', {
-        clickedUrl: href,
-        hostnameUrls: hostnameUrlArray,
-        excludedUrls: excludedUrlArray,
-        fullUrls: fullUrlArray,
-      });
-
       // Case 1: Check if URL is in hostnameurl or fullurl
       const matchesHostnameList = matchesHostname(href, hostnameUrlArray);
       const matchesFullUrlList = matchesFullUrl(href, fullUrlArray);
 
       if (matchesHostnameList || matchesFullUrlList) {
-        // CASE 1: Show privacy modal
-        // eslint-disable-next-line no-console
-        console.log('Case 1: URL matches config - Loading privacy modal');
         await loadPrivacyModal(href);
         return;
       }
@@ -231,9 +220,6 @@ function handleGlobalLinkClicks() {
       const isExcluded = matchesFullUrl(href, excludedUrlArray);
 
       if (!isExcluded) {
-        // CASE 2: Show external redirect popup
-        // eslint-disable-next-line no-console
-        console.log('Case 2: URL not in config and not excluded - Showing redirect popup');
         await loadAndShowExternalRedirectPopup(href);
         return;
       }
