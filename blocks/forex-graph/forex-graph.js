@@ -82,6 +82,8 @@ function renderDatepicker(pick, pickerState, monthLabels, dayLabels, buddhistYea
   const calendarWeeks = buildCalendarGrid(pickerState.viewYear, pickerState.viewMonth);
   const selectedParsed = parseIsoDate(pickerState.selectedDate);
   const now = new Date();
+  const nextDisabled = pickerState.viewYear === now.getFullYear()
+    && pickerState.viewMonth === now.getMonth() + 1;
 
   const weeksMarkup = calendarWeeks.map((week) => {
     const cells = week.map((cell, index) => {
@@ -129,7 +131,7 @@ function renderDatepicker(pick, pickerState, monthLabels, dayLabels, buddhistYea
         <span class="forex-graph-datepicker-month">${escapeHtml(monthLabels[pickerState.viewMonth - 1] || '')}</span>
         <span class="forex-graph-datepicker-year">${pickerState.viewYear + buddhistYearOffset}</span>
       </div>
-      <button type="button" class="forex-graph-datepicker-nav forex-graph-datepicker-next" data-pick="${pick}" aria-label="Next month"><i class="icon-arrow-left" aria-hidden="true"></i></button>
+      <button type="button" class="forex-graph-datepicker-nav forex-graph-datepicker-next${nextDisabled ? ' is-disabled' : ''}" data-pick="${pick}" aria-label="Next month"${nextDisabled ? ' disabled' : ''}><i class="icon-arrow-left" aria-hidden="true"></i></button>
     </div>
     <table class="forex-graph-datepicker-calendar">
       <thead><tr>${daysHeader}</tr></thead>
