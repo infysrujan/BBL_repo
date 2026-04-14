@@ -258,9 +258,11 @@ export default function decorate(block) {
   block.setAttribute('role', 'region');
   block.setAttribute('aria-roledescription', 'carousel');
 
-  const slideEls = slides.map((row, index) => (showArrows
-    ? buildArrowsDotsSlide(row, index)
-    : buildSlide(row, index)));
+  const slideEls = slides
+    .map((row, index) => (showArrows
+      ? buildArrowsDotsSlide(row, index)
+      : buildSlide(row, index)))
+    .filter(Boolean);
 
   const slidesWithImage = slideEls.filter((s) => s.classList.contains('with-image')).length;
   const slidesWithoutImage = slideEls.filter((s) => s.classList.contains('without-image')).length;
