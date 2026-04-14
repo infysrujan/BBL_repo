@@ -4,6 +4,9 @@
       "...": "#/_imagePickerField"
     },
     {
+      "...": "#/_imagePickerMimeTypeField"
+    },
+    {
       "...": "#/_imagePickerAltField"
     }
   ],
@@ -14,6 +17,11 @@
     "description": "Select an Image",
     "configUrl": "/content/dam/image.config.json",
     "valueType": "string"
+  },
+  "_imagePickerMimeTypeField": {
+    "component": "custom-asset-namespace:custom-asset-mimetype",
+    "valueType": "string",
+    "name": "imagePickerMimeType"
   },
   "_imagePickerAltField": {
     "component": "text",

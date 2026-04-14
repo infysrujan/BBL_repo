@@ -8510,6 +8510,11 @@
         "valueType": "string"
       },
       {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerMimeType"
+      },
+      {
         "component": "text",
         "valueType": "string",
         "name": "imagePickerAlt",
