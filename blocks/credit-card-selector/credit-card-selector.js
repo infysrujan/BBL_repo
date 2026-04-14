@@ -1,6 +1,387 @@
+/**
+ * Build a single filter option card: li > label > [input] [option-icon?] [option-text]
+ *
+ * @param {Element} sourceItem   - Original EDS <li> (may contain an .icon span with img)
+ * @param {string}  inputType    - 'radio' | 'checkbox'
+ * @param {string}  groupName    - Shared name attribute for the input group
+ * @param {number}  index        - Position within the group
+ * @param {boolean} stackedLayout - true = icon-on-top (lifestyle), false = icon-inline (benefits)
+ */
+function buildFilterOptionCard(sourceItem, inputType, groupName, index, stackedLayout) {
+  const listItem = document.createElement('li');
+  listItem.className = 'option-item';
+
+  const optionCard = document.createElement('label');
+  optionCard.className = `option-card${
+    stackedLayout ? ' option-card--stacked' : ''
+  }`;
+  optionCard.htmlFor = `${groupName}-${index}`;
+
+  // Native input — visually hidden, accessible via label
+  const nativeInput = document.createElement('input');
+  nativeInput.type = inputType;
+  nativeInput.name = groupName;
+  nativeInput.id = `${groupName}-${index}`;
+  optionCard.appendChild(nativeInput);
+
+  // Icon — lifted from EDS .icon > img, if present in the source list item
+  const sourceIconImg = sourceItem.querySelector('.icon img');
+  if (sourceIconImg) {
+    const iconWrapper = document.createElement('span');
+    iconWrapper.className = `option-icon option-icon--${
+      stackedLayout ? 'above' : 'inline'
+    }`;
+    iconWrapper.setAttribute('aria-hidden', 'true');
+
+    const iconImg = sourceIconImg.cloneNode(true);
+    // Remove inline size attributes; sizes controlled entirely by CSS
+    iconImg.removeAttribute('width');
+    iconImg.removeAttribute('height');
+    iconWrapper.appendChild(iconImg);
+    optionCard.appendChild(iconWrapper);
+  }
+
+  // Text — strip .icon markup from a clone so only the text node remains
+  const textClone = sourceItem.cloneNode(true);
+  textClone.querySelectorAll('.icon').forEach((iconEl) => iconEl.remove());
+
+  const optionText = document.createElement('span');
+  optionText.className = 'option-text';
+  optionText.textContent = textClone.textContent.trim();
+  optionCard.appendChild(optionText);
+
+  listItem.appendChild(optionCard);
+  return listItem;
+}
+
+/**
+ * Build a complete filter group: section > [group-header] > option-list
+ *
+ * @param {object} group - Group configuration
+ * @param {number} groupIndex - Used to generate unique input group names
+ */
+function buildFilterGroup(group, groupIndex) {
+  const section = document.createElement('div');
+  section.className = 'filter-group';
+
+  // Header: title + optional hint
+  const groupHeader = document.createElement('div');
+  groupHeader.className = 'filter-group-header';
+
+  const groupTitle = document.createElement('h3');
+  groupTitle.className = 'filter-group-title';
+  groupTitle.textContent = group.displayTitle;
+  groupHeader.appendChild(groupTitle);
+
+  if (group.sectionHint) {
+    const selectionHint = document.createElement('span');
+    selectionHint.className = 'filter-group-hint';
+    selectionHint.textContent = group.sectionHint;
+    groupHeader.appendChild(selectionHint);
+  }
+
+  section.appendChild(groupHeader);
+
+  const groupName = `filter-group-${groupIndex}`;
+  const inputType = group.isLifestyle ? 'checkbox' : 'radio';
+
+  // Sections whose items have no icons (e.g. Monthly Income) also get a mobile
+  // <select> dropdown — matching the live site's responsive behaviour.
+  const hasIcons = group.items.some((item) => !!item.querySelector('.icon'));
+  const needsMobileDropdown = !hasIcons && !group.isLifestyle;
+
+  // --- Desktop card list (hidden on mobile when a dropdown is present) ---
+  const optionList = document.createElement('ul');
+  optionList.className = `option-list${
+    group.isLifestyle ? ' option-list--three-column' : ''
+  }`;
+
+  group.items.forEach((item, i) => {
+    optionList.appendChild(
+      buildFilterOptionCard(item, inputType, groupName, i, group.isLifestyle),
+    );
+  });
+
+  const desktopCards = document.createElement('div');
+  desktopCards.className = needsMobileDropdown
+    ? 'filter-options-desktop'
+    : 'filter-options-always';
+  desktopCards.appendChild(optionList);
+  section.appendChild(desktopCards);
+
+  // --- Mobile <select> dropdown (hidden on tablet / desktop) ---
+  if (needsMobileDropdown) {
+    const mobileDropdown = document.createElement('div');
+    mobileDropdown.className = 'filter-options-mobile';
+
+    const select = document.createElement('select');
+    select.className = 'filter-dropdown';
+    select.dataset.groupName = groupName;
+
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '-- Select --';
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    select.appendChild(placeholder);
+
+    group.items.forEach((item, i) => {
+      const clone = item.cloneNode(true);
+      clone.querySelectorAll('.icon').forEach((el) => el.remove());
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = clone.textContent.trim();
+      select.appendChild(opt);
+    });
+
+    mobileDropdown.appendChild(select);
+    section.appendChild(mobileDropdown);
+  }
+
+  return section;
+}
+
+/**
+ * Sync the Start Over visibility and Apply disabled state against current selections.
+ * Both Start Over (visible) and Apply (enabled) require every filter group
+ * to have at least one option selected.
+ */
+function syncActionButtonState(block, filterGroups, startOverButton, applyButton) {
+  const everyGroupSelected = filterGroups.every(
+    (_, i) => !!block.querySelector(`input[name="filter-group-${i}"]:checked`),
+  );
+  startOverButton.style.display = everyGroupSelected ? '' : 'none';
+  applyButton.disabled = !everyGroupSelected;
+}
+
+/**
+ * EDS decorate entry point.
+ *
+ * Block row mapping (matches _credit-card-selector.json model):
+ *   Row  0  sectionName            — main heading text
+ *   Row  1  applyButtonLink        — <a> anchor element
+ *   Row  2  applyButtonText
+ *   Row  3  applyButtonTitle       — accessibility title attribute
+ *   Row  4  applyButtonType        — primary | secondary | tertiary
+ *   Row  5  applyButtonTargetLink  — 'true' | 'false'
+ *   Row  6  startOverButtonLink    — <a> anchor element
+ *   Row  7  startOverButtonText
+ *   Row  8  startOverButtonTitle
+ *   Row  9  startOverButtonType    — primary | secondary | tertiary
+ *   Row 10  startOverButtonTargetLink
+ *   Row 11+ credit-card-section items (subSectionTitle | rich-text list)
+ *
+ * Column assignment:
+ *   Sections whose title contains "lifestyle" → right column (checkbox, max 3 selections)
+ *   All other sections                        → left column  (radio, single-select)
+ */
 export default function decorate(block) {
   const rows = [...block.children];
-  rows.forEach((row, i) => {
-    console.log(i, row.innerHTML);
+
+  const readRowText = (row) => row?.querySelector('p')?.textContent?.trim() ?? '';
+  const readRowHref = (row) => row?.querySelector('a')?.getAttribute('href') ?? '';
+
+  // ── Config rows 0–10 ──────────────────────────────────────────────────────
+  const mainTitle = readRowText(rows[0]);
+
+  const applyButtonConfig = {
+    href: readRowHref(rows[1]),
+    label: readRowText(rows[2]) || 'Apply',
+    titleAttr: readRowText(rows[3]),
+    variant: readRowText(rows[4]) || 'primary',
+    opensInNewTab: readRowText(rows[5]) === 'true',
+  };
+
+  const startOverButtonConfig = {
+    href: readRowHref(rows[6]),
+    label: readRowText(rows[7]) || 'Start Over',
+    titleAttr: readRowText(rows[8]),
+    variant: readRowText(rows[9]) || 'secondary',
+    opensInNewTab: readRowText(rows[10]) === 'true',
+  };
+
+  // ── Section rows 11+ ──────────────────────────────────────────────────────
+  const filterGroups = [];
+  for (let i = 11; i < rows.length; i += 1) {
+    const cells = [...rows[i].children];
+    const rawTitle = cells[0]?.querySelector('p')?.textContent?.trim() ?? '';
+
+    // The UE model appends " Selection" to labels — strip it for display
+    const displayTitle = rawTitle.replace(/ Selection$/i, '');
+    const listItems = [...(cells[1]?.querySelectorAll('li') ?? [])];
+    if (listItems.length > 0) {
+      // Hint text is authored as a <p> in the content cell, before the <ul>
+      const sectionHint = cells[1]?.querySelector('p')?.textContent?.trim() ?? '';
+
+      const isLifestyle = rawTitle.toLowerCase().includes('lifestyle');
+      filterGroups.push({
+        displayTitle,
+        sectionHint,
+        items: listItems,
+        isLifestyle,
+        maxSelect: isLifestyle ? 3 : 1,
+      });
+    }
+  }
+
+  // ── Build DOM ─────────────────────────────────────────────────────────────
+  block.innerHTML = '';
+
+  // Main heading
+  const selectorHeader = document.createElement('div');
+  selectorHeader.className = 'card-selector-header';
+
+  const mainHeading = document.createElement('h2');
+  mainHeading.className = 'card-selector-title';
+  mainHeading.textContent = mainTitle;
+  selectorHeader.appendChild(mainHeading);
+  block.appendChild(selectorHeader);
+
+  // Two-column content area
+  const selectorContent = document.createElement('div');
+  selectorContent.className = 'card-selector-content';
+
+  const primaryFilterColumn = document.createElement('div');
+  primaryFilterColumn.className = 'filter-column filter-column--primary';
+
+  const lifestyleFilterColumn = document.createElement('div');
+  lifestyleFilterColumn.className = 'filter-column filter-column--lifestyle';
+
+  filterGroups.forEach((group, index) => {
+    const groupElement = buildFilterGroup(group, index);
+    if (group.isLifestyle) {
+      lifestyleFilterColumn.appendChild(groupElement);
+    } else {
+      primaryFilterColumn.appendChild(groupElement);
+    }
+  });
+
+  selectorContent.appendChild(primaryFilterColumn);
+  selectorContent.appendChild(lifestyleFilterColumn);
+
+  // ── Collapsible wrapper — encloses the content grid and the toggle bar ─────
+  const collapsibleWrapper = document.createElement('div');
+  collapsibleWrapper.className = 'card-selector-collapsible';
+  collapsibleWrapper.appendChild(selectorContent);
+
+  // Toggle bar: always visible, sits directly below the content grid
+  const toggleBar = document.createElement('div');
+  toggleBar.className = 'collapse-toggle-bar';
+
+  const collapseToggleButton = document.createElement('button');
+  collapseToggleButton.type = 'button';
+  collapseToggleButton.className = 'collapse-toggle-button';
+  collapseToggleButton.setAttribute('aria-expanded', 'true');
+  collapseToggleButton.setAttribute('aria-label', 'Toggle card selector');
+  toggleBar.appendChild(collapseToggleButton);
+  collapsibleWrapper.appendChild(toggleBar);
+
+  block.appendChild(collapsibleWrapper);
+
+  // ── Action buttons (inside lifestyle column, pushed to bottom) ────────────
+  const selectorActions = document.createElement('div');
+  selectorActions.className = 'selector-actions';
+
+  const ALLOWED_VARIANTS = new Set(['primary', 'secondary', 'tertiary']);
+
+  const startOverButton = document.createElement('button');
+  startOverButton.type = 'button';
+  const startOverVariant = ALLOWED_VARIANTS.has(startOverButtonConfig.variant)
+    ? startOverButtonConfig.variant
+    : 'secondary';
+  startOverButton.className = `selector-button selector-button--${startOverVariant}`;
+  startOverButton.textContent = startOverButtonConfig.label;
+  if (startOverButtonConfig.titleAttr) startOverButton.title = startOverButtonConfig.titleAttr;
+  startOverButton.style.display = 'none';
+
+  const applyButton = document.createElement('button');
+  applyButton.type = 'button';
+  const applyVariant = ALLOWED_VARIANTS.has(applyButtonConfig.variant)
+    ? applyButtonConfig.variant
+    : 'primary';
+  applyButton.className = `selector-button selector-button--${applyVariant}`;
+  applyButton.textContent = applyButtonConfig.label;
+  if (applyButtonConfig.titleAttr) applyButton.title = applyButtonConfig.titleAttr;
+  applyButton.disabled = true;
+
+  selectorActions.appendChild(startOverButton);
+  selectorActions.appendChild(applyButton);
+  lifestyleFilterColumn.appendChild(selectorActions);
+
+  // ── Event listeners ───────────────────────────────────────────────────────
+
+  startOverButton.addEventListener('click', () => {
+    block.querySelectorAll('input').forEach((input) => { input.checked = false; });
+    block.querySelectorAll('.option-card.is-selected').forEach((card) => {
+      card.classList.remove('is-selected');
+    });
+    // Reset any mobile <select> dropdowns back to the placeholder
+    block.querySelectorAll('.filter-dropdown').forEach((select) => {
+      select.value = '';
+      select.classList.remove('has-value');
+    });
+    syncActionButtonState(block, filterGroups, startOverButton, applyButton);
+  });
+
+  applyButton.addEventListener('click', () => {
+    if (applyButtonConfig.href) {
+      window.open(
+        applyButtonConfig.href,
+        applyButtonConfig.opensInNewTab ? '_blank' : '_self',
+      );
+    }
+  });
+
+  // Single delegated listener covers all option changes (radios, checkboxes, mobile selects)
+  block.addEventListener('change', (e) => {
+    const changedInput = e.target;
+
+    // --- Mobile <select> dropdown ---
+    if (changedInput.classList.contains('filter-dropdown')) {
+      const itemIndex = parseInt(changedInput.value, 10);
+      const { groupName } = changedInput.dataset;
+      // Sync the hidden radio inputs so state-tracking works uniformly
+      block.querySelectorAll(`input[name="${groupName}"]`).forEach((radio, i) => {
+        radio.checked = i === itemIndex;
+        radio.closest('.option-card')?.classList.toggle('is-selected', i === itemIndex);
+      });
+      // Mirror the selected-card blue border onto the dropdown itself
+      changedInput.classList.toggle('has-value', changedInput.value !== '');
+      syncActionButtonState(block, filterGroups, startOverButton, applyButton);
+      return;
+    }
+
+    if (!changedInput.matches('input[type="radio"], input[type="checkbox"]')) return;
+
+    // Enforce max selections per lifestyle checkbox group
+    if (changedInput.type === 'checkbox' && changedInput.checked) {
+      const groupIndex = parseInt(changedInput.name.replace('filter-group-', ''), 10);
+      const maxAllowed = filterGroups[groupIndex]?.maxSelect ?? 3;
+      const currentCount = block.querySelectorAll(
+        `input[name="${changedInput.name}"]:checked`,
+      ).length;
+      if (currentCount > maxAllowed) {
+        changedInput.checked = false;
+        return;
+      }
+    }
+
+    // Remove selected state from sibling cards on radio change
+    if (changedInput.type === 'radio') {
+      block.querySelectorAll(`input[name="${changedInput.name}"]`).forEach((sibling) => {
+        sibling.closest('.option-card')?.classList.remove('is-selected');
+      });
+    }
+
+    // Toggle the visual selected state on the clicked card
+    changedInput.closest('.option-card')?.classList.toggle('is-selected', changedInput.checked);
+
+    syncActionButtonState(block, filterGroups, startOverButton, applyButton);
+  });
+
+  // Collapse / expand the content grid
+  collapseToggleButton.addEventListener('click', () => {
+    const isNowCollapsed = collapsibleWrapper.classList.toggle('is-collapsed');
+    collapseToggleButton.setAttribute('aria-expanded', String(!isNowCollapsed));
   });
 }
