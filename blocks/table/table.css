@@ -20,9 +20,9 @@
   margin: 0;
 }
 
-/* Scroll variant: force horizontal scrollbar and prevent vertical scrolling */
+/* Scroll variant: show horizontal scrollbar only on overflow, prevent vertical scrolling */
 .table.scroll {
-  overflow: scroll hidden;
+  overflow: auto hidden;
 }
 
 /* Table element */
@@ -225,7 +225,7 @@ td .icon {
   }
 
   .table.scroll {
-    overflow: scroll hidden;
+    overflow: auto hidden;
   }
 }
 
@@ -235,6 +235,14 @@ td .icon {
 @media (width > 64rem) {
   .table table {
     font-size: 1rem;
+  }
+
+  .table.scroll {
+    overflow: visible;
+  }
+
+  .table.scroll table {
+    min-width: 0;
   }
 
   .table table tr.header-row td {
