@@ -13,7 +13,7 @@ function buildFilterOptionCard(sourceItem, inputType, groupName, index, stackedL
 
   const optionCard = document.createElement('label');
   optionCard.className = `option-card${
-    stackedLayout ? ' option-card--stacked' : ''
+    stackedLayout ? ' option-card-stacked' : ''
   }`;
   optionCard.htmlFor = `${groupName}-${index}`;
 
@@ -28,7 +28,7 @@ function buildFilterOptionCard(sourceItem, inputType, groupName, index, stackedL
   const sourceIconImg = sourceItem.querySelector('.icon img');
   if (sourceIconImg) {
     const iconWrapper = document.createElement('span');
-    iconWrapper.className = `option-icon option-icon--${
+    iconWrapper.className = `option-icon option-icon-${
       stackedLayout ? 'above' : 'inline'
     }`;
     iconWrapper.setAttribute('aria-hidden', 'true');
@@ -93,7 +93,7 @@ function buildFilterGroup(group, groupIndex) {
   // --- Desktop card list (hidden on mobile when a dropdown is present) ---
   const optionList = document.createElement('ul');
   optionList.className = `option-list${
-    group.isLifestyle ? ' option-list--three-column' : ''
+    group.isLifestyle ? ' option-list-three-column' : ''
   }`;
 
   group.items.forEach((item, i) => {
@@ -289,7 +289,7 @@ export default function decorate(block) {
   const startOverVariant = ALLOWED_VARIANTS.has(startOverButtonConfig.variant)
     ? startOverButtonConfig.variant
     : 'secondary';
-  startOverButton.className = `selector-button selector-button--${startOverVariant}`;
+  startOverButton.className = `selector-button selector-button-${startOverVariant}`;
   startOverButton.textContent = startOverButtonConfig.label;
   if (startOverButtonConfig.titleAttr) startOverButton.title = startOverButtonConfig.titleAttr;
   startOverButton.style.display = 'none';
@@ -299,7 +299,7 @@ export default function decorate(block) {
   const applyVariant = ALLOWED_VARIANTS.has(applyButtonConfig.variant)
     ? applyButtonConfig.variant
     : 'primary';
-  applyButton.className = `selector-button selector-button--${applyVariant}`;
+  applyButton.className = `selector-button selector-button-${applyVariant}`;
   applyButton.textContent = applyButtonConfig.label;
   if (applyButtonConfig.titleAttr) applyButton.title = applyButtonConfig.titleAttr;
   applyButton.disabled = true;
