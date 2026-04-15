@@ -257,13 +257,19 @@ export default function decorate(block) {
     const cells = [...rows[i].children];
     const rawTitle = cells[0]?.querySelector('p')?.textContent?.trim() ?? '';
 
-    // The UE model appends " Selection" to labels — strip it for display
-    const displayTitle = rawTitle.replace(/ Selection$/i, '');
+    // Extract hint from parenthetical in title, e.g. "Lifestyles (Select up to 3 options)"
+    // → displayTitle: "Lifestyles", sectionHint: "Select up to 3 options"
+    const parenMatch = rawTitle.match(/\(([^)]+)\)\s*$/);
+    const displayTitle = rawTitle
+      .replace(/\s*\([^)]+\)\s*$/, '') // strip parenthetical
+      .replace(/ Selection$/i, '')
+      .trim();
+    const sectionHint = parenMatch?.[1]?.trim()
+      ?? cells[1]?.querySelector('p')?.textContent?.trim()
+      ?? '';
+
     const listItems = [...(cells[1]?.querySelectorAll('li') ?? [])];
     if (listItems.length > 0) {
-      // Hint text is authored as a <p> in the content cell, before the <ul>
-      const sectionHint = cells[1]?.querySelector('p')?.textContent?.trim() ?? '';
-
       const isLifestyle = rawTitle.toLowerCase().includes('lifestyle');
       filterGroups.push({
         displayTitle,
