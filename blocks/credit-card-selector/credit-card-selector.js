@@ -1,3 +1,5 @@
+import initCardResults from './credit-card-results.js';
+
 /**
  * Build a single filter option card: li > label > [input] [option-icon?] [option-text]
  *
@@ -139,6 +141,57 @@ function buildFilterGroup(group, groupIndex) {
   }
 
   return section;
+}
+
+/**
+ * Build a filter-state object from the current selections in the block.
+ * Returns { income: string, benefit: string, lifestyles: string[] }.
+ *
+ * The group title is used to assign semantic keys:
+ *   title includes "income"    → income
+ *   isLifestyle === true       → lifestyles (array, up to 3)
+ *   everything else            → benefit
+ *
+ * @param {Element}       block
+ * @param {Array<object>} filterGroups
+ * @returns {{ income: string, benefit: string, lifestyles: string[] }}
+ */
+function buildFilterState(block, filterGroups) {
+  const state = { income: '', benefit: '', lifestyles: [] };
+
+  filterGroups.forEach((group, i) => {
+    if (group.isLifestyle) {
+      const checked = [
+        ...block.querySelectorAll(`input[name="filter-group-${i}"]:checked`),
+      ];
+      state.lifestyles = checked
+        .map(
+          (input) => input
+            .closest('.option-card')
+            ?.querySelector('.option-text')
+            ?.textContent
+            ?.trim() ?? '',
+        )
+        .filter(Boolean);
+    } else {
+      const checked = block.querySelector(
+        `input[name="filter-group-${i}"]:checked`,
+      );
+      const value = checked
+        ?.closest('.option-card')
+        ?.querySelector('.option-text')
+        ?.textContent
+        ?.trim() ?? '';
+      const titleLower = group.displayTitle.toLowerCase();
+      if (titleLower.includes('income')) {
+        state.income = value;
+      } else {
+        state.benefit = value;
+      }
+    }
+  });
+
+  return state;
 }
 
 /**
@@ -320,10 +373,18 @@ export default function decorate(block) {
       select.value = '';
       select.classList.remove('has-value');
     });
+    // Notify the results block that filters have been cleared
+    document.dispatchEvent(new CustomEvent('credit-card-filter-reset'));
     syncActionButtonState(block, filterGroups, startOverButton, applyButton);
   });
 
   applyButton.addEventListener('click', () => {
+    // Dispatch filter state to the results block on the same page
+    const filterState = buildFilterState(block, filterGroups);
+    document.dispatchEvent(
+      new CustomEvent('credit-card-filter-applied', { detail: filterState }),
+    );
+    // Also navigate if a URL is configured (external application flow)
     if (applyButtonConfig.href) {
       window.open(
         applyButtonConfig.href,
@@ -384,4 +445,9 @@ export default function decorate(block) {
     const isNowCollapsed = collapsibleWrapper.classList.toggle('is-collapsed');
     collapseToggleButton.setAttribute('aria-expanded', String(!isNowCollapsed));
   });
+
+  // Inject the card results section immediately after this block in the DOM.
+  // initCardResults handles its own data fetch and all interactivity —
+  // nothing needs to be authored on the page for this to work.
+  initCardResults(block);
 }

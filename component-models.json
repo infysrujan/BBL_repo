@@ -2119,13 +2119,6 @@
     "id": "credit-card-selector",
     "fields": [
       {
-        "component": "text",
-        "name": "sectionName",
-        "label": "Section Name",
-        "description": "Main title for the credit card selector (e.g., Choose the credit card that's suitable for you)",
-        "required": true
-      },
-      {
         "component": "aem-content",
         "name": "applyButtonLink",
         "label": "Apply Button Link",
@@ -2222,6 +2215,13 @@
         "description": "Enable to open the Start Over button link in a new browser tab",
         "valueType": "boolean",
         "value": false
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
       }
     ]
   },
