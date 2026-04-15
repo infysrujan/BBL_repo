@@ -211,18 +211,16 @@ function syncActionButtonState(block, filterGroups, startOverButton, applyButton
  * EDS decorate entry point.
  *
  * Block row mapping (matches _credit-card-selector.json model):
- *   Row  0  sectionName            — main heading text
- *   Row  1  applyButtonLink        — <a> anchor element
- *   Row  2  applyButtonText
- *   Row  3  applyButtonTitle       — accessibility title attribute
- *   Row  4  applyButtonType        — primary | secondary | tertiary
- *   Row  5  applyButtonTargetLink  — 'true' | 'false'
- *   Row  6  startOverButtonLink    — <a> anchor element
- *   Row  7  startOverButtonText
- *   Row  8  startOverButtonTitle
- *   Row  9  startOverButtonType    — primary | secondary | tertiary
- *   Row 10  startOverButtonTargetLink
- *   Row 11+ credit-card-section items (subSectionTitle | rich-text list)
+ *   Row 0  applyButtonText
+ *   Row 1  applyButtonTitle       — accessibility title attribute
+ *   Row 2  applyButtonType        — primary | secondary | tertiary
+ *   Row 3  startOverButtonText
+ *   Row 4  startOverButtonTitle   — accessibility title attribute
+ *   Row 5  startOverButtonType    — primary | secondary | tertiary
+ *   Row 6  disclaimerText         — richtext; forwarded to the results section
+ *   Row 7+ credit-card-section items (subSectionTitle | rich-text list)
+ *
+ * The main heading is authored at section level — not read from the block.
  *
  * Column assignment:
  *   Sections whose title contains "lifestyle" → right column (checkbox, max 3 selections)
@@ -232,30 +230,30 @@ export default function decorate(block) {
   const rows = [...block.children];
 
   const readRowText = (row) => row?.querySelector('p')?.textContent?.trim() ?? '';
-  const readRowHref = (row) => row?.querySelector('a')?.getAttribute('href') ?? '';
+  // Reads the raw HTML of a richtext value cell so formatting is preserved.
+  const readRowHtml = (row) => row?.children[1]?.innerHTML?.trim()
+    ?? row?.querySelector('p')?.outerHTML
+    ?? '';
 
-  // ── Config rows 0–10 ──────────────────────────────────────────────────────
-  const mainTitle = readRowText(rows[0]);
-
+  // ── Config rows 0–6 ───────────────────────────────────────────────────────
   const applyButtonConfig = {
-    href: readRowHref(rows[1]),
-    label: readRowText(rows[2]) || 'Apply',
-    titleAttr: readRowText(rows[3]),
-    variant: readRowText(rows[4]) || 'primary',
-    opensInNewTab: readRowText(rows[5]) === 'true',
+    label: readRowText(rows[0]) || 'Apply',
+    titleAttr: readRowText(rows[1]),
+    variant: readRowText(rows[2]) || 'primary',
   };
 
   const startOverButtonConfig = {
-    href: readRowHref(rows[6]),
-    label: readRowText(rows[7]) || 'Start Over',
-    titleAttr: readRowText(rows[8]),
-    variant: readRowText(rows[9]) || 'secondary',
-    opensInNewTab: readRowText(rows[10]) === 'true',
+    label: readRowText(rows[3]) || 'Start Over',
+    titleAttr: readRowText(rows[4]),
+    variant: readRowText(rows[5]) || 'secondary',
   };
 
-  // ── Section rows 11+ ──────────────────────────────────────────────────────
+  // Row 6: disclaimerText — richtext authored in the block, forwarded to results section.
+  const disclaimerHtml = readRowHtml(rows[6]);
+
+  // ── Section rows 7+ ───────────────────────────────────────────────────────
   const filterGroups = [];
-  for (let i = 11; i < rows.length; i += 1) {
+  for (let i = 7; i < rows.length; i += 1) {
     const cells = [...rows[i].children];
     const rawTitle = cells[0]?.querySelector('p')?.textContent?.trim() ?? '';
 
@@ -279,16 +277,6 @@ export default function decorate(block) {
 
   // ── Build DOM ─────────────────────────────────────────────────────────────
   block.innerHTML = '';
-
-  // Main heading
-  const selectorHeader = document.createElement('div');
-  selectorHeader.className = 'card-selector-header';
-
-  const mainHeading = document.createElement('h2');
-  mainHeading.className = 'card-selector-title';
-  mainHeading.textContent = mainTitle;
-  selectorHeader.appendChild(mainHeading);
-  block.appendChild(selectorHeader);
 
   // Two-column content area
   const selectorContent = document.createElement('div');
@@ -379,18 +367,10 @@ export default function decorate(block) {
   });
 
   applyButton.addEventListener('click', () => {
-    // Dispatch filter state to the results block on the same page
     const filterState = buildFilterState(block, filterGroups);
     document.dispatchEvent(
       new CustomEvent('credit-card-filter-applied', { detail: filterState }),
     );
-    // Also navigate if a URL is configured (external application flow)
-    if (applyButtonConfig.href) {
-      window.open(
-        applyButtonConfig.href,
-        applyButtonConfig.opensInNewTab ? '_blank' : '_self',
-      );
-    }
   });
 
   // Single delegated listener covers all option changes (radios, checkboxes, mobile selects)
@@ -449,5 +429,5 @@ export default function decorate(block) {
   // Inject the card results section immediately after this block in the DOM.
   // initCardResults handles its own data fetch and all interactivity —
   // nothing needs to be authored on the page for this to work.
-  initCardResults(block);
+  initCardResults(block, { disclaimerHtml });
 }

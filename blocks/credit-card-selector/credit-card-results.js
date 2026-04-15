@@ -177,7 +177,7 @@ function addCompareButtons(blockEl, doc) {
  * @param {Element} selectorBlock
  * @returns {Promise<void>}
  */
-export default async function initCardResults(selectorBlock) {
+export default async function initCardResults(selectorBlock, { disclaimerHtml = '' } = {}) {
   const doc = selectorBlock.ownerDocument;
 
   // ── Ensure card-list CSS is loaded (not auto-loaded when called directly) ──
@@ -228,9 +228,9 @@ export default async function initCardResults(selectorBlock) {
   section.appendChild(toggleWrap);
 
   // Disclaimer
-  const disclaimer = doc.createElement('p');
+  const disclaimer = doc.createElement('div');
   disclaimer.className = 'ccs-results-disclaimer';
-  disclaimer.textContent = 'Use when necessary and pay back full amount on time to avoid 16% interest rate';
+  disclaimer.innerHTML = disclaimerHtml;
   section.appendChild(disclaimer);
 
   selectorBlock.insertAdjacentElement('afterend', section);

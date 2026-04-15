@@ -2119,12 +2119,6 @@
     "id": "credit-card-selector",
     "fields": [
       {
-        "component": "aem-content",
-        "name": "applyButtonLink",
-        "label": "Apply Button Link",
-        "description": "Destination URL for the Apply button"
-      },
-      {
         "component": "text",
         "name": "applyButtonText",
         "label": "Apply Button Text",
@@ -2160,20 +2154,6 @@
         ]
       },
       {
-        "component": "boolean",
-        "name": "applyButtonTargetLink",
-        "label": "Open Apply button link in new tab",
-        "description": "Enable to open the Apply button link in a new browser tab",
-        "valueType": "boolean",
-        "value": false
-      },
-      {
-        "component": "aem-content",
-        "name": "startOverButtonLink",
-        "label": "Start Over Button Link",
-        "description": "Destination URL for the Start Over button"
-      },
-      {
         "component": "text",
         "name": "startOverButtonText",
         "label": "Start Over Button Text",
@@ -2207,14 +2187,6 @@
             "value": "tertiary"
           }
         ]
-      },
-      {
-        "component": "boolean",
-        "name": "startOverButtonTargetLink",
-        "label": "Open Start Over button link in new tab",
-        "description": "Enable to open the Start Over button link in a new browser tab",
-        "valueType": "boolean",
-        "value": false
       },
       {
         "component": "richtext",
