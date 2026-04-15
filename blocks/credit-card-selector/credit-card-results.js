@@ -1,16 +1,32 @@
 import decorateCardList from '../card-list/card-list.js';
 import { loadCSS } from '../../scripts/aem.js';
 
-const INITIAL_VISIBLE = 6;
+const INITIAL_VISIBLE = 3;
 const MAX_FILTERED = 5;
 
 function parseIncomeValue(str) {
   if (!str) return 0;
-  return parseInt(str.toString().replace(/[^0-9]/g, ''), 10) || 0;
+  // Extract only the first numeric sequence (handles ranges like "15,000 – 49,999 Baht")
+  const match = str.toString().replace(/\u200B/g, '').match(/[\d,]+/);
+  if (!match) return 0;
+  return parseInt(match[0].replace(/,/g, ''), 10) || 0;
+}
+
+// Strip zero-width spaces from keys and normalize whitespace in values
+function normalizeRow(row) {
+  const out = {};
+  Object.entries(row).forEach(([k, v]) => {
+    const cleanKey = k.replace(/\u200B/g, '').trim();
+    const cleanVal = typeof v === 'string'
+      ? v.replace(/\u200B/g, '').replace(/\s+/g, ' ').trim()
+      : v;
+    out[cleanKey] = cleanVal;
+  });
+  return out;
 }
 
 function norm(str) {
-  return (str || '').toString().toLowerCase().trim();
+  return (str || '').toString().replace(/\u200B/g, '').toLowerCase().trim();
 }
 
 function field(card, ...keys) {
@@ -29,26 +45,46 @@ function resolveImageUrl(card) {
   return raw._publishUrl || raw._authorUrl || '';
 }
 
-function filterCards(cards, { income, benefit, lifestyles } = {}) {
+// Map UI benefit labels to spreadsheet values
+const BENEFIT_ALIASES = {
+  rewards: 'point',
+};
+
+function normBenefit(str) {
+  const n = norm(str);
+  return BENEFIT_ALIASES[n] || n;
+}
+
+function filterSheetCards(sheetCards, { income, benefit, lifestyles } = {}) {
   const userIncome = parseIncomeValue(income);
-  const userBenefit = norm(benefit);
+  const userBenefit = normBenefit(benefit);
   const userLifestyles = (lifestyles || []).map(norm).filter(Boolean);
 
-  return cards.filter((card) => {
+  // eslint-disable-next-line no-console
+  console.log('[filterSheetCards] Parsed filter → income:', userIncome, '| benefit:', userBenefit, '| lifestyles:', userLifestyles);
+
+  return sheetCards.filter((row) => {
+    const cardName = row['Product Name (EN)'];
+
     if (userIncome > 0) {
-      const cardIncome = parseIncomeValue(field(card, 'income', 'Income', 'incomeRequirement'));
-      if (cardIncome > userIncome) return false;
+      const cardIncome = parseIncomeValue(row.Income || '');
+      // eslint-disable-next-line no-console
+      console.log(`  [${cardName}] Income: raw="${row.Income}" parsed=${cardIncome} vs user=${userIncome} → ${cardIncome !== userIncome ? 'EXCLUDED' : 'pass'}`);
+      if (cardIncome !== userIncome) return false;
     }
     if (userBenefit) {
-      const cardBenefit = norm(field(card, 'benefit', 'Benefit'));
+      const cardBenefit = normBenefit(row.Benefit || '');
+      // eslint-disable-next-line no-console
+      console.log(`  [${cardName}] Benefit: raw="${row.Benefit}" norm="${cardBenefit}" vs user="${userBenefit}" → ${cardBenefit !== userBenefit ? 'EXCLUDED' : 'pass'}`);
       if (cardBenefit && cardBenefit !== userBenefit) return false;
     }
     if (userLifestyles.length > 0) {
-      const raw = field(card, 'lifestyles', 'Lifestyles', 'lifestyle');
-      const cardLifestyles = raw.toString().split(/[,;|]/).map(norm).filter(Boolean);
+      const cardLifestyles = (row.Lifestyles || '').split(/[,;|]/).map(norm).filter(Boolean);
       const hasMatch = userLifestyles.some(
         (sel) => cardLifestyles.some((cl) => cl.includes(sel) || sel.includes(cl)),
       );
+      // eslint-disable-next-line no-console
+      console.log(`  [${cardName}] Lifestyles: raw="${row.Lifestyles}" parsed=${JSON.stringify(cardLifestyles)} vs user=${JSON.stringify(userLifestyles)} → ${hasMatch ? 'pass' : 'EXCLUDED'}`);
       if (!hasMatch) return false;
     }
     return true;
@@ -57,8 +93,8 @@ function filterCards(cards, { income, benefit, lifestyles } = {}) {
 
 function sortBySourcing(cards) {
   return [...cards].sort((a, b) => {
-    const an = parseInt(field(a, 'sourcingNumber', 'Sourcing Number', 'order') || 9999, 10);
-    const bn = parseInt(field(b, 'sourcingNumber', 'Sourcing Number', 'order') || 9999, 10);
+    const an = parseInt(field(a, 'Sourcing', 'sourcingNumber', 'Sourcing Number', 'order') || 9999, 10);
+    const bn = parseInt(field(b, 'Sourcing', 'sourcingNumber', 'Sourcing Number', 'order') || 9999, 10);
     return an - bn;
   });
 }
@@ -183,7 +219,33 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
   // ── Ensure card-list CSS is loaded (not auto-loaded when called directly) ──
   await loadCSS(`${window.hlx.codeBasePath}/blocks/card-list/card-list.css`);
 
-  // ── Fetch card data (helper.json; swap for config URL when ready) ─────────
+  // ── Fetch spreadsheet filter data (credit-card-suggestor sheet) ──────────
+  let sheetCards = [];
+  try {
+    const sheetResp = await fetch('/credit-card-suggestor.json');
+    // eslint-disable-next-line no-console
+    console.log('[credit-card-results] Spreadsheet fetch status:', sheetResp.status, sheetResp.ok);
+    if (sheetResp.ok) {
+      const sheetJson = await sheetResp.json();
+      // eslint-disable-next-line no-console
+      console.log('[credit-card-results] credit-card-suggestor sheet data:', sheetJson);
+      sheetCards = (sheetJson.data || []).map(normalizeRow);
+      // eslint-disable-next-line no-console
+      console.log('[credit-card-results] sheetCards loaded:', sheetCards.length, sheetCards);
+      // eslint-disable-next-line no-console
+      console.log('[credit-card-results] First row keys:', Object.keys(sheetCards[0] || {}));
+      // eslint-disable-next-line no-console
+      console.log('[credit-card-results] First row data:', sheetCards[0]);
+    } else {
+      // eslint-disable-next-line no-console
+      console.warn('[credit-card-results] Spreadsheet fetch failed with status:', sheetResp.status);
+    }
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[credit-card-results] Failed to load spreadsheet data:', err);
+  }
+
+  // ── Fetch card data from helper.json ──────────────────────────────────────
   let allCards = [];
   try {
     const resp = await fetch('/blocks/helper/helper.json');
@@ -300,8 +362,42 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
 
   // ── Filter applied ────────────────────────────────────────────────────────
   doc.addEventListener('credit-card-filter-applied', (e) => {
-    let filtered = filterCards(allCards, e.detail || {});
-    filtered = sortBySourcing(filtered).slice(0, MAX_FILTERED);
+    // eslint-disable-next-line no-console
+    console.log('[credit-card-results] Filter applied - filter state:', e.detail);
+
+    // Step 1: filter spreadsheet rows by selected criteria
+    const matchingSheetRows = filterSheetCards(sheetCards, e.detail || {});
+    // eslint-disable-next-line no-console
+    console.log('[credit-card-results] Matching sheet rows:', matchingSheetRows.length, matchingSheetRows);
+
+    // Step 2: collect the product names from matching rows
+    const matchingNames = matchingSheetRows.map((row) => norm(row['Product Name (EN)'] || ''));
+    // eslint-disable-next-line no-console
+    console.log('[credit-card-results] Matching product names:', matchingNames);
+
+    // Step 3: look up those cards in helper.json by name
+    let filtered = allCards.filter((card) => {
+      const cardName = norm(field(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
+      return matchingNames.includes(cardName);
+    });
+    // eslint-disable-next-line no-console
+    console.log('[credit-card-results] Matched helper cards:', filtered.length, filtered);
+
+    // Step 4: sort by Sourcing order from the matching sheet rows
+    const sourcingMap = {};
+    matchingSheetRows.forEach((row) => {
+      const name = norm(row['Product Name (EN)'] || '');
+      if (name) sourcingMap[name] = parseInt(row.Sourcing || 9999, 10);
+    });
+    filtered = [...filtered].sort((a, b) => {
+      const nameA = norm(field(a, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
+      const nameB = norm(field(b, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
+      return (sourcingMap[nameA] ?? 9999) - (sourcingMap[nameB] ?? 9999);
+    });
+    filtered = filtered.slice(0, MAX_FILTERED);
+    // eslint-disable-next-line no-console
+    console.log('[credit-card-results] Final cards to render (sorted, max 5):', filtered.length, filtered);
+
     activeCards = filtered;
     isExpanded = false;
     render();

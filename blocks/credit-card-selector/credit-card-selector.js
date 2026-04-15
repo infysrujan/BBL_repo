@@ -374,6 +374,8 @@ export default function decorate(block) {
 
   applyButton.addEventListener('click', () => {
     const filterState = buildFilterState(block, filterGroups);
+    // eslint-disable-next-line no-console
+    console.log('[credit-card-selector] Apply clicked - filter state:', filterState);
     document.dispatchEvent(
       new CustomEvent('credit-card-filter-applied', { detail: filterState }),
     );
