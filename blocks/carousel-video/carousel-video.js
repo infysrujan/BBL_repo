@@ -1,3 +1,5 @@
+import { moveInstrumentation } from '../../scripts/scripts.js';
+
 const VISIBLE = 4;
 const THUMB_GAP = 12;
 
@@ -10,17 +12,19 @@ function getYouTubeId(url) {
 export default function decorate(block) {
   const rows = [...block.children];
 
-  // Each row is a carousel-video-item; extract its YouTube URL
-  const videoIds = rows.map((row) => {
+  // Each row is a carousel-video-item; pair it with its YouTube ID
+  const items = rows.map((row) => {
     const link = row.querySelector('a');
     const text = row.querySelector('div')?.textContent?.trim();
     const url = link?.getAttribute('href') || text || '';
-    return getYouTubeId(url);
-  }).filter(Boolean);
+    return { row, id: getYouTubeId(url) };
+  }).filter((item) => item.id);
 
-  block.textContent = '';
+  // Always clear and rebuild so UE instrumentation is applied correctly
+  block.innerHTML = '';
 
-  if (videoIds.length === 0) return;
+  // Render nothing visible if no valid URLs yet (block element keeps data-aue-* for UE)
+  if (items.length === 0) return;
 
   let scrollIndex = 0;
 
@@ -29,7 +33,7 @@ export default function decorate(block) {
   mainPlayer.className = 'cv-main-player';
 
   const iframe = document.createElement('iframe');
-  iframe.src = `https://www.youtube.com/embed/${videoIds[0]}`;
+  iframe.src = `https://www.youtube.com/embed/${items[0].id}`;
   iframe.title = 'YouTube Video Player';
   iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
   iframe.setAttribute('allowfullscreen', '');
@@ -57,7 +61,8 @@ export default function decorate(block) {
   nextBtn.className = 'cv-nav cv-next';
   nextBtn.setAttribute('aria-label', 'Next');
 
-  const thumbEls = videoIds.map((id, i) => {
+  // Build one thumbnail per item; move UE instrumentation from original row
+  const thumbEls = items.map(({ row, id }, i) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'cv-thumb';
@@ -70,6 +75,10 @@ export default function decorate(block) {
     img.loading = 'lazy';
 
     btn.appendChild(img);
+
+    // Preserve data-aue-* attributes so UE can track and manage each item
+    moveInstrumentation(row, btn);
+
     track.appendChild(btn);
     return btn;
   });
@@ -84,7 +93,7 @@ export default function decorate(block) {
   const dotsEl = document.createElement('div');
   dotsEl.className = 'cv-dots';
 
-  const dotEls = videoIds.map((_, i) => {
+  const dotEls = items.map((_, i) => {
     const dot = document.createElement('button');
     dot.type = 'button';
     dot.className = 'cv-dot';
@@ -98,17 +107,17 @@ export default function decorate(block) {
 
   // ── State helpers ─────────────────────────────────────────────────────────
   function setActive(index, autoplay = false) {
-    iframe.src = `https://www.youtube.com/embed/${videoIds[index]}${autoplay ? '?autoplay=1' : ''}`;
+    iframe.src = `https://www.youtube.com/embed/${items[index].id}${autoplay ? '?autoplay=1' : ''}`;
     thumbEls.forEach((t, i) => t.classList.toggle('active', i === index));
     dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
   }
 
   function scrollTrack(newIndex) {
-    scrollIndex = Math.max(0, Math.min(newIndex, Math.max(0, videoIds.length - VISIBLE)));
+    scrollIndex = Math.max(0, Math.min(newIndex, Math.max(0, items.length - VISIBLE)));
     const thumbWidth = thumbEls[0]?.offsetWidth || 0;
     track.style.transform = `translateX(-${scrollIndex * (thumbWidth + THUMB_GAP)}px)`;
     prevBtn.disabled = scrollIndex <= 0;
-    nextBtn.disabled = videoIds.length <= VISIBLE || scrollIndex >= videoIds.length - VISIBLE;
+    nextBtn.disabled = items.length <= VISIBLE || scrollIndex >= items.length - VISIBLE;
   }
 
   function ensureVisible(index) {
@@ -132,7 +141,7 @@ export default function decorate(block) {
   });
 
   nextBtn.addEventListener('click', () => {
-    if (scrollIndex < videoIds.length - VISIBLE) scrollTrack(scrollIndex + 1);
+    if (scrollIndex < items.length - VISIBLE) scrollTrack(scrollIndex + 1);
   });
 
   dotEls.forEach((dot, i) => {
@@ -144,7 +153,7 @@ export default function decorate(block) {
 
   // ── Initial state ─────────────────────────────────────────────────────────
   prevBtn.disabled = true;
-  nextBtn.disabled = videoIds.length <= VISIBLE;
+  nextBtn.disabled = items.length <= VISIBLE;
 
   // Recalculate scroll offset on resize
   let resizeTimer;
