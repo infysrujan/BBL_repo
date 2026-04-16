@@ -46,6 +46,7 @@ export default function decorate(block) {
   if (items.length === 0) return;
 
   let scrollIndex = 0;
+  let activeIndex = 0;
 
   // ── Main player ──────────────────────────────────────────────────────────
   const mainPlayer = document.createElement('div');
@@ -126,17 +127,18 @@ export default function decorate(block) {
 
   // ── State helpers ─────────────────────────────────────────────────────────
   function setActive(index, autoplay = false) {
+    activeIndex = index;
     iframe.src = `https://www.youtube.com/embed/${items[index].id}${autoplay ? '?autoplay=1' : ''}`;
     thumbEls.forEach((t, i) => t.classList.toggle('active', i === index));
     dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
+    prevBtn.disabled = index <= 0;
+    nextBtn.disabled = index >= items.length - 1;
   }
 
   function scrollTrack(newIndex) {
     scrollIndex = Math.max(0, Math.min(newIndex, Math.max(0, items.length - VISIBLE)));
     const thumbWidth = thumbEls[0]?.offsetWidth || 0;
     track.style.transform = `translateX(-${scrollIndex * (thumbWidth + THUMB_GAP)}px)`;
-    prevBtn.disabled = scrollIndex <= 0;
-    nextBtn.disabled = items.length <= VISIBLE || scrollIndex >= items.length - VISIBLE;
   }
 
   function ensureVisible(index) {
@@ -156,11 +158,17 @@ export default function decorate(block) {
   });
 
   prevBtn.addEventListener('click', () => {
-    if (scrollIndex > 0) scrollTrack(scrollIndex - 1);
+    if (activeIndex > 0) {
+      setActive(activeIndex - 1, true);
+      ensureVisible(activeIndex);
+    }
   });
 
   nextBtn.addEventListener('click', () => {
-    if (scrollIndex < items.length - VISIBLE) scrollTrack(scrollIndex + 1);
+    if (activeIndex < items.length - 1) {
+      setActive(activeIndex + 1, true);
+      ensureVisible(activeIndex);
+    }
   });
 
   dotEls.forEach((dot, i) => {
@@ -172,7 +180,7 @@ export default function decorate(block) {
 
   // ── Initial state ─────────────────────────────────────────────────────────
   prevBtn.disabled = true;
-  nextBtn.disabled = items.length <= VISIBLE;
+  nextBtn.disabled = items.length <= 1;
 
   // Recalculate scroll offset on resize
   let resizeTimer;
