@@ -13,15 +13,27 @@ export default function decorate(block) {
   const rows = [...block.children];
 
   // Each row is a carousel-video-item; pair it with its YouTube ID
-  const items = rows.map((row) => {
+  const allItems = rows.map((row) => {
     const link = row.querySelector('a');
     const text = row.querySelector('div')?.textContent?.trim();
     const url = link?.getAttribute('href') || text || '';
     return { row, id: getYouTubeId(url) };
-  }).filter((item) => item.id);
+  });
+
+  const items = allItems.filter((item) => item.id);
 
   // Always clear and rebuild so UE instrumentation is applied correctly
   block.innerHTML = '';
+
+  // For rows with no valid YouTube ID, preserve their UE instrumentation via
+  // hidden placeholders so UE can still track and manage those child items.
+  const orphanRows = allItems.filter((item) => !item.id);
+  orphanRows.forEach(({ row }) => {
+    const placeholder = document.createElement('div');
+    placeholder.hidden = true;
+    moveInstrumentation(row, placeholder);
+    block.appendChild(placeholder);
+  });
 
   // Render nothing visible if no valid URLs yet (block element keeps data-aue-* for UE)
   if (items.length === 0) return;
