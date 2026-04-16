@@ -381,6 +381,18 @@
     ]
   },
   {
+    "id": "card-comparator-results",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "description",
+        "label": "Description",
+        "description": "Introductory text displayed above the comparison results table",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "card-list",
     "fields": [
       {
