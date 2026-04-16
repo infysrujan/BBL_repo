@@ -11,7 +11,6 @@ function getYouTubeId(url) {
 
 export default function decorate(block) {
   // Tell UE this block is a container that accepts carousel-video-item children.
-  // Without these attributes the "+" add-child button in the editor shows nothing.
   if (document.documentElement.classList.contains('adobe-ue-edit')) {
     block.setAttribute('data-aue-type', 'container');
     block.setAttribute('data-aue-filter', 'carousel-video');
@@ -19,7 +18,6 @@ export default function decorate(block) {
 
   const rows = [...block.children];
 
-  // Each row is a carousel-video-item; pair it with its YouTube ID
   const allItems = rows.map((row) => {
     const link = row.querySelector('a');
     const text = row.querySelector('div')?.textContent?.trim();
@@ -28,12 +26,10 @@ export default function decorate(block) {
   });
 
   const items = allItems.filter((item) => item.id);
+  const n = items.length;
 
-  // Always clear and rebuild so UE instrumentation is applied correctly
   block.innerHTML = '';
 
-  // For rows with no valid YouTube ID, preserve their UE instrumentation via
-  // hidden placeholders so UE can still track and manage those child items.
   const orphanRows = allItems.filter((item) => !item.id);
   orphanRows.forEach(({ row }) => {
     const placeholder = document.createElement('div');
@@ -42,11 +38,15 @@ export default function decorate(block) {
     block.appendChild(placeholder);
   });
 
-  // Render nothing visible if no valid URLs yet (block element keeps data-aue-* for UE)
-  if (items.length === 0) return;
+  if (n === 0) return;
 
-  let scrollIndex = 0;
   let activeIndex = 0;
+  // rawScrollIndex: position in the 3-set infinite track
+  // Set 0 = leading clones (positions 0..n-1)
+  // Set 1 = originals      (positions n..2n-1)
+  // Set 2 = trailing clones (positions 2n..3n-1)
+  // Start pointing at the first original so the track shows real items on load.
+  let rawScrollIndex = n;
 
   // ── Main player ──────────────────────────────────────────────────────────
   const mainPlayer = document.createElement('div');
@@ -81,27 +81,37 @@ export default function decorate(block) {
   nextBtn.className = 'cv-nav cv-next';
   nextBtn.setAttribute('aria-label', 'Next');
 
-  // Build one thumbnail per item; move UE instrumentation from original row
-  const thumbEls = items.map(({ row, id }, i) => {
+  // Build a thumb button for one item; only the originals carry UE instrumentation.
+  function createThumb(id, realIndex, row) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'cv-thumb';
-    if (i === 0) btn.classList.add('active');
-    btn.setAttribute('aria-label', `Play video ${i + 1}`);
+    btn.setAttribute('aria-label', `Play video ${realIndex + 1}`);
 
     const img = document.createElement('img');
     img.src = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-    img.alt = `Video ${i + 1} thumbnail`;
+    img.alt = `Video ${realIndex + 1} thumbnail`;
     img.loading = 'lazy';
-
     btn.appendChild(img);
 
-    // Preserve data-aue-* attributes so UE can track and manage each item
-    moveInstrumentation(row, btn);
-
+    if (row) moveInstrumentation(row, btn);
     track.appendChild(btn);
     return btn;
+  }
+
+  // Leading clones (set 0)
+  const leadingClones = items.map(({ id }, i) => createThumb(id, i, null));
+  // Originals (set 1) — carry UE instrumentation
+  const thumbEls = items.map(({ row, id }, i) => {
+    const btn = createThumb(id, i, row);
+    if (i === 0) btn.classList.add('active');
+    return btn;
   });
+  // Trailing clones (set 2)
+  const trailingClones = items.map(({ id }, i) => createThumb(id, i, null));
+
+  // All 3 sets flattened; domI % n gives the real item index
+  const allThumbBtns = [...leadingClones, ...thumbEls, ...trailingClones];
 
   trackWrap.appendChild(track);
   carouselSection.appendChild(prevBtn);
@@ -129,46 +139,81 @@ export default function decorate(block) {
   function setActive(index) {
     activeIndex = index;
     iframe.src = `https://www.youtube.com/embed/${items[index].id}`;
-    thumbEls.forEach((t, i) => t.classList.toggle('active', i === index));
+    // Mark all 3 instances (leading clone, original, trailing clone)
+    allThumbBtns.forEach((btn, domI) => btn.classList.toggle('active', domI % n === index));
     dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
-    prevBtn.disabled = index <= 0;
-    nextBtn.disabled = index >= items.length - 1;
   }
 
-  function scrollTrack(newIndex) {
-    scrollIndex = Math.max(0, Math.min(newIndex, Math.max(0, items.length - VISIBLE)));
-    const thumbWidth = thumbEls[0]?.offsetWidth || 0;
-    track.style.transform = `translateX(-${scrollIndex * (thumbWidth + THUMB_GAP)}px)`;
+  function getThumbWidth() {
+    // Fall back to the CSS-declared width so the initial scroll is correct
+    // even before the first browser layout pass.
+    return allThumbBtns[0]?.offsetWidth || 185;
+  }
+
+  function scrollTrack(rawNew) {
+    rawScrollIndex = Math.max(0, Math.min(rawNew, 3 * n - VISIBLE));
+    const w = getThumbWidth();
+    track.style.transform = `translateX(-${rawScrollIndex * (w + THUMB_GAP)}px)`;
+  }
+
+  // Jump without triggering the CSS transition (used for seamless wrap resets).
+  function scrollTrackSilent(rawNew) {
+    rawScrollIndex = rawNew;
+    const w = getThumbWidth();
+    track.style.transition = 'none';
+    track.style.transform = `translateX(-${rawScrollIndex * (w + THUMB_GAP)}px)`;
+    track.getBoundingClientRect(); // force reflow so the transition suppression takes effect
+    track.style.transition = '';
+  }
+
+  // Return the DOM position (across all 3 sets) for realIndex that is
+  // closest to the current rawScrollIndex — this drives infinite scrolling.
+  function nearestRawForIndex(index) {
+    const candidates = [index, n + index, 2 * n + index];
+    return candidates.reduce((best, c) =>
+      Math.abs(c - rawScrollIndex) < Math.abs(best - rawScrollIndex) ? c : best);
   }
 
   function ensureVisible(index) {
-    if (index < scrollIndex) {
-      scrollTrack(index);
-    } else if (index >= scrollIndex + VISIBLE) {
-      scrollTrack(index - VISIBLE + 1);
+    const itemRaw = nearestRawForIndex(index);
+    if (itemRaw < rawScrollIndex) {
+      scrollTrack(itemRaw);
+    } else if (itemRaw >= rawScrollIndex + VISIBLE) {
+      scrollTrack(itemRaw - VISIBLE + 1);
     }
+    // else item is already in the visible window — no scroll needed
   }
 
+  // After each animated scroll, silently reset to the original zone so there
+  // is always room to scroll in both directions (infinite loop illusion).
+  track.addEventListener('transitionend', (e) => {
+    if (e.propertyName !== 'transform') return;
+    if (rawScrollIndex < n) {
+      scrollTrackSilent(rawScrollIndex + n);
+    } else if (rawScrollIndex >= 2 * n) {
+      scrollTrackSilent(rawScrollIndex - n);
+    }
+  });
+
   // ── Event listeners ───────────────────────────────────────────────────────
-  thumbEls.forEach((btn, i) => {
+  allThumbBtns.forEach((btn, domI) => {
     btn.addEventListener('click', () => {
-      setActive(i);
-      ensureVisible(i);
+      const realIndex = domI % n;
+      setActive(realIndex);
+      ensureVisible(realIndex);
     });
   });
 
   prevBtn.addEventListener('click', () => {
-    if (activeIndex > 0) {
-      setActive(activeIndex - 1);
-      ensureVisible(activeIndex);
-    }
+    const newIndex = activeIndex === 0 ? n - 1 : activeIndex - 1;
+    setActive(newIndex);
+    ensureVisible(newIndex);
   });
 
   nextBtn.addEventListener('click', () => {
-    if (activeIndex < items.length - 1) {
-      setActive(activeIndex + 1);
-      ensureVisible(activeIndex);
-    }
+    const newIndex = activeIndex === n - 1 ? 0 : activeIndex + 1;
+    setActive(newIndex);
+    ensureVisible(newIndex);
   });
 
   dotEls.forEach((dot, i) => {
@@ -179,13 +224,16 @@ export default function decorate(block) {
   });
 
   // ── Initial state ─────────────────────────────────────────────────────────
-  prevBtn.disabled = true;
-  nextBtn.disabled = items.length <= 1;
+  prevBtn.disabled = n <= 1;
+  nextBtn.disabled = n <= 1;
+
+  // Place the track at the start of the original set without animation.
+  scrollTrackSilent(n);
 
   // Recalculate scroll offset on resize
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => scrollTrack(scrollIndex), 200);
+    resizeTimer = setTimeout(() => scrollTrack(rawScrollIndex), 200);
   });
 }
