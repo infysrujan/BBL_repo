@@ -1,3 +1,15 @@
+/* ── YouTube player ──────────────────────────────────────────────────────── */
+.carousel-video #player {
+  width: 768px;
+  height: 529.778px;
+  padding: 0;
+  border: none;
+  margin: 0;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
 /* ── Main player ─────────────────────────────────────────────────────────── */
 .carousel-video .cv-main-player {
   position: relative;
@@ -17,35 +29,33 @@
 
 /* ── Thumbnail carousel ──────────────────────────────────────────────────── */
 .carousel-video .cv-carousel-section {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  position: relative;
   padding: 1rem 0 0.5rem;
 }
 
 .carousel-video .cv-track-wrap {
-  flex: 1;
+  width: 100%;
   overflow: hidden;
 }
 
 .carousel-video .cv-track {
   display: flex;
-  gap: 0.75rem;
   transition: transform 0.35s ease;
 }
 
 /* ── Thumbnails ──────────────────────────────────────────────────────────── */
 .carousel-video .cv-thumb {
-  flex: 0 0 calc(25% - 9px); /* (100% - 3 * 12px) / 4 */
-  aspect-ratio: 16 / 9;
+  flex: 0 0 185px;
+  width: 185px;
+  height: 122px;
   padding: 0;
-  margin: 0;
-  border: 2px solid transparent;
+  margin: 0 5px;
+  border: none;
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
   background: #000;
-  transition: border-color 0.2s ease, opacity 0.2s ease;
+  transition: opacity 0.2s ease, outline-color 0.2s ease;
   opacity: 0.65;
 }
 
@@ -62,13 +72,16 @@
 }
 
 .carousel-video .cv-thumb.active {
-  border-color: var(--bbl-color-active-blue, #0070d1);
+  outline: 2px solid var(--bbl-color-active-blue, #0070d1);
+  outline-offset: -2px;
   opacity: 1;
 }
 
 /* ── Prev / Next buttons ─────────────────────────────────────────────────── */
 .carousel-video .cv-nav {
-  flex-shrink: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
@@ -81,6 +94,15 @@
   padding: 0;
   box-shadow: 0 2px 6px rgb(0 0 0 / 15%);
   transition: background 0.2s ease;
+  z-index: 1;
+}
+
+.carousel-video .cv-prev {
+  left: -3rem;
+}
+
+.carousel-video .cv-next {
+  right: -3rem;
 }
 
 .carousel-video .cv-nav:hover {
@@ -148,12 +170,43 @@
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (width <= 47.5rem) {
-  .carousel-video .cv-thumb {
-    flex: 0 0 calc(50% - 6px);
+  /* Block becomes the positioning context for the overlay */
+  .carousel-video {
+    position: relative;
   }
 
+  /* Float the carousel section over the main player */
+  .carousel-video .cv-carousel-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    aspect-ratio: 16 / 9; /* match main player height */
+    padding: 0;
+    pointer-events: none; /* let clicks pass through to the video */
+    z-index: 2;
+  }
+
+  /* Hide thumbnails and dots on mobile */
+  .carousel-video .cv-track-wrap,
+  .carousel-video .cv-dots {
+    display: none;
+  }
+
+  /* Buttons sit on left/right edges of the video */
   .carousel-video .cv-nav {
+    pointer-events: all;
     width: 2rem;
     height: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .carousel-video .cv-prev {
+    left: 0.75rem;
+  }
+
+  .carousel-video .cv-next {
+    right: 0.75rem;
   }
 }

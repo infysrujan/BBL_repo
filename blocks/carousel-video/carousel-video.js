@@ -1,7 +1,7 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 const VISIBLE = 4;
-const THUMB_GAP = 12;
+const THUMB_GAP = 10; // 5px margin on each side of every thumb
 
 function getYouTubeId(url) {
   const regex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
@@ -126,9 +126,9 @@ export default function decorate(block) {
   block.appendChild(dotsEl);
 
   // ── State helpers ─────────────────────────────────────────────────────────
-  function setActive(index, autoplay = false) {
+  function setActive(index) {
     activeIndex = index;
-    iframe.src = `https://www.youtube.com/embed/${items[index].id}${autoplay ? '?autoplay=1' : ''}`;
+    iframe.src = `https://www.youtube.com/embed/${items[index].id}`;
     thumbEls.forEach((t, i) => t.classList.toggle('active', i === index));
     dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
     prevBtn.disabled = index <= 0;
@@ -152,28 +152,28 @@ export default function decorate(block) {
   // ── Event listeners ───────────────────────────────────────────────────────
   thumbEls.forEach((btn, i) => {
     btn.addEventListener('click', () => {
-      setActive(i, true);
+      setActive(i);
       ensureVisible(i);
     });
   });
 
   prevBtn.addEventListener('click', () => {
     if (activeIndex > 0) {
-      setActive(activeIndex - 1, true);
+      setActive(activeIndex - 1);
       ensureVisible(activeIndex);
     }
   });
 
   nextBtn.addEventListener('click', () => {
     if (activeIndex < items.length - 1) {
-      setActive(activeIndex + 1, true);
+      setActive(activeIndex + 1);
       ensureVisible(activeIndex);
     }
   });
 
   dotEls.forEach((dot, i) => {
     dot.addEventListener('click', () => {
-      setActive(i, true);
+      setActive(i);
       ensureVisible(i);
     });
   });
