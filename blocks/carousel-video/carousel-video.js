@@ -10,6 +10,13 @@ function getYouTubeId(url) {
 }
 
 export default function decorate(block) {
+  // Tell UE this block is a container that accepts carousel-video-item children.
+  // Without these attributes the "+" add-child button in the editor shows nothing.
+  if (document.documentElement.classList.contains('adobe-ue-edit')) {
+    block.setAttribute('data-aue-type', 'container');
+    block.setAttribute('data-aue-filter', 'carousel-video');
+  }
+
   const rows = [...block.children];
 
   // Each row is a carousel-video-item; pair it with its YouTube ID
