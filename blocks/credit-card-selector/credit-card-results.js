@@ -1,5 +1,7 @@
 import decorateCardList from '../card-list/card-list.js';
 import { loadCSS } from '../../scripts/aem.js';
+import { getLang } from '../../scripts/scripts.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -184,7 +186,7 @@ function createBlockRow(doc, ...cells) {
   return row;
 }
 
-function buildCardBlock(cards, doc) {
+function buildCardBlock(cards, doc, lang, labels) {
   const block = doc.createElement('div');
   // 'credit-card' is the EDS variation class — sits alongside 'card-list block'
   block.className = 'card-list credit-card block';
@@ -201,26 +203,30 @@ function buildCardBlock(cards, doc) {
     const imgSrc = resolveImageUrl(card);
     const learnHref = getCardField(card, 'learnMoreUrl', 'url', 'pageUrl', 'link') || '#';
 
+    const isTH = lang === 'th';
+    const primaryName = isTH && nameTH ? nameTH : nameEN;
+    const secondaryName = isTH && nameTH ? nameEN : nameTH;
+
     // Image cell
     const imgCell = doc.createElement('div');
     if (imgSrc) {
       const img = doc.createElement('img');
       img.src = imgSrc;
-      img.alt = nameEN;
+      img.alt = primaryName;
       img.loading = 'lazy';
       imgCell.appendChild(img);
     }
 
-    // Title cell: optional Thai name + EN heading
+    // Title cell: primary name as heading, secondary name as sub-label
     const titleCell = doc.createElement('div');
-    if (nameTH) {
+    if (secondaryName) {
       const sub = doc.createElement('p');
       sub.className = 'ccs-name-th';
-      sub.textContent = nameTH;
+      sub.textContent = secondaryName;
       titleCell.appendChild(sub);
     }
     const h3 = doc.createElement('h3');
-    h3.textContent = nameEN;
+    h3.textContent = primaryName;
     titleCell.appendChild(h3);
 
     // Description cell
@@ -235,7 +241,7 @@ function buildCardBlock(cards, doc) {
     const btnCell = doc.createElement('div');
     const link = doc.createElement('a');
     link.href = learnHref;
-    link.textContent = 'Learn more';
+    link.textContent = labels.learnMore;
     btnCell.appendChild(link);
 
     block.appendChild(createBlockRow(
@@ -258,19 +264,19 @@ function buildCardBlock(cards, doc) {
   return block;
 }
 
-function addCompareButtons(blockEl, doc) {
+function addCompareButtons(blockEl, doc, labels) {
   blockEl.querySelectorAll('.cards-list-button').forEach((wrapper) => {
     const btn = doc.createElement('button');
     btn.type = 'button';
     btn.className = 'ccs-compare-btn';
-    btn.textContent = 'Compare';
+    btn.textContent = labels.compare;
     wrapper.appendChild(btn);
   });
 }
 
 // ── Results section DOM ────────────────────────────────────────────────────────
 
-function buildResultsSection(doc, disclaimerHtml) {
+function buildResultsSection(doc, disclaimerHtml, labels) {
   const section = doc.createElement('div');
   section.className = 'ccs-results';
 
@@ -278,7 +284,7 @@ function buildResultsSection(doc, disclaimerHtml) {
   header.className = 'ccs-results-header';
   const title = doc.createElement('h2');
   title.className = 'ccs-results-title';
-  title.textContent = 'A range of cards to suit all lifestyles';
+  title.textContent = labels.resultsTitle;
   header.appendChild(title);
   section.appendChild(header);
 
@@ -306,7 +312,7 @@ function buildResultsSection(doc, disclaimerHtml) {
 
 // ── Mobile carousel: dots + seamless loop ─────────────────────────────────────
 
-function initMobileCarousel(cardsList, blockEl, cardListContainer, doc) {
+function initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels) {
   const dotsEl = doc.createElement('div');
   dotsEl.className = 'ccs-scroll-dots';
   cardListContainer.appendChild(dotsEl);
@@ -331,7 +337,7 @@ function initMobileCarousel(cardsList, blockEl, cardListContainer, doc) {
       dot.type = 'button';
       dot.className = 'ccs-scroll-dot';
       if (i === 0) dot.classList.add('is-active');
-      dot.setAttribute('aria-label', `Go to card ${i + 1}`);
+      dot.setAttribute('aria-label', `${labels.goToCard} ${i + 1}`);
       dot.addEventListener('click', () => scrollToItem(item));
       dotsEl.appendChild(dot);
     });
@@ -406,8 +412,21 @@ function initMobileCarousel(cardsList, blockEl, cardListContainer, doc) {
  */
 export default async function initCardResults(selectorBlock, { disclaimerHtml = '' } = {}) {
   const doc = selectorBlock.ownerDocument;
+  const lang = getLang();
 
   await loadCSS(`${window.hlx.codeBasePath}/blocks/card-list/card-list.css`);
+
+  const ph = await fetchPlaceholders();
+  const labels = {
+    resultsTitle: ph.cardResultsTitle,
+    noResultsFound: ph.cardNoResultsFound,
+    seeLess: ph.cardSeeLess,
+    seeMore: ph.cardSeeMore,
+    learnMore: ph.cardLearnMore,
+    compare: ph.cardCompare,
+    remove: ph.cardRemove,
+    goToCard: lang === 'th' ? 'ไปที่การ์ด' : 'Go to card',
+  };
 
   // Fetch both data sources in parallel
   const [sheetCards, rawCards] = await Promise.all([loadSheetData(), loadCardData()]);
@@ -415,7 +434,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
 
   const {
     section, cardListContainer, toggleWrap, toggleBtn,
-  } = buildResultsSection(doc, disclaimerHtml);
+  } = buildResultsSection(doc, disclaimerHtml, labels);
   selectorBlock.insertAdjacentElement('afterend', section);
 
   // ── State ──────────────────────────────────────────────────────────────────
@@ -430,15 +449,15 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
     if (!cards || cards.length === 0) {
       const msg = doc.createElement('p');
       msg.className = 'ccs-no-results';
-      msg.textContent = 'No Results Found';
+      msg.textContent = labels.noResultsFound;
       cardListContainer.appendChild(msg);
       return;
     }
 
-    const blockEl = buildCardBlock(cards, doc);
+    const blockEl = buildCardBlock(cards, doc, lang, labels);
     cardListContainer.appendChild(blockEl);
     decorateCardList(blockEl);
-    addCompareButtons(blockEl, doc);
+    addCompareButtons(blockEl, doc, labels);
 
     // Tablet+: hide cards beyond INITIAL_VISIBLE (mobile carousel shows all)
     if (activeCards === null && !isExpanded && window.matchMedia(TABLET_BREAKPOINT).matches) {
@@ -449,7 +468,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
 
     const cardsList = blockEl.querySelector('.cards-list.scrollable');
     if (cardsList) {
-      currentBuildDots = initMobileCarousel(cardsList, blockEl, cardListContainer, doc);
+      currentBuildDots = initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels);
     }
   }
 
@@ -460,7 +479,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
 
     toggleBtn.innerHTML = '';
     const label = doc.createElement('span');
-    label.textContent = isExpanded ? 'See less' : 'See more';
+    label.textContent = isExpanded ? labels.seeLess : labels.seeMore;
     const icon = doc.createElement('span');
     icon.className = 'icon-dropdown';
     icon.setAttribute('aria-hidden', 'true');
@@ -508,6 +527,6 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
     const btn = e.target.closest('.ccs-compare-btn');
     if (!btn) return;
     const nowComparing = btn.classList.toggle('is-comparing');
-    btn.textContent = nowComparing ? 'Remove' : 'Compare';
+    btn.textContent = nowComparing ? labels.remove : labels.compare;
   });
 }
