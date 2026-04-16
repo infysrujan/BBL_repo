@@ -47,7 +47,8 @@
       "card-list",
       "privacy-modal",
       "external-redirect-popup",
-      "credit-card-selector"
+      "credit-card-selector",
+      "credit-card-comparator"
     ]
   },
   {
