@@ -300,6 +300,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
   // ── State ─────────────────────────────────────────────────────────────────
   let isExpanded = false;
   let activeCards = null; // null = full unfiltered list; Array = filtered result
+  let currentBuildDots = null; // rebuilt whenever cards are re-rendered
 
   /**
    * Build, decorate, and mount a fresh card-list block for the given cards.
@@ -307,6 +308,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
    */
   function renderCards(cards) {
     cardListContainer.innerHTML = '';
+    currentBuildDots = null;
 
     if (!cards || cards.length === 0) {
       const noResults = doc.createElement('p');
@@ -321,16 +323,112 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
     decorateCardList(blockEl);
     addCompareButtons(blockEl, doc);
 
-    // Initially hide overflow cards only in the unfiltered view
-    if (activeCards === null && !isExpanded) {
+    // Hide overflow cards on tablet+ (mobile carousel shows all cards)
+    if (activeCards === null && !isExpanded && window.matchMedia('(width >= 760px)').matches) {
       [...blockEl.querySelectorAll('.cards-list-item')].forEach((item, i) => {
         if (i >= INITIAL_VISIBLE) item.classList.add('ccs-hidden');
       });
     }
+
+    // ── Scroll dots + seamless infinite loop (mobile carousel) ───────────
+    const cardsList = blockEl.querySelector('.cards-list.scrollable');
+    if (cardsList) {
+      const dotsEl = doc.createElement('div');
+      dotsEl.className = 'ccs-scroll-dots';
+      cardListContainer.appendChild(dotsEl);
+
+      // Real cards only — clones are excluded from dots and active-index logic
+      const getRealItems = () => [
+        ...blockEl.querySelectorAll('.cards-list-item:not(.ccs-hidden):not([data-ccs-clone])'),
+      ];
+
+      const buildDots = () => {
+        dotsEl.innerHTML = '';
+        getRealItems().forEach((item, i) => {
+          const dot = doc.createElement('button');
+          dot.type = 'button';
+          dot.className = 'ccs-scroll-dot';
+          if (i === 0) dot.classList.add('is-active');
+          dot.setAttribute('aria-label', `Go to card ${i + 1}`);
+          dot.addEventListener('click', () => {
+            const offset = item.getBoundingClientRect().left
+              - cardsList.getBoundingClientRect().left
+              + cardsList.scrollLeft;
+            cardsList.scrollTo({ left: offset, behavior: 'smooth' });
+          });
+          dotsEl.appendChild(dot);
+        });
+      };
+
+      buildDots();
+      currentBuildDots = buildDots;
+
+      // Update active dot — ignores clones when finding nearest real card
+      cardsList.addEventListener('scroll', () => {
+        const dots = [...dotsEl.querySelectorAll('.ccs-scroll-dot')];
+        const realItems = getRealItems();
+        if (!realItems.length || !dots.length) return;
+        const containerLeft = cardsList.getBoundingClientRect().left;
+        let activeIndex = 0;
+        let minDistance = Infinity;
+        realItems.forEach((item, i) => {
+          const distance = Math.abs(item.getBoundingClientRect().left - containerLeft);
+          if (distance < minDistance) {
+            minDistance = distance;
+            activeIndex = i;
+          }
+        });
+        dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+      }, { passive: true });
+
+      // ── Seamless loop: clone first card at end, last card at start ────────
+      const realItems = getRealItems();
+      if (realItems.length > 1) {
+        const firstClone = realItems[0].cloneNode(true);
+        const lastClone = realItems[realItems.length - 1].cloneNode(true);
+        [firstClone, lastClone].forEach((c) => {
+          c.dataset.ccsClone = 'true';
+          c.setAttribute('aria-hidden', 'true');
+        });
+        cardsList.appendChild(firstClone); // clone of first → at end
+        cardsList.insertBefore(lastClone, realItems[0]); // clone of last → at start
+
+        // Skip the prepended last-clone on load (instant, no animation)
+        requestAnimationFrame(() => {
+          cardsList.scrollLeft = realItems[0].offsetLeft;
+        });
+
+        // After scroll snaps to a clone, instantly reposition to its real counterpart
+        let wrapTimer = null;
+        cardsList.addEventListener('scroll', () => {
+          clearTimeout(wrapTimer);
+          wrapTimer = setTimeout(() => {
+            const allItems = [...cardsList.querySelectorAll('.cards-list-item')];
+            const containerLeft = cardsList.getBoundingClientRect().left;
+            let snapIdx = 0;
+            let minDist = Infinity;
+            allItems.forEach((item, i) => {
+              const dist = Math.abs(item.getBoundingClientRect().left - containerLeft);
+              if (dist < minDist) { minDist = dist; snapIdx = i; }
+            });
+            const snapped = allItems[snapIdx];
+            if (!snapped || !snapped.dataset.ccsClone) return;
+            // Jump to real counterpart — no animation so user doesn't see the repositioning
+            const real = snapped === lastClone
+              ? realItems[realItems.length - 1]
+              : realItems[0];
+            const delta = real.getBoundingClientRect().left
+              - snapped.getBoundingClientRect().left;
+            cardsList.scrollLeft += delta;
+          }, 100);
+        }, { passive: true });
+      }
+    }
   }
 
   function refreshToggle() {
-    const canToggle = activeCards === null && allCards.length > INITIAL_VISIBLE;
+    const isMobile = window.matchMedia('(width < 760px)').matches;
+    const canToggle = !isMobile && activeCards === null && allCards.length > INITIAL_VISIBLE;
     toggleWrap.style.display = canToggle ? '' : 'none';
     toggleBtn.innerHTML = '';
     const lbl = doc.createElement('span');
@@ -358,6 +456,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
       if (i >= INITIAL_VISIBLE) item.classList.toggle('ccs-hidden', !isExpanded);
     });
     refreshToggle();
+    if (currentBuildDots) currentBuildDots();
   });
 
   // ── Filter applied ────────────────────────────────────────────────────────

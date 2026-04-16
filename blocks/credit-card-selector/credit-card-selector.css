@@ -352,9 +352,12 @@
    Collapsible — wrapper, content transition, toggle button
    ========================================================================== */
 
-/* Outer wrapper: clips vertically so content folds away cleanly */
+/* Outer wrapper: clips vertically so content folds away cleanly.
+   position: relative establishes the containing block for the absolutely
+   positioned collapse toggle button. */
 .credit-card-selector .card-selector-collapsible {
   overflow-y: hidden;
+  position: relative;
 }
 
 /* Collapsed state — content folds away */
@@ -365,16 +368,17 @@
   padding-bottom: 0;
 }
 
-/* Toggle bar: right-aligned on mobile — matches live site float:right ~6px from content edge */
+/* Toggle bar: spacer that reserves room for the absolutely positioned button. */
 .credit-card-selector .collapse-toggle-bar {
-  height: 1.875rem; /* 30 px */
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-  padding-right: 1rem;
+  height: 3.5rem;
 }
 
+/* Toggle button: pinned to bottom-right of the collapsible wrapper.
+   No transform or flex-end hacks — works regardless of container width. */
 .credit-card-selector .collapse-toggle-button {
+  position: absolute;
+  bottom: 0.25rem;
+  right: 0;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -384,7 +388,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: translateY(-1.25rem);
 }
 
 /* Chevron icon — square rounded button matching the live site */
@@ -468,22 +471,7 @@
     justify-content: flex-end;
   }
 
-  /* Toggle bar: switch to relative-positioned block for absolute child */
-  .credit-card-selector .collapse-toggle-bar {
-    display: block;
-    position: relative;
-    padding-right: 0;
-  }
-
-  /* Toggle button: absolute, ~38px inside content's right edge */
-  .credit-card-selector .collapse-toggle-button {
-    position: absolute;
-    top: -1.25rem;
-    right: 5.375rem;
-    transform: none;
-  }
-
-  /* Rotate-only in collapsed state (no translateY to undo) */
+  /* Rotate chevron when collapsed */
   .credit-card-selector .card-selector-collapsible.is-collapsed .collapse-toggle-button::after {
     transform: rotate(180deg);
   }
@@ -514,10 +502,6 @@
     gap: 2rem;
   }
 
-  /* Toggle button: mirrors live site's left:-84px within 192px-padded container */
-  .credit-card-selector .collapse-toggle-button {
-    right: 17.25rem;
-  }
 }
 
 /* ==========================================================================
@@ -661,6 +645,68 @@
   background-color: var(--bbl-color-grey-10, #f5f5f5);
   border-color: var(--bbl-color-grey-60, #939399);
   color: var(--bbl-color-grey-60, #939399);
+}
+
+/* ── Mobile: hide scrollbar on credit card carousel — replaced by dots ───────── */
+
+.ccs-card-list-container .cards-list.scrollable {
+  scrollbar-width: none;
+}
+
+.ccs-card-list-container .cards-list.scrollable::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Scroll dots pagination — matches carousel-dotted show-arrows-dots style ─── */
+
+.ccs-scroll-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  width: auto;
+  height: auto;
+}
+
+.ccs-scroll-dot {
+  appearance: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  min-width: 0.5rem;
+  min-height: 0.5rem;
+  border-radius: 50%;
+  border: 0.063rem solid var(--bbl-color-grey-40, #c0c0c5);
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+  transition: all 180ms ease;
+}
+
+.ccs-scroll-dot.is-active {
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--bbl-color-active-blue, #0064ff);
+  border-color: var(--bbl-color-active-blue, #0064ff);
+}
+
+/* Tablet+: see more/see less applies — hide dots */
+@media (width >= 760px) {
+  .ccs-scroll-dots {
+    display: none;
+  }
+}
+
+/* Mobile only: all cards visible in scroll carousel — hide see more toggle */
+@media (width < 760px) {
+  .ccs-results-toggle {
+    display: none;
+  }
 }
 
 /* ── Hidden cards (beyond initial 6 in unfiltered state) ────────────────────── */
