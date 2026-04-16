@@ -645,6 +645,8 @@
   background-color: var(--bbl-color-grey-10, #f5f5f5);
   border-color: var(--bbl-color-grey-60, #939399);
   color: var(--bbl-color-grey-60, #939399);
+  cursor: default;
+  pointer-events: none;
 }
 
 /* ── Mobile: hide scrollbar on credit card carousel — replaced by dots ───────── */

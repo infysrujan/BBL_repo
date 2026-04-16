@@ -464,12 +464,10 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
   // ── Restore compare button states after re-render ──────────────────────────
   function restoreCompareState(container) {
     const selected = window.ccsSelectedCards || [];
-    const atMax = selected.length >= MAX_COMPARE;
     container.querySelectorAll('.ccs-compare-btn').forEach((btn) => {
       const isSelected = selected.some((c) => c.name === btn.dataset.cardName);
       btn.classList.toggle('is-comparing', isSelected);
       btn.textContent = labels.compare;
-      btn.disabled = !isSelected && atMax;
     });
   }
 
@@ -557,18 +555,18 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
   // ── Compare toggle ─────────────────────────────────────────────────────────
   section.addEventListener('click', (e) => {
     const btn = e.target.closest('.ccs-compare-btn');
-    if (!btn || btn.disabled) return;
+    if (!btn) return;
 
     window.ccsSelectedCards = window.ccsSelectedCards || [];
     const { cardName, cardImage } = btn.dataset;
-    const isSelected = btn.classList.contains('is-comparing');
+    // If already in the comparator, do nothing — removal is only via the X icon in the bar
+    if (btn.classList.contains('is-comparing')) return;
 
-    if (isSelected) {
-      window.ccsSelectedCards = window.ccsSelectedCards.filter((c) => c.name !== cardName);
-    } else {
-      if (window.ccsSelectedCards.length >= MAX_COMPARE) return;
-      window.ccsSelectedCards.push({ name: cardName, image: cardImage });
+    if (window.ccsSelectedCards.length >= MAX_COMPARE) {
+      document.dispatchEvent(new CustomEvent('credit-card-compare-limit-reached'));
+      return;
     }
+    window.ccsSelectedCards.push({ name: cardName, image: cardImage });
 
     restoreCompareState(cardListContainer);
 
