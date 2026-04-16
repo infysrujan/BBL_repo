@@ -1,4 +1,5 @@
 import initCardResults from './credit-card-results.js';
+import { moveInstrumentation } from '../../scripts/scripts.js';
 
 /**
  * Build a single filter option card: li > label > [input] [option-icon?] [option-text]
@@ -277,6 +278,7 @@ export default function decorate(block) {
         items: listItems,
         isLifestyle,
         maxSelect: isLifestyle ? 3 : 1,
+        sourceRow: rows[i],
       });
     }
   }
@@ -296,6 +298,7 @@ export default function decorate(block) {
 
   filterGroups.forEach((group, index) => {
     const groupElement = buildFilterGroup(group, index);
+    moveInstrumentation(group.sourceRow, groupElement);
     if (group.isLifestyle) {
       lifestyleFilterColumn.appendChild(groupElement);
     } else {

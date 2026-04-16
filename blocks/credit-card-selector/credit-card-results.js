@@ -7,6 +7,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
 const INITIAL_VISIBLE = 3;
 const MAX_FILTERED = 5;
+const MAX_COMPARE = 3;
 const MOBILE_BREAKPOINT = '(width < 760px)';
 const TABLET_BREAKPOINT = '(width >= 760px)';
 const BENEFIT_ALIASES = { rewards: 'point' };
@@ -63,6 +64,47 @@ function sortBySourcing(cards) {
   });
 }
 
+// ── Data fetching ──────────────────────────────────────────────────────────────
+
+async function loadSheetData() {
+  try {
+    const resp = await fetch('/credit-card-suggestor.json');
+    // eslint-disable-next-line no-console
+    console.log('[credit-card-results] sheet fetch:', resp.status, resp.ok);
+    if (!resp.ok) return [];
+    const json = await resp.json();
+    const rows = (json.data || []).map(normalizeRow);
+    // eslint-disable-next-line no-console
+    console.log('[credit-card-results] sheet rows loaded:', rows.length, rows[0]);
+    return rows;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[credit-card-results] sheet fetch failed:', err);
+    return [];
+  }
+}
+
+async function loadCardData(names) {
+  try {
+    let url = '/blocks/helper/helper.json';
+    if (names && names.length) {
+      const params = new URLSearchParams();
+      names.forEach((n) => params.append('name', n));
+      url = `${url}?${params.toString()}`;
+    }
+    // eslint-disable-next-line no-console
+    console.log('[credit-card-results] card data fetch:', url);
+    const resp = await fetch(url);
+    if (!resp.ok) return [];
+    const json = await resp.json();
+    return json.data?.creditCardsList?.items || json.data || json.items || [];
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[credit-card-results] card data fetch failed:', err);
+    return [];
+  }
+}
+
 // ── Filtering ──────────────────────────────────────────────────────────────────
 
 function matchesFilter(row, { userIncome, userBenefit, userLifestyles }) {
@@ -107,15 +149,17 @@ function filterSheetCards(sheetCards, { income, benefit, lifestyles } = {}) {
 }
 
 /**
- * Apply a filter state to allCards: match sheet rows → look up helper cards
+ * Apply a filter state to allCards: match sheet rows → fetch helper cards by name
  * → sort by Sourcing → cap at MAX_FILTERED.
  */
-function resolveFilteredCards(sheetCards, allCards, filterState) {
+async function resolveFilteredCards(sheetCards, filterState) {
   const matchingRows = filterSheetCards(sheetCards, filterState);
   const matchingNames = matchingRows.map((row) => norm(row['Product Name (EN)'] || ''));
 
   // eslint-disable-next-line no-console
   console.log('[credit-card-results] matching names:', matchingNames);
+
+  if (!matchingNames.length) return [];
 
   const sourcingMap = {};
   matchingRows.forEach((row) => {
@@ -123,11 +167,12 @@ function resolveFilteredCards(sheetCards, allCards, filterState) {
     if (name) sourcingMap[name] = parseInt(row.Sourcing || 9999, 10);
   });
 
-  const filtered = allCards
-    .filter((card) => {
-      const name = norm(getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
-      return matchingNames.includes(name);
-    })
+  // Second fetch — request only the matched cards by name
+  const rawCards = await loadCardData(matchingNames);
+  // eslint-disable-next-line no-console
+  console.log('[credit-card-results] second fetch returned:', rawCards.length);
+
+  const filtered = rawCards
     .sort((a, b) => {
       const nameA = norm(getCardField(a, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
       const nameB = norm(getCardField(b, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
@@ -138,39 +183,6 @@ function resolveFilteredCards(sheetCards, allCards, filterState) {
   // eslint-disable-next-line no-console
   console.log('[credit-card-results] filtered cards:', filtered.length);
   return filtered;
-}
-
-// ── Data fetching ──────────────────────────────────────────────────────────────
-
-async function loadSheetData() {
-  try {
-    const resp = await fetch('/credit-card-suggestor.json');
-    // eslint-disable-next-line no-console
-    console.log('[credit-card-results] sheet fetch:', resp.status, resp.ok);
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    const rows = (json.data || []).map(normalizeRow);
-    // eslint-disable-next-line no-console
-    console.log('[credit-card-results] sheet rows loaded:', rows.length, rows[0]);
-    return rows;
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.warn('[credit-card-results] sheet fetch failed:', err);
-    return [];
-  }
-}
-
-async function loadCardData() {
-  try {
-    const resp = await fetch('/blocks/helper/helper.json');
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    return json.data?.creditCardsList?.items || json.data || json.items || [];
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.warn('[credit-card-results] card data fetch failed:', err);
-    return [];
-  }
 }
 
 // ── card-list block DOM builder ────────────────────────────────────────────────
@@ -266,10 +278,13 @@ function buildCardBlock(cards, doc, lang, labels) {
 
 function addCompareButtons(blockEl, doc, labels) {
   blockEl.querySelectorAll('.cards-list-button').forEach((wrapper) => {
+    const item = wrapper.closest('.cards-list-item');
     const btn = doc.createElement('button');
     btn.type = 'button';
     btn.className = 'ccs-compare-btn';
     btn.textContent = labels.compare;
+    btn.dataset.cardName = item?.querySelector('h3')?.textContent?.trim() ?? '';
+    btn.dataset.cardImage = item?.querySelector('img')?.src ?? '';
     wrapper.appendChild(btn);
   });
 }
@@ -417,20 +432,24 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
   await loadCSS(`${window.hlx.codeBasePath}/blocks/card-list/card-list.css`);
 
   const ph = await fetchPlaceholders();
+  // eslint-disable-next-line no-console
+  console.log('[credit-card-results] placeholders:', ph);
+
+  const isTH = lang === 'th';
   const labels = {
-    resultsTitle: ph.cardResultsTitle,
-    noResultsFound: ph.cardNoResultsFound,
-    seeLess: ph.cardSeeLess,
-    seeMore: ph.cardSeeMore,
-    learnMore: ph.cardLearnMore,
-    compare: ph.cardCompare,
-    remove: ph.cardRemove,
-    goToCard: lang === 'th' ? 'ไปที่การ์ด' : 'Go to card',
+    resultsTitle: ph.cardResultsTitle || (isTH ? 'บัตรหลากหลายเหมาะกับทุกไลฟ์สไตล์' : 'A range of cards to suit all lifestyles'),
+    noResultsFound: ph.cardNoResultsFound || (isTH ? 'ไม่พบผลลัพธ์' : 'No Results Found'),
+    seeLess: ph.cardSeeLess || (isTH ? 'ดูน้อยลง' : 'See less'),
+    seeMore: ph.cardSeeMore || (isTH ? 'ดูเพิ่มเติม' : 'See more'),
+    learnMore: ph.cardLearnMore || (isTH ? 'เรียนรู้เพิ่มเติม' : 'Learn more'),
+    compare: ph.cardCompare || (isTH ? 'เปรียบเทียบ' : 'Compare'),
+    remove: ph.cardRemove || (isTH ? 'ลบออก' : 'Remove'),
+    goToCard: ph.cardGoToCard || (isTH ? 'ไปที่การ์ด' : 'Go to card'),
   };
 
-  // Fetch both data sources in parallel
+  // Fetch both data sources in parallel for initial render
   const [sheetCards, rawCards] = await Promise.all([loadSheetData(), loadCardData()]);
-  const allCards = sortBySourcing(rawCards);
+  const allCards = sortBySourcing(rawCards); // used for initial (unfiltered) display
 
   const {
     section, cardListContainer, toggleWrap, toggleBtn,
@@ -441,6 +460,18 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
   let isExpanded = false;
   let activeCards = null; // null = full unfiltered list; Array = filtered result
   let currentBuildDots = null;
+
+  // ── Restore compare button states after re-render ──────────────────────────
+  function restoreCompareState(container) {
+    const selected = window.ccsSelectedCards || [];
+    const atMax = selected.length >= MAX_COMPARE;
+    container.querySelectorAll('.ccs-compare-btn').forEach((btn) => {
+      const isSelected = selected.some((c) => c.name === btn.dataset.cardName);
+      btn.classList.toggle('is-comparing', isSelected);
+      btn.textContent = labels.compare;
+      btn.disabled = !isSelected && atMax;
+    });
+  }
 
   function renderCards(cards) {
     cardListContainer.innerHTML = '';
@@ -458,6 +489,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
     cardListContainer.appendChild(blockEl);
     decorateCardList(blockEl);
     addCompareButtons(blockEl, doc, labels);
+    restoreCompareState(cardListContainer);
 
     // Tablet+: hide cards beyond INITIAL_VISIBLE (mobile carousel shows all)
     if (activeCards === null && !isExpanded && window.matchMedia(TABLET_BREAKPOINT).matches) {
@@ -506,10 +538,10 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
   });
 
   // ── Filter applied ─────────────────────────────────────────────────────────
-  doc.addEventListener('credit-card-filter-applied', (e) => {
+  doc.addEventListener('credit-card-filter-applied', async (e) => {
     // eslint-disable-next-line no-console
     console.log('[credit-card-results] filter applied:', e.detail);
-    activeCards = resolveFilteredCards(sheetCards, allCards, e.detail || {});
+    activeCards = await resolveFilteredCards(sheetCards, e.detail || {});
     isExpanded = false;
     render();
     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -525,8 +557,28 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
   // ── Compare toggle ─────────────────────────────────────────────────────────
   section.addEventListener('click', (e) => {
     const btn = e.target.closest('.ccs-compare-btn');
-    if (!btn) return;
-    const nowComparing = btn.classList.toggle('is-comparing');
-    btn.textContent = nowComparing ? labels.remove : labels.compare;
+    if (!btn || btn.disabled) return;
+
+    window.ccsSelectedCards = window.ccsSelectedCards || [];
+    const { cardName, cardImage } = btn.dataset;
+    const isSelected = btn.classList.contains('is-comparing');
+
+    if (isSelected) {
+      window.ccsSelectedCards = window.ccsSelectedCards.filter((c) => c.name !== cardName);
+    } else {
+      if (window.ccsSelectedCards.length >= MAX_COMPARE) return;
+      window.ccsSelectedCards.push({ name: cardName, image: cardImage });
+    }
+
+    restoreCompareState(cardListContainer);
+
+    document.dispatchEvent(new CustomEvent('credit-card-compare-updated', {
+      detail: { cards: window.ccsSelectedCards },
+    }));
+  });
+
+  // ── Sync button states when comparator bar removes a card ──────────────────
+  doc.addEventListener('credit-card-compare-updated', () => {
+    restoreCompareState(cardListContainer);
   });
 }
