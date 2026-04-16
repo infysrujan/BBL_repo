@@ -80,6 +80,12 @@
     ]
   },
   {
+    "id": "carousel-video",
+    "components": [
+      "carousel-video-item"
+    ]
+  },
+  {
     "id": "carousel",
     "components": [
       "carousel-card"

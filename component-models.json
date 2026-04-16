@@ -1841,6 +1841,23 @@
     ]
   },
   {
+    "id": "carousel-video",
+    "fields": []
+  },
+  {
+    "id": "carousel-video-item",
+    "fields": [
+      {
+        "component": "text",
+        "name": "youtubeUrl",
+        "label": "YouTube URL",
+        "description": "Enter the YouTube video URL.",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "carousel",
     "fields": [
       {
@@ -2486,11 +2503,11 @@
         "collapsible": false,
         "fields": [
           {
-              "component": "text",
-              "name": "title",
-              "label": "Form Title",
-              "valueType": "string"
-            },
+            "component": "text",
+            "name": "title",
+            "label": "Form Title",
+            "valueType": "string"
+          },
           {
             "component": "text",
             "name": "style",
