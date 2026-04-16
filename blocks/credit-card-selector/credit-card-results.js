@@ -382,8 +382,10 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
       }, { passive: true });
 
       // ── Seamless loop: clone first card at end, last card at start ────────
+      // Only on mobile (<760px) where the carousel is active — clones must not
+      // appear in the tablet/desktop grid view.
       const realItems = getRealItems();
-      if (realItems.length > 1) {
+      if (realItems.length > 1 && window.matchMedia('(width < 760px)').matches) {
         const firstClone = realItems[0].cloneNode(true);
         const lastClone = realItems[realItems.length - 1].cloneNode(true);
         [firstClone, lastClone].forEach((c) => {
