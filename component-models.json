@@ -8515,33 +8515,6 @@
         "name": "imagePickerDesktopMimeType"
       },
       {
-        "component": "text",
-        "valueType": "string",
-        "name": "imagePickerDesktopAlt",
-        "label": "Alternative text (Desktop)",
-        "description": "Alt text for the desktop image. Describe the image in context for accessibility and SEO."
-      },
-      {
-        "component": "custom-asset-namespace:custom-asset",
-        "name": "imagePickerTablet",
-        "label": "Image (Tablet)",
-        "description": "Select an image shown at tablet breakpoints",
-        "configUrl": "/content/dam/image.config.json",
-        "valueType": "string"
-      },
-      {
-        "component": "custom-asset-namespace:custom-asset-mimetype",
-        "valueType": "string",
-        "name": "imagePickerTabletMimeType"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imagePickerTabletAlt",
-        "label": "Alternative text (Tablet)",
-        "description": "Alt text for the tablet image. Describe the image in context for accessibility and SEO."
-      },
-      {
         "component": "custom-asset-namespace:custom-asset",
         "name": "imagePickerMobile",
         "label": "Image (Mobile)",
@@ -8557,9 +8530,9 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "imagePickerMobileAlt",
-        "label": "Alternative text (Mobile)",
-        "description": "Alt text for the mobile image. Describe the image in context for accessibility and SEO."
+        "name": "imagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
       },
       {
         "component": "text",
