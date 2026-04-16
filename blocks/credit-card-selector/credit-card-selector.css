@@ -657,6 +657,21 @@
   display: none;
 }
 
+/* ── Tablet: 3-column grid — override card-list's fixed-width horizontal scroll ─ */
+
+@media (width >= 760px) and (width < 1025px) {
+  .ccs-card-list-container .cards-list.scrollable {
+    flex-wrap: wrap;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  .ccs-card-list-container .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-250, 1.25rem)) / 3);
+    margin-bottom: var(--bbl-space-250, 1.25rem);
+  }
+}
+
 /* ── Scroll dots pagination — matches carousel-dotted show-arrows-dots style ─── */
 
 .ccs-scroll-dots {
@@ -752,22 +767,15 @@
   background-color: var(--bbl-color-blue-10, #e8f1ff);
 }
 
-.ccs-chevron {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
+.ccs-results-toggle-btn .icon-dropdown {
+  font-size: 0.75rem;
+  color: var(--bbl-color-active-blue, #0064ff);
+  transition: transform 0.2s ease;
   flex-shrink: 0;
 }
 
-.ccs-chevron-down {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M3 6l5 5 5-5' stroke='%230064FF' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-
-.ccs-chevron-up {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M3 10l5-5 5 5' stroke='%230064FF' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+.ccs-results-toggle-btn[aria-expanded="true"] .icon-dropdown {
+  transform: rotate(180deg);
 }
 
 /* ── Disclaimer ────────────────────────────────────────────────────────────── */
