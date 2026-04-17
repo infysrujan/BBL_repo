@@ -34,10 +34,6 @@
   ],
   "models": [
     {
-      "id": "card-list-wealth",
-      "fields": []
-    },
-    {
       "id": "card-list-wealth-item",
       "fields": [
         {
