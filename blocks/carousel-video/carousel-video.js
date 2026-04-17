@@ -19,10 +19,18 @@ export default function decorate(block) {
   const rows = [...block.children];
 
   const allItems = rows.map((row) => {
-    const link = row.querySelector('a');
-    const text = row.querySelector('div')?.textContent?.trim();
+    const cells = [...row.children];
+    const firstCell = cells[0];
+    const secondCell = cells[1];
+
+    const link = firstCell?.querySelector('a');
+    const text = firstCell?.textContent?.trim();
     const url = link?.getAttribute('href') || text || '';
-    return { row, id: getYouTubeId(url) };
+
+    const thumbImg = secondCell?.querySelector('img');
+    const thumbSrc = thumbImg ? thumbImg.src || thumbImg.getAttribute('src') : null;
+
+    return { row, id: getYouTubeId(url), thumbSrc };
   });
 
   const items = allItems.filter((item) => item.id);
@@ -82,14 +90,14 @@ export default function decorate(block) {
   nextBtn.setAttribute('aria-label', 'Next');
 
   // Build a thumb button for one item; only the originals carry UE instrumentation.
-  function createThumb(id, realIndex, row) {
+  function createThumb(id, realIndex, row, thumbSrc) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'cv-thumb';
     btn.setAttribute('aria-label', `Play video ${realIndex + 1}`);
 
     const img = document.createElement('img');
-    img.src = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+    img.src = thumbSrc || `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
     img.alt = `Video ${realIndex + 1} thumbnail`;
     img.loading = 'lazy';
     btn.appendChild(img);
@@ -100,15 +108,15 @@ export default function decorate(block) {
   }
 
   // Leading clones (set 0)
-  const leadingClones = items.map(({ id }, i) => createThumb(id, i, null));
+  const leadingClones = items.map(({ id, thumbSrc }, i) => createThumb(id, i, null, thumbSrc));
   // Originals (set 1) — carry UE instrumentation
-  const thumbEls = items.map(({ row, id }, i) => {
-    const btn = createThumb(id, i, row);
+  const thumbEls = items.map(({ row, id, thumbSrc }, i) => {
+    const btn = createThumb(id, i, row, thumbSrc);
     if (i === 0) btn.classList.add('active');
     return btn;
   });
   // Trailing clones (set 2)
-  const trailingClones = items.map(({ id }, i) => createThumb(id, i, null));
+  const trailingClones = items.map(({ id, thumbSrc }, i) => createThumb(id, i, null, thumbSrc));
 
   // All 3 sets flattened; domI % n gives the real item index
   const allThumbBtns = [...leadingClones, ...thumbEls, ...trailingClones];
@@ -170,8 +178,8 @@ export default function decorate(block) {
   // closest to the current rawScrollIndex — this drives infinite scrolling.
   function nearestRawForIndex(index) {
     const candidates = [index, n + index, 2 * n + index];
-    return candidates.reduce((best, c) =>
-      Math.abs(c - rawScrollIndex) < Math.abs(best - rawScrollIndex) ? c : best);
+    return candidates.reduce((best, c) => (
+      Math.abs(c - rawScrollIndex) < Math.abs(best - rawScrollIndex) ? c : best));
   }
 
   function ensureVisible(index) {

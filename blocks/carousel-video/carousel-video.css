@@ -36,6 +36,7 @@
 .carousel-video .cv-track-wrap {
   width: 100%;
   overflow: hidden;
+  margin: 30px -5px;
 }
 
 .carousel-video .cv-track {
@@ -51,7 +52,7 @@
   padding: 0;
   margin: 0 5px;
   border: none;
-  border-radius: 4px;
+  border-radius: 0;
   overflow: hidden;
   cursor: pointer;
   background: #000;
@@ -65,6 +66,7 @@
   object-fit: cover;
   display: block;
   pointer-events: none;
+  border-radius: 0;
 }
 
 .carousel-video .cv-thumb:hover {
@@ -72,7 +74,7 @@
 }
 
 .carousel-video .cv-thumb.active {
-  outline: 2px solid var(--bbl-color-active-blue, #0070d1);
+  /* outline: 2px solid var(--bbl-color-active-blue, #0070d1); */
   outline-offset: -2px;
   opacity: 1;
 }
