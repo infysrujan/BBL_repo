@@ -1,13 +1,13 @@
 /* ── Wrapper ─────────────────────────────────────────────────────────────── */
 .carousel-video-wrapper {
-  width: 900px;
-  height: 842px;
+  width: 56.25rem;
+  height: 52.625rem;
 }
 
 /* ── YouTube player ──────────────────────────────────────────────────────── */
 .carousel-video #player {
-  width: 768px;
-  height: 529.778px;
+  width: 48rem;
+  height: 33.111rem;
   padding: 0;
   border: none;
   margin: 0;
@@ -19,8 +19,8 @@
 /* ── Main player ─────────────────────────────────────────────────────────── */
 .carousel-video .cv-main-player {
   position: relative;
-  width: 810px;
-  height: 490px;
+  width: 50.625rem;
+  height: 30.625rem;
   background: #000;
 }
 
@@ -36,9 +36,9 @@
 /* ── Thumbnail carousel ──────────────────────────────────────────────────── */
 .carousel-video .cv-carousel-section {
   position: relative;
-  width: 810px;
-  height: 142px;
-  margin: 30px 0;
+  width: 50.625rem;
+  height: 8.875rem;
+  margin: 1.875rem 0;
   padding: 0;
   border: 0;
 }
@@ -46,7 +46,7 @@
 .carousel-video .cv-track-wrap {
   width: 100%;
   overflow: hidden;
-  margin: 30px -5px;
+  margin: 1.875rem -0.3125rem;
 }
 
 .carousel-video .cv-track {
@@ -56,11 +56,11 @@
 
 /* ── Thumbnails ──────────────────────────────────────────────────────────── */
 .carousel-video .cv-thumb {
-  flex: 0 0 185px;
-  width: 185px;
-  height: 100px;
+  flex: 0 0 11.5625rem;
+  width: 11.5625rem;
+  height: 6.25rem;
   padding: 0;
-  margin: 0 5px;
+  margin: 0 0.3125rem;
   border: none;
   border-radius: 0;
   overflow: hidden;
@@ -84,8 +84,8 @@
 }
 
 .carousel-video .cv-thumb.active {
-  /* outline: 2px solid var(--bbl-color-active-blue, #0070d1); */
-  outline-offset: -2px;
+  /* outline: 0.125rem solid var(--bbl-color-active-blue, #0070d1); */
+  outline-offset: -0.125rem;
   opacity: 1;
 }
 
@@ -97,14 +97,14 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  border: 1px solid var(--bbl-color-grey-40, #ccc);
+  border: 0.0625rem solid var(--bbl-color-grey-40, #ccc);
   background: var(--bbl-color-white, #fff);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 15%);
+  box-shadow: 0 0.125rem 0.375rem rgb(0 0 0 / 15%);
   transition: background 0.2s ease;
   z-index: 1;
 }
@@ -131,18 +131,18 @@
   display: block;
   width: 0.5rem;
   height: 0.5rem;
-  border-top: 2px solid var(--bbl-color-grey-80, #333);
-  border-right: 2px solid var(--bbl-color-grey-80, #333);
+  border-top: 0.125rem solid var(--bbl-color-grey-80, #333);
+  border-right: 0.125rem solid var(--bbl-color-grey-80, #333);
 }
 
 .carousel-video .cv-prev::before {
   transform: rotate(-135deg);
-  margin-left: 3px;
+  margin-left: 0.1875rem;
 }
 
 .carousel-video .cv-next::before {
   transform: rotate(45deg);
-  margin-right: 3px;
+  margin-right: 0.1875rem;
 }
 
 /* ── Dots ────────────────────────────────────────────────────────────────── */
@@ -160,7 +160,7 @@
   min-width: 0.5rem;
   min-height: 0.5rem;
   border-radius: 50%;
-  border: 1px solid var(--bbl-color-grey-40, #999);
+  border: 0.0625rem solid var(--bbl-color-grey-40, #999);
   background: transparent;
   padding: 0;
   cursor: pointer;
