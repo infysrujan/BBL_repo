@@ -49,12 +49,10 @@
           "required": true
         },
         {
-          "component": "file-reference",
+          "component": "reference",
           "name": "thumbnail",
           "label": "Thumbnail Image",
-          "description": "Upload or select a custom thumbnail image for this video.",
-          "valueType": "string",
-          "required": false
+          "multi": false
         }
       ]
     }
