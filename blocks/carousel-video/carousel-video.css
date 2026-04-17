@@ -1,3 +1,9 @@
+/* ── Wrapper ─────────────────────────────────────────────────────────────── */
+.carousel-video-wrapper {
+  width: 900px;
+  height: 842px;
+}
+
 /* ── YouTube player ──────────────────────────────────────────────────────── */
 .carousel-video #player {
   width: 768px;
@@ -13,8 +19,8 @@
 /* ── Main player ─────────────────────────────────────────────────────────── */
 .carousel-video .cv-main-player {
   position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
+  width: 810px;
+  height: 490px;
   background: #000;
 }
 
@@ -30,7 +36,11 @@
 /* ── Thumbnail carousel ──────────────────────────────────────────────────── */
 .carousel-video .cv-carousel-section {
   position: relative;
-  padding: 1rem 0 0.5rem;
+  width: 810px;
+  height: 142px;
+  margin: 30px 0;
+  padding: 0;
+  border: 0;
 }
 
 .carousel-video .cv-track-wrap {
