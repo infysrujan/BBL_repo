@@ -2,6 +2,7 @@
 .carousel-video-wrapper {
   width: 56.25rem;
   height: 52.625rem;
+  margin: auto;
 }
 
 /* ── YouTube player ──────────────────────────────────────────────────────── */
