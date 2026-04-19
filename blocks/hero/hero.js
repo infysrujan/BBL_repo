@@ -1,3 +1,4 @@
+import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 
@@ -47,21 +48,84 @@ function createThumbItem(picture, index, { strip = false, active = false } = {})
   return item;
 }
 
+function createSmartImage(imageCellDesktop, imageCellMobile, imageAlt) {
+  const imgDesktop = imageCellDesktop?.querySelector('img');
+  const imgMobile = imageCellMobile?.querySelector('img');
+  // Extract alt text from a cell that may contain HTML
+  let altText = '';
+  if (imageAlt) {
+    // Try to get direct text (including from <p>, <span>, etc)
+    altText = imageAlt.textContent?.trim() || '';
+  }
+  if (imgDesktop && imgMobile) {
+    const picture = createElement('picture');
+
+    const desktopSource = createElement('source');
+    desktopSource.setAttribute('media', '(min-width: 761px)');
+    const desktopSrc = imgDesktop.getAttribute('src');
+    desktopSource.setAttribute('srcset', desktopSrc);
+
+    const mobileSource = createElement('source');
+    mobileSource.setAttribute('media', '(max-width: 760px)');
+    const mobileSrc = imgMobile.getAttribute('src');
+    mobileSource.setAttribute('srcset', mobileSrc);
+
+    const img = createElement('img');
+    img.setAttribute('loading', 'lazy');
+
+    img.setAttribute('alt', altText || img.alt || '');
+    img.setAttribute('src', mobileSrc);
+
+    picture.appendChild(desktopSource);
+    picture.appendChild(mobileSource);
+    picture.appendChild(img);
+
+    return picture;
+  }
+  const img = imgMobile || imgDesktop;
+  if (!img) return null;
+  return createOptimizedPicture(
+    img.src,
+    altText || '',
+    false,
+    [{ media: '(max-width: 760px)', width: '2000' }, { width: '750' }],
+  );
+}
+
 export default function decorate(block) {
   const variant = block.children[0]?.textContent?.trim() || 'default';
-
   const bannerList = createElement('ul', 'hero-banner-list');
-  const thumbnailList = createElement('ul', 'hero-banner-thumbnail-list', 'content');
+  let thumbnailList = '';
 
-  [...block.children].slice(2, 9).forEach((row, i) => {
-    const [imageCell, logoImageCell, thumbImgCell, headingCell, textCell, linkCell] = row.children;
+  if (variant === "hero-with-thumbnail-images") {
+    thumbnailList = createElement('ul', 'hero-banner-thumbnail-list', 'content');
+  }
+
+  [...block.children].slice(1, 9).forEach((row, i) => {
+    const [
+      imageCellDesktop,
+      imageCellMobile,
+      imageAlt,
+      logoImageCell,
+      thumbImgCell,
+      headingCell,
+      textCell,
+      linkCell,
+    ] = row.children;
 
     const bannerItem = createElement('li', 'hero-banner-item');
     if (i === 0) bannerItem.classList.add('hero-banner-item-active');
     bannerItem.dataset.index = i;
 
-    const img = imageCell?.querySelector('img');
-    if (img) { img.className = 'hero-banner-img'; img.loading = 'lazy'; bannerItem.append(img); }
+    if (imageCellDesktop || imageCellMobile) {
+      const heroPicture = createSmartImage(imageCellDesktop, imageCellMobile, imageAlt);
+      if (heroPicture) {
+        const img = heroPicture?.querySelector('img');
+        img.className = 'hero-banner-img';
+        img.loading = 'lazy';
+        bannerItem.append(heroPicture);
+      }
+    }
 
     const contentInner = createElement('div', 'hero-banner-content-inner');
     const logoImg = logoImageCell?.querySelector('img');
@@ -83,25 +147,27 @@ export default function decorate(block) {
     const content = createElement('div', 'hero-banner-content', 'content');
     content.append(contentInner);
     bannerItem.append(content);
-
-    const thumbPicture = thumbImgCell?.querySelector('picture');
-    const cloned = thumbPicture?.cloneNode(true);
-
-    const thumbImg = thumbPicture?.querySelector('img');
-    if (thumbImg) {
-      thumbImg.className = 'hero-banner-thumbnail-img';
-      thumbImg.style.display = 'none';
-      thumbImg.setAttribute('aria-hidden', 'true');
-      bannerItem.append(thumbImg);
+  
+    if (variant === "hero-with-thumbnail-images") {
+      const thumbPicture = thumbImgCell?.querySelector('picture');
+      const cloned = thumbPicture?.cloneNode(true);
+      const thumbImg = thumbPicture?.querySelector('img');
+      if (thumbImg) {
+        thumbImg.className = 'hero-banner-thumbnail-img';
+        thumbImg.style.display = 'none';
+        thumbImg.setAttribute('aria-hidden', 'true');
+        bannerItem.append(thumbImg);
+      }
+      thumbnailList.append(createThumbItem(cloned, i, { strip: true, active: i === 0 }));
     }
-
+    
     moveInstrumentation(row, bannerItem);
-    bannerList.append(bannerItem);
-    thumbnailList.append(createThumbItem(cloned, i, { strip: true, active: i === 0 }));
+    bannerList.append(bannerItem); 
   });
 
   const mainImgContainer = createElement('div', 'hero-banner-container');
   mainImgContainer.append(bannerList);
+  
 
   const wrapper = createElement('div', 'hero-banner', `hero-banner-${variant}`);
   wrapper.append(mainImgContainer);
