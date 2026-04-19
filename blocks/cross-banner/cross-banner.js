@@ -51,7 +51,15 @@ function createSmartImage(imageCellDesktop, imageCellMobile, imageAlt) {
 }
 
 export default function decorate(block) {
-  const [imgElDesktop, imgElMobile, imgAlt, budgeTextEl, titleEl, descriptionEl, buttonEl] = block.children;
+  const [
+    imgElDesktop,
+    imgElMobile,
+    imgAlt,
+    budgeTextEl,
+    titleEl,
+    descriptionEl,
+    buttonEl,
+  ] = block.children;
   // const pictureHTML = imgEl?.querySelector('img')?.outerHTML || '';
   const picture = createSmartImage(imgElDesktop, imgElMobile, imgAlt);
   const pictureHTML = picture?.outerHTML || '';
