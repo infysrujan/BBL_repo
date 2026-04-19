@@ -97,7 +97,7 @@ export default function decorate(block) {
   const bannerList = createElement('ul', 'hero-banner-list');
   let thumbnailList = '';
 
-  if (variant === "hero-with-thumbnail-images") {
+  if (variant === 'hero-with-thumbnail-images') {
     thumbnailList = createElement('ul', 'hero-banner-thumbnail-list', 'content');
   }
 
@@ -147,8 +147,8 @@ export default function decorate(block) {
     const content = createElement('div', 'hero-banner-content', 'content');
     content.append(contentInner);
     bannerItem.append(content);
-  
-    if (variant === "hero-with-thumbnail-images") {
+
+    if (variant === 'hero-with-thumbnail-images') {
       const thumbPicture = thumbImgCell?.querySelector('picture');
       const cloned = thumbPicture?.cloneNode(true);
       const thumbImg = thumbPicture?.querySelector('img');
@@ -160,14 +160,13 @@ export default function decorate(block) {
       }
       thumbnailList.append(createThumbItem(cloned, i, { strip: true, active: i === 0 }));
     }
-    
+
     moveInstrumentation(row, bannerItem);
-    bannerList.append(bannerItem); 
+    bannerList.append(bannerItem);
   });
 
   const mainImgContainer = createElement('div', 'hero-banner-container');
   mainImgContainer.append(bannerList);
-  
 
   const wrapper = createElement('div', 'hero-banner', `hero-banner-${variant}`);
   wrapper.append(mainImgContainer);
