@@ -2119,17 +2119,37 @@
     "id": "cross-banner",
     "fields": [
       {
-        "component": "reference",
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerDesktop",
+        "label": "Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
+        "name": "imagePickerDesktopMimeType"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerMobile",
+        "label": "Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerMobileMimeType"
       },
       {
         "component": "text",
-        "name": "imageAlt",
-        "label": "Image Alt",
-        "valueType": "string"
+        "valueType": "string",
+        "name": "imagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
       },
       {
         "component": "text",
