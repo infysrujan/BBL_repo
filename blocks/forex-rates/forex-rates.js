@@ -1,3 +1,4 @@
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import {
   buildCalendarGrid,
@@ -39,7 +40,7 @@ function isValidSelectedDay(state) {
   return enabledDays.includes(parsed.day);
 }
 
-function renderDatepicker(state, monthLabels, dayLabels, buddhistYearOffset) {
+function renderDatepicker(state, monthLabels, dayLabels, buddhistYearOffset, prevMonthLabel, nextMonthLabel) {
   if (!state.calendarOpen) return '';
 
   const viewMonthKey = getMonthKey(state.viewYear, state.viewMonth);
@@ -94,12 +95,12 @@ function renderDatepicker(state, monthLabels, dayLabels, buddhistYearOffset) {
 
   return `<div class="forex-rates-datepicker">
     <div class="forex-rates-datepicker-header">
-      <button type="button" class="forex-rates-datepicker-nav forex-rates-datepicker-prev" aria-label="Previous month"><i class="icon-arrow-left" aria-hidden="true"></i></button>
+      <button type="button" class="forex-rates-datepicker-nav forex-rates-datepicker-prev" aria-label="${escapeHtml(prevMonthLabel)}"><i class="icon-arrow-left" aria-hidden="true"></i></button>
       <div class="forex-rates-datepicker-title">
         <span class="forex-rates-datepicker-month">${escapeHtml(monthLabels[state.viewMonth - 1] || '')}</span>
         <span class="forex-rates-datepicker-year">${state.viewYear + buddhistYearOffset}</span>
       </div>
-      <button type="button" class="forex-rates-datepicker-nav forex-rates-datepicker-next${nextDisabled ? ' is-disabled' : ''}" aria-label="Next month"${nextDisabled ? ' disabled' : ''}><i class="icon-arrow-left" aria-hidden="true"></i></button>
+      <button type="button" class="forex-rates-datepicker-nav forex-rates-datepicker-next${nextDisabled ? ' is-disabled' : ''}" aria-label="${escapeHtml(nextMonthLabel)}"${nextDisabled ? ' disabled' : ''}><i class="icon-arrow-left" aria-hidden="true"></i></button>
     </div>
     <table class="forex-rates-datepicker-calendar">
       <thead><tr>${daysHeader}</tr></thead>
@@ -149,8 +150,8 @@ function renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYe
         <span class="forex-rates-calendar-label">${escapeHtml(authoring.calendarLabel)}</span>
         <div class="forex-rates-date-group">
           <input id="forex-rates-date-text-input" class="forex-rates-date-text-input" type="text" inputmode="text" placeholder="DD MMM YYYY" value="${escapeHtml(state.typedDate)}" aria-label="${escapeHtml(authoring.calendarLabel)} date">
-          <button type="button" class="forex-rates-date-trigger icon-calendar" title="Open calendar" aria-label="Open calendar"></button>
-          ${renderDatepicker(state, monthLabels, dayLabels, buddhistYearOffset)}
+          <button type="button" class="forex-rates-date-trigger icon-calendar" title="${escapeHtml(authoring.openCalendarLabel)}" aria-label="${escapeHtml(authoring.openCalendarLabel)}"></button>
+          ${renderDatepicker(state, monthLabels, dayLabels, buddhistYearOffset, authoring.prevMonthLabel, authoring.nextMonthLabel)}
         </div>
         <div class="forex-rates-time-wrap">
           <div class="forex-rates-time-dropdown${timeDropdownOpen}${timeDisabled}" role="combobox" aria-expanded="${state.timeDropdownOpen}" aria-haspopup="listbox">
@@ -183,7 +184,11 @@ function renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYe
 
 export default async function decorate(block) {
   const authoring = parseAuthoring(block);
-  const configs = await fetchConfigs();
+  const [placeholders, configs] = await Promise.all([fetchPlaceholders(), fetchConfigs()]);
+
+  authoring.prevMonthLabel = placeholders?.forexRatesPrevMonth || 'Previous month';
+  authoring.nextMonthLabel = placeholders?.forexRatesNextMonth || 'Next month';
+  authoring.openCalendarLabel = placeholders?.forexRatesOpenCalendar || 'Open calendar';
   const language = document.documentElement.lang?.split('-')[0] || 'en';
   const monthLabels = parseCsvConfigList(configs?.monthLabels, buildIntlMonthLabels(language));
   const dayLabels = parseCsvConfigList(configs?.dayLabels, buildIntlDayLabels(language));

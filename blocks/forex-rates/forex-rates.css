@@ -231,7 +231,7 @@
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-22);
   border-radius: var(--bbl-rounded-100);
-  box-shadow: 0 0.5rem 2rem rgb(0 0 0 / 14%);
+  box-shadow: 0 0.5rem 2rem var(--bbl-color-black-alpha-14);
   z-index: 300;
   padding: 1rem;
   box-sizing: border-box;
@@ -250,7 +250,7 @@
   gap: 0.375rem;
   font-size: 0.875rem;
   font-weight: 700;
-  color: #039;
+  color: var(--bbl-color-blue-105);
 }
 
 .forex-rates .forex-rates-datepicker-nav {
@@ -285,8 +285,8 @@
 }
 
 .forex-rates .forex-rates-datepicker-nav:not(:disabled, .is-disabled):hover {
-  background: #0068b7;
-  border-color: #0068b7;
+  background: var(--bbl-color-blue-80);
+  border-color: var(--bbl-color-blue-80);
   color: var(--bbl-color-white);
 }
 
@@ -330,12 +330,12 @@
 }
 
 .forex-rates .forex-rates-datepicker-day-btn:hover {
-  background: #0068b7;
+  background: var(--bbl-color-blue-80);
   color: var(--bbl-color-white);
 }
 
 .forex-rates .forex-rates-datepicker-day-text {
-  color: #bbb;
+  color: var(--bbl-color-grey-45);
   cursor: default;
 }
 
@@ -380,11 +380,11 @@
   border-collapse: collapse;
   font-size: 0.8125rem;
   color: var(--bbl-color-gray-121);
-  border: 0.0625rem solid #ebebeb;
+  border: 0.0625rem solid var(--bbl-color-grey-18);
 }
 
 .forex-rates .forex-rates-table thead tr {
-  background: #e6eef4;
+  background: var(--bbl-color-blue-steel-light);
   height: 4.5rem;
 }
 
