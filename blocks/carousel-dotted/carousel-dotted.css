@@ -1,3 +1,5 @@
+@import url("./card-list-carousel.css");
+
 .carousel-dotted {
   position: relative;
   height: auto;
@@ -1180,4 +1182,3 @@
     height: 2.5rem;
   }
 }
-

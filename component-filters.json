@@ -48,7 +48,8 @@
       "privacy-modal",
       "external-redirect-popup",
       "video",
-      "carousel-video"
+      "carousel-video",
+      "forex-rates"
     ]
   },
   {
@@ -320,7 +321,9 @@
       "brand-logo",
       "location",
       "login",
-      "main-nav-item"
+      "main-nav-item",
+      "forex-rates",
+      "forex-graph"
     ]
   },
   {
@@ -333,6 +336,12 @@
     "id": "top-nav",
     "components": [
       "top-nav-link"
+    ]
+  },
+  {
+    "id": "video",
+    "components": [
+      "video"
     ]
   }
 ]
