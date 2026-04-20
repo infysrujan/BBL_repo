@@ -5,6 +5,11 @@
   margin: auto;
 }
 
+/* ── Block positioning context ───────────────────────────────────────────── */
+.carousel-video {
+  position: relative;
+}
+
 /* ── Main player ─────────────────────────────────────────────────────────── */
 .carousel-video .cv-main-player {
   position: relative;
@@ -22,17 +27,25 @@
   display: block;
 }
 
-/* ── Thumbnail carousel ──────────────────────────────────────────────────── */
+/* ── Thumbnail carousel — mobile: overlay on player ─────────────────────── */
 .carousel-video .cv-carousel-section {
-  position: relative;
-  width: 100%;
-  height: 8.875rem;
-  margin: 1.875rem 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  margin: 0;
   padding: 0;
   border: 0;
+  pointer-events: none;
+  z-index: 2;
 }
 
+/* Track hidden on mobile */
 .carousel-video .cv-track-wrap {
+  display: none;
   width: 100%;
   overflow: hidden;
   margin: 1.875rem -0.3125rem;
@@ -78,16 +91,16 @@
   opacity: 1;
 }
 
-/* ── Prev / Next buttons ─────────────────────────────────────────────────── */
+/* ── Prev / Next buttons — mobile: overlaid on video edges ───────────────── */
 .carousel-video .cv-nav {
   position: absolute;
-  top: 40%;
+  top: 50%;
   transform: translateY(-50%);
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   border: 0.0625rem solid var(--bbl-color-grey-125);
-  background: var(--bbl-color-white);
+  background: var(--bbl-color-white-alpha-80);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -96,14 +109,15 @@
   box-shadow: 0 0.125rem 0.375rem var(--bbl-color-black-alpha-20);
   transition: background 0.2s ease;
   z-index: 1;
+  pointer-events: all;
 }
 
 .carousel-video .cv-prev {
-  left: -3rem;
+  left: 0.75rem;
 }
 
 .carousel-video .cv-next {
-  right: -3rem;
+  right: 0.75rem;
 }
 
 .carousel-video .cv-nav:hover {
@@ -134,9 +148,9 @@
   margin-right: 0.1875rem;
 }
 
-/* ── Dots ────────────────────────────────────────────────────────────────── */
+/* ── Dots — hidden on mobile ─────────────────────────────────────────────── */
 .carousel-video .cv-dots {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
@@ -169,54 +183,49 @@
   border-color: var(--bbl-color-active-blue);
 }
 
-
-
-/* ── Mobile ──────────────────────────────────────────────────────────────── */
-@media (width <= 47.5rem) {
-  .carousel-video-wrapper {
-    padding: 0 0rem;
-  }
-
-  /* Block becomes the positioning context for the nav overlay */
-  .carousel-video {
-    position: relative;
-  }
-
-  /* Float the carousel section over the main player */
+/* ── Tablet: > 760px ─────────────────────────────────────────────────────── */
+@media (width > 47.5rem) {
   .carousel-video .cv-carousel-section {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    aspect-ratio: 16 / 9;
-    height: auto;
-    margin: 0;
-    padding: 0;
-    pointer-events: none;
-    z-index: 2;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
+    aspect-ratio: unset;
+    height: 8.875rem;
+    margin: 1.875rem 0;
+    pointer-events: auto;
+    z-index: auto;
   }
 
-  /* Hide thumbnails and dots on mobile */
-  .carousel-video .cv-track-wrap,
+  .carousel-video .cv-track-wrap {
+    display: block;
+  }
+
   .carousel-video .cv-dots {
-    display: none;
+    display: flex;
   }
 
-  /* Buttons sit on left/right edges of the video */
   .carousel-video .cv-nav {
-    pointer-events: all;
-    width: 2rem;
-    height: 2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--bbl-color-white-alpha-80);
+    top: 40%;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--bbl-color-white);
+    pointer-events: auto;
   }
 
   .carousel-video .cv-prev {
-    left: 0.75rem;
+    left: -3rem;
   }
 
   .carousel-video .cv-next {
-    right: 0.75rem;
+    right: -3rem;
+  }
+}
+
+/* ── Desktop: > 1024px ───────────────────────────────────────────────────── */
+@media (width > 64rem) {
+  .carousel-video-wrapper {
+    padding: 0 3rem;
   }
 }
