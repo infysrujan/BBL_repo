@@ -380,16 +380,7 @@
           }
         },
         {
-          "...": "../../models/elements/_image-picker.json#/imagePickerFields",
-          "condition": {
-            "===": [
-              {
-                "var": "slideType"
-                
-              },
-              "withImage"
-            ]
-          }
+          "...": "../../models/elements/_image-picker.json#/imagePickerFields"
         },
         {
           "component": "richtext",
