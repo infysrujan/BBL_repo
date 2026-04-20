@@ -380,14 +380,12 @@
           }
         },
         {
-          "component": "reference",
-          "name": "image",
-          "label": "Image",
-          "valueType": "string",
+          "...": "../../models/elements/_image-picker.json#/imagePickerFields",
           "condition": {
             "===": [
               {
                 "var": "slideType"
+                
               },
               "withImage"
             ]
