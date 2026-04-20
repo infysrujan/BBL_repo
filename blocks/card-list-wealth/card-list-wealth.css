@@ -128,19 +128,6 @@
 
 /* ── Responsive ────────────────────────────────────────── */
 
-/* Tablet: 2.5 cards visible */
-/* @media (width > 47.5rem) and (width <= 64rem) {
-  .card-list-wealth {
-    overflow-x: auto;
-    padding: 0 2.5rem;
-    gap: 1.25rem;
-  }
-
-  .card-list-wealth-card {
-    flex: 0 0 calc((100% - 2 * 1.25rem) / 2.5);
-    min-width: unset;
-  }
-} */
 
 /* Mobile: 1.5 cards visible */
 @media (width <= 47.5rem) {
