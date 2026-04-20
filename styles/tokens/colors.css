@@ -152,6 +152,7 @@
   --bbl-color-orange-50: #FCAF7F;
   --bbl-color-orange-60: #FA995C;
   --bbl-color-orange-70: #F98339;
+  --bbl-color-orange-75: #FF6E00;
   --bbl-color-orange-80: #F86D16;
   --bbl-color-orange-90: #BB4F10;
   --bbl-color-orange-100: #7E330B;
@@ -181,6 +182,7 @@
   /* Black Transparencies */
   --bbl-color-black-alpha-5: rgba(0, 0, 0, 0.05);
   --bbl-color-black-alpha-10: rgba(0, 0, 0, 0.10);
+  --bbl-color-black-alpha-12: rgba(0, 0, 0, 0.12);
   --bbl-color-black-alpha-14: rgba(0, 0, 0, 0.14);
   --bbl-color-black-alpha-20: rgba(0, 0, 0, 0.20);
   --bbl-color-black-alpha-30: rgba(0, 0, 0, 0.30);

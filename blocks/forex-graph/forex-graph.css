@@ -70,7 +70,7 @@
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-22);
   border-radius: 0.375rem;
-  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 12%);
+  box-shadow: 0 0.5rem 1.5rem var(--bbl-color-black-alpha-12);
   z-index: 400;
   margin: 0;
   padding: 0.5rem 0;
@@ -300,7 +300,7 @@
 .forex-graph .forex-graph-legend-selling {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #ff6e00;
+  color: var(--bbl-color-orange-75);
 }
 
 .forex-graph .forex-graph-canvas-wrap {
@@ -346,7 +346,7 @@
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-22);
   border-radius: var(--bbl-rounded-100);
-  box-shadow: 0 0.5rem 2rem rgb(0 0 0 / 14%);
+  box-shadow: 0 0.5rem 2rem var(--bbl-color-black-alpha-14);
   z-index: 300;
   padding: 1rem;
   box-sizing: border-box;
@@ -365,7 +365,7 @@
   gap: 0.375rem;
   font-size: 0.875rem;
   font-weight: 700;
-  color: #039;
+  color: var(--bbl-color-blue-105);
 }
 
 .forex-graph .forex-graph-datepicker-nav {
@@ -400,8 +400,8 @@
 }
 
 .forex-graph .forex-graph-datepicker-nav:not(:disabled, .is-disabled):hover {
-  background: #0068b7;
-  border-color: #0068b7;
+  background: var(--bbl-color-blue-80);
+  border-color: var(--bbl-color-blue-80);
   color: var(--bbl-color-white);
 }
 
@@ -445,12 +445,12 @@
 }
 
 .forex-graph .forex-graph-datepicker-day-btn:hover {
-  background: #0068b7;
+  background: var(--bbl-color-blue-80);
   color: var(--bbl-color-white);
 }
 
 .forex-graph .forex-graph-datepicker-day-text {
-  color: #bbb;
+  color: var(--bbl-color-grey-45);
   cursor: default;
 }
 
