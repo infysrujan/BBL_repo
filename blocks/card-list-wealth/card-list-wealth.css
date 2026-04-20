@@ -1,18 +1,20 @@
 /* Card List Wealth Block */
+
+/* ── Common / Mobile-first base ────────────────────────── */
 .card-list-wealth {
   display: flex;
-  gap: 2.1875rem;
+  gap: 1rem;
   margin: 0;
-  padding: 0 5.25rem;
+  padding: 0 1.25rem;
   margin-top: 3.125rem;
   margin-bottom: 0.625rem;
+  overflow-x: auto;
 }
 
 .card-list-wealth-card {
   display: flex;
   flex-direction: column;
-  flex: 1 1 33.333%;
-  min-width: 17.5rem;
+  flex: 0 0 calc((100% - 1rem) / 1.5);
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-bottom-left-radius: 0.4375rem;
   border-bottom-right-radius: 0.4375rem;
@@ -52,14 +54,14 @@
 }
 
 .card-title {
-  font-size: 2rem;
-  line-height: 2rem;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
   margin: 0 0 1.25rem;
 }
 
 .card-description {
-  font-size: 1rem;
-  line-height: 1.375rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
   margin: 0 0 1.25rem;
 }
 
@@ -125,30 +127,43 @@
   background: var(--bbl-color-active-blue);
 }
 
-
-/* ── Responsive ────────────────────────────────────────── */
-
-
-/* Mobile: 1.5 cards visible */
-@media (width <= 47.5rem) {
+/* ── Tablet: > 760px ───────────────────────────────────── */
+@media (width > 47.5rem) {
   .card-list-wealth {
-    overflow-x: auto;
-    padding: 0 1.25rem;
-    gap: 1rem;
+    gap: 1.5rem;
+    padding: 0 2.5rem;
+    overflow-x: unset;
   }
 
   .card-list-wealth-card {
-    flex: 0 0 calc((100% - 1rem) / 1.5);
-    min-width: unset;
+    flex: 0 0 calc((100% - 1.5rem) / 2);
   }
 
   .card-title {
-    font-size: 1.5rem;
-    line-height: 1.5rem;
+    font-size: 1.75rem;
+    line-height: 1.75rem;
   }
 
   .card-description {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+    font-size: 1rem;
+    line-height: 1.375rem;
+  }
+}
+
+/* ── Desktop: > 1024px ─────────────────────────────────── */
+@media (width > 64rem) {
+  .card-list-wealth {
+    gap: 2.1875rem;
+    padding: 0 5.25rem;
+  }
+
+  .card-list-wealth-card {
+    flex: 1 1 33.333%;
+    min-width: 17.5rem;
+  }
+
+  .card-title {
+    font-size: 2rem;
+    line-height: 2rem;
   }
 }
