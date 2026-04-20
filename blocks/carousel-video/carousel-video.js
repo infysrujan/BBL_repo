@@ -1,4 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { fetchConfigs } from '../../scripts/config.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
 const VISIBLE = 4;
 const THUMB_GAP = 10; // 5px margin on each side of every thumb
@@ -9,12 +11,23 @@ function getYouTubeId(url) {
   return match ? match[1] : null;
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
   // Tell UE this block is a container that accepts carousel-video-item children.
   if (document.documentElement.classList.contains('adobe-ue-edit')) {
     block.setAttribute('data-aue-type', 'container');
     block.setAttribute('data-aue-filter', 'carousel-video');
   }
+
+  const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
+
+  const embedBaseUrl = configs.carouselVideoEmbedBaseUrl || 'https://www.youtube.com/embed/';
+  const thumbBaseUrl = configs.carouselVideoThumbnailBaseUrl || 'https://img.youtube.com/vi/';
+  const thumbQuality = configs.carouselVideoThumbnailQuality || 'hqdefault';
+
+  const playerTitle = placeholders.carouselVideoPlayerTitle || 'YouTube Video Player';
+  const prevLabel = placeholders.carouselVideoPrevLabel || 'Previous';
+  const nextLabel = placeholders.carouselVideoNextLabel || 'Next';
+  const thumbLabel = placeholders.carouselVideoThumbLabel || 'Play video';
 
   const rows = [...block.children];
 
@@ -61,8 +74,8 @@ export default function decorate(block) {
   mainPlayer.className = 'cv-main-player';
 
   const iframe = document.createElement('iframe');
-  iframe.src = `https://www.youtube.com/embed/${items[0].id}`;
-  iframe.title = 'YouTube Video Player';
+  iframe.src = `${embedBaseUrl}${items[0].id}`;
+  iframe.title = playerTitle;
   iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
   iframe.setAttribute('allowfullscreen', '');
   iframe.setAttribute('loading', 'lazy');
@@ -76,7 +89,7 @@ export default function decorate(block) {
   const prevBtn = document.createElement('button');
   prevBtn.type = 'button';
   prevBtn.className = 'cv-nav cv-prev';
-  prevBtn.setAttribute('aria-label', 'Previous');
+  prevBtn.setAttribute('aria-label', prevLabel);
 
   const trackWrap = document.createElement('div');
   trackWrap.className = 'cv-track-wrap';
@@ -87,17 +100,17 @@ export default function decorate(block) {
   const nextBtn = document.createElement('button');
   nextBtn.type = 'button';
   nextBtn.className = 'cv-nav cv-next';
-  nextBtn.setAttribute('aria-label', 'Next');
+  nextBtn.setAttribute('aria-label', nextLabel);
 
   // Build a thumb button for one item; only the originals carry UE instrumentation.
   function createThumb(id, realIndex, row, thumbSrc) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'cv-thumb';
-    btn.setAttribute('aria-label', `Play video ${realIndex + 1}`);
+    btn.setAttribute('aria-label', `${thumbLabel} ${realIndex + 1}`);
 
     const img = document.createElement('img');
-    img.src = thumbSrc || `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+    img.src = thumbSrc || `${thumbBaseUrl}${id}/${thumbQuality}.jpg`;
     img.alt = `Video ${realIndex + 1} thumbnail`;
     img.loading = 'lazy';
     btn.appendChild(img);
@@ -146,7 +159,7 @@ export default function decorate(block) {
   // ── State helpers ─────────────────────────────────────────────────────────
   function setActive(index) {
     activeIndex = index;
-    iframe.src = `https://www.youtube.com/embed/${items[index].id}`;
+    iframe.src = `${embedBaseUrl}${items[index].id}`;
     // Mark all 3 instances (leading clone, original, trailing clone)
     allThumbBtns.forEach((btn, domI) => btn.classList.toggle('active', domI % n === index));
     dotEls.forEach((d, i) => d.classList.toggle('active', i === index));

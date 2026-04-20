@@ -1,0 +1,7 @@
+{
+  "data": [
+    { "Key": "carousel-video-embed-base-url", "Value": "https://www.youtube.com/embed/" },
+    { "Key": "carousel-video-thumbnail-base-url", "Value": "https://img.youtube.com/vi/" },
+    { "Key": "carousel-video-thumbnail-quality", "Value": "hqdefault" }
+  ]
+}
