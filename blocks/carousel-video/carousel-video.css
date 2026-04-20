@@ -2,7 +2,7 @@
 .carousel-video-wrapper {
   max-width: 56.25rem;
   width: 100%;
-  margin: auto;
+  /* margin: auto; */
 }
 
 /* ── Main player ─────────────────────────────────────────────────────────── */
@@ -169,17 +169,12 @@
   border-color: var(--bbl-color-active-blue);
 }
 
-/* ── Tablet ──────────────────────────────────────────────────────────────── */
-@media (width <= 64rem) {
-  .carousel-video-wrapper {
-    padding: 0 3rem;
-  }
-}
+
 
 /* ── Mobile ──────────────────────────────────────────────────────────────── */
 @media (width <= 47.5rem) {
   .carousel-video-wrapper {
-    padding: 0 1rem;
+    padding: 0 0rem;
   }
 
   /* Block becomes the positioning context for the nav overlay */
