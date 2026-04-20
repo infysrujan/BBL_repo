@@ -41,10 +41,13 @@
       "currency-converter-expanded",
       "table",
       "locate-us",
+      "rate-card",
+      "accordion-block",
       "social-icons",
       "card-list",
       "privacy-modal",
-      "external-redirect-popup"
+      "external-redirect-popup",
+      "forex-rates"
     ]
   },
   {
@@ -310,7 +313,9 @@
       "brand-logo",
       "location",
       "login",
-      "main-nav-item"
+      "main-nav-item",
+      "forex-rates",
+      "forex-graph"
     ]
   },
   {
@@ -323,6 +328,12 @@
     "id": "top-nav",
     "components": [
       "top-nav-link"
+    ]
+  },
+  {
+    "id": "video",
+    "components": [
+      "video"
     ]
   }
 ]

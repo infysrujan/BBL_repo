@@ -323,6 +323,37 @@
     ]
   },
   {
+    "id": "accordion-block",
+    "fields": [
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "showExpandAll",
+        "value": true,
+        "label": "Show Expand All",
+        "description": "Show an Expand All / Collapse All toggle in the header."
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "showPrint",
+        "value": true,
+        "label": "Show Print",
+        "description": "Show a Print button that expands all items before printing in a new tab and open the print dialog."
+      },
+      {
+        "component": "aem-content",
+        "name": "fragmentPath",
+        "label": "Fragment path",
+        "valueType": "string",
+        "config": {
+          "rootPath": "/en/fragments/accordions",
+          "allowFolders": false
+        }
+      }
+    ]
+  },
+  {
     "id": "brand-logo",
     "fields": [
       {
@@ -1633,6 +1664,10 @@
           {
             "name": "With Circular Image",
             "value": "withCircularImage"
+          },
+          {
+            "name": "Card List Carousel",
+            "value": "cardListCarousel"
           }
         ]
       },
@@ -1804,6 +1839,20 @@
               "var": "slideType"
             },
             "withCircularImage"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "fragmentPath",
+        "label": "Fragment Path",
+        "description": "Fragment path for the card-list carousel content",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "cardListCarousel"
           ]
         }
       }
@@ -2445,6 +2494,79 @@
     ]
   },
   {
+    "id": "forex-graph",
+    "fields": [
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "CTA Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "printLabel",
+        "label": "Print Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "downloadLabel",
+        "label": "Download Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "forex-rates",
+    "fields": [
+      {
+        "component": "text",
+        "name": "calendarLabel",
+        "label": "Calendar Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "CTA Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "printCtaLabel",
+        "label": "Print CTA Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "forexColumnHeadings",
+        "label": "Forex Column Headings",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "form",
     "fields": [
       {
@@ -2454,6 +2576,12 @@
         "description": "Visit https://www.adobe.com/go/learn_aemforms_cs_properties_ext for more details.",
         "collapsible": false,
         "fields": [
+          {
+            "component": "text",
+            "name": "title",
+            "label": "Form Title",
+            "valueType": "string"
+          },
           {
             "component": "text",
             "name": "style",
@@ -8655,6 +8783,19 @@
             ]
           },
           {
+            "name": "Padding",
+            "children": [
+              {
+                "name": "Compact Padding",
+                "value": "compact-padding"
+              },
+              {
+                "name": "Border Bottom Tight Columns",
+                "value": "border-bottom-tight-cols"
+              }
+            ]
+          },
+          {
             "name": "Functional",
             "children": [
               {
@@ -8802,6 +8943,19 @@
               {
                 "name": "Dash Cell Highlight",
                 "value": "dash-cell-highlight"
+              }
+            ]
+          },
+          {
+            "name": "Padding",
+            "children": [
+              {
+                "name": "Compact Padding",
+                "value": "compact-padding"
+              },
+              {
+                "name": "Border Bottom Tight Columns",
+                "value": "border-bottom-tight-cols"
               }
             ]
           },
@@ -9272,6 +9426,147 @@
               "var": "classes"
             },
             "link-logo"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "video",
+    "fields": [
+      {
+        "component": "select",
+        "name": "mediaType",
+        "label": "Media Type",
+        "description": "Choose how to provide the video.",
+        "valueType": "string",
+        "required": true,
+        "value": "youtube-url",
+        "options": [
+          {
+            "name": "Video from YouTube",
+            "value": "youtube-url"
+          },
+          {
+            "name": "Video From DAM",
+            "value": "dam-video"
+          },
+          {
+            "name": "Video From CTA",
+            "value": "cta-video"
+          },
+          {
+            "name": "Video From Image",
+            "value": "image-video"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "youtubeUrl",
+        "label": "YouTube URL",
+        "description": "Enter the YouTube video URL.",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "youtube-url"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "damVideoAsset",
+        "label": "Video Asset",
+        "description": "Choose or upload an MP4 video file from DAM.",
+        "valueType": "string",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "dam-video"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "ctaVideoAsset",
+        "label": "Video Asset",
+        "description": "Browse and select a video file from DAM.",
+        "valueType": "string",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "cta-video"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "ctaButtonName",
+        "label": "Button Name",
+        "description": "The display name of the CTA button.",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "cta-video"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "ctaButtonTitle",
+        "label": "Button Title",
+        "description": "The title attribute of the CTA button (tooltip text).",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "cta-video"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "imageVideoAsset",
+        "label": "Video Asset",
+        "description": "Choose or upload an MP4 video file. Clicking the image will open this video in a new tab.",
+        "valueType": "string",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "image-video"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "imageAsset",
+        "label": "Image",
+        "description": "Choose an image to display. Clicking it opens the video in a new tab.",
+        "valueType": "string",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "image-video"
           ]
         }
       }

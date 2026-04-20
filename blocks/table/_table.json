@@ -116,6 +116,19 @@
 							]
 						},
 						{
+							"name": "Padding",
+							"children": [
+								{
+									"name": "Compact Padding",
+									"value": "compact-padding"
+								},
+								{
+									"name": "Border Bottom Tight Columns",
+									"value": "border-bottom-tight-cols"
+								}
+							]
+						},
+						{
 							"name": "Functional",
 							"children": [
 								{
@@ -263,6 +276,19 @@
 								{
 									"name": "Dash Cell Highlight",
 									"value": "dash-cell-highlight"
+								}
+							]
+						},
+						{
+							"name": "Padding",
+							"children": [
+								{
+									"name": "Compact Padding",
+									"value": "compact-padding"
+								},
+								{
+									"name": "Border Bottom Tight Columns",
+									"value": "border-bottom-tight-cols"
 								}
 							]
 						},

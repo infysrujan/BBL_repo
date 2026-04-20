@@ -190,10 +190,13 @@
         "currency-converter-expanded",
         "table",
         "locate-us",
+        "rate-card",
+        "accordion-block",
         "social-icons",
         "card-list",
         "privacy-modal",
-        "external-redirect-popup"
+        "external-redirect-popup",
+        "forex-rates"
       ]
     }
   ]
