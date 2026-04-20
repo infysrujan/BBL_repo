@@ -20,21 +20,37 @@ function saveComparatorCookie(selectedCards) {
     title: name,
     photo: image,
   }));
-  const expires = new Date(Date.now() + 365 * 864e5).toUTCString();
-  document.cookie = `${cookieName}=${encodeURIComponent(JSON.stringify(cookieValue))}; expires=${expires}; path=/; SameSite=Lax`;
+  document.cookie = `${cookieName}=${encodeURIComponent(JSON.stringify(cookieValue))}; path=/; SameSite=Lax`;
 }
 
 // ── Config ─────────────────────────────────────────────────────────────────────
 
-// Read the CTA link, label text, and target-blank flag from the authored block rows
+// Read the CTA link, label text, and target-blank flag from the authored block rows.
+// Model field order (from _credit-card-comparator.json):
+//   Row 0: link        (aem-content → anchor or plain text path)
+//   Row 1: linkText    (text)
+//   Row 2: linkTitle   (text, optional)
+//   Row 3: linkType    (select: primary | secondary | tertiary)
+//   Row 4: targetLink  (boolean, inside targetSettings container)
 function readBlockConfig(block) {
   const rows = [...block.children];
   rows.forEach((row) => moveInstrumentation(row, block));
-  const anchor = rows[0]?.children[0]?.querySelector('a');
+
+  const readText = (row) => row?.children[0]?.querySelector('p')?.textContent?.trim()
+    ?? row?.children[0]?.textContent?.trim()
+    ?? '';
+
+  // Row 0: link — aem-content renders as <a href="published-url"> or plain-text path
+  const cell0 = rows[0]?.children[0];
+  const anchor = cell0?.querySelector('a');
+  const link = anchor?.href ?? readText(rows[0]);
+
   return {
-    link: anchor?.href ?? '',
-    linkText: anchor?.textContent?.trim() ?? 'Compare',
-    targetLink: rows[1]?.children[0]?.querySelector('p')?.textContent?.trim() === 'true',
+    link,
+    linkText: readText(rows[1]) || 'Compare',
+    linkTitle: readText(rows[2]),
+    linkType: readText(rows[3]) || 'primary',
+    targetLink: readText(rows[4]) === 'true',
   };
 }
 
@@ -50,17 +66,17 @@ function buildErrorDiv(warningText) {
 }
 
 // Create the compare CTA button, disabled until MIN_COMPARE cards are selected
-function buildCtaButton(linkText) {
+function buildCtaButton(linkText, linkType) {
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.className = 'btn-primary';
+  btn.className = `btn-${linkType || 'primary'}`;
   btn.textContent = linkText;
   btn.disabled = true;
   return btn;
 }
 
 // Assemble the full comparator DOM inside block; returns the key child elements
-function buildComparatorDOM(block, warningText, linkText) {
+function buildComparatorDOM(block, warningText, linkText, linkType) {
   block.innerHTML = '';
   const innerContainer = document.createElement('div');
   innerContainer.className = 'inner-container';
@@ -68,7 +84,7 @@ function buildComparatorDOM(block, warningText, linkText) {
   const errorDiv = buildErrorDiv(warningText);
   const compareGroup = document.createElement('div');
   compareGroup.className = 'compare-group';
-  const ctaBtn = buildCtaButton(linkText);
+  const ctaBtn = buildCtaButton(linkText, linkType);
 
   innerContainer.appendChild(errorDiv);
   innerContainer.appendChild(compareGroup);
@@ -125,12 +141,17 @@ function renderBar(compareGroup, selectedCards) {
 // ── Main export ────────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
-  const { link, linkText, targetLink } = readBlockConfig(block);
+  const {
+    link, linkText, linkTitle, linkType, targetLink,
+  } = readBlockConfig(block);
 
   const ph = await fetchPlaceholders();
   const warningText = ph.compareLimitWarning || 'Maximum 3 products can be compared at the same time.';
 
-  const { errorDiv, compareGroup, ctaBtn } = buildComparatorDOM(block, warningText, linkText);
+  const {
+    errorDiv, compareGroup, ctaBtn,
+  } = buildComparatorDOM(block, warningText, linkText, linkType);
+  if (linkTitle) ctaBtn.title = linkTitle;
 
   let warningTimer = null;
 
@@ -164,9 +185,7 @@ export default async function decorate(block) {
       document.dispatchEvent(new CustomEvent('credit-card-compare-show', { detail: { cards } }));
       resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (link) {
-      const cookieName = cards.length ? buildCookieName(cards[0].id || cards[0].name) : '';
-      const url = cookieName ? `${link}?compare-product-btn=${cookieName}` : link;
-      window.open(url, targetLink ? '_blank' : '_self');
+      window.open(`${link}?compare-product-btn=`, targetLink ? '_blank' : '_self');
     }
   });
 

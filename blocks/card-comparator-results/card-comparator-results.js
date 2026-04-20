@@ -109,22 +109,6 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
 
 // ── DOM builders ───────────────────────────────────────────────────────────────
 
-// Build a single label/value detail row for a card comparison column
-function buildRow(doc, label, value) {
-  if (!value) return null;
-  const row = doc.createElement('div');
-  row.className = 'ccr-row';
-  const lbl = doc.createElement('p');
-  lbl.className = 'ccr-label';
-  lbl.textContent = label;
-  const val = doc.createElement('p');
-  val.className = 'ccr-value';
-  val.textContent = value;
-  row.appendChild(lbl);
-  row.appendChild(val);
-  return row;
-}
-
 // Resolve the learn-more URL from cardPageUrl (object with _publishUrl/_authorUrl)
 function resolveCardPageUrl(card) {
   const raw = card.cardPageUrl;
@@ -135,7 +119,10 @@ function resolveCardPageUrl(card) {
   return '';
 }
 
-// Build a full comparison card column with image, name, apply/learn-more links, and detail rows
+// Build a full comparison card column matching the live site structure:
+//   .ccr-card > .ccr-inner > .ccr-thumb (bg-image)
+//              > .ccr-caption > h3 + .ccr-apply-area + .compare-info (dl/dt/dd)
+//              > .ccr-button-group > a.ccr-learn-more
 function buildCompareCard(card, doc, labels) {
   const name = card.name || '';
   const imgSrc = resolveImageUrl(card);
@@ -144,21 +131,35 @@ function buildCompareCard(card, doc, labels) {
   const col = doc.createElement('div');
   col.className = 'ccr-card';
 
+  // ── Image inner (background-image + hidden print img) ──
+  const inner = doc.createElement('div');
+  inner.className = 'ccr-inner';
+  const thumb = doc.createElement('div');
+  thumb.className = 'ccr-thumb';
   if (imgSrc) {
-    const imgWrap = doc.createElement('div');
-    imgWrap.className = 'ccr-card-image';
+    thumb.style.backgroundImage = `url("${imgSrc}")`;
     const img = doc.createElement('img');
     img.src = imgSrc;
     img.alt = name;
     img.loading = 'lazy';
-    imgWrap.appendChild(img);
-    col.appendChild(imgWrap);
+    img.className = 'ccr-img-print';
+    thumb.appendChild(img);
   }
+  inner.appendChild(thumb);
+  col.appendChild(inner);
+
+  // ── Caption ──
+  const caption = doc.createElement('div');
+  caption.className = 'ccr-caption';
 
   const nameEl = doc.createElement('h3');
   nameEl.className = 'ccr-card-name';
   nameEl.textContent = name;
-  col.appendChild(nameEl);
+  caption.appendChild(nameEl);
+
+  // Detail rows as dl/dt/dd (matching live site's .compare-info structure)
+  const compareInfo = doc.createElement('div');
+  compareInfo.className = 'compare-info';
 
   const fields = [
     { label: labels.slogan, value: plaintext(card.slogan) },
@@ -169,17 +170,31 @@ function buildCompareCard(card, doc, labels) {
   ];
 
   fields.forEach(({ label, value }) => {
-    const row = buildRow(doc, label, value);
-    if (row) col.appendChild(row);
+    if (!value) return;
+    const dl = doc.createElement('dl');
+    const dt = doc.createElement('dt');
+    dt.className = 'ccr-label';
+    dt.textContent = label;
+    const dd = doc.createElement('dd');
+    dd.className = 'ccr-value';
+    dd.textContent = value;
+    dl.appendChild(dt);
+    dl.appendChild(dd);
+    compareInfo.appendChild(dl);
   });
 
-  const learnWrap = doc.createElement('div');
-  learnWrap.className = 'ccr-learn-more';
+  caption.appendChild(compareInfo);
+  col.appendChild(caption);
+
+  // ── Learn more button group ──
+  const btnGroup = doc.createElement('div');
+  btnGroup.className = 'ccr-button-group';
   const learnLink = doc.createElement('a');
   learnLink.href = learnHref;
+  learnLink.className = 'ccr-learn-more';
   learnLink.textContent = labels.learnMore;
-  learnWrap.appendChild(learnLink);
-  col.appendChild(learnWrap);
+  btnGroup.appendChild(learnLink);
+  col.appendChild(btnGroup);
 
   return col;
 }
@@ -239,10 +254,11 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
 // ── Decorate ───────────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
+  // eslint-disable-next-line no-console
+  console.log('[card-comparator-results] block children:', [...block.children].map((c) => c.outerHTML));
   const doc = block.ownerDocument;
   const ph = await fetchPlaceholders();
   const labels = {
-    apply: ph.cardApply || 'Apply',
     learnMore: ph.cardLearnMore || 'Learn more',
     slogan: ph.cardSlogan || 'Slogan',
     privileges: ph.cardPrivileges || 'Privileges',
@@ -252,9 +268,18 @@ export default async function decorate(block) {
     noResults: ph.cardNoResultsFound || 'No results found',
   };
 
+  const descriptionRow = block.children[0];
+  if (descriptionRow) {
+    descriptionRow.classList.add('ccr-description');
+  }
+
+  const innerContainer = doc.createElement('div');
+  innerContainer.className = 'inner-container';
+  block.appendChild(innerContainer);
+
   const container = doc.createElement('div');
   container.className = 'ccr-grid';
-  block.appendChild(container);
+  innerContainer.appendChild(container);
 
   const [allCards, sourcingMap] = await Promise.all([loadAllCards(), loadSourcingOrder()]);
 
