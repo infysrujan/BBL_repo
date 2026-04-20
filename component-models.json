@@ -1134,12 +1134,28 @@
         "label": "Image (Desktop)",
         "description": "Select an image shown at desktop breakpoints",
         "configUrl": "/content/dam/image.config.json",
-        "valueType": "string"
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withImage"
+          ]
+        }
       },
       {
         "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "imagePickerDesktopMimeType"
+        "name": "imagePickerDesktopMimeType",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withImage"
+          ]
+        }
       },
       {
         "component": "custom-asset-namespace:custom-asset",
@@ -1147,19 +1163,43 @@
         "label": "Image (Mobile)",
         "description": "Select an image shown at mobile breakpoints",
         "configUrl": "/content/dam/image.config.json",
-        "valueType": "string"
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withImage"
+          ]
+        }
       },
       {
         "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "imagePickerMobileMimeType"
+        "name": "imagePickerMobileMimeType",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withImage"
+          ]
+        }
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "imagePickerAlt",
         "label": "Alternative text for accessibility",
-        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withImage"
+          ]
+        }
       },
       {
         "component": "richtext",
