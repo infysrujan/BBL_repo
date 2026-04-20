@@ -8,7 +8,7 @@
   width: 100%;
   padding-top: 56.25%;
   overflow: hidden;
-  background-color: #000;
+  background-color: var(--bbl-color-black);
 }
 
 .video .video-embed iframe,
