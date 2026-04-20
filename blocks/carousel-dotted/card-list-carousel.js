@@ -49,7 +49,7 @@ const createFragmentSlide = (row, slideIndex, section, itemsChunk, doc) => {
 export const getCardListCarouselOffsetForSlide = (block, trackWrapper, slideEl) => {
   const wrapperWidth = block.querySelector('.carousel-track-wrapper')?.parentElement?.offsetWidth
     || trackWrapper.offsetWidth;
-  const isMobile = window.matchMedia('(max-width: 47.4375rem)').matches;
+  const isMobile = window.matchMedia(`(max-width: ${tabletMin})`).matches;
 
   if (!slideEl) return 0;
 

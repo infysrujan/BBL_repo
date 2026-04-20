@@ -391,7 +391,7 @@
     }
 
     .cards-list:is(.carousel) .cards-list-item {
-        flex: 0 0 13.875rem;
+        flex: 0 13.51rem;
     }
 
     .cards-list:is(.scrollablel).cards-3 .cards-list-item,
