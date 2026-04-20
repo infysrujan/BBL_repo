@@ -2,6 +2,7 @@ import decorateCardList from '../card-list/card-list.js';
 import { loadCSS } from '../../scripts/aem.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { fetchConfigs } from '../../scripts/config.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -70,7 +71,7 @@ async function loadSheetData() {
   try {
     const resp = await fetch('/credit-card-suggestor.json');
     // eslint-disable-next-line no-console
-    console.log('[credit-card-results] sheet fetch:', resp.status, resp.ok);
+    console.log('[credit-card-results] sheet data fetch:', resp.status, resp.ok);
     if (!resp.ok) return [];
     const json = await resp.json();
     const rows = (json.data || []).map(normalizeRow);
@@ -84,16 +85,17 @@ async function loadSheetData() {
   }
 }
 
-async function loadCardData(names) {
+async function loadCardData() {
   try {
-    let url = '/blocks/helper/helper.json';
-    if (names && names.length) {
-      const params = new URLSearchParams();
-      names.forEach((n) => params.append('name', n));
-      url = `${url}?${params.toString()}`;
-    }
+    const configs = await fetchConfigs();
+    const url = configs.creditCardSuggesterData;
     // eslint-disable-next-line no-console
     console.log('[credit-card-results] card data fetch:', url);
+    if (!url) {
+      // eslint-disable-next-line no-console
+      console.warn('[credit-card-results] creditCardSuggesterData not found in config');
+      return [];
+    }
     const resp = await fetch(url);
     if (!resp.ok) return [];
     const json = await resp.json();
@@ -168,7 +170,7 @@ async function resolveFilteredCards(sheetCards, filterState) {
   });
 
   // Second fetch — request only the matched cards by name
-  const rawCards = await loadCardData(matchingNames);
+  const rawCards = await loadCardData();
   // eslint-disable-next-line no-console
   console.log('[credit-card-results] second fetch returned:', rawCards.length);
 
@@ -213,7 +215,9 @@ function buildCardBlock(cards, doc, lang, labels) {
     const nameTH = getCardField(card, 'nameTH', 'Product Name (TH)', 'cardNameTH');
     const description = getCardField(card, 'cardDescription', 'description');
     const imgSrc = resolveImageUrl(card);
-    const learnHref = getCardField(card, 'learnMoreUrl', 'url', 'pageUrl', 'link') || '#';
+    const { cardPageUrl } = card;
+    // eslint-disable-next-line no-underscore-dangle
+    const learnHref = (cardPageUrl && (cardPageUrl._publishUrl || cardPageUrl._authorUrl || cardPageUrl._path)) || '';
 
     const isTH = lang === 'th';
     const primaryName = isTH && nameTH ? nameTH : nameEN;
