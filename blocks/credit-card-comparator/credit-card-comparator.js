@@ -6,17 +6,17 @@ const MAX_COMPARE = 3;
 
 // ── Cookie helpers ─────────────────────────────────────────────────────────────
 
-// Sanitize a card name into a valid cookie token (alphanumeric / dash / underscore, max 64 chars)
-function buildCookieName(cardName) {
-  return cardName.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 64);
+// Sanitize a card id into a valid cookie token (alphanumeric / dash / underscore, max 64 chars)
+function buildCookieName(cardId) {
+  return cardId.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 64);
 }
 
-// Write the current card selection as a JSON cookie keyed by the first card's sanitized name
+// Write the current card selection as a JSON cookie keyed by the first card's id
 function saveComparatorCookie(selectedCards) {
   if (!selectedCards.length) return;
-  const cookieName = buildCookieName(selectedCards[0].name);
-  const cookieValue = selectedCards.map(({ name, image }) => ({
-    id: name,
+  const cookieName = buildCookieName(selectedCards[0].id || selectedCards[0].name);
+  const cookieValue = selectedCards.map(({ id, name, image }) => ({
+    id: id || name,
     title: name,
     photo: image,
   }));
@@ -164,7 +164,7 @@ export default async function decorate(block) {
       document.dispatchEvent(new CustomEvent('credit-card-compare-show', { detail: { cards } }));
       resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (link) {
-      const cookieName = cards.length ? buildCookieName(cards[0].name) : '';
+      const cookieName = cards.length ? buildCookieName(cards[0].id || cards[0].name) : '';
       const url = cookieName ? `${link}?compare-product-btn=${cookieName}` : link;
       window.open(url, targetLink ? '_blank' : '_self');
     }

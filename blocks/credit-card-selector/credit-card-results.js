@@ -243,6 +243,7 @@ function buildCardBlock(cards, doc, lang, labels) {
     }
     const h3 = doc.createElement('h3');
     h3.textContent = primaryName;
+    h3.dataset.cardId = card.cardId || card.id || '';
     titleCell.appendChild(h3);
 
     // Description cell
@@ -287,7 +288,9 @@ function addCompareButtons(blockEl, doc, labels) {
     btn.type = 'button';
     btn.className = 'ccs-compare-btn';
     btn.textContent = labels.compare;
-    btn.dataset.cardName = item?.querySelector('h3')?.textContent?.trim() ?? '';
+    const h3 = item?.querySelector('h3');
+    btn.dataset.cardName = h3?.textContent?.trim() ?? '';
+    btn.dataset.cardId = h3?.dataset?.cardId ?? '';
     btn.dataset.cardImage = item?.querySelector('img')?.src ?? '';
     wrapper.appendChild(btn);
   });
@@ -562,7 +565,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
     if (!btn) return;
 
     window.ccsSelectedCards = window.ccsSelectedCards || [];
-    const { cardName, cardImage } = btn.dataset;
+    const { cardName, cardImage, cardId } = btn.dataset;
     // If already in the comparator, do nothing — removal is only via the X icon in the bar
     if (btn.classList.contains('is-comparing')) return;
 
@@ -570,7 +573,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
       document.dispatchEvent(new CustomEvent('credit-card-compare-limit-reached'));
       return;
     }
-    window.ccsSelectedCards.push({ name: cardName, image: cardImage });
+    window.ccsSelectedCards.push({ id: cardId, name: cardName, image: cardImage });
 
     restoreCompareState(cardListContainer);
 
