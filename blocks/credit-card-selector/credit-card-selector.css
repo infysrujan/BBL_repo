@@ -424,7 +424,7 @@
    Tablet — ≥ 760 px
    ========================================================================== */
 
-@media (width >= 760px) {
+@media (width > 47.5rem) {
   .credit-card-selector .card-selector-header {
     padding: 2rem 3rem 3rem;
   }
@@ -481,7 +481,7 @@
    Desktop — ≥ 1025 px
    ========================================================================== */
 
-@media (width >= 1025px) {
+@media (width > 64rem) {
   .credit-card-selector .card-selector-header {
     padding: 2rem 1rem 3.5rem;
     text-align: center;
@@ -659,9 +659,9 @@
   display: none;
 }
 
-/* ── Tablet: 3-column grid — override card-list's fixed-width horizontal scroll ─ */
+/* ── Tablet ≥ 760 px: 3-column grid — override card-list's horizontal scroll ─── */
 
-@media (width >= 760px) and (width < 1025px) {
+@media (width > 47.5rem) {
   .ccs-card-list-container .cards-list.scrollable {
     flex-wrap: wrap;
     overflow: visible;
@@ -713,15 +713,8 @@
 }
 
 /* Tablet+: see more/see less applies — hide dots */
-@media (width >= 760px) {
+@media (width > 47.5rem) {
   .ccs-scroll-dots {
-    display: none;
-  }
-}
-
-/* Mobile only: all cards visible in scroll carousel — hide see more toggle */
-@media (width < 760px) {
-  .ccs-results-toggle {
     display: none;
   }
 }
@@ -741,10 +734,10 @@
   font-size: var(--bbl-font-size-b1, 1rem);
 }
 
-/* ── See more / See less toggle ───────────────────────────────────────────── */
+/* ── See more / See less toggle — mobile: hidden; tablet+: visible ───────── */
 
 .ccs-results-toggle {
-  display: flex;
+  display: none;
   justify-content: center;
   margin-top: 1.5rem;
 }
@@ -796,7 +789,7 @@
    Tablet ≥ 760 px
    ========================================================================== */
 
-@media (width >= 760px) {
+@media (width > 47.5rem) {
   .ccs-results {
     padding: 3rem;
   }
@@ -804,13 +797,17 @@
   .ccs-results-title {
     font-size: 2rem;
   }
+
+  .ccs-results-toggle {
+    display: flex;
+  }
 }
 
 /* ==========================================================================
    Desktop ≥ 1025 px
    ========================================================================== */
 
-@media (width >= 1025px) {
+@media (width > 64rem) {
   .ccs-results {
     padding: 3rem 1rem;
   }
