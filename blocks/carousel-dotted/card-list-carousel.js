@@ -5,8 +5,10 @@ const getFragmentPath = (cells) => cells.map((cell) => cell.querySelector('a')?.
   ?? cells.map((cell) => cell.textContent.trim()).find((text) => text.startsWith('/'))
   ?? '';
 
+const tabletMin = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim();
+
 const getChunkSize = (cardList) => {
-  const isNarrow = window.matchMedia('(max-width: 47.5rem)').matches;
+  const isNarrow = window.matchMedia(`(max-width: ${tabletMin})`).matches;
   const isMultiColumn = cardList.classList.contains('cards-3') || cardList.classList.contains('cards-4');
   return !isNarrow && isMultiColumn ? 3 : 1;
 };

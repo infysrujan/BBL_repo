@@ -97,8 +97,16 @@
     }
 }
 
-@media (width > 47.5rem) and (width <= 64rem) {
-    .carousel-dotted.all-carousel-fragment
+@media (width > 64rem) {
+    .carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
+        display: flex;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+    }
+
+     .carousel-dotted.all-carousel-fragment
         .carousel-dotted-item.carousel-fragment
         .cards-list {
         gap: 0 var(--bbl-space-250);
@@ -110,16 +118,6 @@
         flex: 1 1 0;
         min-width: 0;
         margin-bottom: 0;
-    }
-}
-
-@media (width > 64rem) {
-    .carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
-        display: flex;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 2;
     }
 
     .carousel-dotted.all-carousel-fragment.show-arrows-dots
