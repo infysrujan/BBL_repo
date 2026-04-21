@@ -16,13 +16,6 @@ async function fetchPromoData(promoId) {
   return cards?.find((c) => c.ctaLink?.split('/').pop() === promoId) || null;
 }
 
-function formatDate(dateStr) {
-  if (!dateStr) return '';
-  return new Date(dateStr).toLocaleDateString('en-GB', {
-    day: 'numeric', month: 'long', year: 'numeric',
-  });
-}
-
 function buildLogosHtml(logos = [], types = []) {
   return logos.map((src, i) => `<img src="${src}" alt="${types[i] || ''}" class="promo-detail-card-logo">`).join('');
 }
@@ -39,22 +32,27 @@ export default async function decorate(block) {
   if (isAuthoringMode()) {
     block.classList.add('promo-detail-authoring');
     block.innerHTML = `
-      <div class="promo-detail-image">
-        <div class="promo-detail-skeleton promo-detail-skeleton-image"></div>
-      </div>
-      <div class="promo-detail-content">
-        <div class="promo-detail-skeleton promo-detail-skeleton-title"></div>
-        <div class="promo-detail-skeleton promo-detail-skeleton-line"></div>
-        <div class="promo-detail-skeleton promo-detail-skeleton-line"></div>
-        <div class="promo-detail-skeleton promo-detail-skeleton-line"></div>
-        <div class="promo-detail-skeleton promo-detail-skeleton-line" style="width:70%"></div>
-        <div class="promo-detail-skeleton promo-detail-skeleton-logos">
-          <div class="promo-detail-skeleton promo-detail-skeleton-logo"></div>
-          <div class="promo-detail-skeleton promo-detail-skeleton-logo"></div>
-        </div>
-        <div class="promo-detail-disclaimer">
-          <div class="promo-detail-skeleton promo-detail-skeleton-checkbox"></div>
-          <div class="promo-detail-skeleton promo-detail-skeleton-line"></div>
+      <div class="promo-detail-inner">
+        <div class="promo-detail-center">
+          <div class="promo-detail-title-wrap">
+            <div class="promo-detail-skeleton promo-detail-skeleton-title"></div>
+          </div>
+          <div class="promo-detail-row">
+            <div class="promo-detail-image">
+              <div class="promo-detail-skeleton promo-detail-skeleton-image"></div>
+            </div>
+            <div class="promo-detail-content">
+              <div class="promo-detail-skeleton promo-detail-skeleton-desc"></div>
+              <div class="promo-detail-card-logos">
+                <div class="promo-detail-skeleton promo-detail-skeleton-logo"></div>
+                <div class="promo-detail-skeleton promo-detail-skeleton-logo"></div>
+              </div>
+              <div class="promo-detail-disclaimer">
+                <div class="promo-detail-skeleton promo-detail-skeleton-checkbox"></div>
+                <div class="promo-detail-skeleton promo-detail-skeleton-line"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>`;
     return;
@@ -66,19 +64,24 @@ export default async function decorate(block) {
     return;
   }
 
-  const validityText = (card.promotionStartDate || card.promotionEndDate)
-    ? `${card.dateValidityLabel || 'Valid'} ${formatDate(card.promotionStartDate)} – ${formatDate(card.promotionEndDate)}`
-    : '';
-
   block.innerHTML = `
-    <div class="promo-detail-image">
-      <img src="${card.detailImageUrl}" alt="${card.title}" loading="lazy">
-    </div>
-    <div class="promo-detail-content">
-      <h1 class="promo-detail-title">${card.title}</h1>
-      ${validityText ? `<p class="promo-detail-validity">${validityText}</p>` : ''}
-      <div class="promo-detail-description">${card.detailDescription || ''}</div>
-      <div class="promo-detail-card-logos">${buildLogosHtml(card.cardTypeLogos, card.cardTypes)}</div>
-      ${buildDisclaimerHtml(card.responsibleLendingDisclaimerEnabled, card.responsibleLendingDisclaimerText)}
+    <div class="promo-detail-inner">
+      <div class="promo-detail-center">
+        <div class="promo-detail-title-wrap">
+          <h2 class="promo-detail-title">${card.title}</h2>
+        </div>
+        <div class="promo-detail-row">
+          <div class="promo-detail-image">
+            <a href="${card.detailImageUrl}" title="Click to view full">
+              <img src="${card.detailImageUrl}" alt="${card.title}" loading="lazy">
+            </a>
+          </div>
+          <div class="promo-detail-content">
+            <div class="promo-detail-description">${card.detailDescription || ''}</div>
+            <div class="promo-detail-card-logos">${buildLogosHtml(card.cardTypeLogos, card.cardTypes)}</div>
+            ${buildDisclaimerHtml(card.responsibleLendingDisclaimerEnabled, card.responsibleLendingDisclaimerText)}
+          </div>
+        </div>
+      </div>
     </div>`;
 }
