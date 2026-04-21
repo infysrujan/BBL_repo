@@ -11,8 +11,15 @@ export default function decorate(block) {
     buttonEl,
   ] = block.children;
   // const pictureHTML = imgEl?.querySelector('img')?.outerHTML || '';
-  const picture = createSmartImage(imgElDesktop, imgElMobile, imgAlt);
-  const pictureHTML = picture?.outerHTML || '';
+  const pictureDesktop = imgElDesktop?.querySelector('picture');
+  const pictureMobile = imgElMobile?.querySelector('picture');
+
+  let pictureHTML = ''
+
+  if(pictureDesktop || pictureMobile) {
+    const picture = createSmartImage(imgElDesktop, imgElMobile, imgAlt);
+    pictureHTML = picture?.outerHTML || '';
+  }
   const budgeText = budgeTextEl?.textContent?.trim() || '';
   const titleName = titleEl?.textContent?.trim() || '';
   const description = descriptionEl?.querySelector('p')?.innerHTML?.trim() || '';

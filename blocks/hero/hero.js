@@ -73,8 +73,11 @@ export default function decorate(block) {
     if (i === 0) bannerItem.classList.add('hero-banner-item-active');
     bannerItem.dataset.index = i;
 
-    if (imageCellDesktop || imageCellMobile) {
-      const heroPicture = createSmartImage(imageCellDesktop, imageCellMobile, imageAlt);
+    const pictureDesktop = imageCellDesktop?.querySelector('picture');
+    const pictureMobile = imageCellMobile?.querySelector('picture');
+
+    if (pictureDesktop || pictureMobile) {
+      const heroPicture = createSmartImage(pictureDesktop, pictureMobile, imageAlt);
       if (heroPicture) {
         const img = heroPicture?.querySelector('img');
         img.className = 'hero-banner-img';

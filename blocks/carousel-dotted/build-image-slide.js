@@ -17,7 +17,7 @@ export default function buildSlideWithImage(row, index, cells) {
   // Background image (cell 3)
   const pictureDesktop = cells[3]?.querySelector('picture');
   const pictureMobile = cells[4]?.querySelector('picture');
-  const imgAlt = cells[5]?.textContent.trim();
+  const imgAlt = cells[5]
 
   if (pictureDesktop || pictureMobile) {
     const picture = createSmartImage(pictureDesktop, pictureMobile, imgAlt);

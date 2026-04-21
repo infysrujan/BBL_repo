@@ -1,5 +1,11 @@
 import { createOptimizedPicture } from '../aem.js';
 
+/** Min-width for desktop image source (px). */
+const DESKTOP_MEDIA_MIN = 761;
+
+/** Max-width for mobile image source (px). */
+const MOBILE_MEDIA_MAX = 760;
+
 /**
  * Strip query string from an image URL (everything from `?` onward).
  * @param {string|null|undefined} src
@@ -17,9 +23,9 @@ function createElement(tag, ...classNames) {
   return el;
 }
 
-export default function createSmartImage(imageCellDesktop, imageCellMobile, imageAlt) {
-  const imgDesktop = imageCellDesktop?.querySelector('img');
-  const imgMobile = imageCellMobile?.querySelector('img');
+export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt) {
+  const imgDesktop = pictureDesktop?.querySelector('img');
+  const imgMobile = pictureMobile?.querySelector('img');
   // Extract alt text from a cell that may contain HTML
   let altText = '';
   if (imageAlt) {
@@ -30,13 +36,13 @@ export default function createSmartImage(imageCellDesktop, imageCellMobile, imag
     const picture = createElement('picture');
 
     const desktopSource = createElement('source');
-    desktopSource.setAttribute('media', '(min-width: 761px)');
+    desktopSource.setAttribute('media', `(min-width: ${DESKTOP_MEDIA_MIN}px)`);
     let desktopSrc = imgDesktop.getAttribute('src');
     desktopSrc = cleanImgSrc(desktopSrc);
     desktopSource.setAttribute('srcset', desktopSrc);
 
     const mobileSource = createElement('source');
-    mobileSource.setAttribute('media', '(max-width: 760px)');
+    mobileSource.setAttribute('media', `(max-width: ${MOBILE_MEDIA_MAX}px)`);
     let mobileSrc = imgMobile.getAttribute('src');
     mobileSrc = cleanImgSrc(mobileSrc);
     mobileSource.setAttribute('srcset', mobileSrc);
@@ -59,6 +65,6 @@ export default function createSmartImage(imageCellDesktop, imageCellMobile, imag
     img.src,
     altText || '',
     false,
-    [{ media: '(max-width: 760px)', width: '2000' }, { width: '750' }],
+    [{ media: `(max-width: ${MOBILE_MEDIA_MAX}px)`, width: '2000' }, { width: '750' }],
   );
 }
