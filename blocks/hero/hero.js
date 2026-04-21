@@ -1,6 +1,6 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
+import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
 function changeBanner(block) {
   block.addEventListener('mouseenter', (e) => {
@@ -46,50 +46,6 @@ function createThumbItem(picture, index, { strip = false, active = false } = {})
     if (img) { img.className = 'hero-banner-thumbnail-img'; img.loading = 'lazy'; item.append(img); }
   }
   return item;
-}
-
-function createSmartImage(imageCellDesktop, imageCellMobile, imageAlt) {
-  const imgDesktop = imageCellDesktop?.querySelector('img');
-  const imgMobile = imageCellMobile?.querySelector('img');
-  // Extract alt text from a cell that may contain HTML
-  let altText = '';
-  if (imageAlt) {
-    // Try to get direct text (including from <p>, <span>, etc)
-    altText = imageAlt.textContent?.trim() || '';
-  }
-  if (imgDesktop && imgMobile) {
-    const picture = createElement('picture');
-
-    const desktopSource = createElement('source');
-    desktopSource.setAttribute('media', '(min-width: 761px)');
-    const desktopSrc = imgDesktop.getAttribute('src');
-    desktopSource.setAttribute('srcset', desktopSrc);
-
-    const mobileSource = createElement('source');
-    mobileSource.setAttribute('media', '(max-width: 760px)');
-    const mobileSrc = imgMobile.getAttribute('src');
-    mobileSource.setAttribute('srcset', mobileSrc);
-
-    const img = createElement('img');
-    img.setAttribute('loading', 'lazy');
-
-    img.setAttribute('alt', altText || img.alt || '');
-    img.setAttribute('src', mobileSrc);
-
-    picture.appendChild(desktopSource);
-    picture.appendChild(mobileSource);
-    picture.appendChild(img);
-
-    return picture;
-  }
-  const img = imgMobile || imgDesktop;
-  if (!img) return null;
-  return createOptimizedPicture(
-    img.src,
-    altText || '',
-    false,
-    [{ media: '(max-width: 760px)', width: '2000' }, { width: '750' }],
-  );
 }
 
 export default function decorate(block) {
