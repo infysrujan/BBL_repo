@@ -1187,6 +1187,8 @@
   }
 }
 
+/* simple carousel section */
+
 .carousel-dotted-wrapper .simple-carousel{
   margin: auto;
   margin-top: 3.125rem;
@@ -1250,4 +1252,32 @@
 
 .carousel-dotted-container .default-content-wrapper {
   padding: 0 3.5rem;
+}
+
+
+.central-aligned.carousel-dotted-container .default-content-wrapper {
+    max-width: var(--bbl-layout-central-aligned-max-width);
+    margin: 0 auto;
+}
+
+.central-aligned.carousel-dotted-container .carousel-dotted{
+    position: relative;
+    margin-bottom: 5rem;
+    display: block;
+}
+
+.central-aligned.carousel-dotted-container .carousel-arrow-prev {
+    position: absolute;
+    top: 40%;
+    left: -3.4375rem;
+}
+
+.central-aligned.carousel-dotted-container .carousel-arrow-next {
+    position: absolute;
+    right: -3.4375rem;
+    top: 40%;
+}
+
+.carousel-dotted .carousel-dotted-item.simple-carousel {
+    margin-top: 0;
 }
