@@ -238,19 +238,38 @@ function syncActionButtonState(block, filterGroups, startOverButton, applyButton
  *   All other sections                        → left column  (radio, single-select)
  */
 export default function decorate(block) {
+  // eslint-disable-next-line no-console
+  console.log('[ccs:decorate] called — block element:', block, 'isConnected:', block.isConnected);
+  // eslint-disable-next-line no-console
+  console.log('[ccs:decorate] block.children count:', block.children.length, 'classes:', [...block.children].map((c) => c.className || c.tagName));
+
   // UE inserts a fresh block element when a newly-added block is edited for the first time.
   // The original decorated block stays in the DOM alongside the new one, causing duplication.
   // Remove any other already-decorated credit-card-selector instances before proceeding.
   document.querySelectorAll('.credit-card-selector.block').forEach((other) => {
     if (other === block) return;
     if (!other.querySelector('.card-selector-collapsible')) return; // not yet decorated
+    // eslint-disable-next-line no-console
+    console.log('[ccs:decorate] removing stale decorated block:', other);
     if (other.nextElementSibling?.classList.contains('ccs-results')) {
       other.nextElementSibling.remove();
     }
     other.remove();
   });
 
+  // Remove any previously built interactive UI so decorate() is safe to re-call
+  // (UE re-calls decorate when a child item is added to the block).
+  const existingUI = block.querySelector('.card-selector-collapsible');
+  // eslint-disable-next-line no-console
+  console.log('[ccs:decorate] existing built UI found:', !!existingUI);
+  existingUI?.remove();
+
+  // Un-hide authored rows that were hidden by a previous decoration pass.
+  [...block.children].forEach((row) => { row.classList.remove('ccs-source-row'); });
+
   const rows = [...block.children];
+  // eslint-disable-next-line no-console
+  console.log('[ccs:decorate] authored rows after un-hide:', rows.length, rows.map((r) => r.querySelector('p')?.textContent?.trim().slice(0, 40) || r.className));
 
   const readRowText = (row) => row?.querySelector('p')?.textContent?.trim() ?? '';
   // Reads the raw HTML of a richtext value cell so formatting is preserved.
@@ -317,7 +336,12 @@ export default function decorate(block) {
   })));
 
   // ── Build DOM ─────────────────────────────────────────────────────────────
-  block.innerHTML = '';
+  // Hide authored rows via CSS class instead of inline style — the !important rule
+  // in the stylesheet prevents Universal Editor from overriding it when the author
+  // interacts with other elements on the page.
+  rows.forEach((row) => { row.classList.add('ccs-source-row'); });
+  // eslint-disable-next-line no-console
+  console.log('[ccs:decorate] authored rows hidden with ccs-source-row, count:', rows.length);
 
   // Two-column content area
   const selectorContent = document.createElement('div');
@@ -477,6 +501,9 @@ export default function decorate(block) {
     const isNowCollapsed = collapsibleWrapper.classList.toggle('is-collapsed');
     collapseToggleButton.setAttribute('aria-expanded', String(!isNowCollapsed));
   });
+
+  // eslint-disable-next-line no-console
+  console.log('[ccs:decorate] complete — block children now:', block.children.length, [...block.children].map((c) => c.className));
 
   // Inject the card results section immediately after this block in the DOM.
   // initCardResults handles its own data fetch and all interactivity —

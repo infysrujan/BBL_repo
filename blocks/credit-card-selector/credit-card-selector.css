@@ -1,6 +1,9 @@
 /* ==========================================================================
    Credit Card Selector Block
 /* ── Block wrapper ─────────────────────────────────────────────────────────── */
+.credit-card-selector .ccs-source-row {
+  display: none;
+}
 
 .credit-card-selector {
   font-family: var(--bbl-font-family-primary);

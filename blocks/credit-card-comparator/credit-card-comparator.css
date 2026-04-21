@@ -1,3 +1,8 @@
+/* Authored source rows hidden after decoration — !important blocks UE inline-style overrides */
+.credit-card-comparator .ccs-source-row {
+  display: none !important;
+}
+
 /* ── Sticky bar ──────────────────────────────────────────────────────────── */
 
 .credit-card-comparator {

@@ -77,7 +77,6 @@ function buildCtaButton(linkText, linkType) {
 
 // Assemble the full comparator DOM inside block; returns the key child elements
 function buildComparatorDOM(block, warningText, linkText, linkType) {
-  block.innerHTML = '';
   const innerContainer = document.createElement('div');
   innerContainer.className = 'inner-container';
 
@@ -141,9 +140,25 @@ function renderBar(compareGroup, selectedCards) {
 // ── Main export ────────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
+  // Remove any other already-decorated credit-card-comparator instances (UE duplication fix)
+  document.querySelectorAll('.credit-card-comparator.block').forEach((other) => {
+    if (other === block) return;
+    if (!other.querySelector('.inner-container')) return;
+    other.remove();
+  });
+
+  // Remove previously built UI so re-decoration starts clean
+  block.querySelector('.inner-container')?.remove();
+
+  // Un-hide authored rows from any previous decoration pass
+  [...block.children].forEach((row) => { row.classList.remove('ccs-source-row'); });
+
   const {
     link, linkText, linkTitle, linkType, targetLink,
   } = readBlockConfig(block);
+
+  // Hide authored rows via CSS class with !important (UE cannot override this)
+  [...block.children].forEach((row) => { row.classList.add('ccs-source-row'); });
 
   const ph = await fetchPlaceholders();
   const warningText = ph.compareLimitWarning || 'Maximum 3 products can be compared at the same time.';
