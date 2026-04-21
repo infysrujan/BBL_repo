@@ -26,7 +26,7 @@
   display: flex;
   flex-direction: column;
   background: var(--bbl-color-white);
-  border: 1px solid var(--bbl-color-black-alpha-10);
+  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-radius: 0.4375rem;
   overflow: hidden;
   flex: 0 0 16.875rem;
@@ -69,7 +69,7 @@
 .card-comparator-results .ccr-caption {
   padding: var(--bbl-space-250);
   flex-grow: 1;
-  font-size: 1rem;
+  font-size: var(--bbl-font-size-b1);
   line-height: 1.375;
   color: var(--bbl-color-grey-70);
 }
@@ -78,7 +78,7 @@
 
 .card-comparator-results .ccr-card-name {
   font-family: var(--bbl-font-family-medium);
-  font-size: 1.5rem;
+  font-size: var(--bbl-font-size-h5-desktop);
   line-height: 1.625rem;
   color: var(--bbl-color-black);
   margin: 0 0 var(--bbl-space-200);
@@ -89,7 +89,7 @@
 /* ── Compare info rows — .compare-info dl/dt/dd ──────────────────────────── */
 
 .card-comparator-results .compare-info dl {
-  border-top: 1px solid var(--bbl-color-grey-150);
+  border-top: 0.0625rem solid var(--bbl-color-grey-150);
   padding: 1.4375rem 0;
   margin: 0;
   box-sizing: border-box;
@@ -101,7 +101,7 @@
 }
 
 .card-comparator-results .ccr-label {
-  font-size: 1rem;
+  font-size: var(--bbl-font-size-b1);
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   margin: 0;
@@ -115,21 +115,21 @@
 }
 
 .card-comparator-results .ccr-learn-more {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    min-height: 2.75rem;
-    padding: 0 1rem;
-    box-sizing: border-box;
-    border-radius: 0.4375rem;
-    border: 1px solid var(--bbl-color-active-blue);
-    color: var(--bbl-color-active-blue);
-    font-family: var(--bbl-font-family-medium);
-    font-size: var(--bbl-font-size-b1);
-    font-weight: var(--bbl-font-weight-medium);
-    text-decoration: none;
-    transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0 var(--bbl-space-200);
+  box-sizing: border-box;
+  border-radius: 0.4375rem;
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  color: var(--bbl-color-active-blue);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-medium);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
 }
 
 .card-comparator-results .ccr-learn-more:hover {
@@ -152,20 +152,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
+  gap: var(--bbl-space-100);
+  margin-top: var(--bbl-space-150);
   width: auto;
   height: auto;
 }
 
 .card-comparator-results .ccr-scroll-dot {
   appearance: none;
-  width: 0.5rem;
-  height: 0.5rem;
-  min-width: 0.5rem;
-  min-height: 0.5rem;
-  border-radius: 50%;
-  border: 0.063rem solid var(--bbl-color-grey-40);
+  width: var(--bbl-space-100);
+  height: var(--bbl-space-100);
+  min-width: var(--bbl-space-100);
+  min-height: var(--bbl-space-100);
+  border-radius: var(--bbl-radius-full);
+  border: 0.0625rem solid var(--bbl-color-grey-40);
   background: transparent;
   padding: 0;
   margin: 0;
