@@ -4,13 +4,26 @@
 
 .credit-card-selector {
   font-family: var(--bbl-font-family-primary);
+  position: relative;
+  z-index: 0; /* creates stacking context so ::after z-index: -1 stays behind content */
+}
+
+/* Full-bleed white strip covering the toggle bar area, behind the block's content */
+.credit-card-selector::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  height: 3.5rem;
+  left: -100vw;
+  right: -100vw;
+  background-color: var(--bbl-color-white);
+  z-index: -1;
 }
 
 /* ==========================================================================
    Header — main page title
    Mobile-first: left-aligned, smaller font
    ========================================================================== */
-
 .credit-card-selector .card-selector-header {
   padding: 1.5rem 1rem 2rem;
   text-align: left;
@@ -372,6 +385,7 @@
 /* Toggle bar: spacer that reserves room for the absolutely positioned button. */
 .credit-card-selector .collapse-toggle-bar {
   height: 3.5rem;
+  background-color: var(--bbl-color-white);
 }
 
 /* Toggle button: pinned to bottom-right of the collapsible wrapper.
