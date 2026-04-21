@@ -2,7 +2,7 @@
   text-align: center;
 }
 
-/* ── Comparison grid — always a single row; scrollable on mobile ──────────── */
+/* ── Comparison grid — scrollable on mobile (matches card-list scrollable) ── */
 
 .card-comparator-results .ccr-grid {
   display: flex;
@@ -11,9 +11,16 @@
   gap: var(--bbl-space-250);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 0.625rem 0;
 }
 
-/* ── Card — .thumb-default.card ──────────────────────────────────────────── */
+.card-comparator-results .ccr-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Card — fixed width on mobile, snaps into place ─────────────────────── */
 
 .card-comparator-results .ccr-card {
   display: flex;
@@ -22,8 +29,8 @@
   border: 1px solid var(--bbl-color-black-alpha-10);
   border-radius: 0.4375rem;
   overflow: hidden;
-  flex: 1 1 0;
-  min-width: 16.25rem; /* prevent cards collapsing on mobile */
+  flex: 0 0 16.875rem;
+  scroll-snap-align: start;
 }
 
 /* ── Image area — .thumb-default.card .inner + .thumb ────────────────────── */
@@ -144,19 +151,69 @@
   color: var(--bbl-color-grey-70);
 }
 
+/* ── Scroll dots — mobile only ───────────────────────────────────────────── */
+
+.card-comparator-results .ccr-scroll-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  width: auto;
+  height: auto;
+}
+
+.card-comparator-results .ccr-scroll-dot {
+  appearance: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  min-width: 0.5rem;
+  min-height: 0.5rem;
+  border-radius: 50%;
+  border: 0.063rem solid var(--bbl-color-grey-40);
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+  transition: all 180ms ease;
+}
+
+.card-comparator-results .ccr-scroll-dot.is-active {
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
 @media (width > 47.5rem) {
+  .card-comparator-results .ccr-scroll-dots {
+    display: none;
+  }
+
   .card-comparator-results .ccr-grid {
     overflow-x: visible;
+    scroll-snap-type: none;
     justify-content: center;
+    gap: 0 var(--bbl-space-250);
+    padding: 0;
   }
 
   .card-comparator-results .ccr-card {
-    min-width: 0;
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-250)) / 3);
+    scroll-snap-align: none;
   }
 }
 
 @media (width > 64rem) {
   .card-comparator-results .ccr-grid {
-    gap: var(--bbl-space-500);
+    gap: 0 var(--bbl-space-500);
+  }
+
+  .card-comparator-results .ccr-card {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
   }
 }

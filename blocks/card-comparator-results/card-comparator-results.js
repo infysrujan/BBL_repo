@@ -199,6 +199,54 @@ function buildCompareCard(card, doc, labels) {
   return col;
 }
 
+// ── Mobile carousel dots ───────────────────────────────────────────────────────
+
+function initMobileCarousel(grid, doc) {
+  const dotsEl = doc.createElement('div');
+  dotsEl.className = 'ccr-scroll-dots';
+  grid.parentElement.appendChild(dotsEl);
+
+  const getItems = () => [...grid.querySelectorAll('.ccr-card')];
+
+  const scrollToItem = (item) => {
+    const offset = item.getBoundingClientRect().left
+      - grid.getBoundingClientRect().left
+      + grid.scrollLeft;
+    grid.scrollTo({ left: offset, behavior: 'smooth' });
+  };
+
+  const buildDots = () => {
+    dotsEl.innerHTML = '';
+    const items = getItems();
+    if (items.length <= 1) return;
+    items.forEach((item, i) => {
+      const dot = doc.createElement('button');
+      dot.type = 'button';
+      dot.className = 'ccr-scroll-dot';
+      if (i === 0) dot.classList.add('is-active');
+      dot.setAttribute('aria-label', `Card ${i + 1}`);
+      dot.addEventListener('click', () => scrollToItem(item));
+      dotsEl.appendChild(dot);
+    });
+  };
+
+  grid.addEventListener('scroll', () => {
+    const dots = [...dotsEl.querySelectorAll('.ccr-scroll-dot')];
+    const items = getItems();
+    if (!items.length || !dots.length) return;
+    const containerLeft = grid.getBoundingClientRect().left;
+    let activeIndex = 0;
+    let minDistance = Infinity;
+    items.forEach((item, i) => {
+      const dist = Math.abs(item.getBoundingClientRect().left - containerLeft);
+      if (dist < minDistance) { minDistance = dist; activeIndex = i; }
+    });
+    dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+  }, { passive: true });
+
+  return buildDots;
+}
+
 // ── Cookie reader ──────────────────────────────────────────────────────────────
 
 // Read sessionStorage first; fall back to the cookie keyed by the ?compare-product-btn param
@@ -281,16 +329,20 @@ export default async function decorate(block) {
   container.className = 'ccr-grid';
   innerContainer.appendChild(container);
 
+  const buildDots = initMobileCarousel(container, doc);
+
   const [allCards, sourcingMap] = await Promise.all([loadAllCards(), loadSourcingOrder()]);
 
   // On page load, restore selection from sessionStorage or cookie (survives page refresh)
   const storedCards = getCardsFromStorage();
   if (storedCards) {
     renderComparison(container, storedCards, allCards, sourcingMap, labels, doc);
+    buildDots();
   }
 
   // Inline mode: render when the comparator bar fires the compare event
   doc.addEventListener('credit-card-compare-show', (e) => {
     renderComparison(container, e.detail?.cards, allCards, sourcingMap, labels, doc);
+    buildDots();
   });
 }
