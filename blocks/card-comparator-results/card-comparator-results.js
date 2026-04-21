@@ -33,19 +33,13 @@ async function loadAllCards() {
   try {
     const configs = await fetchConfigs();
     const cardSuggesterData = configs.creditCardSuggesterData;
-    // eslint-disable-next-line no-console
-    console.log('[card-comparator-results] Full config:', configs);
     if (!cardSuggesterData) {
-      // eslint-disable-next-line no-console
-      console.log('[card-comparator-results] cardSuggesterData key exists but value is empty — clear sessionStorage config cache and reload');
       return [];
     }
     const resp = await fetch(cardSuggesterData);
     if (!resp.ok) return [];
     const json = await resp.json();
     const cards = json.data?.creditCardsList?.items || json.data || json.items || [];
-    // eslint-disable-next-line no-console
-    console.log('[card-comparator-results] cards loaded:', cards.length, cards[0]);
     return cards;
   } catch {
     return [];
@@ -330,8 +324,6 @@ function equalizeRowHeights(grid) {
 // ── Decorate ───────────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
-  // eslint-disable-next-line no-console
-  console.log('[card-comparator-results] block children:', [...block.children].map((c) => c.outerHTML));
   const doc = block.ownerDocument;
   const ph = await fetchPlaceholders();
   const labels = {

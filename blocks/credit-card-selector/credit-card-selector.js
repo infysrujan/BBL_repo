@@ -174,11 +174,6 @@ function buildFilterState(block, filterGroups) {
             ?.trim() ?? '',
         )
         .filter(Boolean);
-      // eslint-disable-next-line no-console
-      console.log(
-        `[ccs] buildFilterState group ${i} (lifestyle): checked=${checked.length} values=`,
-        state.lifestyles,
-      );
     } else {
       const checked = block.querySelector(
         `input[name="filter-group-${i}"]:checked`,
@@ -194,16 +189,9 @@ function buildFilterState(block, filterGroups) {
       } else {
         state.benefit = value;
       }
-      // eslint-disable-next-line no-console
-      console.log(
-        `[ccs] buildFilterState group ${i} ("${group.displayTitle}"): `
-        + `key=${titleLower.includes('income') ? 'income' : 'benefit'} value="${value}"`,
-      );
     }
   });
 
-  // eslint-disable-next-line no-console
-  console.log('[ccs] buildFilterState result:', state);
   return state;
 }
 
@@ -218,13 +206,6 @@ function syncActionButtonState(block, filterGroups, startOverButton, applyButton
     return { title: g.displayTitle, isLifestyle: g.isLifestyle, hasChecked };
   });
   const everyGroupSelected = groupStates.every((s) => s.hasChecked);
-  // eslint-disable-next-line no-console
-  console.log(
-    '[ccs] syncActionButtonState groupStates:',
-    groupStates,
-    'everyGroupSelected:',
-    everyGroupSelected,
-  );
   startOverButton.style.display = everyGroupSelected ? '' : 'none';
   applyButton.disabled = !everyGroupSelected;
 }
@@ -249,11 +230,6 @@ function syncActionButtonState(block, filterGroups, startOverButton, applyButton
  *   All other sections                        → left column  (radio, single-select)
  */
 export default function decorate(block) {
-  // eslint-disable-next-line no-console
-  console.log('[ccs:decorate] called — block element:', block, 'isConnected:', block.isConnected);
-  // eslint-disable-next-line no-console
-  console.log('[ccs:decorate] block.children count:', block.children.length, 'classes:', [...block.children].map((c) => c.className || c.tagName));
-
   // UE inserts a fresh block element when a newly-added block is edited for the first time.
   // The original decorated block stays in the DOM alongside the new one, causing duplication.
   // Only remove the stale block if it shares the same data-aue-resource (same AEM content path).
@@ -265,8 +241,6 @@ export default function decorate(block) {
     const otherResource = other.dataset.aueResource;
     // If both have a resource and they differ, these are different blocks — leave them alone.
     if (blockResource && otherResource && otherResource !== blockResource) return;
-    // eslint-disable-next-line no-console
-    console.log('[ccs:decorate] removing stale decorated block:', other);
     if (other.nextElementSibling?.classList.contains('ccs-results')) {
       other.nextElementSibling.remove();
     }
@@ -276,8 +250,6 @@ export default function decorate(block) {
   // Remove any previously built interactive UI so decorate() is safe to re-call
   // (UE re-calls decorate when a child item is added to the block).
   const existingUI = block.querySelector('.card-selector-collapsible');
-  // eslint-disable-next-line no-console
-  console.log('[ccs:decorate] existing built UI found:', !!existingUI);
   if (existingUI) {
     // Restore UE instrumentation attrs from built elements back to source rows/fields.
     existingUI.querySelectorAll('.filter-group').forEach((groupEl) => {
@@ -295,9 +267,6 @@ export default function decorate(block) {
   [...block.children].forEach((row) => { row.classList.remove('ccs-source-row'); });
 
   const rows = [...block.children];
-  // eslint-disable-next-line no-console
-  console.log('[ccs:decorate] authored rows after un-hide:', rows.length, rows.map((r) => r.querySelector('p')?.textContent?.trim().slice(0, 40) || r.className));
-
   const readRowText = (row) => row?.querySelector('p')?.textContent?.trim() ?? '';
   // Reads the raw HTML of a richtext value cell so formatting is preserved.
   const readRowHtml = (row) => row?.children[1]?.innerHTML?.trim()
@@ -340,12 +309,6 @@ export default function decorate(block) {
 
     const listItems = [...(cells[1]?.querySelectorAll('li') ?? [])];
     const isLifestyle = rawTitle.toLowerCase().includes('lifestyle');
-    // eslint-disable-next-line no-console
-    console.log(
-      `[ccs] row ${i} rawTitle="${rawTitle}" displayTitle="${displayTitle}" `
-      + `sectionHint="${sectionHint}" isLifestyle=${isLifestyle} items=${listItems.length}`,
-    );
-
     if (listItems.length > 0) {
       filterGroups.push({
         displayTitle,
@@ -357,24 +320,11 @@ export default function decorate(block) {
       });
     }
   }
-  // eslint-disable-next-line no-console
-  console.log(
-    '[ccs] filterGroups built:',
-    filterGroups.map((g) => ({
-      title: g.displayTitle,
-      isLifestyle: g.isLifestyle,
-      items: g.items.length,
-      maxSelect: g.maxSelect,
-    })),
-  );
-
   // ── Build DOM ─────────────────────────────────────────────────────────────
   // Hide authored rows via CSS class instead of inline style — the !important rule
   // in the stylesheet prevents Universal Editor from overriding it when the author
   // interacts with other elements on the page.
   rows.forEach((row) => { row.classList.add('ccs-source-row'); });
-  // eslint-disable-next-line no-console
-  console.log('[ccs:decorate] authored rows hidden with ccs-source-row, count:', rows.length);
 
   // Two-column content area
   const selectorContent = document.createElement('div');
@@ -498,8 +448,6 @@ export default function decorate(block) {
 
   applyButton.addEventListener('click', () => {
     const filterState = buildFilterState(block, filterGroups);
-    // eslint-disable-next-line no-console
-    console.log('[credit-card-selector] Apply clicked - filter state:', filterState);
     document.dispatchEvent(
       new CustomEvent('credit-card-filter-applied', { detail: filterState }),
     );
@@ -508,13 +456,6 @@ export default function decorate(block) {
   // Single delegated listener covers all option changes (radios, checkboxes, mobile selects)
   block.addEventListener('change', (e) => {
     const changedInput = e.target;
-    // eslint-disable-next-line no-console
-    console.log('[ccs] change event:', {
-      type: changedInput.type || changedInput.tagName,
-      name: changedInput.name || changedInput.dataset?.groupName,
-      value: changedInput.value,
-      checked: changedInput.checked,
-    });
 
     // --- Mobile <select> dropdown ---
     if (changedInput.classList.contains('filter-dropdown')) {
@@ -540,11 +481,7 @@ export default function decorate(block) {
       const currentCount = block.querySelectorAll(
         `input[name="${changedInput.name}"]:checked`,
       ).length;
-      // eslint-disable-next-line no-console
-      console.log(`[ccs] lifestyle checkbox: groupIndex=${groupIndex} maxAllowed=${maxAllowed} currentCount=${currentCount}`);
       if (currentCount > maxAllowed) {
-        // eslint-disable-next-line no-console
-        console.log('[ccs] max selections reached — unchecking');
         changedInput.checked = false;
         return;
       }
@@ -568,13 +505,6 @@ export default function decorate(block) {
     const isNowCollapsed = collapsibleWrapper.classList.toggle('is-collapsed');
     collapseToggleButton.setAttribute('aria-expanded', String(!isNowCollapsed));
   });
-
-  // eslint-disable-next-line no-console
-  console.log(
-    '[ccs:decorate] complete — block children now:',
-    block.children.length,
-    [...block.children].map((c) => c.className),
-  );
 
   // Inject the card results section immediately after this block in the DOM.
   // initCardResults handles its own data fetch and all interactivity —
