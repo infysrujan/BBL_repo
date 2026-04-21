@@ -303,9 +303,7 @@ export default function decorate(block) {
       .replace(/ Selection$/i, '')
       .trim();
     // [1] = capture group text only (without surrounding parentheses)
-    const sectionHint = parenMatch?.[1]?.trim()
-      ?? cells[1]?.querySelector('p')?.textContent?.trim()
-      ?? '';
+    const sectionHint = parenMatch?.[1]?.trim() ?? '';
 
     const listItems = [...(cells[1]?.querySelectorAll('li') ?? [])];
     const isLifestyle = rawTitle.toLowerCase().includes('lifestyle');
