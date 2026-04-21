@@ -34,7 +34,7 @@
 
 .credit-card-comparator .compare-error {
   width: 100%;
-  color: #d0021b;
+  color: var(--bbl-color-red-130);
   font-size: var(--bbl-font-size-b2);
   font-weight: 600;
   padding-bottom: var(--bbl-space-100);
@@ -54,17 +54,15 @@
   white-space: nowrap;
 }
 
-/* ── Each product card — mobile: fixed-width tiles in scroll row ─────────── */
+/* ── Each product card — fixed width so names stay readable; group scrolls ── */
 
 .credit-card-comparator .product-comparing {
   display: flex;
   align-items: center;
-  flex: 1;
+  flex: 0 0 16.25rem;
   min-width: 0;
-  max-width: 16.25rem;
   padding: 0 var(--bbl-space-250);
   position: relative;
-  flex-shrink: 0;
   white-space: normal;
 }
 
@@ -154,7 +152,7 @@
 }
 
 .credit-card-comparator .btn-primary:hover {
-  background: #0052cc;
+  background: var(--bbl-color-blue-150);
 }
 
 .credit-card-comparator .btn-primary:disabled {
@@ -163,8 +161,6 @@
   cursor: not-allowed;
   pointer-events: none;
 }
-
-/* ── Tablet ≥ 760 px ─────────────────────────────────────────────────────── */
 
 @media (width > 47.5rem) {
   .credit-card-comparator .compare-group {
@@ -182,8 +178,6 @@
     display: block;
   }
 }
-
-/* ── Desktop ≥ 1024 px ────────────────────────────────────────────────────── */
 
 @media (width > 64rem) {
   .credit-card-comparator .inner-container {

@@ -357,10 +357,7 @@ export default function decorate(block) {
 
   const startOverButton = document.createElement('button');
   startOverButton.type = 'button';
-  const startOverVariant = ALLOWED_VARIANTS.has(startOverButtonConfig.variant)
-    ? startOverButtonConfig.variant
-    : 'secondary';
-  startOverButton.className = `selector-button selector-button-${startOverVariant}`;
+  startOverButton.className = 'selector-button selector-button-secondary';
   startOverButton.textContent = startOverButtonConfig.label;
   if (startOverButtonConfig.titleAttr) startOverButton.title = startOverButtonConfig.titleAttr;
   startOverButton.style.display = 'none';

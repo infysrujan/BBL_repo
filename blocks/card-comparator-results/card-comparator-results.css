@@ -83,6 +83,7 @@
   color: var(--bbl-color-black);
   margin: 0 0 var(--bbl-space-200);
   min-height: 4.4375rem;
+  box-sizing: border-box;
 }
 
 /* ── Compare info rows — .compare-info dl/dt/dd ──────────────────────────── */
@@ -91,6 +92,7 @@
   border-top: 1px solid var(--bbl-color-grey-150);
   padding: 1.4375rem 0;
   margin: 0;
+  box-sizing: border-box;
 }
 
 .card-comparator-results .compare-info dl:first-child {
@@ -112,29 +114,22 @@
   color: var(--bbl-color-grey-70);
 }
 
-/* ── Learn more button group — .button-group + .btn-default ──────────────── */
-
-.card-comparator-results .ccr-button-group {
-  padding: 0 var(--bbl-space-250) var(--bbl-space-250);
-  width: 100%;
-  align-self: flex-start;
-}
-
 .card-comparator-results .ccr-learn-more {
-  display: inline-block;
-  text-align: center;
-  color: var(--bbl-color-active-blue);
-  border: 1px solid var(--bbl-color-active-blue);
-  background: var(--bbl-color-white);
-  font-family: var(--bbl-font-family-primary);
-  font-size: 1rem;
-  line-height: 2.75rem;
-  height: 2.75rem;
-  min-width: 9.6875rem;
-  text-decoration: none;
-  border-radius: var(--bbl-radius-sm);
-  transition: all 0.3s;
-  padding: 0 var(--bbl-space-150);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    border-radius: 0.4375rem;
+    border: 1px solid var(--bbl-color-active-blue);
+    color: var(--bbl-color-active-blue);
+    font-family: var(--bbl-font-family-medium);
+    font-size: var(--bbl-font-size-b1);
+    font-weight: var(--bbl-font-weight-medium);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
 }
 
 .card-comparator-results .ccr-learn-more:hover {

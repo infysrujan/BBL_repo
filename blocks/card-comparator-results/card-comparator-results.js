@@ -186,16 +186,12 @@ function buildCompareCard(card, doc, labels) {
   caption.appendChild(compareInfo);
   col.appendChild(caption);
 
-  // ── Learn more button group ──
-  const btnGroup = doc.createElement('div');
-  btnGroup.className = 'ccr-button-group';
+  // ── Learn more link ──
   const learnLink = doc.createElement('a');
   learnLink.href = learnHref;
   learnLink.className = 'ccr-learn-more';
   learnLink.textContent = labels.learnMore;
-  btnGroup.appendChild(learnLink);
-  col.appendChild(btnGroup);
-
+  col.appendChild(learnLink);
   return col;
 }
 
@@ -299,6 +295,38 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
   });
 }
 
+// ── Row height equalizer — matches live site JS (sets inline height) ──────────
+
+function equalizeRowHeights(grid) {
+  if (!window.matchMedia('(width > 47.5rem)').matches) return;
+
+  const cards = [...grid.querySelectorAll('.ccr-card')];
+  if (cards.length < 2) return;
+
+  // Reset previously set heights so we remeasure from natural content height
+  cards.forEach((card) => {
+    card.querySelectorAll('.ccr-card-name, dl').forEach((el) => {
+      // eslint-disable-next-line no-param-reassign
+      el.style.height = '';
+    });
+  });
+
+  // Equalize card name height
+  const nameEls = cards.map((c) => c.querySelector('.ccr-card-name')).filter(Boolean);
+  const maxNameH = Math.max(...nameEls.map((el) => el.offsetHeight));
+  nameEls.forEach((el) => { el.style.height = `${maxNameH}px`; });
+
+  // Equalize each dl row by position index
+  const maxDls = Math.max(...cards.map((c) => c.querySelectorAll('dl').length));
+  for (let i = 0; i < maxDls; i += 1) {
+    const dls = cards.map((c) => c.querySelectorAll('dl')[i]).filter(Boolean);
+    // eslint-disable-next-line no-continue
+    if (!dls.length) continue;
+    const maxH = Math.max(...dls.map((dl) => dl.offsetHeight));
+    dls.forEach((dl) => { dl.style.height = `${maxH}px`; });
+  }
+}
+
 // ── Decorate ───────────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
@@ -331,18 +359,29 @@ export default async function decorate(block) {
 
   const buildDots = initMobileCarousel(container, doc);
 
+  const doAlign = () => {
+    doc.fonts.ready.then(() => requestAnimationFrame(() => equalizeRowHeights(container)));
+  };
+
   const [allCards, sourcingMap] = await Promise.all([loadAllCards(), loadSourcingOrder()]);
+
+  const renderAndAlign = (cards) => {
+    renderComparison(container, cards, allCards, sourcingMap, labels, doc);
+    buildDots();
+    doAlign();
+  };
 
   // On page load, restore selection from sessionStorage or cookie (survives page refresh)
   const storedCards = getCardsFromStorage();
-  if (storedCards) {
-    renderComparison(container, storedCards, allCards, sourcingMap, labels, doc);
-    buildDots();
-  }
+  if (storedCards) renderAndAlign(storedCards);
 
   // Inline mode: render when the comparator bar fires the compare event
-  doc.addEventListener('credit-card-compare-show', (e) => {
-    renderComparison(container, e.detail?.cards, allCards, sourcingMap, labels, doc);
-    buildDots();
+  doc.addEventListener('credit-card-compare-show', (e) => renderAndAlign(e.detail?.cards));
+
+  // Re-equalize on resize (debounced) so rows stay aligned after viewport changes
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => equalizeRowHeights(container), 150);
   });
 }

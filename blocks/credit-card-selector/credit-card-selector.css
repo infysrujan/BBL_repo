@@ -88,7 +88,7 @@
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem; /* 4 px — matches original site's card margin */
+  gap: 0.25rem;
 }
 
 /* Default two-column layout — Benefits (and Monthly Income desktop cards) */
@@ -125,13 +125,27 @@
 
 .credit-card-selector .filter-options-mobile {
   display: block;
+  position: relative;
+}
+
+.credit-card-selector .filter-options-mobile::after {
+  content: "\e902";
+  font-family: icomoon, sans-serif;
+  font-size: 0.375rem;
+  color: var(--bbl-color-black);
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  line-height: 1;
 }
 
 /* Styled <select> to match the option card appearance */
 .credit-card-selector .filter-dropdown {
   width: 100%;
-  height: 3.5rem; /* 56 px — matches option card height */
-  padding: 0 2.5rem 0 1rem; /* right space reserves room for the arrow */
+  height: 3.5rem;
+  padding: 0 2.5rem 0 1rem;
   box-sizing: border-box;
   background-color: var(--bbl-color-white);
   border: 1px solid var(--bbl-color-grey-30);
@@ -141,10 +155,6 @@
   color: var(--bbl-color-grey-110);
   appearance: none;
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M3 6l5 5 5-5' stroke='%230064FF' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 16px 16px;
   transition: border-color 0.15s ease;
 }
 
@@ -170,7 +180,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  min-height: 3.5rem; /* 56 px — matches original site list-thumb-square li height */
+  min-height: 3.5rem;
   width: 100%;
   box-sizing: border-box;
 
@@ -267,7 +277,7 @@
   justify-content: center;
   align-items: center;
   gap: 0.75rem;
-  margin-top: auto; /* pushes buttons to the bottom of the lifestyle column */
+  margin-top: auto;
   padding-top: 1.25rem;
 }
 
@@ -279,7 +289,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 2.75rem; /* 44 px — BBL M size */
+  height: 2.75rem;
   width: auto;
   min-width: 9rem;
   padding: 0 2rem;
@@ -317,14 +327,15 @@
 
 /* Secondary — outlined (Start Over) */
 .credit-card-selector .selector-button-secondary {
-  background-color: transparent;
+  background-color: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
   border: 1px solid var(--bbl-color-active-blue);
   min-width: 7rem;
 }
 
 .credit-card-selector .selector-button-secondary:hover {
-  background-color: var(--bbl-color-blue-10);
+  background-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
 }
 
 
@@ -408,90 +419,6 @@
     border-color: var(--bbl-color-active-blue);
     box-shadow: inset 0 0 0 1px var(--bbl-color-active-blue);
   }
-}
-
-/* ==========================================================================
-   Tablet — ≥ 760 px
-   ========================================================================== */
-
-@media (width > 47.5rem) {
-  .credit-card-selector .card-selector-header {
-    padding: 2rem 3rem 3rem;
-  }
-
-  /* Two-column grid on tablet */
-  .credit-card-selector .card-selector-content {
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-  }
-
-  /* Show desktop card list for Monthly Income; hide mobile dropdown */
-  .credit-card-selector .filter-options-desktop {
-    display: block;
-  }
-
-  .credit-card-selector .filter-options-mobile {
-    display: none;
-  }
-
-  /* Lifestyle / stacked icons scale up to their natural 3rem on tablet+ */
-  .credit-card-selector .option-icon-above img {
-    width: 3rem;
-    height: 3rem;
-  }
-
-  /* Lifestyle stacked card: restore full 126 px height on tablet+ */
-  .credit-card-selector .option-card-stacked {
-    min-height: 7.875rem;
-  }
-
-  /* Lifestyle: wrap back to three-column grid — no horizontal scroll needed */
-  .credit-card-selector .option-list-three-column {
-    flex-wrap: wrap;
-    overflow: visible;
-    padding-bottom: 0;
-  }
-
-  .credit-card-selector .option-list-three-column .option-item {
-    flex: 0 0 calc(33.333% - 0.1875rem);
-  }
-
-  /* Actions: right-aligned on tablet+ */
-  .credit-card-selector .selector-actions {
-    justify-content: flex-end;
-  }
-
-  /* Rotate chevron when collapsed */
-  .credit-card-selector .card-selector-collapsible.is-collapsed .collapse-toggle-button::after {
-    transform: rotate(180deg);
-  }
-}
-
-/* ==========================================================================
-   Desktop — ≥ 1025 px
-   ========================================================================== */
-
-@media (width > 64rem) {
-  .credit-card-selector .card-selector-header {
-    padding: 2rem 1rem 3.5rem;
-    text-align: center;
-  }
-
-  /* Desktop: large heading matches original 3 rem */
-  .credit-card-selector .card-selector-title {
-    font-size: var(--bbl-font-size-h3-desktop);
-    line-height: var(--bbl-line-height-heading-tight);
-  }
-
-  /* Desktop: section titles step up to 1.5 rem */
-  .credit-card-selector .filter-group-title {
-    font-size: 1.5rem;
-  }
-
-  .credit-card-selector .card-selector-content {
-    gap: 2rem;
-  }
-
 }
 
 /* ==========================================================================
@@ -649,38 +576,6 @@
   display: none;
 }
 
-/* ── Tablet ≥ 760 px: 3-column grid — override card-list's horizontal scroll ── */
-
-@media (width > 47.5rem) {
-  .card-list.credit-card .cards-list.scrollable.cards-3 {
-    flex-flow: row wrap;
-    overflow: visible;
-    scroll-snap-type: none;
-    gap: 0 var(--bbl-space-250);
-  }
-
-  .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
-    flex: 0 0 calc((100% - 3 * var(--bbl-space-250)) / 3);
-    margin-bottom: var(--bbl-space-250);
-    scroll-snap-align: none;
-  }
-}
-
-/* ── Desktop ≥ 1025 px: gap increases to --bbl-space-500 ─────────────────── */
-
-@media (width > 64rem) {
-  .card-list.credit-card .cards-list.scrollable.cards-3 {
-    gap: 0 var(--bbl-space-500);
-    margin-right: -1.25rem;
-    margin-left: -1.25rem;
-  }
-
-  .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
-    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 3);
-    margin-bottom: var(--bbl-space-500);
-  }
-}
-
 /* ── Scroll dots pagination — matches carousel-dotted show-arrows-dots style ─── */
 
 .ccs-scroll-dots {
@@ -719,13 +614,6 @@
   border-color: var(--bbl-color-active-blue);
 }
 
-/* Tablet+: see more/see less applies — hide dots */
-@media (width > 47.5rem) {
-  .ccs-scroll-dots {
-    display: none;
-  }
-}
-
 /* ── Hidden cards (beyond initial 6 in unfiltered state) ────────────────────── */
 
 .ccs-hidden {
@@ -744,7 +632,7 @@
 /* ── See more / See less toggle — JS controls display via inline style ────── */
 
 .ccs-results-toggle {
-  display: none; /* JS overrides to flex when visible */
+  display: none;
   justify-content: center;
   margin-top: 1.5rem;
 }
@@ -792,10 +680,6 @@
   line-height: 1.6;
 }
 
-/* ==========================================================================
-   Tablet ≥ 760 px
-   ========================================================================== */
-
 @media (width > 47.5rem) {
   .ccs-results {
     padding: 3rem;
@@ -805,11 +689,75 @@
     font-size: 2rem;
   }
 
-}
+  .ccs-scroll-dots {
+    display: none;
+  }
 
-/* ==========================================================================
-   Desktop ≥ 1025 px
-   ========================================================================== */
+  .credit-card-selector .card-selector-header {
+    padding: 2rem 3rem 3rem;
+  }
+
+  /* Two-column grid on tablet */
+  .credit-card-selector .card-selector-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  /* Show desktop card list for Monthly Income; hide mobile dropdown */
+  .credit-card-selector .filter-options-desktop {
+    display: block;
+  }
+
+  .credit-card-selector .filter-options-mobile {
+    display: none;
+  }
+
+  /* Lifestyle / stacked icons scale up to their natural 3rem on tablet+ */
+  .credit-card-selector .option-icon-above img {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  /* Lifestyle stacked card: restore full 126 px height on tablet+ */
+  .credit-card-selector .option-card-stacked {
+    min-height: 7.875rem;
+  }
+
+  /* Lifestyle: wrap back to three-column grid — no horizontal scroll needed */
+  .credit-card-selector .option-list-three-column {
+    flex-wrap: wrap;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .credit-card-selector .option-list-three-column .option-item {
+    flex: 0 0 calc(33.333% - 0.1875rem);
+  }
+
+  /* Actions: right-aligned on tablet+ */
+  .credit-card-selector .selector-actions {
+    justify-content: flex-end;
+  }
+
+  /* Rotate chevron when collapsed */
+  .credit-card-selector .card-selector-collapsible.is-collapsed .collapse-toggle-button::after {
+    transform: rotate(180deg);
+  }
+
+  .card-list.credit-card .cards-list.scrollable.cards-3 {
+    flex-flow: row wrap;
+    overflow: visible;
+    scroll-snap-type: none;
+    gap: 0 var(--bbl-space-250);
+  }
+
+  .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-250)) / 3);
+    margin-bottom: var(--bbl-space-250);
+    scroll-snap-align: none;
+  }
+
+}
 
 @media (width > 64rem) {
   .ccs-results {
@@ -819,5 +767,36 @@
   .ccs-results-title {
     font-size: var(--bbl-font-size-h3-desktop);
     line-height: var(--bbl-line-height-heading-tight);
+  }
+
+  .credit-card-selector .card-selector-header {
+    padding: 2rem 1rem 3.5rem;
+    text-align: center;
+  }
+
+  /* Desktop: large heading matches original 3 rem */
+  .credit-card-selector .card-selector-title {
+    font-size: var(--bbl-font-size-h3-desktop);
+    line-height: var(--bbl-line-height-heading-tight);
+  }
+
+  /* Desktop: section titles step up to 1.5 rem */
+  .credit-card-selector .filter-group-title {
+    font-size: 1.5rem;
+  }
+
+  .credit-card-selector .card-selector-content {
+    gap: 2rem;
+  }
+
+  .card-list.credit-card .cards-list.scrollable.cards-3 {
+    gap: 0 var(--bbl-space-500);
+    margin-right: -1.25rem;
+    margin-left: -1.25rem;
+  }
+
+  .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 3);
+    margin-bottom: var(--bbl-space-500);
   }
 }
