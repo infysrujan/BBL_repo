@@ -12,6 +12,10 @@ function buildDateHtml(start, end, label) {
   return `<p class="promo-detail-date">${label} ${parts.join(' \u2013 ')}</p>`;
 }
 
+function parseBooleanFlag(el) {
+  return el?.textContent?.trim().toLowerCase() === 'true';
+}
+
 function buildDisclaimerHtml(enabled, text) {
   if (!enabled || !text) return '';
   return `<div class="promo-detail-disclaimer"><p class="promo-detail-disclaimer-text">${text}</p></div>`;
@@ -28,7 +32,7 @@ export default async function decorate(block) {
   const description = rows[6]?.innerHTML?.trim() || '';
   const startDate = rows[9]?.textContent?.trim() || '';
   const endDate = rows[10]?.textContent?.trim() || '';
-  const disclaimerEnabled = rows[18]?.textContent?.trim() === 'true';
+  const disclaimerEnabled = parseBooleanFlag(rows[18]);
   const disclaimerText = rows[19]?.innerHTML?.trim() || '';
 
   block.innerHTML = `
