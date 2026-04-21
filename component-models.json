@@ -8284,6 +8284,10 @@
     ]
   },
   {
+    "id": "promotional-page-detail",
+    "fields": []
+  },
+  {
     "id": "rate-card-item",
     "fields": [
       {
