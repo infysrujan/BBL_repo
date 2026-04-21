@@ -27,13 +27,13 @@ export default async function decorate(block) {
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
 
   const title = rows[1]?.innerHTML?.trim() || '';
-  const imageHtml = rows[4]?.querySelector('picture, img')?.outerHTML || '';
-  const imageHref = rows[4]?.querySelector('img')?.src || '#';
-  const description = rows[6]?.innerHTML?.trim() || '';
-  const startDate = rows[9]?.textContent?.trim() || '';
-  const endDate = rows[10]?.textContent?.trim() || '';
-  const disclaimerEnabled = parseBooleanFlag(rows[18]);
-  const disclaimerText = rows[19]?.innerHTML?.trim() || '';
+  const imageHtml = rows[3]?.querySelector('picture, img')?.outerHTML || '';
+  const imageHref = rows[3]?.querySelector('img')?.src || '#';
+  const description = rows[5]?.innerHTML?.trim() || '';
+  const startDate = rows[8]?.textContent?.trim() || '';
+  const endDate = rows[9]?.textContent?.trim() || '';
+  const disclaimerEnabled = parseBooleanFlag(rows[14]);
+  const disclaimerText = rows[15]?.innerHTML?.trim() || '';
 
   block.innerHTML = `
     <div class="promo-detail-inner">
