@@ -196,6 +196,8 @@
         "card-list",
         "privacy-modal",
         "external-redirect-popup",
+        "video",
+        "carousel-video",
         "forex-rates"
       ]
     }

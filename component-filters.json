@@ -47,6 +47,8 @@
       "card-list",
       "privacy-modal",
       "external-redirect-popup",
+      "video",
+      "carousel-video",
       "forex-rates"
     ]
   },
@@ -78,6 +80,12 @@
     "id": "showArrowsDots",
     "components": [
       "carousel-dotted-slide-arrows"
+    ]
+  },
+  {
+    "id": "carousel-video",
+    "components": [
+      "carousel-video-item"
     ]
   },
   {

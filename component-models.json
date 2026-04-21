@@ -1859,6 +1859,29 @@
     ]
   },
   {
+    "id": "carousel-video",
+    "fields": []
+  },
+  {
+    "id": "carousel-video-item",
+    "fields": [
+      {
+        "component": "text",
+        "name": "youtubeUrl",
+        "label": "YouTube URL",
+        "description": "Enter the YouTube video URL.",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "reference",
+        "name": "thumbnail",
+        "label": "Thumbnail Image",
+        "multi": false
+      }
+    ]
+  },
+  {
     "id": "carousel",
     "fields": [
       {
