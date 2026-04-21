@@ -659,18 +659,38 @@
   display: none;
 }
 
-/* ── Tablet ≥ 760 px: 3-column grid — override card-list's horizontal scroll ─── */
+/* ── Tablet ≥ 760 px: 3-column grid — override card-list's horizontal scroll ──
+   !important is required because card-list.css is injected dynamically via
+   loadCSS (appended to <head> after this file), so it always wins on source
+   order for equal-specificity rules. !important bypasses source order.       */
 
 @media (width > 47.5rem) {
-  .ccs-card-list-container .cards-list.scrollable {
-    flex-wrap: wrap;
-    overflow: visible;
-    scroll-snap-type: none;
+  .card-list.credit-card .cards-list.scrollable.cards-3 {
+    flex-flow: row wrap !important;
+    overflow: visible !important;
+    scroll-snap-type: none !important;
+    gap: 0 var(--bbl-space-250, 1.25rem) !important;
   }
 
-  .ccs-card-list-container .cards-list.scrollable.cards-3 .cards-list-item {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-250, 1.25rem)) / 3);
+  .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-250, 1.25rem)) / 3) !important;
     margin-bottom: var(--bbl-space-250, 1.25rem);
+    scroll-snap-align: none !important;
+  }
+}
+
+/* ── Desktop ≥ 1025 px: gap increases to --bbl-space-500 ─────────────────── */
+
+@media (width > 64rem) {
+  .card-list.credit-card .cards-list.scrollable.cards-3 {
+    gap: 0 var(--bbl-space-500, 2.5rem);
+    margin-right: -20px;
+    margin-left: -20px;
+  }
+
+  .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500, 2.5rem)) / 3) !important;
+    margin-bottom: var(--bbl-space-500, 2.5rem);
   }
 }
 

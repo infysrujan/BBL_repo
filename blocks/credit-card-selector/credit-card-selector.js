@@ -174,6 +174,8 @@ function buildFilterState(block, filterGroups) {
             ?.trim() ?? '',
         )
         .filter(Boolean);
+      // eslint-disable-next-line no-console
+      console.log(`[ccs] buildFilterState group ${i} (lifestyle): checked=${checked.length} values=`, state.lifestyles);
     } else {
       const checked = block.querySelector(
         `input[name="filter-group-${i}"]:checked`,
@@ -189,9 +191,13 @@ function buildFilterState(block, filterGroups) {
       } else {
         state.benefit = value;
       }
+      // eslint-disable-next-line no-console
+      console.log(`[ccs] buildFilterState group ${i} ("${group.displayTitle}"): key=${titleLower.includes('income') ? 'income' : 'benefit'} value="${value}"`);
     }
   });
 
+  // eslint-disable-next-line no-console
+  console.log('[ccs] buildFilterState result:', state);
   return state;
 }
 
@@ -201,9 +207,13 @@ function buildFilterState(block, filterGroups) {
  * to have at least one option selected.
  */
 function syncActionButtonState(block, filterGroups, startOverButton, applyButton) {
-  const everyGroupSelected = filterGroups.every(
-    (_, i) => !!block.querySelector(`input[name="filter-group-${i}"]:checked`),
-  );
+  const groupStates = filterGroups.map((g, i) => {
+    const hasChecked = !!block.querySelector(`input[name="filter-group-${i}"]:checked`);
+    return { title: g.displayTitle, isLifestyle: g.isLifestyle, hasChecked };
+  });
+  const everyGroupSelected = groupStates.every((s) => s.hasChecked);
+  // eslint-disable-next-line no-console
+  console.log('[ccs] syncActionButtonState groupStates:', groupStates, 'everyGroupSelected:', everyGroupSelected);
   startOverButton.style.display = everyGroupSelected ? '' : 'none';
   applyButton.disabled = !everyGroupSelected;
 }
@@ -265,13 +275,17 @@ export default function decorate(block) {
       .replace(/\s*\([^)]+\)\s*$/, '') // strip parenthetical
       .replace(/ Selection$/i, '')
       .trim();
+    // [1] = capture group text only (without surrounding parentheses)
     const sectionHint = parenMatch?.[1]?.trim()
       ?? cells[1]?.querySelector('p')?.textContent?.trim()
       ?? '';
 
     const listItems = [...(cells[1]?.querySelectorAll('li') ?? [])];
+    const isLifestyle = rawTitle.toLowerCase().includes('lifestyle');
+    // eslint-disable-next-line no-console
+    console.log(`[ccs] row ${i} rawTitle="${rawTitle}" displayTitle="${displayTitle}" sectionHint="${sectionHint}" isLifestyle=${isLifestyle} items=${listItems.length}`);
+
     if (listItems.length > 0) {
-      const isLifestyle = rawTitle.toLowerCase().includes('lifestyle');
       filterGroups.push({
         displayTitle,
         sectionHint,
@@ -282,6 +296,13 @@ export default function decorate(block) {
       });
     }
   }
+  // eslint-disable-next-line no-console
+  console.log('[ccs] filterGroups built:', filterGroups.map((g) => ({
+    title: g.displayTitle,
+    isLifestyle: g.isLifestyle,
+    items: g.items.length,
+    maxSelect: g.maxSelect,
+  })));
 
   // ── Build DOM ─────────────────────────────────────────────────────────────
   block.innerHTML = '';
@@ -387,6 +408,13 @@ export default function decorate(block) {
   // Single delegated listener covers all option changes (radios, checkboxes, mobile selects)
   block.addEventListener('change', (e) => {
     const changedInput = e.target;
+    // eslint-disable-next-line no-console
+    console.log('[ccs] change event:', {
+      type: changedInput.type || changedInput.tagName,
+      name: changedInput.name || changedInput.dataset?.groupName,
+      value: changedInput.value,
+      checked: changedInput.checked,
+    });
 
     // --- Mobile <select> dropdown ---
     if (changedInput.classList.contains('filter-dropdown')) {
@@ -412,7 +440,11 @@ export default function decorate(block) {
       const currentCount = block.querySelectorAll(
         `input[name="${changedInput.name}"]:checked`,
       ).length;
+      // eslint-disable-next-line no-console
+      console.log(`[ccs] lifestyle checkbox: groupIndex=${groupIndex} maxAllowed=${maxAllowed} currentCount=${currentCount}`);
       if (currentCount > maxAllowed) {
+        // eslint-disable-next-line no-console
+        console.log('[ccs] max selections reached — unchecking');
         changedInput.checked = false;
         return;
       }

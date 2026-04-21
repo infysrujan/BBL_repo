@@ -76,7 +76,15 @@ async function loadSheetData() {
     const json = await resp.json();
     const rows = (json.data || []).map(normalizeRow);
     // eslint-disable-next-line no-console
-    console.log('[credit-card-results] sheet rows loaded:', rows.length, rows[0]);
+    console.log('[credit-card-results] sheet rows loaded:', rows.length);
+    // eslint-disable-next-line no-console
+    console.table(rows.map((r) => ({
+      name: r['Product Name (EN)'],
+      income: r.Income,
+      lifestyles: r.Lifestyles,
+      benefit: r.Benefit,
+      sourcing: r.Sourcing,
+    })));
     return rows;
   } catch (err) {
     // eslint-disable-next-line no-console
@@ -173,8 +181,19 @@ async function resolveFilteredCards(sheetCards, filterState) {
   const rawCards = await loadCardData();
   // eslint-disable-next-line no-console
   console.log('[credit-card-results] second fetch returned:', rawCards.length);
+  // eslint-disable-next-line no-console
+  console.log('[credit-card-results] raw card names:', rawCards.map((c) => norm(getCardField(c, 'nameEN', 'Product Name (EN)', 'name', 'cardName'))));
+  // eslint-disable-next-line no-console
+  console.log('[credit-card-results] matching against:', matchingNames);
 
   const filtered = rawCards
+    .filter((card) => {
+      const name = norm(getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
+      const matches = matchingNames.includes(name);
+      // eslint-disable-next-line no-console
+      console.log(`  [filter] "${name}" → ${matches}`);
+      return matches;
+    })
     .sort((a, b) => {
       const nameA = norm(getCardField(a, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
       const nameB = norm(getCardField(b, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
