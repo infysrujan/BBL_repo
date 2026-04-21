@@ -11,12 +11,12 @@
   z-index: 0; /* creates stacking context so ::after z-index: -1 stays behind content */
 }
 
-/* Full-bleed white strip covering the toggle bar area, behind the block's content */
+/* Full-bleed white strip — height matches the short toggle bar (1.875rem = 30px). */
 .credit-card-selector::after {
   content: '';
   position: absolute;
   bottom: 0;
-  height: var(--bbl-space-700);
+  height: 1.875rem;
   left: -100vw;
   right: -100vw;
   background-color: var(--bbl-color-white);
@@ -51,6 +51,7 @@
   gap: 0;
   max-height: 75rem;
   opacity: 1;
+  padding-bottom: 1.875rem;
   transition:
     max-height 0.5s ease,
     opacity 0.5s ease,
@@ -385,35 +386,57 @@
   padding-bottom: 0;
 }
 
-/* Toggle bar: spacer that reserves room for the absolutely positioned button. */
+/* Toggle bar: short white strip (30 px) — matches live site's .collapse-container.
+   The button is taller and anchored to bottom: 0, so it bleeds 20 px UP into the
+   gray section above (invisible there, #f5f5f5 on #f5f5f5) and 30 px down into
+   the white strip (visible as a gray teardrop tab). */
 .credit-card-selector .collapse-toggle-bar {
-  height: var(--bbl-space-700);
+  height: 1.875rem;
   background-color: var(--bbl-color-white);
 }
 
-/* Toggle button: pinned to bottom-right of the collapsible wrapper.
-   No transform or flex-end hacks — works regardless of container width. */
+/* Toggle button: 50 px tall, anchored to the collapsible's bottom edge.
+   Top 20 px overlap the gray section — transparent so it blends with any
+   section background without needing a colour match.
+   Bottom 30 px sit in the white toggle bar and show the gray teardrop box
+   (drawn by ::before, only covering those bottom 30 px).
+   overflow-y: hidden on the collapsible clips it to 30 px when collapsed. */
 .credit-card-selector .collapse-toggle-button {
   position: absolute;
-  bottom: var(--bbl-space-050);
+  bottom: 0;
   right: 0;
   background: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
   width: var(--bbl-space-600);
-  height: var(--bbl-space-600);
+  height: 3.125rem;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
+  padding-bottom: 0.375rem;
 }
 
-/* Chevron icon — square rounded button matching the live site */
+/* Gray rounded box — only the bottom 30 px (the visible teardrop portion) */
+.credit-card-selector .collapse-toggle-button::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1.875rem;
+  background: #f5f5f5;
+  z-index: 0;
+}
+
+/* Chevron icon — sits above the ::before box */
 .credit-card-selector .collapse-toggle-button::after {
-  content: url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 8C0 3.58172 3.58172 0 8 0H40C44.4183 0 48 3.58172 48 8V40C48 44.4183 44.4183 48 40 48H8C3.58172 48 0 44.4183 0 40V8Z' fill='%23F5F5F5'/%3E%3Cpath d='M33.6001 28.7997L24.0001 19.1997L14.4001 28.7997' stroke='%230064FF' stroke-width='2.5' stroke-miterlimit='10'/%3E%3C/svg%3E");
+  content: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19 14.5L12 7.5L5 14.5' stroke='%230064FF' stroke-width='2' stroke-miterlimit='10'/%3E%3C/svg%3E");
   display: block;
-  width: var(--bbl-space-600);
-  height: var(--bbl-space-600);
+  width: 1.5rem;
+  height: 1.5rem;
+  position: relative;
+  z-index: 1;
   transition: transform 0.3s ease;
 }
 
