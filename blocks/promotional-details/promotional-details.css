@@ -1,17 +1,17 @@
 /* Promotional Page Detail Block */
-.promotional-page-detail .promo-detail-center {
+.promotional-details .promo-detail-center {
   max-width: 79.5rem;
   margin: 0 auto;
   padding: 1.5rem 1rem;
 }
 
 /* Title — centered above the row */
-.promotional-page-detail .promo-detail-title-wrap {
+.promotional-details .promo-detail-title-wrap {
   text-align: center;
   margin-bottom: 2rem;
 }
 
-.promotional-page-detail .promo-detail-title {
+.promotional-details .promo-detail-title {
   font-size: 1.25rem;
   line-height: 1.5;
   font-family: var(--bbl-font-family-bold);
@@ -20,18 +20,18 @@
 }
 
 /* Two-column row */
-.promotional-page-detail .promo-detail-row {
+.promotional-details .promo-detail-row {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
 /* Image column */
-.promotional-page-detail .promo-detail-image a {
+.promotional-details .promo-detail-image a {
   display: block;
 }
 
-.promotional-page-detail .promo-detail-image img {
+.promotional-details .promo-detail-image img {
   display: block;
   width: 100%;
   height: auto;
@@ -40,14 +40,14 @@
 }
 
 /* Content column */
-.promotional-page-detail .promo-detail-content {
+.promotional-details .promo-detail-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.promotional-page-detail .promo-detail-date {
+.promotional-details .promo-detail-date {
   margin: 0;
   font-size: 0.9375rem;
   line-height: 1.7;
@@ -55,36 +55,36 @@
   font-family: var(--bbl-font-family-bold);
 }
 
-.promotional-page-detail .promo-detail-description p {
+.promotional-details .promo-detail-description p {
   margin: 0 0 0.75rem;
   font-size: 0.9375rem;
   line-height: 1.7;
   color: var(--bbl-color-black);
 }
 
-.promotional-page-detail .promo-detail-description p:last-child {
+.promotional-details .promo-detail-description p:last-child {
   margin-bottom: 0;
 }
 
 /* Card logos */
-.promotional-page-detail .promo-detail-card-logos {
+.promotional-details .promo-detail-card-logos {
   display: flex;
   gap: 0.5rem;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.promotional-page-detail .promo-detail-card-logo {
+.promotional-details .promo-detail-card-logo {
   height: 1.5rem;
   width: auto;
 }
 
 /* Disclaimer */
-.promotional-page-detail .promo-detail-disclaimer {
+.promotional-details .promo-detail-disclaimer {
   padding-top: 1rem;
 }
 
-.promotional-page-detail .promo-detail-disclaimer-text {
+.promotional-details .promo-detail-disclaimer-text {
   margin: 0;
   font-size: 0.8125rem;
   line-height: 1.5;
@@ -92,7 +92,7 @@
 }
 
 /* Error state */
-.promotional-page-detail .promo-detail-error {
+.promotional-details .promo-detail-error {
   text-align: center;
   padding: 3rem 1rem;
   color: var(--bbl-color-grey-85);
@@ -145,37 +145,37 @@
 
 /* Tablet and up */
 @media (width >= 47.5rem) {
-  .promotional-page-detail .promo-detail-center {
+  .promotional-details .promo-detail-center {
     padding: 2rem 1.5rem;
   }
 
-  .promotional-page-detail .promo-detail-title {
+  .promotional-details .promo-detail-title {
     font-size: 1.5rem;
   }
 
-  .promotional-page-detail .promo-detail-row {
+  .promotional-details .promo-detail-row {
     flex-direction: row;
     align-items: flex-start;
     gap: 2rem;
   }
 
-  .promotional-page-detail .promo-detail-image {
+  .promotional-details .promo-detail-image {
     width: 33.33%;
     flex-shrink: 0;
   }
 
-  .promotional-page-detail .promo-detail-content {
+  .promotional-details .promo-detail-content {
     width: 66.67%;
   }
 }
 
 /* Desktop */
 @media (width >= 64.0625rem) {
-  .promotional-page-detail .promo-detail-center {
+  .promotional-details .promo-detail-center {
     padding: 2.5rem 0;
   }
 
-  .promotional-page-detail .promo-detail-title {
+  .promotional-details .promo-detail-title {
     font-size: 1.75rem;
   }
 }

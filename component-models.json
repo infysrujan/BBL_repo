@@ -8283,7 +8283,7 @@
     ]
   },
   {
-    "id": "promotional-page-detail",
+    "id": "promotional-details",
     "fields": [
       {
         "component": "text",
