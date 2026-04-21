@@ -47,6 +47,14 @@
   gap: 1rem;
 }
 
+.promotional-page-detail .promo-detail-date {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--bbl-color-black);
+  font-family: var(--bbl-font-family-bold);
+}
+
 .promotional-page-detail .promo-detail-description p {
   margin: 0 0 0.75rem;
   font-size: 0.9375rem;
@@ -73,27 +81,14 @@
 
 /* Disclaimer */
 .promotional-page-detail .promo-detail-disclaimer {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.625rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--bbl-color-grey-30, #e0e0e0);
 }
 
-.promotional-page-detail .promo-detail-disclaimer-checkbox {
-  flex-shrink: 0;
-  width: 1.125rem;
-  height: 1.125rem;
-  margin-top: 0.125rem;
-  cursor: pointer;
-  accent-color: var(--bbl-color-active-blue);
-}
-
-.promotional-page-detail .promo-detail-disclaimer-label {
+.promotional-page-detail .promo-detail-disclaimer-text {
+  margin: 0;
   font-size: 0.8125rem;
   line-height: 1.5;
   color: var(--bbl-color-grey-85);
-  cursor: pointer;
 }
 
 /* Error state */
@@ -146,12 +141,6 @@
 .promo-detail-skeleton-logo {
   height: 1.5rem;
   width: 3rem;
-}
-
-.promo-detail-skeleton-checkbox {
-  width: 1.125rem;
-  height: 1.125rem;
-  flex-shrink: 0;
 }
 
 /* Tablet and up */
