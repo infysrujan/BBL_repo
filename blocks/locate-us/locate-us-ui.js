@@ -159,9 +159,8 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     noResults.hidden = true;
     resultsSection.hidden = false;
     onLocationSelect(allLocs[0]);
-    renderCards(
-      allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs,
-    );
+    // eslint-disable-next-line max-len
+    renderCards(allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs);
   }
 
   function buildProvinceList(provinces) {
