@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 20px;
+  gap: var(--bbl-space-250);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -18,27 +18,27 @@
 .card-comparator-results .ccr-card {
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border: 1px solid rgb(0 0 0 / 10%);
-  border-radius: 7px;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--bbl-color-black-alpha-10);
+  border-radius: 0.4375rem;
   overflow: hidden;
   flex: 1 1 0;
-  min-width: 260px; /* prevent cards collapsing on mobile */
+  min-width: 16.25rem; /* prevent cards collapsing on mobile */
 }
 
 /* ── Image area — .thumb-default.card .inner + .thumb ────────────────────── */
 
 .card-comparator-results .ccr-inner {
-  min-height: 143px;
-  max-height: 175px;
+  min-height: 8.9375rem;
+  max-height: 10.9375rem;
   height: calc(100vw * 0.12);
   overflow: hidden;
-  padding: 20px 20px 0;
+  padding: var(--bbl-space-250) var(--bbl-space-250) 0;
 }
 
 .card-comparator-results .ccr-thumb {
   height: 100%;
-  border-radius: 7px;
+  border-radius: 0.4375rem;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -60,54 +60,55 @@
 /* ── Caption — .thumb-default .caption ───────────────────────────────────── */
 
 .card-comparator-results .ccr-caption {
-  padding: 20px;
+  padding: var(--bbl-space-250);
   flex-grow: 1;
   font-size: 1rem;
   line-height: 1.375;
-  color: #78787d;
+  color: var(--bbl-color-grey-70);
 }
 
 /* Card name — .title-3 */
 
 .card-comparator-results .ccr-card-name {
-  font-family: BangkokBank-Medium, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-size: 1.5rem;
   line-height: 1.625rem;
-  color: #000;
-  margin: 0 0 16px;
-  min-height: 71px;
+  color: var(--bbl-color-black);
+  margin: 0 0 var(--bbl-space-200);
+  min-height: 4.4375rem;
 }
 
 /* ── Compare info rows — .compare-info dl/dt/dd ──────────────────────────── */
 
 .card-comparator-results .compare-info dl {
-  border-top: 1px solid #9a9a9a;
-  padding: 23px 0;
+  border-top: 1px solid var(--bbl-color-grey-150);
+  padding: 1.4375rem 0;
   margin: 0;
 }
 
 .card-comparator-results .compare-info dl:first-child {
   border-top: none;
-  padding-top: 10px;
+  padding-top: 0.625rem;
 }
 
 .card-comparator-results .ccr-label {
-  font: 1rem BangkokBank-Medium, sans-serif;
-  color: #000;
+  font-size: 1rem;
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-color-black);
   margin: 0;
 }
 
 .card-comparator-results .ccr-value {
-  line-height: 26px;
-  padding: 8px 0 0;
+  line-height: 1.625rem;
+  padding: var(--bbl-space-100) 0 0;
   margin: 0;
-  color: #78787d;
+  color: var(--bbl-color-grey-70);
 }
 
 /* ── Learn more button group — .button-group + .btn-default ──────────────── */
 
 .card-comparator-results .ccr-button-group {
-  padding: 0 20px 20px;
+  padding: 0 var(--bbl-space-250) var(--bbl-space-250);
   width: 100%;
   align-self: flex-start;
 }
@@ -115,32 +116,32 @@
 .card-comparator-results .ccr-learn-more {
   display: inline-block;
   text-align: center;
-  color: #0064ff;
-  border: 1px solid #0064ff;
-  background: #fff;
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  color: var(--bbl-color-active-blue);
+  border: 1px solid var(--bbl-color-active-blue);
+  background: var(--bbl-color-white);
+  font-family: var(--bbl-font-family-primary);
   font-size: 1rem;
-  line-height: 44px;
-  height: 44px;
-  min-width: 155px;
+  line-height: 2.75rem;
+  height: 2.75rem;
+  min-width: 9.6875rem;
   text-decoration: none;
-  border-radius: 4px;
+  border-radius: var(--bbl-radius-sm);
   transition: all 0.3s;
-  padding: 0 12px;
+  padding: 0 var(--bbl-space-150);
 }
 
 .card-comparator-results .ccr-learn-more:hover {
-  color: #fff;
-  border-color: #0064ff;
-  background: #0064ff;
+  color: var(--bbl-color-white);
+  border-color: var(--bbl-color-active-blue);
+  background: var(--bbl-color-active-blue);
 }
 
 /* No results */
 
 .card-comparator-results .ccr-no-results {
-  padding: 24px;
+  padding: var(--bbl-space-300);
   text-align: center;
-  color: #78787d;
+  color: var(--bbl-color-grey-70);
 }
 
 @media (width > 47.5rem) {
@@ -156,6 +157,6 @@
 
 @media (width > 64rem) {
   .card-comparator-results .ccr-grid {
-    gap: 40px; /* matches col-md-4's 20px l+r padding */
+    gap: var(--bbl-space-500);
   }
 }

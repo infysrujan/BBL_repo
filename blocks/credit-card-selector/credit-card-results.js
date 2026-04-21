@@ -10,7 +10,6 @@ const INITIAL_VISIBLE = 3;
 const MAX_FILTERED = 5;
 const MAX_COMPARE = 3;
 const MOBILE_BREAKPOINT = '(width < 760px)';
-const TABLET_BREAKPOINT = '(width >= 760px)';
 const BENEFIT_ALIASES = { rewards: 'point' };
 
 // ── String / data utilities ────────────────────────────────────────────────────
@@ -515,8 +514,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
     addCompareButtons(blockEl, doc, labels);
     restoreCompareState(cardListContainer);
 
-    // Tablet+: hide cards beyond INITIAL_VISIBLE (mobile carousel shows all)
-    if (activeCards === null && !isExpanded && window.matchMedia(TABLET_BREAKPOINT).matches) {
+    if (activeCards === null && !isExpanded) {
       [...blockEl.querySelectorAll('.cards-list-item')].forEach((item, i) => {
         if (i >= INITIAL_VISIBLE) item.classList.add('ccs-hidden');
       });
@@ -529,9 +527,8 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
   }
 
   function refreshToggle() {
-    const isMobile = window.matchMedia(MOBILE_BREAKPOINT).matches;
-    const canToggle = !isMobile && activeCards === null && allCards.length > INITIAL_VISIBLE;
-    toggleWrap.style.display = canToggle ? '' : 'none';
+    const canToggle = activeCards === null && allCards.length > INITIAL_VISIBLE;
+    toggleWrap.style.display = canToggle ? 'flex' : 'none';
 
     toggleBtn.innerHTML = '';
     const label = doc.createElement('span');
