@@ -451,6 +451,10 @@ function initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels) 
  * @param {{ disclaimerHtml?: string }} options
  */
 export default async function initCardResults(selectorBlock, { disclaimerHtml = '' } = {}) {
+  // Remove any stale results sections left over from a previously decorated instance.
+  // This handles the case where UE replaced the block element but the old .ccs-results remains.
+  selectorBlock.ownerDocument.querySelectorAll('.ccs-results').forEach((el) => el.remove());
+
   const doc = selectorBlock.ownerDocument;
   const lang = getLang();
 

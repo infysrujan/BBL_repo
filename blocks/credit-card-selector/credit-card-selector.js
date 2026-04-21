@@ -238,6 +238,18 @@ function syncActionButtonState(block, filterGroups, startOverButton, applyButton
  *   All other sections                        → left column  (radio, single-select)
  */
 export default function decorate(block) {
+  // UE inserts a fresh block element when a newly-added block is edited for the first time.
+  // The original decorated block stays in the DOM alongside the new one, causing duplication.
+  // Remove any other already-decorated credit-card-selector instances before proceeding.
+  document.querySelectorAll('.credit-card-selector.block').forEach((other) => {
+    if (other === block) return;
+    if (!other.querySelector('.card-selector-collapsible')) return; // not yet decorated
+    if (other.nextElementSibling?.classList.contains('ccs-results')) {
+      other.nextElementSibling.remove();
+    }
+    other.remove();
+  });
+
   const rows = [...block.children];
 
   const readRowText = (row) => row?.querySelector('p')?.textContent?.trim() ?? '';
