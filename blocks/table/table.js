@@ -63,7 +63,7 @@ function hasUnresolvedPlaceholders(table, nestedTables) {
   return false;
 }
 
-function replaceNestedTablePlaceholders(parentTable, nestedTables) {
+function replaceNestedTablePlaceholders(parentTable, nestedTables, cloneAll = false) {
   const usageCount = new Map();
   const walker = document.createTreeWalker(parentTable, NodeFilter.SHOW_TEXT);
   const textNodes = [];
@@ -92,7 +92,8 @@ function replaceNestedTablePlaceholders(parentTable, nestedTables) {
       const table = nestedTables.get(nestedId);
       if (table) {
         const used = usageCount.get(nestedId) || 0;
-        const tableToInsert = used === 0 ? table : table.cloneNode(true);
+        // In authoring (cloneAll=true), always clone. In dev, use first instance directly
+        const tableToInsert = cloneAll || used > 0 ? table.cloneNode(true) : table;
         usageCount.set(nestedId, used + 1);
         fragment.append(tableToInsert);
       } else {
@@ -266,11 +267,18 @@ export default async function decorate(block) {
   applyVariationClasses(parentTable, parentStyles);
 
   const nestedRows = rows.slice(2);
-  if (nestedRows.length > 0 && block.hasAttribute('data-aue-resource')) return;
+  const isAuthoring = block.hasAttribute('data-aue-resource');
 
   const nestedTables = getNestedTables(nestedRows);
-  if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
-  replaceNestedTablePlaceholders(parentTable, nestedTables);
+
+  if (isAuthoring) {
+    // In authoring: copy nested tables to placeholders, keep nested structure outside
+    replaceNestedTablePlaceholders(parentTable, nestedTables, true);
+  } else {
+    // In dev site: process normally like before
+    if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
+    replaceNestedTablePlaceholders(parentTable, nestedTables, false);
+  }
 
   await transformDownloadMarkers(parentTable);
 
@@ -282,6 +290,13 @@ export default async function decorate(block) {
 
   block.textContent = '';
   block.append(parentTable);
+
+  // In authoring mode, preserve and display nested table rows
+  if (isAuthoring && nestedRows.length > 0) {
+    nestedRows.forEach((row) => {
+      block.append(row);
+    });
+  }
 
   scheduleMergeTables(block, parentTable);
 }

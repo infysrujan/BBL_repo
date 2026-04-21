@@ -194,8 +194,12 @@
         "accordion-block",
         "social-icons",
         "card-list",
+        "card-list-wealth",
         "privacy-modal",
-        "external-redirect-popup"
+        "external-redirect-popup",
+        "video",
+        "carousel-video",
+        "forex-rates"
       ]
     }
   ]

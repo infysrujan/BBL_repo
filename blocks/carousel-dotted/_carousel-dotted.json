@@ -919,6 +919,10 @@
              {
               "name": "Simple Carousel",
               "value": "onlyImage"
+            },
+            {
+              "name": "Card List Carousel",
+              "value": "cardListCarousel"
             }
           ]
         },
@@ -1108,6 +1112,20 @@
           }
         },
         {
+          "component": "aem-content",
+          "name": "fragmentPath",
+          "label": "Fragment Path",
+          "description": "Fragment path for the card-list carousel content",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "cardListCarousel"
+            ]
+          }
+        },
+        {
           "component": "text",
           "name": "onlyImageAlt",
           "label": "Alt",
@@ -1118,7 +1136,8 @@
               {
                 "var": "slideType"
               },
-              "onlyImage"
+              "onlyImage",
+              "cardListCarousel"
             ]
           }
         }
