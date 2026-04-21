@@ -14,9 +14,9 @@ export default function decorate(block) {
   const pictureDesktop = imgElDesktop?.querySelector('picture');
   const pictureMobile = imgElMobile?.querySelector('picture');
 
-  let pictureHTML = ''
+  let pictureHTML = '';
 
-  if(pictureDesktop || pictureMobile) {
+  if (pictureDesktop || pictureMobile) {
     const picture = createSmartImage(imgElDesktop, imgElMobile, imgAlt);
     pictureHTML = picture?.outerHTML || '';
   }

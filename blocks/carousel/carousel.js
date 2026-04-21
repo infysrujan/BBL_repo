@@ -1,4 +1,3 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 /**
@@ -46,13 +45,17 @@ function createCarouselCard(cardElement, doc) {
   // Create image container with active and inactive states
   const imageContainer = createElementFromHTML('<div class="carousel-image-container"></div>', doc);
   const nonActivePictureDesktop = nonActiveImageDesktopDiv?.querySelector('picture');
-  const nonActivePictureMobile = nonActiveImageDesktopDiv?.querySelector('picture');
+  const nonActivePictureMobile = nonActiveImageMobileDiv?.querySelector('picture');
   const activePictureDesktop = activeImageDesktopDiv?.querySelector('picture');
   const activePictureMobile = activeImageDesktopDiv?.querySelector('picture');
 
   if (nonActivePictureDesktop || activePictureMobile) {
     const inactiveWrapper = createElementFromHTML('<div class="carousel-image-inactive"></div>', doc);
-    const picture = createSmartImage(nonActivePictureDesktop, nonActivePictureMobile, nonActiveImageAlt);
+    const picture = createSmartImage(
+      nonActivePictureDesktop,
+      nonActivePictureMobile,
+      nonActiveImageAlt,
+    );
     if (picture) {
       inactiveWrapper.appendChild(picture);
     }
