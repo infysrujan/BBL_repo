@@ -8473,7 +8473,10 @@
         "component": "richtext",
         "name": "responsibleLendingDisclaimerText",
         "label": "Disclaimer Text (appears on the promotional page)",
-        "valueType": "string"
+        "valueType": "string",
+        "condition": {
+          "responsibleLendingDisclaimerEnabled": true
+        }
       }
     ]
   },
