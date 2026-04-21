@@ -140,10 +140,15 @@ function renderBar(compareGroup, selectedCards) {
 // ── Main export ────────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
-  // Remove any other already-decorated credit-card-comparator instances (UE duplication fix)
+  // Remove any other already-decorated credit-card-comparator instances (UE duplication fix).
+  // Only remove if it shares the same data-aue-resource (same AEM content path), so a
+  // legitimately different comparator instance on the same page is not affected.
+  const blockResource = block.dataset.aueResource;
   document.querySelectorAll('.credit-card-comparator.block').forEach((other) => {
     if (other === block) return;
     if (!other.querySelector('.inner-container')) return;
+    const otherResource = other.dataset.aueResource;
+    if (blockResource && otherResource && otherResource !== blockResource) return;
     other.remove();
   });
 

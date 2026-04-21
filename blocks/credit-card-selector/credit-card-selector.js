@@ -175,7 +175,10 @@ function buildFilterState(block, filterGroups) {
         )
         .filter(Boolean);
       // eslint-disable-next-line no-console
-      console.log(`[ccs] buildFilterState group ${i} (lifestyle): checked=${checked.length} values=`, state.lifestyles);
+      console.log(
+        `[ccs] buildFilterState group ${i} (lifestyle): checked=${checked.length} values=`,
+        state.lifestyles,
+      );
     } else {
       const checked = block.querySelector(
         `input[name="filter-group-${i}"]:checked`,
@@ -192,7 +195,10 @@ function buildFilterState(block, filterGroups) {
         state.benefit = value;
       }
       // eslint-disable-next-line no-console
-      console.log(`[ccs] buildFilterState group ${i} ("${group.displayTitle}"): key=${titleLower.includes('income') ? 'income' : 'benefit'} value="${value}"`);
+      console.log(
+        `[ccs] buildFilterState group ${i} ("${group.displayTitle}"): `
+        + `key=${titleLower.includes('income') ? 'income' : 'benefit'} value="${value}"`,
+      );
     }
   });
 
@@ -213,7 +219,12 @@ function syncActionButtonState(block, filterGroups, startOverButton, applyButton
   });
   const everyGroupSelected = groupStates.every((s) => s.hasChecked);
   // eslint-disable-next-line no-console
-  console.log('[ccs] syncActionButtonState groupStates:', groupStates, 'everyGroupSelected:', everyGroupSelected);
+  console.log(
+    '[ccs] syncActionButtonState groupStates:',
+    groupStates,
+    'everyGroupSelected:',
+    everyGroupSelected,
+  );
   startOverButton.style.display = everyGroupSelected ? '' : 'none';
   applyButton.disabled = !everyGroupSelected;
 }
@@ -245,10 +256,15 @@ export default function decorate(block) {
 
   // UE inserts a fresh block element when a newly-added block is edited for the first time.
   // The original decorated block stays in the DOM alongside the new one, causing duplication.
-  // Remove any other already-decorated credit-card-selector instances before proceeding.
+  // Only remove the stale block if it shares the same data-aue-resource (same AEM content path).
+  // This prevents accidentally removing legitimately different selector instance on the same page.
+  const blockResource = block.dataset.aueResource;
   document.querySelectorAll('.credit-card-selector.block').forEach((other) => {
     if (other === block) return;
     if (!other.querySelector('.card-selector-collapsible')) return; // not yet decorated
+    const otherResource = other.dataset.aueResource;
+    // If both have a resource and they differ, these are different blocks — leave them alone.
+    if (blockResource && otherResource && otherResource !== blockResource) return;
     // eslint-disable-next-line no-console
     console.log('[ccs:decorate] removing stale decorated block:', other);
     if (other.nextElementSibling?.classList.contains('ccs-results')) {
@@ -262,7 +278,18 @@ export default function decorate(block) {
   const existingUI = block.querySelector('.card-selector-collapsible');
   // eslint-disable-next-line no-console
   console.log('[ccs:decorate] existing built UI found:', !!existingUI);
-  existingUI?.remove();
+  if (existingUI) {
+    // Restore UE instrumentation attrs from built elements back to source rows/fields.
+    existingUI.querySelectorAll('.filter-group').forEach((groupEl) => {
+      const restore = groupEl.ccsRestore;
+      if (!restore) return;
+      moveInstrumentation(groupEl, restore.sourceRow);
+      restore.fieldPairs.forEach(([builtEl, sourceEl]) => {
+        if (builtEl && sourceEl) moveInstrumentation(builtEl, sourceEl);
+      });
+    });
+    existingUI.remove();
+  }
 
   // Un-hide authored rows that were hidden by a previous decoration pass.
   [...block.children].forEach((row) => { row.classList.remove('ccs-source-row'); });
@@ -314,7 +341,10 @@ export default function decorate(block) {
     const listItems = [...(cells[1]?.querySelectorAll('li') ?? [])];
     const isLifestyle = rawTitle.toLowerCase().includes('lifestyle');
     // eslint-disable-next-line no-console
-    console.log(`[ccs] row ${i} rawTitle="${rawTitle}" displayTitle="${displayTitle}" sectionHint="${sectionHint}" isLifestyle=${isLifestyle} items=${listItems.length}`);
+    console.log(
+      `[ccs] row ${i} rawTitle="${rawTitle}" displayTitle="${displayTitle}" `
+      + `sectionHint="${sectionHint}" isLifestyle=${isLifestyle} items=${listItems.length}`,
+    );
 
     if (listItems.length > 0) {
       filterGroups.push({
@@ -328,12 +358,15 @@ export default function decorate(block) {
     }
   }
   // eslint-disable-next-line no-console
-  console.log('[ccs] filterGroups built:', filterGroups.map((g) => ({
-    title: g.displayTitle,
-    isLifestyle: g.isLifestyle,
-    items: g.items.length,
-    maxSelect: g.maxSelect,
-  })));
+  console.log(
+    '[ccs] filterGroups built:',
+    filterGroups.map((g) => ({
+      title: g.displayTitle,
+      isLifestyle: g.isLifestyle,
+      items: g.items.length,
+      maxSelect: g.maxSelect,
+    })),
+  );
 
   // ── Build DOM ─────────────────────────────────────────────────────────────
   // Hide authored rows via CSS class instead of inline style — the !important rule
@@ -355,7 +388,41 @@ export default function decorate(block) {
 
   filterGroups.forEach((group, index) => {
     const groupElement = buildFilterGroup(group, index);
+    const groupTitleEl = groupElement.querySelector('.filter-group-title');
+    const optionsAreaEl = groupElement.querySelector('.filter-options-desktop, .filter-options-always');
+
+    // Move component-level (row) attrs to the built group element.
     moveInstrumentation(group.sourceRow, groupElement);
+
+    // Move field-level attrs to built elements by matching data-aue-prop.
+    // The attrs live on deep descendants (e.g. <p>, inner <div>), not on the
+    // direct cell divs, so we must use querySelectorAll('[data-aue-prop]').
+    const fieldMap = {
+      subSectionTitle: groupTitleEl,
+      content: optionsAreaEl,
+    };
+    const fieldPairs = []; // [builtEl, sourceEl] pairs needed for restoration
+
+    group.sourceRow.querySelectorAll('[data-aue-prop]').forEach((sourceFieldEl) => {
+      const prop = sourceFieldEl.dataset.aueProp;
+      const targetEl = fieldMap[prop];
+      if (targetEl) {
+        fieldPairs.push([targetEl, sourceFieldEl]);
+        moveInstrumentation(sourceFieldEl, targetEl);
+      }
+    });
+
+    // Clear any remaining data-aue-* from other source row descendants
+    // (cell wrapper divs, unknown props, etc.) so nothing leaks into the tree.
+    group.sourceRow.querySelectorAll('*').forEach((el) => {
+      [...el.attributes]
+        .filter(({ nodeName }) => nodeName.startsWith('data-aue-') || nodeName.startsWith('data-richtext-'))
+        .forEach(({ nodeName }) => el.removeAttribute(nodeName));
+    });
+
+    // Store refs for restoration before a subsequent decoration pass.
+    groupElement.ccsRestore = { sourceRow: group.sourceRow, fieldPairs };
+
     if (group.isLifestyle) {
       lifestyleFilterColumn.appendChild(groupElement);
     } else {
@@ -503,7 +570,11 @@ export default function decorate(block) {
   });
 
   // eslint-disable-next-line no-console
-  console.log('[ccs:decorate] complete — block children now:', block.children.length, [...block.children].map((c) => c.className));
+  console.log(
+    '[ccs:decorate] complete — block children now:',
+    block.children.length,
+    [...block.children].map((c) => c.className),
+  );
 
   // Inject the card results section immediately after this block in the DOM.
   // initCardResults handles its own data fetch and all interactivity —
