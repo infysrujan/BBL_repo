@@ -32,7 +32,7 @@
 }
 
 .multi-column-tiles-wrapper > * {
-  flex: 0 0 85%;
+  flex: 0 0 60%;
   scroll-snap-align: start;
 }
 
