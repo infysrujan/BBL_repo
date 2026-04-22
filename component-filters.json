@@ -50,7 +50,8 @@
       "external-redirect-popup",
       "video",
       "carousel-video",
-      "forex-rates"
+      "forex-rates",
+      "multi-column-tiles"
     ]
   },
   {
@@ -214,6 +215,12 @@
       "menu-card"
     ],
     "maxItems": 6
+  },
+  {
+    "id": "multi-column-tiles",
+    "components": [
+      "multi-column-tiles-item"
+    ]
   },
   {
     "id": "rate-card",
