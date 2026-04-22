@@ -1339,6 +1339,36 @@
           }
         },
         {
+          "title": "Promotional Card Selector",
+          "id": "promotional-card-selector",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Promotional Card Selector",
+                  "model": "promotional-card-selector"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Promotional Details",
+          "id": "promotional-details",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Promotional Details",
+                  "model": "promotional-details"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Rate Card",
           "id": "rate-card",
           "plugins": {

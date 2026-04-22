@@ -199,7 +199,9 @@
         "external-redirect-popup",
         "video",
         "carousel-video",
-        "forex-rates"
+        "forex-rates",
+        "promotional-details",
+        "promotional-card-selector"
       ]
     }
   ]

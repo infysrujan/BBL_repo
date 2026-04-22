@@ -50,7 +50,9 @@
       "external-redirect-popup",
       "video",
       "carousel-video",
-      "forex-rates"
+      "forex-rates",
+      "promotional-details",
+      "promotional-card-selector"
     ]
   },
   {
@@ -330,7 +332,8 @@
       "login",
       "main-nav-item",
       "forex-rates",
-      "forex-graph"
+      "forex-graph",
+      "promotional-card-selector"
     ]
   },
   {
