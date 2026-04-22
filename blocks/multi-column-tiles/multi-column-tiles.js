@@ -60,7 +60,7 @@ export default function decorate(block) {
   const rows = [...block.children].slice(0, 4);
 
   const wrapper = doc.createElement('div');
-  wrapper.className = 'multi-column-tiles-wrapper';
+  wrapper.className = `multi-column-tiles-wrapper tiles-count-${rows.length}`;
 
   rows.forEach((row) => {
     const { element, instrumentation } = createTile(row, doc);

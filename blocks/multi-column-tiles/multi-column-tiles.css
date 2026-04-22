@@ -1,0 +1,96 @@
+.multi-column-tiles-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.multi-column-tiles-wrapper > * {
+  flex: 1;
+}
+
+.multi-column-tiles-link {
+  display: flex;
+  text-decoration: none;
+}
+
+.multi-column-tiles-tile {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.multi-column-tiles-link .multi-column-tiles-tile {
+  flex: 1;
+}
+
+.multi-column-tiles-image {
+  width: 100%;
+  height: 100%;
+}
+
+.multi-column-tiles-image picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.multi-column-tiles-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.multi-column-tiles-overlay {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+}
+
+.multi-column-tiles-title {
+  color: var(--bbl-color-white, #fff);
+  font-size: 1rem;
+  line-height: 1.375rem;
+  font-weight: var(--bbl-font-weight-regular, 400);
+  margin: 0;
+}
+
+.multi-column-tiles-separator {
+  display: block;
+  width: 1.3125rem;
+  height: 0.0625rem;
+  background: var(--bbl-color-white, #fff);
+  margin-top: 0.5rem;
+}
+
+/* Mobile: stacked tiles with fixed height */
+.multi-column-tiles-tile {
+  height: 21.875rem; /* 350px mobile default */
+}
+
+@media (width > 47.5rem) {
+  .multi-column-tiles-wrapper {
+    flex-direction: row;
+    align-items: stretch;
+    height: 35.5625rem; /* 569px */
+  }
+
+  .multi-column-tiles-tile {
+    height: 100%;
+  }
+
+  /* 4 items — TileSmall: 360 × 569 */
+  .multi-column-tiles-wrapper.tiles-count-4 > * {
+    flex: 0 0 22.5rem; /* 360px */
+  }
+
+  /* 3 items — TileMedium: 480 × 569 */
+  .multi-column-tiles-wrapper.tiles-count-3 > * {
+    flex: 0 0 30rem; /* 480px */
+  }
+
+  /* 2 items — TileLarge: 780 × 569 */
+  .multi-column-tiles-wrapper.tiles-count-2 > * {
+    flex: 0 0 48.75rem; /* 780px */
+  }
+}
