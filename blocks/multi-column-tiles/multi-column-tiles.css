@@ -10,6 +10,12 @@
 .multi-column-tiles-tile {
   position: relative;
   width: 100%;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.multi-column-tiles-tile:hover {
+  opacity: 1;
 }
 
 .multi-column-tiles-link {
@@ -42,8 +48,8 @@
 
 .multi-column-tiles-title {
   position: absolute;
-  bottom: 2.0625rem;
-  left: 1.5rem;
+  bottom: 8.0625rem;
+  left: 7.5rem;
   right: 1.5rem;
   z-index: 1;
   color: var(--bbl-color-white, #fff);
@@ -55,8 +61,8 @@
 
 .multi-column-tiles-separator {
   position: absolute;
-  bottom: 1.5rem;
-  left: 1.5rem;
+  bottom: 7.5rem;
+  left: 7.5rem;
   z-index: 1;
   display: block;
   width: 1.3125rem;
