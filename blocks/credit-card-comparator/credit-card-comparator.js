@@ -166,7 +166,7 @@ export default async function decorate(block) {
   [...block.children].forEach((row) => { row.classList.add('ccs-source-row'); });
 
   const ph = await fetchPlaceholders();
-  const warningText = ph.compareLimitWarning || 'Maximum 3 products can be compared at the same time.';
+  const warningText = ph.compareLimitWarning;
 
   const {
     errorDiv, compareGroup, ctaBtn,
