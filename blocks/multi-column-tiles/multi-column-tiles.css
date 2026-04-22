@@ -116,6 +116,11 @@
   margin: 0 auto;
 }
 
+.multi-column-tiles-tile:hover .multi-column-tiles-title::after,
+.multi-column-tiles-tile.is-active .multi-column-tiles-title::after {
+  opacity: 0;
+}
+
 /* Tablet: 3.25 tiles visible */
 @media (width > 47.5rem) {
   .multi-column-tiles .multi-column-tiles-wrapper > * {
