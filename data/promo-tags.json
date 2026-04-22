@@ -76,7 +76,6 @@
     { "id": "amex", "label": "Amex" }
   ],
   "areas": [
-    { "id": "all", "label": "All" },
     { "id": "central", "label": "Central" },
     { "id": "east", "label": "East" },
     { "id": "west", "label": "West" },

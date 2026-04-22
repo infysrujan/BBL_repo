@@ -44,21 +44,19 @@ function buildCardHtml(card, tag) {
   const cta = card.ctaLabel || 'Learn More';
   const target = card.linkTarget || '_self';
   return `<div class="promo-selector-card">
-  <a href="${card.ctaLink}" target="${target}" class="promo-selector-card-link">
-    <div class="promo-selector-card-img-wrap">
-      <span class="promo-selector-card-tag">${tag}</span>
-      <img src="${card.cardImageUrl}" alt="${card.title || ''}"
-        class="promo-selector-card-img" loading="lazy">
-    </div>
-    <div class="promo-selector-card-body">
-      <p class="promo-selector-card-desc">${card.shortDescription || ''}</p>
-      ${logoHtml}
-      ${dateLine ? `<p class="promo-selector-card-date">${dateLine}</p>` : ''}
-    </div>
-    <div class="promo-selector-card-footer">
-      <span class="promo-selector-cta">${cta}</span>
-    </div>
-  </a>
+  <div class="promo-selector-card-img-wrap">
+    <span class="promo-selector-card-tag">${tag}</span>
+    <img src="${card.cardImageUrl}" alt="${card.title || ''}"
+      class="promo-selector-card-img" loading="lazy">
+  </div>
+  <div class="promo-selector-card-body">
+    <p class="promo-selector-card-desc">${card.shortDescription || ''}</p>
+    ${logoHtml}
+    ${dateLine ? `<p class="promo-selector-card-date">${dateLine}</p>` : ''}
+  </div>
+  <div class="promo-selector-card-footer">
+    <a href="${card.ctaLink}" target="${target}" class="promo-selector-cta button primary">${cta}</a>
+  </div>
 </div>`;
 }
 
@@ -86,18 +84,10 @@ function buildPaginationHtml(current, total) {
     <button class="promo-selector-arrow" data-dir="next"${nextAttr} aria-label="Next">&#8250;</button>`;
 }
 
-function buildSubOptions(subcategories) {
-  const all = '<li class="promo-selector-option is-active" data-value="" role="option">All</li>';
-  const opts = subcategories
+function buildSubOptions(items) {
+  return items
     .map((s) => `<li class="promo-selector-option" data-value="${s.id}" role="option">${s.label}</li>`)
     .join('');
-  return all + opts;
-}
-
-function buildCheckOptions(items) {
-  return items.map((item) => `<label class="promo-selector-check-label">
-      <input type="checkbox" class="promo-selector-check" value="${item.id}"> ${item.label}
-    </label>`).join('');
 }
 
 // ─── Data loader ────────────────────────────────────────────────────────────
@@ -110,7 +100,7 @@ async function loadPage(dataSource, filters, page, pageSize) {
   if (!data) return { cards: [], total: 0 };
 
   const {
-    category, subcategory, cardTypes, area,
+    category, subcategory, cardType, area,
   } = filters;
   const today = new Date();
 
@@ -118,13 +108,13 @@ async function loadPage(dataSource, filters, page, pageSize) {
     if (category && card.category !== category) return false;
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
     if (subcategory && card.subcategory?.toLowerCase() !== subcategory) return false;
-    if (cardTypes.length) {
+    if (cardType) {
       const ct = (card.cardTypes || []).map((t) => t.toLowerCase());
-      if (!cardTypes.some((t) => ct.includes(t))) return false;
+      if (!ct.includes(cardType)) return false;
     }
-    if (area.length) {
+    if (area) {
       const cardArea = card.area?.toLowerCase();
-      if (cardArea !== 'all' && !area.includes(cardArea)) return false;
+      if (cardArea !== 'all' && cardArea !== area) return false;
     }
     return true;
   });
@@ -172,18 +162,22 @@ export default async function decorate(block) {
           <span class="promo-selector-filter-label">Card Type</span>
           <span class="promo-selector-filter-arrow"></span>
         </button>
-        <div class="promo-selector-dropdown promo-selector-dropdown--multi">
-          ${buildCheckOptions(cardTypes)}
-        </div>
+        <ul class="promo-selector-dropdown" role="listbox">
+          ${buildSubOptions(cardTypes)}
+        </ul>
       </div>
       <div class="promo-selector-filter" data-filter="area">
         <button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
           <span class="promo-selector-filter-label">Area</span>
           <span class="promo-selector-filter-arrow"></span>
         </button>
-        <div class="promo-selector-dropdown promo-selector-dropdown--multi">
-          ${buildCheckOptions(areas)}
-        </div>
+        <ul class="promo-selector-dropdown" role="listbox">
+          ${buildSubOptions(areas)}
+        </ul>
+      </div>
+      <div class="promo-selector-filter-actions">
+        <button class="promo-selector-btn-reset button secondary" type="button">Reset</button>
+        <button class="promo-selector-btn-search button primary" type="button">Search</button>
       </div>
     </div>
     <div class="promo-selector-grid"></div>
@@ -194,29 +188,44 @@ export default async function decorate(block) {
 
   const state = {
     subcategory: '',
-    cardTypes: [],
-    area: [],
+    cardType: '',
+    area: '',
     page: 1,
   };
 
   function showSkeleton() {
-    const items = Array.from({ length: pageSize }, () => '<div class="promo-selector-skeleton"></div>').join('');
-    gridEl.innerHTML = items;
+    const card = `<div class="promo-selector-skeleton">
+      <div class="promo-selector-skeleton-img"></div>
+      <div class="promo-selector-skeleton-body">
+        <div class="promo-selector-skeleton-line"></div>
+        <div class="promo-selector-skeleton-line"></div>
+        <div class="promo-selector-skeleton-line promo-selector-skeleton-line-short"></div>
+        <div class="promo-selector-skeleton-logos">
+          <div class="promo-selector-skeleton-logo"></div>
+          <div class="promo-selector-skeleton-logo"></div>
+        </div>
+      </div>
+      <div class="promo-selector-skeleton-footer">
+        <div class="promo-selector-skeleton-cta"></div>
+      </div>
+    </div>`;
+    gridEl.innerHTML = Array.from({ length: pageSize }, () => card).join('');
     paginationEl.innerHTML = '';
   }
 
   async function fetchAndRender() {
     showSkeleton();
+    await new Promise((resolve) => { requestAnimationFrame(resolve); });
     const { cards, total } = await loadPage(dataSource, {
       category,
       subcategory: state.subcategory,
-      cardTypes: state.cardTypes,
+      cardType: state.cardType,
       area: state.area,
     }, state.page, pageSize);
 
     gridEl.innerHTML = cards.length
       ? cards.map((c) => buildCardHtml(c, categoryLabel)).join('')
-      : '<p class="promo-selector-empty">No promotions found.</p>';
+      : '<p class="promo-selector-empty">No results found.</p>';
 
     paginationEl.innerHTML = buildPaginationHtml(state.page, Math.ceil(total / pageSize));
   }
@@ -254,54 +263,58 @@ export default async function decorate(block) {
     });
   });
 
-  // Subcategory single-select
-  block.querySelectorAll('[data-filter="subcategory"] .promo-selector-option').forEach((opt) => {
-    opt.addEventListener('click', () => {
-      block.querySelectorAll('[data-filter="subcategory"] .promo-selector-option')
-        .forEach((o) => o.classList.remove('is-active'));
-      opt.classList.add('is-active');
-      state.subcategory = opt.dataset.value;
-      const labelEl = block.querySelector(
-        '[data-filter="subcategory"] .promo-selector-filter-label',
-      );
-      if (state.subcategory) {
-        const match = subcategories.find((s) => s.id === state.subcategory);
-        labelEl.textContent = match?.label || state.subcategory;
-      } else {
-        labelEl.textContent = 'Category';
-      }
-      block.querySelector('[data-filter="subcategory"]').classList.remove('is-open');
-      state.page = 1;
-      fetchAndRender();
-    });
-  });
+  // Disable subcategory dropdown when category has no subcategories
+  if (!subcategories.length) {
+    const subBtn = block.querySelector('[data-filter="subcategory"] .promo-selector-filter-btn');
+    subBtn?.setAttribute('disabled', '');
+    block.querySelector('[data-filter="subcategory"]')?.classList.add('is-disabled');
+  }
 
-  // Card type multi-select
-  block.querySelectorAll('[data-filter="cardType"] .promo-selector-check').forEach((cb) => {
-    cb.addEventListener('change', () => {
-      const checked = [...block.querySelectorAll('[data-filter="cardType"] .promo-selector-check:checked')];
-      state.cardTypes = checked.map((c) => c.value);
-      const labelEl = block.querySelector(
-        '[data-filter="cardType"] .promo-selector-filter-label',
-      );
-      labelEl.textContent = state.cardTypes.length
-        ? `Card Type (${state.cardTypes.length})`
-        : 'Card Type';
-      state.page = 1;
-      fetchAndRender();
+  function makeSingleSelect(filterAttr, stateKey, defaultLabel, list) {
+    block.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`).forEach((opt) => {
+      opt.addEventListener('click', () => {
+        const isActive = opt.classList.contains('is-active');
+        block.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`)
+          .forEach((o) => o.classList.remove('is-active'));
+        const labelEl = block.querySelector(
+          `[data-filter="${filterAttr}"] .promo-selector-filter-label`,
+        );
+        if (isActive) {
+          state[stateKey] = '';
+          labelEl.textContent = defaultLabel;
+        } else {
+          opt.classList.add('is-active');
+          state[stateKey] = opt.dataset.value;
+          const match = list.find((item) => item.id === opt.dataset.value);
+          labelEl.textContent = match?.label || opt.dataset.value;
+        }
+        block.querySelector(`[data-filter="${filterAttr}"]`).classList.remove('is-open');
+        state.page = 1;
+        fetchAndRender();
+      });
     });
-  });
+  }
 
-  // Area multi-select
-  block.querySelectorAll('[data-filter="area"] .promo-selector-check').forEach((cb) => {
-    cb.addEventListener('change', () => {
-      const checked = [...block.querySelectorAll('[data-filter="area"] .promo-selector-check:checked')];
-      state.area = checked.map((c) => c.value);
-      const labelEl = block.querySelector('[data-filter="area"] .promo-selector-filter-label');
-      labelEl.textContent = state.area.length ? `Area (${state.area.length})` : 'Area';
-      state.page = 1;
-      fetchAndRender();
-    });
+  makeSingleSelect('subcategory', 'subcategory', 'Category', subcategories);
+  makeSingleSelect('cardType', 'cardType', 'Card Type', cardTypes);
+  makeSingleSelect('area', 'area', 'Area', areas);
+
+  function resetFilters() {
+    state.subcategory = '';
+    state.cardType = '';
+    state.area = '';
+    state.page = 1;
+    block.querySelectorAll('.promo-selector-option').forEach((o) => o.classList.remove('is-active'));
+    block.querySelector('[data-filter="subcategory"] .promo-selector-filter-label').textContent = 'Category';
+    block.querySelector('[data-filter="cardType"] .promo-selector-filter-label').textContent = 'Card Type';
+    block.querySelector('[data-filter="area"] .promo-selector-filter-label').textContent = 'Area';
+    fetchAndRender();
+  }
+
+  block.querySelector('.promo-selector-btn-reset')?.addEventListener('click', resetFilters);
+  block.querySelector('.promo-selector-btn-search')?.addEventListener('click', () => {
+    state.page = 1;
+    fetchAndRender();
   });
 
   // Pagination

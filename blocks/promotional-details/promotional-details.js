@@ -66,18 +66,22 @@ export default async function decorate(block) {
     : parseBooleanFlag(rows[14]);
   const disclaimerText = card?.responsibleLendingDisclaimerText || rows[15]?.innerHTML?.trim() || '';
 
+  const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
+  const imageColHtml = imageHtml ? `
+          <div class="promo-detail-image">
+            <a href="${imageHref}" title="Click to view full">
+              ${imageHtml}
+            </a>
+          </div>` : '';
+
   block.innerHTML = `
     <div class="promo-detail-inner">
       <div class="promo-detail-center">
         <div class="promo-detail-title-wrap">
           ${title}
         </div>
-        <div class="promo-detail-row">
-          <div class="promo-detail-image">
-            <a href="${imageHref}" title="Click to view full">
-              ${imageHtml}
-            </a>
-          </div>
+        <div class="${rowClass}">
+          ${imageColHtml}
           <div class="promo-detail-content">
             <div class="promo-detail-description">${description}</div>
             ${buildDateHtml(startDate, endDate, periodLabel)}

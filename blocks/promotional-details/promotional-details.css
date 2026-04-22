@@ -47,6 +47,11 @@
   gap: 1rem;
 }
 
+.promotional-details .promo-detail-row-no-image .promo-detail-content {
+  width: 100%;
+  max-width: 100%;
+}
+
 .promotional-details .promo-detail-date {
   margin: 0;
   font-size: 0.9375rem;
