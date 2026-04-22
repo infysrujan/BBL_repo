@@ -94,7 +94,7 @@
   display: block;
   width: 100%;
   background-position: center;
-  transition: opacity 600ms ease;    /* check this */
+  transition: opacity 600ms ease;    
 }
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
@@ -103,7 +103,7 @@
 }
 
 .carousel-dotted .carousel-dotted-item:not(.is-active) .carousel-bg {
-  opacity: 0;       /* check this */
+  opacity: 0;      
 }
 
 .carousel-dotted .carousel-bg::after {
@@ -327,12 +327,12 @@
 /* Override the generic display:none so all slides exist in the flex row */
 .carousel-dotted.all-without-image .carousel-dotted-item.without-image {
   position: relative;
-  display: block !important;
+  display: block ;
   opacity: 1;
   flex: 0 0 100%;
   width: 100%;
   min-height: 12.6875rem;
-  transition: opacity 600ms ease;   /* check this */
+  transition: opacity 600ms ease;  
 }
 
 /* Dot positioning – mobile */
@@ -1260,7 +1260,7 @@
     margin: 0 auto;
 }
 
-.central-aligned.carousel-dotted-container .carousel-dotted{
+.central-aligned.carousel-dotted-container .carousel-dotted-wrapper .carousel-dotted {
     position: relative;
     margin-bottom: 5rem;
     display: block;
