@@ -82,6 +82,8 @@
   height: 0.0625rem;
   background: var(--bbl-color-white, #fff);
   margin: 0.5rem auto 0;
+  position: relative;
+  right: 5rem;
 }
 
 /* Tablet: 3+ tiles visible */
