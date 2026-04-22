@@ -51,8 +51,7 @@
       "video",
       "carousel-video",
       "forex-rates",
-      "promotional-details",
-      "promo-selector"
+      "promotional-details"
     ]
   },
   {
@@ -332,7 +331,8 @@
       "login",
       "main-nav-item",
       "forex-rates",
-      "forex-graph"
+      "forex-graph",
+      "promo-selector"
     ]
   },
   {
