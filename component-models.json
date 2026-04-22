@@ -393,6 +393,128 @@
     ]
   },
   {
+    "id": "card-list-wealth-item",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "logo",
+        "label": "Logo",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "logoAlt",
+        "label": "Alt",
+        "value": ""
+      },
+      {
+        "component": "select",
+        "name": "theme",
+        "label": "Theme",
+        "valueType": "string",
+        "value": "default",
+        "options": [
+          {
+            "name": "Default",
+            "value": "default"
+          },
+          {
+            "name": "Featured",
+            "value": "featured"
+          },
+          {
+            "name": "Featured Dark",
+            "value": "featured-dark"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "label": "Description",
+        "valueType": "string",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "name": "eyebrow",
+        "label": "Eyebrow",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "listItems",
+        "label": "List Items",
+        "valueType": "string",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Link",
+        "description": "Destination URL for the button"
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "linkTitle",
+        "label": "Title",
+        "description": "Accessibility title attribute (optional)"
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "card-list",
     "fields": [
       {
@@ -1676,6 +1798,14 @@
           {
             "name": "With Circular Image",
             "value": "withCircularImage"
+          },
+          {
+            "name": "Simple Carousel",
+            "value": "onlyImage"
+          },
+          {
+            "name": "Card List Carousel",
+            "value": "cardListCarousel"
           }
         ]
       },
@@ -1849,6 +1979,73 @@
             "withCircularImage"
           ]
         }
+      },
+      {
+        "component": "reference",
+        "name": "onlyImage",
+        "label": "Image",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "onlyImage"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "fragmentPath",
+        "label": "Fragment Path",
+        "description": "Fragment path for the card-list carousel content",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "cardListCarousel"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "onlyImageAlt",
+        "label": "Alt",
+        "value": "",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "onlyImage",
+            "cardListCarousel"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "carousel-video",
+    "fields": []
+  },
+  {
+    "id": "carousel-video-item",
+    "fields": [
+      {
+        "component": "text",
+        "name": "youtubeUrl",
+        "label": "YouTube URL",
+        "description": "Enter the YouTube video URL.",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "reference",
+        "name": "thumbnail",
+        "label": "Thumbnail Image",
+        "multi": false
       }
     ]
   },
@@ -2647,6 +2844,79 @@
             "value": "tertiary"
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "forex-graph",
+    "fields": [
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "CTA Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "printLabel",
+        "label": "Print Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "downloadLabel",
+        "label": "Download Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "forex-rates",
+    "fields": [
+      {
+        "component": "text",
+        "name": "calendarLabel",
+        "label": "Calendar Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "CTA Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "printCtaLabel",
+        "label": "Print CTA Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "forexColumnHeadings",
+        "label": "Forex Column Headings",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "valueType": "string",
+        "required": true
       }
     ]
   },
@@ -8867,6 +9137,19 @@
             ]
           },
           {
+            "name": "Padding",
+            "children": [
+              {
+                "name": "Compact Padding",
+                "value": "compact-padding"
+              },
+              {
+                "name": "Border Bottom Tight Columns",
+                "value": "border-bottom-tight-cols"
+              }
+            ]
+          },
+          {
             "name": "Functional",
             "children": [
               {
@@ -9014,6 +9297,19 @@
               {
                 "name": "Dash Cell Highlight",
                 "value": "dash-cell-highlight"
+              }
+            ]
+          },
+          {
+            "name": "Padding",
+            "children": [
+              {
+                "name": "Compact Padding",
+                "value": "compact-padding"
+              },
+              {
+                "name": "Border Bottom Tight Columns",
+                "value": "border-bottom-tight-cols"
               }
             ]
           },
@@ -9484,6 +9780,147 @@
               "var": "classes"
             },
             "link-logo"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "video",
+    "fields": [
+      {
+        "component": "select",
+        "name": "mediaType",
+        "label": "Media Type",
+        "description": "Choose how to provide the video.",
+        "valueType": "string",
+        "required": true,
+        "value": "youtube-url",
+        "options": [
+          {
+            "name": "Video from YouTube",
+            "value": "youtube-url"
+          },
+          {
+            "name": "Video From DAM",
+            "value": "dam-video"
+          },
+          {
+            "name": "Video From CTA",
+            "value": "cta-video"
+          },
+          {
+            "name": "Video From Image",
+            "value": "image-video"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "youtubeUrl",
+        "label": "YouTube URL",
+        "description": "Enter the YouTube video URL.",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "youtube-url"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "damVideoAsset",
+        "label": "Video Asset",
+        "description": "Choose or upload an MP4 video file from DAM.",
+        "valueType": "string",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "dam-video"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "ctaVideoAsset",
+        "label": "Video Asset",
+        "description": "Browse and select a video file from DAM.",
+        "valueType": "string",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "cta-video"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "ctaButtonName",
+        "label": "Button Name",
+        "description": "The display name of the CTA button.",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "cta-video"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "ctaButtonTitle",
+        "label": "Button Title",
+        "description": "The title attribute of the CTA button (tooltip text).",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "cta-video"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "imageVideoAsset",
+        "label": "Video Asset",
+        "description": "Choose or upload an MP4 video file. Clicking the image will open this video in a new tab.",
+        "valueType": "string",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "image-video"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "imageAsset",
+        "label": "Image",
+        "description": "Choose an image to display. Clicking it opens the video in a new tab.",
+        "valueType": "string",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "image-video"
           ]
         }
       }
