@@ -2,16 +2,17 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 
 function createTile(row, doc) {
   const cells = [...row.children];
-  // Preview: 4 cells (imageAlt embedded in img); author: 5 cells (imageAlt has own cell)
-  const offset = cells.length >= 5 ? 1 : 0;
+  // Preview: 3 cells — imageAlt in img.alt, imageLinkTitle in a.title (neither a separate cell)
+  // Author:  5 cells — each field has its own cell with data-aue-prop
   const imageDiv = row.querySelector('[data-aue-prop="image"]') || cells[0];
-  const imageLinkDiv = row.querySelector('[data-aue-prop="imageLink"]') || cells[1 + offset];
-  const imageLinkTitleDiv = row.querySelector('[data-aue-prop="imageLinkTitle"]') || cells[2 + offset];
-  const titleDiv = row.querySelector('[data-aue-prop="title"]') || cells[3 + offset];
+  const imageLinkDiv = row.querySelector('[data-aue-prop="imageLink"]') || cells[1];
+  const imageLinkTitleDiv = row.querySelector('[data-aue-prop="imageLinkTitle"]');
+  const titleDiv = row.querySelector('[data-aue-prop="title"]') || cells[cells.length - 1];
 
   const linkAnchor = imageLinkDiv?.querySelector('a');
   const linkHref = linkAnchor?.getAttribute('href') || imageLinkDiv?.textContent?.trim() || '';
-  const linkTitle = imageLinkTitleDiv?.textContent?.trim() || '';
+  // In preview, imageLinkTitle is embedded in the anchor's title attribute
+  const linkTitle = imageLinkTitleDiv?.textContent?.trim() || linkAnchor?.getAttribute('title') || '';
   const title = titleDiv?.textContent?.trim() || '';
 
   const tile = doc.createElement('div');
