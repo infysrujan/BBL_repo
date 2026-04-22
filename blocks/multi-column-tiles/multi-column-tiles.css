@@ -32,7 +32,7 @@
 }
 
 .multi-column-tiles-wrapper > * {
-  flex: 0 0 60%;
+  flex: 0 0 80%;
   scroll-snap-align: start;
 }
 
@@ -110,10 +110,10 @@
   right: 5rem;
 }
 
-/* Tablet: 3+ tiles visible */
+/* Tablet: 3.25 tiles visible */
 @media (width > 47.5rem) {
   .multi-column-tiles-wrapper > * {
-    flex: 0 0 30%;
+    flex: 0 0 30.77%;
   }
 
   .multi-column-tiles-image {
