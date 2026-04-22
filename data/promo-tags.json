@@ -1,0 +1,86 @@
+{
+  "categories": [
+    { "id": "NEWSLETTER", "label": "Newsletter", "subcategories": [] },
+    {
+      "id": "DINING",
+      "label": "Dining",
+      "subcategories": [
+        { "id": "thai", "label": "Thai" },
+        { "id": "international", "label": "International" },
+        { "id": "japanese", "label": "Japanese" },
+        { "id": "chinese", "label": "Chinese" },
+        { "id": "western", "label": "Western" },
+        { "id": "buffet", "label": "Buffet" }
+      ]
+    },
+    {
+      "id": "SHOPPING",
+      "label": "Shopping",
+      "subcategories": [
+        { "id": "fashion", "label": "Fashion" },
+        { "id": "electronics", "label": "Electronics" },
+        { "id": "department-stores", "label": "Department Stores" },
+        { "id": "online", "label": "Online" }
+      ]
+    },
+    {
+      "id": "HOTEL & TRAVEL",
+      "label": "Hotel & Travel",
+      "subcategories": [
+        { "id": "ota", "label": "OTA" },
+        { "id": "hotel", "label": "Hotel" },
+        { "id": "airline", "label": "Airline" },
+        { "id": "car-rental", "label": "Car Rental" }
+      ]
+    },
+    {
+      "id": "HEALTH & BEAUTY",
+      "label": "Health & Beauty",
+      "subcategories": [
+        { "id": "beauty", "label": "Beauty" },
+        { "id": "fitness", "label": "Fitness" },
+        { "id": "medical", "label": "Medical" },
+        { "id": "spa", "label": "Spa" }
+      ]
+    },
+    {
+      "id": "GAS",
+      "label": "Gas",
+      "subcategories": [
+        { "id": "fuel", "label": "Fuel" }
+      ]
+    },
+    {
+      "id": "HOME & DECOR",
+      "label": "Home & Decor",
+      "subcategories": [
+        { "id": "furniture", "label": "Furniture" },
+        { "id": "appliances", "label": "Appliances" },
+        { "id": "renovation", "label": "Renovation" }
+      ]
+    },
+    {
+      "id": "INSURANCE & FINANCE",
+      "label": "Insurance & Finance",
+      "subcategories": [
+        { "id": "insurance", "label": "Insurance" },
+        { "id": "investment", "label": "Investment" }
+      ]
+    },
+    { "id": "THANK YOU REWARDS", "label": "Thank You Rewards", "subcategories": [] }
+  ],
+  "cardTypes": [
+    { "id": "visa", "label": "Visa" },
+    { "id": "mastercard", "label": "Mastercard" },
+    { "id": "unionpay", "label": "UnionPay" },
+    { "id": "amex", "label": "Amex" }
+  ],
+  "areas": [
+    { "id": "all", "label": "All" },
+    { "id": "central", "label": "Central" },
+    { "id": "east", "label": "East" },
+    { "id": "west", "label": "West" },
+    { "id": "north", "label": "North" },
+    { "id": "south", "label": "South" }
+  ]
+}

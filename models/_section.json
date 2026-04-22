@@ -200,7 +200,8 @@
         "video",
         "carousel-video",
         "forex-rates",
-        "promotional-details"
+        "promotional-details",
+        "promo-selector"
       ]
     }
   ]
