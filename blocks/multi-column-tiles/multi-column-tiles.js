@@ -2,8 +2,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 
 function createTile(row, doc) {
   const cells = [...row.children];
-  // Author env: AEM adds data-aue-prop to each field cell — use them when present
-  // Preview env: 4 cells (imageAlt embedded in img); author env: 5 cells (imageAlt has own cell)
+  // Preview: 4 cells (imageAlt embedded in img); author: 5 cells (imageAlt has own cell)
   const offset = cells.length >= 5 ? 1 : 0;
   const imageDiv = row.querySelector('[data-aue-prop="image"]') || cells[0];
   const imageLinkDiv = row.querySelector('[data-aue-prop="imageLink"]') || cells[1 + offset];
@@ -27,22 +26,6 @@ function createTile(row, doc) {
   } else if (img) {
     imageWrapper.appendChild(img.cloneNode(true));
   }
-  tile.appendChild(imageWrapper);
-
-  const overlay = doc.createElement('div');
-  overlay.className = 'multi-column-tiles-overlay';
-
-  const titleEl = doc.createElement('p');
-  titleEl.className = 'multi-column-tiles-title';
-  titleEl.textContent = title;
-  if (titleDiv) moveInstrumentation(titleDiv, titleEl);
-  overlay.appendChild(titleEl);
-
-  const separator = doc.createElement('span');
-  separator.className = 'multi-column-tiles-separator';
-  overlay.appendChild(separator);
-
-  tile.appendChild(overlay);
 
   if (linkHref) {
     const anchor = doc.createElement('a');
@@ -50,9 +33,21 @@ function createTile(row, doc) {
     anchor.className = 'multi-column-tiles-link';
     if (linkTitle) anchor.setAttribute('title', linkTitle);
     anchor.setAttribute('aria-label', title || linkTitle);
-    anchor.appendChild(tile);
-    return { element: anchor, instrumentation: tile, titleEl };
+    anchor.appendChild(imageWrapper);
+    tile.appendChild(anchor);
+  } else {
+    tile.appendChild(imageWrapper);
   }
+
+  const titleEl = doc.createElement('h2');
+  titleEl.className = 'multi-column-tiles-title';
+  titleEl.textContent = title;
+  if (titleDiv) moveInstrumentation(titleDiv, titleEl);
+  tile.appendChild(titleEl);
+
+  const separator = doc.createElement('span');
+  separator.className = 'multi-column-tiles-separator';
+  tile.appendChild(separator);
 
   return { element: tile, instrumentation: tile, titleEl };
 }
@@ -67,8 +62,6 @@ export default function decorate(block) {
   rows.forEach((row) => {
     const { element, instrumentation, titleEl } = createTile(row, doc);
     moveInstrumentation(row, instrumentation);
-    // Copy data-aue-resource to titleEl so the UE can push property-panel updates
-    // directly to the canvas element without requiring a page reload
     const resource = instrumentation.getAttribute('data-aue-resource');
     if (resource && titleEl) titleEl.setAttribute('data-aue-resource', resource);
     wrapper.appendChild(element);
