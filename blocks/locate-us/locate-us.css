@@ -662,7 +662,7 @@
 /* ── Overseas layout ─────────────────────────────────────────────────────────── */
 
 .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
-  padding: 0 32px;
+  padding: 0 16px;
 }
 
 .locate-us:has(.locate-us-results-overseas) .locate-us-location-filter-row {
@@ -736,6 +736,12 @@
 
 .locate-us .locate-us-card-appointment:hover {
   text-decoration: underline;
+}
+
+.locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {
+    width: calc(100% - 32px);
+    left: unset;
+    right: unset;
 }
 
 /* ─── Tablet (> 47.5rem) ──────────────────────────────────────────────────────── */

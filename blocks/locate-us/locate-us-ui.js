@@ -3,7 +3,7 @@ import {
   buildUrl, showToast, getUserLocation,
   updateMapIframe, populateSidebar,
   fetchNearMe, fetchProvinces, fetchDistricts, fetchByProvince, fetchByKeyword,
-  renderCards,
+  renderCards, renderPagination, buildOverseasCard, CARDS_PER_PAGE, hasValue,
 } from './locate-us-helpers.js';
 
 // ─── Thailand UI ──────────────────────────────────────────────────────────────
@@ -458,8 +458,43 @@ export async function buildOverseasUI(container, placeholders, configs) {
   const cardsContainer = container.querySelector('.locate-us-cards');
   const paginationEl = container.querySelector('.locate-us-pagination');
 
+  function renderOverseasPage(allLocs, page) {
+    cardsContainer.innerHTML = '';
+    const start = (page - 1) * CARDS_PER_PAGE;
+    allLocs.slice(start, start + CARDS_PER_PAGE).forEach((loc, idx) => {
+      const card = buildOverseasCard(loc);
+      card.dataset.cardIndex = idx;
+      const header = card.querySelector('.locate-us-card-header');
+      const body = card.querySelector('.locate-us-card-body');
+      header.addEventListener('click', () => {
+        const isExpanded = header.getAttribute('aria-expanded') === 'true';
+        cardsContainer.querySelectorAll('.locate-us-card-body').forEach((b) => { b.hidden = true; });
+        cardsContainer.querySelectorAll('.locate-us-card-header').forEach((h) => h.setAttribute('aria-expanded', 'false'));
+        if (!isExpanded) {
+          body.hidden = false;
+          header.setAttribute('aria-expanded', 'true');
+        }
+      });
+      if (idx === 0) {
+        body.hidden = false;
+        header.setAttribute('aria-expanded', 'true');
+      }
+      cardsContainer.appendChild(card);
+    });
+
+    renderPagination(paginationEl, allLocs.length, page, (newPage) => {
+      renderOverseasPage(allLocs, newPage);
+    });
+  }
+
   function showOverseasResults(allLocs) {
-    if (!allLocs.length) {
+    const filtered = allLocs.filter((loc) => {
+      const address = [loc.Address1, loc.Address2, loc.Address3, loc.Province, loc.Postcode].filter(Boolean).join(' ');
+      const validTel = hasValue(loc.Tel) && /[\d]/.test(loc.Tel);
+      return hasValue(loc.MicroBranchHours) && validTel && address;
+    });
+
+    if (!filtered.length) {
       resultsSection.hidden = false;
       noResults.hidden = false;
       cardsContainer.innerHTML = '';
@@ -468,7 +503,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
     }
     noResults.hidden = true;
     resultsSection.hidden = false;
-    renderCards(allLocs, cardsContainer, paginationEl, 1, placeholders, () => {});
+    renderOverseasPage(filtered, 1);
   }
 
   function buildCountryList(countries) {

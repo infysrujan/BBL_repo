@@ -1,5 +1,11 @@
 // ─── Utilities ────────────────────────────────────────────────────────────────
 
+export function hasValue(val) {
+  if (!val) return false;
+  const trimmed = val.trim();
+  return trimmed !== '' && !/^[-–—]+$/.test(trimmed);
+}
+
 export function buildUrl(template, params) {
   return Object.entries(params).reduce(
     (url, [key, val]) => url.replace(`{{${key}}}`, encodeURIComponent(String(val))),
@@ -79,7 +85,10 @@ export function populateSidebar(sidebar, loc, placeholders, configs) {
   const branchBookingText = placeholders?.branchBookingText || 'Branch Booking';
   const nearestLabel = placeholders?.nearestLocationTag || 'Nearest';
   const isNearest = loc.Range === 0;
-  const hasStatus = loc.BranchStatus || loc.MicroBranchHours;
+  const branchStatus = hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
+  const tel = hasValue(loc.Tel) ? loc.Tel : '';
+  const fax = hasValue(loc.Fax) ? loc.Fax : '';
+  const hasStatus = branchStatus || loc.MicroBranchHours;
 
   const card = createEl(`
     <article class="locate-us-card">
@@ -95,12 +104,12 @@ export function populateSidebar(sidebar, loc, placeholders, configs) {
             <div class="locate-us-card-row">
               <span class="locate-us-card-label">Status:</span>
               <div class="locate-us-card-status-col">
-                ${loc.BranchStatus ? '<span class="locate-us-card-status"></span>' : ''}
+                ${branchStatus ? '<span class="locate-us-card-status"></span>' : ''}
                 ${loc.MicroBranchHours ? '<span class="locate-us-card-hours"></span>' : ''}
               </div>
             </div>` : ''}
-          ${loc.Tel ? '<div class="locate-us-card-row"><span class="locate-us-card-label">Tel:</span><span class="locate-us-card-tel"></span></div>' : ''}
-          ${loc.Fax ? '<div class="locate-us-card-row"><span class="locate-us-card-label">Fax:</span><span class="locate-us-card-fax"></span></div>' : ''}
+          ${tel ? '<div class="locate-us-card-row"><span class="locate-us-card-label">Tel:</span><span class="locate-us-card-tel"></span></div>' : ''}
+          ${fax ? '<div class="locate-us-card-row"><span class="locate-us-card-label">Fax:</span><span class="locate-us-card-fax"></span></div>' : ''}
           ${address ? '<p class="locate-us-card-address"></p>' : ''}
           ${directionsUrl ? '<a class="locate-us-card-directions" target="_blank" rel="noopener noreferrer"></a>' : ''}
           ${loc.BranchAppointment ? '<a class="locate-us-card-appointment" target="_blank" rel="noopener noreferrer"></a>' : ''}
@@ -110,14 +119,14 @@ export function populateSidebar(sidebar, loc, placeholders, configs) {
 
   card.querySelector('.locate-us-card-name').textContent = loc.BranchName;
   if (isNearest) card.querySelector('.locate-us-card-nearest-tag').textContent = nearestLabel;
-  if (loc.BranchStatus) {
+  if (branchStatus) {
     const statusEl = card.querySelector('.locate-us-card-status');
-    statusEl.textContent = loc.BranchStatus;
-    statusEl.classList.add(`locate-us-card-status-${loc.BranchStatus.toLowerCase()}`);
+    statusEl.textContent = branchStatus;
+    statusEl.classList.add(`locate-us-card-status-${branchStatus.toLowerCase()}`);
   }
   if (loc.MicroBranchHours) card.querySelector('.locate-us-card-hours').textContent = loc.MicroBranchHours;
-  if (loc.Tel) card.querySelector('.locate-us-card-tel').textContent = loc.Tel;
-  if (loc.Fax) card.querySelector('.locate-us-card-fax').textContent = loc.Fax;
+  if (tel) card.querySelector('.locate-us-card-tel').textContent = tel;
+  if (fax) card.querySelector('.locate-us-card-fax').textContent = fax;
   if (address) card.querySelector('.locate-us-card-address').textContent = address;
   if (directionsUrl) {
     const dirEl = card.querySelector('.locate-us-card-directions');
@@ -234,7 +243,10 @@ export function buildAddressCard(loc, isNearest, placeholders, configs) {
     ? buildUrl(dirTemplate, { LAT: loc.Lat, LNG: loc.Lng })
     : '';
 
-  const hasStatus = loc.BranchStatus || loc.MicroBranchHours;
+  const branchStatus = hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
+  const tel = hasValue(loc.Tel) ? loc.Tel : '';
+  const fax = hasValue(loc.Fax) ? loc.Fax : '';
+  const hasStatus = branchStatus || loc.MicroBranchHours;
 
   const card = createEl(`
     <article class="locate-us-card">
@@ -250,12 +262,12 @@ export function buildAddressCard(loc, isNearest, placeholders, configs) {
             <div class="locate-us-card-row">
               <span class="locate-us-card-label">Status:</span>
               <div class="locate-us-card-status-col">
-                ${loc.BranchStatus ? '<span class="locate-us-card-status"></span>' : ''}
+                ${branchStatus ? '<span class="locate-us-card-status"></span>' : ''}
                 ${loc.MicroBranchHours ? '<span class="locate-us-card-hours"></span>' : ''}
               </div>
             </div>` : ''}
-          ${loc.Tel ? '<div class="locate-us-card-row"><span class="locate-us-card-label">Tel:</span><span class="locate-us-card-tel"></span></div>' : ''}
-          ${loc.Fax ? '<div class="locate-us-card-row"><span class="locate-us-card-label">Fax:</span><span class="locate-us-card-fax"></span></div>' : ''}
+          ${tel ? '<div class="locate-us-card-row"><span class="locate-us-card-label">Tel:</span><span class="locate-us-card-tel"></span></div>' : ''}
+          ${fax ? '<div class="locate-us-card-row"><span class="locate-us-card-label">Fax:</span><span class="locate-us-card-fax"></span></div>' : ''}
           ${address ? '<p class="locate-us-card-address"></p>' : ''}
           ${directionsUrl ? '<a class="locate-us-card-directions" target="_blank" rel="noopener noreferrer"></a>' : ''}
         </div>
@@ -264,20 +276,59 @@ export function buildAddressCard(loc, isNearest, placeholders, configs) {
 
   card.querySelector('.locate-us-card-name').textContent = loc.BranchName;
   if (isNearest) card.querySelector('.locate-us-card-nearest-tag').textContent = nearestLabel;
-  if (loc.BranchStatus) {
+  if (branchStatus) {
     const statusEl = card.querySelector('.locate-us-card-status');
-    statusEl.textContent = loc.BranchStatus;
-    statusEl.classList.add(`locate-us-card-status-${loc.BranchStatus.toLowerCase()}`);
+    statusEl.textContent = branchStatus;
+    statusEl.classList.add(`locate-us-card-status-${branchStatus.toLowerCase()}`);
   }
   if (loc.MicroBranchHours) card.querySelector('.locate-us-card-hours').textContent = loc.MicroBranchHours;
-  if (loc.Tel) card.querySelector('.locate-us-card-tel').textContent = loc.Tel;
-  if (loc.Fax) card.querySelector('.locate-us-card-fax').textContent = loc.Fax;
+  if (tel) card.querySelector('.locate-us-card-tel').textContent = tel;
+  if (fax) card.querySelector('.locate-us-card-fax').textContent = fax;
   if (address) card.querySelector('.locate-us-card-address').textContent = address;
   if (directionsUrl) {
     const dirEl = card.querySelector('.locate-us-card-directions');
     dirEl.href = directionsUrl;
     dirEl.textContent = getDirectionText;
   }
+
+  return card;
+}
+
+export function buildOverseasCard(loc) {
+  const address = [loc.Address1, loc.Address2, loc.Address3, loc.Province, loc.Postcode]
+    .filter(Boolean).join(' ');
+  const hours = hasValue(loc.MicroBranchHours) ? loc.MicroBranchHours : '';
+  const tel = hasValue(loc.Tel) ? loc.Tel : '';
+  const fax = hasValue(loc.Fax) ? loc.Fax : '';
+
+  const card = createEl(`
+    <article class="locate-us-card">
+      <button type="button" class="locate-us-card-header" aria-expanded="false">
+        <span class="locate-us-card-name"></span>
+        <span class="icon-dropdown locate-us-card-chevron" aria-hidden="true"></span>
+      </button>
+      <div class="locate-us-card-body" hidden>
+        <hr class="locate-us-card-hr">
+        <div class="locate-us-card-detail">
+          ${hours ? `
+            <div class="locate-us-card-row">
+              <span class="locate-us-card-label">Hours:</span>
+              <div class="locate-us-card-status-col">
+                <span class="locate-us-card-hours"></span>
+              </div>
+            </div>` : ''}
+          ${tel ? '<div class="locate-us-card-row"><span class="locate-us-card-label">Tel:</span><span class="locate-us-card-tel"></span></div>' : ''}
+          ${fax ? '<div class="locate-us-card-row"><span class="locate-us-card-label">Fax:</span><span class="locate-us-card-fax"></span></div>' : ''}
+          ${address ? '<p class="locate-us-card-address"></p>' : ''}
+        </div>
+      </div>
+    </article>`);
+
+  card.querySelector('.locate-us-card-name').textContent = loc.BranchName;
+  if (hours) card.querySelector('.locate-us-card-hours').textContent = hours;
+  if (tel) card.querySelector('.locate-us-card-tel').textContent = tel;
+  if (fax) card.querySelector('.locate-us-card-fax').textContent = fax;
+  if (address) card.querySelector('.locate-us-card-address').textContent = address;
 
   return card;
 }
