@@ -22,6 +22,10 @@
   overflow: hidden;
 }
 
+.multi-column-tiles-image > div {
+  height: 100%;
+}
+
 .multi-column-tiles-image picture {
   display: block;
   width: 100%;

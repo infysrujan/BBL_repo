@@ -9,8 +9,6 @@ function createTile(row, doc) {
   const imageLinkTitleDiv = row.querySelector('[data-aue-prop="imageLinkTitle"]') || cells[2 + offset];
   const titleDiv = row.querySelector('[data-aue-prop="title"]') || cells[3 + offset];
 
-  const picture = imageDiv?.querySelector('picture');
-  const img = imageDiv?.querySelector('img');
   const linkAnchor = imageLinkDiv?.querySelector('a');
   const linkHref = linkAnchor?.getAttribute('href') || imageLinkDiv?.textContent?.trim() || '';
   const linkTitle = imageLinkTitleDiv?.textContent?.trim() || '';
@@ -21,11 +19,7 @@ function createTile(row, doc) {
 
   const imageWrapper = doc.createElement('div');
   imageWrapper.className = 'multi-column-tiles-image';
-  if (picture) {
-    imageWrapper.appendChild(picture.cloneNode(true));
-  } else if (img) {
-    imageWrapper.appendChild(img.cloneNode(true));
-  }
+  if (imageDiv) imageWrapper.appendChild(imageDiv);
 
   if (linkHref) {
     const anchor = doc.createElement('a');
