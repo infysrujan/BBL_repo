@@ -77,6 +77,8 @@ export function populateSidebar(sidebar, loc, placeholders, configs) {
   const directionsUrl = dirTemplate ? buildUrl(dirTemplate, { LAT: loc.Lat, LNG: loc.Lng }) : '';
   const getDirectionText = placeholders?.getDirectionText || 'Get Direction';
   const branchBookingText = placeholders?.branchBookingText || 'Branch Booking';
+  const nearestLabel = placeholders?.nearestLocationTag || 'Nearest';
+  const isNearest = loc.Range === 0;
   const hasStatus = loc.BranchStatus || loc.MicroBranchHours;
 
   const card = createEl(`
@@ -88,6 +90,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs) {
       <div class="locate-us-card-body">
         <hr class="locate-us-card-hr">
         <div class="locate-us-card-detail">
+          ${isNearest ? '<div class="locate-us-card-nearest-tag"></div>' : ''}
           ${hasStatus ? `
             <div class="locate-us-card-row">
               <span class="locate-us-card-label">Status:</span>
@@ -106,6 +109,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs) {
     </article>`);
 
   card.querySelector('.locate-us-card-name').textContent = loc.BranchName;
+  if (isNearest) card.querySelector('.locate-us-card-nearest-tag').textContent = nearestLabel;
   if (loc.BranchStatus) {
     const statusEl = card.querySelector('.locate-us-card-status');
     statusEl.textContent = loc.BranchStatus;
@@ -285,39 +289,80 @@ export function renderPagination(paginationEl, total, page, onPageChange) {
     return;
   }
 
-  // Build the set of page numbers to show
+  // Build 4-page window around current, matching BBL pagination behaviour
+  const winStart = Math.max(1, Math.min(page - 2, totalPages - 3));
+  const winEnd = Math.min(totalPages, winStart + 3);
+
   const show = new Set();
-  // Always show first 2 and last 2
   [1, 2, totalPages - 1, totalPages].forEach((p) => {
     if (p >= 1 && p <= totalPages) show.add(p);
   });
-  // Show current page and 1 neighbour each side
-  for (let p = Math.max(1, page - 1); p <= Math.min(totalPages, page + 1); p += 1) show.add(p);
+  for (let p = winStart; p <= winEnd; p += 1) show.add(p);
 
   const sorted = [...show].sort((a, b) => a - b);
 
-  const parts = [];
+  // ── Build pagination container ──────────────────────────────
+  paginationEl.innerHTML = '';
+
+  // Prev button
+  const prevBtn = createEl(`
+    <button class="locate-us-page-nav locate-us-page-prev" aria-label="Previous page"
+      ${page <= 1 ? 'disabled' : ''}>
+      <span class="icon-arrow-left locate-us-page-nav-icon" aria-hidden="true"></span>
+    </button>`);
+  prevBtn.addEventListener('click', () => onPageChange(page - 1));
+  paginationEl.appendChild(prevBtn);
+
+  // Numbers wrapper
+  const numbersEl = createEl('<div class="locate-us-page-numbers"></div>');
+
+  // Page buttons + clickable ellipsis
+  function addEllipsis() {
+    const ellipsis = createEl('<span class="locate-us-page-ellipsis" role="button" tabindex="0">…</span>');
+    ellipsis.addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.min = 1;
+      input.max = totalPages;
+      input.className = 'locate-us-page-input';
+      ellipsis.replaceWith(input);
+      input.focus();
+
+      function commitInput() {
+        const val = parseInt(input.value, 10);
+        if (val >= 1 && val <= totalPages) {
+          onPageChange(val);
+        } else {
+          input.replaceWith(ellipsis);
+        }
+      }
+      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') commitInput(); });
+      input.addEventListener('blur', commitInput);
+    });
+    numbersEl.appendChild(ellipsis);
+  }
+
   sorted.forEach((p, idx) => {
-    if (idx > 0 && p - sorted[idx - 1] > 1) {
-      parts.push('<span class="locate-us-page-ellipsis">...</span>');
-    }
-    const active = p === page ? ' locate-us-page-btn-active' : '';
-    parts.push(`<button class="locate-us-page-btn${active}" aria-label="Page ${p}">${p}</button>`);
-  });
-  const pageButtons = parts.join('');
+    if (idx > 0 && p - sorted[idx - 1] > 1) addEllipsis();
 
-  paginationEl.innerHTML = `
-    <button class="locate-us-page-btn locate-us-page-btn-nav" aria-label="Previous page" ${page <= 1 ? 'disabled' : ''}>‹</button>
-    ${pageButtons}
-    <button class="locate-us-page-btn locate-us-page-btn-nav" aria-label="Next page" ${page >= totalPages ? 'disabled' : ''}>›</button>`;
-
-  paginationEl.querySelector('[aria-label="Previous page"]')
-    .addEventListener('click', () => onPageChange(page - 1));
-  paginationEl.querySelector('[aria-label="Next page"]')
-    .addEventListener('click', () => onPageChange(page + 1));
-  paginationEl.querySelectorAll('[aria-label^="Page"]').forEach((btn) => {
-    btn.addEventListener('click', () => onPageChange(Number(btn.textContent)));
+    const btn = createEl(
+      `<button class="locate-us-page-btn${p === page ? ' locate-us-page-btn-active' : ''}"
+        aria-label="Page ${p}">${p}</button>`,
+    );
+    btn.addEventListener('click', () => onPageChange(p));
+    numbersEl.appendChild(btn);
   });
+
+  paginationEl.appendChild(numbersEl);
+
+  // Next button
+  const nextBtn = createEl(`
+    <button class="locate-us-page-nav locate-us-page-next" aria-label="Next page"
+      ${page >= totalPages ? 'disabled' : ''}>
+      <span class="icon-arrow-left locate-us-page-nav-icon" aria-hidden="true"></span>
+    </button>`);
+  nextBtn.addEventListener('click', () => onPageChange(page + 1));
+  paginationEl.appendChild(nextBtn);
 }
 
 export function renderCards(
@@ -332,6 +377,11 @@ export function renderCards(
   cardsContainer.innerHTML = '';
   const start = (page - 1) * CARDS_PER_PAGE;
   const pageResults = allResults.slice(start, start + CARDS_PER_PAGE);
+
+  function scrollToMap() {
+    const keywordWrapper = cardsContainer.closest('.locate-us-wrapper')?.querySelector('.locate-us-keyword-wrapper');
+    if (keywordWrapper) keywordWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   function collapseAll() {
     cardsContainer.querySelectorAll('.locate-us-card-body').forEach((b) => { b.hidden = true; });
@@ -358,6 +408,7 @@ export function renderCards(
     header.addEventListener('click', () => {
       if (window.matchMedia('(width > 47.5rem)').matches) {
         onSelect(loc);
+        scrollToMap();
         return;
       }
       const isExpanded = header.getAttribute('aria-expanded') === 'true';
@@ -367,6 +418,7 @@ export function renderCards(
         header.setAttribute('aria-expanded', 'true');
         restoreOrder(card);
         onSelect(loc);
+        scrollToMap();
       }
     });
 
@@ -381,5 +433,6 @@ export function renderCards(
 
   renderPagination(paginationEl, allResults.length, page, (newPage) => {
     renderCards(allResults, cardsContainer, paginationEl, newPage, placeholders, onSelect, configs);
+    scrollToMap();
   });
 }

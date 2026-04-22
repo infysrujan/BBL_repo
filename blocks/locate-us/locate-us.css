@@ -1,4 +1,7 @@
 /* ─── Locate Us ──────────────────────────────────────────────────────────────── */
+.section.locate-us-container {
+    padding-bottom: 60px;
+}
 
 /* ── Filter bar ──────────────────────────────────────────────────────────────── */
 
@@ -21,7 +24,7 @@
   padding: 0 16px 0 20px;
   border: 1px solid #d6d6d6;
   border-radius: 8px;
-  background-color: #fff;
+  background-color: #f9f9f9;
   font-size: 18px;
   color: #9e9e9e;
   cursor: pointer;
@@ -63,9 +66,8 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 260px;
+  max-height: 220px;
   overflow-y: auto;
-  width: max-content;
 }
 
 .locate-us .locate-us-service-item {
@@ -119,7 +121,7 @@
   padding: 0 16px 0 20px;
   border: 1px solid #d6d6d6;
   border-radius: 8px;
-  background-color: #fff;
+  background-color: #f9f9f9;
   justify-content: space-between;
 }
 
@@ -128,7 +130,7 @@
   border: none;
   outline: none;
   font-size: 18px;
-  color: #606060;
+  color: #9e9e9e;
   background: transparent;
   font-family: var(--bbl-font-family-primary);
   max-width: calc(85% - 16px);
@@ -183,7 +185,7 @@
   border: 1px solid #e8e8e8;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
-  max-height: 260px;
+  max-height: 200px;
   overflow-y: auto;
 }
 
@@ -453,57 +455,110 @@
 .locate-us .locate-us-pagination {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 24px 15px;
+  justify-content: space-between;
+  padding-top: 24px;
+}
+
+.locate-us .locate-us-page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
 }
 
 .locate-us .locate-us-page-btn {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 15px;
-  color: #606060;
+  font-size: 19px;
+  color: #9e9e9e;
   font-family: var(--bbl-font-family-primary);
-  padding: 4px 6px;
-  min-width: 28px;
+  padding: 0 6px;
+  max-width: fit-content;
+  line-height: 1;
 }
 
 .locate-us .locate-us-page-btn-active {
-  color: #171717;
-  font-weight: 700;
+  color: #000;
 }
 
-.locate-us .locate-us-page-btn-nav {
-  width: 36px;
-  height: 36px;
-  border: 1px solid #d6d6d6;
-  border-radius: 50%;
+/* Nav prev/next — matches forex-rates datepicker nav */
+.locate-us .locate-us-page-nav {
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  background: #fff;
+  border: 1px solid #d6d6d6;
+  border-radius: 50%;
+  cursor: pointer;
   padding: 0;
+  color: #9e9e9e;
+  flex-shrink: 0;
 }
 
-.locate-us .locate-us-page-btn-nav:disabled {
-  opacity: 0.4;
+.locate-us .locate-us-page-nav:disabled {
+  opacity: 0.35;
   cursor: default;
+  pointer-events: none;
 }
 
+.locate-us .locate-us-page-nav:not(:disabled):hover {
+  background-color: #0048b7;
+  border-color: #0048b7;
+  color: #fff;
+}
+
+.locate-us .locate-us-page-nav-icon {
+  font-size: 12px;
+  display: inline-block;
+  line-height: 1;
+}
+
+.locate-us .locate-us-page-prev .locate-us-page-nav-icon {
+  transform: rotate(180deg);
+}
+
+/* Ellipsis — clickable, shows input on click */
 .locate-us .locate-us-page-ellipsis {
   font-size: 15px;
   color: #606060;
   font-family: var(--bbl-font-family-primary);
-  padding: 4px 2px;
+  padding: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.locate-us .locate-us-page-ellipsis:hover {
+  color: #0048b7;
+}
+
+.locate-us .locate-us-page-input {
+  width: 40px;
+  height: 28px;
+  border: 1px solid #0048b7;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+  font-family: var(--bbl-font-family-primary);
+  color: #171717;
+  outline: none;
+  padding: 0 4px;
+  appearance: textfield;
+}
+
+.locate-us .locate-us-page-input::-webkit-inner-spin-button,
+.locate-us .locate-us-page-input::-webkit-outer-spin-button {
+  appearance: none;
 }
 
 /* ── District dropdown ───────────────────────────────────────────────────────── */
 
 .locate-us .locate-us-district-wrapper {
   flex: 1;
-  min-width: 0;
   position: relative;
+  min-width: calc(50% - 10px);
 }
 
 .locate-us .locate-us-district-btn {
@@ -512,7 +567,6 @@
   padding: 0 16px 0 20px;
   border: 1px solid #d6d6d6;
   border-radius: 8px;
-  background-color: #fff;
   font-size: 18px;
   color: #9e9e9e;
   cursor: pointer;
@@ -521,6 +575,7 @@
   justify-content: space-between;
   font-family: var(--bbl-font-family-primary);
   text-align: left;
+  background-color: #f9f9f9;
 }
 
 .locate-us .locate-us-district-btn[aria-expanded="true"] {
@@ -556,7 +611,7 @@
   padding: 0;
   max-height: 260px;
   overflow-y: auto;
-  width: max-content;
+  width: fit-content;
 }
 
 .locate-us .locate-us-district-item {
@@ -706,10 +761,14 @@
     gap: 0;
   }
 
+  .locate-us .locate-us-district-dropdown {
+    width: 100%;
+  }
+
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
     padding: 0;
     flex: 1;
-    max-width: 600px;
+    margin: auto;
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-location-filter-row {
@@ -720,7 +779,7 @@
 
   .locate-us .locate-us-keyword-wrapper:has(.locate-us-district-wrapper:not([hidden])) {
     flex: 2;
-    gap: 10px;
+    gap: 20px;
   }
 
   /* ── Results ── */
@@ -796,27 +855,13 @@
   .locate-us .locate-us-card-hr {
     margin: 0 0 12px;
   }
-
-  /* ── Pagination ── */
-
-  .locate-us .locate-us-pagination {
-    padding: 24px 40px;
-  }
-
-  .locate-us .locate-us-district-select {
-    font-size: 16px;
-  }
 }
 
 
 @media (width > 64rem) {
     .locate-us .locate-us-filter-bar {
-        margin-left: 25%;
+        margin: auto;
         max-width: 620px;
-    }
-
-    .locate-us .locate-us-service-select-wrapper {
-        max-width: fit-content;
     }
 
     .locate-us .locate-us-keyword-form {
@@ -842,6 +887,26 @@
     .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
         display: flex;
         justify-content: center;
+    }
+
+    .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper .locate-us-keyword-form { 
+        max-width: 194px;
+        min-width: 194px;
+    }
+
+    .locate-us:has(.locate-us-results-overseas) .locate-us-district-wrapper {
+        max-width: 220px;
+        min-width: 220px;
+    }
+
+    .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper:has(.locate-us-district-wrapper:not([hidden])) {
+        gap: 40px;
+    }
+
+   .locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {
+        width: max-content;
+        left: unset;
+        right: unset;
     }
 }
 

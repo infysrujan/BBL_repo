@@ -291,6 +291,10 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     if (!selectedServiceCode) return;
     const isHidden = provinceDropdown.hidden;
     if (isHidden) {
+      keywordInput.value = '';
+      districtWrapper.hidden = true;
+      districtWrapper.innerHTML = '';
+      provinceDropdown.querySelectorAll('.locate-us-province-item').forEach((item) => item.classList.remove('locate-us-province-item-active'));
       buildProvinceList(provincesCache || []);
       provinceDropdown.hidden = false;
       dropdownToggle.setAttribute('aria-expanded', 'true');
@@ -330,6 +334,26 @@ export async function buildThailandUI(container, data, placeholders, configs) {
       console.error('[locate-us] Keyword search error');
     }
   });
+
+  // ── Auto-select service from URL query param ────────────────────────────────
+  const SERVICE_PARAM_KEYS = [
+    'location-Branch',
+    'location-ATM',
+    'location-ATM-Plus',
+    'location-FXBooth',
+    'location-FCDService',
+    'location-Be-My-ID',
+    'location-BualuangExclusive',
+    'location-BusinessCenter',
+  ];
+
+  const urlService = new URLSearchParams(window.location.search).get('service');
+  if (urlService) {
+    const paramIndex = SERVICE_PARAM_KEYS.indexOf(urlService);
+    if (paramIndex !== -1 && services[paramIndex]) {
+      onServiceChange(services[paramIndex]);
+    }
+  }
 }
 
 // ─── Overseas UI ─────────────────────────────────────────────────────────────
@@ -527,6 +551,9 @@ export async function buildOverseasUI(container, placeholders, configs) {
   function toggleCountryDropdown() {
     const isHidden = countryDropdown.hidden;
     if (isHidden) {
+      keywordInput.value = '';
+      districtWrapper.hidden = true;
+      districtWrapper.innerHTML = '';
       buildCountryList(countriesCache);
       countryDropdown.hidden = false;
       dropdownToggle.setAttribute('aria-expanded', 'true');
