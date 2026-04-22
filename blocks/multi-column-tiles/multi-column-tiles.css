@@ -84,17 +84,22 @@
 
 .multi-column-tiles-title {
   position: absolute;
-  bottom: 8.0625rem;
-  left: 7.5rem;
-  right: 1.5rem;
+  bottom: 4.0625rem;
+  left: 0;
+  right: 0;
   z-index: 1;
   color: var(--bbl-color-white, #fff);
-  font-size: 1rem;
-  line-height: 1.375rem;
+  font-size: 1.267rem;
+  line-height: 1.375;
+  letter-spacing: 0.5px;
   font-weight: var(--bbl-font-weight-regular, 400);
+  text-align: center;
+  padding-left: 18%;
+  padding-right: 18%;
+  padding-bottom: 0.9375rem;
   margin: 0;
   transform: translateY(0);
-  transition: transform 0.3s ease;
+  transition: all 0.5s;
 }
 
 .multi-column-tiles-tile:hover .multi-column-tiles-title,
@@ -108,9 +113,7 @@
   width: 1.3125rem;
   height: 0.0625rem;
   background: var(--bbl-color-white, #fff);
-  margin: 0.5rem auto 0;
-  position: relative;
-  right: 5rem;
+  margin: 0 auto;
 }
 
 /* Tablet: 3.25 tiles visible */
