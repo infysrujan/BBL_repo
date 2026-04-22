@@ -75,15 +75,13 @@
   transform: translateY(-6.25rem);
 }
 
-.multi-column-tiles-separator {
-  position: absolute;
-  bottom: 7.5rem;
-  left: 7.5rem;
-  z-index: 1;
+.multi-column-tiles-title::after {
+  content: '';
   display: block;
   width: 1.3125rem;
   height: 0.0625rem;
   background: var(--bbl-color-white, #fff);
+  margin: 0.5rem auto 0;
 }
 
 /* Tablet: 3+ tiles visible */

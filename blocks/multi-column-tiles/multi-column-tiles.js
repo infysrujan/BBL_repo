@@ -40,10 +40,6 @@ function createTile(row, doc) {
   if (titleDiv) moveInstrumentation(titleDiv, titleEl);
   tile.appendChild(titleEl);
 
-  const separator = doc.createElement('span');
-  separator.className = 'multi-column-tiles-separator';
-  tile.appendChild(separator);
-
   return { element: tile, instrumentation: tile, titleEl };
 }
 
