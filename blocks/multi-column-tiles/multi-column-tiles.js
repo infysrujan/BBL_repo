@@ -2,8 +2,8 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 
 function createTile(row, doc) {
   const cells = [...row.children];
-  // Author env: AEM adds data-aue-prop attributes to each field cell — use them when present
-  // Preview env: AEM embeds imageAlt into <img alt=""> (4 cells), author env renders it as its own cell (5 cells)
+  // Author env: AEM adds data-aue-prop to each field cell — use them when present
+  // Preview env: 4 cells (imageAlt embedded in img); author env: 5 cells (imageAlt has own cell)
   const offset = cells.length >= 5 ? 1 : 0;
   const imageDiv = row.querySelector('[data-aue-prop="image"]') || cells[0];
   const imageLinkDiv = row.querySelector('[data-aue-prop="imageLink"]') || cells[1 + offset];
@@ -35,8 +35,6 @@ function createTile(row, doc) {
   const titleEl = doc.createElement('p');
   titleEl.className = 'multi-column-tiles-title';
   titleEl.textContent = title;
-  // Transfer data-aue-* attributes so the UE recognises this element as the "title" field
-  // and allows inline editing directly on the canvas in the author environment
   if (titleDiv) moveInstrumentation(titleDiv, titleEl);
   overlay.appendChild(titleEl);
 
@@ -53,10 +51,10 @@ function createTile(row, doc) {
     if (linkTitle) anchor.setAttribute('title', linkTitle);
     anchor.setAttribute('aria-label', title || linkTitle);
     anchor.appendChild(tile);
-    return { element: anchor, instrumentation: tile };
+    return { element: anchor, instrumentation: tile, titleEl };
   }
 
-  return { element: tile, instrumentation: tile };
+  return { element: tile, instrumentation: tile, titleEl };
 }
 
 export default function decorate(block) {
@@ -67,8 +65,12 @@ export default function decorate(block) {
   wrapper.className = `multi-column-tiles-wrapper tiles-count-${rows.length}`;
 
   rows.forEach((row) => {
-    const { element, instrumentation } = createTile(row, doc);
+    const { element, instrumentation, titleEl } = createTile(row, doc);
     moveInstrumentation(row, instrumentation);
+    // Copy data-aue-resource to titleEl so the UE can push property-panel updates
+    // directly to the canvas element without requiring a page reload
+    const resource = instrumentation.getAttribute('data-aue-resource');
+    if (resource && titleEl) titleEl.setAttribute('data-aue-resource', resource);
     wrapper.appendChild(element);
   });
 
