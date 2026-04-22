@@ -17,6 +17,9 @@ function createTile(row, doc) {
 
   const tile = doc.createElement('div');
   tile.className = 'multi-column-tiles-tile';
+  tile.addEventListener('touchstart', () => tile.classList.add('is-active'), { passive: true });
+  tile.addEventListener('touchend', () => tile.classList.remove('is-active'), { passive: true });
+  tile.addEventListener('touchcancel', () => tile.classList.remove('is-active'), { passive: true });
 
   const imageWrapper = doc.createElement('div');
   imageWrapper.className = 'multi-column-tiles-image';
