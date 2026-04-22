@@ -16,6 +16,7 @@
   position: relative;
   width: 100%;
   overflow: hidden;
+  height: 21.875rem; /* 350px mobile default */
 }
 
 .multi-column-tiles-link .multi-column-tiles-tile {
@@ -61,11 +62,6 @@
   height: 0.0625rem;
   background: var(--bbl-color-white, #fff);
   margin-top: 0.5rem;
-}
-
-/* Mobile: stacked tiles with fixed height */
-.multi-column-tiles-tile {
-  height: 21.875rem; /* 350px mobile default */
 }
 
 @media (width > 47.5rem) {
