@@ -8562,6 +8562,50 @@
       },
       {
         "component": "text",
+        "name": "category",
+        "label": "Category",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "subcategory",
+        "label": "Subcategory",
+        "valueType": "string"
+      },
+      {
+        "component": "multiselect",
+        "name": "area",
+        "label": "Area",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "All",
+            "value": "All"
+          },
+          {
+            "name": "Central",
+            "value": "Central"
+          },
+          {
+            "name": "East",
+            "value": "East"
+          },
+          {
+            "name": "West",
+            "value": "West"
+          },
+          {
+            "name": "North",
+            "value": "North"
+          },
+          {
+            "name": "South",
+            "value": "South"
+          }
+        ]
+      },
+      {
+        "component": "text",
         "name": "dateValidityLabel",
         "label": "Date Validity Label",
         "valueType": "string"
@@ -8590,34 +8634,6 @@
         "label": "Text",
         "description": "Button label text",
         "required": true
-      },
-      {
-        "component": "text",
-        "name": "linkTitle",
-        "label": "Title",
-        "description": "Accessibility title attribute (optional)"
-      },
-      {
-        "component": "select",
-        "name": "linkType",
-        "label": "Type",
-        "description": "Button style variant",
-        "valueType": "string",
-        "value": "",
-        "options": [
-          {
-            "name": "Primary",
-            "value": "primary"
-          },
-          {
-            "name": "Secondary",
-            "value": "secondary"
-          },
-          {
-            "name": "Tertiary",
-            "value": "tertiary"
-          }
-        ]
       },
       {
         "component": "container",

@@ -1,11 +1,160 @@
 {
+  "categories": [
+    {
+      "label": "Newsletter",
+      "subcategories": []
+    },
+    {
+      "label": "Dining",
+      "subcategories": [
+        {
+          "label": "Thai"
+        },
+        {
+          "label": "International"
+        },
+        {
+          "label": "Japanese"
+        },
+        {
+          "label": "Chinese"
+        },
+        {
+          "label": "Western"
+        },
+        {
+          "label": "Buffet"
+        }
+      ]
+    },
+    {
+      "label": "Shopping",
+      "subcategories": [
+        {
+          "label": "Fashion"
+        },
+        {
+          "label": "Electronics"
+        },
+        {
+          "label": "Department Stores"
+        },
+        {
+          "label": "Online"
+        }
+      ]
+    },
+    {
+      "label": "Hotel & Travel",
+      "subcategories": [
+        {
+          "label": "OTA"
+        },
+        {
+          "label": "Hotel"
+        },
+        {
+          "label": "Airline"
+        },
+        {
+          "label": "Car Rental"
+        }
+      ]
+    },
+    {
+      "label": "Health & Beauty",
+      "subcategories": [
+        {
+          "label": "Beauty"
+        },
+        {
+          "label": "Fitness"
+        },
+        {
+          "label": "Medical"
+        },
+        {
+          "label": "Spa"
+        }
+      ]
+    },
+    {
+      "label": "Gas",
+      "subcategories": [
+        {
+          "label": "Fuel"
+        }
+      ]
+    },
+    {
+      "label": "Home & Decor",
+      "subcategories": [
+        {
+          "label": "Furniture"
+        },
+        {
+          "label": "Appliances"
+        },
+        {
+          "label": "Renovation"
+        }
+      ]
+    },
+    {
+      "label": "Insurance & Finance",
+      "subcategories": [
+        {
+          "label": "Insurance"
+        },
+        {
+          "label": "Investment"
+        }
+      ]
+    },
+    {
+      "label": "Thank You Rewards",
+      "subcategories": []
+    }
+  ],
+  "cardTypes": [
+    {
+      "label": "Visa"
+    },
+    {
+      "label": "Mastercard"
+    },
+    {
+      "label": "UnionPay"
+    },
+    {
+      "label": "Amex"
+    }
+  ],
+  "areas": [
+    {
+      "label": "Central"
+    },
+    {
+      "label": "East"
+    },
+    {
+      "label": "West"
+    },
+    {
+      "label": "North"
+    },
+    {
+      "label": "South"
+    }
+  ],
   "cards": [
     {
       "id": "CARD_001",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "Thai",
-      "cardTypes": ["VISA"],
-      "cardTypeLogos": ["https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg"],
+      "cardTypes": [
+        "visa"
+      ],
       "area": "East",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/thumbnails/2025/hoteldining_thumbnail_exp_123126.jpg",
       "shortDescription": "20% off at Ootoya & Ootoya Oki with Bangkok Bank Credit Cards.",
@@ -25,12 +174,11 @@
     },
     {
       "id": "CARD_002",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "International",
-      "cardTypes": ["VISA", "MASTERCARD"],
-      "cardTypeLogos": [
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg",
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/mastercard_new.svg"
+      "cardTypes": [
+        "visa",
+        "mastercard"
       ],
       "area": "Central",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
@@ -51,10 +199,11 @@
     },
     {
       "id": "CARD_003",
-      "category": "SHOPPING",
+      "category": "Shopping",
       "subcategory": "Fashion",
-      "cardTypes": ["VISA"],
-      "cardTypeLogos": ["https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg"],
+      "cardTypes": [
+        "visa"
+      ],
       "area": "West",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "shortDescription": "All-Season Flavor: Enjoy exclusive offer from participating restaurants.",
@@ -74,10 +223,11 @@
     },
     {
       "id": "CARD_004",
-      "category": "HOTEL & TRAVEL",
+      "category": "Hotel & Travel",
       "subcategory": "OTA",
-      "cardTypes": ["VISA"],
-      "cardTypeLogos": ["https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg"],
+      "cardTypes": [
+        "visa"
+      ],
       "area": "All",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/hat2131_ota_260501-260831.jpg",
       "shortDescription": "Book Online Travel Agencies and redeem points to get cash back up to 18%.",
@@ -97,12 +247,11 @@
     },
     {
       "id": "CARD_D03",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "Japanese",
-      "cardTypes": ["VISA", "MASTERCARD"],
-      "cardTypeLogos": [
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg",
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/mastercard_new.svg"
+      "cardTypes": [
+        "visa",
+        "mastercard"
       ],
       "area": "Central",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
@@ -123,10 +272,11 @@
     },
     {
       "id": "CARD_D04",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "Western",
-      "cardTypes": ["VISA"],
-      "cardTypeLogos": ["https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg"],
+      "cardTypes": [
+        "visa"
+      ],
       "area": "East",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "shortDescription": "Buy 1 Get 1 Free main course at select steakhouses.",
@@ -146,10 +296,11 @@
     },
     {
       "id": "CARD_D05",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "Buffet",
-      "cardTypes": ["MASTERCARD"],
-      "cardTypeLogos": ["https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/mastercard_new.svg"],
+      "cardTypes": [
+        "mastercard"
+      ],
       "area": "West",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "shortDescription": "10% off buffet dinner at Grand Hyatt Hotel with Bangkok Bank Mastercard.",
@@ -169,12 +320,11 @@
     },
     {
       "id": "CARD_D06",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "Chinese",
-      "cardTypes": ["VISA", "UNIONPAY"],
-      "cardTypeLogos": [
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg",
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/up_new.svg"
+      "cardTypes": [
+        "visa",
+        "unionpay"
       ],
       "area": "Central",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
@@ -195,12 +345,11 @@
     },
     {
       "id": "CARD_D07",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "Thai",
-      "cardTypes": ["VISA", "MASTERCARD"],
-      "cardTypeLogos": [
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg",
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/mastercard_new.svg"
+      "cardTypes": [
+        "visa",
+        "mastercard"
       ],
       "area": "North",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
@@ -221,10 +370,11 @@
     },
     {
       "id": "CARD_D08",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "International",
-      "cardTypes": ["AMEX"],
-      "cardTypeLogos": ["https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/amex_new.svg"],
+      "cardTypes": [
+        "amex"
+      ],
       "area": "Central",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "shortDescription": "Exclusive 3-course dinner for 2 with wine pairing at Le Normandie.",
@@ -244,10 +394,11 @@
     },
     {
       "id": "CARD_D09",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "Japanese",
-      "cardTypes": ["VISA"],
-      "cardTypeLogos": ["https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg"],
+      "cardTypes": [
+        "visa"
+      ],
       "area": "East",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "shortDescription": "Free edamame and miso soup with every visit to Sukishi.",
@@ -267,12 +418,11 @@
     },
     {
       "id": "CARD_D10",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "Buffet",
-      "cardTypes": ["VISA", "MASTERCARD"],
-      "cardTypeLogos": [
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg",
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/mastercard_new.svg"
+      "cardTypes": [
+        "visa",
+        "mastercard"
       ],
       "area": "West",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
@@ -293,10 +443,11 @@
     },
     {
       "id": "CARD_D11",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "Thai",
-      "cardTypes": ["MASTERCARD"],
-      "cardTypeLogos": ["https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/mastercard_new.svg"],
+      "cardTypes": [
+        "mastercard"
+      ],
       "area": "South",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "shortDescription": "Authentic Southern Thai seafood at 15% off with Bangkok Bank Mastercard.",
@@ -316,12 +467,11 @@
     },
     {
       "id": "CARD_D12",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "Western",
-      "cardTypes": ["VISA", "AMEX"],
-      "cardTypeLogos": [
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg",
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/amex_new.svg"
+      "cardTypes": [
+        "visa",
+        "amex"
       ],
       "area": "Central",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
@@ -342,13 +492,12 @@
     },
     {
       "id": "CARD_D13",
-      "category": "DINING",
+      "category": "Dining",
       "subcategory": "International",
-      "cardTypes": ["VISA", "MASTERCARD", "AMEX"],
-      "cardTypeLogos": [
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg",
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/mastercard_new.svg",
-        "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/amex_new.svg"
+      "cardTypes": [
+        "visa",
+        "mastercard",
+        "unionpay"
       ],
       "area": "Central",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
@@ -369,10 +518,14 @@
     },
     {
       "id": "CARD_TEST",
-      "category": "HOTEL & TRAVEL",
+      "category": "Hotel & Travel",
       "subcategory": "OTA",
-      "cardTypes": ["VISA"],
-      "cardTypeLogos": ["https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/cards/icons/visa_new.svg"],
+      "cardTypes": [
+        "visa",
+        "mastercard",
+        "unionpay",
+        "amex"
+      ],
       "area": "All",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "shortDescription": "Test promotion card for component testing.",
@@ -392,9 +545,14 @@
     },
     {
       "id": "CARD_NL01",
-      "category": "NEWSLETTER",
+      "category": "Newsletter",
       "subcategory": "",
-      "cardTypes": ["VISA", "MASTERCARD"],
+      "cardTypes": [
+        "visa",
+        "mastercard",
+        "unionpay",
+        "amex"
+      ],
       "area": "All",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/thumbnails/2026/nt2017_260301-260430.jpg",
       "shortDescription": "Subscribe to Bangkok Bank newsletter and get exclusive credit card offers delivered to your inbox.",

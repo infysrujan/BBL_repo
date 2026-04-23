@@ -1,15 +1,15 @@
 const PROMOTIONS_JSON = '/data/promotions.json';
-const TAGS_JSON = '/data/promo-tags.json';
 const DEFAULT_PAGE_SIZE = 12;
 
+const fetchCache = {};
+
 async function fetchJson(url) {
-  try {
-    const resp = await fetch(url);
-    if (!resp.ok) return null;
-    return resp.json();
-  } catch {
-    return null;
+  if (!fetchCache[url]) {
+    fetchCache[url] = fetch(url)
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
   }
+  return fetchCache[url];
 }
 
 function formatDate(dateStr) {
@@ -30,17 +30,27 @@ function buildDateLine(card) {
   return '';
 }
 
+const LOGO_ICONS = {
+  visa: '/icons/visa-new.svg',
+  mastercard: '/icons/mastercard-new.svg',
+  amex: '/icons/amex-new.svg',
+  unionpay: '/icons/upi-new.svg',
+};
+
 function buildLogosHtml(logos) {
   if (!logos?.length) return '';
   const imgs = logos
-    .map((src) => `<img src="${src}" alt="" class="promo-selector-logo" loading="lazy">`)
+    .map((key) => {
+      const src = LOGO_ICONS[key];
+      return src ? `<img src="${src}" alt="${key}" class="promo-selector-logo" loading="lazy">` : '';
+    })
     .join('');
   return `<div class="promo-selector-logos">${imgs}</div>`;
 }
 
 function buildCardHtml(card, tag) {
   const dateLine = buildDateLine(card);
-  const logoHtml = buildLogosHtml(card.cardTypeLogos);
+  const logoHtml = buildLogosHtml((card.cardTypes || []).map((t) => t.toLowerCase()));
   const cta = card.ctaLabel || 'Learn More';
   const target = card.linkTarget || '_self';
   return `<div class="promo-selector-card">
@@ -86,70 +96,66 @@ function buildPaginationHtml(current, total) {
 
 function buildSubOptions(items) {
   return items
-    .map((s) => `<li class="promo-selector-option" data-value="${s.id}" role="option">${s.label}</li>`)
+    .map((s) => `<li class="promo-selector-option" data-value="${s.label}" role="option">${s.label}</li>`)
     .join('');
 }
 
-// ─── Data loader ────────────────────────────────────────────────────────────
-// Single function to swap for API later.
-// Future API shape:
-// GET {dataSource}?category=X&subcategory=Y&cardType=visa&area=central&page=1&limit=12
-// API should return: { cards: [...], total: 45 }
-async function loadPage(dataSource, filters, page, pageSize) {
-  const data = await fetchJson(dataSource);
-  if (!data) return { cards: [], total: 0 };
-
+function filterCards(allCards, filters, page, pageSize) {
   const {
     category, subcategory, cardType, area,
   } = filters;
   const today = new Date();
 
-  const all = (data.cards || []).filter((card) => {
-    if (category && card.category !== category) return false;
+  const matched = allCards.filter((card) => {
+    if (category && card.category?.toLowerCase() !== category.toLowerCase()) return false;
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
-    if (subcategory && card.subcategory?.toLowerCase() !== subcategory) return false;
-    if (cardType) {
-      const ct = (card.cardTypes || []).map((t) => t.toLowerCase());
-      if (!ct.includes(cardType)) return false;
-    }
-    if (area) {
-      const cardArea = card.area?.toLowerCase();
-      if (cardArea !== 'all' && cardArea !== area) return false;
-    }
+    if (subcategory && card.subcategory !== subcategory) return false;
+    if (cardType && !(card.cardTypes || []).includes(cardType.toLowerCase())) return false;
+    if (area && card.area !== 'All' && card.area !== area) return false;
     return true;
   });
 
-  const total = all.length;
+  const total = matched.length;
   const start = (page - 1) * pageSize;
-  return { cards: all.slice(start, start + pageSize), total };
+  return { cards: matched.slice(start, start + pageSize), total };
 }
-// ────────────────────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
   const rows = [...block.children];
-  const category = rows[0]?.textContent?.trim() || '';
-  const dataSource = rows[1]?.textContent?.trim() || PROMOTIONS_JSON;
-  const tagsSource = rows[2]?.textContent?.trim() || TAGS_JSON;
-  const pageSize = parseInt(rows[3]?.textContent?.trim() || '', 10) || DEFAULT_PAGE_SIZE;
+  const dataSource = rows[0]?.textContent?.trim() || PROMOTIONS_JSON;
+  const pageSize = parseInt(rows[1]?.textContent?.trim() || '', 10) || DEFAULT_PAGE_SIZE;
 
-  // Tags are small — load upfront to build dropdowns
-  const tagsData = await fetchJson(tagsSource);
+  // Read tab label BEFORE async fetch so DOM is in its original state.
+  // Use role="tabpanel" (set by tabs.js) — more reliable than class name.
+  const tabPanel = block.closest('[role="tabpanel"]');
+  const tabBtnId = tabPanel?.getAttribute('aria-labelledby');
+  const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
+  const tabText = tabBtn?.textContent?.trim() || '';
 
-  const categoryMeta = tagsData?.categories?.find((c) => c.id === category) || {};
-  const categoryLabel = categoryMeta.label || category;
-  const subcategories = categoryMeta.subcategories || [];
+  const tagsData = await fetchJson(dataSource);
+
+  const categories = tagsData?.categories || [];
   const cardTypes = tagsData?.cardTypes || [
-    { id: 'visa', label: 'Visa' },
-    { id: 'mastercard', label: 'Mastercard' },
-    { id: 'unionpay', label: 'UnionPay' },
-    { id: 'amex', label: 'Amex' },
+    { label: 'Visa' },
+    { label: 'Mastercard' },
+    { label: 'UnionPay' },
+    { label: 'Amex' },
   ];
   const areas = tagsData?.areas || [];
 
+  // Match tab text to a known category label (case-insensitive)
+  const catMeta = categories.find((c) => c.label.toLowerCase() === tabText.toLowerCase()) || {};
+  // If inside a tab panel, always use a non-empty category so unmatched tabs show
+  // "No results found" instead of bypassing the filter and showing all cards.
+  const category = tabPanel ? (catMeta.label || tabText) : (catMeta.label || '');
+  const subcategories = catMeta.subcategories || [];
+
+  const subDisabled = !subcategories.length;
+
   block.innerHTML = `
     <div class="promo-selector-filters">
-      <div class="promo-selector-filter" data-filter="subcategory">
-        <button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
+      <div class="promo-selector-filter${subDisabled ? ' is-disabled' : ''}" data-filter="subcategory">
+        <button class="promo-selector-filter-btn"${subDisabled ? ' disabled' : ''} aria-expanded="false" aria-haspopup="listbox">
           <span class="promo-selector-filter-label">Category</span>
           <span class="promo-selector-filter-arrow"></span>
         </button>
@@ -213,10 +219,10 @@ export default async function decorate(block) {
     paginationEl.innerHTML = '';
   }
 
-  async function fetchAndRender() {
-    showSkeleton();
-    await new Promise((resolve) => { requestAnimationFrame(resolve); });
-    const { cards, total } = await loadPage(dataSource, {
+  let allCards = null;
+
+  function render() {
+    const { cards, total } = filterCards(allCards, {
       category,
       subcategory: state.subcategory,
       cardType: state.cardType,
@@ -224,10 +230,20 @@ export default async function decorate(block) {
     }, state.page, pageSize);
 
     gridEl.innerHTML = cards.length
-      ? cards.map((c) => buildCardHtml(c, categoryLabel)).join('')
+      ? cards.map((c) => buildCardHtml(c, category)).join('')
       : '<p class="promo-selector-empty">No results found.</p>';
 
     paginationEl.innerHTML = buildPaginationHtml(state.page, Math.ceil(total / pageSize));
+  }
+
+  async function fetchAndRender() {
+    if (!allCards) {
+      showSkeleton();
+      await new Promise((resolve) => { requestAnimationFrame(resolve); });
+      const data = await fetchJson(dataSource);
+      allCards = data?.cards || [];
+    }
+    render();
   }
 
   // Lazy load — only fetch when block becomes visible (inactive tabs don't load)
@@ -249,7 +265,7 @@ export default async function decorate(block) {
         f.classList.remove('is-open');
         f.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
       });
-      if (!isOpen) {
+      if (!isOpen && !btn.disabled) {
         filter.classList.add('is-open');
         btn.setAttribute('aria-expanded', 'true');
       }
@@ -263,14 +279,7 @@ export default async function decorate(block) {
     });
   });
 
-  // Disable subcategory dropdown when category has no subcategories
-  if (!subcategories.length) {
-    const subBtn = block.querySelector('[data-filter="subcategory"] .promo-selector-filter-btn');
-    subBtn?.setAttribute('disabled', '');
-    block.querySelector('[data-filter="subcategory"]')?.classList.add('is-disabled');
-  }
-
-  function makeSingleSelect(filterAttr, stateKey, defaultLabel, list) {
+  function makeSingleSelect(filterAttr, stateKey, defaultLabel) {
     block.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`).forEach((opt) => {
       opt.addEventListener('click', () => {
         const isActive = opt.classList.contains('is-active');
@@ -285,8 +294,7 @@ export default async function decorate(block) {
         } else {
           opt.classList.add('is-active');
           state[stateKey] = opt.dataset.value;
-          const match = list.find((item) => item.id === opt.dataset.value);
-          labelEl.textContent = match?.label || opt.dataset.value;
+          labelEl.textContent = opt.dataset.value;
         }
         block.querySelector(`[data-filter="${filterAttr}"]`).classList.remove('is-open');
         state.page = 1;
@@ -295,9 +303,9 @@ export default async function decorate(block) {
     });
   }
 
-  makeSingleSelect('subcategory', 'subcategory', 'Category', subcategories);
-  makeSingleSelect('cardType', 'cardType', 'Card Type', cardTypes);
-  makeSingleSelect('area', 'area', 'Area', areas);
+  makeSingleSelect('subcategory', 'subcategory', 'Category');
+  makeSingleSelect('cardType', 'cardType', 'Card Type');
+  makeSingleSelect('area', 'area', 'Area');
 
   function resetFilters() {
     state.subcategory = '';
