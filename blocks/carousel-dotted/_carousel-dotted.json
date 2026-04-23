@@ -916,6 +916,10 @@
               "name": "With Circular Image",
               "value": "withCircularImage"
             },
+             {
+              "name": "Simple Carousel",
+              "value": "onlyImage"
+            },
             {
               "name": "Card List Carousel",
               "value": "cardListCarousel"
@@ -1094,6 +1098,20 @@
           }
         },
         {
+          "component": "reference",
+          "name": "onlyImage",
+          "label": "Image",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "onlyImage"
+            ]
+          }
+        },
+        {
           "component": "aem-content",
           "name": "fragmentPath",
           "label": "Fragment Path",
@@ -1103,6 +1121,22 @@
               {
                 "var": "slideType"
               },
+              "cardListCarousel"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "onlyImageAlt",
+          "label": "Alt",
+          "value": "",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "onlyImage",
               "cardListCarousel"
             ]
           }
