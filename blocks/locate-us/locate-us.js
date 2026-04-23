@@ -1,7 +1,7 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
-import { createEl } from './locate-us-helpers.js';
-import { buildThailandUI, buildOverseasUI } from './locate-us-ui.js';
+import { createEl } from './helpers/utils.js';
+import { buildThailandUI, buildOverseasUI } from './helpers/ui-helpers.js';
 
 // ─── Parse EDS block data ─────────────────────────────────────────────────────
 

@@ -1,15 +1,28 @@
-import { loadFragment } from '../fragment/fragment.js';
+import { loadFragment } from '../../fragment/fragment.js';
 import {
-  buildUrl, showToast, getUserLocation,
+  buildUrl, showToast, getUserLocation, hasValue,
+} from './utils.js';
+import {
   updateMapIframe, populateSidebar,
   fetchNearMe, fetchProvinces, fetchDistricts, fetchByProvince, fetchByKeyword,
-  renderCards, renderPagination, buildOverseasCard, CARDS_PER_PAGE, hasValue,
-} from './locate-us-helpers.js';
+} from './api-helpers.js';
+import {
+  renderCards, renderPagination, buildOverseasCard, CARDS_PER_PAGE,
+} from './card-helpers.js';
 
 // ─── Thailand UI ──────────────────────────────────────────────────────────────
 
 export async function buildThailandUI(container, data, placeholders, configs) {
   const { services, specialServiceName, specialFragmentPath } = data;
+
+  if (!configs?.selectServiceCodes) {
+    // eslint-disable-next-line no-console
+    console.error('[locate-us] Missing config key: select-service-codes');
+  }
+  if (!configs?.defaultServiceCode) {
+    // eslint-disable-next-line no-console
+    console.error('[locate-us] Missing config key: default-service-code');
+  }
 
   const serviceCodes = (configs?.selectServiceCodes || '')
     .split(',').map((s) => s.trim()).filter(Boolean);
@@ -19,7 +32,8 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     if (name === specialServiceName) {
       serviceCodeMap[name] = null;
     } else {
-      serviceCodeMap[name] = serviceCodes[codeIdx] ?? serviceCodes[serviceCodes.length - 1] ?? configs?.defaultServiceCode ?? 'BRC';
+      const fallbackCode = serviceCodes[serviceCodes.length - 1] ?? configs?.defaultServiceCode;
+      serviceCodeMap[name] = serviceCodes[codeIdx] ?? fallbackCode;
       codeIdx += 1;
     }
   });
@@ -44,6 +58,11 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   const noResultsText = placeholders?.noResultsFoundText || 'No Results Found';
   const selectProvinceText = placeholders?.selectProvinceText || 'Select Province';
   const searchRemarkText = placeholders?.searchRemarkText || 'Search results of service points near your location.';
+  const ariaSearchForm = placeholders?.locateUsAriaSearchForm || 'Search by keyword';
+  const ariaSearchBtn = placeholders?.ariaLableSearch || 'Search';
+  const ariaShowProvinces = placeholders?.locateUsAriaShowProvinces || 'Show provinces';
+  const ariaMapTitle = placeholders?.locateUsAriaMapTitle || 'Location map';
+  const ariaPagination = placeholders?.locateUsAriaPagination || 'Results pages';
 
   const serviceItems = services.map(() => '<li class="locate-us-service-item" role="option"></li>').join('');
 
@@ -60,14 +79,14 @@ export async function buildThailandUI(container, data, placeholders, configs) {
         </ul>
       </div>
       <div class="locate-us-keyword-wrapper">
-        <form class="locate-us-keyword-form" aria-label="Search by keyword">
+        <form class="locate-us-keyword-form" aria-label="${ariaSearchForm}">
           <input type="text" class="locate-us-keyword-input" autocomplete="off" disabled />
-          <button type="submit" class="locate-us-keyword-search-btn" aria-label="Search">
+          <button type="submit" class="locate-us-keyword-search-btn" aria-label="${ariaSearchBtn}">
             <span class="icon-search locate-us-keyword-search-icon" aria-hidden="true"></span>
           </button>
         </form>
         <div class="locate-us-district-wrapper" hidden></div>
-        <button type="button" class="locate-us-keyword-dropdown-toggle" aria-label="Show provinces" aria-expanded="false"></button>
+        <button type="button" class="locate-us-keyword-dropdown-toggle" aria-label="${ariaShowProvinces}" aria-expanded="false"></button>
         <div class="locate-us-province-dropdown" hidden></div>
       </div>
     </div>
@@ -75,14 +94,14 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     <div class="locate-us-results" hidden>
       <div class="locate-us-results-title"></div>
       <div class="locate-us-map-row">
-        <iframe class="locate-us-map" loading="lazy" frameborder="0" scrolling="no" title="Location map"></iframe>
+        <iframe class="locate-us-map" loading="lazy" frameborder="0" scrolling="no" title="${ariaMapTitle}"></iframe>
         <div class="locate-us-map-sidebar">
           <p class="locate-us-map-remark"></p>
         </div>
       </div>
       <div class="locate-us-no-results" hidden></div>
       <div class="locate-us-cards"></div>
-      <nav class="locate-us-pagination" aria-label="Results pages"></nav>
+      <nav class="locate-us-pagination" aria-label="${ariaPagination}"></nav>
     </div>
     <div class="locate-us-fragment" hidden></div>`;
 
@@ -116,7 +135,6 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     }
   });
 
-  // keep a reference so event handlers below can trigger service change
   const serviceSelect = { value: '' };
   const keywordWrapper = container.querySelector('.locate-us-keyword-wrapper');
   const keywordForm = container.querySelector('.locate-us-keyword-form');
@@ -250,7 +268,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
       li.setAttribute('aria-selected', li.dataset.value === selectedService ? 'true' : 'false');
     });
 
-    selectedServiceCode = serviceCodeMap[selectedService] ?? configs?.defaultServiceCode ?? 'BRC';
+    selectedServiceCode = serviceCodeMap[selectedService] ?? configs?.defaultServiceCode;
 
     const isSpecial = serviceCodeMap[selectedService] === null;
     keywordInput.disabled = isSpecial;
@@ -317,7 +335,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   keywordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!selectedServiceCode) {
-      showToast(placeholders?.pleaseSelectServiceText || 'Please select service');
+      showToast(placeholders?.pleaseSelectServiceText || 'Please select service', placeholders);
       return;
     }
     const keyword = keywordInput.value.trim();
@@ -336,20 +354,12 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   });
 
   // ── Auto-select service from URL query param ────────────────────────────────
-  const SERVICE_PARAM_KEYS = [
-    'location-Branch',
-    'location-ATM',
-    'location-ATM-Plus',
-    'location-FXBooth',
-    'location-FCDService',
-    'location-Be-My-ID',
-    'location-BualuangExclusive',
-    'location-BusinessCenter',
-  ];
+  const serviceParamKeys = (configs?.serviceLocationCodes || '')
+    .split(',').map((s) => s.trim()).filter(Boolean);
 
   const urlService = new URLSearchParams(window.location.search).get('service');
-  if (urlService) {
-    const paramIndex = SERVICE_PARAM_KEYS.indexOf(urlService);
+  if (urlService && serviceParamKeys.length) {
+    const paramIndex = serviceParamKeys.indexOf(urlService);
     if (paramIndex !== -1 && services[paramIndex]) {
       onServiceChange(services[paramIndex]);
     }
@@ -423,24 +433,28 @@ export async function buildOverseasUI(container, placeholders, configs) {
   const noResultsText = placeholders?.noResultsFoundText || 'No Results Found';
   const selectCityText = placeholders?.selectCityText || 'Select City';
   const selectCountryText = placeholders?.selectCountryText || 'Select Country';
+  const ariaSearchOverseasForm = placeholders?.locateUsAriaSearchOverseasForm || 'Search overseas locations';
+  const ariaSearchBtn = placeholders?.ariaLableSearch || 'Search';
+  const ariaShowCountries = placeholders?.locateUsAriaShowCountries || 'Show countries';
+  const ariaPagination = placeholders?.locateUsAriaPagination || 'Results pages';
 
   container.innerHTML = `
     <div class="locate-us-keyword-wrapper">
-      <form class="locate-us-keyword-form" aria-label="Search overseas locations">
+      <form class="locate-us-keyword-form" aria-label="${ariaSearchOverseasForm}">
         <input type="text" class="locate-us-keyword-input" autocomplete="off" />
-        <button type="submit" class="locate-us-keyword-search-btn" aria-label="Search">
+        <button type="submit" class="locate-us-keyword-search-btn" aria-label="${ariaSearchBtn}">
           <span class="icon-search locate-us-keyword-search-icon" aria-hidden="true"></span>
         </button>
       </form>
       <div class="locate-us-district-wrapper" hidden></div>
-      <button type="button" class="locate-us-keyword-dropdown-toggle" aria-label="Show countries" aria-expanded="false"></button>
+      <button type="button" class="locate-us-keyword-dropdown-toggle" aria-label="${ariaShowCountries}" aria-expanded="false"></button>
       <div class="locate-us-province-dropdown" hidden></div>
     </div>
     <div class="locate-us-results locate-us-results-overseas" hidden>
       <div class="locate-us-results-title"></div>
       <div class="locate-us-no-results" hidden></div>
       <div class="locate-us-cards"></div>
-      <nav class="locate-us-pagination" aria-label="Results pages"></nav>
+      <nav class="locate-us-pagination" aria-label="${ariaPagination}"></nav>
     </div>`;
 
   container.querySelector('.locate-us-keyword-input').placeholder = enterKeywordText;
@@ -462,7 +476,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
     cardsContainer.innerHTML = '';
     const start = (page - 1) * CARDS_PER_PAGE;
     allLocs.slice(start, start + CARDS_PER_PAGE).forEach((loc, idx) => {
-      const card = buildOverseasCard(loc);
+      const card = buildOverseasCard(loc, placeholders);
       card.dataset.cardIndex = idx;
       const header = card.querySelector('.locate-us-card-header');
       const body = card.querySelector('.locate-us-card-body');
@@ -484,7 +498,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
 
     renderPagination(paginationEl, allLocs.length, page, (newPage) => {
       renderOverseasPage(allLocs, newPage);
-    });
+    }, placeholders);
   }
 
   function showOverseasResults(allLocs) {
@@ -572,8 +586,8 @@ export async function buildOverseasUI(container, placeholders, configs) {
                 cityDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
                 cityItem.classList.add('locate-us-district-item-active');
                 toggleCityDropdown(false);
-                const filtered = await fetchByCountryCity(selectedCountry, city);
-                showOverseasResults(filtered);
+                const cityFiltered = await fetchByCountryCity(selectedCountry, city);
+                showOverseasResults(cityFiltered);
               });
             });
 

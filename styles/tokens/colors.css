@@ -250,5 +250,6 @@
   --bbl-color-status-open: #67bb7f;        /* Locate Us — branch open status */
   --bbl-color-status-closed: #e53935;      /* Locate Us — branch closed status */
   --bbl-color-toast-error: #b85c5c;        /* Locate Us — error toast background */
+  --bbl-color-status-other: #bb6967;       /* Locate Us — branch status non-open */
 }
 

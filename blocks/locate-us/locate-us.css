@@ -398,16 +398,14 @@
   gap: var(--bbl-space-025);
 }
 
-.locate-us .locate-us-card-status-open {
-  color: var(--bbl-color-status-open);
+.locate-us .locate-us-card-status {
+  color: var(--bbl-color-status-other);
   font-size: 0.9375rem;
   font-family: var(--bbl-font-family-primary);
 }
 
-.locate-us .locate-us-card-status-closed {
-  color: var(--bbl-color-status-closed);
-  font-size: 0.9375rem;
-  font-family: var(--bbl-font-family-primary);
+.locate-us .locate-us-card-status-open {
+  color: var(--bbl-color-status-open);
 }
 
 .locate-us .locate-us-card-hours {
