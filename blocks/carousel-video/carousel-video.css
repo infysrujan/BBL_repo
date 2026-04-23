@@ -185,15 +185,21 @@
 
 /* ── Tablet: > 760px ─────────────────────────────────────────────────────── */
 @media (width > 47.5rem) {
+  /* 4 thumbs × (11.5625rem width + 0.625rem margin) = 48.75rem */
+  .carousel-video .cv-main-player {
+    width: 48.75rem;
+    margin: 0 auto;
+  }
+
   .carousel-video .cv-carousel-section {
     position: relative;
     top: auto;
     left: auto;
     right: auto;
-    width: 100%;
+    width: 48.75rem;
     aspect-ratio: unset;
     height: 8.875rem;
-    margin: 1.875rem 0;
+    margin: 1.875rem auto;
     pointer-events: auto;
     z-index: auto;
   }
