@@ -205,6 +205,12 @@ export default async function decorate(block) {
     // else item is already in the visible window — no scroll needed
   }
 
+  // Scroll so the given index lands at the first (leftmost) visible slot.
+  function scrollToFirst(index) {
+    const itemRaw = nearestRawForIndex(index);
+    scrollTrack(itemRaw);
+  }
+
   // After each animated scroll, silently reset to the original zone so there
   // is always room to scroll in both directions (infinite loop illusion).
   track.addEventListener('transitionend', (e) => {
@@ -234,7 +240,7 @@ export default async function decorate(block) {
   nextBtn.addEventListener('click', () => {
     const newIndex = activeIndex === n - 1 ? 0 : activeIndex + 1;
     setActive(newIndex);
-    ensureVisible(newIndex);
+    scrollToFirst(newIndex);
   });
 
   dotEls.forEach((dot, i) => {
