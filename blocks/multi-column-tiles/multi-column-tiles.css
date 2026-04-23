@@ -111,7 +111,7 @@
   content: '';
   display: block;
   width: 1.3125rem;
-  height: 0.0625rem;
+  height: 0.0825rem;
   background: var(--bbl-color-white, #fff);
   margin: 0 auto;
 }
