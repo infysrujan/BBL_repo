@@ -13,11 +13,11 @@ async function fetchBreadcrumbData() {
   if (!AEM_BASE_URL_FOR_BREADCRUMB) {
     // eslint-disable-next-line no-console
     console.log('No Breadcrumb data');
-    return { titleMap: {}, currentPageData: null };
+    return { titleMap: {}, currentPageData: null, homepageData: null };
   }
   try {
     const { pathname } = window.location;
-    const apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}/content/bangkokbank${pathname}.pageinfo.json`;
+    const apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}/content/bangkokbank${pathname}.pageinfo.parent.json`;
     const response = await fetch(apiUrl);
     if (!response.ok) {
       throw new Error(`API returned status ${response.status}`);
@@ -65,6 +65,9 @@ async function fetchBreadcrumbData() {
       allPages = pages;
     }
 
+    // Find homepage (lang root, pageDepth === 3) to use as first breadcrumb item
+    const homepageData = allPages.find((p) => p.pageDepth === 3) || null;
+
     // Filter pages: only include pages with pageDepth > 3 (after "en" level)
     // and build the titleMap
     allPages.forEach((page) => {
@@ -77,11 +80,11 @@ async function fetchBreadcrumbData() {
         titleMap[pagePath] = pageTitle;
       }
     });
-    return { titleMap, currentPageData };
+    return { titleMap, currentPageData, homepageData };
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Breadcrumb data fetch error:', error);
-    return { titleMap: {}, currentPageData: null };
+    return { titleMap: {}, currentPageData: null, homepageData: null };
   }
 }
 
