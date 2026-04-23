@@ -8561,13 +8561,13 @@
         ]
       },
       {
-        "component": "text",
+        "component": "aem-tag",
         "name": "category",
         "label": "Category",
         "valueType": "string"
       },
       {
-        "component": "text",
+        "component": "aem-tag",
         "name": "subcategory",
         "label": "Subcategory",
         "valueType": "string"
