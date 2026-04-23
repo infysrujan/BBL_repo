@@ -227,7 +227,7 @@ export default async function decorate(block) {
     btn.addEventListener('click', () => {
       const realIndex = domI % n;
       setActive(realIndex);
-      ensureVisible(realIndex);
+      scrollToFirst(realIndex);
     });
   });
 
@@ -246,7 +246,7 @@ export default async function decorate(block) {
   dotEls.forEach((dot, i) => {
     dot.addEventListener('click', () => {
       setActive(i);
-      ensureVisible(i);
+      scrollToFirst(i);
     });
   });
 
