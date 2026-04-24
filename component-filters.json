@@ -45,10 +45,20 @@
       "accordion-block",
       "social-icons",
       "card-list",
+      "card-list-wealth",
       "privacy-modal",
       "external-redirect-popup",
+      "video",
+      "carousel-video",
+      "forex-rates",
       "cookie-alert",
       "cookie-modal"
+    ]
+  },
+  {
+    "id": "card-list-wealth",
+    "components": [
+      "card-list-wealth-item"
     ]
   },
   {
@@ -79,6 +89,12 @@
     "id": "showArrowsDots",
     "components": [
       "carousel-dotted-slide-arrows"
+    ]
+  },
+  {
+    "id": "carousel-video",
+    "components": [
+      "carousel-video-item"
     ]
   },
   {
@@ -320,7 +336,9 @@
       "brand-logo",
       "location",
       "login",
-      "main-nav-item"
+      "main-nav-item",
+      "forex-rates",
+      "forex-graph"
     ]
   },
   {
@@ -333,6 +351,12 @@
     "id": "top-nav",
     "components": [
       "top-nav-link"
+    ]
+  },
+  {
+    "id": "video",
+    "components": [
+      "video"
     ]
   }
 ]
