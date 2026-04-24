@@ -1,18 +1,8 @@
+/* === Mobile (all devices base) === */
+
 .multi-column-tiles-container {
   padding: 0;
   padding-inline: 0;
-}
-
-@media (width > 47.5rem) {
-  .multi-column-tiles-container {
-    padding-inline: 0;
-  }
-}
-
-@media (width > 64rem) {
-  .multi-column-tiles-container {
-    padding-inline: 0;
-  }
 }
 
 .multi-column-tiles {
@@ -55,7 +45,7 @@
 
 .multi-column-tiles-image {
   width: 100%;
-  height: 21.875rem;
+  height: 55vh;
   overflow: hidden;
 }
 
@@ -104,7 +94,7 @@
 
 .multi-column-tiles-tile:hover .multi-column-tiles-title,
 .multi-column-tiles-tile.is-active .multi-column-tiles-title {
-  transform: translateY(-6.25rem);
+  transform: translateY(calc(-11vh - 130px));
 }
 
 .multi-column-tiles-title::after {
@@ -121,18 +111,20 @@
   opacity: 0;
 }
 
-/* Tablet: 3.25 tiles visible */
+/* === Tablet and above (> 47.5rem) === */
+
 @media (width > 47.5rem) {
   .multi-column-tiles .multi-column-tiles-wrapper > * {
     flex: 0 0 30.77%;
   }
 
   .multi-column-tiles-image {
-    height: 35.5625rem;
+    height: 80vh;
   }
 }
 
-/* Desktop: full width, no scroll */
+/* === Desktop and above (> 64rem) === */
+
 @media (width > 64rem) {
   .multi-column-tiles .multi-column-tiles-wrapper {
     overflow-x: visible;
@@ -142,5 +134,9 @@
 
   .multi-column-tiles .multi-column-tiles-wrapper > * {
     flex: 1;
+  }
+
+  .multi-column-tiles-image {
+    height: 100vh;
   }
 }
