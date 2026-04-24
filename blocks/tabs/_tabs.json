@@ -211,7 +211,8 @@
         "main-nav-item",
         "forex-rates",
         "forex-graph",
-        "accordion-block"
+        "accordion-block",
+        "table"
       ]
     }
   ]
