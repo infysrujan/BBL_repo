@@ -72,12 +72,10 @@ export default function decorateTabs(main) {
 
   // Create tabs blocks for each group
   tabGroups.forEach((group) => {
-    // Filter out tabs with empty names or no content
-    const validTabs = group.filter(
-      (tab) => tab.tabName && tab.tabName.trim() !== '' && tab.content.length > 0,
-    );
+    // Filter out tabs with empty names only — allow tabs with no authored content
+    // (content can be injected dynamically by blocks like promotional-card-selector)
+    const validTabs = group.filter((tab) => tab.tabName && tab.tabName.trim() !== '');
 
-    // Skip if no valid tabs remain
     if (validTabs.length === 0) {
       return;
     }

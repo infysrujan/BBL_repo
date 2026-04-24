@@ -47,6 +47,34 @@ function activateTab(tabsContainer, targetIndex) {
   }
 }
 
+function enableMouseDragScroll(scroller) {
+  let startX = 0;
+  let startScrollLeft = 0;
+
+  const stopDragging = (e) => {
+    if (!scroller.classList.contains('is-dragging')) return;
+    scroller.classList.remove('is-dragging');
+    scroller.releasePointerCapture(e.pointerId);
+  };
+
+  scroller.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0 || scroller.scrollWidth <= scroller.clientWidth) return;
+    startX = e.clientX;
+    startScrollLeft = scroller.scrollLeft;
+    scroller.classList.add('is-dragging');
+    scroller.setPointerCapture(e.pointerId);
+  });
+
+  scroller.addEventListener('pointermove', (e) => {
+    if (!scroller.classList.contains('is-dragging')) return;
+    e.preventDefault();
+    scroller.scrollLeft = startScrollLeft - (e.clientX - startX);
+  });
+
+  scroller.addEventListener('pointerup', stopDragging);
+  scroller.addEventListener('pointercancel', stopDragging);
+}
+
 export default async function decorate(block) {
   const rows = [...block.children];
 
@@ -208,6 +236,8 @@ export default async function decorate(block) {
 
   // Add prev/next arrows for carousel variants
   if (isCarouselVariant) {
+    enableMouseDragScroll(tabsNav);
+
     const prevBtn = document.createElement('button');
     prevBtn.className = 'tabs-nav-prev icon-arrow-left';
     prevBtn.setAttribute('aria-label', 'Previous tabs');

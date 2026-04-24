@@ -6,7 +6,7 @@ const fetchCache = {};
 async function fetchJson(url) {
   if (!fetchCache[url]) {
     fetchCache[url] = fetch(url)
-      .then((r) => (r.ok ? r.json() : null))
+      .then((r) => (r.ok && r.status !== 204 ? r.json() : null))
       .catch(() => null);
   }
   return fetchCache[url];
@@ -111,7 +111,10 @@ function filterCards(allCards, filters, page, pageSize) {
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
     if (subcategory && card.subcategory !== subcategory) return false;
     if (cardType && !(card.cardTypes || []).includes(cardType.toLowerCase())) return false;
-    if (area && card.area !== 'All' && card.area !== area) return false;
+    if (area) {
+      const cardAreas = Array.isArray(card.area) ? card.area : [card.area];
+      if (!cardAreas.includes('All') && !cardAreas.includes(area)) return false;
+    }
     return true;
   });
 
@@ -120,44 +123,15 @@ function filterCards(allCards, filters, page, pageSize) {
   return { cards: matched.slice(start, start + pageSize), total };
 }
 
-export default async function decorate(block) {
-  const rows = [...block.children];
-  const dataSource = rows[0]?.textContent?.trim() || PROMOTIONS_JSON;
-  const pageSize = parseInt(rows[1]?.textContent?.trim() || '', 10) || DEFAULT_PAGE_SIZE;
-
-  // Read tab label BEFORE async fetch so DOM is in its original state.
-  // Use role="tabpanel" (set by tabs.js) — more reliable than class name.
-  const tabPanel = block.closest('[role="tabpanel"]');
-  const tabBtnId = tabPanel?.getAttribute('aria-labelledby');
-  const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
-  const tabText = tabBtn?.textContent?.trim() || '';
-
-  const tagsData = await fetchJson(dataSource);
-
-  const categories = tagsData?.categories || [];
-  const cardTypes = tagsData?.cardTypes || [
-    { label: 'Visa' },
-    { label: 'Mastercard' },
-    { label: 'UnionPay' },
-    { label: 'Amex' },
-  ];
-  const areas = tagsData?.areas || [];
-
-  // Match tab text to a known category label (case-insensitive)
-  const catMeta = categories.find((c) => c.label.toLowerCase() === tabText.toLowerCase()) || {};
-  // If inside a tab panel, always use a non-empty category so unmatched tabs show
-  // "No results found" instead of bypassing the filter and showing all cards.
-  const category = tabPanel ? (catMeta.label || tabText) : (catMeta.label || '');
-  const subcategories = catMeta.subcategories || [];
-
+function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, pageSize) {
   const subDisabled = !subcategories.length;
 
-  block.innerHTML = `
+  panel.innerHTML = `
     <div class="promo-selector-filters">
       <div class="promo-selector-filter${subDisabled ? ' is-disabled' : ''}" data-filter="subcategory">
         <button class="promo-selector-filter-btn"${subDisabled ? ' disabled' : ''} aria-expanded="false" aria-haspopup="listbox">
           <span class="promo-selector-filter-label">Category</span>
-          <span class="promo-selector-filter-arrow"></span>
+          <span class="icon-dropdown promo-selector-filter-arrow"></span>
         </button>
         <ul class="promo-selector-dropdown" role="listbox">
           ${buildSubOptions(subcategories)}
@@ -166,7 +140,7 @@ export default async function decorate(block) {
       <div class="promo-selector-filter" data-filter="cardType">
         <button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
           <span class="promo-selector-filter-label">Card Type</span>
-          <span class="promo-selector-filter-arrow"></span>
+          <span class="icon-dropdown promo-selector-filter-arrow"></span>
         </button>
         <ul class="promo-selector-dropdown" role="listbox">
           ${buildSubOptions(cardTypes)}
@@ -175,7 +149,7 @@ export default async function decorate(block) {
       <div class="promo-selector-filter" data-filter="area">
         <button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
           <span class="promo-selector-filter-label">Area</span>
-          <span class="promo-selector-filter-arrow"></span>
+          <span class="icon-dropdown promo-selector-filter-arrow"></span>
         </button>
         <ul class="promo-selector-dropdown" role="listbox">
           ${buildSubOptions(areas)}
@@ -189,37 +163,12 @@ export default async function decorate(block) {
     <div class="promo-selector-grid"></div>
     <div class="promo-selector-pagination"></div>`;
 
-  const gridEl = block.querySelector('.promo-selector-grid');
-  const paginationEl = block.querySelector('.promo-selector-pagination');
+  const gridEl = panel.querySelector('.promo-selector-grid');
+  const paginationEl = panel.querySelector('.promo-selector-pagination');
 
   const state = {
-    subcategory: '',
-    cardType: '',
-    area: '',
-    page: 1,
+    subcategory: '', cardType: '', area: '', page: 1,
   };
-
-  function showSkeleton() {
-    const card = `<div class="promo-selector-skeleton">
-      <div class="promo-selector-skeleton-img"></div>
-      <div class="promo-selector-skeleton-body">
-        <div class="promo-selector-skeleton-line"></div>
-        <div class="promo-selector-skeleton-line"></div>
-        <div class="promo-selector-skeleton-line promo-selector-skeleton-line-short"></div>
-        <div class="promo-selector-skeleton-logos">
-          <div class="promo-selector-skeleton-logo"></div>
-          <div class="promo-selector-skeleton-logo"></div>
-        </div>
-      </div>
-      <div class="promo-selector-skeleton-footer">
-        <div class="promo-selector-skeleton-cta"></div>
-      </div>
-    </div>`;
-    gridEl.innerHTML = Array.from({ length: pageSize }, () => card).join('');
-    paginationEl.innerHTML = '';
-  }
-
-  let allCards = null;
 
   function render() {
     const { cards, total } = filterCards(allCards, {
@@ -236,32 +185,22 @@ export default async function decorate(block) {
     paginationEl.innerHTML = buildPaginationHtml(state.page, Math.ceil(total / pageSize));
   }
 
-  async function fetchAndRender() {
-    if (!allCards) {
-      showSkeleton();
-      await new Promise((resolve) => { requestAnimationFrame(resolve); });
-      const data = await fetchJson(dataSource);
-      allCards = data?.cards || [];
-    }
-    render();
-  }
-
-  // Lazy load — only fetch when block becomes visible (inactive tabs don't load)
+  // Lazy render — only when panel becomes visible (inactive tabs are hidden = not intersecting)
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
       observer.disconnect();
-      fetchAndRender();
+      render();
     }
   }, { rootMargin: '100px' });
-  observer.observe(block);
+  observer.observe(panel);
 
   // Dropdown open/close
-  block.querySelectorAll('.promo-selector-filter-btn').forEach((btn) => {
+  panel.querySelectorAll('.promo-selector-filter-btn').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const filter = btn.closest('.promo-selector-filter');
       const isOpen = filter.classList.contains('is-open');
-      block.querySelectorAll('.promo-selector-filter').forEach((f) => {
+      panel.querySelectorAll('.promo-selector-filter').forEach((f) => {
         f.classList.remove('is-open');
         f.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
       });
@@ -272,20 +211,13 @@ export default async function decorate(block) {
     });
   });
 
-  document.addEventListener('click', () => {
-    block.querySelectorAll('.promo-selector-filter').forEach((f) => {
-      f.classList.remove('is-open');
-      f.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
-    });
-  });
-
   function makeSingleSelect(filterAttr, stateKey, defaultLabel) {
-    block.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`).forEach((opt) => {
+    panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`).forEach((opt) => {
       opt.addEventListener('click', () => {
         const isActive = opt.classList.contains('is-active');
-        block.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`)
+        panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`)
           .forEach((o) => o.classList.remove('is-active'));
-        const labelEl = block.querySelector(
+        const labelEl = panel.querySelector(
           `[data-filter="${filterAttr}"] .promo-selector-filter-label`,
         );
         if (isActive) {
@@ -296,9 +228,9 @@ export default async function decorate(block) {
           state[stateKey] = opt.dataset.value;
           labelEl.textContent = opt.dataset.value;
         }
-        block.querySelector(`[data-filter="${filterAttr}"]`).classList.remove('is-open');
+        panel.querySelector(`[data-filter="${filterAttr}"]`).classList.remove('is-open');
         state.page = 1;
-        fetchAndRender();
+        render();
       });
     });
   }
@@ -312,20 +244,19 @@ export default async function decorate(block) {
     state.cardType = '';
     state.area = '';
     state.page = 1;
-    block.querySelectorAll('.promo-selector-option').forEach((o) => o.classList.remove('is-active'));
-    block.querySelector('[data-filter="subcategory"] .promo-selector-filter-label').textContent = 'Category';
-    block.querySelector('[data-filter="cardType"] .promo-selector-filter-label').textContent = 'Card Type';
-    block.querySelector('[data-filter="area"] .promo-selector-filter-label').textContent = 'Area';
-    fetchAndRender();
+    panel.querySelectorAll('.promo-selector-option').forEach((o) => o.classList.remove('is-active'));
+    panel.querySelector('[data-filter="subcategory"] .promo-selector-filter-label').textContent = 'Category';
+    panel.querySelector('[data-filter="cardType"] .promo-selector-filter-label').textContent = 'Card Type';
+    panel.querySelector('[data-filter="area"] .promo-selector-filter-label').textContent = 'Area';
+    render();
   }
 
-  block.querySelector('.promo-selector-btn-reset')?.addEventListener('click', resetFilters);
-  block.querySelector('.promo-selector-btn-search')?.addEventListener('click', () => {
+  panel.querySelector('.promo-selector-btn-reset')?.addEventListener('click', resetFilters);
+  panel.querySelector('.promo-selector-btn-search')?.addEventListener('click', () => {
     state.page = 1;
-    fetchAndRender();
+    render();
   });
 
-  // Pagination
   paginationEl.addEventListener('click', (e) => {
     const pageBtn = e.target.closest('.promo-selector-page');
     const arrowBtn = e.target.closest('.promo-selector-arrow');
@@ -341,8 +272,52 @@ export default async function decorate(block) {
       changed = true;
     }
     if (changed) {
-      fetchAndRender();
+      render();
       gridEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
+}
+
+export default async function decorate(block) {
+  const rows = [...block.children];
+  const dataSource = rows[0]?.textContent?.trim() || PROMOTIONS_JSON;
+  const pageSize = parseInt(rows[1]?.textContent?.trim() || '', 10) || DEFAULT_PAGE_SIZE;
+
+  // Fetch all data once, shared across all tab panels
+  const tagsData = await fetchJson(dataSource);
+  const allCards = tagsData?.cards || [];
+  const categories = tagsData?.categories || [];
+  const cardTypes = tagsData?.cardTypes || [
+    { label: 'Visa' },
+    { label: 'Mastercard' },
+    { label: 'UnionPay' },
+    { label: 'Amex' },
+  ];
+  const areas = tagsData?.areas || [];
+
+  // Find tab panels created by tabs.js from the empty tab sections
+  const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
+
+  tabPanels.forEach((panel) => {
+    const tabBtnId = panel.getAttribute('aria-labelledby');
+    const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
+    const tabText = tabBtn?.textContent?.trim() || '';
+
+    const catMeta = categories.find((c) => c.label.toLowerCase() === tabText.toLowerCase()) || {};
+    const category = catMeta.label || tabText;
+    const subcategories = catMeta.subcategories || [];
+
+    setupPanel(panel, allCards, category, subcategories, cardTypes, areas, pageSize);
+  });
+
+  // Close all dropdowns on outside click (single listener for all panels)
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.promo-selector-filter.is-open').forEach((f) => {
+      f.classList.remove('is-open');
+      f.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Block is just a data-source config — hide it from view
+  block.hidden = true;
 }
