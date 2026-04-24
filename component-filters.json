@@ -45,11 +45,18 @@
       "accordion-block",
       "social-icons",
       "card-list",
+      "card-list-wealth",
       "privacy-modal",
       "external-redirect-popup",
       "video",
       "carousel-video",
       "forex-rates"
+    ]
+  },
+  {
+    "id": "card-list-wealth",
+    "components": [
+      "card-list-wealth-item"
     ]
   },
   {
