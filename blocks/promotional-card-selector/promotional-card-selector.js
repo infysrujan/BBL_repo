@@ -160,7 +160,7 @@ function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, 
         <button class="promo-selector-btn-search button primary" type="button">Search</button>
       </div>
     </div>
-    <div class="promo-selector-grid"></div>
+    <div class="promo-selector-grid pad-top-30" pad-btm-30""></div>
     <div class="promo-selector-pagination"></div>`;
 
   const gridEl = panel.querySelector('.promo-selector-grid');

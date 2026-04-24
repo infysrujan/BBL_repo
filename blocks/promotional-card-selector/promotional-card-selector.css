@@ -47,7 +47,10 @@
 .promo-selector-filter-arrow {
     font-size: 6px;
     flex-shrink: 0;
+}
 
+.promo-selector-filter.is-disabled .promo-selector-filter-label {
+    color: var(--bbl-color-grey-20, #ccc);
 }
 
 /* Dropdown panel */
@@ -106,7 +109,6 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.25rem;
-    padding: 1rem;
 }
 
 /* Card */

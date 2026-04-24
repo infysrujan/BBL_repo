@@ -50,8 +50,11 @@ function activateTab(tabsContainer, targetIndex) {
 function enableMouseDragScroll(scroller) {
   let startX = 0;
   let startScrollLeft = 0;
+  let pending = false;
+  const DRAG_THRESHOLD = 5;
 
   const stopDragging = (e) => {
+    pending = false;
     if (!scroller.classList.contains('is-dragging')) return;
     scroller.classList.remove('is-dragging');
     scroller.releasePointerCapture(e.pointerId);
@@ -61,11 +64,16 @@ function enableMouseDragScroll(scroller) {
     if (e.pointerType !== 'mouse' || e.button !== 0 || scroller.scrollWidth <= scroller.clientWidth) return;
     startX = e.clientX;
     startScrollLeft = scroller.scrollLeft;
-    scroller.classList.add('is-dragging');
-    scroller.setPointerCapture(e.pointerId);
+    pending = true;
   });
 
   scroller.addEventListener('pointermove', (e) => {
+    if (!pending && !scroller.classList.contains('is-dragging')) return;
+    if (pending && Math.abs(e.clientX - startX) > DRAG_THRESHOLD) {
+      pending = false;
+      scroller.classList.add('is-dragging');
+      scroller.setPointerCapture(e.pointerId);
+    }
     if (!scroller.classList.contains('is-dragging')) return;
     e.preventDefault();
     scroller.scrollLeft = startScrollLeft - (e.clientX - startX);
