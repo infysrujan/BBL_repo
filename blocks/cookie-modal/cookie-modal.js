@@ -235,10 +235,9 @@ export default function decorate(block) {
     const cols = [...row.children];
     const labelText = cols[0]?.textContent?.trim() || '';
     const descriptionHTML = cols[1]?.innerHTML?.trim() || '';
-    const defaultEnabled = cols[2]?.textContent?.trim().toLowerCase() !== 'false';
     const cookieName = COOKIE_NAME_MAP[labelText.toLowerCase()] || labelText;
     const stored = getCookie(cookieName);
-    const isChecked = stored !== null ? true : defaultEnabled;
+    const isChecked = stored !== null;
 
     return {
       labelText,

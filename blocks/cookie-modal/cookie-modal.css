@@ -74,12 +74,6 @@ body.cookie-modal-open .header {
   filter: invert(20%) sepia(95%) saturate(5000%) hue-rotate(210deg) brightness(102%) contrast(104%);
 }
 
-.cookie-modal-close:hover,
-.cookie-modal-close:focus-visible {
-  background: var(--bbl-color-grey-20);
-  outline: none;
-}
-
 .cookie-modal-header {
   padding: var(--bbl-space-500) var(--bbl-space-200) 0;
   flex-shrink: 0;
@@ -190,12 +184,6 @@ body.cookie-modal-open .header {
   text-align: left;
 }
 
-@media (width <= 23.4375rem) {
-  .cookie-accordion-name {
-    font-size: 0.875rem;
-  }
-}
-
 .cookie-accordion-toggle {
   display: flex;
   align-items: center;
@@ -264,7 +252,7 @@ body.cookie-modal-open .header {
   top: 0;
   left: 0;
   width: 2.5em;
-  background: var(--bbl-color-grey-50);
+  background: var(--bbl-color-blue-160);
   border-radius: 0.75em;
   cursor: pointer;
   transition: 0.3s ease-in-out;
