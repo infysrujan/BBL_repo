@@ -177,7 +177,11 @@ main img {
 
 .section.columns-2-75 {
     display: flex;
-    gap: var(--bbl-space-layout-sm);
+    flex-direction: column;
+}
+
+.section.columns-2-50 {
+    display: flex;
     flex-direction: column;
 }
 
@@ -201,17 +205,26 @@ main img {
         flex: 1;
     }
 
+    .section.columns-2-50 {
+        flex-direction: row;
+    }
+
+    .section.columns-2-50 > * {
+        padding-inline: 20px;
+        flex: 1;
+    }
+
     .section.columns-2-75 {
         flex-direction: row;
     }
 
-    .section.columns-2-75 > *:first-child {
-        width: 75%;
-        flex: 0 0 75%;
+    .section.columns-2-75 > * {
+        padding-inline: 20px;
+        flex: 1;
     }
 
-    .section.columns-2-75 > *:last-child {
-        flex: 1;
+    .section.columns-2-75 > *:first-child {
+        flex: 0 0 75%;
     }
 }
 
