@@ -22,7 +22,7 @@
 }
 
 .multi-column-tiles .multi-column-tiles-wrapper > * {
-  flex: 0 0 80%;
+  flex: 0 0 250px;
   scroll-snap-align: start;
 }
 
@@ -45,7 +45,7 @@
 
 .multi-column-tiles-image {
   width: 100%;
-  height: 55vh;
+  height: 356px;
   overflow: hidden;
 }
 
@@ -115,11 +115,11 @@
 
 @media (width > 47.5rem) {
   .multi-column-tiles .multi-column-tiles-wrapper > * {
-    flex: 0 0 30.77%;
+    flex: 0 0 250px;
   }
 
   .multi-column-tiles-image {
-    height: 80vh;
+    height: 356px;
   }
 }
 
