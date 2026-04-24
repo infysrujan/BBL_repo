@@ -237,7 +237,8 @@ export default function decorate(block) {
     const descriptionHTML = cols[1]?.innerHTML?.trim() || '';
     const cookieName = COOKIE_NAME_MAP[labelText.toLowerCase()] || labelText;
     const stored = getCookie(cookieName);
-    const isChecked = stored !== null;
+    const defaultEnabled = cols[2]?.textContent?.trim() === 'true';
+    const isChecked = stored !== null || defaultEnabled;
 
     return {
       labelText,
