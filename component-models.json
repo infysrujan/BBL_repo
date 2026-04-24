@@ -285,6 +285,10 @@
               {
                 "name": "Columns 3",
                 "value": "columns-3"
+              },
+              {
+                "name": "Columns 2-75",
+                "value": "columns-2-75"
               }
             ]
           },
