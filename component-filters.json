@@ -334,6 +334,12 @@
     ]
   },
   {
+    "id": "tax-calculator",
+    "components": [
+      "tax-calculator-journey"
+    ]
+  },
+  {
     "id": "teaser-with-bg-image",
     "components": [
       "teaser-with-bg-image-card"
