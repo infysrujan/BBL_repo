@@ -4,18 +4,13 @@ const PROMOTIONS_JSON = '/data/promotions.json';
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function buildDateHtml(start, end, label) {
   if (!start && !end) return '';
   const parts = [start && formatDate(start), end && formatDate(end)].filter(Boolean);
-  return `<p class="promo-detail-date">${label} ${parts.join(' \u2013 ')}</p>`;
-}
-
-function parseBooleanFlag(el) {
-  return el?.textContent?.trim().toLowerCase() === 'true';
+  return `<p class="promo-detail-date">${label} ${parts.join(' – ')}</p>`;
 }
 
 function buildDisclaimerHtml(enabled, text) {
@@ -40,8 +35,7 @@ async function fetchPromoData(promoId) {
 }
 
 export default async function decorate(block) {
-  const rows = [...block.children];
-  const promoId = rows[0]?.textContent?.trim() || '';
+  const promoId = block.children[0]?.textContent?.trim() || '';
 
   const [placeholders, card] = await Promise.all([
     fetchPlaceholders(),
@@ -50,26 +44,23 @@ export default async function decorate(block) {
 
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
 
-  const titleTag = rows[2]?.textContent?.trim() || 'h2';
-  const titleText = card?.title || rows[1]?.textContent?.trim() || '';
-  const title = titleText ? `<${titleTag} class="promo-detail-title">${titleText}</${titleTag}>` : '';
+  const title = card?.title
+    ? `<h2 class="promo-detail-title">${card.title}</h2>`
+    : '';
   const imageUrl = card?.detailImageUrl || '';
   const imageHtml = imageUrl
-    ? `<img src="${imageUrl}" alt="${card.title || ''}" loading="lazy">`
-    : rows[3]?.querySelector('picture, img')?.outerHTML || '';
-  const imageHref = imageUrl || rows[3]?.querySelector('img')?.src || '#';
-  const description = card?.detailDescription || rows[5]?.innerHTML?.trim() || '';
-  const startDate = card?.promotionStartDate || rows[8]?.textContent?.trim() || '';
-  const endDate = card?.promotionEndDate || rows[9]?.textContent?.trim() || '';
-  const disclaimerEnabled = card
-    ? card.responsibleLendingDisclaimerEnabled
-    : parseBooleanFlag(rows[14]);
-  const disclaimerText = card?.responsibleLendingDisclaimerText || rows[15]?.innerHTML?.trim() || '';
+    ? `<img src="${imageUrl}" alt="${card?.title || ''}" loading="lazy">`
+    : '';
+  const description = card?.detailDescription || '';
+  const startDate = card?.promotionStartDate || '';
+  const endDate = card?.promotionEndDate || '';
+  const disclaimerEnabled = card?.responsibleLendingDisclaimerEnabled;
+  const disclaimerText = card?.responsibleLendingDisclaimerText || '';
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
           <div class="promo-detail-image">
-            <a href="${imageHref}" title="Click to view full">
+            <a href="${imageUrl}" title="Click to view full">
               ${imageHtml}
             </a>
           </div>` : '';

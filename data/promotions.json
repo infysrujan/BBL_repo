@@ -1,291 +1,225 @@
 {
   "categories": [
     {
-      "label": "Newsletter",
+      "label": "Be Smart",
       "subcategories": []
     },
     {
       "label": "Dining",
       "subcategories": [
-        {
-          "label": "Thai"
-        },
-        {
-          "label": "International"
-        },
-        {
-          "label": "Japanese"
-        },
-        {
-          "label": "Chinese"
-        },
-        {
-          "label": "Western"
-        },
-        {
-          "label": "Buffet"
-        }
-      ]
-    },
-    {
-      "label": "Shopping",
-      "subcategories": [
-        {
-          "label": "Fashion"
-        },
-        {
-          "label": "Electronics"
-        },
-        {
-          "label": "Department Stores"
-        },
-        {
-          "label": "Online"
-        }
-      ]
-    },
-    {
-      "label": "Hotel & Travel",
-      "subcategories": [
-        {
-          "label": "OTA"
-        },
-        {
-          "label": "Hotel"
-        },
-        {
-          "label": "Airline"
-        },
-        {
-          "label": "Car Rental"
-        }
-      ]
-    },
-    {
-      "label": "Health & Beauty",
-      "subcategories": [
-        {
-          "label": "Beauty"
-        },
-        {
-          "label": "Fitness"
-        },
-        {
-          "label": "Medical"
-        },
-        {
-          "label": "Spa"
-        }
+        { "label": "Thai" },
+        { "label": "International" },
+        { "label": "Japanese" },
+        { "label": "Chinese" },
+        { "label": "Western" },
+        { "label": "Buffet" }
       ]
     },
     {
       "label": "Gas",
       "subcategories": [
-        {
-          "label": "Fuel"
-        }
+        { "label": "Fuel" }
       ]
     },
     {
-      "label": "Home & Decor",
+      "label": "Health and Beauty",
       "subcategories": [
-        {
-          "label": "Furniture"
-        },
-        {
-          "label": "Appliances"
-        },
-        {
-          "label": "Renovation"
-        }
+        { "label": "Beauty" },
+        { "label": "Fitness" },
+        { "label": "Medical" },
+        { "label": "Spa" }
       ]
     },
     {
-      "label": "Insurance & Finance",
+      "label": "Home and Décor",
       "subcategories": [
-        {
-          "label": "Insurance"
-        },
-        {
-          "label": "Investment"
-        }
+        { "label": "Furniture" },
+        { "label": "Appliances" },
+        { "label": "Renovation" }
       ]
     },
     {
-      "label": "Thank You Rewards",
+      "label": "Hotel and Travel",
+      "subcategories": [
+        { "label": "OTA" },
+        { "label": "Hotel" },
+        { "label": "Airline" },
+        { "label": "Car Rental" }
+      ]
+    },
+    {
+      "label": "Insurance and Finance",
+      "subcategories": [
+        { "label": "Insurance" },
+        { "label": "Investment" }
+      ]
+    },
+    {
+      "label": "Newsletter",
       "subcategories": []
+    },
+    {
+      "label": "Others",
+      "subcategories": []
+    },
+    {
+      "label": "Reward",
+      "subcategories": [
+        { "label": "Donation" }
+      ]
+    },
+    {
+      "label": "Shopping",
+      "subcategories": [
+        { "label": "Fashion" },
+        { "label": "Electronics" },
+        { "label": "Department Stores" },
+        { "label": "Online" }
+      ]
     }
   ],
   "cardTypes": [
-    {
-      "label": "Visa"
-    },
-    {
-      "label": "Mastercard"
-    },
-    {
-      "label": "UnionPay"
-    },
-    {
-      "label": "Amex"
-    }
+    { "label": "Amex" },
+    { "label": "MasterCard" },
+    { "label": "UnionPay" },
+    { "label": "Visa" }
   ],
   "areas": [
-    {
-      "label": "Central"
-    },
-    {
-      "label": "East"
-    },
-    {
-      "label": "West"
-    },
-    {
-      "label": "North"
-    },
-    {
-      "label": "South"
-    }
+    { "label": "AIS Shop" },
+    { "label": "All" },
+    { "label": "Bangkok" },
+    { "label": "Central" },
+    { "label": "East" },
+    { "label": "North" },
+    { "label": "Northeast" },
+    { "label": "South" },
+    { "label": "West" }
   ],
   "cards": [
     {
       "id": "CARD_001",
       "category": "Dining",
       "subcategory": "Thai",
-      "cardTypes": [
-        "visa"
-      ],
-      "area": "East",
+      "cardTypes": ["visa"],
+      "area": ["East"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/thumbnails/2025/hoteldining_thumbnail_exp_123126.jpg",
-      "shortDescription": "20% off at Ootoya & Ootoya Oki with Bangkok Bank Credit Cards.",
+      "cardShortDescription": "<p>20% off at Ootoya &amp; Ootoya Oki with Bangkok Bank Credit Cards.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-02-01",
-      "promotionEndDate": "2026-05-31",
+      "promotionStartDate": "2026-02-01T00:00:00",
+      "promotionEndDate": "2026-05-31T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/Ootoya_and_Ootoya_Oki_260201-260531",
-      "linkTarget": "_self",
       "topCategory": true,
       "topPromotion": false,
       "title": "Ootoya & Ootoya Oki Dining Promotion",
       "detailImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "detailDescription": "<p>Enjoy exclusive dining privileges at Ootoya &amp; Ootoya Oki when you pay with Bangkok Bank Credit Cards.</p><p><strong># Tier 1:</strong> Get 20% discount when spending 500 baht or more per sales slip.</p><p><strong># Tier 2:</strong> For Infinite, Platinum credit cards. Get 25% discount when spending 1,000 baht or more per sales slip.</p>",
+      "detailDescription": "<p>Enjoy exclusive dining privileges at Ootoya &amp; Ootoya Oki when you pay with Bangkok Bank Credit Cards.</p>",
       "responsibleLendingDisclaimerEnabled": true,
-      "responsibleLendingDisclaimerText": "Use when necessary and pay back full amount on time to avoid 16% interest rate."
+      "responsibleLendingDisclaimerText": "<p>Use when necessary and pay back full amount on time to avoid 16% interest rate.</p>"
     },
     {
       "id": "CARD_002",
       "category": "Dining",
       "subcategory": "International",
-      "cardTypes": [
-        "visa",
-        "mastercard"
-      ],
-      "area": "Central",
+      "cardTypes": ["visa", "mastercard"],
+      "area": ["Central"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "The Signature Gastronomy Experience with Bangkok Bank Credit Cards.",
+      "cardShortDescription": "<p>The Signature Gastronomy Experience with Bangkok Bank Credit Cards.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-03-01",
-      "promotionEndDate": "2026-06-30",
+      "promotionStartDate": "2026-03-01T00:00:00",
+      "promotionEndDate": "2026-06-30T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/Signature_Gastronomy_Experience_260301-260630",
-      "linkTarget": "_self",
       "topCategory": false,
       "topPromotion": true,
       "title": "The Signature Gastronomy Experience",
       "detailImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "detailDescription": "<p>Savour extraordinary culinary journeys at Thailand's finest restaurants with your Bangkok Bank Credit Card.</p><p><strong>Special Privilege:</strong> Complimentary welcome drink for every visit when spending 2,000 baht or more per sales slip.</p>",
+      "detailDescription": "<p>Savour extraordinary culinary journeys at Thailand's finest restaurants with your Bangkok Bank Credit Card.</p>",
       "responsibleLendingDisclaimerEnabled": true,
-      "responsibleLendingDisclaimerText": "Use when necessary and pay back full amount on time to avoid 16% interest rate."
+      "responsibleLendingDisclaimerText": "<p>Use when necessary and pay back full amount on time to avoid 16% interest rate.</p>"
     },
     {
       "id": "CARD_003",
       "category": "Shopping",
       "subcategory": "Fashion",
-      "cardTypes": [
-        "visa"
-      ],
-      "area": "West",
+      "cardTypes": ["visa"],
+      "area": ["West"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "All-Season Flavor: Enjoy exclusive offer from participating restaurants.",
+      "cardShortDescription": "<p>All-Season Flavor: Enjoy exclusive offer from participating restaurants.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-01-01",
-      "promotionEndDate": "2026-12-31",
+      "promotionStartDate": "2026-01-01T00:00:00",
+      "promotionEndDate": "2026-12-31T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/All_Season_Flavors_260101-261231",
-      "linkTarget": "_self",
       "topCategory": false,
       "topPromotion": false,
       "title": "All-Season Flavors",
       "detailImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "detailDescription": "<p>Enjoy exclusive privileges at participating restaurants year-round when paying with your Bangkok Bank Credit Card.</p><p>Discount: 15% off total bill, no minimum spend required.</p>",
+      "detailDescription": "<p>Enjoy exclusive privileges at participating restaurants year-round when paying with your Bangkok Bank Credit Card.</p>",
       "responsibleLendingDisclaimerEnabled": false,
       "responsibleLendingDisclaimerText": ""
     },
     {
       "id": "CARD_004",
-      "category": "Hotel & Travel",
+      "category": "Hotel and Travel",
       "subcategory": "OTA",
-      "cardTypes": [
-        "visa"
-      ],
-      "area": "All",
+      "cardTypes": ["visa"],
+      "area": ["All"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/hat2131_ota_260501-260831.jpg",
-      "shortDescription": "Book Online Travel Agencies and redeem points to get cash back up to 18%.",
+      "cardShortDescription": "<p>Book Online Travel Agencies and redeem points to get cash back up to 18%.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-05-01",
-      "promotionEndDate": "2026-08-31",
+      "promotionStartDate": "2026-05-01T00:00:00",
+      "promotionEndDate": "2026-08-31T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/OTA_260501-260831",
-      "linkTarget": "_self",
       "topCategory": true,
       "topPromotion": true,
-      "title": "Book Online Travel Agencies and redeem points to get cash back up to 18% when you meet the spending conditions and redeem points equal to the amount spent.",
+      "title": "Book Online Travel Agencies and redeem points to get cash back up to 18%",
       "detailImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/hat2131_ota_260501-260831.jpg",
-      "detailDescription": "<p>Redeem points to get cash back up to 18% when spend at website and application Agoda, Klook,Traveloka and Trip.com and redeem Thank You Rewards points/ M Point equal to the amount spent per sales slip.</p><p>&nbsp;</p><p><strong># Tier 1: </strong>Get 15% cash back when spend 2,500 baht or more per sales slip.</p><p><strong># Tier 2:</strong> For Pinnacle, Infinite, Platinum leader,Bangkok Bank M Legend/M Luxe credit cards: Get 18% cash back when spend 20,000 baht or more per sales slip.</p><p>&nbsp;</p><p>• No maximum point redemptions limited throughout the campaign., Only purchases made with Bangkok Bank M Visa credit card are eligible for redemption of M Point points.<br>• Send SMS registration of each transaction within promotion period.</p><p>Type <strong>BOTA</strong> followed by 16 digits of your credit card number and followed by* spending amount. (without decimal amount and ,) and send SMS to <strong>4545666</strong> (3 Baht/SMS).</p><p>Example: Spending amount of 3,500.75 baht Type BOTA 1111222233334444*3500</p>",
+      "detailDescription": "<p>Redeem points to get cash back up to 18% when spend at Agoda, Klook, Traveloka and Trip.com.</p>",
       "responsibleLendingDisclaimerEnabled": true,
-      "responsibleLendingDisclaimerText": "Use when necessary and pay back full amount on time to avoid 16% interest rate."
+      "responsibleLendingDisclaimerText": "<p>Use when necessary and pay back full amount on time to avoid 16% interest rate.</p>"
     },
     {
       "id": "CARD_D03",
       "category": "Dining",
       "subcategory": "Japanese",
-      "cardTypes": [
-        "visa",
-        "mastercard"
-      ],
-      "area": "Central",
+      "cardTypes": ["visa", "mastercard"],
+      "area": ["Central"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "15% discount at all Fuji Restaurant branches with Bangkok Bank Credit Cards.",
+      "cardShortDescription": "<p>15% discount at all Fuji Restaurant branches with Bangkok Bank Credit Cards.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-03-01",
-      "promotionEndDate": "2026-07-31",
+      "promotionStartDate": "2026-03-01T00:00:00",
+      "promotionEndDate": "2026-07-31T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/Fuji_260301-260731",
-      "linkTarget": "_self",
       "topCategory": false,
       "topPromotion": false,
       "title": "Fuji Restaurant 15% Discount",
       "detailImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "detailDescription": "<p>Enjoy 15% discount at all Fuji Restaurant branches when paying with Bangkok Bank Credit Cards.</p>",
       "responsibleLendingDisclaimerEnabled": true,
-      "responsibleLendingDisclaimerText": "Use when necessary and pay back full amount on time to avoid 16% interest rate."
+      "responsibleLendingDisclaimerText": "<p>Use when necessary and pay back full amount on time to avoid 16% interest rate.</p>"
     },
     {
       "id": "CARD_D04",
       "category": "Dining",
       "subcategory": "Western",
-      "cardTypes": [
-        "visa"
-      ],
-      "area": "East",
+      "cardTypes": ["visa"],
+      "area": ["East"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "Buy 1 Get 1 Free main course at select steakhouses.",
+      "cardShortDescription": "<p>Buy 1 Get 1 Free main course at select steakhouses.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-04-01",
-      "promotionEndDate": "2026-09-30",
+      "promotionStartDate": "2026-04-01T00:00:00",
+      "promotionEndDate": "2026-09-30T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/Steakhouse_260401-260930",
-      "linkTarget": "_self",
       "topCategory": false,
       "topPromotion": false,
       "title": "Steakhouse Buy 1 Get 1 Free",
@@ -298,43 +232,38 @@
       "id": "CARD_D05",
       "category": "Dining",
       "subcategory": "Buffet",
-      "cardTypes": [
-        "mastercard"
-      ],
-      "area": "West",
+      "cardTypes": ["mastercard"],
+      "area": ["West"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "10% off buffet dinner at Grand Hyatt Hotel with Bangkok Bank Mastercard.",
+      "cardShortDescription": "<p>10% off buffet dinner at Grand Hyatt Hotel with Bangkok Bank Mastercard.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-02-15",
-      "promotionEndDate": "2026-08-15",
+      "promotionStartDate": "2026-02-15T00:00:00",
+      "promotionEndDate": "2026-08-15T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/GrandHyatt_Buffet_260215-260815",
-      "linkTarget": "_self",
       "topCategory": true,
       "topPromotion": false,
       "title": "Grand Hyatt Buffet Dinner 10% Off",
       "detailImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "detailDescription": "<p>Enjoy 10% off buffet dinner at Grand Hyatt Hotel with Bangkok Bank Mastercard.</p>",
       "responsibleLendingDisclaimerEnabled": true,
-      "responsibleLendingDisclaimerText": "Use when necessary and pay back full amount on time to avoid 16% interest rate."
+      "responsibleLendingDisclaimerText": "<p>Use when necessary and pay back full amount on time to avoid 16% interest rate.</p>"
     },
     {
       "id": "CARD_D06",
       "category": "Dining",
       "subcategory": "Chinese",
-      "cardTypes": [
-        "visa",
-        "unionpay"
-      ],
-      "area": "Central",
+      "cardTypes": ["visa", "unionpay"],
+      "area": ["Central"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "Get a complimentary dim sum set when spending 1,500 baht at Golden Palace Restaurant.",
+      "cardShortDescription": "<p>Get a complimentary dim sum set when spending 1,500 baht at Golden Palace Restaurant.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-01-15",
-      "promotionEndDate": "2026-06-15",
+      "promotionStartDate": "2026-01-15T00:00:00",
+      "promotionEndDate": "2026-06-15T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/GoldenPalace_260115-260615",
-      "linkTarget": "_self",
       "topCategory": false,
       "topPromotion": true,
       "title": "Golden Palace Complimentary Dim Sum",
@@ -347,67 +276,60 @@
       "id": "CARD_D07",
       "category": "Dining",
       "subcategory": "Thai",
-      "cardTypes": [
-        "visa",
-        "mastercard"
-      ],
-      "area": "North",
+      "cardTypes": ["visa", "mastercard"],
+      "area": ["North"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "25% off authentic Northern Thai cuisine at Khao Soi Paradise.",
+      "cardShortDescription": "<p>25% off authentic Northern Thai cuisine at Khao Soi Paradise.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-03-15",
-      "promotionEndDate": "2026-09-15",
+      "promotionStartDate": "2026-03-15T00:00:00",
+      "promotionEndDate": "2026-09-15T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/KhaoSoi_260315-260915",
-      "linkTarget": "_self",
       "topCategory": false,
       "topPromotion": false,
       "title": "Khao Soi Paradise 25% Off",
       "detailImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "detailDescription": "<p>Get 25% off authentic Northern Thai cuisine at Khao Soi Paradise with Bangkok Bank Credit Cards.</p>",
       "responsibleLendingDisclaimerEnabled": true,
-      "responsibleLendingDisclaimerText": "Use when necessary and pay back full amount on time to avoid 16% interest rate."
+      "responsibleLendingDisclaimerText": "<p>Use when necessary and pay back full amount on time to avoid 16% interest rate.</p>"
     },
     {
       "id": "CARD_D08",
       "category": "Dining",
       "subcategory": "International",
-      "cardTypes": [
-        "amex"
-      ],
-      "area": "Central",
+      "cardTypes": ["amex"],
+      "area": ["Central"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "Exclusive 3-course dinner for 2 with wine pairing at Le Normandie.",
+      "cardShortDescription": "<p>Exclusive 3-course dinner for 2 with wine pairing at Le Normandie.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-04-01",
-      "promotionEndDate": "2026-10-31",
+      "promotionStartDate": "2026-04-01T00:00:00",
+      "promotionEndDate": "2026-10-31T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/LeNormandie_260401-261031",
-      "linkTarget": "_self",
       "topCategory": true,
       "topPromotion": true,
       "title": "Le Normandie Exclusive Dinner for Two",
       "detailImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "detailDescription": "<p>Exclusive 3-course dinner for two with wine pairing at Le Normandie for Bangkok Bank Amex cardholders.</p>",
       "responsibleLendingDisclaimerEnabled": true,
-      "responsibleLendingDisclaimerText": "Use when necessary and pay back full amount on time to avoid 16% interest rate."
+      "responsibleLendingDisclaimerText": "<p>Use when necessary and pay back full amount on time to avoid 16% interest rate.</p>"
     },
     {
       "id": "CARD_D09",
       "category": "Dining",
       "subcategory": "Japanese",
-      "cardTypes": [
-        "visa"
-      ],
-      "area": "East",
+      "cardTypes": ["visa"],
+      "area": ["East"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "Free edamame and miso soup with every visit to Sukishi.",
+      "cardShortDescription": "<p>Free edamame and miso soup with every visit to Sukishi.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-05-01",
-      "promotionEndDate": "2026-07-31",
+      "promotionStartDate": "2026-05-01T00:00:00",
+      "promotionEndDate": "2026-07-31T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/Sukishi_260501-260731",
-      "linkTarget": "_self",
       "topCategory": false,
       "topPromotion": false,
       "title": "Sukishi Free Welcome Snacks",
@@ -420,19 +342,16 @@
       "id": "CARD_D10",
       "category": "Dining",
       "subcategory": "Buffet",
-      "cardTypes": [
-        "visa",
-        "mastercard"
-      ],
-      "area": "West",
+      "cardTypes": ["visa", "mastercard"],
+      "area": ["West"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "20% off Sunday brunch at Centara Grand with Bangkok Bank Credit Cards.",
+      "cardShortDescription": "<p>20% off Sunday brunch at Centara Grand with Bangkok Bank Credit Cards.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-01-01",
-      "promotionEndDate": "2026-12-31",
+      "promotionStartDate": "2026-01-01T00:00:00",
+      "promotionEndDate": "2026-12-31T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/Centara_Brunch_260101-261231",
-      "linkTarget": "_self",
       "topCategory": false,
       "topPromotion": false,
       "title": "Centara Grand Sunday Brunch 20% Off",
@@ -445,43 +364,38 @@
       "id": "CARD_D11",
       "category": "Dining",
       "subcategory": "Thai",
-      "cardTypes": [
-        "mastercard"
-      ],
-      "area": "South",
+      "cardTypes": ["mastercard"],
+      "area": ["South"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "Authentic Southern Thai seafood at 15% off with Bangkok Bank Mastercard.",
+      "cardShortDescription": "<p>Authentic Southern Thai seafood at 15% off with Bangkok Bank Mastercard.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-02-01",
-      "promotionEndDate": "2026-08-31",
+      "promotionStartDate": "2026-02-01T00:00:00",
+      "promotionEndDate": "2026-08-31T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/SouthernSeafood_260201-260831",
-      "linkTarget": "_self",
       "topCategory": false,
       "topPromotion": false,
       "title": "Southern Seafood 15% Off",
       "detailImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "detailDescription": "<p>Enjoy authentic Southern Thai seafood at 15% off with Bangkok Bank Mastercard.</p>",
       "responsibleLendingDisclaimerEnabled": true,
-      "responsibleLendingDisclaimerText": "Use when necessary and pay back full amount on time to avoid 16% interest rate."
+      "responsibleLendingDisclaimerText": "<p>Use when necessary and pay back full amount on time to avoid 16% interest rate.</p>"
     },
     {
       "id": "CARD_D12",
       "category": "Dining",
       "subcategory": "Western",
-      "cardTypes": [
-        "visa",
-        "amex"
-      ],
-      "area": "Central",
+      "cardTypes": ["visa", "amex"],
+      "area": ["Central"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "Free dessert platter for tables of 4 or more at The Grill Bangkok.",
+      "cardShortDescription": "<p>Free dessert platter for tables of 4 or more at The Grill Bangkok.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-03-01",
-      "promotionEndDate": "2026-09-30",
+      "promotionStartDate": "2026-03-01T00:00:00",
+      "promotionEndDate": "2026-09-30T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/TheGrill_260301-260930",
-      "linkTarget": "_self",
       "topCategory": false,
       "topPromotion": true,
       "title": "The Grill Bangkok Free Dessert Platter",
@@ -494,81 +408,67 @@
       "id": "CARD_D13",
       "category": "Dining",
       "subcategory": "International",
-      "cardTypes": [
-        "visa",
-        "mastercard",
-        "unionpay"
-      ],
-      "area": "Central",
+      "cardTypes": ["visa", "mastercard", "unionpay"],
+      "area": ["Central"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "Earn 3x rewards points every Friday at all Four Seasons restaurants.",
+      "cardShortDescription": "<p>Earn 3x rewards points every Friday at all Four Seasons restaurants.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-04-01",
-      "promotionEndDate": "2026-12-31",
+      "promotionStartDate": "2026-04-01T00:00:00",
+      "promotionEndDate": "2026-12-31T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-card-promotion/FourSeasons_260401-261231",
-      "linkTarget": "_self",
       "topCategory": true,
       "topPromotion": false,
       "title": "Four Seasons 3x Rewards Every Friday",
       "detailImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
       "detailDescription": "<p>Earn 3x rewards points every Friday at all Four Seasons restaurants with Bangkok Bank Credit Cards.</p>",
       "responsibleLendingDisclaimerEnabled": true,
-      "responsibleLendingDisclaimerText": "Use when necessary and pay back full amount on time to avoid 16% interest rate."
+      "responsibleLendingDisclaimerText": "<p>Use when necessary and pay back full amount on time to avoid 16% interest rate.</p>"
     },
     {
       "id": "CARD_TEST",
-      "category": "Hotel & Travel",
+      "category": "Hotel and Travel",
       "subcategory": "OTA",
-      "cardTypes": [
-        "visa",
-        "mastercard",
-        "unionpay",
-        "amex"
-      ],
-      "area": "All",
+      "cardTypes": ["visa", "mastercard", "unionpay", "amex"],
+      "area": ["All"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "shortDescription": "Test promotion card for component testing.",
+      "cardShortDescription": "<p>Test promotion card for component testing.</p>",
       "dateValidityLabel": "until",
-      "promotionStartDate": "2026-05-01",
-      "promotionEndDate": "2026-08-31",
+      "promotionStartDate": "2026-05-01T00:00:00",
+      "promotionEndDate": "2026-08-31T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/component-test/promotional-cards",
-      "linkTarget": "_self",
       "topCategory": true,
       "topPromotion": true,
-      "title": "Book Online Travel Agencies and redeem points to get cash back up to 18% when you meet the spending conditions and redeem points equal to the amount spent.",
+      "title": "Book Online Travel Agencies and redeem points to get cash back up to 18%",
       "detailImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/features/2026/sh2331_foodland_260305-260630.jpg",
-      "detailDescription": "<p>Redeem points to get cash back up to 18% when spend at website and application Agoda, Klook, Traveloka and Trip.com and redeem Thank You Rewards points/M Point equal to the amount spent per sales slip.</p><p><strong># Tier 1:</strong> Get 15% cash back when spend 2,500 baht or more per sales slip.</p><p><strong># Tier 2:</strong> For Pinnacle, Infinite, Platinum leader, Bangkok Bank M Legend/M Luxe credit cards: Get 18% cash back when spend 20,000 baht or more per sales slip.</p>",
+      "detailDescription": "<p>Redeem points to get cash back up to 18% when spend at Agoda, Klook, Traveloka and Trip.com.</p>",
       "responsibleLendingDisclaimerEnabled": true,
-      "responsibleLendingDisclaimerText": "Use when necessary and pay back full amount on time to avoid 16% interest rate."
+      "responsibleLendingDisclaimerText": "<p>Use when necessary and pay back full amount on time to avoid 16% interest rate.</p>"
     },
     {
       "id": "CARD_NL01",
       "category": "Newsletter",
       "subcategory": "",
-      "cardTypes": [
-        "visa",
-        "mastercard",
-        "unionpay",
-        "amex"
-      ],
-      "area": "All",
+      "cardTypes": ["visa", "mastercard", "unionpay", "amex"],
+      "area": ["All"],
+      "targetLink": "false",
       "cardImageUrl": "https://www.bangkokbank.com/-/media/feature/page-content/bbl-corporate/teasers/promotions/creditcardnew/thumbnails/2026/nt2017_260301-260430.jpg",
-      "shortDescription": "Subscribe to Bangkok Bank newsletter and get exclusive credit card offers delivered to your inbox.",
+      "cardShortDescription": "<p>Subscribe to Bangkok Bank newsletter and get exclusive credit card offers delivered to your inbox.</p>",
       "dateValidityLabel": "until",
       "promotionStartDate": "",
-      "promotionEndDate": "2026-12-31",
+      "promotionEndDate": "2026-12-31T00:00:00",
       "ctaLabel": "Learn more",
       "ctaLink": "/en/credit-cards-promotions/newsletter-mar-apr-26-260301-260430",
-      "linkTarget": "_self",
       "topCategory": false,
       "topPromotion": false,
       "title": "Newsletter March-April 2026",
       "detailImageUrl": "",
       "detailDescription": "<p>Subscribe to the Bangkok Bank newsletter and receive exclusive promotions and special offers for credit cardholders directly to your inbox.</p>",
       "responsibleLendingDisclaimerEnabled": true,
-      "responsibleLendingDisclaimerText": "Use when necessary and pay back full amount on time to avoid 16% interest rate."
+      "responsibleLendingDisclaimerText": "<p>Use when necessary and pay back full amount on time to avoid 16% interest rate.</p>"
     }
   ]
 }

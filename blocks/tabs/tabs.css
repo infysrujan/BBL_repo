@@ -232,6 +232,7 @@
   font-size: 0.7875rem;
   line-height: 1.0631rem;
   font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif !important;
+  text-transform: uppercase;
 }
 
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button::before {

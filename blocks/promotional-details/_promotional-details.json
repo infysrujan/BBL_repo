@@ -89,16 +89,10 @@
           "valueType": "string"
         },
         {
-          "component": "multiselect",
+          "component": "aem-tag",
           "name": "cardTypes",
           "label": "Card Types",
-          "valueType": "string",
-          "options": [
-            { "name": "Visa", "value": "visa" },
-            { "name": "Mastercard", "value": "mastercard" },
-            { "name": "UnionPay", "value": "unionpay" },
-             { "name": "Amex", "value": "amex" }
-          ]
+          "valueType": "string"
         },
         {
           "component": "aem-tag",
@@ -113,18 +107,10 @@
           "valueType": "string"
         },
         {
-          "component": "multiselect",
+          "component": "aem-tag",
           "name": "area",
           "label": "Area",
-          "valueType": "string",
-          "options": [
-            { "name": "All", "value": "All" },
-            { "name": "Central", "value": "Central" },
-            { "name": "East", "value": "East" },
-            { "name": "West", "value": "West" },
-            { "name": "North", "value": "North" },
-            { "name": "South", "value": "South" }
-          ]
+          "valueType": "string"
         },
         {
           "component": "text",

@@ -1,5 +1,5 @@
 const PROMOTIONS_JSON = '/data/promotions.json';
-const DEFAULT_PAGE_SIZE = 12;
+const PAGE_SIZE = 12;
 
 const fetchCache = {};
 
@@ -51,21 +51,22 @@ function buildLogosHtml(logos) {
 function buildCardHtml(card, tag) {
   const dateLine = buildDateLine(card);
   const logoHtml = buildLogosHtml((card.cardTypes || []).map((t) => t.toLowerCase()));
-  const cta = card.ctaLabel || 'Learn More';
-  const target = card.linkTarget || '_self';
-  return `<div class="promo-selector-card">
-  <div class="promo-selector-card-img-wrap">
-    <span class="promo-selector-card-tag">${tag}</span>
-    <img src="${card.cardImageUrl}" alt="${card.title || ''}"
-      class="promo-selector-card-img" loading="lazy">
-  </div>
-  <div class="promo-selector-card-body">
-    <p class="promo-selector-card-desc">${card.shortDescription || ''}</p>
-    ${logoHtml}
-    ${dateLine ? `<p class="promo-selector-card-date">${dateLine}</p>` : ''}
-  </div>
-  <div class="promo-selector-card-footer">
-    <a href="${card.ctaLink}" target="${target}" class="promo-selector-cta button primary">${cta}</a>
+  const target = card.targetLink === 'true' ? '_blank' : '_self';
+  return `<div class="promo-selector-card-container">
+  <div class="promo-selector-card">
+    <div class="promo-selector-card-img-wrap">
+      <span class="promo-selector-card-tag">${tag}</span>
+      <img src="${card.cardImageUrl}" alt="${card.title || ''}"
+        class="promo-selector-card-img" loading="lazy">
+    </div>
+    <div class="promo-selector-card-body">
+      <div class="promo-selector-card-desc">${card.cardShortDescription || ''}</div>
+      ${logoHtml}
+      ${dateLine ? `<p class="promo-selector-card-date">${dateLine}</p>` : ''}
+    </div>
+    <div class="promo-selector-card-footer">
+      <a href="${card.ctaLink || ''}" target="${target}" class="promo-selector-cta button primary">${card.ctaLabel || 'Learn More'}</a>
+    </div>
   </div>
 </div>`;
 }
@@ -89,9 +90,9 @@ function buildPaginationHtml(current, total) {
   const prevAttr = current === 1 ? ' disabled' : '';
   const nextAttr = current === total ? ' disabled' : '';
   return `
-    <button class="promo-selector-arrow" data-dir="prev"${prevAttr} aria-label="Previous">&#8249;</button>
+    <button class="promo-selector-arrow" data-dir="prev"${prevAttr} aria-label="Previous"><i class="icon-arrow-left" aria-hidden="true"></i></button>
     <div class="promo-selector-pages">${pageButtons}</div>
-    <button class="promo-selector-arrow" data-dir="next"${nextAttr} aria-label="Next">&#8250;</button>`;
+    <button class="promo-selector-arrow promo-selector-arrow-next" data-dir="next"${nextAttr} aria-label="Next"><i class="icon-arrow-left" aria-hidden="true"></i></button>`;
 }
 
 function buildSubOptions(items) {
@@ -156,12 +157,14 @@ function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, 
         </ul>
       </div>
       <div class="promo-selector-filter-actions">
-        <button class="promo-selector-btn-reset button secondary" type="button">Reset</button>
-        <button class="promo-selector-btn-search button primary" type="button">Search</button>
+        <div class="promo-selector-filter-action btn-reset"><button class="promo-selector-btn-reset button secondary" type="button">Reset</button></div>
+        <div class="promo-selector-filter-action btn-search"><button class="promo-selector-btn-search button primary" type="button">Search</button></div>
       </div>
     </div>
-    <div class="promo-selector-grid pad-top-30" pad-btm-30""></div>
-    <div class="promo-selector-pagination"></div>`;
+    <div class="promo-selector-content pad-top-30 pad-bot-30">
+      <div class="promo-selector-grid"></div>
+      <div class="promo-selector-pagination"></div>
+    </div>`;
 
   const gridEl = panel.querySelector('.promo-selector-grid');
   const paginationEl = panel.querySelector('.promo-selector-pagination');
@@ -211,6 +214,8 @@ function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, 
     });
   });
 
+  const isDesktop = () => window.matchMedia('(width > 64rem)').matches;
+
   function makeSingleSelect(filterAttr, stateKey, defaultLabel) {
     panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`).forEach((opt) => {
       opt.addEventListener('click', () => {
@@ -230,7 +235,7 @@ function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, 
         }
         panel.querySelector(`[data-filter="${filterAttr}"]`).classList.remove('is-open');
         state.page = 1;
-        render();
+        if (isDesktop()) render();
       });
     });
   }
@@ -279,12 +284,8 @@ function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, 
 }
 
 export default async function decorate(block) {
-  const rows = [...block.children];
-  const dataSource = rows[0]?.textContent?.trim() || PROMOTIONS_JSON;
-  const pageSize = parseInt(rows[1]?.textContent?.trim() || '', 10) || DEFAULT_PAGE_SIZE;
-
   // Fetch all data once, shared across all tab panels
-  const tagsData = await fetchJson(dataSource);
+  const tagsData = await fetchJson(PROMOTIONS_JSON);
   const allCards = tagsData?.cards || [];
   const categories = tagsData?.categories || [];
   const cardTypes = tagsData?.cardTypes || [
@@ -307,7 +308,7 @@ export default async function decorate(block) {
     const category = catMeta.label || tabText;
     const subcategories = catMeta.subcategories || [];
 
-    setupPanel(panel, allCards, category, subcategories, cardTypes, areas, pageSize);
+    setupPanel(panel, allCards, category, subcategories, cardTypes, areas, PAGE_SIZE);
   });
 
   // Close all dropdowns on outside click (single listener for all panels)
