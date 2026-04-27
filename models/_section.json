@@ -199,7 +199,10 @@
         "external-redirect-popup",
         "video",
         "carousel-video",
-        "forex-rates"
+        "forex-rates",
+        "promotional-details",
+        "promo-card-listing",
+        "top-promotional-cards"
       ]
     }
   ]
