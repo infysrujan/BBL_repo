@@ -8462,7 +8462,7 @@
     ]
   },
   {
-    "id": "promotional-card-selector",
+    "id": "promo-card-listing",
     "fields": []
   },
   {
@@ -9829,6 +9829,10 @@
         }
       }
     ]
+  },
+  {
+    "id": "top-promotional-cards",
+    "fields": []
   },
   {
     "id": "video",

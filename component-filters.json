@@ -52,7 +52,8 @@
       "carousel-video",
       "forex-rates",
       "promotional-details",
-      "promotional-card-selector"
+      "promo-card-listing",
+      "top-promotional-cards"
     ]
   },
   {
@@ -332,8 +333,7 @@
       "login",
       "main-nav-item",
       "forex-rates",
-      "forex-graph",
-      "promotional-card-selector"
+      "forex-graph"
     ]
   },
   {

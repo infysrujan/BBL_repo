@@ -201,7 +201,8 @@
         "carousel-video",
         "forex-rates",
         "promotional-details",
-        "promotional-card-selector"
+        "promo-card-listing",
+        "top-promotional-cards"
       ]
     }
   ]
