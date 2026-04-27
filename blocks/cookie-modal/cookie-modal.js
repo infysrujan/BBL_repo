@@ -203,19 +203,60 @@ function closeModal(overlay) {
   window.setTimeout(finishClose, 300);
 }
 
-export default function decorate(block) {
-  // Detect authoring mode - check the block wrapper itself for data-aue-resource
-  // (block.querySelectorAll only checks descendants, missing the wrapper itself)
-  const rows = [...block.children];
-  const hasAuthoringAttrs = block.hasAttribute('data-aue-resource')
-    || rows.some((row) => [...row.attributes].some(({ name }) => name.startsWith('data-aue-')));
-  const isAuthoringMode = hasAuthoringAttrs && window.self !== window.top;
+function setupUEEditHandler(blockEl) {
+  const ueEvents = ['aue:content-patch', 'aue:content-update', 'aue:content-add'];
 
-  // In authoring mode, don't process the block to allow proper content authoring
-  if (isAuthoringMode) {
+  const handler = (event) => {
+    const resource = event.detail?.request?.target?.resource
+      || event.detail?.request?.target?.container?.resource;
+    if (!resource) return;
+
+    const blockResource = blockEl.getAttribute('data-aue-resource');
+    const sectionResource = blockEl.closest('[data-aue-resource]')?.getAttribute('data-aue-resource');
+
+    if (resource !== blockResource && resource !== sectionResource) return;
+
+    // Stop editor-support.js from handling this event — its insert-then-remove
+    // pattern causes UE to snapshot both old and new blocks simultaneously,
+    // producing the visual duplicate in the content tree and canvas.
+    ueEvents.forEach((e) => document.removeEventListener(e, handler, { capture: true }));
+    event.stopImmediatePropagation();
+
+    // Targeted block swap using the updated HTML already in the event response.
+    // This is instant — no page reload, no network request.
+    const content = event.detail?.response?.updates?.[0]?.content;
+    if (content) {
+      const doc = new DOMParser().parseFromString(content, 'text/html');
+      const newBlock = (blockResource && doc.querySelector(`[data-aue-resource="${blockResource}"]`))
+        || doc.querySelector('.cookie-modal');
+      if (newBlock) {
+        blockEl.replaceWith(newBlock);
+        setupUEEditHandler(newBlock); // re-register on new element for future edits
+        return;
+      }
+    }
+
+    // Fallback if response content is unavailable
+    window.location.reload();
+  };
+
+  ueEvents.forEach((e) => document.addEventListener(e, handler, { capture: true }));
+}
+
+export default function decorate(block) {
+  if (block.classList.contains('cookie-modal-initialized')) return;
+
+  // Don't decorate inside the Universal Editor iframe. Instead, intercept UE
+  // content events in the capture phase (before editor-support.js's bubbling
+  // handler on main runs) and do an atomic block swap using the response HTML.
+  // This avoids the duplicate that editor-support.js causes by inserting a new
+  // block alongside the old one before removal — which UE snapshots as two components.
+  if (window.self !== window.top) {
+    setupUEEditHandler(block);
     return;
   }
 
+  const rows = [...block.children];
   const titleSource = rows[0]?.firstElementChild || rows[0];
   const descSource = rows[1]?.firstElementChild || rows[1];
   const saveRow = rows.find((row, index) => index > 1
