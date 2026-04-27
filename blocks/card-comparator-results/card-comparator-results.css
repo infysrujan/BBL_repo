@@ -27,7 +27,7 @@
   flex-direction: column;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
-  border-radius: 0.4375rem;
+  border-radius: var(--bbl-radius-md);
   overflow: hidden;
   flex: 0 0 16.875rem;
   scroll-snap-align: start;
@@ -45,7 +45,7 @@
 
 .card-comparator-results .ccr-thumb {
   height: 100%;
-  border-radius: 0.4375rem;
+  border-radius: var(--bbl-radius-md);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -70,7 +70,7 @@
   padding: var(--bbl-space-250);
   flex-grow: 1;
   font-size: var(--bbl-font-size-b1);
-  line-height: 1.375;
+  line-height: var(--bbl-line-height-body);
   color: var(--bbl-color-grey-70);
 }
 
@@ -90,7 +90,7 @@
 
 .card-comparator-results .compare-info dl {
   border-top: 0.0625rem solid var(--bbl-color-grey-150);
-  padding: 1.4375rem 0;
+  padding: var(--bbl-space-300) 0;
   margin: 0;
   box-sizing: border-box;
 }
@@ -122,7 +122,7 @@
   min-height: 2.75rem;
   padding: 0.3125rem 0;
   box-sizing: border-box;
-  border-radius: 0.4375rem;
+  border-radius: var(--bbl-radius-md);
   border: 0.0625rem solid var(--bbl-color-active-blue);
   background: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
@@ -137,6 +137,74 @@
   color: var(--bbl-color-white);
   border-color: var(--bbl-color-active-blue);
   background: var(--bbl-color-active-blue);
+}
+
+/* ── Apply area ───────────────────────────────────────────────────────────── */
+
+.card-comparator-results .ccr-apply-area {
+  margin-bottom: var(--bbl-space-200);
+}
+
+.card-comparator-results .ccr-apply-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bbl-space-100);
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.3125rem var(--bbl-space-150);
+  box-sizing: border-box;
+  border-radius: var(--bbl-radius-md);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.card-comparator-results .ccr-apply-btn:hover {
+  color: var(--bbl-color-white);
+  border-color: var(--bbl-color-active-blue);
+  background: var(--bbl-color-active-blue);
+}
+
+.card-comparator-results .ccr-apply-btn svg {
+  flex-shrink: 0;
+}
+
+/* Both variants hidden by default; each is enabled only in its target viewport */
+
+.card-comparator-results .ccr-apply-desktop,
+.card-comparator-results .ccr-apply-mobile-group {
+  display: none;
+}
+
+/* Mobile only: show the two-button group */
+
+@media (width <= 47.5rem) {
+  .card-comparator-results .ccr-apply-mobile-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bbl-space-100);
+  }
+}
+
+/* Desktop only: show the single apply button as solid blue */
+
+@media (width > 47.5rem) {
+  .card-comparator-results .ccr-apply-desktop {
+    display: flex;
+    background: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
+  }
+
+  .card-comparator-results .ccr-apply-desktop:hover {
+    background: var(--bbl-color-blue-90);
+    border-color: var(--bbl-color-blue-90);
+  }
 }
 
 /* No results */

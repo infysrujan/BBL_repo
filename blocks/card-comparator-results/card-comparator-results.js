@@ -26,6 +26,20 @@ function resolveImageUrl(card) {
   return raw._publishUrl || raw._authorUrl || '';
 }
 
+// ── Icon loading ───────────────────────────────────────────────────────────────
+
+// Fetch an SVG from the icons folder and return its markup string for inline use
+async function loadIconSvg(name) {
+  const base = window.hlx?.codeBasePath || '';
+  try {
+    const resp = await fetch(`${base}/icons/${name}.svg`);
+    if (!resp.ok) return '';
+    return resp.text();
+  } catch {
+    return '';
+  }
+}
+
 // ── Data fetching ──────────────────────────────────────────────────────────────
 
 // Fetch all credit card items from the card-suggester-data config endpoint
@@ -113,11 +127,64 @@ function resolveCardPageUrl(card) {
   return '';
 }
 
+// Resolve a URL field that may be a plain string or a publish/author URL object
+function resolveApplyUrl(urlField) {
+  if (!urlField) return '';
+  if (typeof urlField === 'string') return urlField;
+  // eslint-disable-next-line no-underscore-dangle
+  return urlField._publishUrl || urlField._authorUrl || urlField._path || '';
+}
+
+// Build the apply area with desktop (single) and mobile (two-button) variants.
+// icons: { web: svgString, mweb: svgString } — inline SVG fetched from /icons/
+function buildApplyArea(card, doc, labels, icons) {
+  const hasWebApply = card.webApplyEnabled === true || card.webApplyEnabled === 'true';
+  const hasMobileApply = card.mobileApplyEnabled === true || card.mobileApplyEnabled === 'true';
+  if (!hasWebApply && !hasMobileApply) return null;
+
+  const webUrl = resolveApplyUrl(card.webApplyUrl);
+  const mobileUrl = resolveApplyUrl(card.mobileApplyUrl);
+
+  const area = doc.createElement('div');
+  area.className = 'ccr-apply-area';
+
+  // Desktop: single apply button shown when webApplyEnabled
+  if (hasWebApply) {
+    const desktopBtn = doc.createElement('a');
+    desktopBtn.href = webUrl || '#';
+    desktopBtn.className = 'ccr-apply-btn ccr-apply-desktop';
+    desktopBtn.textContent = labels.applyNow;
+    area.appendChild(desktopBtn);
+  }
+
+  // Mobile: two buttons shown when mobileApplyEnabled
+  if (hasMobileApply) {
+    const mobileGroup = doc.createElement('div');
+    mobileGroup.className = 'ccr-apply-mobile-group';
+
+    const webBtn = doc.createElement('a');
+    webBtn.href = webUrl || '#';
+    webBtn.className = 'ccr-apply-btn ccr-apply-mobile-btn';
+    webBtn.innerHTML = `${icons.web}<span>${labels.applyViaWebsite}</span>`;
+    mobileGroup.appendChild(webBtn);
+
+    const mwebBtn = doc.createElement('a');
+    mwebBtn.href = mobileUrl || '#';
+    mwebBtn.className = 'ccr-apply-btn ccr-apply-mobile-btn';
+    mwebBtn.innerHTML = `${icons.mweb}<span>${labels.applyViaMobile}</span>`;
+    mobileGroup.appendChild(mwebBtn);
+
+    area.appendChild(mobileGroup);
+  }
+
+  return area;
+}
+
 // Build a full comparison card column matching the live site structure:
 //   .ccr-card > .ccr-inner > .ccr-thumb (bg-image)
 //              > .ccr-caption > h3 + .ccr-apply-area + .compare-info (dl/dt/dd)
 //              > .ccr-button-group > a.ccr-learn-more
-function buildCompareCard(card, doc, labels) {
+function buildCompareCard(card, doc, labels, icons) {
   const name = card.name || '';
   const imgSrc = resolveImageUrl(card);
   const learnHref = resolveCardPageUrl(card);
@@ -150,6 +217,10 @@ function buildCompareCard(card, doc, labels) {
   nameEl.className = 'ccr-card-name';
   nameEl.textContent = name;
   caption.appendChild(nameEl);
+
+  // Apply area (desktop single button / mobile two-button group)
+  const applyArea = buildApplyArea(card, doc, labels, icons);
+  if (applyArea) caption.appendChild(applyArea);
 
   // Detail rows as dl/dt/dd (matching live site's .compare-info structure)
   const compareInfo = doc.createElement('div');
@@ -267,7 +338,7 @@ function getCardsFromStorage() {
 // ── Render ─────────────────────────────────────────────────────────────────────
 
 // Populate the comparison grid with matched cards, falling back to raw cookie data if none found
-function renderComparison(container, cards, allCards, sourcingMap, labels, doc) {
+function renderComparison(container, cards, allCards, sourcingMap, labels, doc, icons) {
   container.innerHTML = '';
 
   if (!cards || cards.length === 0) {
@@ -286,7 +357,7 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
     : cards.map(({ name, image }) => ({ name, image }));
 
   displayCards.forEach((card) => {
-    container.appendChild(buildCompareCard(card, doc, labels));
+    container.appendChild(buildCompareCard(card, doc, labels, icons));
   });
 }
 
@@ -306,7 +377,7 @@ function equalizeRowHeights(grid) {
   cards.forEach((card) => {
     // eslint-disable-next-line no-param-reassign
     card.style.height = '';
-    card.querySelectorAll('.ccr-card-name, dl').forEach((el) => {
+    card.querySelectorAll('.ccr-card-name, .ccr-apply-area, dl').forEach((el) => {
       // eslint-disable-next-line no-param-reassign
       el.style.height = '';
     });
@@ -316,6 +387,13 @@ function equalizeRowHeights(grid) {
   const nameEls = cards.map((c) => c.querySelector('.ccr-card-name')).filter(Boolean);
   const maxNameH = Math.max(...nameEls.map((el) => el.offsetHeight));
   nameEls.forEach((el) => { el.style.height = `${maxNameH}px`; }); // eslint-disable-line no-param-reassign
+
+  // Equalize apply area height (so dl rows align even when some cards have no apply area)
+  const applyAreas = cards.map((c) => c.querySelector('.ccr-apply-area')).filter(Boolean);
+  if (applyAreas.length > 1) {
+    const maxApplyH = Math.max(...applyAreas.map((el) => el.offsetHeight));
+    applyAreas.forEach((el) => { el.style.height = `${maxApplyH}px`; }); // eslint-disable-line no-param-reassign
+  }
 
   // Equalize each field's dl by data-field key, not by array index.
   // Cards may omit dls for empty field values, so index-based matching would
@@ -343,6 +421,9 @@ export default async function decorate(block) {
   const ph = await fetchPlaceholders();
   const labels = {
     learnMore: ph.cardLearnMore || 'Learn more',
+    applyNow: ph.cardApplyNow || 'Apply',
+    applyViaWebsite: ph.cardApplyViaWebsite || 'Apply via Website',
+    applyViaMobile: ph.cardApplyViaMobileBanking || 'Apply via Mobile Banking',
     slogan: ph.cardSlogan || 'Slogan',
     privileges: ph.cardPrivileges || 'Privileges',
     qualification: ph.cardQualification || 'Qualification',
@@ -367,8 +448,16 @@ export default async function decorate(block) {
   const buildDots = initMobileCarousel(container, doc);
 
   const doAlign = () => {
+    const measure = () => requestAnimationFrame(() => equalizeRowHeights(container));
+
     const runAlign = () => {
-      doc.fonts.ready.then(() => equalizeRowHeights(container));
+      // document.fonts.ready may already be resolved when a section that was
+      // display:none becomes visible — browsers skip loading web fonts for hidden
+      // elements, so the custom card-name font only starts fetching at this point,
+      // after fonts.ready has already settled. Listening to loadingdone catches
+      // that late load and triggers a corrective re-measure with correct metrics.
+      doc.fonts.ready.then(measure);
+      doc.fonts.addEventListener('loadingdone', measure, { once: true });
     };
 
     // If section is already visible (inline/event mode after page load), run immediately
@@ -390,10 +479,16 @@ export default async function decorate(block) {
     mo.observe(doc.body, { attributes: true, attributeFilter: ['class'] });
   };
 
-  const [allCards, sourcingMap] = await Promise.all([loadAllCards(), loadSourcingOrder()]);
+  const [allCards, sourcingMap, webIconSvg, mwebIconSvg] = await Promise.all([
+    loadAllCards(),
+    loadSourcingOrder(),
+    loadIconSvg('web'),
+    loadIconSvg('mweb'),
+  ]);
+  const icons = { web: webIconSvg, mweb: mwebIconSvg };
 
   const renderAndAlign = (cards) => {
-    renderComparison(container, cards, allCards, sourcingMap, labels, doc);
+    renderComparison(container, cards, allCards, sourcingMap, labels, doc, icons);
     buildDots();
     doAlign();
   };
