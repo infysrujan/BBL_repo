@@ -190,6 +190,11 @@
     flex-direction: column;
     gap: var(--bbl-space-100);
   }
+
+  .card-comparator-results .ccr-apply-mobile-btn {
+    font-size: var(--bbl-font-size-b2);
+    white-space: nowrap;
+  }
 }
 
 /* Desktop only: show the single apply button as solid blue */
