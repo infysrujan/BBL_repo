@@ -1,11 +1,11 @@
-const PROMOTIONS_JSON = '/data/promotions.json';
+const PROMOTIONS_JSON = 'https://publish-p185039-e1939903.adobeaemcloud.com/content/bangkokbank/en/credit-cards-promotions.allpromo.json';
 const PAGE_SIZE = 12;
 
 const fetchCache = {};
 
 async function fetchJson(url) {
   if (!fetchCache[url]) {
-    fetchCache[url] = fetch(url)
+    fetchCache[url] = fetch(url, { headers: { Accept: 'application/json' } })
       .then((r) => (r.ok && r.status !== 204 ? r.json() : null))
       .catch(() => null);
   }
@@ -111,7 +111,8 @@ function filterCards(allCards, filters, page, pageSize) {
     if (category && card.category?.toLowerCase() !== category.toLowerCase()) return false;
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
     if (subcategory && card.subcategory !== subcategory) return false;
-    if (cardType && !(card.cardTypes || []).includes(cardType.toLowerCase())) return false;
+    const cardTypesLower = (card.cardTypes || []).map((t) => t.toLowerCase());
+    if (cardType && !cardTypesLower.includes(cardType.toLowerCase())) return false;
     if (area) {
       const cardAreas = Array.isArray(card.area) ? card.area : [card.area];
       if (!cardAreas.includes('All') && !cardAreas.includes(area)) return false;
