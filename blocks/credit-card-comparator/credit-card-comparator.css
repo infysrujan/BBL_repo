@@ -202,3 +202,18 @@
     display: inline-block;
   }
 }
+
+/* ── Authoring mode — keep sticky bar visible at bottom ──────────────────── */
+
+.adobe-ue-edit div[data-aue-component="credit-card-comparator"] {
+  position: sticky ;
+  bottom: 0;
+  opacity: 1;
+  transform: translateY(0);
+  z-index: 200;
+}
+
+.adobe-ue-edit div[data-aue-component="credit-card-comparator"] .compare-group {
+  display: none;
+}
+
