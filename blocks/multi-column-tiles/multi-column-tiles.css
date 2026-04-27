@@ -1,4 +1,4 @@
-/* === Mobile (all devices base) === */
+/* Mobile (all devices base) */
 
 .multi-column-tiles-container {
   padding: 0;
@@ -22,7 +22,7 @@
 }
 
 .multi-column-tiles .multi-column-tiles-wrapper > * {
-  flex: 0 0 250px;
+  flex: 0 0 15.625rem;
   scroll-snap-align: start;
 }
 
@@ -45,7 +45,7 @@
 
 .multi-column-tiles-image {
   width: 100%;
-  height: 356px;
+  height: 22.25rem;
   overflow: hidden;
 }
 
@@ -78,10 +78,10 @@
   left: 0;
   right: 0;
   z-index: 1;
-  color: var(--bbl-color-white, #fff);
+  color: var(--bbl-color-white);
   font-size: 1.267rem;
   line-height: 1.375;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.0313rem;
   font-weight: var(--bbl-font-weight-regular, 400);
   text-align: center;
   padding-left: 18%;
@@ -94,7 +94,7 @@
 
 .multi-column-tiles-tile:hover .multi-column-tiles-title,
 .multi-column-tiles-tile.is-active .multi-column-tiles-title {
-  transform: translateY(calc(-11vh - 130px));
+  transform: translateY(calc(-11vh - 8.125rem));
 }
 
 .multi-column-tiles-title::after {
@@ -102,7 +102,7 @@
   display: block;
   width: 1.3125rem;
   height: 0.0825rem;
-  background: var(--bbl-color-white, #fff);
+  background: var(--bbl-color-white);
   margin: 0 auto;
 }
 
@@ -115,11 +115,11 @@
 
 @media (width > 47.5rem) {
   .multi-column-tiles .multi-column-tiles-wrapper > * {
-    flex: 0 0 250px;
+    flex: 0 0 15.625rem;
   }
 
   .multi-column-tiles-image {
-    height: 356px;
+    height: 22.25rem;
   }
 }
 
