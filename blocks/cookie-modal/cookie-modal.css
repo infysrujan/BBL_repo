@@ -296,7 +296,7 @@ body.cookie-modal-open .header {
   left: 0.9375rem;
   width: 1.2em;
   height: 1.2em;
-  background: var(--bbl-color-white) url('../../icons/check-symbol.svg') center / 0.75em no-repeat;
+  background: var(--bbl-color-white) url('../../icons/ckCheck.svg') center / 0.75em no-repeat;
   display: block;
 }
 

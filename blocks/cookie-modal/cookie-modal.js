@@ -93,7 +93,7 @@ function buildAccordionItem(cookieName, labelText, descriptionHTML, isChecked, s
   icon.setAttribute('aria-hidden', 'true');
   const iconImg = el('img', {
     attrs: {
-      src: startOpen ? '/icons/24_Minus.svg' : '/icons/24_Add.svg',
+      src: startOpen ? '/icons/ckMinus.svg' : '/icons/ckAdd.svg',
       alt: '',
       width: '24',
       height: '24',
@@ -122,7 +122,7 @@ function buildAccordionItem(cookieName, labelText, descriptionHTML, isChecked, s
     const isOpen = item.classList.contains('open-cookie');
     item.classList.toggle('open-cookie', !isOpen);
     item.classList.toggle('close-cookie', isOpen);
-    iconImg.src = isOpen ? '/icons/24_Add.svg' : '/icons/24_Minus.svg';
+    iconImg.src = isOpen ? '/icons/ckAdd.svg' : '/icons/ckMinus.svg';
     heading.setAttribute('aria-expanded', String(!isOpen));
   }
 
@@ -400,6 +400,4 @@ export default function decorate(block) {
   block.innerHTML = '';
   block.classList.add('cookie-modal-initialized');
   window.showCookieModal = (trigger) => openModal(overlay, trigger);
-  // eslint-disable-next-line no-console
-  console.log('[cookie-modal] window.showCookieModal registered successfully');
 }

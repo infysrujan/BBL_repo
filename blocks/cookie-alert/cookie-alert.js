@@ -56,25 +56,14 @@ function acceptAll(section) {
 }
 
 async function ensureCookieModal(fragmentPath) {
-  // eslint-disable-next-line no-console
-  console.log('[cookie-modal] ensureCookieModal called, path:', fragmentPath);
-  // eslint-disable-next-line no-console
-  console.log('[cookie-modal] window.showCookieModal exists?', typeof window.showCookieModal);
-
   if (typeof window.showCookieModal === 'function') {
     return true;
   }
 
   if (!window[MODAL_PROMISE_KEY] || window[MODAL_PATH_KEY] !== fragmentPath) {
-    // eslint-disable-next-line no-console
-    console.log('[cookie-modal] Fetching cookie-modal fragment:', fragmentPath);
     window[MODAL_PATH_KEY] = fragmentPath;
     window[MODAL_PROMISE_KEY] = loadFragment(fragmentPath)
       .then((fragment) => {
-        // eslint-disable-next-line no-console
-        console.log('[cookie-modal] loadFragment result:', fragment);
-        // eslint-disable-next-line no-console
-        console.log('[cookie-modal] window.showCookieModal after load:', typeof window.showCookieModal);
         if (!fragment && typeof window.showCookieModal !== 'function') {
           // eslint-disable-next-line no-console
           console.error('[cookie-alert] Cookie modal fragment not found at', fragmentPath);
@@ -89,8 +78,6 @@ async function ensureCookieModal(fragmentPath) {
   }
 
   const fragment = await window[MODAL_PROMISE_KEY];
-  // eslint-disable-next-line no-console
-  console.log('[cookie-modal] after await, fragment:', fragment, '| showCookieModal:', typeof window.showCookieModal);
   if (!fragment && typeof window.showCookieModal !== 'function') {
     window[MODAL_PROMISE_KEY] = null;
     return false;
@@ -156,14 +143,8 @@ export default async function decorate(block) {
           moveInstrumentation(anchor, btn);
 
           const fragmentPath = anchor.getAttribute('href') || `/${document.documentElement.lang || 'en'}/fragments/cookie-modal`;
-          // eslint-disable-next-line no-console
-          console.log('[cookie-alert] "Cookies setting" button created, modal fragment path:', fragmentPath);
           btn.addEventListener('click', async () => {
-            // eslint-disable-next-line no-console
-            console.log('[cookie-alert] "Cookies setting" button clicked');
             const loaded = await ensureCookieModal(fragmentPath);
-            // eslint-disable-next-line no-console
-            console.log('[cookie-alert] ensureCookieModal returned:', loaded, '| showCookieModal:', typeof window.showCookieModal);
             if (loaded && typeof window.showCookieModal === 'function') {
               window.showCookieModal(btn);
             } else {
