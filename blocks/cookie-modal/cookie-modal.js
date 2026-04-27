@@ -203,6 +203,44 @@ function closeModal(overlay) {
   window.setTimeout(finishClose, 300);
 }
 
+function setupUEBlockRefresh(blockEl) {
+  const ueEvents = ['aue:content-patch', 'aue:content-update', 'aue:content-add'];
+
+  const handler = async (event) => {
+    const resource = event.detail?.request?.target?.resource
+      || event.detail?.request?.target?.container?.resource;
+    if (!resource) return;
+
+    const blockResource = blockEl.getAttribute('data-aue-resource');
+    const sectionResource = blockEl.closest('[data-aue-resource]')?.getAttribute('data-aue-resource');
+    if (resource !== blockResource && resource !== sectionResource) return;
+
+    // Matched — stop editor-support.js from running its insert-then-remove
+    // which causes UE to snapshot both old and new blocks as duplicates.
+    ueEvents.forEach((e) => document.removeEventListener(e, handler, { capture: true }));
+    event.stopImmediatePropagation();
+
+    // Block-level refresh: fetch the current page, extract only the updated
+    // cookie-modal block, and swap it in atomically. No full page reload.
+    try {
+      const res = await fetch(window.location.href);
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const newBlock = doc.querySelector('.cookie-modal');
+      if (newBlock) {
+        blockEl.replaceWith(newBlock);
+        setupUEBlockRefresh(newBlock); // re-register for subsequent edits
+        return;
+      }
+    } catch {
+      // fall through to reload on fetch failure
+    }
+    window.location.reload();
+  };
+
+  ueEvents.forEach((e) => document.addEventListener(e, handler, { capture: true }));
+}
+
 export default function decorate(block) {
   // Detect authoring mode - check the block wrapper itself for data-aue-resource
   // (block.querySelectorAll only checks descendants, missing the wrapper itself)
@@ -211,8 +249,11 @@ export default function decorate(block) {
     || rows.some((row) => [...row.attributes].some(({ name }) => name.startsWith('data-aue-')));
   const isAuthoringMode = hasAuthoringAttrs && window.self !== window.top;
 
-  // In authoring mode, don't process the block to allow proper content authoring
+  // In authoring mode: don't run the full decoration, but register the block
+  // refresh handler so UE edits swap only this block instead of causing a
+  // full page reload or the insert-then-remove duplicate in editor-support.js.
   if (isAuthoringMode) {
+    setupUEBlockRefresh(block);
     return;
   }
 
