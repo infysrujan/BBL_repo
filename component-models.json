@@ -8580,14 +8580,14 @@
       },
       {
         "component": "aem-content",
-        "name": "link",
-        "label": "Link",
+        "name": "ctaLink",
+        "label": "Cta Link",
         "description": "Destination URL for the button"
       },
       {
         "component": "text",
-        "name": "linkText",
-        "label": "Text",
+        "name": "ctaLabel",
+        "label": "Cta Label",
         "description": "Button label text",
         "required": true
       },
