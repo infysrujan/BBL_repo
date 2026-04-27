@@ -212,7 +212,8 @@
         "forex-rates",
         "forex-graph",
         "accordion-block",
-        "table"
+        "table",
+        "market-report"
       ]
     }
   ]
