@@ -120,7 +120,7 @@
   justify-content: center;
   margin: 0 var(--bbl-space-250) var(--bbl-space-250);
   min-height: 2.75rem;
-  padding: 5px 0;
+  padding: 0.3125rem 0;
   box-sizing: border-box;
   border-radius: 0.4375rem;
   border: 0.0625rem solid var(--bbl-color-active-blue);

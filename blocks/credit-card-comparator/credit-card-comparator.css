@@ -124,7 +124,7 @@
 }
 
 .credit-card-comparator .icon-close:hover {
-  box-shadow: 0.0625rem 0.0625rem 0.375rem 0 var(--bbl-color-black-alpha-30);
+  box-shadow: 0.0625rem 0.0625rem var(--bbl-space-075) 0 var(--bbl-color-black-alpha-30);
 }
 
 /* ── Info ────────────────────────────────────────────────────────────────── */
