@@ -1008,7 +1008,7 @@
   }
 }
 
-@media (width > 47.5rem) and (width < 64rem) {
+@media (width > 47.5rem) {
   /* Fix tablet spacing and align arrows automatically to content size */
   .carousel-dotted.show-arrows-dots {
     display: grid;
@@ -1061,6 +1061,7 @@
   .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards.is-active {
     display: block;
     opacity: 1;
+    overflow: hidden;
   }
 }
 
