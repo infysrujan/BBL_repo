@@ -8883,6 +8883,14 @@
     "id": "table",
     "fields": [
       {
+        "component": "text",
+        "name": "id",
+        "label": "Id",
+        "valueType": "string",
+        "value": "",
+        "description": "The id of the table"
+      },
+      {
         "component": "multiselect",
         "name": "style",
         "label": "Variation",
@@ -8941,6 +8949,19 @@
               {
                 "name": "Header Mixed Blue",
                 "value": "header-mixed-blue"
+              }
+            ]
+          },
+          {
+            "name": "Row",
+            "children": [
+              {
+                "name": "Zebra Light Gray without header",
+                "value": "zebra-light-gray-without-header"
+              },
+              {
+                "name": "Zebra Light Gray with header",
+                "value": "zebra-light-gray-with-header"
               }
             ]
           },
