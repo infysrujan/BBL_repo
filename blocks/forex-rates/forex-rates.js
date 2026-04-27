@@ -40,8 +40,14 @@ function isValidSelectedDay(state) {
   return enabledDays.includes(parsed.day);
 }
 
-// eslint-disable-next-line max-len
-function renderDatepicker(state, monthLabels, dayLabels, buddhistYearOffset, prevMonthLabel, nextMonthLabel) {
+function renderDatepicker(
+  state,
+  monthLabels,
+  dayLabels,
+  buddhistYearOffset,
+  prevMonthLabel,
+  nextMonthLabel,
+) {
   if (!state.calendarOpen) return '';
 
   const viewMonthKey = getMonthKey(state.viewYear, state.viewMonth);
