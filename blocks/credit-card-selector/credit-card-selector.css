@@ -9,6 +9,7 @@
   font-family: var(--bbl-font-family-primary);
   position: relative;
   z-index: 0; /* creates stacking context so ::after z-index: -1 stays behind content */
+  overflow-x: clip; /* prevent ::after full-bleed strip from causing horizontal scroll */
 }
 
 /* Full-bleed white strip — height matches the short toggle bar (1.875rem = 30px). */
@@ -17,8 +18,9 @@
   position: absolute;
   bottom: 0;
   height: 1.875rem;
-  left: -100vw;
-  right: -100vw;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: var(--bbl-color-white);
   z-index: -1;
 }
