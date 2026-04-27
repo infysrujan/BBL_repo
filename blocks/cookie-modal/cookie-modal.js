@@ -400,6 +400,4 @@ export default function decorate(block) {
   block.innerHTML = '';
   block.classList.add('cookie-modal-initialized');
   window.showCookieModal = (trigger) => openModal(overlay, trigger);
-  // eslint-disable-next-line no-console
-  console.log('[cookie-modal] window.showCookieModal registered successfully');
 }
