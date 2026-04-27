@@ -156,16 +156,17 @@ function buildCompareCard(card, doc, labels) {
   compareInfo.className = 'compare-info';
 
   const fields = [
-    { label: labels.slogan, value: plaintext(card.slogan) },
-    { label: labels.privileges, value: plaintext(card.privileges) },
-    { label: labels.qualification, value: plaintext(card.qualification) },
-    { label: labels.rewardPoints, value: plaintext(card.rewardPointsCashback) },
-    { label: labels.mileage, value: plaintext(card.mileageRedemption) },
+    { key: 'slogan', label: labels.slogan, value: plaintext(card.slogan) },
+    { key: 'privileges', label: labels.privileges, value: plaintext(card.privileges) },
+    { key: 'qualification', label: labels.qualification, value: plaintext(card.qualification) },
+    { key: 'rewardPoints', label: labels.rewardPoints, value: plaintext(card.rewardPointsCashback) },
+    { key: 'mileage', label: labels.mileage, value: plaintext(card.mileageRedemption) },
   ];
 
-  fields.forEach(({ label, value }) => {
+  fields.forEach(({ key, label, value }) => {
     if (!value) return;
     const dl = doc.createElement('dl');
+    dl.dataset.field = key;
     const dt = doc.createElement('dt');
     dt.className = 'ccr-label';
     dt.textContent = label;
@@ -297,8 +298,14 @@ function equalizeRowHeights(grid) {
   const cards = [...grid.querySelectorAll('.ccr-card')];
   if (cards.length < 2) return;
 
-  // Reset previously set heights so we remeasure from natural content height
+  // Bail out if the grid has not been painted yet (e.g. inside a display:none section).
+  // Check BEFORE resetting so we don't wipe existing heights on a hidden-section call.
+  if (grid.getBoundingClientRect().width === 0) return;
+
+  // Reset previously set heights (including card height) so we remeasure naturally
   cards.forEach((card) => {
+    // eslint-disable-next-line no-param-reassign
+    card.style.height = '';
     card.querySelectorAll('.ccr-card-name, dl').forEach((el) => {
       // eslint-disable-next-line no-param-reassign
       el.style.height = '';
@@ -308,17 +315,25 @@ function equalizeRowHeights(grid) {
   // Equalize card name height
   const nameEls = cards.map((c) => c.querySelector('.ccr-card-name')).filter(Boolean);
   const maxNameH = Math.max(...nameEls.map((el) => el.offsetHeight));
-  nameEls.forEach((el) => { el.style.height = `${maxNameH}px`; });
+  nameEls.forEach((el) => { el.style.height = `${maxNameH}px`; }); // eslint-disable-line no-param-reassign
 
-  // Equalize each dl row by position index
-  const maxDls = Math.max(...cards.map((c) => c.querySelectorAll('dl').length));
-  for (let i = 0; i < maxDls; i += 1) {
-    const dls = cards.map((c) => c.querySelectorAll('dl')[i]).filter(Boolean);
-    // eslint-disable-next-line no-continue
-    if (!dls.length) continue;
+  // Equalize each field's dl by data-field key, not by array index.
+  // Cards may omit dls for empty field values, so index-based matching would
+  // silently compare the wrong fields across cards (e.g. card 1's Mileage dl
+  // at index 3 paired with card 2's Reward Points dl also at index 3).
+  const fieldKeys = ['slogan', 'privileges', 'qualification', 'rewardPoints', 'mileage'];
+  fieldKeys.forEach((key) => {
+    const dls = cards.map((c) => c.querySelector(`dl[data-field="${key}"]`)).filter(Boolean);
+    if (dls.length < 2) return;
     const maxH = Math.max(...dls.map((dl) => dl.offsetHeight));
-    dls.forEach((dl) => { dl.style.height = `${maxH}px`; });
-  }
+    dls.forEach((dl) => { dl.style.height = `${maxH}px`; }); // eslint-disable-line no-param-reassign
+  });
+
+  // Equalize total card height so cards with fewer fields are not shorter.
+  // The caption's flex-grow: 1 fills the extra space, keeping the learn-more
+  // button pinned to the bottom of every card.
+  const maxCardH = Math.max(...cards.map((c) => c.offsetHeight));
+  cards.forEach((c) => { c.style.height = `${maxCardH}px`; }); // eslint-disable-line no-param-reassign
 }
 
 // ── Decorate ───────────────────────────────────────────────────────────────────
@@ -352,7 +367,27 @@ export default async function decorate(block) {
   const buildDots = initMobileCarousel(container, doc);
 
   const doAlign = () => {
-    doc.fonts.ready.then(() => requestAnimationFrame(() => equalizeRowHeights(container)));
+    const runAlign = () => {
+      doc.fonts.ready.then(() => equalizeRowHeights(container));
+    };
+
+    // If section is already visible (inline/event mode after page load), run immediately
+    if (container.getBoundingClientRect().width > 0) {
+      runAlign();
+      return;
+    }
+
+    // EDS sets sections to display:none until all blocks in the section are decorated,
+    // then removes the inline style. Watch for that change so we measure after paint.
+    const section = block.closest('.section');
+    const mo = new MutationObserver(() => {
+      if (container.getBoundingClientRect().width > 0) {
+        mo.disconnect();
+        runAlign();
+      }
+    });
+    if (section) mo.observe(section, { attributes: true, attributeFilter: ['style', 'class'] });
+    mo.observe(doc.body, { attributes: true, attributeFilter: ['class'] });
   };
 
   const [allCards, sourcingMap] = await Promise.all([loadAllCards(), loadSourcingOrder()]);
