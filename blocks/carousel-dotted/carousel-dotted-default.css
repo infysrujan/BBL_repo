@@ -497,7 +497,7 @@
 }
 
 :lang(th) {
- .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is h2 {
+ .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
     line-height: 2.0625rem;
   }
 }
@@ -920,7 +920,7 @@
     font-size: var(--bbl-font-size-h3-desktop);
     line-height: 2.875rem;
   }
-  
+
   :lang(th) {
       .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
       line-height: 5.5rem;
