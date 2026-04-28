@@ -8209,7 +8209,14 @@
         "component": "reference",
         "valueType": "string",
         "name": "image",
-        "label": "Image",
+        "label": "Image (Desktop)",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "imageMobile",
+        "label": "Image (Mobile)",
         "multi": false
       },
       {

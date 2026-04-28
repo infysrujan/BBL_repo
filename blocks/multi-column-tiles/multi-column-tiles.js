@@ -1,14 +1,22 @@
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
 function buildTileHTML(row) {
-  const [imageDiv, imageLinkDiv, imageLinkTitleDiv, titleDiv] = row.children;
+  const [
+    imgElDesktop,
+    imgElMobile,
+    imgAlt,
+    imageLinkDiv,
+    imageLinkTitleDiv,
+    titleDiv,
+  ] = row.children;
 
-  const pictureDesktop = imageDiv?.querySelector('picture');
+  const pictureDesktop = imgElDesktop?.querySelector('picture');
+  const pictureMobile = imgElMobile?.querySelector('picture');
 
   let pictureHTML = '';
-  if (pictureDesktop) {
-    const picture = createSmartImage(imageDiv, null, null);
-    pictureHTML = picture?.outerHTML || pictureDesktop.outerHTML || '';
+  if (pictureDesktop || pictureMobile) {
+    const picture = createSmartImage(imgElDesktop, imgElMobile, imgAlt);
+    pictureHTML = picture?.outerHTML || '';
   }
 
   const linkAnchor = imageLinkDiv?.querySelector('a');
