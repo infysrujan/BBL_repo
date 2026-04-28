@@ -6,7 +6,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
-const INITIAL_VISIBLE = 3;
+const INITIAL_VISIBLE = 6;
 const MAX_FILTERED = 5;
 const MAX_COMPARE = 3;
 const MOBILE_BREAKPOINT = '(width < 760px)';

@@ -175,41 +175,21 @@
   flex-shrink: 0;
 }
 
-/* Both variants hidden by default; each is enabled only in its target viewport */
+/* Mobile: show two-button group, hide desktop button */
 
-.card-comparator-results .ccr-apply-desktop,
-.card-comparator-results .ccr-apply-mobile-group {
+.card-comparator-results .ccr-apply-desktop {
   display: none;
 }
 
-/* Mobile only: show the two-button group */
-
-@media (width <= 47.5rem) {
-  .card-comparator-results .ccr-apply-mobile-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--bbl-space-100);
-  }
-
-  .card-comparator-results .ccr-apply-mobile-btn {
-    font-size: var(--bbl-font-size-b2);
-    white-space: nowrap;
-  }
+.card-comparator-results .ccr-apply-mobile-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bbl-space-100);
 }
 
-/* Desktop only: show the single apply button as solid blue */
-
-@media (width > 47.5rem) {
-  .card-comparator-results .ccr-apply-desktop {
-    display: flex;
-    background: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
-  }
-
-  .card-comparator-results .ccr-apply-desktop:hover {
-    background: var(--bbl-color-blue-90);
-    border-color: var(--bbl-color-blue-90);
-  }
+.card-comparator-results .ccr-apply-mobile-btn {
+  font-size: var(--bbl-font-size-b2);
+  white-space: nowrap;
 }
 
 /* No results */
@@ -274,6 +254,21 @@
   .card-comparator-results .ccr-card {
     flex: 0 0 calc((100% - 2 * var(--bbl-space-250)) / 3);
     scroll-snap-align: none;
+  }
+
+  .card-comparator-results .ccr-apply-mobile-group {
+    display: none;
+  }
+
+  .card-comparator-results .ccr-apply-desktop {
+    display: flex;
+    background: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
+  }
+
+  .card-comparator-results .ccr-apply-desktop:hover {
+    background: var(--bbl-color-blue-90);
+    border-color: var(--bbl-color-blue-90);
   }
 }
 
