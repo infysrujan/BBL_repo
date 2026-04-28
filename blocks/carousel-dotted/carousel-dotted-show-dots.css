@@ -11,7 +11,7 @@
 }
 
 .section.central-aligned.center-title.carousel-dotted-container {
-  padding: 80px 20px 30px;
+  padding: var(--bbl-space-section-lg) var(--bbl-space-250) 1.875rem;
 }
 
 .card-list-modal-title {
