@@ -529,18 +529,6 @@
   transition: all 0.6s 0.4s;
 }
 
-:lang(th) {
-  h1 {
-    line-height: 2.4375rem;
-  }
-}
-
-:lang(th) {
-  h2 {
-    line-height: 2.0625rem;
-  }
-}
-
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-subtitle p {
   font-size: 1.1375rem;
   line-height: 1.57;
@@ -1136,29 +1124,6 @@
     line-height: 2.875rem;
   }
   
-  :lang(th) {
-    h1 {
-      line-height: 5.5rem;
-    }
-  }
-
-  :lang(th) {
-   h2 {
-      line-height: 4.875rem;
-    }
-  }
-
-  :lang(th) {
-    h3 {
-      line-height: 3.75rem;
-    }
-  }
-
-  :lang(th) {
-  h4 {
-      line-height: 2.5rem;
-    }
-  }
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-subtitle p {
     font-size: 1.5rem;
@@ -1229,7 +1194,7 @@
 }
 
 .section.central-aligned.center-title.carousel-dotted-container {
-  padding: 80px 20px 30px;
+  padding: 5rem 1.25rem 1.875rem;
 }
 
 .card-list-modal-title {
