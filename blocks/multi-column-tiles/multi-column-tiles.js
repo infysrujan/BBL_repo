@@ -38,6 +38,8 @@ function buildTileHTML(row) {
 }
 
 export default function decorate(block) {
+  if (document.documentElement.classList.contains('adobe-ue-edit')) return;
+
   const rows = [...block.children].slice(0, 4);
 
   block.innerHTML = `
@@ -50,5 +52,6 @@ export default function decorate(block) {
     tile.addEventListener('touchstart', () => tile.classList.add('is-active'), { passive: true });
     tile.addEventListener('touchend', () => tile.classList.remove('is-active'), { passive: true });
     tile.addEventListener('touchcancel', () => tile.classList.remove('is-active'), { passive: true });
+
   });
 }
