@@ -379,35 +379,30 @@
     overflow-y: clip;
     margin-inline: 0;
   }
-
-
   :lang(th) {
-    .hero-banner-content :is(h1) {
+    h1 {
       line-height: 5.5rem;
       ;
     }
   }
 
   :lang(th) {
-    .hero-banner-content :is(h2) {
+    h2 {
       line-height: 4.875rem;
     }
   }
 
-
   :lang(th) {
-    .hero-banner-content :is(h3) {
+    h3 {
       line-height: 3.75rem;
     }
   }
 
-
   :lang(th) {
-    .hero-banner-content :is(h4) {
+    h4 {
       line-height: 2.5rem;
     }
   }
-
 
   .hero-banner-content-inner {
     width: 66.6667%;
