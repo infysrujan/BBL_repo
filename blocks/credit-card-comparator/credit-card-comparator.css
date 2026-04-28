@@ -39,7 +39,7 @@
 
 .credit-card-comparator .compare-error {
   width: 100%;
-  color: var(--bbl-color-red-130);
+  color: var(--bbl-color-system-red);
   font-size: var(--bbl-font-size-b2);
   font-weight: 600;
   padding-bottom: var(--bbl-space-100);
@@ -157,7 +157,7 @@
 }
 
 .credit-card-comparator .btn-primary:hover {
-  background: var(--bbl-color-blue-150);
+  background: var(--bbl-color-blue-90);
 }
 
 .credit-card-comparator .btn-primary:disabled {

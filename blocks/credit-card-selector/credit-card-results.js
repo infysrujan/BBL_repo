@@ -6,11 +6,13 @@ import { fetchConfigs } from '../../scripts/config.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
+const TABLET_MIN = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim();
+
 const INITIAL_VISIBLE = 6;
-const DESKTOP_BREAKPOINT = '(width > 47.5rem)';
+const DESKTOP_BREAKPOINT = `(width > ${TABLET_MIN})`;
 const MAX_FILTERED = 5;
 const MAX_COMPARE = 3;
-const MOBILE_BREAKPOINT = '(width < 47.5rem)';
+const MOBILE_BREAKPOINT = `(width < ${TABLET_MIN})`;
 const BENEFIT_ALIASES = { rewards: 'point' };
 
 // ── String / data utilities ────────────────────────────────────────────────────
@@ -70,25 +72,11 @@ function sortBySourcing(cards) {
 async function loadSheetData() {
   try {
     const resp = await fetch('/credit-card-suggestor.json');
-    // eslint-disable-next-line no-console
-    console.log('[credit-card-results] sheet data fetch:', resp.status, resp.ok);
     if (!resp.ok) return [];
     const json = await resp.json();
     const rows = (json.data || []).map(normalizeRow);
-    // eslint-disable-next-line no-console
-    console.log('[credit-card-results] sheet rows loaded:', rows.length);
-    // eslint-disable-next-line no-console
-    console.table(rows.map((r) => ({
-      name: r['Product Name (EN)'],
-      income: r.Income,
-      lifestyles: r.Lifestyles,
-      benefit: r.Benefit,
-      sourcing: r.Sourcing,
-    })));
     return rows;
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.warn('[credit-card-results] sheet fetch failed:', err);
+  } catch {
     return [];
   }
 }
@@ -97,20 +85,12 @@ async function loadCardData() {
   try {
     const configs = await fetchConfigs();
     const url = configs.creditCardSuggesterData;
-    // eslint-disable-next-line no-console
-    console.log('[credit-card-results] card data fetch:', url);
-    if (!url) {
-      // eslint-disable-next-line no-console
-      console.warn('[credit-card-results] creditCardSuggesterData not found in config');
-      return [];
-    }
+    if (!url) return [];
     const resp = await fetch(url);
     if (!resp.ok) return [];
     const json = await resp.json();
     return json.data?.creditCardsList?.items || json.data || json.items || [];
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.warn('[credit-card-results] card data fetch failed:', err);
+  } catch {
     return [];
   }
 }
@@ -118,19 +98,13 @@ async function loadCardData() {
 // ── Filtering ──────────────────────────────────────────────────────────────────
 
 function matchesFilter(row, { userIncome, userBenefit, userLifestyles }) {
-  const name = row['Product Name (EN)'];
-
   if (userIncome > 0) {
     const cardIncome = parseIncomeValue(row.Income || '');
-    // eslint-disable-next-line no-console
-    console.log(`  [${name}] Income: ${cardIncome} vs ${userIncome}`);
     if (cardIncome !== userIncome) return false;
   }
 
   if (userBenefit) {
     const cardBenefit = normalizeBenefit(row.Benefit || '');
-    // eslint-disable-next-line no-console
-    console.log(`  [${name}] Benefit: "${cardBenefit}" vs "${userBenefit}"`);
     if (cardBenefit && cardBenefit !== userBenefit) return false;
   }
 
@@ -139,8 +113,6 @@ function matchesFilter(row, { userIncome, userBenefit, userLifestyles }) {
     const hasMatch = userLifestyles.some(
       (sel) => cardLifestyles.some((cl) => cl.includes(sel) || sel.includes(cl)),
     );
-    // eslint-disable-next-line no-console
-    console.log(`  [${name}] Lifestyles match: ${hasMatch}`);
     if (!hasMatch) return false;
   }
 
@@ -153,8 +125,6 @@ function filterSheetCards(sheetCards, { income, benefit, lifestyles } = {}) {
     userBenefit: normalizeBenefit(benefit),
     userLifestyles: (lifestyles || []).map(norm).filter(Boolean),
   };
-  // eslint-disable-next-line no-console
-  console.log('[filterSheetCards] income:', criteria.userIncome, '| benefit:', criteria.userBenefit, '| lifestyles:', criteria.userLifestyles);
   return sheetCards.filter((row) => matchesFilter(row, criteria));
 }
 
@@ -166,9 +136,6 @@ async function resolveFilteredCards(sheetCards, filterState) {
   const matchingRows = filterSheetCards(sheetCards, filterState);
   const matchingNames = matchingRows.map((row) => norm(row['Product Name (EN)'] || ''));
 
-  // eslint-disable-next-line no-console
-  console.log('[credit-card-results] matching names:', matchingNames);
-
   if (!matchingNames.length) return [];
 
   const sourcingMap = {};
@@ -179,20 +146,11 @@ async function resolveFilteredCards(sheetCards, filterState) {
 
   // Second fetch — request only the matched cards by name
   const rawCards = await loadCardData();
-  // eslint-disable-next-line no-console
-  console.log('[credit-card-results] second fetch returned:', rawCards.length);
-  // eslint-disable-next-line no-console
-  console.log('[credit-card-results] raw card names:', rawCards.map((c) => norm(getCardField(c, 'nameEN', 'Product Name (EN)', 'name', 'cardName'))));
-  // eslint-disable-next-line no-console
-  console.log('[credit-card-results] matching against:', matchingNames);
 
   const filtered = rawCards
     .filter((card) => {
       const name = norm(getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
-      const matches = matchingNames.includes(name);
-      // eslint-disable-next-line no-console
-      console.log(`  [filter] "${name}" → ${matches}`);
-      return matches;
+      return matchingNames.includes(name);
     })
     .sort((a, b) => {
       const nameA = norm(getCardField(a, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
@@ -201,8 +159,6 @@ async function resolveFilteredCards(sheetCards, filterState) {
     })
     .slice(0, MAX_FILTERED);
 
-  // eslint-disable-next-line no-console
-  console.log('[credit-card-results] filtered cards:', filtered.length);
   return filtered;
 }
 
@@ -468,15 +424,15 @@ function setPeek(container) {
   const anchorEl = btnEl || row2Item.querySelector('.cards-list-description') || row2Item;
   const anchorRect = anchorEl.getBoundingClientRect();
   const peekHeight = Math.round(anchorRect.top - containerTop);
-  // eslint-disable-next-line no-param-reassign
-  container.style.maxHeight = `${peekHeight}px`;
-  container.classList.add('ccs-peek');
+  const el = container;
+  el.style.maxHeight = `${peekHeight}px`;
+  el.classList.add('ccs-peek');
 }
 
 function removePeek(container) {
-  // eslint-disable-next-line no-param-reassign
-  container.style.maxHeight = '';
-  container.classList.remove('ccs-peek');
+  const el = container;
+  el.style.maxHeight = '';
+  el.classList.remove('ccs-peek');
 }
 
 export default async function initCardResults(selectorBlock, { disclaimerHtml = '' } = {}) {
@@ -490,8 +446,6 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
   await loadCSS(`${window.hlx.codeBasePath}/blocks/card-list/card-list.css`);
 
   const ph = await fetchPlaceholders();
-  // eslint-disable-next-line no-console
-  console.log('[credit-card-results] placeholders:', ph);
 
   const isTH = lang === 'th';
   const labels = {
@@ -602,8 +556,6 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
 
   // ── Filter applied ─────────────────────────────────────────────────────────
   doc.addEventListener('credit-card-filter-applied', async (e) => {
-    // eslint-disable-next-line no-console
-    console.log('[credit-card-results] filter applied:', e.detail);
     activeCards = await resolveFilteredCards(sheetCards, e.detail || {});
     isExpanded = false;
     render();
