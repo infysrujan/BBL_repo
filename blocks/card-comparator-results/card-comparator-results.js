@@ -2,6 +2,8 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
 
+const TABLET_MIN = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim();
+
 // ── Utilities ──────────────────────────────────────────────────────────────────
 
 // Normalize a string: strip zero-width spaces, collapse whitespace, lowercase
@@ -364,7 +366,7 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc, 
 // ── Row height equalizer — matches live site JS (sets inline height) ──────────
 
 function equalizeRowHeights(grid) {
-  if (!window.matchMedia('(width > 47.5rem)').matches) return;
+  if (!window.matchMedia(`(width > ${TABLET_MIN})`).matches) return;
 
   const cards = [...grid.querySelectorAll('.ccr-card')];
   if (cards.length < 2) return;
