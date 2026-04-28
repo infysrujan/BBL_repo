@@ -252,7 +252,7 @@ body.cookie-modal-open .header {
   top: 0;
   left: 0;
   width: 2.5rem;
-  background: var(--bbl-color-blue-160);
+  background: var(--bbl-color-active-blue);
   border-radius: var(--bbl-rounded-150);
   cursor: pointer;
   transition: 0.3s ease-in-out;
