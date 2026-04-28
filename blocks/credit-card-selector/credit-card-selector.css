@@ -12,7 +12,6 @@
   overflow-x: clip; /* prevent ::after full-bleed strip from causing horizontal scroll */
 }
 
-/* Full-bleed white strip — height matches the short toggle bar (1.875rem = 30px). */
 .credit-card-selector::after {
   content: '';
   position: absolute;
@@ -218,7 +217,6 @@
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Mobile: 7rem = 112px matches live site's mobile lifestyle card height */
 .credit-card-selector .option-card-stacked {
   flex-direction: column;
   justify-content: center;
@@ -242,7 +240,6 @@
   border-color: var(--bbl-color-active-blue);
 }
 
-/* Selected — simulate 2 px blue ring via box-shadow so layout never shifts */
 .credit-card-selector .option-card.is-selected {
   border-color: var(--bbl-color-active-blue);
   box-shadow: inset 0 0 0 0.0625rem var(--bbl-color-active-blue);
@@ -259,8 +256,6 @@
   flex-shrink: 0;
 }
 
-
-/* Benefits / inline icons — 24 px (icon SVGs are naturally 24 px) */
 .credit-card-selector .option-icon-inline img {
   display: block;
   width: var(--bbl-space-300);
@@ -778,7 +773,6 @@
     height: var(--bbl-space-600);
   }
 
-  /* Lifestyle stacked card: restore full 126 px height on tablet+ */
   .credit-card-selector .option-card-stacked {
     min-height: 7.875rem;
   }
