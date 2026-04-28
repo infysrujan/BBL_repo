@@ -50,7 +50,7 @@
     scroll-behavior: smooth;
 }
 
-.cards-list-button button{
+.cards-list-button .button{
     width: 100%;
     box-sizing: border-box;
 }
