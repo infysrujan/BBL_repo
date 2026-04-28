@@ -662,6 +662,24 @@
   display: none !important;
 }
 
+/* ── Row-2 peek: clips container to show cards 4–6 at 50% height on desktop ─── */
+
+.ccs-card-list-container.ccs-peek {
+  overflow: hidden;
+  position: relative;
+}
+
+.ccs-card-list-container.ccs-peek::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8rem;
+  background: linear-gradient(to bottom, transparent, var(--bbl-color-white));
+  pointer-events: none;
+}
+
 /* ── No-results state ─────────────────────────────────────────────────────── */
 
 .ccs-no-results {

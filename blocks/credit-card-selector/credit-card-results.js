@@ -7,6 +7,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 // ── Constants ──────────────────────────────────────────────────────────────────
 
 const INITIAL_VISIBLE = 6;
+const DESKTOP_BREAKPOINT = '(width > 47.5rem)';
 const MAX_FILTERED = 5;
 const MAX_COMPARE = 3;
 const MOBILE_BREAKPOINT = '(width < 760px)';
@@ -450,6 +451,34 @@ function initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels) 
  * @param {Element} selectorBlock
  * @param {{ disclaimerHtml?: string }} options
  */
+// ── Row-peek helpers ───────────────────────────────────────────────────────────
+
+// Clip the container so row 2 (cards 4–6) shows at 50% height on desktop.
+// Uses getBoundingClientRect so the measurement is accurate after any scroll.
+function setPeek(container) {
+  if (!window.matchMedia(DESKTOP_BREAKPOINT).matches) return;
+  const items = [...container.querySelectorAll(
+    '.cards-list-item:not(.ccs-hidden):not([data-ccs-clone])',
+  )];
+  if (items.length < 4) return;
+  const containerTop = container.getBoundingClientRect().top;
+  const row2Item = items[3];
+  // Clip at the top of the button area — the 8rem gradient fades the description text out
+  const btnEl = row2Item.querySelector('.cards-list-button');
+  const anchorEl = btnEl || row2Item.querySelector('.cards-list-description') || row2Item;
+  const anchorRect = anchorEl.getBoundingClientRect();
+  const peekHeight = Math.round(anchorRect.top - containerTop);
+  // eslint-disable-next-line no-param-reassign
+  container.style.maxHeight = `${peekHeight}px`;
+  container.classList.add('ccs-peek');
+}
+
+function removePeek(container) {
+  // eslint-disable-next-line no-param-reassign
+  container.style.maxHeight = '';
+  container.classList.remove('ccs-peek');
+}
+
 export default async function initCardResults(selectorBlock, { disclaimerHtml = '' } = {}) {
   // Remove any stale results sections left over from a previously decorated instance.
   // This handles the case where UE replaced the block element but the old .ccs-results remains.
@@ -522,6 +551,10 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
       [...blockEl.querySelectorAll('.cards-list-item')].forEach((item, i) => {
         if (i >= INITIAL_VISIBLE) item.classList.add('ccs-hidden');
       });
+      // Defer peek measurement until after the browser has laid out the new cards
+      requestAnimationFrame(() => setPeek(cardListContainer));
+    } else {
+      removePeek(cardListContainer);
     }
 
     const cardsList = blockEl.querySelector('.cards-list.scrollable');
@@ -558,6 +591,11 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
     [...cardListContainer.querySelectorAll('.cards-list-item')].forEach((item, i) => {
       if (i >= INITIAL_VISIBLE) item.classList.toggle('ccs-hidden', !isExpanded);
     });
+    if (isExpanded) {
+      removePeek(cardListContainer);
+    } else {
+      requestAnimationFrame(() => setPeek(cardListContainer));
+    }
     refreshToggle();
     if (currentBuildDots) currentBuildDots();
   });
