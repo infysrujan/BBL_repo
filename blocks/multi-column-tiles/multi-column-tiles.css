@@ -140,3 +140,7 @@
     height: 100vh;
   }
 }
+
+html.adobe-ue-edit .multi-column-tiles-image {
+  height: 22.25rem;
+}
