@@ -71,7 +71,10 @@ function sortBySourcing(cards) {
 
 async function loadSheetData() {
   try {
-    const resp = await fetch('/credit-card-suggestor.json');
+    const configs = await fetchConfigs();
+    const url = configs.creditCardFilteringMatrixUrl;
+    if (!url) return [];
+    const resp = await fetch(url);
     if (!resp.ok) return [];
     const json = await resp.json();
     const rows = (json.data || []).map(normalizeRow);

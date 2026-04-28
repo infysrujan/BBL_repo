@@ -75,7 +75,10 @@ function normalizeRow(row) {
 // Build a map of normalized card name → sourcing priority number from the suggestor sheet
 async function loadSourcingOrder() {
   try {
-    const resp = await fetch('/credit-card-suggestor.json');
+    const configs = await fetchConfigs();
+    const url = configs.creditCardFilteringMatrixUrl;
+    if (!url) return null;
+    const resp = await fetch(url);
     if (!resp.ok) return null;
     const json = await resp.json();
     const lang = getLang();
