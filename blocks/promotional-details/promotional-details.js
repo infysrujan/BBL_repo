@@ -1,6 +1,6 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
-const PROMOTIONS_JSON = '/data/promotions.json';
+const PROMOTIONS_JSON = 'https://publish-p185039-e1939903.adobeaemcloud.com/content/bangkokbank/en/credit-cards-promotions.allpromo.json';
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -15,7 +15,7 @@ function buildDateHtml(start, end, label) {
 
 function buildDisclaimerHtml(enabled, text) {
   if (!enabled || !text) return '';
-  return `<div class="promo-detail-disclaimer"><p class="promo-detail-disclaimer-text">${text}</p></div>`;
+  return `<div class="promo-detail-disclaimer pad-top-30">${text}</div>`;
 }
 
 async function fetchPromoData(promoId) {

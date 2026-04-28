@@ -1,9 +1,11 @@
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
+
 const PROMOTIONS_JSON = 'https://publish-p185039-e1939903.adobeaemcloud.com/content/bangkokbank/en/credit-cards-promotions.allpromo.json';
 const PAGE_SIZE = 12;
 
 const fetchCache = {};
 
-async function fetchJson(url) {
+export async function fetchJson(url) {
   if (!fetchCache[url]) {
     fetchCache[url] = fetch(url, { headers: { Accept: 'application/json' } })
       .then((r) => (r.ok && r.status !== 204 ? r.json() : null))
@@ -48,8 +50,8 @@ function buildLogosHtml(logos) {
   return `<div class="promo-selector-logos">${imgs}</div>`;
 }
 
-function buildCardHtml(card, tag) {
-  const dateLine = buildDateLine(card);
+export function buildCardHtml(card, tag, placeholders = {}) {
+  const dateLine = buildDateLine(card, placeholders);
   const logoHtml = buildLogosHtml((card.cardTypes || []).map((t) => t.toLowerCase()));
   const target = card.targetLink === 'true' ? '_blank' : '_self';
   return `<div class="promo-selector-card-container">
@@ -101,6 +103,17 @@ function buildSubOptions(items) {
     .join('');
 }
 
+export function sortCards(cards) {
+  return [...cards].sort((a, b) => {
+    const aStart = a.promotionStartDate ? new Date(a.promotionStartDate).getTime() : 0;
+    const bStart = b.promotionStartDate ? new Date(b.promotionStartDate).getTime() : 0;
+    if (bStart !== aStart) return bStart - aStart;
+    const aEnd = a.promotionEndDate ? new Date(a.promotionEndDate).getTime() : Infinity;
+    const bEnd = b.promotionEndDate ? new Date(b.promotionEndDate).getTime() : Infinity;
+    return aEnd - bEnd;
+  });
+}
+
 function filterCards(allCards, filters, page, pageSize) {
   const {
     category, subcategory, cardType, area,
@@ -120,19 +133,34 @@ function filterCards(allCards, filters, page, pageSize) {
     return true;
   });
 
-  const total = matched.length;
+  const sorted = sortCards(matched);
+  const total = sorted.length;
   const start = (page - 1) * pageSize;
-  return { cards: matched.slice(start, start + pageSize), total };
+  return { cards: sorted.slice(start, start + pageSize), total };
 }
 
-function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, pageSize) {
+function setupPanel(
+  panel,
+  allCards,
+  category,
+  subcategories,
+  cardTypes,
+  areas,
+  pageSize,
+  placeholders,
+) {
+  const labelCategory = placeholders.promoFilterCategory || 'Category';
+  const labelCardType = placeholders.promoFilterCardType || 'Card Type';
+  const labelArea = placeholders.promoFilterArea || 'Area';
+  const labelReset = placeholders.promoReset || 'Reset';
+  const labelSearch = placeholders.promoSearch || 'Search';
   const subDisabled = !subcategories.length;
 
   panel.innerHTML = `
     <div class="promo-selector-filters">
       <div class="promo-selector-filter${subDisabled ? ' is-disabled' : ''}" data-filter="subcategory">
         <button class="promo-selector-filter-btn"${subDisabled ? ' disabled' : ''} aria-expanded="false" aria-haspopup="listbox">
-          <span class="promo-selector-filter-label">Category</span>
+          <span class="promo-selector-filter-label">${labelCategory}</span>
           <span class="icon-dropdown promo-selector-filter-arrow"></span>
         </button>
         <ul class="promo-selector-dropdown" role="listbox">
@@ -141,7 +169,7 @@ function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, 
       </div>
       <div class="promo-selector-filter" data-filter="cardType">
         <button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
-          <span class="promo-selector-filter-label">Card Type</span>
+          <span class="promo-selector-filter-label">${labelCardType}</span>
           <span class="icon-dropdown promo-selector-filter-arrow"></span>
         </button>
         <ul class="promo-selector-dropdown" role="listbox">
@@ -150,7 +178,7 @@ function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, 
       </div>
       <div class="promo-selector-filter" data-filter="area">
         <button class="promo-selector-filter-btn" aria-expanded="false" aria-haspopup="listbox">
-          <span class="promo-selector-filter-label">Area</span>
+          <span class="promo-selector-filter-label">${labelArea}</span>
           <span class="icon-dropdown promo-selector-filter-arrow"></span>
         </button>
         <ul class="promo-selector-dropdown" role="listbox">
@@ -158,8 +186,8 @@ function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, 
         </ul>
       </div>
       <div class="promo-selector-filter-actions">
-        <div class="promo-selector-filter-action btn-reset"><button class="promo-selector-btn-reset button secondary" type="button">Reset</button></div>
-        <div class="promo-selector-filter-action btn-search"><button class="promo-selector-btn-search button primary" type="button">Search</button></div>
+        <div class="promo-selector-filter-action btn-reset"><button class="promo-selector-btn-reset button secondary" type="button">${labelReset}</button></div>
+        <div class="promo-selector-filter-action btn-search"><button class="promo-selector-btn-search button primary" type="button">${labelSearch}</button></div>
       </div>
     </div>
     <div class="promo-selector-content pad-top-30 pad-bot-30">
@@ -183,8 +211,8 @@ function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, 
     }, state.page, pageSize);
 
     gridEl.innerHTML = cards.length
-      ? cards.map((c) => buildCardHtml(c, category)).join('')
-      : '<p class="promo-selector-empty">No results found.</p>';
+      ? cards.map((c) => buildCardHtml(c, category, placeholders)).join('')
+      : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 
     paginationEl.innerHTML = buildPaginationHtml(state.page, Math.ceil(total / pageSize));
   }
@@ -241,9 +269,9 @@ function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, 
     });
   }
 
-  makeSingleSelect('subcategory', 'subcategory', 'Category');
-  makeSingleSelect('cardType', 'cardType', 'Card Type');
-  makeSingleSelect('area', 'area', 'Area');
+  makeSingleSelect('subcategory', 'subcategory', labelCategory);
+  makeSingleSelect('cardType', 'cardType', labelCardType);
+  makeSingleSelect('area', 'area', labelArea);
 
   function resetFilters() {
     state.subcategory = '';
@@ -251,9 +279,9 @@ function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, 
     state.area = '';
     state.page = 1;
     panel.querySelectorAll('.promo-selector-option').forEach((o) => o.classList.remove('is-active'));
-    panel.querySelector('[data-filter="subcategory"] .promo-selector-filter-label').textContent = 'Category';
-    panel.querySelector('[data-filter="cardType"] .promo-selector-filter-label').textContent = 'Card Type';
-    panel.querySelector('[data-filter="area"] .promo-selector-filter-label').textContent = 'Area';
+    panel.querySelector('[data-filter="subcategory"] .promo-selector-filter-label').textContent = labelCategory;
+    panel.querySelector('[data-filter="cardType"] .promo-selector-filter-label').textContent = labelCardType;
+    panel.querySelector('[data-filter="area"] .promo-selector-filter-label').textContent = labelArea;
     render();
   }
 
@@ -286,7 +314,10 @@ function setupPanel(panel, allCards, category, subcategories, cardTypes, areas, 
 
 export default async function decorate(block) {
   // Fetch all data once, shared across all tab panels
-  const tagsData = await fetchJson(PROMOTIONS_JSON);
+  const [tagsData, placeholders] = await Promise.all([
+    fetchJson(PROMOTIONS_JSON),
+    fetchPlaceholders(),
+  ]);
   const allCards = tagsData?.cards || [];
   const categories = tagsData?.categories || [];
   const cardTypes = tagsData?.cardTypes || [
@@ -309,7 +340,7 @@ export default async function decorate(block) {
     const category = catMeta.label || tabText;
     const subcategories = catMeta.subcategories || [];
 
-    setupPanel(panel, allCards, category, subcategories, cardTypes, areas, PAGE_SIZE);
+    setupPanel(panel, allCards, category, subcategories, cardTypes, areas, PAGE_SIZE, placeholders);
   });
 
   // Close all dropdowns on outside click (single listener for all panels)
