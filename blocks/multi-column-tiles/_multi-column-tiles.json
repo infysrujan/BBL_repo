@@ -36,18 +36,7 @@
       "id": "multi-column-tiles-item",
       "fields": [
         {
-          "component": "reference",
-          "valueType": "string",
-          "name": "image",
-          "label": "Image",
-          "multi": false
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "imageAlt",
-          "label": "Image Alt Text",
-          "value": ""
+          "...": "../../models/elements/_image-picker.json#/imagePickerFields"
         },
         {
           "component": "aem-content",

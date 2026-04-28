@@ -1,66 +1,46 @@
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
-function createTile(row, doc) {
-  const cells = [...row.children];
-  // Preview: 3 cells — imageAlt in img.alt, imageLinkTitle in a.title (neither a separate cell)
-  // Author:  5 cells — each field has its own cell with data-aue-prop
-  const imageDiv = row.querySelector('[data-aue-prop="image"]') || cells[0];
-  const imageLinkDiv = row.querySelector('[data-aue-prop="imageLink"]') || cells[1];
-  const imageLinkTitleDiv = row.querySelector('[data-aue-prop="imageLinkTitle"]');
-  const titleDiv = row.querySelector('[data-aue-prop="title"]') || cells[cells.length - 1];
+function buildTileHTML(row) {
+  const [imageDiv, imageLinkDiv, imageLinkTitleDiv, titleDiv] = row.children;
+
+  const pictureDesktop = imageDiv?.querySelector('picture');
+
+  let pictureHTML = '';
+  if (pictureDesktop) {
+    const picture = createSmartImage(imageDiv, null, null);
+    pictureHTML = picture?.outerHTML || pictureDesktop.outerHTML || '';
+  }
 
   const linkAnchor = imageLinkDiv?.querySelector('a');
   const linkHref = linkAnchor?.getAttribute('href') || imageLinkDiv?.textContent?.trim() || '';
-  // In preview, imageLinkTitle is embedded in the anchor's title attribute
   const linkTitle = imageLinkTitleDiv?.textContent?.trim() || linkAnchor?.getAttribute('title') || '';
   const title = titleDiv?.textContent?.trim() || '';
 
-  const tile = doc.createElement('div');
-  tile.className = 'multi-column-tiles-tile';
-  tile.addEventListener('touchstart', () => tile.classList.add('is-active'), { passive: true });
-  tile.addEventListener('touchend', () => tile.classList.remove('is-active'), { passive: true });
-  tile.addEventListener('touchcancel', () => tile.classList.remove('is-active'), { passive: true });
+  const imageContent = `<div class="multi-column-tiles-image">${pictureHTML}</div>`;
+  const wrappedImage = linkHref
+    ? `<a href="${linkHref}" class="multi-column-tiles-link"${linkTitle ? ` title="${linkTitle}"` : ''} aria-label="${title || linkTitle}">${imageContent}</a>`
+    : imageContent;
 
-  const imageWrapper = doc.createElement('div');
-  imageWrapper.className = 'multi-column-tiles-image';
-  if (imageDiv) imageWrapper.appendChild(imageDiv);
-
-  if (linkHref) {
-    const anchor = doc.createElement('a');
-    anchor.href = linkHref;
-    anchor.className = 'multi-column-tiles-link';
-    if (linkTitle) anchor.setAttribute('title', linkTitle);
-    anchor.setAttribute('aria-label', title || linkTitle);
-    anchor.appendChild(imageWrapper);
-    tile.appendChild(anchor);
-  } else {
-    tile.appendChild(imageWrapper);
-  }
-
-  const titleEl = doc.createElement('h2');
-  titleEl.className = 'multi-column-tiles-title';
-  titleEl.textContent = title;
-  if (titleDiv) moveInstrumentation(titleDiv, titleEl);
-  tile.appendChild(titleEl);
-
-  return { element: tile, instrumentation: tile, titleEl };
+  return `
+    <div class="multi-column-tiles-tile">
+      ${wrappedImage}
+      <h2 class="multi-column-tiles-title">${title}</h2>
+    </div>
+  `;
 }
 
 export default function decorate(block) {
-  const doc = block.ownerDocument;
   const rows = [...block.children].slice(0, 4);
 
-  const wrapper = doc.createElement('div');
-  wrapper.className = `multi-column-tiles-wrapper tiles-count-${rows.length}`;
+  block.innerHTML = `
+    <div class="multi-column-tiles-wrapper tiles-count-${rows.length}">
+      ${rows.map(buildTileHTML).join('')}
+    </div>
+  `;
 
-  rows.forEach((row) => {
-    const { element, instrumentation, titleEl } = createTile(row, doc);
-    moveInstrumentation(row, instrumentation);
-    const resource = instrumentation.getAttribute('data-aue-resource');
-    if (resource && titleEl) titleEl.setAttribute('data-aue-resource', resource);
-    wrapper.appendChild(element);
+  block.querySelectorAll('.multi-column-tiles-tile').forEach((tile) => {
+    tile.addEventListener('touchstart', () => tile.classList.add('is-active'), { passive: true });
+    tile.addEventListener('touchend', () => tile.classList.remove('is-active'), { passive: true });
+    tile.addEventListener('touchcancel', () => tile.classList.remove('is-active'), { passive: true });
   });
-
-  block.innerHTML = '';
-  block.appendChild(wrapper);
 }
