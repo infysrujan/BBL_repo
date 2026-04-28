@@ -74,7 +74,7 @@
   justify-content: center;
   min-width: 9.375rem;
   padding: 0.625rem var(--bbl-space-200);
-  border: 1px solid var(--bbl-color-active-blue);
+  border: 0.063rem solid var(--bbl-color-active-blue);
   border-radius: var(--bbl-rounded-100);
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b1);
@@ -89,8 +89,8 @@
 }
 
 .cookie-alert-btn:focus-visible {
-  outline: 2px solid var(--bbl-color-active-blue);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--bbl-color-active-blue);
+  outline-offset: 0.125rem;
 }
 
 .cookie-alert-btn-secondary {
