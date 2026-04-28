@@ -275,15 +275,15 @@ export default function decorate(block) {
 
   // ── Config rows 0–6 ───────────────────────────────────────────────────────
   const applyButtonConfig = {
-    label: readRowText(rows[0]) || 'Apply',
+    label: readRowText(rows[0]),
     titleAttr: readRowText(rows[1]),
-    variant: readRowText(rows[2]) || 'primary',
+    variant: readRowText(rows[2]),
   };
 
   const startOverButtonConfig = {
-    label: readRowText(rows[3]) || 'Start Over',
+    label: readRowText(rows[3]),
     titleAttr: readRowText(rows[4]),
-    variant: readRowText(rows[5]) || 'secondary',
+    variant: readRowText(rows[5]),
   };
 
   // Row 6: disclaimerText — richtext authored in the block, forwarded to results section.
