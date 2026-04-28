@@ -137,7 +137,7 @@ body.cookie-modal-open .header {
   padding: var(--bbl-space-250) 0.9375rem 0.9375rem 0.625rem;
   background: var(--bbl-color-white);
   color: var(--bbl-color-black);
-  border: 1px solid var(--bbl-color-grey-30);
+  border: 0.0625rem solid var(--bbl-color-grey-30);
   border-radius: 0.625rem;
   box-sizing: border-box;
   cursor: pointer;
@@ -146,8 +146,8 @@ body.cookie-modal-open .header {
 }
 
 .cookie-accordion-heading:focus-visible {
-  outline: 2px solid var(--bbl-color-active-blue);
-  outline-offset: 2px;
+  outline: var(--bbl-space-025) solid var(--bbl-color-active-blue);
+  outline-offset: var(--bbl-space-025);
 }
 
 .open-cookie .cookie-accordion-heading {
@@ -194,7 +194,7 @@ body.cookie-modal-open .header {
   width: 100%;
   margin: 0 0 0.9375rem;
   background: var(--bbl-color-white);
-  border: 1px solid var(--bbl-color-active-blue);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
   border-top-style: hidden;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0.625rem;
@@ -282,8 +282,8 @@ body.cookie-modal-open .header {
 }
 
 .cookie-toggle > input[type="checkbox"]:focus-visible + .el-switch-style {
-  outline: 2px solid var(--bbl-color-active-blue);
-  outline-offset: 2px;
+  outline: var(--bbl-space-025) solid var(--bbl-color-active-blue);
+  outline-offset: var(--bbl-space-025);
 }
 
 .cookie-toggle > input[type="checkbox"]:checked + .el-switch-style {
@@ -311,7 +311,7 @@ body.cookie-modal-open .header {
 .cookie-modal-save-btn {
   min-width: 9.375rem;
   padding: var(--bbl-space-150) var(--bbl-space-500);
-  border: 1px solid var(--bbl-color-active-blue);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
   border-radius: var(--bbl-rounded-100);
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
