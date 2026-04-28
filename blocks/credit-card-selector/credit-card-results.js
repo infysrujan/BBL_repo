@@ -10,7 +10,7 @@ const INITIAL_VISIBLE = 6;
 const DESKTOP_BREAKPOINT = '(width > 47.5rem)';
 const MAX_FILTERED = 5;
 const MAX_COMPARE = 3;
-const MOBILE_BREAKPOINT = '(width < 760px)';
+const MOBILE_BREAKPOINT = '(width < 47.5rem)';
 const BENEFIT_ALIASES = { rewards: 'point' };
 
 // ── String / data utilities ────────────────────────────────────────────────────
