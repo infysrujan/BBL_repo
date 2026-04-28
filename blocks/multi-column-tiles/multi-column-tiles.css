@@ -82,7 +82,7 @@
   font-size: 1.267rem;
   line-height: 1.375;
   letter-spacing: 0.0313rem;
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-font-weight-regular,400);
   text-align: center;
   padding-left: 18%;
   padding-right: 18%;
