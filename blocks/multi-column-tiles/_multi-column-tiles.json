@@ -39,7 +39,8 @@
           "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
           "name": "image",
           "label": "Image (Smart crop)",
-          "description": "Choose or upload an image from DAM for 4 tiles layout -tileSmall variant, 3 tiles layout -tileMedium variant, 2 tiles layout -tileLarge variant"
+          "description": "Select or upload a DAM image for tile variants: 4-tile (Small), 3-tile (Medium), or 2-tile (Large)."
+"
       },
       {
           "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
