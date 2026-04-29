@@ -23,6 +23,15 @@ const WC_SECTIONS = [
   },
 ];
 
+function fmtResult(val) {
+  return val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtInput(val) {
+  const num = parseFloat(val) || 0;
+  return num.toLocaleString('en-US', { maximumFractionDigits: 2 });
+}
+
 const TABS = [
   {
     id: 'monthly-payment',
@@ -41,6 +50,12 @@ const TABS = [
       if (!pv || !n) return null;
       return r ? (pv * r) / (1 - (1 + r) ** -n) : pv / n;
     },
+    tableConfig: {
+      headers: '<tr><th>Loan Payment</th><th>Loan Balance</th><th>Term/Period</th><th>Interest Rate</th></tr>',
+      getRow(inputs, result) {
+        return [fmtResult(result), fmtInput(inputs.loanBalance), fmtInput(inputs.term), fmtInput(inputs.interestRate)];
+      },
+    },
   },
   {
     id: 'loan-balance',
@@ -58,6 +73,12 @@ const TABS = [
       const r = (+inputs.interestRate) / 100 / 12;
       if (!pmt || !n) return null;
       return r ? (pmt * (1 - (1 + r) ** -n)) / r : pmt * n;
+    },
+    tableConfig: {
+      headers: '<tr><th>Loan Payment</th><th>Loan Balance</th><th>Term/Period</th><th>Interest Rate</th></tr>',
+      getRow(inputs, result) {
+        return [fmtInput(inputs.loanPayment), fmtResult(result), fmtInput(inputs.term), fmtInput(inputs.interestRate)];
+      },
     },
   },
   {
@@ -81,6 +102,12 @@ const TABS = [
       if (inner <= 0) return null;
       return -Math.log(inner) / Math.log(1 + r);
     },
+    tableConfig: {
+      headers: '<tr><th>Loan Payment</th><th>Loan Balance</th><th>Term/Period</th><th>Interest Rate</th></tr>',
+      getRow(inputs, result) {
+        return [fmtInput(inputs.loanPayment), fmtInput(inputs.loanBalance), Math.round(result).toString(), fmtInput(inputs.interestRate)];
+      },
+    },
   },
   {
     id: 'working-capital',
@@ -98,6 +125,33 @@ const TABS = [
       const G = +inputs.creditBuy || 0;
       const H = +inputs.inventoryPolicy || 0;
       return (B * (D / 100) * C + B * H) - (E * (G / 100) * F);
+    },
+    tableConfig: {
+      headers: `
+        <tr>
+          <th>Working Capital Need</th>
+          <th colspan="3">Account Receivable</th>
+          <th colspan="3">Account Payable</th>
+          <th>Inventory Policy</th>
+        </tr>
+        <tr>
+          <th></th>
+          <th>Sale Monthly</th><th>Credit Sale</th><th>Credit Term</th>
+          <th>Buy Monthly</th><th>Credit Buy</th><th>Credit Term</th>
+          <th></th>
+        </tr>`,
+      getRow(inputs, result) {
+        return [
+          fmtResult(result),
+          fmtInput(inputs.saleMonthly),
+          fmtInput(inputs.creditSale),
+          fmtInput(inputs.creditTermAR),
+          fmtInput(inputs.buyMonthly),
+          fmtInput(inputs.creditBuy),
+          fmtInput(inputs.creditTermAP),
+          fmtInput(inputs.inventoryPolicy),
+        ];
+      },
     },
   },
 ];
@@ -156,39 +210,29 @@ export default function decorate(block) {
     </div>
     <div class="slc-result">
       <p class="slc-result-label">
-        <span class="slc-result-prefix">${TABS[0].resultPrefix}</span>
-        <strong class="slc-result-value"> 0.00 </strong>
-        <span class="slc-result-suffix">${TABS[0].resultSuffix}</span>
+        <span class="slc-result-prefix">${TABS[0].resultPrefix} </span><strong class="slc-result-value">0.00</strong><span class="slc-result-suffix"> ${TABS[0].resultSuffix}</span>
       </p>
       <p class="slc-result-sub">To compare the calculated results, click the button below to add the latest results in the table.</p>
       <button class="slc-add-btn" disabled>ADD TO TABLE</button>
-      <table class="slc-compare-table" hidden>
-        <thead>
-          <tr><th>#</th><th>Calculator</th><th>Result</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+    </div>
+    <div class="slc-compare" hidden>
+      <h2 class="slc-compare-title">Compare your Result</h2>
+      <div class="slc-compare-divider"></div>
+      <div class="slc-compare-table-wrap"></div>
     </div>
     ${remarkHtml ? `<div class="slc-remark">${remarkHtml}</div>` : ''}
   `;
 
   let lastResult = null;
+  let lastInputs = {};
   let activeTabIndex = 0;
-  let rowNum = 0;
+  let rowCount = 0;
+  const MAX_ROWS = 5;
 
   const resultLabel = block.querySelector('.slc-result-label');
-  const resultPrefix = block.querySelector('.slc-result-prefix');
-  const resultValue = block.querySelector('.slc-result-value');
-  const resultSuffix = block.querySelector('.slc-result-suffix');
   const addBtn = block.querySelector('.slc-add-btn');
-  const compareTable = block.querySelector('.slc-compare-table');
-  const tbody = compareTable.querySelector('tbody');
-
-  function updateResultLabel(tabIndex) {
-    const tab = TABS[tabIndex];
-    resultPrefix.textContent = `${tab.resultPrefix} `;
-    resultSuffix.textContent = ` ${tab.resultSuffix}`;
-  }
+  const compareSection = block.querySelector('.slc-compare');
+  const tableWrap = block.querySelector('.slc-compare-table-wrap');
 
   function showError() {
     resultLabel.innerHTML = '<span class="slc-result-error">Cannot Calculate</span>';
@@ -196,10 +240,12 @@ export default function decorate(block) {
 
   function showResult(value, tabIndex) {
     const tab = TABS[tabIndex];
-    const formatted = tab.formatResult ? tab.formatResult(value) : value.toFixed(2);
-    resultLabel.innerHTML = `
-      <span class="slc-result-prefix">${tab.resultPrefix} </span><strong class="slc-result-value">${formatted}</strong><span class="slc-result-suffix"> ${tab.resultSuffix}</span>
-    `;
+    const formatted = tab.formatResult ? tab.formatResult(value) : fmtResult(value);
+    resultLabel.innerHTML = `<span class="slc-result-prefix">${tab.resultPrefix} </span><strong class="slc-result-value">${formatted}</strong><span class="slc-result-suffix"> ${tab.resultSuffix}</span>`;
+  }
+
+  function rebuildTable(tabIndex) {
+    tableWrap.innerHTML = `<table class="slc-compare-table"><thead>${TABS[tabIndex].tableConfig.headers}</thead><tbody></tbody></table>`;
   }
 
   block.querySelectorAll('.slc-tab').forEach((tabBtn, i) => {
@@ -210,6 +256,9 @@ export default function decorate(block) {
       block.querySelector(`.slc-panel[data-panel="${i}"]`).classList.add('is-active');
       activeTabIndex = i;
       lastResult = null;
+      lastInputs = {};
+      rowCount = 0;
+      compareSection.hidden = true;
       showResult(0, i);
       addBtn.disabled = true;
     });
@@ -224,10 +273,12 @@ export default function decorate(block) {
       const result = TABS[i].calculate(inputs);
       if (result === null || Number.isNaN(result)) {
         lastResult = null;
+        lastInputs = {};
         showError();
         addBtn.disabled = true;
       } else {
         lastResult = result;
+        lastInputs = { ...inputs };
         showResult(result, i);
         addBtn.disabled = false;
       }
@@ -235,11 +286,17 @@ export default function decorate(block) {
   });
 
   addBtn.addEventListener('click', () => {
-    if (lastResult === null) return;
-    rowNum += 1;
-    compareTable.hidden = false;
+    if (lastResult === null || rowCount >= MAX_ROWS) return;
+    if (compareSection.hidden) {
+      compareSection.hidden = false;
+      rebuildTable(activeTabIndex);
+    }
+    rowCount += 1;
+    const rowData = TABS[activeTabIndex].tableConfig.getRow(lastInputs, lastResult);
+    const tbody = tableWrap.querySelector('tbody');
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${rowNum}</td><td>${TABS[activeTabIndex].label}</td><td>${lastResult.toFixed(2)}</td>`;
+    tr.innerHTML = rowData.map((cell) => `<td>${cell}</td>`).join('');
     tbody.appendChild(tr);
+    if (rowCount >= MAX_ROWS) addBtn.disabled = true;
   });
 }
