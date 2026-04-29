@@ -6,7 +6,7 @@
 
 /* ── Sections ─────────────────────────────────────────────── */
 
-.forward-points-sme .fpsme-section + .fpsme-section {
+.forward-points-sme .fpsme-section-fwd {
   margin-top: var(--bbl-space-500);
 }
 
@@ -358,7 +358,7 @@
 }
 
 .forward-points-sme .fpsme-table-currency {
-  min-width: 28rem;
+  min-width: 0;
 }
 
 .forward-points-sme .fpsme-table thead tr {
@@ -372,7 +372,6 @@
   color: var(--bbl-color-black);
   text-align: left;
   border-bottom: 0.125rem solid var(--bbl-color-grey-20);
-  white-space: nowrap;
   line-height: 1.4;
 }
 
@@ -425,17 +424,17 @@
   text-align: right;
 }
 
-/* ── Section 2 — Forward points ────────────────────────────── */
+/* ── Section 1 bar: currency (left col) + Print btn (far right) ─ */
 
-.forward-points-sme .fpsme-fwd-bar {
+.forward-points-sme .fpsme-section1-bar {
   display: flex;
-  flex-wrap: wrap;
   align-items: flex-start;
-  gap: var(--bbl-space-200);
+  width: 100%;
 }
 
-.forward-points-sme .fpsme-fwd-bar .fpsme-controls {
-  flex: 1 1 0;
+/* Currency section: full width on mobile, ~50% on desktop */
+.forward-points-sme .fpsme-section-currency {
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -449,9 +448,12 @@
   font-weight: 700;
   color: var(--bbl-color-grey-70);
   cursor: pointer;
-  padding: var(--bbl-space-150) var(--bbl-space-100) 0;
+  padding: 0 var(--bbl-space-100);
+  height: 2.75rem;
   white-space: nowrap;
   flex-shrink: 0;
+  align-self: flex-start;
+  margin-left: auto;
 }
 
 .forward-points-sme .fpsme-print-btn .icon-print {
@@ -463,6 +465,8 @@
 .forward-points-sme .fpsme-print-btn:hover .icon-print {
   color: var(--bbl-color-gray-121);
 }
+
+/* ── Section 2 — Forward points ────────────────────────────── */
 
 /* ── Forward points body ───────────────────────────────────── */
 
@@ -541,6 +545,11 @@
     margin-bottom: 0;
   }
 
+  /* Prevent controls from wrapping onto multiple lines at tablet+ */
+  .forward-points-sme .fpsme-controls {
+    flex-wrap: nowrap;
+  }
+
   .forward-points-sme .fpsme-date-group {
     flex: 0 0 10rem;
     width: 10rem;
@@ -555,7 +564,7 @@
   .forward-points-sme .fpsme-go-btn {
     width: auto;
     flex: 0 0 5rem;
-    min-width: 8.4375rem;
+    min-width: 5rem;
   }
 
   .forward-points-sme .fpsme-datepicker {
@@ -586,6 +595,12 @@
 /* ── Desktop: 64rem+ (1024px) ──────────────────────────────── */
 
 @media (width > 64rem) {
+  /* Section 1 currency column: ~50% width matching live site col-md-6 layout */
+  .forward-points-sme .fpsme-section-currency {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
   .forward-points-sme .fpsme-update-label {
     font-size: 1rem;
   }
@@ -664,14 +679,62 @@
 /* ── Print styles ──────────────────────────────────────────── */
 
 @media print {
+  /* Isolate print to block only — hide everything outside block's section */
+  body > *:not(main) { display: none !important; }
+  main > .section:not(:has(.forward-points-sme)) { display: none !important; }
+
+  /* Additional fallback selectors for common page chrome */
+  header,
+  footer,
+  .header-wrapper,
+  .footer-wrapper,
+  nav,
+  .nav-wrapper,
+  .nav-section,
+  .breadcrumb,
+  .breadcrumbs,
+  .breadcrumb-wrapper { display: none !important; }
+
+  /* Hide interactive block elements */
   .forward-points-sme .fpsme-print-btn,
-  .forward-points-sme .fpsme-controls,
-  .forward-points-sme .fpsme-fwd-bar {
-    display: none;
+  .forward-points-sme .fpsme-go-btn,
+  .forward-points-sme .fpsme-date-trigger,
+  .forward-points-sme .fpsme-datepicker,
+  .forward-points-sme .fpsme-time-list,
+  .forward-points-sme .fpsme-time-chevron { display: none !important; }
+
+  /* Date input: render as plain text */
+  .forward-points-sme .fpsme-date-input {
+    border: none;
+    outline: none;
+    padding-left: 0;
+    background: none;
   }
 
+  /* Time trigger: render as plain text, no border */
+  .forward-points-sme .fpsme-time-trigger {
+    border: none;
+    background: none;
+    padding: 0;
+    pointer-events: none;
+  }
+
+  /* Stack controls vertically to match live site print layout */
+  .forward-points-sme .fpsme-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  /* Full-width currency section in print (override desktop 50% constraint) */
+  .forward-points-sme .fpsme-section-currency {
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Force forward tables side by side */
   .forward-points-sme .fpsme-fwd-tables {
-    flex-direction: row;
+    flex-direction: row !important;
   }
 
   .forward-points-sme .fpsme-table {

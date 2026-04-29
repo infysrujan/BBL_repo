@@ -182,7 +182,7 @@ function renderCurrencyTable(fxRates, authoring) {
 
   const rows = fxRates.map((rate) => `<tr>
     <td class="fpsme-currency-cell">
-      <img src="/icons/${escapeHtml(rate.family)}.svg" alt="${escapeHtml(rate.family)} flag" loading="lazy" class="fpsme-flag">
+      <img src="/icons/${escapeHtml(rate.familyIcon)}.svg" alt="${escapeHtml(rate.family)} flag" loading="lazy" class="fpsme-flag">
       <span>${escapeHtml(rate.family)}</span>
     </td>
     <td class="fpsme-td-right">${escapeHtml(rate.sightBillBuying)}</td>
@@ -279,20 +279,28 @@ function renderBlock(
     nextLabel,
   );
 
-  const fxRates = normalizeFxRates(s1State.rates);
+  const allFxRates = normalizeFxRates(s1State.rates);
+  const usdWithRates = allFxRates.filter(
+    (r) => r.family.toUpperCase() === 'USD' && r.sightBillBuying !== '-',
+  );
+  const fxRates = usdWithRates.length
+    ? usdWithRates.slice(0, 1)
+    : allFxRates.filter((r) => r.family.toUpperCase() === 'USD').slice(0, 1);
   const fwdRates = normalizeFwdRates(s2State.rates);
 
   block.innerHTML = `<div class="fpsme-wrapper">
-    <div class="fpsme-section fpsme-section-currency">
-      ${s1Controls}
-      ${renderCurrencyTable(fxRates, authoring)}
+    <div class="fpsme-section1-bar">
+      <div class="fpsme-section fpsme-section-currency">
+        ${s1Controls}
+        ${renderCurrencyTable(fxRates, authoring)}
+      </div>
+      <button type="button" class="fpsme-print-btn">
+        ${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i>
+      </button>
     </div>
 
     <div class="fpsme-section fpsme-section-fwd">
-      <div class="fpsme-fwd-bar">
-        ${s2Controls}
-        <button type="button" class="fpsme-print-btn">${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i></button>
-      </div>
+      ${s2Controls}
       <div class="fpsme-fwd-body">
         <h3 class="fpsme-fwd-title">${escapeHtml(authoring.section2TableTitle)}</h3>
         <div class="fpsme-fwd-tables">

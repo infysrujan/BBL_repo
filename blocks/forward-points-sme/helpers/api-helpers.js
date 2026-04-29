@@ -83,12 +83,16 @@ export function createApiEndpoints(configs) {
  * Columns: Sight Bill Buying Rates | TT Buying Rates | TT Selling Rates
  */
 export function normalizeFxRates(list) {
-  return (Array.isArray(list) ? list : []).map((item) => ({
-    family: trimValue(item.Family),
-    sightBillBuying: trimValue(item.SightBill || item.SightBillBuying),
-    ttBuying: trimValue(item.TTBuying || item.TT),
-    ttSelling: trimValue(item.TTSelling),
-  }));
+  return (Array.isArray(list) ? list : []).map((item) => {
+    const raw = trimValue(item.Family);
+    return {
+      family: raw.replace(/\d+$/, ''),
+      familyIcon: raw,
+      sightBillBuying: trimValue(item.SightBill || item.SightBillBuying),
+      ttBuying: trimValue(item.TTBuying || item.TT),
+      ttSelling: trimValue(item.Bill_DD_TT || item.TTSelling),
+    };
+  });
 }
 
 /**
