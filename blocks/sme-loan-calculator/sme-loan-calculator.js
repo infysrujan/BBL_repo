@@ -75,9 +75,9 @@ const TABS = [
       return r ? (pmt * (1 - (1 + r) ** -n)) / r : pmt * n;
     },
     tableConfig: {
-      headers: '<tr><th>Loan Payment</th><th>Loan Balance</th><th>Term/Period</th><th>Interest Rate</th></tr>',
+      headers: '<tr><th>Loan Balance</th><th>Loan Payment</th><th>Term/Period</th><th>Interest Rate</th></tr>',
       getRow(inputs, result) {
-        return [fmtInput(inputs.loanPayment), fmtResult(result), fmtInput(inputs.term), fmtInput(inputs.interestRate)];
+        return [fmtResult(result), fmtInput(inputs.loanPayment), fmtInput(inputs.term), fmtInput(inputs.interestRate)];
       },
     },
   },
@@ -103,9 +103,9 @@ const TABS = [
       return -Math.log(inner) / Math.log(1 + r);
     },
     tableConfig: {
-      headers: '<tr><th>Loan Payment</th><th>Loan Balance</th><th>Term/Period</th><th>Interest Rate</th></tr>',
+      headers: '<tr><th>Term/Period</th><th>Loan Balance</th><th>Loan Payment</th><th>Interest Rate</th></tr>',
       getRow(inputs, result) {
-        return [fmtInput(inputs.loanPayment), fmtInput(inputs.loanBalance), Math.round(result).toString(), fmtInput(inputs.interestRate)];
+        return [Math.round(result).toString(), fmtInput(inputs.loanBalance), fmtInput(inputs.loanPayment), fmtInput(inputs.interestRate)];
       },
     },
   },
