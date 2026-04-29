@@ -245,6 +245,7 @@ export default function decorate(block) {
   }
 
   function rebuildTable(tabIndex) {
+    tableWrap.dataset.tab = tabIndex;
     tableWrap.innerHTML = `<table class="slc-compare-table"><thead>${TABS[tabIndex].tableConfig.headers}</thead><tbody></tbody></table>`;
   }
 
