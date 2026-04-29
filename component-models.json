@@ -7696,6 +7696,14 @@
         "valueType": "string",
         "required": true,
         "description": "Bullet list of remark/disclaimer items shown below the tables"
+      },
+      {
+        "component": "reference",
+        "name": "printLogo",
+        "label": "Print - Logo",
+        "multi": false,
+        "required": false,
+        "description": "Logo image shown at the top of the print preview"
       }
     ]
   },

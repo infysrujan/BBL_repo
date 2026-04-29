@@ -676,7 +676,17 @@
   }
 }
 
+/* ── Print logo (hidden on screen, shown in print) ────────── */
+
+.forward-points-sme .fpsme-print-logo {
+  display: none;
+}
+
 /* ── Print styles ──────────────────────────────────────────── */
+
+@page {
+  margin: 0.75cm;
+}
 
 @media print {
   /* Isolate print to block only — hide everything outside block's section */
@@ -726,18 +736,77 @@
     gap: 0.25rem;
   }
 
-  /* Full-width currency section in print (override desktop 50% constraint) */
+  /* Section 1 currency column: keep ~50% in print to match live site */
   .forward-points-sme .fpsme-section-currency {
-    flex: 1 1 100% !important;
-    max-width: 100% !important;
+    flex: 0 0 50%;
+    max-width: 50%;
   }
 
-  /* Force forward tables side by side */
+  /* Force forward tables side by side, compact gap */
   .forward-points-sme .fpsme-fwd-tables {
     flex-direction: row !important;
+    gap: var(--bbl-space-200);
   }
 
   .forward-points-sme .fpsme-table {
     border: 0.0625rem solid var(--bbl-color-grey-20);
   }
+
+  /* Print logo */
+  .forward-points-sme .fpsme-print-logo {
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .forward-points-sme .fpsme-print-logo img {
+    height: 2rem;
+    width: auto;
+  }
+
+  /* Compact table cells */
+  .forward-points-sme .fpsme-table thead th {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .forward-points-sme .fpsme-table tbody td {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  /* Reduce section and body spacing */
+  .forward-points-sme .fpsme-section-fwd {
+    margin-top: 0.75rem;
+  }
+
+  .forward-points-sme .fpsme-fwd-body {
+    margin-top: 0.375rem;
+  }
+
+  .forward-points-sme .fpsme-fwd-title {
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .forward-points-sme .fpsme-fwd-subtitle {
+    margin-bottom: 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .forward-points-sme .fpsme-table-wrap {
+    margin-top: 0.25rem;
+  }
+
+  .forward-points-sme .fpsme-unit {
+    margin-top: 0.125rem;
+    font-size: 0.75rem;
+  }
+
+  /* Compact remark */
+  .forward-points-sme .fpsme-remark {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    margin-top: 0.5rem;
+  }
+
 }

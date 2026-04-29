@@ -176,9 +176,7 @@ function renderControlsRow(
 }
 
 function renderCurrencyTable(fxRates, authoring) {
-  const [col0, col1, col2, col3] = authoring.section1Columns.length >= 4
-    ? authoring.section1Columns
-    : ['Currency', 'Sight Bill Buying Rates', 'TT Buying Rates', 'TT Selling Rates'];
+  const [col0, col1, col2, col3] = authoring.section1Columns;
 
   const rows = fxRates.map((rate) => `<tr>
     <td class="fpsme-currency-cell">
@@ -210,13 +208,9 @@ function renderCurrencyTable(fxRates, authoring) {
 }
 
 function renderFwdTable(fwdRates, authoring, tableIndex) {
-  const [col0, col1, col2] = authoring.section2Columns.length >= 3
-    ? authoring.section2Columns
-    : ['Period', 'Export (Buying)', 'Import (Selling)'];
+  const [col0, col1, col2] = authoring.section2Columns;
 
-  const rowHeadings = authoring.section2Rows.length
-    ? authoring.section2Rows
-    : ['1 Month', '3 Months', '6 Months'];
+  const rowHeadings = authoring.section2Rows;
 
   const rows = rowHeadings.map((heading, i) => {
     const rate = fwdRates[i];
@@ -289,6 +283,7 @@ function renderBlock(
   const fwdRates = normalizeFwdRates(s2State.rates);
 
   block.innerHTML = `<div class="fpsme-wrapper">
+    ${authoring.printLogoHtml ? `<div class="fpsme-print-logo">${authoring.printLogoHtml}</div>` : ''}
     <div class="fpsme-section1-bar">
       <div class="fpsme-section fpsme-section-currency">
         ${s1Controls}
