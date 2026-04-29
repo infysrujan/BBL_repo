@@ -8917,6 +8917,23 @@
     ]
   },
   {
+    "id": "sme-loan-calculator",
+    "fields": [
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "remarkText",
+        "label": "Remark Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "story-card",
     "fields": [
       {
