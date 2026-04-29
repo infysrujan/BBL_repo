@@ -95,7 +95,7 @@
 }
 
 .slc-field {
-  flex: 1;
+  flex: 0 0 calc((100% - 40px) / 3);
   min-width: 0;
 }
 
@@ -137,10 +137,10 @@
 
 .slc-field-unit {
   display: block;
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 0.75rem;
+  color: #9e9e9e;
+  font-size: 11px;
   margin-top: 5px;
-  padding-left: 2px;
+  text-align: right;
 }
 
 /* Working Capital sections */
@@ -262,15 +262,14 @@
 
 .slc-remark {
   background: #fff;
-  padding: 20px 80px;
+  padding: 20px;
 }
 
 .slc-remark p {
-  color: #555;
-  font-size: 0.8rem;
+  color: #9e9e9e;
+  font-size: 11px;
+  line-height: 1.63;
   margin: 0;
-  text-align: center;
-  line-height: 1.5;
 }
 
 /* Responsive */
@@ -285,7 +284,7 @@
   }
 
   .slc-remark {
-    padding: 20px 40px;
+    padding: 20px;
   }
 }
 

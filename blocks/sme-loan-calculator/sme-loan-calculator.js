@@ -63,8 +63,9 @@ const TABS = [
   {
     id: 'term-period',
     label: 'Term/Period Monthly',
-    resultPrefix: 'Your Term/Period Monthly is',
-    resultSuffix: 'months.',
+    resultPrefix: 'Your Term/Period is',
+    resultSuffix: 'month.',
+    formatResult: (val) => Math.round(val).toString(),
     fields: [
       { key: 'loanBalance', label: 'Loan Balance', unit: '(Baht)' },
       { key: 'loanPayment', label: 'Loan Payment', unit: '(Baht/month)' },
@@ -89,10 +90,14 @@ const TABS = [
     sections: WC_SECTIONS,
     fields: WC_SECTIONS.flatMap((s) => s.fields),
     calculate(inputs) {
-      const ar = (+inputs.saleMonthly || 0) * (+inputs.creditTermAR || 0) * ((+inputs.creditSale || 0) / 100);
-      const ap = (+inputs.buyMonthly || 0) * (+inputs.creditTermAP || 0) * ((+inputs.creditBuy || 0) / 100);
-      const inv = (+inputs.buyMonthly || 0) * (+inputs.inventoryPolicy || 0);
-      return ar + inv - ap;
+      const B = +inputs.saleMonthly || 0;
+      const C = +inputs.creditTermAR || 0;
+      const D = +inputs.creditSale || 0;
+      const E = +inputs.buyMonthly || 0;
+      const F = +inputs.creditTermAP || 0;
+      const G = +inputs.creditBuy || 0;
+      const H = +inputs.inventoryPolicy || 0;
+      return (B * (D / 100) * C + B * H) - (E * (G / 100) * F);
     },
   },
 ];
@@ -103,7 +108,7 @@ function buildField(field) {
     <div class="slc-field">
       <div class="slc-input-box">
         <span class="slc-field-label">${field.label}</span>
-        <input type="number" class="slc-input" name="${field.key}" value="0"${step}>
+        <input type="number" class="slc-input" name="${field.key}" placeholder="0"${step}>
       </div>
       <span class="slc-field-unit">${field.unit}</span>
     </div>`;
@@ -191,8 +196,9 @@ export default function decorate(block) {
 
   function showResult(value, tabIndex) {
     const tab = TABS[tabIndex];
+    const formatted = tab.formatResult ? tab.formatResult(value) : value.toFixed(2);
     resultLabel.innerHTML = `
-      <span class="slc-result-prefix">${tab.resultPrefix} </span><strong class="slc-result-value">${value.toFixed(2)}</strong><span class="slc-result-suffix"> ${tab.resultSuffix}</span>
+      <span class="slc-result-prefix">${tab.resultPrefix} </span><strong class="slc-result-value">${formatted}</strong><span class="slc-result-suffix"> ${tab.resultSuffix}</span>
     `;
   }
 
