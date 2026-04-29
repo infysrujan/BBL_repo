@@ -7595,7 +7595,7 @@
       },
       {
         "component": "text",
-        "name": "section1CtaLabel",
+        "name": "section1GoCtaLabel",
         "label": "Section 1 - GO CTA Label",
         "valueType": "string",
         "required": true,
@@ -7603,7 +7603,7 @@
       },
       {
         "component": "richtext",
-        "name": "section1ColumnHeadings",
+        "name": "section1TableColumnHeadings",
         "label": "Section 1 - Table Column Headings",
         "valueType": "string",
         "required": true,
@@ -7611,7 +7611,15 @@
       },
       {
         "component": "text",
-        "name": "section2CalendarLabel",
+        "name": "section1UnitLabel",
+        "label": "Section 1 - Unit Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Unit: Satang"
+      },
+      {
+        "component": "text",
+        "name": "section2UpdateDateLabel",
         "label": "Section 2 - Update Date Label",
         "valueType": "string",
         "required": true,
@@ -7619,7 +7627,7 @@
       },
       {
         "component": "text",
-        "name": "section2CtaLabel",
+        "name": "section2GoCtaLabel",
         "label": "Section 2 - GO CTA Label",
         "valueType": "string",
         "required": true,
@@ -7635,7 +7643,7 @@
       },
       {
         "component": "text",
-        "name": "tableTitle",
+        "name": "section2ForwardPointsTableTitle",
         "label": "Section 2 - Table Title",
         "valueType": "string",
         "required": true,
@@ -7643,7 +7651,7 @@
       },
       {
         "component": "text",
-        "name": "tableSubTitle1",
+        "name": "section2SmeLowRevenueSubTitle",
         "label": "Section 2 - Table Sub-Title 1",
         "valueType": "string",
         "required": true,
@@ -7651,7 +7659,7 @@
       },
       {
         "component": "text",
-        "name": "tableSubTitle2",
+        "name": "section2SmeMidRevenueSubTitle",
         "label": "Section 2 - Table Sub-Title 2",
         "valueType": "string",
         "required": true,
@@ -7659,7 +7667,7 @@
       },
       {
         "component": "richtext",
-        "name": "section2ColumnHeadings",
+        "name": "section2TableColumnHeadings",
         "label": "Section 2 - Table Column Headings",
         "valueType": "string",
         "required": true,
@@ -7667,7 +7675,7 @@
       },
       {
         "component": "richtext",
-        "name": "section2RowHeadings",
+        "name": "section2TableRowHeadings",
         "label": "Section 2 - Table Row Headings",
         "valueType": "string",
         "required": true,
@@ -7675,7 +7683,7 @@
       },
       {
         "component": "text",
-        "name": "unitLabel",
+        "name": "section2UnitLabel",
         "label": "Section 2 - Unit Label",
         "valueType": "string",
         "required": true,
@@ -7683,7 +7691,7 @@
       },
       {
         "component": "richtext",
-        "name": "remarkText",
+        "name": "remarkDisclaimerText",
         "label": "Remark Text",
         "valueType": "string",
         "required": true,
