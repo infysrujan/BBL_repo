@@ -36,8 +36,20 @@
       "id": "multi-column-tiles-item",
       "fields": [
         {
-          "...": "../../models/elements/_image-picker.json#/imagePickerFields"
-        },
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
+          "name": "image",
+          "label": "Image (Smart crop)",
+          "description": "Choose or upload an image from DAM for 4 tiles layout -tileSmall variant, 3 tiles layout -tileMedium variant, 2 tiles layout -tileLarge variant"
+      },
+      {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
+          "name": "imageMimeType"
+      },
+      {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerAltField",
+          "name": "imageAlt",
+          "label": "Image Alt Text"
+      },
         {
           "component": "aem-content",
           "name": "imageLink",

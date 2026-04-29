@@ -8389,35 +8389,22 @@
     "fields": [
       {
         "component": "custom-asset-namespace:custom-asset",
-        "name": "imagePickerDesktop",
-        "label": "Image (Desktop)",
-        "description": "Select an image shown at desktop breakpoints",
+        "name": "image",
+        "label": "Image (Smart crop)",
+        "description": "Choose or upload an image from DAM for 4 tiles layout -tileSmall variant, 3 tiles layout -tileMedium variant, 2 tiles layout -tileLarge variant",
         "configUrl": "/content/dam/image.config.json",
         "valueType": "string"
       },
       {
         "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "imagePickerDesktopMimeType"
-      },
-      {
-        "component": "custom-asset-namespace:custom-asset",
-        "name": "imagePickerMobile",
-        "label": "Image (Mobile)",
-        "description": "Select an image shown at mobile breakpoints",
-        "configUrl": "/content/dam/image.config.json",
-        "valueType": "string"
-      },
-      {
-        "component": "custom-asset-namespace:custom-asset-mimetype",
-        "valueType": "string",
-        "name": "imagePickerMobileMimeType"
+        "name": "imageMimeType"
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "imagePickerAlt",
-        "label": "Alternative text for accessibility",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
         "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
       },
       {
