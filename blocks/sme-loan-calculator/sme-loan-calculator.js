@@ -27,55 +27,65 @@ const TABS = [
   {
     id: 'monthly-payment',
     label: 'Monthly Payment',
+    resultPrefix: 'Your Loan Payment (per month) is',
+    resultSuffix: 'baht.',
     fields: [
       { key: 'loanBalance', label: 'Loan Balance', unit: '(Baht)' },
       { key: 'term', label: 'Term', unit: '(Month)' },
       { key: 'interestRate', label: 'Interest Rate', unit: '(Maximum 2 digits and 3 decimal points % per year)', step: 0.001 },
     ],
     calculate(inputs) {
-      const pv = +inputs.loanBalance || 0;
-      const n = +inputs.term || 0;
-      const r = (+inputs.interestRate || 0) / 100 / 12;
-      if (!n) return 0;
+      const pv = +inputs.loanBalance;
+      const n = +inputs.term;
+      const r = (+inputs.interestRate) / 100 / 12;
+      if (!pv || !n) return null;
       return r ? (pv * r) / (1 - (1 + r) ** -n) : pv / n;
     },
   },
   {
     id: 'loan-balance',
     label: 'Loan Balance',
+    resultPrefix: 'Your Loan Balance is',
+    resultSuffix: 'baht.',
     fields: [
       { key: 'loanPayment', label: 'Loan Payment', unit: '(Baht/month)' },
       { key: 'term', label: 'Term', unit: '(Month)' },
       { key: 'interestRate', label: 'Interest Rate', unit: '(Maximum 2 digits and 3 decimal points % per year)', step: 0.001 },
     ],
     calculate(inputs) {
-      const pmt = +inputs.loanPayment || 0;
-      const n = +inputs.term || 0;
-      const r = (+inputs.interestRate || 0) / 100 / 12;
+      const pmt = +inputs.loanPayment;
+      const n = +inputs.term;
+      const r = (+inputs.interestRate) / 100 / 12;
+      if (!pmt || !n) return null;
       return r ? (pmt * (1 - (1 + r) ** -n)) / r : pmt * n;
     },
   },
   {
     id: 'term-period',
     label: 'Term/Period Monthly',
+    resultPrefix: 'Your Term/Period Monthly is',
+    resultSuffix: 'months.',
     fields: [
       { key: 'loanBalance', label: 'Loan Balance', unit: '(Baht)' },
       { key: 'loanPayment', label: 'Loan Payment', unit: '(Baht/month)' },
       { key: 'interestRate', label: 'Interest Rate', unit: '(Maximum 2 digits and 3 decimal points % per year)', step: 0.001 },
     ],
     calculate(inputs) {
-      const pv = +inputs.loanBalance || 0;
-      const pmt = +inputs.loanPayment || 0;
-      const r = (+inputs.interestRate || 0) / 100 / 12;
-      if (!pmt) return 0;
+      const pv = +inputs.loanBalance;
+      const pmt = +inputs.loanPayment;
+      const r = (+inputs.interestRate) / 100 / 12;
+      if (!pv || !pmt) return null;
       if (!r) return pv / pmt;
       const inner = 1 - (r * pv) / pmt;
-      return inner <= 0 ? 0 : -Math.log(inner) / Math.log(1 + r);
+      if (inner <= 0) return null;
+      return -Math.log(inner) / Math.log(1 + r);
     },
   },
   {
     id: 'working-capital',
     label: 'Working Capital Needs',
+    resultPrefix: 'Your Working Capital Need is',
+    resultSuffix: 'baht.',
     sections: WC_SECTIONS,
     fields: WC_SECTIONS.flatMap((s) => s.fields),
     calculate(inputs) {
@@ -140,7 +150,11 @@ export default function decorate(block) {
       <div class="slc-panels">${panelsHTML}</div>
     </div>
     <div class="slc-result">
-      <p class="slc-result-label">Your result value is <strong class="slc-result-value">0.00</strong></p>
+      <p class="slc-result-label">
+        <span class="slc-result-prefix">${TABS[0].resultPrefix}</span>
+        <strong class="slc-result-value"> 0.00 </strong>
+        <span class="slc-result-suffix">${TABS[0].resultSuffix}</span>
+      </p>
       <p class="slc-result-sub">To compare the calculated results, click the button below to add the latest results in the table.</p>
       <button class="slc-add-btn" disabled>ADD TO TABLE</button>
       <table class="slc-compare-table" hidden>
@@ -157,10 +171,30 @@ export default function decorate(block) {
   let activeTabIndex = 0;
   let rowNum = 0;
 
+  const resultLabel = block.querySelector('.slc-result-label');
+  const resultPrefix = block.querySelector('.slc-result-prefix');
   const resultValue = block.querySelector('.slc-result-value');
+  const resultSuffix = block.querySelector('.slc-result-suffix');
   const addBtn = block.querySelector('.slc-add-btn');
   const compareTable = block.querySelector('.slc-compare-table');
   const tbody = compareTable.querySelector('tbody');
+
+  function updateResultLabel(tabIndex) {
+    const tab = TABS[tabIndex];
+    resultPrefix.textContent = `${tab.resultPrefix} `;
+    resultSuffix.textContent = ` ${tab.resultSuffix}`;
+  }
+
+  function showError() {
+    resultLabel.innerHTML = '<span class="slc-result-error">Cannot Calculate</span>';
+  }
+
+  function showResult(value, tabIndex) {
+    const tab = TABS[tabIndex];
+    resultLabel.innerHTML = `
+      <span class="slc-result-prefix">${tab.resultPrefix} </span><strong class="slc-result-value">${value.toFixed(2)}</strong><span class="slc-result-suffix"> ${tab.resultSuffix}</span>
+    `;
+  }
 
   block.querySelectorAll('.slc-tab').forEach((tabBtn, i) => {
     tabBtn.addEventListener('click', () => {
@@ -170,7 +204,7 @@ export default function decorate(block) {
       block.querySelector(`.slc-panel[data-panel="${i}"]`).classList.add('is-active');
       activeTabIndex = i;
       lastResult = null;
-      resultValue.textContent = '0.00';
+      showResult(0, i);
       addBtn.disabled = true;
     });
   });
@@ -181,9 +215,16 @@ export default function decorate(block) {
       block.querySelectorAll(`.slc-panel[data-panel="${i}"] .slc-input`).forEach((input) => {
         inputs[input.name] = input.value;
       });
-      lastResult = TABS[i].calculate(inputs);
-      resultValue.textContent = lastResult.toFixed(2);
-      addBtn.disabled = false;
+      const result = TABS[i].calculate(inputs);
+      if (result === null || Number.isNaN(result)) {
+        lastResult = null;
+        showError();
+        addBtn.disabled = true;
+      } else {
+        lastResult = result;
+        showResult(result, i);
+        addBtn.disabled = false;
+      }
     });
   });
 
