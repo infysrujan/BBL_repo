@@ -258,7 +258,7 @@ function decorateButtonsV1(element) {
     if (a.href !== a.textContent) {
       const up = a.parentElement;
       const twoup = a.parentElement.parentElement;
-      if (!a.querySelector('img') && !a.closest('.download-file')) {
+      if (!a.querySelector('img') && !a.closest('.download-files')) {
         if (
           up.childNodes.length === 1
           && up.tagName === 'STRONG'

@@ -307,6 +307,8 @@
 
 /* Calculate button */
 .currency-converter-expanded .converter-expanded-btn {
+  padding-right: 3.75rem;
+  position: relative;
   width: 100%;
   max-width: min-content;
   height: 2.75rem;
@@ -337,6 +339,9 @@
   transition: transform 0.2s ease-in-out;
   height: 1.5625rem;
   font-size: 1.5625rem;
+  position: absolute;
+  right: 0.625rem; 
+  top: 0.25rem;
 }
 
 .currency-converter-expanded .converter-expanded-btn:hover {
