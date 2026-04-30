@@ -4,7 +4,7 @@ const WC_SECTIONS = [
     fields: [
       { key: 'saleMonthly', label: 'Sale Monthly', unit: '(Baht/month)' },
       { key: 'creditTermAR', label: 'Credit Term', unit: '(Month)' },
-      { key: 'creditSale', label: 'Credit Sale', unit: '(% of sale)', step: 0.01 },
+      { key: 'creditSale', label: 'Credit Sale', unit: '(% of sale)', step: 0.001, placeholder: '0.00' },
     ],
   },
   {
@@ -12,7 +12,7 @@ const WC_SECTIONS = [
     fields: [
       { key: 'buyMonthly', label: 'Buy Monthly', unit: '(Baht/month)' },
       { key: 'creditTermAP', label: 'Credit Term', unit: '(Month)' },
-      { key: 'creditBuy', label: 'Credit Buy', unit: '(% of buy)', step: 0.01 },
+      { key: 'creditBuy', label: 'Credit Buy', unit: '(% of buy)', step: 0.001, placeholder: '0.00' },
     ],
   },
   {
@@ -41,7 +41,7 @@ const TABS = [
     fields: [
       { key: 'loanBalance', label: 'Loan Balance', unit: '(Baht)' },
       { key: 'term', label: 'Term', unit: '(Month)' },
-      { key: 'interestRate', label: 'Interest Rate', unit: '(Maximum 2 digits and 3 decimal points % per year)', step: 0.001 },
+      { key: 'interestRate', label: 'Interest Rate', unit: '(Maximum 2 digits and 3 decimal points % per year)', step: 0.001, placeholder: '0.00' },
     ],
     calculate(inputs) {
       const pv = +inputs.loanBalance;
@@ -65,7 +65,7 @@ const TABS = [
     fields: [
       { key: 'loanPayment', label: 'Loan Payment', unit: '(Baht/month)' },
       { key: 'term', label: 'Term', unit: '(Month)' },
-      { key: 'interestRate', label: 'Interest Rate', unit: '(Maximum 2 digits and 3 decimal points % per year)', step: 0.001 },
+      { key: 'interestRate', label: 'Interest Rate', unit: '(Maximum 2 digits and 3 decimal points % per year)', step: 0.001, placeholder: '0.00' },
     ],
     calculate(inputs) {
       const pmt = +inputs.loanPayment;
@@ -90,7 +90,7 @@ const TABS = [
     fields: [
       { key: 'loanBalance', label: 'Loan Balance', unit: '(Baht)' },
       { key: 'loanPayment', label: 'Loan Payment', unit: '(Baht/month)' },
-      { key: 'interestRate', label: 'Interest Rate', unit: '(Maximum 2 digits and 3 decimal points % per year)', step: 0.001 },
+      { key: 'interestRate', label: 'Interest Rate', unit: '(Maximum 2 digits and 3 decimal points % per year)', step: 0.001, placeholder: '0.00' },
     ],
     calculate(inputs) {
       const pv = +inputs.loanBalance;
@@ -158,11 +158,12 @@ const TABS = [
 
 function buildField(field) {
   const step = field.step !== undefined ? ` step="${field.step}"` : '';
+  const placeholder = field.placeholder || '0';
   return `
     <div class="slc-field">
       <div class="slc-input-box">
         <span class="slc-field-label">${field.label}</span>
-        <input type="number" class="slc-input" name="${field.key}" placeholder="0"${step}>
+        <input type="number" class="slc-input" name="${field.key}" placeholder="${placeholder}"${step}>
       </div>
       <span class="slc-field-unit">${field.unit}</span>
     </div>`;
