@@ -225,14 +225,8 @@
   {
     "id": "sme-loan-calculator",
     "components": [
-      "sme-calculator-section",
+      "section",
       "sme-calculator-tab-section"
-    ]
-  },
-  {
-    "id": "sme-calculator-section",
-    "components": [
-      "sme-calculator-input"
     ]
   },
   {

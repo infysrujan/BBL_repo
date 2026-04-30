@@ -1415,22 +1415,6 @@
           }
         },
         {
-          "title": "SME Calculator Section",
-          "id": "sme-calculator-section",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/section/v1/section",
-                "template": {
-                  "name": "SME Calculator Section",
-                  "model": "sme-calculator-section",
-                  "filter": "sme-calculator-section"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "SME Calculator Tab Section",
           "id": "sme-calculator-tab-section",
           "plugins": {

@@ -8881,17 +8881,6 @@
     "fields": []
   },
   {
-    "id": "sme-calculator-section",
-    "fields": [
-      {
-        "component": "text",
-        "name": "sectionName",
-        "label": "Section Name",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
     "id": "sme-calculator-tab-section",
     "fields": [
       {
