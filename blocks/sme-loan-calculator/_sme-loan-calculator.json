@@ -35,7 +35,6 @@
   "models": [
     {
       "id": "sme-loan-calculator",
-      "filter": "sme-loan-calculator",
       "fields": [
         {
           "component": "text",
