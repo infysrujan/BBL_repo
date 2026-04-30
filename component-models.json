@@ -8879,6 +8879,10 @@
   {
     "id": "sme-loan-calculator",
     "filter": "sme-loan-calculator",
+    "fields": []
+  },
+  {
+    "id": "sme-child-item",
     "fields": [
       {
         "component": "text",
@@ -8931,10 +8935,6 @@
         }
       }
     ]
-  },
-  {
-    "id": "sme-child-item",
-    "fields": []
   },
   {
     "id": "social-icon",
