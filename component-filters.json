@@ -50,8 +50,7 @@
       "external-redirect-popup",
       "video",
       "carousel-video",
-      "forex-rates",
-      "sme-loan-calculator"
+      "forex-rates"
     ]
   },
   {
@@ -220,6 +219,28 @@
     "id": "rate-card",
     "components": [
       "rate-card-item"
+    ]
+  },
+  {
+    "id": "sme-loan-calculator",
+    "components": [
+      "sme-calculator-section",
+      "sme-calculator-tab-section"
+    ]
+  },
+  {
+    "id": "sme-calculator-section",
+    "components": [
+      "title",
+      "text"
+    ]
+  },
+  {
+    "id": "sme-calculator-tab-section",
+    "components": [
+      "embed-adaptive-form",
+      "button",
+      "text"
     ]
   },
   {
