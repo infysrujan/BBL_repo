@@ -8879,7 +8879,58 @@
   {
     "id": "sme-loan-calculator",
     "filter": "sme-loan-calculator",
-    "fields": []
+    "fields": [
+      {
+        "component": "text",
+        "name": "text",
+        "label": "Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "tableContent",
+        "label": "Table Content",
+        "valueType": "string",
+        "value": "",
+        "rte": {
+          "toolbar": {
+            "format": [
+              "bold",
+              "italic",
+              "underline"
+            ],
+            "list": [
+              "bullet_list",
+              "ordered_list"
+            ],
+            "insert": [
+              "link",
+              "unlink",
+              "table"
+            ],
+            "editor": [
+              "removeformat"
+            ],
+            "sections": [
+              "format",
+              "list",
+              "insert",
+              "editor"
+            ]
+          },
+          "actions": {
+            "table": {
+              "label": "Insert Table",
+              "shortcut": "Mod-Alt-T",
+              "wrapInParagraphs": true
+            },
+            "link": {
+              "hideTarget": false
+            }
+          }
+        }
+      }
+    ]
   },
   {
     "id": "sme-child-item",
