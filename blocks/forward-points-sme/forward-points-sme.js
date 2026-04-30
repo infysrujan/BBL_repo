@@ -409,9 +409,6 @@ function setupSection(
     }
 
     rerender();
-    if (state.selectedDate && state.selectedUpdate && isValidSelectedDay(state)) {
-      await loadRates(state.selectedDate, state.selectedUpdate);
-    }
     return true;
   };
 
@@ -536,12 +533,9 @@ function setupSection(
 
   block.querySelectorAll(`.fpsme-time-dropdown-${sid} .fpsme-time-item`).forEach((item) => {
     item.addEventListener('click', () => {
-      const prev = state.selectedUpdate;
       state.selectedUpdate = item.dataset.value;
       toggleTime(false);
-      if (prev !== state.selectedUpdate && state.selectedDate && isValidSelectedDay(state)) {
-        loadRates(state.selectedDate, state.selectedUpdate);
-      }
+      rerender();
     });
   });
 
