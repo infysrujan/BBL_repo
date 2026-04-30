@@ -444,6 +444,12 @@ body.bangkok-bankm-card main {
     margin: auto;
 }
 
+.section.center-content-max .default-content-wrapper {
+    max-width: var(--bbl-layout-central-aligned-max-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .section.background-wealth,
 .section.background-privatebanking {
     padding: 1.875rem 1rem;
