@@ -20,9 +20,9 @@ export function updateMapIframe(iframe, loc, configs) {
   if (src) iframe.src = src;
 }
 
-export function populateSidebar(sidebar, loc, placeholders, configs) {
+export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = false) {
   const address = [loc.Address1, loc.Address2, loc.Address3, loc.Province, loc.Postcode]
-    .filter(Boolean).join(' ');
+    .filter((v) => hasValue(v)).join(' ');
   const dirTemplate = configs?.googleMapsDirectionsUrl;
   if (!dirTemplate) {
     // eslint-disable-next-line no-console
@@ -36,10 +36,13 @@ export function populateSidebar(sidebar, loc, placeholders, configs) {
   const telLabel = placeholders?.telLabel || 'Tel:';
   const faxLabel = placeholders?.faxLabel || 'Fax:';
   const isNearest = loc.Range === 0;
-  const branchStatus = hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
-  const tel = hasValue(loc.Tel) ? loc.Tel : '';
-  const fax = hasValue(loc.Fax) ? loc.Fax : '';
-  const hasStatus = branchStatus || loc.MicroBranchHours;
+
+  // ATM/ATM+ sidebar only shows name, address, and directions
+  const branchStatus = !isAtm && hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
+  const isOpen = branchStatus.toLowerCase() === 'open';
+  const tel = !isAtm && hasValue(loc.Tel) && loc.Tel.trim() !== 'BeID' ? loc.Tel : '';
+  const fax = !isAtm && hasValue(loc.Fax) ? loc.Fax : '';
+  const showAppointment = !isAtm && loc.BranchAppointment;
 
   const card = createEl(`
     <article class="locate-us-card">
@@ -51,35 +54,34 @@ export function populateSidebar(sidebar, loc, placeholders, configs) {
         <hr class="locate-us-card-hr">
         <div class="locate-us-card-detail">
           ${isNearest ? '<div class="locate-us-card-nearest-tag"></div>' : ''}
-          ${hasStatus ? `
+          ${branchStatus ? `
             <div class="locate-us-card-row">
               <span class="locate-us-card-label"></span>
               <div class="locate-us-card-status-col">
-                ${branchStatus ? '<span class="locate-us-card-status"></span>' : ''}
-                ${loc.MicroBranchHours ? '<span class="locate-us-card-hours"></span>' : ''}
+                <span class="locate-us-card-status"></span>
+                ${isOpen ? '<span class="locate-us-card-hours"></span>' : ''}
               </div>
             </div>` : ''}
           ${tel ? '<div class="locate-us-card-row"><span class="locate-us-card-label"></span><span class="locate-us-card-tel"></span></div>' : ''}
           ${fax ? '<div class="locate-us-card-row"><span class="locate-us-card-label"></span><span class="locate-us-card-fax"></span></div>' : ''}
           ${address ? '<p class="locate-us-card-address"></p>' : ''}
           ${directionsUrl ? '<a class="locate-us-card-directions" target="_blank" rel="noopener noreferrer"></a>' : ''}
-          ${loc.BranchAppointment ? '<a class="locate-us-card-appointment" target="_blank" rel="noopener noreferrer"></a>' : ''}
+          ${showAppointment ? '<a class="locate-us-card-appointment" target="_blank" rel="noopener noreferrer"></a>' : ''}
         </div>
       </div>
     </article>`);
 
   card.querySelector('.locate-us-card-name').textContent = loc.BranchName;
   if (isNearest) card.querySelector('.locate-us-card-nearest-tag').textContent = nearestLabel;
-  if (hasStatus) {
-    const labels = card.querySelectorAll('.locate-us-card-detail .locate-us-card-row .locate-us-card-label');
-    if (labels[0]) labels[0].textContent = statusLabel;
-  }
   if (branchStatus) {
+    card.querySelector('.locate-us-card-detail .locate-us-card-row .locate-us-card-label').textContent = statusLabel;
     const statusEl = card.querySelector('.locate-us-card-status');
     statusEl.textContent = branchStatus;
     statusEl.classList.add(`locate-us-card-status-${branchStatus.toLowerCase()}`);
   }
-  if (loc.MicroBranchHours) card.querySelector('.locate-us-card-hours').textContent = loc.MicroBranchHours;
+  if (isOpen) {
+    card.querySelector('.locate-us-card-hours').textContent = hasValue(loc.MicroBranchHours) ? loc.MicroBranchHours : '-';
+  }
   if (tel) {
     const rows = card.querySelectorAll('.locate-us-card-row');
     const telRow = [...rows].find((r) => r.querySelector('.locate-us-card-tel'));
@@ -98,7 +100,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs) {
     dirEl.href = directionsUrl;
     dirEl.textContent = getDirectionText;
   }
-  if (loc.BranchAppointment) {
+  if (showAppointment) {
     const appointmentEl = card.querySelector('.locate-us-card-appointment');
     appointmentEl.href = loc.BranchAppointment;
     appointmentEl.textContent = branchBookingText;

@@ -4,9 +4,9 @@ export const CARDS_PER_PAGE = 12;
 
 // ─── Thailand card ────────────────────────────────────────────────────────────
 
-export function buildAddressCard(loc, isNearest, placeholders, configs) {
+export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = false) {
   const address = [loc.Address1, loc.Address2, loc.Address3, loc.Province, loc.Postcode]
-    .filter(Boolean).join(' ');
+    .filter((v) => hasValue(v)).join(' ');
   const nearestLabel = placeholders?.nearestLocationTag || 'Nearest';
   const getDirectionText = placeholders?.getDirectionText || 'Get Direction';
   const statusLabel = placeholders?.statusLabel || 'Status:';
@@ -18,10 +18,11 @@ export function buildAddressCard(loc, isNearest, placeholders, configs) {
     ? buildUrl(dirTemplate, { LAT: loc.Lat, LNG: loc.Lng })
     : '';
 
-  const branchStatus = hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
-  const tel = hasValue(loc.Tel) ? loc.Tel : '';
-  const fax = hasValue(loc.Fax) ? loc.Fax : '';
-  const hasStatus = branchStatus || loc.MicroBranchHours;
+  // ATM/ATM+ cards only show name, address, and directions
+  const branchStatus = !isAtm && hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
+  const isOpen = branchStatus.toLowerCase() === 'open';
+  const tel = !isAtm && hasValue(loc.Tel) && loc.Tel.trim() !== 'BeID' ? loc.Tel : '';
+  const fax = !isAtm && hasValue(loc.Fax) ? loc.Fax : '';
 
   const card = createEl(`
     <article class="locate-us-card">
@@ -33,12 +34,12 @@ export function buildAddressCard(loc, isNearest, placeholders, configs) {
         <hr class="locate-us-card-hr">
         <div class="locate-us-card-detail">
           ${isNearest ? '<div class="locate-us-card-nearest-tag"></div>' : ''}
-          ${hasStatus ? `
+          ${branchStatus ? `
             <div class="locate-us-card-row">
               <span class="locate-us-card-label"></span>
               <div class="locate-us-card-status-col">
-                ${branchStatus ? '<span class="locate-us-card-status"></span>' : ''}
-                ${loc.MicroBranchHours ? '<span class="locate-us-card-hours"></span>' : ''}
+                <span class="locate-us-card-status"></span>
+                ${isOpen ? '<span class="locate-us-card-hours"></span>' : ''}
               </div>
             </div>` : ''}
           ${tel ? '<div class="locate-us-card-row"><span class="locate-us-card-label"></span><span class="locate-us-card-tel"></span></div>' : ''}
@@ -51,16 +52,15 @@ export function buildAddressCard(loc, isNearest, placeholders, configs) {
 
   card.querySelector('.locate-us-card-name').textContent = loc.BranchName;
   if (isNearest) card.querySelector('.locate-us-card-nearest-tag').textContent = nearestLabel;
-  if (hasStatus) {
-    const rows = card.querySelectorAll('.locate-us-card-detail .locate-us-card-row');
-    if (rows[0]) rows[0].querySelector('.locate-us-card-label').textContent = statusLabel;
-  }
   if (branchStatus) {
+    card.querySelector('.locate-us-card-detail .locate-us-card-row .locate-us-card-label').textContent = statusLabel;
     const statusEl = card.querySelector('.locate-us-card-status');
     statusEl.textContent = branchStatus;
     statusEl.classList.add(`locate-us-card-status-${branchStatus.toLowerCase()}`);
   }
-  if (loc.MicroBranchHours) card.querySelector('.locate-us-card-hours').textContent = loc.MicroBranchHours;
+  if (isOpen) {
+    card.querySelector('.locate-us-card-hours').textContent = hasValue(loc.MicroBranchHours) ? loc.MicroBranchHours : '-';
+  }
   if (tel) {
     const rows = card.querySelectorAll('.locate-us-card-row');
     const telRow = [...rows].find((r) => r.querySelector('.locate-us-card-tel'));
@@ -237,6 +237,7 @@ export function renderCards(
   placeholders,
   onSelect,
   configs,
+  isAtm = false,
 ) {
   cardsContainer.innerHTML = '';
   const start = (page - 1) * CARDS_PER_PAGE;
@@ -263,17 +264,19 @@ export function renderCards(
 
   pageResults.forEach((loc, idx) => {
     const isNearest = loc.Range === 0;
-    const card = buildAddressCard(loc, isNearest, placeholders, configs);
+    const card = buildAddressCard(loc, isNearest, placeholders, configs, isAtm);
     card.dataset.cardIndex = idx;
     const header = card.querySelector('.locate-us-card-header');
     const body = card.querySelector('.locate-us-card-body');
 
-    header.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
       if (window.matchMedia('(width > 47.5rem)').matches) {
+        if (e.target.closest('a')) return;
         onSelect(loc);
         scrollToMap();
         return;
       }
+      if (!e.target.closest('.locate-us-card-header')) return;
       const isExpanded = header.getAttribute('aria-expanded') === 'true';
       collapseAll();
       if (!isExpanded) {
@@ -296,7 +299,7 @@ export function renderCards(
 
   renderPagination(paginationEl, allResults.length, page, (newPage) => {
     // eslint-disable-next-line max-len
-    renderCards(allResults, cardsContainer, paginationEl, newPage, placeholders, onSelect, configs);
+    renderCards(allResults, cardsContainer, paginationEl, newPage, placeholders, onSelect, configs, isAtm);
     scrollToMap();
   }, placeholders);
 }
