@@ -232,14 +232,12 @@
   {
     "id": "sme-calculator-section",
     "components": [
-      "title",
-      "text"
+      "sme-calculator-input"
     ]
   },
   {
     "id": "sme-calculator-tab-section",
     "components": [
-      "embed-adaptive-form",
       "button",
       "text"
     ]

@@ -8885,7 +8885,7 @@
     "fields": [
       {
         "component": "text",
-        "name": "name",
+        "name": "sectionName",
         "label": "Section Name",
         "valueType": "string"
       }
@@ -8896,10 +8896,38 @@
     "fields": [
       {
         "component": "text",
-        "name": "tab-name",
+        "name": "tabName",
         "label": "Tab Name",
         "valueType": "string",
         "required": true
+      }
+    ]
+  },
+  {
+    "id": "sme-calculator-input",
+    "fields": [
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Field Name",
+        "description": "Unique key for this input field (e.g. loanBalance)",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "label",
+        "label": "Field Label",
+        "description": "Label displayed next to the input",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "placeholder",
+        "label": "Placeholder",
+        "description": "Placeholder text shown inside the input",
+        "valueType": "string"
       }
     ]
   },
