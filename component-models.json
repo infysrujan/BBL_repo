@@ -8893,7 +8893,7 @@
       {
         "component": "richtext",
         "name": "tableContent",
-        "label": "Content",
+        "label": "Table Content",
         "valueType": "string",
         "value": "",
         "rte": {
