@@ -8878,6 +8878,7 @@
   },
   {
     "id": "sme-loan-calculator",
+    "filter": "sme-loan-calculator",
     "fields": []
   },
   {
