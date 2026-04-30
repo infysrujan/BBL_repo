@@ -8892,8 +8892,8 @@
       },
       {
         "component": "richtext",
-        "name": "rte",
-        "label": "RTE",
+        "name": "tableContent",
+        "label": "Content",
         "valueType": "string",
         "value": "",
         "rte": {
