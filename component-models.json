@@ -8894,7 +8894,45 @@
         "component": "richtext",
         "name": "rte",
         "label": "RTE",
-        "valueType": "string"
+        "valueType": "string",
+        "value": "",
+        "rte": {
+          "toolbar": {
+            "format": [
+              "bold",
+              "italic",
+              "underline"
+            ],
+            "list": [
+              "bullet_list",
+              "ordered_list"
+            ],
+            "insert": [
+              "link",
+              "unlink",
+              "table"
+            ],
+            "editor": [
+              "removeformat"
+            ],
+            "sections": [
+              "format",
+              "list",
+              "insert",
+              "editor"
+            ]
+          },
+          "actions": {
+            "table": {
+              "label": "Insert Table",
+              "shortcut": "Mod-Alt-T",
+              "wrapInParagraphs": true
+            },
+            "link": {
+              "hideTarget": false
+            }
+          }
+        }
       }
     ]
   },
