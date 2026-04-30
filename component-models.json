@@ -8878,12 +8878,11 @@
   },
   {
     "id": "sme-loan-calculator",
-    "filter": "sme-loan-calculator",
     "fields": [
       {
         "component": "text",
-        "name": "text",
-        "label": "Text",
+        "name": "tabName",
+        "label": "Tab Name",
         "valueType": "string"
       },
       {
@@ -8931,10 +8930,6 @@
         }
       }
     ]
-  },
-  {
-    "id": "sme-child-item",
-    "fields": []
   },
   {
     "id": "social-icon",

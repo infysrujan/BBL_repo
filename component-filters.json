@@ -223,12 +223,6 @@
     ]
   },
   {
-    "id": "sme-loan-calculator",
-    "components": [
-      "sme-child-item"
-    ]
-  },
-  {
     "id": "social-icons",
     "components": [
       "social-icon"
