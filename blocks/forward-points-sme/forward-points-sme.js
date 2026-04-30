@@ -33,15 +33,6 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-function isValidSelectedDay(state) {
-  const parsed = parseIsoDate(state.selectedDate);
-  if (!parsed) return false;
-  const selectedMonthKey = getMonthKey(parsed.year, parsed.month);
-  const enabledDays = state.enabledDaysByMonth[selectedMonthKey] || [];
-  if (!enabledDays.length) return true;
-  return enabledDays.includes(parsed.day);
-}
-
 function renderDatepicker(
   state,
   sid,
@@ -145,7 +136,7 @@ function renderControlsRow(
 
   const timeDropdownOpen = state.timeDropdownOpen ? ' is-open' : '';
   const timeDisabled = !state.updates.length ? ' is-disabled' : '';
-  const goDisabled = (!state.selectedDate || !state.selectedUpdate || state.loading) ? ' disabled' : '';
+  const goDisabled = '';
 
   return `<div class="fpsme-controls fpsme-controls-${sid}">
     <span class="fpsme-update-label">${escapeHtml(calendarLabel)}</span>
@@ -335,16 +326,16 @@ function setupSection(
   monthLabels,
   dayLabels,
   buddhistYearOffset,
+  prevLabel,
+  nextLabel,
   rerender,
 ) {
   const dateGroup = block.querySelector(`.fpsme-date-group-${sid}`);
   const dateInput = block.querySelector(`#fpsme-date-input-${sid}`);
   const dateTrigger = block.querySelector(`.fpsme-date-trigger-${sid}`);
-  const prevBtn = dateGroup?.querySelector('.fpsme-dp-prev');
-  const nextBtn = dateGroup?.querySelector('.fpsme-dp-next');
-  const dayButtons = dateGroup?.querySelectorAll('.fpsme-dp-day-btn');
   const timeDropdownEl = block.querySelector(`.fpsme-time-dropdown-${sid}`);
   const timeTrigger = timeDropdownEl?.querySelector('.fpsme-time-trigger');
+  const timeList = timeDropdownEl?.querySelector('.fpsme-time-list');
   const goBtn = block.querySelector(`.fpsme-go-btn-${sid}`);
 
   const getEndpointUrl = (type, ...args) => {
@@ -360,12 +351,57 @@ function setupSection(
     return '';
   };
 
+  // ── Partial DOM updaters — never touch the outer block ──────────────────────
+
+  // Re-render only the datepicker popup inside the date group
+  const refreshDatepicker = () => {
+    if (!dateGroup) return;
+    const existing = dateGroup.querySelector(`.fpsme-datepicker-${sid}`);
+    if (!state.calendarOpen) {
+      existing?.remove();
+      return;
+    }
+    // eslint-disable-next-line max-len
+    const html = renderDatepicker(state, sid, monthLabels, dayLabels, buddhistYearOffset, prevLabel, nextLabel);
+    if (existing) {
+      existing.outerHTML = html;
+    } else {
+      dateGroup.insertAdjacentHTML('beforeend', html);
+    }
+  };
+
+  // Update only the time dropdown list and label — no full rerender
+  const refreshTimeDropdown = () => {
+    if (!timeDropdownEl) return;
+    const list = timeDropdownEl.querySelector('.fpsme-time-list');
+    const labelEl = timeDropdownEl.querySelector('.fpsme-time-label');
+    const trigger = timeDropdownEl.querySelector('.fpsme-time-trigger');
+    if (!list) return;
+
+    list.innerHTML = state.updates.map((item) => {
+      const update = trimValue(item.Update);
+      const time = trimValue(item.Time);
+      const isActive = update === state.selectedUpdate;
+      return `<li class="fpsme-time-item${isActive ? ' is-active' : ''}" role="option" aria-selected="${isActive}" data-value="${escapeHtml(update)}">${escapeHtml(`${update}: ${time}`)}</li>`;
+    }).join('');
+
+    const selectedObj = state.updates.find((u) => trimValue(u.Update) === state.selectedUpdate);
+    if (labelEl) {
+      labelEl.textContent = selectedObj
+        ? `${trimValue(selectedObj.Update)}: ${trimValue(selectedObj.Time)}`
+        : (state.selectedUpdate || '');
+    }
+    if (trigger) trigger.disabled = !state.updates.length;
+    timeDropdownEl.classList.toggle('is-disabled', !state.updates.length);
+  };
+
+  // ── Data fetch — only called by GO button ───────────────────────────────────
+
   const loadRates = async (dateIso, updateValue) => {
     const parsed = parseIsoDate(dateIso);
     if (!parsed || !updateValue) return;
     state.loading = true;
     rerender();
-
     try {
       const url = getEndpointUrl('rates', parsed.day, parsed.month, parsed.year, updateValue);
       state.rates = await getFxRates(url);
@@ -374,6 +410,8 @@ function setupSection(
       rerender();
     }
   };
+
+  // ── Date selection — fetches enabled days + time updates, no rates fetch ────
 
   const applyDateSelection = async (dateIso) => {
     const parsed = parseIsoDate(dateIso);
@@ -393,7 +431,7 @@ function setupSection(
     state.typedDate = formatDateInputValue(state.selectedDate, monthLabels, buddhistYearOffset);
     state.viewYear = Number(parsed.year);
     state.viewMonth = Number(parsed.month);
-    rerender();
+    if (dateInput) dateInput.value = state.typedDate;
 
     try {
       const updates = await getUpdatesInDay(
@@ -408,11 +446,12 @@ function setupSection(
       // silent
     }
 
-    rerender();
+    refreshTimeDropdown();
     return true;
   };
 
-  // Date input events
+  // ── Date input ──────────────────────────────────────────────────────────────
+
   if (dateInput) {
     dateInput.addEventListener('input', (e) => { state.typedDate = e.target.value; });
 
@@ -420,7 +459,7 @@ function setupSection(
       const parsed = parseTypedDate(state.typedDate, buddhistYearOffset);
       if (!parsed) {
         state.typedDate = formatDateInputValue(state.selectedDate, monthLabels, buddhistYearOffset);
-        rerender();
+        dateInput.value = state.typedDate;
         return;
       }
       if (parsed.iso !== state.selectedDate) applyDateSelection(parsed.iso);
@@ -434,7 +473,8 @@ function setupSection(
     });
   }
 
-  // Calendar open
+  // ── Calendar open ───────────────────────────────────────────────────────────
+
   const openCalendar = () => {
     const parsed = parseIsoDate(state.selectedDate);
     if (parsed) {
@@ -442,7 +482,7 @@ function setupSection(
       state.viewMonth = Number(parsed.month);
     }
     state.calendarOpen = true;
-    rerender();
+    refreshDatepicker();
 
     if (parsed) {
       const monthKey = getMonthKey(parsed.year, parsed.month);
@@ -450,7 +490,7 @@ function setupSection(
         getEnabledDays(getEndpointUrl('dayInMonth', parsed.year, parsed.month))
           .then((days) => {
             state.enabledDaysByMonth[monthKey] = days;
-            if (state.calendarOpen) rerender();
+            if (state.calendarOpen) refreshDatepicker();
           });
       }
     }
@@ -459,63 +499,76 @@ function setupSection(
   if (dateInput) dateInput.addEventListener('focus', openCalendar);
   if (dateTrigger) dateTrigger.addEventListener('click', openCalendar);
 
-  // Calendar navigation
-  if (prevBtn) {
-    prevBtn.addEventListener('click', async () => {
-      const month = state.viewMonth === 1 ? 12 : state.viewMonth - 1;
-      const year = state.viewMonth === 1 ? state.viewYear - 1 : state.viewYear;
-      state.viewMonth = month;
-      state.viewYear = year;
-      const monthKey = getMonthKey(year, month);
-      if (!state.enabledDaysByMonth[monthKey]) {
-        state.enabledDaysByMonth[monthKey] = await getEnabledDays(
-          getEndpointUrl('dayInMonth', year, month),
-        );
-      }
-      rerender();
-    });
-  }
+  // ── Calendar interactions via event delegation on dateGroup ────────────────
 
-  if (nextBtn) {
-    nextBtn.addEventListener('click', async () => {
-      const month = state.viewMonth === 12 ? 1 : state.viewMonth + 1;
-      const year = state.viewMonth === 12 ? state.viewYear + 1 : state.viewYear;
-      const nextIndex = year * 12 + month;
-      const maxIndex = state.maxSelectableMonth
-        ? state.maxSelectableMonth.year * 12 + state.maxSelectableMonth.month
-        : null;
-      if (maxIndex && nextIndex > maxIndex) return;
-
-      state.viewMonth = month;
-      state.viewYear = year;
-      const monthKey = getMonthKey(year, month);
-      if (!state.enabledDaysByMonth[monthKey]) {
-        state.enabledDaysByMonth[monthKey] = await getEnabledDays(
-          getEndpointUrl('dayInMonth', year, month),
-        );
-      }
-      rerender();
-    });
-  }
-
-  if (dayButtons) {
-    dayButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const { day } = btn.dataset;
+  if (dateGroup) {
+    dateGroup.addEventListener('click', async (e) => {
+      // Day click
+      const dayBtn = e.target.closest('.fpsme-dp-day-btn');
+      if (dayBtn) {
+        const { day } = dayBtn.dataset;
         const dateIso = `${state.viewYear}-${String(state.viewMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        applyDateSelection(dateIso).then((applied) => {
-          if (!applied) return;
+        const applied = await applyDateSelection(dateIso);
+        if (applied) {
           state.calendarOpen = false;
-          rerender();
-        });
-      });
+          refreshDatepicker();
+        }
+        return;
+      }
+
+      // Prev month
+      if (e.target.closest('.fpsme-dp-prev')) {
+        const month = state.viewMonth === 1 ? 12 : state.viewMonth - 1;
+        const year = state.viewMonth === 1 ? state.viewYear - 1 : state.viewYear;
+        state.viewMonth = month;
+        state.viewYear = year;
+        const monthKey = getMonthKey(year, month);
+        if (!state.enabledDaysByMonth[monthKey]) {
+          state.enabledDaysByMonth[monthKey] = await getEnabledDays(
+            getEndpointUrl('dayInMonth', year, month),
+          );
+        }
+        refreshDatepicker();
+        return;
+      }
+
+      // Next month
+      const nextEl = e.target.closest('.fpsme-dp-next');
+      if (nextEl && !nextEl.disabled && !nextEl.classList.contains('is-disabled')) {
+        const month = state.viewMonth === 12 ? 1 : state.viewMonth + 1;
+        const year = state.viewMonth === 12 ? state.viewYear + 1 : state.viewYear;
+        const nextIndex = year * 12 + month;
+        const maxIndex = state.maxSelectableMonth
+          ? state.maxSelectableMonth.year * 12 + state.maxSelectableMonth.month
+          : null;
+        if (maxIndex && nextIndex > maxIndex) return;
+        state.viewMonth = month;
+        state.viewYear = year;
+        const monthKey = getMonthKey(year, month);
+        if (!state.enabledDaysByMonth[monthKey]) {
+          state.enabledDaysByMonth[monthKey] = await getEnabledDays(
+            getEndpointUrl('dayInMonth', year, month),
+          );
+        }
+        refreshDatepicker();
+      }
+    });
+
+    // Close calendar on outside click
+    document.addEventListener('mousedown', (e) => {
+      if (!state.calendarOpen) return;
+      if (!dateGroup.contains(e.target) && !dateTrigger?.contains(e.target)) {
+        state.calendarOpen = false;
+        refreshDatepicker();
+      }
     });
   }
 
-  // Time dropdown
+  // ── Time dropdown ───────────────────────────────────────────────────────────
+
   const toggleTime = (open) => {
     state.timeDropdownOpen = open;
-    if (timeDropdownEl) timeDropdownEl.classList.toggle('is-open', open);
+    timeDropdownEl?.classList.toggle('is-open', open);
   };
 
   if (timeTrigger) {
@@ -524,39 +577,39 @@ function setupSection(
       toggleTime(next);
       if (next) {
         document.addEventListener('mousedown', function closeTime(e) {
-          if (!timeDropdownEl || !timeDropdownEl.contains(e.target)) toggleTime(false);
+          if (!timeDropdownEl?.contains(e.target)) toggleTime(false);
           document.removeEventListener('mousedown', closeTime);
         });
       }
     });
   }
 
-  block.querySelectorAll(`.fpsme-time-dropdown-${sid} .fpsme-time-item`).forEach((item) => {
-    item.addEventListener('click', () => {
+  // Time item selection — update label + active class directly, no rerender
+  if (timeList) {
+    timeList.addEventListener('click', (e) => {
+      const item = e.target.closest('.fpsme-time-item');
+      if (!item) return;
       state.selectedUpdate = item.dataset.value;
       toggleTime(false);
-      rerender();
-    });
-  });
-
-  // GO button
-  if (goBtn) {
-    goBtn.addEventListener('click', () => {
-      if (!state.selectedDate || !state.selectedUpdate || !isValidSelectedDay(state)) return;
-      loadRates(state.selectedDate, state.selectedUpdate);
+      timeList.querySelectorAll('.fpsme-time-item').forEach((li) => {
+        li.classList.toggle('is-active', li.dataset.value === state.selectedUpdate);
+        li.setAttribute('aria-selected', String(li.dataset.value === state.selectedUpdate));
+      });
+      const labelEl = timeDropdownEl?.querySelector('.fpsme-time-label');
+      const selectedObj = state.updates.find((u) => trimValue(u.Update) === state.selectedUpdate);
+      if (labelEl && selectedObj) {
+        labelEl.textContent = `${trimValue(selectedObj.Update)}: ${trimValue(selectedObj.Time)}`;
+      }
     });
   }
 
-  // Outside click to close calendar
-  if (state.calendarOpen && dateGroup) {
-    const outsideClick = (e) => {
-      if (!dateGroup.contains(e.target)) {
-        state.calendarOpen = false;
-        rerender();
-        document.removeEventListener('mousedown', outsideClick);
-      }
-    };
-    document.addEventListener('mousedown', outsideClick);
+  // ── GO button ───────────────────────────────────────────────────────────────
+
+  if (goBtn) {
+    goBtn.addEventListener('click', () => {
+      if (!state.selectedDate || !state.selectedUpdate) return;
+      loadRates(state.selectedDate, state.selectedUpdate);
+    });
   }
 }
 
@@ -613,6 +666,8 @@ export default async function decorate(block) {
       monthLabels,
       dayLabels,
       buddhistYearOffset,
+      prevLabel,
+      nextLabel,
       render,
     );
     setupSection(
@@ -624,6 +679,8 @@ export default async function decorate(block) {
       monthLabels,
       dayLabels,
       buddhistYearOffset,
+      prevLabel,
+      nextLabel,
       render,
     );
 
