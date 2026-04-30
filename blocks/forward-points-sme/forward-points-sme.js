@@ -553,13 +553,21 @@ function setupSection(
         refreshDatepicker();
       }
     });
+  }
 
-    // Close calendar on outside click
+  // Attach the outside-click listener only once per section (guard against
+  // duplicate attachment caused by rerender calling setupSection repeatedly).
+  // Uses live block.querySelector so it always checks the current DOM.
+  const outsideKey = `_fpsme_outside_${sid}`;
+  if (!block[outsideKey]) {
+    block[outsideKey] = true;
     document.addEventListener('mousedown', (e) => {
       if (!state.calendarOpen) return;
-      if (!dateGroup.contains(e.target) && !dateTrigger?.contains(e.target)) {
+      const liveGroup = block.querySelector(`.fpsme-date-group-${sid}`);
+      const liveTrigger = block.querySelector(`.fpsme-date-trigger-${sid}`);
+      if (!liveGroup?.contains(e.target) && !liveTrigger?.contains(e.target)) {
         state.calendarOpen = false;
-        refreshDatepicker();
+        liveGroup?.querySelector(`.fpsme-datepicker-${sid}`)?.remove();
       }
     });
   }
@@ -741,7 +749,7 @@ export default async function decorate(block) {
       const latestFwd = await getLatestFwdUpdate(endpoints);
       if (!latestFwd) return;
 
-      const latestDate = parseApiDate(latestFwd?.Ddate || latestFwd?.Date);
+      const latestDate = parseApiDate(latestFwd?.Ddate || latestFwd?.Date || latestFwd?.Day);
       if (!latestDate) return;
 
       s2State.selectedDate = latestDate.iso;

@@ -96,35 +96,25 @@ export function normalizeFxRates(list) {
 }
 
 /**
- * Normalizes forward points rates response for Section 2 tables.
- * Row order corresponds to row headings configured by the author (1M, 3M, 6M).
- * Table 1 (low revenue THB 50-200M): t1Buying / t1Selling
- * Table 2 (mid revenue THB 200-500M): t2Buying / t2Selling
- * Exact field names confirmed via "Mapping for forward point for SME.docx".
- * Falls back to same value for both tables if only one set of fields exists.
+ * Normalizes forward points response from GetFwdfxrates.
+ * API returns: [{Tier:"SME01", Tenors:[{TenorCode, BuyingRate, SellingRate}]}, {Tier:"SME02",...}]
+ * SME01 = Table 1 (THB 50-200M), SME02 = Table 2 (THB 200-500M).
+ * Output: one entry per tenor row (1M, 3M, 6M) with t1/t2 buying+selling.
  */
 export function normalizeFwdRates(list) {
-  return (Array.isArray(list) ? list : []).map((item) => {
-    const t1Buying = trimValue(
-      item.ExportBuyingLow ?? item.ExportBuying ?? item.Buying ?? item.ExportBuyingAmt,
-    );
-    const t1Selling = trimValue(
-      item.ImportSellingLow ?? item.ImportSelling ?? item.Selling ?? item.ImportSellingAmt,
-    );
-    const t2Buying = trimValue(
-      item.ExportBuyingMid ?? item.ExportBuying2 ?? item.ExportBuying ?? item.Buying,
-    );
-    const t2Selling = trimValue(
-      item.ImportSellingMid ?? item.ImportSelling2 ?? item.ImportSelling ?? item.Selling,
-    );
-    return {
-      tenorCode: trimValue(item.TenorCode),
-      t1Buying,
-      t1Selling,
-      t2Buying,
-      t2Selling,
-    };
-  });
+  if (!Array.isArray(list) || !list.length) return [];
+  const tier1 = list.find((t) => t.Tier === 'SME01');
+  const tier2 = list.find((t) => t.Tier === 'SME02');
+  const tenors1 = Array.isArray(tier1?.Tenors) ? tier1.Tenors : [];
+  const tenors2 = Array.isArray(tier2?.Tenors) ? tier2.Tenors : [];
+  const len = Math.max(tenors1.length, tenors2.length);
+  return Array.from({ length: len }, (_, i) => ({
+    tenorCode: trimValue((tenors1[i] || tenors2[i])?.TenorCode),
+    t1Buying: trimValue(tenors1[i]?.BuyingRate),
+    t1Selling: trimValue(tenors1[i]?.SellingRate),
+    t2Buying: trimValue(tenors2[i]?.BuyingRate),
+    t2Selling: trimValue(tenors2[i]?.SellingRate),
+  }));
 }
 
 export async function getLatestFxRates(endpoints) {
