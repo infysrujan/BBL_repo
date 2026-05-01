@@ -9251,6 +9251,22 @@
         ]
       },
       {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "showDropdownInMobile",
+        "value": false,
+        "label": "Enable dropdown in mobile",
+        "description": "Enable dropdown in mobile to select the tab",
+        "condition": {
+          "===": [
+            {
+              "var": "tab-variant"
+            },
+            "simple-tab"
+          ]
+        }
+      },
+      {
         "component": "reference",
         "name": "tab-icon",
         "label": "Tab Icon/Image",
