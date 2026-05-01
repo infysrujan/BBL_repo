@@ -31,9 +31,10 @@ function parseVariationClasses(cell) {
   return [...new Set(classes)];
 }
 
-function applyVariationClasses(table, styles) {
-  if (!table || !styles.length) return;
+function applyVariationClasses(table, styles, id) {
+  if (!table) return;
   table.classList.add(...styles);
+  table.setAttribute('id', id);
 }
 
 function getNestedTables(rows) {
@@ -257,16 +258,18 @@ export default async function decorate(block) {
   const rows = [...block.children];
   if (rows.length < 2) return;
 
-  const parentStyles = parseVariationClasses(rows[0].children[0]);
+  const tableId = rows[0]?.textContent.trim().toLowerCase();
+
+  const parentStyles = parseVariationClasses(rows[1].children[0]);
   if (parentStyles.includes('scroll')) {
     block.classList.add('scroll');
   }
-  const parentTable = rows[1].querySelector('table');
+  const parentTable = rows[2].querySelector('table');
   if (!parentTable) return;
 
-  applyVariationClasses(parentTable, parentStyles);
+  applyVariationClasses(parentTable, parentStyles, tableId);
 
-  const nestedRows = rows.slice(2);
+  const nestedRows = rows.slice(3);
   const isAuthoring = block.hasAttribute('data-aue-resource');
 
   const nestedTables = getNestedTables(nestedRows);
