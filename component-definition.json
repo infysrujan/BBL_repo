@@ -98,7 +98,7 @@
           }
         },
         {
-          "title": "BCAP Table",
+          "title": "Bcap",
           "id": "bcap",
           "plugins": {
             "xwalk": {
