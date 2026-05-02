@@ -1,258 +1,162 @@
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 
 const ALL_FUND_NAMES_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/AllFundNames';
 
-const DEFAULT_HEADERS = [
-  'Fund Type',
-  'Open-End Fund',
-  'NAV',
-  'Selling Price',
-  'Redemption Price',
-  'Total Net Assets',
-];
-
-/**
- * @param {unknown} val
- * @returns {string}
- */
-function formatPriceLike(val) {
-  if (val === null || val === undefined || val === '') return '–';
-  const n = Number(val);
-  if (Number.isNaN(n)) return '–';
-  return n.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+// Helper to normalize header text as keys
+function normalizeHeaderKey(header) {
+  return header
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, ''); // removes all non-alphanumeric chars
 }
 
-/**
- * @param {unknown} val
- * @returns {string}
- */
-function formatAum(val) {
-  if (val === null || val === undefined || val === '') return '–';
-  const n = Number(val);
-  if (Number.isNaN(n)) return '–';
-  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+// Helper to get current language - default to en (English) if unknown
+function getLang() {
+  if (typeof document !== 'undefined' && document.documentElement) {
+    const langAttr = document.documentElement.getAttribute('lang');
+    return langAttr && langAttr.toLowerCase().startsWith('th') ? 'th' : 'en';
+  }
+  return 'en';
 }
 
-/**
- * @param {string | undefined} iso
- * @returns {string}
- */
-function formatDisplayDate(iso) {
-  if (!iso) return '';
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-}
+// Map for language-aware object keys
+const localizedHeaderMap = {
+  fundtype: { en: 'mf_cateEng', th: 'mf_cateTha' },
+  openendfund: { en: 'mf_sEng', th: 'mf_sTha' },
+  nav: 'mfr_fNav',
+  sellingprice: 'mfr_fBuy',
+  redemptionprice: 'mfr_fSel',
+  totalnetassets: 'mf_sAUM',
+};
 
-/**
- * @typedef {object} FundRecord
- * @property {string} [mf_cateEng]
- * @property {string} [mf_sEng]
- * @property {string|null} [mf_linkEng]
- * @property {number|null|undefined} [mfr_fNav]
- * @property {number|null|undefined} [mfr_fBuy]
- * @property {number|null|undefined} [mfr_fSel]
- * @property {number|null|undefined} [mf_sAUM]
- * @property {string} [mfr_dDataDate]
- * @property {number} [mf_order]
- */
+function appendRowFromData(tableElement, dataArray) {
+  const lang = getLang();
 
-/**
- * @param {FundRecord[]} funds
- * @returns {{ cateEng: string, funds: FundRecord[] }[]}
- */
-function groupFundsByCategory(funds) {
-  const sorted = [...funds].sort((a, b) => (a.mf_order ?? 0) - (b.mf_order ?? 0));
-  const categoryOrder = [];
-  /** @type {Map<string, FundRecord[]>} */
-  const byCategory = new Map();
-  sorted.forEach((fund) => {
-    const key = fund.mf_cateEng ?? '';
-    if (!byCategory.has(key)) {
-      categoryOrder.push(key);
-      byCategory.set(key, []);
+  const tbody = tableElement.querySelector('tbody');
+  const headerRow = tbody.querySelector('.header-row');
+
+  if (!headerRow) {
+    // eslint-disable-next-line no-console -- dev diagnostic when table markup is wrong
+    console.error('Header row not found');
+    return;
+  }
+
+  const headers = Array.from(headerRow.querySelectorAll('td'));
+
+  // Ensure dataArray is an array
+  if (!Array.isArray(dataArray)) {
+    // eslint-disable-next-line no-console -- dev diagnostic for invalid API payload
+    console.error('appendRowFromData: dataArray is not an array');
+    return;
+  }
+
+  // Extract fund category order, use correct (Eng/Tha) fund type per lang
+  const mfCateKey = lang === 'th' ? 'mf_cateTha' : 'mf_cateEng';
+  const mfCateOrder = [];
+  const seenCategories = new Set();
+  dataArray.forEach((data) => {
+    const cate = data[mfCateKey];
+    if (cate !== undefined && !seenCategories.has(cate)) {
+      mfCateOrder.push(cate);
+      seenCategories.add(cate);
     }
-    byCategory.get(key).push(fund);
   });
-  return categoryOrder.map((cateEng) => ({
-    cateEng,
-    funds: byCategory.get(cateEng) ?? [],
-  }));
-}
 
-/**
- * @param {FundRecord} fund
- * @returns {HTMLDivElement}
- */
-function createOpenEndSubrow(fund) {
-  const sub = document.createElement('div');
-  sub.className = 'bcap-subrow';
+  // Group dataArray by fund category (per lang)
+  const groupedByCate = {};
+  dataArray.forEach((data) => {
+    const cate = data[mfCateKey];
+    if (!groupedByCate[cate]) {
+      groupedByCate[cate] = [];
+    }
+    groupedByCate[cate].push(data);
+  });
 
-  const line = document.createElement('span');
-  line.className = 'bcap-fund-line';
+  // Clear all rows except header row before appending
+  Array.from(tbody.querySelectorAll('tr')).forEach((tr) => {
+    if (!tr.classList.contains('header-row')) tr.remove();
+  });
 
-  const nameEl = document.createElement(fund.mf_linkEng ? 'a' : 'span');
-  if (fund.mf_linkEng) {
-    nameEl.href = fund.mf_linkEng;
-    nameEl.className = 'bcap-fund-name';
-  } else {
-    nameEl.className = 'bcap-fund-name';
-  }
-  nameEl.textContent = fund.mf_sEng ?? '';
+  // Append rows in the order of fund type, each group together,
+  // merge "Fund Type" tds with rowspan
+  mfCateOrder.forEach((cate) => {
+    const group = groupedByCate[cate];
+    group.forEach((data, idx) => {
+      const newRow = document.createElement('tr');
+      headers.forEach((headerCell) => {
+        const headerText = headerCell.textContent.trim();
+        const normalizedKey = normalizeHeaderKey(headerText);
 
-  const dateEl = document.createElement('span');
-  dateEl.className = 'bcap-fund-date';
-  dateEl.textContent = formatDisplayDate(fund.mfr_dDataDate);
+        let columnKey;
+        // Get proper key per lang for columns with Eng/Tha variants (fundtype, openendfund)
+        if (localizedHeaderMap[normalizedKey]) {
+          if (
+            typeof localizedHeaderMap[normalizedKey] === 'object'
+            && (normalizedKey === 'fundtype' || normalizedKey === 'openendfund')
+          ) {
+            columnKey = localizedHeaderMap[normalizedKey][lang];
+          } else {
+            // Numeric/other columns
+            columnKey = localizedHeaderMap[normalizedKey];
+          }
+        } else {
+          // fallback: use normalizedKey directly
+          columnKey = normalizedKey;
+        }
 
-  line.append(nameEl, dateEl);
-  sub.append(line);
-  return sub;
-}
-
-/**
- * @param {string} text
- * @returns {HTMLDivElement}
- */
-function createNumericSubrow(text) {
-  const sub = document.createElement('div');
-  sub.className = 'bcap-subrow bcap-subrow--num';
-  sub.textContent = text;
-  return sub;
-}
-
-/**
- * One table row per category; columns 2–6 use stacked sub-rows (split cells).
- * @param {{ cateEng: string, funds: FundRecord[] }} group
- * @returns {HTMLTableRowElement}
- */
-function createGroupRow(group) {
-  const tr = document.createElement('tr');
-  tr.className = 'bcap-group-row';
-
-  const tdType = document.createElement('td');
-  tdType.className = 'bcap-cell-type';
-  tdType.textContent = group.cateEng || '–';
-  tr.appendChild(tdType);
-
-  const tdOpen = document.createElement('td');
-  tdOpen.className = 'bcap-cell-stack bcap-cell-open-end';
-  group.funds.forEach((f) => tdOpen.appendChild(createOpenEndSubrow(f)));
-  tr.appendChild(tdOpen);
-
-  const tdNav = document.createElement('td');
-  tdNav.className = 'bcap-cell-stack bcap-cell-num';
-  group.funds.forEach((f) => tdNav.appendChild(createNumericSubrow(formatPriceLike(f.mfr_fNav))));
-  tr.appendChild(tdNav);
-
-  const tdBuy = document.createElement('td');
-  tdBuy.className = 'bcap-cell-stack bcap-cell-num';
-  group.funds.forEach((f) => tdBuy.appendChild(createNumericSubrow(formatPriceLike(f.mfr_fBuy))));
-  tr.appendChild(tdBuy);
-
-  const tdSel = document.createElement('td');
-  tdSel.className = 'bcap-cell-stack bcap-cell-num';
-  group.funds.forEach((f) => tdSel.appendChild(createNumericSubrow(formatPriceLike(f.mfr_fSel))));
-  tr.appendChild(tdSel);
-
-  const tdAum = document.createElement('td');
-  tdAum.className = 'bcap-cell-stack bcap-cell-num';
-  group.funds.forEach((f) => tdAum.appendChild(createNumericSubrow(formatAum(f.mf_sAUM))));
-  tr.appendChild(tdAum);
-
-  return tr;
-}
-
-/**
- * @param {HTMLTableElement} table
- */
-function ensureThead(table) {
-  let thead = table.querySelector(':scope > thead');
-  if (!thead) {
-    thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
-    headerRow.className = 'header-row';
-    DEFAULT_HEADERS.forEach((label, i) => {
-      const th = document.createElement('th');
-      th.scope = 'col';
-      th.textContent = label;
-      if (i >= 2) th.classList.add('bcap-th-num');
-      headerRow.appendChild(th);
+        // For the "Fund Type" column, only add the td (with rowspan) on the first row in the group
+        if (normalizedKey === 'fundtype') {
+          if (idx === 0) {
+            const td = document.createElement('td');
+            td.textContent = data[columnKey] !== undefined ? data[columnKey] : '';
+            td.rowSpan = group.length;
+            td.classList.add('merged-fund-type');
+            newRow.appendChild(td);
+          }
+          // skip appending a td for this header for all but the first in group
+        } else {
+          const td = document.createElement('td');
+          td.textContent = columnKey && data[columnKey] !== undefined ? data[columnKey] : '';
+          newRow.appendChild(td);
+        }
+      });
+      tbody.appendChild(newRow);
     });
-    thead.appendChild(headerRow);
-    table.insertBefore(thead, table.firstChild);
-  }
+  });
 }
 
-/**
- * @param {HTMLTableElement} table
- * @param {string} message
- */
-function renderErrorRow(table, message) {
-  let tbody = table.querySelector(':scope > tbody');
-  if (!tbody) {
-    tbody = document.createElement('tbody');
-    table.appendChild(tbody);
+export default async function decorate() {
+  const table = document.querySelector('.table');
+  const calendarLabel = document.querySelector('.table-container > .default-content-wrapper p:nth-child(2)');
+  if (calendarLabel) {
+    const input = document.createElement('input');
+    input.id = 'date-to';
+    input.type = 'text';
+    input.name = 'date-to';
+    calendarLabel.appendChild(input);
+    attachCalendarPicker({
+      input,
+      value: new Date(),
+      onChange: () => {
+        // date picker wired; hook fetch/update here when API is ready
+      },
+    });
   }
-  tbody.replaceChildren();
-  const tr = document.createElement('tr');
-  const td = document.createElement('td');
-  td.colSpan = 6;
-  td.className = 'bcap-message';
-  td.textContent = message;
-  tr.appendChild(td);
-  tbody.appendChild(tr);
-}
-
-/**
- * @param {HTMLTableElement} table
- * @param {FundRecord[]} funds
- */
-function renderFundRows(table, funds) {
-  let tbody = table.querySelector(':scope > tbody');
-  if (!tbody) {
-    tbody = document.createElement('tbody');
-    table.appendChild(tbody);
-  }
-  tbody.replaceChildren();
-  const groups = groupFundsByCategory(funds);
-  groups.forEach((g) => tbody.appendChild(createGroupRow(g)));
-}
-
-/**
- * @returns {Promise<FundRecord[]>}
- */
-async function fetchAllFunds() {
-  const response = await fetch(ALL_FUND_NAMES_URL);
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
-  const data = await response.json();
-  return Array.isArray(data) ? data : [];
-}
-
-export default async function decorate(block) {
-  const table = document.querySelector('table');
-
   if (!table) return;
 
   table.classList.add('bcap-table');
 
-  ensureThead(table);
-  renderErrorRow(table, 'Loading…');
-
-  moveInstrumentation(block, table);
-  block.replaceChildren(table);
-
+  let funds = [];
   try {
-    const funds = await fetchAllFunds();
-    if (!funds.length) {
-      renderErrorRow(table, 'No fund data available.');
-      return;
+    const response = await fetch(ALL_FUND_NAMES_URL);
+    if (!response.ok) {
+      throw new Error(`AllFundNames API returned ${response.status}`);
     }
-    renderFundRows(table, funds);
-  } catch (e) {
+    const data = await response.json();
+    funds = Array.isArray(data) ? data : [];
+  } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('BCAP fund table:', e);
-    renderErrorRow(table, 'Unable to load fund data. Please try again later.');
+    console.error('bcap: failed to load fund list', error);
   }
+
+  appendRowFromData(table, funds);
 }
