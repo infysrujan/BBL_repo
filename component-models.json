@@ -9364,39 +9364,6 @@
     ]
   },
   {
-    "id": "tax-calculator-journey",
-    "fields": [
-      {
-        "component": "text",
-        "name": "journeyName",
-        "label": "Journey Name",
-        "valueType": "string",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "name": "formFields",
-        "label": "Form Fields",
-        "valueType": "string",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "name": "notesLabel",
-        "label": "Notes Label",
-        "valueType": "string",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "name": "notes",
-        "label": "Notes",
-        "valueType": "string",
-        "value": ""
-      }
-    ]
-  },
-  {
     "id": "teaser-with-bg-image",
     "fields": [
       {

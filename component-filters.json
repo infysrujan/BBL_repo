@@ -50,7 +50,8 @@
       "external-redirect-popup",
       "video",
       "carousel-video",
-      "forex-rates"
+      "forex-rates",
+      "tax-calculator"
     ]
   },
   {
@@ -331,12 +332,6 @@
       "main-nav-item",
       "forex-rates",
       "forex-graph"
-    ]
-  },
-  {
-    "id": "tax-calculator",
-    "components": [
-      "tax-calculator-journey"
     ]
   },
   {
