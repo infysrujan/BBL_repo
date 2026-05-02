@@ -1,0 +1,817 @@
+{
+  "taxSavings": {
+    "total": 0,
+    "offset": 0,
+    "limit": 0,
+    "data": [],
+    "columns": [
+      "Key",
+      "Value"
+    ]
+  },
+  "th": {
+    "total": 89,
+    "offset": 0,
+    "limit": 89,
+    "data": [
+      {
+        "Key": "common-title",
+        "Value": "วางแผนประหยัดภาษี"
+      },
+      {
+        "Key": "common-step1Label",
+        "Value": "รายได้"
+      },
+      {
+        "Key": "common-step2Label",
+        "Value": "รายการลดหย่อน"
+      },
+      {
+        "Key": "common-step3Label",
+        "Value": "ผลการคำนวณ"
+      },
+      {
+        "Key": "common-noteText",
+        "Value": "*กรอกเฉพาะเงินได้ที่ต้องเสียภาษีโดยไม่หักค่าลดหย่อนส่วนตัวและประกันสังคม"
+      },
+      {
+        "Key": "common-unit",
+        "Value": "บาท"
+      },
+      {
+        "Key": "common-fatherLabel",
+        "Value": "บิดา"
+      },
+      {
+        "Key": "common-motherLabel",
+        "Value": "มารดา"
+      },
+      {
+        "Key": "common-maritalStatusLabel",
+        "Value": "สถานภาพสมรส"
+      },
+      {
+        "Key": "buttons-nextButton",
+        "Value": "ต่อไป"
+      },
+      {
+        "Key": "buttons-backButton",
+        "Value": "ย้อนกลับ"
+      },
+      {
+        "Key": "buttons-calculateButton",
+        "Value": "คำนวณ"
+      },
+      {
+        "Key": "buttons-recalculateButton",
+        "Value": "คำนวณใหม่"
+      },
+      {
+        "Key": "steps-step1-currentMonthlyIncomeLabel",
+        "Value": "เงินเดือน*"
+      },
+      {
+        "Key": "steps-step1-otherIncomeLabel",
+        "Value": "เงินได้อื่น ๆ ทั้งปี (ที่ไม่ใช่เงินเดือน)*"
+      },
+      {
+        "Key": "steps-step1-annualBonusLabel",
+        "Value": "โบนัสประจำปี"
+      },
+      {
+        "Key": "steps-step1-providentFundContributionRateLabel",
+        "Value": "อัตราเงินสะสมที่จ่ายเข้ากองทุนสำรองเลี้ยงชีพ (%)"
+      },
+      {
+        "Key": "steps-step2-familyDeductionLabel",
+        "Value": "ด้านครอบครัว"
+      },
+      {
+        "Key": "steps-step2-familyDeductionHint",
+        "Value": "จำนวนเงินที่กรอกต้องไม่เกินจำนวนเงินที่จ่ายจริง และไม่เกินจำนวนเงินที่สามารถใช้สิทธิลดหย่อนภาษีได้ตามเงื่อนไขที่กรมสรรพากรกำหนด"
+      },
+      {
+        "Key": "steps-step2-numberOfChildrenBefore2561Label",
+        "Value": "จำนวนบุตร (เกิดก่อนปี 2561)"
+      },
+      {
+        "Key": "steps-step2-numberOfChildrenBefore2561Max",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-numberOfChildrenAfter2561Label",
+        "Value": "จำนวนบุตร (เกิดในและหลังปี 2561)"
+      },
+      {
+        "Key": "steps-step2-numberOfChildrenAfter2561Max",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-parentalDeductionSelfLabel",
+        "Value": "ใช้สิทธิลดหย่อนบิดา-มารดาตนเอง"
+      },
+      {
+        "Key": "steps-step2-parentalDeductionSelfHint",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-parentalDeductionSelfMax",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-parentalDeductionSpouseLabel",
+        "Value": "ใช้สิทธิลดหย่อนบิดา-มารดาคู่สมรส"
+      },
+      {
+        "Key": "steps-step2-parentalDeductionSpouseHint",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-parentalDeductionSpouseMax",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-insuranceSectionLabel",
+        "Value": "ด้านประกัน"
+      },
+      {
+        "Key": "steps-step2-insuranceSectionHint",
+        "Value": "จำนวนเงินที่กรอกต้องไม่เกินจำนวนเงินที่จ่ายจริง และไม่เกินจำนวนเงินที่สามารถใช้สิทธิลดหย่อนภาษีได้ตามเงื่อนไขที่กรมสรรพากรกำหนด"
+      },
+      {
+        "Key": "steps-step2-healthInsurancePremiumLabel",
+        "Value": "เบี้ยประกันสุขภาพ"
+      },
+      {
+        "Key": "steps-step2-healthInsurancePremiumMax",
+        "Value": "ลดหย่อนได้สูงสุด {max} บาท"
+      },
+      {
+        "Key": "steps-step2-lifeInsurancePremiumLabel",
+        "Value": "เบี้ยประกันชีวิต"
+      },
+      {
+        "Key": "steps-step2-lifeInsurancePremiumMax",
+        "Value": "ลดหย่อนได้สูงสุด {max} บาท"
+      },
+      {
+        "Key": "steps-step2-healthParentInsurancePremiumLabel",
+        "Value": "เบี้ยประกันสุขภาพบิดามารดา"
+      },
+      {
+        "Key": "steps-step2-healthParentInsurancePremiumMax",
+        "Value": "ลดหย่อนได้สูงสุด {max} บาท"
+      },
+      {
+        "Key": "steps-step2-lifePensionInsurancePremiumLabel",
+        "Value": "เบี้ยประกันชีวิตแบบบำนาญ"
+      },
+      {
+        "Key": "steps-step2-lifePensionInsurancePremiumMax",
+        "Value": "ลดหย่อนได้สูงสุด {max} บาท"
+      },
+      {
+        "Key": "steps-step2-investmentSectionLabel",
+        "Value": "ด้านการลงทุน"
+      },
+      {
+        "Key": "steps-step2-investmentSectionHint",
+        "Value": "จำนวนเงินที่กรอกต้องไม่เกินจำนวนเงินที่จ่ายจริง และไม่เกินจำนวนเงินที่สามารถใช้สิทธิลดหย่อนภาษีได้ตามเงื่อนไขที่กรมสรรพากรกำหนด"
+      },
+      {
+        "Key": "steps-step2-rmfSavingsLabel",
+        "Value": "RMF"
+      },
+      {
+        "Key": "steps-step2-rmfSavingsMax",
+        "Value": "ลดหย่อนได้สูงสุด {max} บาท"
+      },
+      {
+        "Key": "steps-step2-thaiEsgSavingsLabel",
+        "Value": "Thai ESG"
+      },
+      {
+        "Key": "steps-step2-thaiEsgSavingsMax",
+        "Value": "ลดหย่อนได้สูงสุด {max} บาท"
+      },
+      {
+        "Key": "steps-step2-otherDeductionsSectionLabel",
+        "Value": "ด้านอื่น ๆ"
+      },
+      {
+        "Key": "steps-step2-otherDeductionsSectionHint",
+        "Value": "• จำนวนเงินที่กรอกต้องไม่เกินจำนวนเงินที่จ่ายจริง และไม่เกินจำนวนเงินที่สามารถใช้สิทธิลดหย่อนภาษีได้ตามเงื่อนไขที่กรมสรรพากรกำหนด\\n• เงินบริจาคที่ใช้สิทธิลดหย่อนได้ 2 เท่า ให้ระบุจำนวนเงิน 2 เท่าตามที่คำนวณได้  และไม่เกินจำนวนที่สามารถใช้สิทธิลดหย่อนภาษีได้ตามเงื่อนไขที่กรมสรรพากรกำหนด\\n• ค่าลดหย่อนอื่น ๆ ให้ระบุจำนวนเงินที่สามารถใช้สิทธิได้ตามเงื่อนไขที่กรมสรรพากรกำหนด"
+      },
+      {
+        "Key": "steps-step2-socialSecurityContributionLabel",
+        "Value": "เงินสมทบ"
+      },
+      {
+        "Key": "steps-step2-donationLabel",
+        "Value": "เงินบริจาค"
+      },
+      {
+        "Key": "steps-step2-donationMax",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-homeLoanInterestLabel",
+        "Value": "ดอกเบี้ยสินเชื่อที่อยู่อาศัย"
+      },
+      {
+        "Key": "steps-step2-homeLoanInterestMax",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-otherDeductionsLabel",
+        "Value": "ลดหย่อนอื่น ๆ"
+      },
+      {
+        "Key": "steps-step2-otherDeductionsMax",
+        "Value": ""
+      },
+      {
+        "Key": "results-taxToBePaidLabel",
+        "Value": "ภาษีที่ต้องชำระ"
+      },
+      {
+        "Key": "results-taxToBePaidOriginalLabel",
+        "Value": "ภาษีที่ต้องชำระเดิม"
+      },
+      {
+        "Key": "results-taxToBePaidNewLabel",
+        "Value": "ภาษีที่ชำระใหม่"
+      },
+      {
+        "Key": "results-taxSavedLabel",
+        "Value": "ประหยัดไป"
+      },
+      {
+        "Key": "results-taxRateLabel",
+        "Value": "(อัตราภาษี {rate}%)"
+      },
+      {
+        "Key": "results-taxRateRemainLabel",
+        "Value": "(ฐานภาษีสูงสุดอยู่ที่ {rate}%)"
+      },
+      {
+        "Key": "results-noTaxPayable",
+        "Value": "ไม่มีภาษีที่ต้องชำระ"
+      },
+      {
+        "Key": "results-maxTaxSavingsResult",
+        "Value": "สามารถประหยัดภาษีได้สูงสุด"
+      },
+      {
+        "Key": "results-maxInvestmentSavingsResult",
+        "Value": "โดยใช้เงินลงทุนอีกเพียง"
+      },
+      {
+        "Key": "results-remainingTaxResult",
+        "Value": "เหลือภาษีที่ต้องชำระ"
+      },
+      {
+        "Key": "results-chooseMoreInvestmentLabel",
+        "Value": "ลงทุนหรือซื้อประกันเพิ่มเพื่อประหยัดภาษี"
+      },
+      {
+        "Key": "results-investmentAmountLabel",
+        "Value": "ลงทุน/ซื้อประกันเพิ่ม (บาท)"
+      },
+      {
+        "Key": "results-totalInvestmentLabel",
+        "Value": "จำนวนเงินรวมตามหมวดหมู่ (บาท)"
+      },
+      {
+        "Key": "results-rmfLabel",
+        "Value": "RMF*"
+      },
+      {
+        "Key": "results-thaiEsgLabel",
+        "Value": "Thai ESG***"
+      },
+      {
+        "Key": "results-lifeInsuranceLabel",
+        "Value": "เบี้ยประกันชีวิต**"
+      },
+      {
+        "Key": "results-healthInsuranceLabel",
+        "Value": "เบี้ยประกันสุขภาพ**"
+      },
+      {
+        "Key": "results-pensionInsuranceLabel",
+        "Value": "เบี้ยประกันชีวิตแบบบำนาญ*"
+      },
+      {
+        "Key": "results-totalAllInvestmentsLabel",
+        "Value": "จำนวนเงินรวมทุกหมวดหมู่ (บาท)"
+      },
+      {
+        "Key": "results-canInvestMoreLabel",
+        "Value": "สูงสุด"
+      },
+      {
+        "Key": "results-noRemainDeduction",
+        "Value": "ใช้สิทธิ์ครบแล้ว"
+      },
+      {
+        "Key": "config-validation-percentageError",
+        "Value": "อยู่ระหว่าง 0-100"
+      },
+      {
+        "Key": "config-validation-minValueError",
+        "Value": "ต่ำสุดได้ไม่เกิน {min}"
+      },
+      {
+        "Key": "config-validation-maxValueError",
+        "Value": "สูงสุดได้ไม่เกิน {max}"
+      },
+      {
+        "Key": "config-validation-combinedLifeHealthExceededError",
+        "Value": "เบี้ยประกันชีวิต และเบี้ยประกันสุขภาพ รวมแล้วไม่เกิน {combinedLifeHealthMax} บาท"
+      },
+      {
+        "Key": "config-validation-combinedRMFPensionExceededError",
+        "Value": "จำนวนเงินของ RMF และเบี้ยประกันชีวิตแบบบำนาญ รวมแล้วไม่เกิน {combinedRMFPensionMax} บาท"
+      },
+      {
+        "Key": "config-validation-thaiEsgExceededError",
+        "Value": "ลงทุนใน Thai ESG ได้ไม่เกิน 30% ของเงินได้ที่ต้องเสียภาษี หรือไม่เกิน {thaiEsgMax} บาท"
+      },
+      {
+        "Key": "config-notes-title",
+        "Value": "หมายเหตุ"
+      },
+      {
+        "Key": "config-notes-investmentCalculation",
+        "Value": "คำนวณจำนวนเงินลงทุนสูงสุดที่ท่านสามารถลงทุนได้ ตามเงื่อนไขของกรมสรรพากร"
+      },
+      {
+        "Key": "config-notes-rmfAndPension",
+        "Value": "*จำนวนเงินของ RMF และเบี้ยประกันชีวิตแบบบำนาญ รวมแล้วไม่เกิน {combinedRMFPensionMax} บาท"
+      },
+      {
+        "Key": "config-notes-lifeAndHealthInsurance",
+        "Value": "**เบี้ยประกันชีวิต และเบี้ยประกันสุขภาพ รวมแล้วไม่เกิน {combinedLifeHealthMax} บาท"
+      },
+      {
+        "Key": "config-notes-thaiEsg",
+        "Value": "***ลงทุนใน Thai ESG ได้ไม่เกิน 30% ของเงินได้ที่ต้องเสียภาษี หรือไม่เกิน {thaiEsgMax} บาท"
+      },
+      {
+        "Key": "config-notes-noTaxPayableNote",
+        "Value": "(ไม่มีภาษีที่ต้องชำระ)"
+      },
+      {
+        "Key": "config-notes-taxNote",
+        "Value": "• เบี้ยประกันชีวิต เบี้ยประกันชีวิตแบบบำนาญ เบี้ยประกันสุขภาพ RMF Thai ESG และเงินบริจาค ต้องไม่เกินสิทธิหักลดหย่อนภาษีเงินได้บุคคลธรรมดาตามเงื่อนไขที่กรมสรรพากรกำหนด"
+      },
+      {
+        "Key": "config-notes-thaiEsgNote",
+        "Value": "• หากมีการลงทุนใน Thai ESGX สามารถกรอกจำนวนเงินได้ในช่อง ลดหย่อนอื่น ๆ โดยจำนวนเงินที่กรอกต้องเป็นไปตามเงื่อนไขของกรมสรรพากรเท่านั้น \u003Ca href=https://www.bangkokbank.com/th-TH/Personal/Save-And-Invest/Mutual-Funds/ThaiESGX\u003E\u003Cu\u003Eศึกษาเงื่อนไขของกองทุน Thai ESGX\u003C/u\u003E\u003C/a\u003E"
+      }
+    ],
+    "columns": [
+      "Key",
+      "Value"
+    ]
+  },
+  "en": {
+    "total": 90,
+    "offset": 0,
+    "limit": 90,
+    "data": [
+      {
+        "Key": "common-title",
+        "Value": "Plan your tax saving"
+      },
+      {
+        "Key": "common-step1Label",
+        "Value": "Income"
+      },
+      {
+        "Key": "common-step2Label",
+        "Value": "Allowance"
+      },
+      {
+        "Key": "common-step3Label",
+        "Value": "Result"
+      },
+      {
+        "Key": "common-noteText",
+        "Value": "*Enter only taxable income without deducting personal allowances and Social Security contributions."
+      },
+      {
+        "Key": "common-unit",
+        "Value": "baht"
+      },
+      {
+        "Key": "common-fatherLabel",
+        "Value": "Father"
+      },
+      {
+        "Key": "common-motherLabel",
+        "Value": "Mother"
+      },
+      {
+        "Key": "common-maritalStatusLabel",
+        "Value": "Marital Status"
+      },
+      {
+        "Key": "buttons-nextButton",
+        "Value": "Next"
+      },
+      {
+        "Key": "buttons-backButton",
+        "Value": "Back"
+      },
+      {
+        "Key": "buttons-calculateButton",
+        "Value": "Calculate"
+      },
+      {
+        "Key": "buttons-recalculateButton",
+        "Value": "Recalculate"
+      },
+      {
+        "Key": "buttons-backToPlanButton",
+        "Value": "Back"
+      },
+      {
+        "Key": "steps-step1-currentMonthlyIncomeLabel",
+        "Value": "Salary*"
+      },
+      {
+        "Key": "steps-step1-otherIncomeLabel",
+        "Value": "Other annual income (non-salary)*"
+      },
+      {
+        "Key": "steps-step1-annualBonusLabel",
+        "Value": "Annual bonus"
+      },
+      {
+        "Key": "steps-step1-providentFundContributionRateLabel",
+        "Value": "Percentage of provident fund contribution (%)"
+      },
+      {
+        "Key": "steps-step2-familyDeductionLabel",
+        "Value": "Family"
+      },
+      {
+        "Key": "steps-step2-familyDeductionHint",
+        "Value": "The amount entered must not exceed the amount actually paid and not be more than the tax allowance threshold as specified by the Revenue Department."
+      },
+      {
+        "Key": "steps-step2-numberOfChildrenBefore2561Label",
+        "Value": "Number of children (born before 2018)"
+      },
+      {
+        "Key": "steps-step2-numberOfChildrenBefore2561Max",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-numberOfChildrenAfter2561Label",
+        "Value": "Number of children (born in or after 2018)"
+      },
+      {
+        "Key": "steps-step2-numberOfChildrenAfter2561Max",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-parentalDeductionSelfLabel",
+        "Value": "Claim tax deduction for supporting parents (self)"
+      },
+      {
+        "Key": "steps-step2-parentalDeductionSelfHint",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-parentalDeductionSelfMax",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-parentalDeductionSpouseLabel",
+        "Value": "Claim tax deduction for supporting parents (spouse's)"
+      },
+      {
+        "Key": "steps-step2-parentalDeductionSpouseHint",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-parentalDeductionSpouseMax",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-insuranceSectionLabel",
+        "Value": "Insurance"
+      },
+      {
+        "Key": "steps-step2-insuranceSectionHint",
+        "Value": "The amount entered must not exceed the amount actually paid and not be more than the tax allowance threshold as specified by the Revenue Department."
+      },
+      {
+        "Key": "steps-step2-healthInsurancePremiumLabel",
+        "Value": "Health insurance premiums"
+      },
+      {
+        "Key": "steps-step2-healthInsurancePremiumMax",
+        "Value": "Max allowance {max} baht"
+      },
+      {
+        "Key": "steps-step2-lifeInsurancePremiumLabel",
+        "Value": "Life insurance premiums"
+      },
+      {
+        "Key": "steps-step2-lifeInsurancePremiumMax",
+        "Value": "Max allowance {max} baht"
+      },
+      {
+        "Key": "steps-step2-healthParentInsurancePremiumLabel",
+        "Value": "Parents' Health Insurance Premiums"
+      },
+      {
+        "Key": "steps-step2-healthParentInsurancePremiumMax",
+        "Value": "Max allowance to {max} baht"
+      },
+      {
+        "Key": "steps-step2-lifePensionInsurancePremiumLabel",
+        "Value": "Pension insurance premiums"
+      },
+      {
+        "Key": "steps-step2-lifePensionInsurancePremiumMax",
+        "Value": "Max allowance {max} baht"
+      },
+      {
+        "Key": "steps-step2-investmentSectionLabel",
+        "Value": "Investment"
+      },
+      {
+        "Key": "steps-step2-investmentSectionHint",
+        "Value": "The amount entered must not exceed the amount actually paid and not be more than the tax allowance threshold as specified by the Revenue Department."
+      },
+      {
+        "Key": "steps-step2-rmfSavingsLabel",
+        "Value": "RMF"
+      },
+      {
+        "Key": "steps-step2-rmfSavingsMax",
+        "Value": "Max allowance {max} baht"
+      },
+      {
+        "Key": "steps-step2-thaiEsgSavingsLabel",
+        "Value": "Thai ESG"
+      },
+      {
+        "Key": "steps-step2-thaiEsgSavingsMax",
+        "Value": "Max allowance {max} baht"
+      },
+      {
+        "Key": "steps-step2-otherDeductionsSectionLabel",
+        "Value": "Other allowances"
+      },
+      {
+        "Key": "steps-step2-otherDeductionsSectionHint",
+        "Value": "• The amount entered must not exceed the amount actually paid and not be more than the tax allowance threshold as specified by the Revenue Department \\n• For donations eligible for double deduction enter double the calculated amount but it must not exceed the tax allowance threshold as specified by the Revenue Department \\n• Enter the eligible amount as specified by the Revenue Department for some other types of tax allowances"
+      },
+      {
+        "Key": "steps-step2-socialSecurityContributionLabel",
+        "Value": "Social Security Contribution"
+      },
+      {
+        "Key": "steps-step2-donationLabel",
+        "Value": "Donations"
+      },
+      {
+        "Key": "steps-step2-donationMax",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-homeLoanInterestLabel",
+        "Value": "Mortgage loan interest"
+      },
+      {
+        "Key": "steps-step2-homeLoanInterestMax",
+        "Value": ""
+      },
+      {
+        "Key": "steps-step2-otherDeductionsLabel",
+        "Value": "Other"
+      },
+      {
+        "Key": "steps-step2-otherDeductionsMax",
+        "Value": ""
+      },
+      {
+        "Key": "results-taxToBePaidLabel",
+        "Value": "Tax payable"
+      },
+      {
+        "Key": "results-taxToBePaidOriginalLabel",
+        "Value": "Tax payable"
+      },
+      {
+        "Key": "results-taxToBePaidNewLabel",
+        "Value": "New tax payable"
+      },
+      {
+        "Key": "results-taxSavedLabel",
+        "Value": "Saved"
+      },
+      {
+        "Key": "results-taxRateLabel",
+        "Value": "(Tax rate {rate}%)"
+      },
+      {
+        "Key": "results-taxRateRemainLabel",
+        "Value": "(The maximum tax base {rate}%)"
+      },
+      {
+        "Key": "results-noTaxPayable",
+        "Value": "No Tax Payable"
+      },
+      {
+        "Key": "results-maxTaxSavingsResult",
+        "Value": "You can save tax up to"
+      },
+      {
+        "Key": "results-maxInvestmentSavingsResult",
+        "Value": "By investing only"
+      },
+      {
+        "Key": "results-remainingTaxResult",
+        "Value": "Remaining tax"
+      },
+      {
+        "Key": "results-chooseMoreInvestmentLabel",
+        "Value": "Save more on tax by investing or buying insurance"
+      },
+      {
+        "Key": "results-investmentAmountLabel",
+        "Value": "Additional investment or insurance (baht)"
+      },
+      {
+        "Key": "results-totalInvestmentLabel",
+        "Value": "Total amount for each item (baht)"
+      },
+      {
+        "Key": "results-rmfLabel",
+        "Value": "RMF*"
+      },
+      {
+        "Key": "results-thaiEsgLabel",
+        "Value": "Thai ESG***"
+      },
+      {
+        "Key": "results-lifeInsuranceLabel",
+        "Value": "Life insurance premiums**"
+      },
+      {
+        "Key": "results-healthInsuranceLabel",
+        "Value": "Health insurance premiums**"
+      },
+      {
+        "Key": "results-pensionInsuranceLabel",
+        "Value": "Pension insurance premiums*"
+      },
+      {
+        "Key": "results-totalAllInvestmentsLabel",
+        "Value": "Total amount for all items (baht)"
+      },
+      {
+        "Key": "results-canInvestMoreLabel",
+        "Value": "Up to"
+      },
+      {
+        "Key": "results-noRemainDeduction",
+        "Value": "All tax deductions have been used."
+      },
+      {
+        "Key": "config-validation-percentageError",
+        "Value": "Between 0-100"
+      },
+      {
+        "Key": "config-validation-minValueError",
+        "Value": "Minimum must not exceed {min}"
+      },
+      {
+        "Key": "config-validation-maxValueError",
+        "Value": "Maximum up to {max}"
+      },
+      {
+        "Key": "config-validation-combinedLifeHealthExceededError",
+        "Value": "The combined amount of life insurance premiums and health insurance premiums must not exceed {combinedLifeHealthMax} baht"
+      },
+      {
+        "Key": "config-validation-combinedRMFPensionExceededError",
+        "Value": "The combined amount of RMF and pension insurance premiums must not exceed {combinedRMFPensionMax} baht"
+      },
+      {
+        "Key": "config-validation-thaiEsgExceededError",
+        "Value": "Investing in Thai ESG funds must not exceed 30% of taxable income or {thaiEsgMax} baht whichever is lower"
+      },
+      {
+        "Key": "config-notes-title",
+        "Value": "Notes"
+      },
+      {
+        "Key": "config-notes-investmentCalculation",
+        "Value": "Calculate the maximum amount that you can invest according to the conditions of the Revenue Department."
+      },
+      {
+        "Key": "config-notes-rmfAndPension",
+        "Value": "* The combined amount of RMF and pension insurance premiums must not exceed {combinedRMFPensionMax} baht"
+      },
+      {
+        "Key": "config-notes-lifeAndHealthInsurance",
+        "Value": "** The combined amount of life insurance premiums and health insurance premiums must not exceed {combinedLifeHealthMax} baht"
+      },
+      {
+        "Key": "config-notes-thaiEsg",
+        "Value": "*** Investing in Thai ESG funds must not exceed 30% of taxable income or {thaiEsgMax} baht whichever is lower"
+      },
+      {
+        "Key": "config-notes-noTaxPayableNote",
+        "Value": "No tax payable"
+      },
+      {
+        "Key": "config-notes-taxNote",
+        "Value": "• Life insurance premiums pension insurance premiums health insurance premiums RMF Thai ESG and donations must not exceed the allowable personal income tax deduction limits as specified by the Revenue Department."
+      },
+      {
+        "Key": "config-notes-thaiEsgNote",
+        "Value": "• If you have invested in Thai ESGX please enter the amount in the Other field. The entered amount must comply with the conditions as specified by the Revenue Department. \u003Ca href=https://www.bangkokbank.com/en/Personal/Save-And-Invest/Mutual-Funds/ThaiESGX\u003E\u003Cu\u003ELearn more about Thai ESGX fund conditions\u003C/u\u003E\u003C/a\u003E"
+      }
+    ],
+    "columns": [
+      "Key",
+      "Value"
+    ]
+  },
+  "config": {
+    "total": 12,
+    "offset": 0,
+    "limit": 12,
+    "data": [
+      {
+        "Key": "deductions-parentalDeductionAmount",
+        "Value": "30000"
+      },
+      {
+        "Key": "defaults-currentMonthlyIncome",
+        "Value": "50000"
+      },
+      {
+        "Key": "defaults-annualBonus",
+        "Value": "100000"
+      },
+      {
+        "Key": "defaults-providentFundContributionRate",
+        "Value": "5"
+      },
+      {
+        "Key": "defaults-numberOfChildrenAfter2561",
+        "Value": "0"
+      },
+      {
+        "Key": "individualMaxes-rmf",
+        "Value": "500000"
+      },
+      {
+        "Key": "individualMaxes-thaiEsg",
+        "Value": "300000"
+      },
+      {
+        "Key": "individualMaxes-lifeInsurance",
+        "Value": "100000"
+      },
+      {
+        "Key": "individualMaxes-healthInsurance",
+        "Value": "25000"
+      },
+      {
+        "Key": "individualMaxes-pensionInsurance",
+        "Value": "200000"
+      },
+      {
+        "Key": "individualMaxes-combinedRMFPensionMax",
+        "Value": "440000"
+      },
+      {
+        "Key": "individualMaxes-combinedLifeHealthMax",
+        "Value": "100000"
+      }
+    ],
+    "columns": [
+      "Key",
+      "Value"
+    ]
+  },
+  ":version": 3,
+  ":names": [
+    "taxSavings",
+    "th",
+    "en",
+    "config"
+  ],
+  ":type": "multi-sheet"
+}
