@@ -44,11 +44,11 @@
 } */
 
 .locate-us .cards-list-content {
-  padding: 0px;
+  padding: 0;
 }
 
 .locate-us .cards-list-inner .cards-list-button {
-  padding: 0px;
+  padding: 0;
 }
 
 /* ── Service select (custom dropdown) ───────────────────────────────────────── */
@@ -111,7 +111,7 @@
 
 .locate-us .locate-us-service-item {
   padding: 0.625rem 1.875rem;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-gray-121);
   cursor: pointer;
   font-family: var(--bbl-font-family-primary);
@@ -162,6 +162,7 @@
   border-radius: var(--bbl-radius-md);
   background-color: var(--bbl-color-gray-144);
   justify-content: space-between;
+  max-width: fit-content;
 }
 
 .locate-us .locate-us-keyword-input {
@@ -237,7 +238,7 @@
 .locate-us .locate-us-province-item {
   padding: 0.625rem 1.875rem;
   margin: var(--bbl-space-025) 0;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-font-size-b1);
   font-weight: 700;
   color: var(--bbl-color-gray-121);
   cursor: pointer;
@@ -335,7 +336,7 @@
 }
 
 .locate-us .locate-us-map-sidebar {
-  padding: var(--bbl-space-250) 0.9375rem;
+  padding: var(--bbl-space-250);
   font-size: 0.9375rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
@@ -359,6 +360,8 @@
   align-items: stretch;
   padding: 0;
   margin: 30px auto;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
 }
 
 .locate-us .locate-us-card {
@@ -391,8 +394,7 @@
   font-size: 23px;
   font-weight: 700;
   color: var(--bbl-color-gray-121);
-  font-family: var(--bbl-font-family-primary);
-  font-family: 'BangkokBank-Bold', Tahoma, Helvetica, Arial, sans-serif;
+  font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
 }
 
 .locate-us .locate-us-card-chevron {
@@ -409,6 +411,7 @@
 
 .locate-us .locate-us-card-hr {
   border: none;
+
   /* border-top: 0.0625rem solid var(--bbl-color-gray-300); */
   margin: 0 0 0.625rem;
 }
@@ -422,14 +425,12 @@
 .locate-us .locate-us-card-nearest-tag {
   display: block;
   text-align: right;
-  font-size: 0.8125rem;
-  color: var(--bbl-color-gray-142);
   margin-bottom: var(--bbl-space-100);
   position: absolute;
   right: 0;
   background-color: #E0E6F8;
-  border-radius: 4px 0px 0px 4px;
-  color: #003399;
+  border-radius: 4px 0 0 4px;
+  color: #039;
   padding: 0 5px;
   font-size: 12px;
 }
@@ -499,7 +500,7 @@
   color: var(--bbl-color-blue-90);
   font-size: 14px;
   text-decoration: none;
-  font-family: 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif;
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   margin-top: 0.625rem;
 }
 
@@ -672,7 +673,7 @@
 
 .locate-us .locate-us-district-item {
   padding: 0.625rem 1.875rem;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-font-size-b1);
   font-weight: 700;
   color: var(--bbl-color-gray-121);
   cursor: pointer;
@@ -719,6 +720,8 @@
 
 .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
   padding: 0 var(--bbl-space-200);
+  display: flex;
+  justify-content: center;
 }
 
 .locate-us:has(.locate-us-results-overseas) .locate-us-location-filter-row {
@@ -806,7 +809,7 @@
   /* ── Filter bar ── */
 
   .locate-us .cards-list.cards-3 .cards-list-item {
-    max-width: 100%;
+    max-width: max-content;
   }
 
   .locate-us .cards-list.cards-3 .cards-list-item .cards-list-image.cards-list-image-x-small {
@@ -954,10 +957,6 @@
     margin: 0 0 var(--bbl-space-150);
   }
 
-  .locate-us .cards-list.cards-3 .cards-list-item{
-    max-width: max-content;
-  }
-
 }
 
 @media (width > 64rem) {
@@ -978,7 +977,7 @@
   .locate-us .cards-list.cards-3 .cards-list-item .cards-list-image.cards-list-image-x-small img {
     height: auto;
     margin-bottom: 10px;
-    padding: 14px 0px;
+    padding: 14px 0;
   }
 
   .locate-us .card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
@@ -986,8 +985,8 @@
   }
 
   .locate-us .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
-    padding: 0px 25px 15px 0px;
-    margin: 0 0 18px 0;
+    padding: 0 25px 15px 0;
+    margin: 0 0 18px;
   }
 
    /* .locate-us .cards-list.cards-3 .cards-list-item{
@@ -997,37 +996,5 @@
   .locate-us-fragment .cards-list {
     flex-flow: unset;
     flex-direction: unset;
-  } 
-}
-
-
-
-.locate-us .locate-us-keyword-form {
-  max-width: fit-content;
-}
-
-.locate-us .locate-us-map-sidebar {
-  padding: var(--bbl-space-250);
-}
-
-.locate-us .locate-us-service-item {
-  font-size: var(--bbl-font-size-b1);
-}
-
-.locate-us .locate-us-province-item {
-  font-size: var(--bbl-font-size-b1);
-}
-
-.locate-us .locate-us-district-item {
-  font-size: var(--bbl-font-size-b1);
-}
-
-.locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
-  display: flex;
-  justify-content: center;
-}
-
-.locate-us .locate-us-cards {
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px;
+  }
 }
