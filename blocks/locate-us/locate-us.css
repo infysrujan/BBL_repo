@@ -3,6 +3,10 @@
   padding-bottom: 3.75rem;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 /* ── Filter bar ──────────────────────────────────────────────────────────────── */
 
 .locate-us .locate-us-filter-bar {
@@ -10,6 +14,41 @@
   flex-direction: column;
   gap: var(--bbl-space-250);
   padding: 0 var(--bbl-space-400);
+}
+
+.locate-us .cards-list-item {
+  width: auto;
+  border: none;
+  border-radius: 0;
+  padding: 20px;
+  box-shadow: 0 0 16px 0 rgb(0 0 0 / 10%);
+}
+
+.locate-us .cards-list.cards-3 .cards-list-item {
+  max-width: 100%;
+  flex: auto;
+}
+
+.locate-us .cards-list-title.has-title-underline :is(h1, h2, h3, h4, h5, h6)::before {
+  width: 64px;
+}
+
+.locate-us .card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+  font-size: 21px;
+  text-align: center;
+}
+
+/* .locate-us .button, .button.primary, .button-primary, button[type="submit"], button.primary, .button-m.primary{
+  width: 100%;
+  margin-top: 16px;
+} */
+
+.locate-us .cards-list-content {
+  padding: 0px;
+}
+
+.locate-us .cards-list-inner .cards-list-button {
+  padding: 0px;
 }
 
 /* ── Service select (custom dropdown) ───────────────────────────────────────── */
@@ -766,6 +805,26 @@
 @media (width > 47.5rem) {
   /* ── Filter bar ── */
 
+  .locate-us .cards-list.cards-3 .cards-list-item {
+    max-width: 100%;
+  }
+
+  .locate-us .cards-list.cards-3 .cards-list-item .cards-list-image.cards-list-image-x-small {
+    height: auto;
+  }
+
+  .locate-us .cards-list.cards-3 .cards-list-item .cards-list-image.cards-list-image-x-small img {
+    height: auto;
+  }
+
+  .locate-us .card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    font-size: 21px;
+  }
+
+  .locate-us .section{
+    padding: 0;
+  }
+
   .locate-us .locate-us-filter-bar {
     flex-direction: row;
     align-items: center;
@@ -894,6 +953,11 @@
     font-size: 16px;
     margin: 0 0 var(--bbl-space-150);
   }
+
+  .locate-us .cards-list.cards-3 .cards-list-item{
+    max-width: max-content;
+  }
+
 }
 
 @media (width > 64rem) {
@@ -902,33 +966,68 @@
     max-width: 38.75rem;
   }
 
-  .locate-us .locate-us-keyword-form {
-    max-width: fit-content;
+  .locate-us .cards-list.cards-3 .cards-list-item {
+    flex: 1;
+    max-width: 240px;
   }
 
-  .locate-us .locate-us-map-sidebar {
-    padding: var(--bbl-space-250);
+  .locate-us .cards-list.cards-3 .cards-list-item .cards-list-image.cards-list-image-x-small {
+    height: auto;
   }
 
-  .locate-us .locate-us-service-item {
-    font-size: var(--bbl-font-size-b1);
+  .locate-us .cards-list.cards-3 .cards-list-item .cards-list-image.cards-list-image-x-small img {
+    height: auto;
+    margin-bottom: 10px;
+    padding: 14px 0px;
   }
 
-  .locate-us .locate-us-province-item {
-    font-size: var(--bbl-font-size-b1);
+  .locate-us .card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    font-size: 21px;
   }
 
-  .locate-us .locate-us-district-item {
-    font-size: var(--bbl-font-size-b1);
+  .locate-us .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
+    padding: 0px 25px 15px 0px;
+    margin: 0 0 18px 0;
   }
 
-  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
-    display: flex;
-    justify-content: center;
-  }
+   /* .locate-us .cards-list.cards-3 .cards-list-item{
+    flex: 1;
+  } */
 
-  .locate-us .locate-us-cards {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 40px;
-  }
+  .locate-us-fragment .cards-list {
+    flex-flow: unset;
+    flex-direction: unset;
+  } 
+}
+
+
+
+.locate-us .locate-us-keyword-form {
+  max-width: fit-content;
+}
+
+.locate-us .locate-us-map-sidebar {
+  padding: var(--bbl-space-250);
+}
+
+.locate-us .locate-us-service-item {
+  font-size: var(--bbl-font-size-b1);
+}
+
+.locate-us .locate-us-province-item {
+  font-size: var(--bbl-font-size-b1);
+}
+
+.locate-us .locate-us-district-item {
+  font-size: var(--bbl-font-size-b1);
+}
+
+.locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.locate-us .locate-us-cards {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
 }
