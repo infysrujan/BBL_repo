@@ -362,6 +362,39 @@
     ]
   },
   {
+    "id": "bcap",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "date-label",
+        "value": "",
+        "label": "Calander Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "print-label",
+        "value": "",
+        "label": "Print Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "error-message",
+        "value": "",
+        "label": "Error Message Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimer-text",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "brand-logo",
     "fields": [
       {
