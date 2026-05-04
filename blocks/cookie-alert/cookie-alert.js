@@ -9,6 +9,7 @@
 
 import { loadFragment } from '../fragment/fragment.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { fetchConfigs } from '../../scripts/config.js';
 
 const COOKIE_DURATION_DAYS = 30;
 const COOKIE_CONSENT = 'ConsentAlert';
@@ -92,6 +93,8 @@ export default async function decorate(block) {
     return;
   }
 
+  const configs = await fetchConfigs();
+
   if (document.querySelector('.popup-modal-card-offer')) {
     block.closest('.section')?.remove();
     return;
@@ -142,7 +145,7 @@ export default async function decorate(block) {
           copyAnchorAttributes(anchor, btn);
           moveInstrumentation(anchor, btn);
 
-          const fragmentPath = anchor.getAttribute('href') || `/${document.documentElement.lang || 'en'}/fragments/cookie-modal`;
+          const fragmentPath = configs.cookieModalPath;
           btn.addEventListener('click', async () => {
             const loaded = await ensureCookieModal(fragmentPath);
             if (loaded && typeof window.showCookieModal === 'function') {
