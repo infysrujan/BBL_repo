@@ -1,4 +1,5 @@
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
+import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
 const ALL_FUND_NAMES_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/AllFundNames';
 const LATEST_DATE_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/LatestDate';
@@ -344,6 +345,11 @@ export default async function decorate(block) {
 
   await refreshTableFromPrices(table, funds, calendarDate);
 
-  root.append(dateLabel, printLabel, errorMessage, table, disclaimer);
+  if (isAuthoringInstance(block)) {
+    root.append(dateLabel, printLabel, errorMessage, disclaimer);
+  } else {
+    root.append(dateLabel, printLabel, errorMessage, table, disclaimer);
+  }
+
   block.appendChild(root);
 }
