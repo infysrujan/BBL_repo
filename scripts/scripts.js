@@ -23,6 +23,18 @@ import {
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
 
 /**
+ * Import the martech plugin.
+ * See: https://github.com/adobe-rnd/aem-martech#launch-container-configuration for more information.
+ */
+import {
+  initMartech,
+  updateUserConsent,
+  martechEager,
+  martechLazy,
+  martechDelayed,
+} from '../plugins/martech/src/index.js';
+
+/**
  * Gets the language from the HTML tag.
  * @returns {string} The language code (e.g., 'en', 'th')
  */
@@ -135,17 +147,66 @@ function getDocumentLangFromPath(pathname) {
 }
 
 /**
+ * Gets the environment from the hostname.
+ * @returns {'dev'|'stage'|'prod'}
+ */
+const env = (() => {
+  const host = window.location.hostname;
+  if (host.includes('localhost') || host.includes('--preview') || host.includes('dev')) return 'dev';
+  if (host.includes('stage') || host.includes('staging')) return 'stage';
+  return 'prod';
+})();
+
+/**
+ * Configuration for each environment.
+ * @type {Object}
+ */
+// TODO: Update BBL's Dev, Stage and Prod datastream IDs here
+const dataStreamConfig = {
+  dev: 'db3b9bf1-f8e7-4d57-9fdf-94494c1459c6',
+  stage: 'db3b9bf1-f8e7-4d57-9fdf-94494c1459c6',
+  prod: 'db3b9bf1-f8e7-4d57-9fdf-94494c1459c6',
+};
+
+/**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
+  // TODO: Update consent logic here.
+  const isConsentGiven = false;
+
+  const martechLoadedPromise = initMartech(
+    // WebSDK Configuration
+    // TODO: Remove the below comment once the WebSDK Configuration is updated.
+    // Docs: https://experienceleague.adobe.com/en/docs/experience-platform/web-sdk/commands/configure/overview#configure-js
+    {
+      datastreamId: dataStreamConfig[env],
+      orgId: 'C735552962AB1A800A495FFD@AdobeOrg',
+      martechConfig: {
+        analytics: false, // setting to false as BBL uses GA through GTM
+      }
+    },
+    // 2. Library Configuration
+    {
+      personalization: !!getMetadata('target') && isConsentGiven,
+      launchUrls: [
+        /* TODO: Add BBL's Launch script URLs here */
+      ],
+    },
+  );
+  
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');
-    await loadSection(main.querySelector('.section'), waitForFirstImage);
+    await Promise.all([
+      // Load the martech library in the eager phase.
+      martechLoadedPromise.then(martechEager),
+      loadSection(main.querySelector('.section'), waitForFirstImage),
+    ]);
   }
 
   try {
@@ -177,6 +238,9 @@ async function loadLazy(doc) {
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
 
+  // Load the martech library in the lazy phase.
+  await martechLazy();
+
   await loadBreadcrumb(doc);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -194,7 +258,11 @@ async function loadLazy(doc) {
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3000);
+  window.setTimeout(() => {
+    // Load the martech library in the delayed phase.
+    martechDelayed();
+    import('./delayed.js');
+  }, 3000);
   // load anything that can be postponed to the latest here
 }
 
