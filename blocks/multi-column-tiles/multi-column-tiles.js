@@ -4,17 +4,17 @@ import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 function buildTile(row, doc) {
   const [
     imgElDesktop,
-    imgAlt,
     imageLinkDiv,
     imageLinkTitleDiv,
     titleDiv,
   ] = row.children;
 
   const pictureDesktop = imgElDesktop?.querySelector('picture');
+  const existingAlt = imgElDesktop?.querySelector('img')?.getAttribute('alt') || '';
 
   let pictureHTML = '';
   if (pictureDesktop) {
-    const picture = createSmartImage(imgElDesktop, null, imgAlt);
+    const picture = createSmartImage(imgElDesktop, null, { textContent: existingAlt });
     pictureHTML = picture?.outerHTML || '';
   }
 
