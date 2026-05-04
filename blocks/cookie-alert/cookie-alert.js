@@ -64,18 +64,8 @@ async function ensureCookieModal(fragmentPath) {
   if (!window[MODAL_PROMISE_KEY] || window[MODAL_PATH_KEY] !== fragmentPath) {
     window[MODAL_PATH_KEY] = fragmentPath;
     window[MODAL_PROMISE_KEY] = loadFragment(fragmentPath)
-      .then((fragment) => {
-        if (!fragment && typeof window.showCookieModal !== 'function') {
-          // eslint-disable-next-line no-console
-          console.error('[cookie-alert] Cookie modal fragment not found at', fragmentPath);
-        }
-        return fragment;
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error('[cookie-alert] Failed to load cookie modal fragment', error);
-        return null;
-      });
+      .then((fragment) => fragment)
+      .catch(() => null);
   }
 
   const fragment = await window[MODAL_PROMISE_KEY];
@@ -150,9 +140,6 @@ export default async function decorate(block) {
             const loaded = await ensureCookieModal(fragmentPath);
             if (loaded && typeof window.showCookieModal === 'function') {
               window.showCookieModal(btn);
-            } else {
-              // eslint-disable-next-line no-console
-              console.error('[cookie-alert] Modal not shown — loaded:', loaded, ', showCookieModal:', typeof window.showCookieModal);
             }
           });
 
