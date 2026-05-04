@@ -35,6 +35,11 @@ import {
 } from '../plugins/martech/src/index.js';
 
 /**
+ * Import the gtm-martech plugin.
+ * See: https://github.com/adobe-rnd/aem-gtm-martech#launch-container-configuration for more information.
+ */
+import gtmMartech from './gtm-martech.js';
+/**
  * Gets the language from the HTML tag.
  * @returns {string} The language code (e.g., 'en', 'th')
  */
@@ -205,6 +210,8 @@ async function loadEager(doc) {
     await Promise.all([
       // Load the martech library in the eager phase.
       martechLoadedPromise.then(martechEager),
+      // Load the gtm-martech library in the eager phase.
+      gtmMartech.eager(),
       loadSection(main.querySelector('.section'), waitForFirstImage),
     ]);
   }
@@ -226,6 +233,9 @@ async function loadEager(doc) {
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
+
+  // Load the gtm-martech library in the lazy phase.
+  await gtmMartech.lazy();
 
   // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
   decorateButtonsV1(main);
@@ -257,6 +267,8 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  // Load the gtm-martech library in the delayed phase.
+  window.setTimeout(gtmMartech.delayed, 1000);
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => {
     // Load the martech library in the delayed phase.
