@@ -1415,15 +1415,15 @@
           }
         },
         {
-          "title": "SME Child Item",
-          "id": "sme-child-item",
+          "title": "SME Field",
+          "id": "sme-field",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
-                  "name": "SME Child Item",
-                  "model": "sme-child-item"
+                  "name": "SME Field",
+                  "model": "sme-field"
                 }
               }
             }
