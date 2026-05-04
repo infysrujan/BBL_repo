@@ -625,7 +625,7 @@ function buildTooltipIcon(text) {
           <path d="M12 7.5C12.4418 7.5 12.7997 7.85807 12.7998 8.2998C12.7998 8.74163 12.4418 9.09961 12 9.09961C11.5583 9.0995 11.2002 8.74157 11.2002 8.2998C11.2003 7.85813 11.5583 7.50011 12 7.5Z" fill="#0064FF" stroke="#0064FF" stroke-miterlimit="10"/>
         </svg>
       </button>
-      <div class="tax-calc-tooltip" role="tooltip">${text.replace(/\n/g, '<br>')}</div>
+      <div class="tax-calc-tooltip" role="tooltip">${text.replace(/\\n|\n/g, '<br>')}</div>
     </div>
   `);
 
@@ -734,6 +734,10 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   card.appendChild(footer);
   container.appendChild(card);
   block.appendChild(container);
+
+  const primaryBtn = footer.querySelector('.tax-calc-btn-primary');
+  const syncBtnState = () => { primaryBtn.disabled = !!block.querySelector('.tax-calc-field-error:not(:empty)'); };
+  container.addEventListener('input', syncBtnState);
 
   footer.querySelector('.tax-calc-btn-primary').addEventListener('click', async (e) => {
     const btn = e.currentTarget;
@@ -848,6 +852,10 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
   container.appendChild(card);
   block.appendChild(container);
 
+  const j2PrimaryBtn = footer.querySelector('.tax-calc-btn-primary');
+  const syncJ2BtnState = () => { j2PrimaryBtn.disabled = !!block.querySelector('.tax-calc-field-error:not(:empty)'); };
+  container.addEventListener('input', syncJ2BtnState);
+
   // Wire Insure + HealthInsure combined max constraint
   const insureField = block.querySelector('[data-id="Insure"]');
   const healthInsureField = block.querySelector('[data-id="HealthInsure"]');
@@ -859,12 +867,14 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
       const val = parseFloat(raw(insureInput.value)) || 0;
       const newMax = Math.min(apiResponse.MaxHealthInsure, COMBINED_INSURANCE_MAX - val);
       if (healthInsureField?.updateMax) healthInsureField.updateMax(Math.max(0, newMax));
+      syncJ2BtnState();
     });
 
     healthInsureInput.addEventListener('input', () => {
       const val = parseFloat(raw(healthInsureInput.value)) || 0;
       const newMax = Math.min(apiResponse.MaxInsure, COMBINED_INSURANCE_MAX - val);
       if (insureField?.updateMax) insureField.updateMax(Math.max(0, newMax));
+      syncJ2BtnState();
     });
   }
 
@@ -1146,6 +1156,20 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
     const insureInput = insureField?.querySelector('#tc-InputInsure');
     const healthInput = healthField?.querySelector('#tc-InputHealthInsure');
 
+    // Enable/disable recalculate
+    const recalcBtn = footer.querySelector('#tc-recalculate');
+    const checkRecalcEnabled = () => {
+      const hasErrors = !!block.querySelector('.tax-calc-invest-table .tax-calc-field-error:not(:empty)');
+      const anyNonZero = investFieldDefs.some((def) => {
+        const inp = block.querySelector(`#tc-${def.id}`);
+        return inp && (parseFloat(raw(inp.value)) || 0) > 0;
+      });
+      recalcBtn.disabled = !anyNonZero || hasErrors;
+    };
+    block.querySelectorAll('.tax-calc-invest-table .tax-calc-input').forEach((inp) => {
+      inp.addEventListener('input', checkRecalcEnabled);
+    });
+
     if (insureInput && healthInput) {
       const syncHealthMax = () => {
         const insureVal = parseFloat(raw(insureInput.value)) || 0;
@@ -1158,26 +1182,13 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
         if (insureField?.updateMax) insureField.updateMax(Math.max(0, cap));
       };
 
-      insureInput.addEventListener('input', syncHealthMax);
-      healthInput.addEventListener('input', syncInsureMax);
+      insureInput.addEventListener('input', () => { syncHealthMax(); checkRecalcEnabled(); });
+      healthInput.addEventListener('input', () => { syncInsureMax(); checkRecalcEnabled(); });
 
       // Apply immediately so pre-populated J2 values are reflected on first render
       syncHealthMax();
       syncInsureMax();
     }
-
-    // Enable/disable recalculate
-    const recalcBtn = footer.querySelector('#tc-recalculate');
-    const checkRecalcEnabled = () => {
-      const anyNonZero = investFieldDefs.some((def) => {
-        const inp = block.querySelector(`#tc-${def.id}`);
-        return inp && (parseFloat(raw(inp.value)) || 0) > 0;
-      });
-      recalcBtn.disabled = !anyNonZero;
-    };
-    block.querySelectorAll('.tax-calc-invest-table .tax-calc-input').forEach((inp) => {
-      inp.addEventListener('input', checkRecalcEnabled);
-    });
 
     footer.querySelector('.tax-calc-btn-outline').addEventListener('click', onBack);
 
