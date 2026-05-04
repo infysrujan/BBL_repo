@@ -192,10 +192,16 @@
   .hero-banner-simple .hero-banner-content :is(h1) {
     line-height: 2.4375rem;
   }
-}
 
-:lang(th) {
   .hero-banner-simple .hero-banner-content :is(h2) {
+    line-height: 2.0625rem;
+  }
+
+  .hero-banner-private-wealth-banking .hero-banner-content :is(h1) {
+    line-height: 2.4375rem;
+  }
+
+  .hero-banner-private-wealth-banking .hero-banner-content :is(h2) {
     line-height: 2.0625rem;
   }
 }
@@ -255,18 +261,6 @@
   font-size: 1.4rem;
   line-height: 1.375rem;
   letter-spacing: -0.0125rem;
-}
-
-:lang(th) {
-  .hero-banner-private-wealth-banking .hero-banner-content :is(h1) {
-    line-height: 2.4375rem;
-  }
-}
-
-:lang(th) {
-  .hero-banner-private-wealth-banking .hero-banner-content :is(h2) {
-    line-height: 2.0625rem;
-  }
 }
 
 .wealth .hero-banner-simple .hero-banner-content-inner-text {
@@ -379,27 +373,53 @@
     overflow-y: clip;
     margin-inline: 0;
   }
-  :lang(th) {
-     .hero-banner-content :is(h1) {
-      line-height: 5.5rem;
-      ;
-    }
-  }
 
   :lang(th) {
+    .hero-banner-content :is(h1) {
+      line-height: 5.5rem;
+    }
+
     .hero-banner-content :is(h2) {
       line-height: 4.875rem;
     }
-  }
 
-  :lang(th) {
     .hero-banner-content :is(h3) {
       line-height: 3.75rem;
     }
-  }
 
-  :lang(th) {
     .hero-banner-content :is(h4) {
+      line-height: 2.5rem;
+    }
+
+    .hero-banner-simple .hero-banner-content :is(h1) {
+      line-height: 5.5rem;
+    }
+
+    .hero-banner-simple .hero-banner-content :is(h2) {
+      line-height: 4.875rem;
+    }
+
+    .hero-banner-simple .hero-banner-content :is(h3) {
+      line-height: 3.75rem;
+    }
+
+    .hero-banner-simple .hero-banner-content :is(h4) {
+      line-height: 2.5rem;
+    }
+
+    .hero-banner-private-wealth-banking .hero-banner-content :is(h1) {
+      line-height: 5.5rem;
+    }
+
+    .hero-banner-private-wealth-banking .hero-banner-content :is(h2) {
+      line-height: 4.875rem;
+    }
+
+    .hero-banner-private-wealth-banking .hero-banner-content :is(h3) {
+      line-height: 3.75rem;
+    }
+
+    .hero-banner-private-wealth-banking .hero-banner-content :is(h4) {
       line-height: 2.5rem;
     }
   }
@@ -489,31 +509,6 @@
     line-height: 2.875rem;
   }
 
-  :lang(th) {
-    .hero-banner-simple .hero-banner-content :is(h1) {
-      line-height: 5.5rem;
-    }
-  }
-
-  :lang(th) {
-    .hero-banner-simple .hero-banner-content :is(h2) {
-      line-height: 4.875rem;
-    }
-  }
-
-
-  :lang(th) {
-    .hero-banner-simple .hero-banner-content :is(h3) {
-      line-height: 3.75rem;
-    }
-  }
-
-  :lang(th) {
-    .hero-banner-simple .hero-banner-content :is(h4) {
-      line-height: 2.5rem;
-    }
-  }
-
   /* Simple logo and title variant override */
   .hero-banner-private-wealth-banking .hero-banner-content-inner {
     display: flex;
@@ -532,30 +527,6 @@
     font-size: var(--bbl-font-size-h3-desktop);
     line-height: 2.875rem;
     font-family: var(--bbl-font-family-primary);
-  }
-
-  :lang(th) {
-    .hero-banner-private-wealth-banking .hero-banner-content :is(h1) {
-      line-height: 5.5rem;
-    }
-  }
-
-  :lang(th) {
-    .hero-banner-private-wealth-banking .hero-banner-content :is(h2) {
-      line-height: 4.875rem;
-    }
-  }
-
-  :lang(th) {
-    .hero-banner-private-wealth-banking .hero-banner-content :is(h3) {
-      line-height: 3.75rem;
-    }
-  }
-
-  :lang(th) {
-    .hero-banner-private-wealth-banking .hero-banner-content :is(h4) {
-      line-height: 2.5rem;
-    }
   }
 
   .hero-banner-private-wealth-banking .hero-banner-content-group {
