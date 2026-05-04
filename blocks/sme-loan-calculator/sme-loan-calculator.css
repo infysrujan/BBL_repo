@@ -10,8 +10,7 @@
 /* Fields row */
 .sme-calc-wrapper {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   gap: 16px;
   margin-bottom: 32px;
 }
@@ -19,7 +18,7 @@
 .sme-calc-field {
   flex: 1;
   min-width: 200px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgb(255 255 255 / 18%);
   border-radius: 10px;
   padding: 14px 20px 12px;
   display: flex;
@@ -69,7 +68,7 @@
 }
 
 .sme-calc-field-row input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgb(255 255 255 / 30%);
 }
 
 .sme-calc-field-bottom {
@@ -99,7 +98,7 @@
 }
 
 .sme-calc-btn:hover {
-  background-color: #ddeeff;
+  background-color: #def;
 }
 
 /* Result */
@@ -117,7 +116,7 @@
   letter-spacing: 0.02em;
 }
 
-.sme-calc-result--error .sme-calc-result-label {
+.sme-calc-result-error .sme-calc-result-label {
   color: #f07070;
   font-size: 18px;
 }
@@ -137,7 +136,7 @@
   margin: 0 auto 28px;
   background-color: transparent;
   color: #fff;
-  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border: 1.5px solid rgb(255 255 255 / 50%);
   border-radius: 28px;
   padding: 12px 48px;
   font-size: 13px;
@@ -149,7 +148,7 @@
 }
 
 .sme-calc-add-table-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgb(255 255 255 / 10%);
   border-color: #fff;
 }
 
@@ -166,7 +165,7 @@
 }
 
 .sme-calc-table th {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgb(255 255 255 / 8%);
   color: #90b8d8;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -174,14 +173,14 @@
   font-weight: 600;
   padding: 12px 16px;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgb(255 255 255 / 12%);
 }
 
 .sme-calc-table td {
   color: #d0e8f8;
   padding: 12px 16px;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgb(255 255 255 / 7%);
 }
 
 .sme-calc-table tbody tr:last-child td {
@@ -189,11 +188,11 @@
 }
 
 .sme-calc-table tbody tr:hover td {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgb(255 255 255 / 5%);
 }
 
 /* Mobile */
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .sme-loan-calculator {
     padding: 24px 16px;
     border-radius: 8px;
