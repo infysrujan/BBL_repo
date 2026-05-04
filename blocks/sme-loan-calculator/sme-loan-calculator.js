@@ -84,6 +84,14 @@ function evaluateFormula(formula, variables) {
     const regex = new RegExp(`\\b${varName}\\b`, 'g');
     expr = expr.replace(regex, variables[varName]);
   });
+  // Auto-close any unclosed parentheses to tolerate minor authoring mistakes
+  let depth = 0;
+  for (let k = 0; k < expr.length; k += 1) {
+    if (expr[k] === '(') depth += 1;
+    else if (expr[k] === ')') depth -= 1;
+  }
+  if (depth > 0) expr += ')'.repeat(depth);
+
   try {
     const result = safeEval(expr);
     return Number.isFinite(result) ? result : null;
