@@ -310,10 +310,6 @@
               {
                 "name": "Center Content",
                 "value": "center-content"
-              },
-              {
-                "name": "Center Content Max",
-                "value": "center-content-max"
               }
             ]
           },
