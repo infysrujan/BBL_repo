@@ -5,7 +5,6 @@ function buildTile(row, doc) {
   const [
     imgElDesktop,
     imageLinkDiv,
-    imageLinkTitleDiv,
     titleDiv,
   ] = row.children;
 
@@ -20,7 +19,6 @@ function buildTile(row, doc) {
 
   const linkAnchor = imageLinkDiv?.querySelector('a');
   const linkHref = linkAnchor?.getAttribute('href') || imageLinkDiv?.textContent?.trim() || '';
-  const linkTitle = imageLinkTitleDiv?.textContent?.trim() || linkAnchor?.getAttribute('title') || '';
   const title = titleDiv?.textContent?.trim() || '';
 
   const tile = doc.createElement('div');
@@ -37,8 +35,8 @@ function buildTile(row, doc) {
     const anchor = doc.createElement('a');
     anchor.href = linkHref;
     anchor.className = 'multi-column-tiles-link';
-    if (linkTitle) anchor.setAttribute('title', linkTitle);
-    anchor.setAttribute('aria-label', title || linkTitle);
+    if (title) anchor.setAttribute('title', title);
+    anchor.setAttribute('aria-label', title);
     anchor.appendChild(imageWrapper);
     tile.appendChild(anchor);
   } else {
