@@ -1,3 +1,5 @@
+import { moveInstrumentation } from '../../scripts/scripts.js';
+
 // Maps sorted field IDs to the config.json key for the formula
 const FIELD_KEY_MAP = {
   'P,i,n': 'monthly-payment',
@@ -211,13 +213,13 @@ async function buildCalculator(block) {
   // In AEM EDS each parent model field renders as its own single-cell row;
   // child items (sme-field) render as multi-cell rows.
   const parentValues = [];
-  const fieldRows = [];
+  const fieldRows = []; // each entry: { row, cells }
   rows.forEach((row) => {
     const cells = [...row.querySelectorAll(':scope > div')];
     if (cells.length <= 1) {
       parentValues.push(cells[0]?.textContent.trim() || '');
     } else {
-      fieldRows.push(cells);
+      fieldRows.push({ row, cells });
     }
   });
 
@@ -229,7 +231,7 @@ async function buildCalculator(block) {
   const description = filteredParentValues[2] || '';
   const addToTableButtonName = filteredParentValues[3] || 'ADD TO TABLE';
 
-  const fields = fieldRows.map((cells, idx) => ({
+  const fields = fieldRows.map(({ cells }, idx) => ({
     id: cells[0]?.textContent.trim() || `field${idx + 1}`,
     label: cells[1]?.textContent.trim() || '',
     maxLength: parseInt(cells[2]?.textContent.trim(), 10) || null,
@@ -251,9 +253,10 @@ async function buildCalculator(block) {
   const wrapper = document.createElement('div');
   wrapper.className = 'sme-calc-wrapper';
 
-  fields.forEach((field) => {
+  fields.forEach((field, idx) => {
     const card = document.createElement('div');
     card.className = 'sme-calc-field';
+    moveInstrumentation(fieldRows[idx].row, card);
 
     if (field.topText) {
       const top = document.createElement('span');
