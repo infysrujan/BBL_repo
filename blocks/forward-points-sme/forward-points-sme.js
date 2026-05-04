@@ -188,9 +188,9 @@ function renderCurrencyTable(fxRates, authoring) {
       <thead>
         <tr>
           <th>${col0}</th>
-          <th class="fpsme-th-right">${col1}</th>
-          <th class="fpsme-th-right">${col2}</th>
-          <th class="fpsme-th-right">${col3}</th>
+          <th>${col1}</th>
+          <th>${col2}</th>
+          <th>${col3}</th>
         </tr>
       </thead>
       <tbody>${rows}</tbody>
@@ -201,9 +201,7 @@ function renderCurrencyTable(fxRates, authoring) {
 function renderFwdTable(fwdRates, authoring, tableIndex) {
   const [col0, col1, col2] = authoring.section2Columns;
 
-  const rowHeadings = authoring.section2Rows;
-
-  const rows = rowHeadings.map((heading, i) => {
+  const dataRows = authoring.section2Rows.map((heading, i) => {
     const rate = fwdRates[i];
     let buying = '-';
     let selling = '-';
@@ -211,23 +209,21 @@ function renderFwdTable(fwdRates, authoring, tableIndex) {
       buying = tableIndex === 1 ? rate.t1Buying : rate.t2Buying;
       selling = tableIndex === 1 ? rate.t1Selling : rate.t2Selling;
     }
-    return `<tr>
-      <td class="fpsme-fwd-period">${escapeHtml(heading)}</td>
-      <td class="fpsme-td-right">${escapeHtml(buying)}</td>
-      <td class="fpsme-td-right">${escapeHtml(selling)}</td>
-    </tr>`;
+    return `<div class="fpsme-rt-row">
+      <div class="fpsme-rt-cell fpsme-rt-cell-muted fpsme-rt-period">${escapeHtml(heading)}</div>
+      <div class="fpsme-rt-cell fpsme-rt-value">${escapeHtml(buying)}</div>
+      <div class="fpsme-rt-cell fpsme-rt-value fpsme-rt-cell-last">${escapeHtml(selling)}</div>
+    </div>`;
   }).join('');
 
-  return `<table class="fpsme-table fpsme-fwd-table">
-    <thead>
-      <tr>
-        <th>${col0}</th>
-        <th class="fpsme-th-right">${col1}</th>
-        <th class="fpsme-th-right">${col2}</th>
-      </tr>
-    </thead>
-    <tbody>${rows}</tbody>
-  </table>`;
+  return `<div class="fpsme-rt">
+    <div class="fpsme-rt-row fpsme-rt-header">
+      <div class="fpsme-rt-cell fpsme-rt-cell-muted fpsme-rt-head fpsme-rt-period-head">${col0}</div>
+      <div class="fpsme-rt-cell fpsme-rt-cell-muted fpsme-rt-head">${col1}</div>
+      <div class="fpsme-rt-cell fpsme-rt-cell-muted fpsme-rt-head fpsme-rt-cell-last">${col2}</div>
+    </div>
+    ${dataRows}
+  </div>`;
 }
 
 function renderBlock(
@@ -288,7 +284,7 @@ function renderBlock(
     <div class="fpsme-section fpsme-section-fwd">
       ${s2Controls}
       <div class="fpsme-fwd-body">
-        <h3 class="fpsme-fwd-title">${escapeHtml(authoring.section2TableTitle)}</h3>
+        <h3 class="fpsme-fwd-title">${authoring.section2TableTitle}</h3>
         <div class="fpsme-fwd-tables">
           <div class="fpsme-fwd-table-col">
             <p class="fpsme-fwd-subtitle">${escapeHtml(authoring.section2SubTitle1)}</p>
@@ -625,7 +621,13 @@ function setupSection(
 
 export default async function decorate(block) {
   const authoring = parseAuthoring(block);
+  // eslint-disable-next-line no-console
+  console.log('fpsme raw s1 columns row:', [...block.children][2]?.innerHTML);
+  // eslint-disable-next-line no-console
+  console.log('fpsme raw s2 columns row:', [...block.children][10]?.innerHTML);
   const [placeholders, configs] = await Promise.all([fetchPlaceholders(), fetchConfigs()]);
+  // eslint-disable-next-line no-console
+  console.log('[fpsme] configs:', configs);
 
   const prevLabel = placeholders?.forexRatesPrevMonth || 'Previous month';
   const nextLabel = placeholders?.forexRatesNextMonth || 'Next month';

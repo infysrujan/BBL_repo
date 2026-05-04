@@ -40,15 +40,15 @@
 .forward-points-sme .fpsme-date-input {
   width: 100%;
   height: 2.75rem;
-  padding: 0 2.5rem 0 1.25rem;
+  padding: 0 2.5rem 0 1.875rem;
   color: var(--bbl-color-gray-121);
   background: var(--bbl-color-white);
-  border: 0.0625rem solid var(--bbl-color-grey-40);
-  border-radius: var(--bbl-radius-input);
+  border: 0.0625rem solid #919dab;
+  border-radius: 0.4375rem;
   outline: none;
   box-sizing: border-box;
   appearance: none;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
 }
 
 .forward-points-sme .fpsme-date-input:focus {
@@ -91,13 +91,13 @@
   justify-content: space-between;
   width: 100%;
   height: 2.75rem;
-  padding: 0 1rem;
-  font-size: 0.875rem;
-  font-weight: 700;
+  padding: 0 1.875rem;
+  font-size: 0.95rem;
+  font-weight: 400;
   color: var(--bbl-color-grey-85);
   background: var(--bbl-color-white);
-  border: 0.0625rem solid var(--bbl-color-grey-40);
-  border-radius: var(--bbl-radius-input);
+  border: 0.0625rem solid #919dab;
+  border-radius: 0.4375rem;
   cursor: pointer;
   box-sizing: border-box;
   text-align: left;
@@ -173,22 +173,24 @@
 /* ── GO button ─────────────────────────────────────────────── */
 
 .forward-points-sme .fpsme-go-btn {
+  flex: 0 0 100%;
   width: 100%;
   height: 2.75rem;
-  padding: 0 var(--bbl-space-300);
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--bbl-color-white);
-  background: var(--bbl-color-active-blue);
-  border: none;
-  border-radius: var(--bbl-radius-button);
+  padding: 0 1.25rem;
+  font-size: 0.95rem;
+  font-family: var(--bbl-font-family-medium);
+  color: #fff;
+  background: #0064ff;
+  border: 0.0625rem solid #0064ff;
+  border-radius: 0.4375rem;
   cursor: pointer;
-  letter-spacing: 0.0313rem;
   box-sizing: border-box;
+  min-width: 155px;
 }
 
 .forward-points-sme .fpsme-go-btn:hover {
-  background: var(--bbl-color-blue-90);
+  background: #0048b7;
+  border-color: #0048b7;
 }
 
 .forward-points-sme .fpsme-go-btn:disabled {
@@ -352,9 +354,9 @@
 .forward-points-sme .fpsme-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.8125rem;
-  color: var(--bbl-color-gray-121);
-  border: 0.0625rem solid var(--bbl-color-grey-18);
+  font-size: 1rem;
+  color: #606060;
+  border: 0.0625rem solid #e2e6e9;
 }
 
 .forward-points-sme .fpsme-table-currency {
@@ -367,20 +369,16 @@
 
 .forward-points-sme .fpsme-table thead th {
   padding: 0.75rem 0.625rem;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: var(--bbl-color-black);
-  text-align: left;
-  border-bottom: 0.125rem solid var(--bbl-color-grey-20);
+  font-size: 1rem;
+  font-family: var(--bbl-font-family-medium);
+  color: #606060;
+  text-align: center;
+  border-bottom: 0.0625rem solid #e2e6e9;
   line-height: 1.4;
 }
 
-.forward-points-sme .fpsme-th-right {
-  text-align: right !important;
-}
-
 .forward-points-sme .fpsme-table tbody tr {
-  border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
+  border-bottom: 0.0625rem solid #e2e6e9;
 }
 
 .forward-points-sme .fpsme-table tbody tr:last-child {
@@ -389,13 +387,13 @@
 
 .forward-points-sme .fpsme-table tbody td {
   padding: 0.75rem 0.625rem;
-  font-size: 0.875rem;
-  color: var(--bbl-color-grey-70);
+  font-size: 1rem;
+  color: #606060;
   vertical-align: middle;
 }
 
 .forward-points-sme .fpsme-td-right {
-  text-align: right;
+  text-align: center;
 }
 
 .forward-points-sme .fpsme-currency-cell {
@@ -415,9 +413,9 @@
 /* ── Unit label ────────────────────────────────────────────── */
 
 .forward-points-sme .fpsme-unit {
-  font-size: 0.8125rem;
+  font-size: 0.8rem;
   color: var(--bbl-color-grey-70);
-  margin-top: var(--bbl-space-075);
+  margin-top: 1rem;
 }
 
 .forward-points-sme .fpsme-unit-right {
@@ -445,7 +443,6 @@
   background: none;
   border: none;
   font-size: 0.875rem;
-  font-weight: 700;
   color: var(--bbl-color-grey-70);
   cursor: pointer;
   padding: 0 var(--bbl-space-100);
@@ -454,6 +451,7 @@
   flex-shrink: 0;
   align-self: flex-start;
   margin-left: auto;
+  text-decoration: none;
 }
 
 .forward-points-sme .fpsme-print-btn .icon-print {
@@ -463,7 +461,7 @@
 
 .forward-points-sme .fpsme-print-btn:hover,
 .forward-points-sme .fpsme-print-btn:hover .icon-print {
-  color: var(--bbl-color-gray-121);
+  color: var(--bbl-color-grey-70);
 }
 
 /* ── Section 2 — Forward points ────────────────────────────── */
@@ -475,12 +473,20 @@
 }
 
 .forward-points-sme .fpsme-fwd-title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   text-align: center;
   margin: 0 0 var(--bbl-space-300);
-  line-height: 1.4;
+  line-height: 1.75rem;
+}
+
+.forward-points-sme .fpsme-fwd-title p {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-align: center;
 }
 
 .forward-points-sme .fpsme-fwd-tables {
@@ -495,19 +501,76 @@
 }
 
 .forward-points-sme .fpsme-fwd-subtitle {
-  font-size: 0.8125rem;
+  font-size: 1rem;
+  font-weight: 400;
   color: var(--bbl-color-grey-70);
   text-align: center;
-  margin: 0 0 var(--bbl-space-150);
+  margin: 1rem 0;
 }
 
-.forward-points-sme .fpsme-fwd-table {
-  min-width: 16rem;
+/* ── Flex-based forward points table (matches prod Rtable layout) */
+
+.forward-points-sme .fpsme-rt {
+  display: flex;
+  flex-direction: column;
+  border: 0.0625rem solid #e2e6e9;
+  overflow: hidden;
 }
 
-.forward-points-sme .fpsme-fwd-period {
+.forward-points-sme .fpsme-rt-row {
+  display: flex;
+  width: 100%;
+}
+
+.forward-points-sme .fpsme-rt-cell {
+  flex: 1 1 33.33%;
+  width: 33.33%;
+  padding: 0.75rem 0.625rem;
+  font-size: 1rem;
+  color: #606060;
+  background: var(--bbl-color-white);
+  border-right: 0.0625rem solid #e2e6e9;
+  border-bottom: 0.0625rem solid #e2e6e9;
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.4;
+}
+
+.forward-points-sme .fpsme-rt-cell-last {
+  border-right: none;
+}
+
+/* Muted background — all header cells + Period data cells */
+.forward-points-sme .fpsme-rt-cell-muted {
+  background: #e6eef4;
+}
+
+/* Header row cells — match currency table <th> styling */
+.forward-points-sme .fpsme-rt-head {
+  font-size: 1rem;
+  font-family: var(--bbl-font-family-medium);
   font-weight: 700;
-  color: var(--bbl-color-black);
+  color: #606060;
+  padding: 0.75rem 0.625rem;
+}
+
+/* Period data cells — same styling as header cells */
+.forward-points-sme .fpsme-rt-period {
+  font-size: 1rem;
+  color: #606060;
+}
+
+/* Value cells — center-aligned to match live site */
+.forward-points-sme .fpsme-rt-value {
+  color: #606060;
+}
+
+/* Remove bottom border from last row */
+.forward-points-sme .fpsme-rt-row:last-child .fpsme-rt-cell {
+  border-bottom: none;
 }
 
 /* ── Remark section ────────────────────────────────────────── */
@@ -563,8 +626,8 @@
 
   .forward-points-sme .fpsme-go-btn {
     width: auto;
-    flex: 0 0 5rem;
-    min-width: 5rem;
+    flex: 0 0 auto;
+    min-width: 155px;
   }
 
   .forward-points-sme .fpsme-datepicker {
@@ -584,13 +647,12 @@
   /* Forward tables side by side on tablet+ */
   .forward-points-sme .fpsme-fwd-tables {
     flex-direction: row;
-    gap: var(--bbl-space-400);
+    gap: 1.25rem;
+    align-items: flex-start;
   }
 
-  .forward-points-sme .fpsme-fwd-title {
-    font-size: 1.125rem;
-  }
 }
+
 
 /* ── Desktop: 64rem+ (1024px) ──────────────────────────────── */
 
@@ -624,7 +686,7 @@
   }
 
   .forward-points-sme .fpsme-go-btn {
-    flex: 0 0 6.25rem;
+    flex: 0 0 auto;
     font-size: 1rem;
   }
 
@@ -663,13 +725,6 @@
     padding: 0.75rem 1rem;
   }
 
-  .forward-points-sme .fpsme-fwd-title {
-    font-size: 1.25rem;
-  }
-
-  .forward-points-sme .fpsme-fwd-subtitle {
-    font-size: 0.875rem;
-  }
 
   .forward-points-sme .fpsme-time-item {
     font-size: 1rem;

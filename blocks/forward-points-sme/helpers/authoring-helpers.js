@@ -1,7 +1,7 @@
 function parseListItems(listElement) {
   if (!listElement) return [];
   return [...listElement.querySelectorAll('li')]
-    .map((li) => li.textContent.trim())
+    .map((li) => li.innerHTML.trim())
     .filter(Boolean);
 }
 
@@ -24,8 +24,8 @@ export default function parseAuthoring(block) {
   const section2GoCtaLabel = rows[5]?.textContent?.trim() || '';
   // Row 6: Print CTA label
   const printCtaLabel = rows[6]?.textContent?.trim() || '';
-  // Row 7: Section 2 - forward points table title
-  const section2TableTitle = rows[7]?.textContent?.trim() || '';
+  // Row 7: Section 2 - forward points table title (richtext — preserve line breaks)
+  const section2TableTitle = rows[7]?.firstElementChild?.innerHTML || rows[7]?.textContent?.trim() || '';
   // Row 8: Section 2 - table sub-title 1 (low revenue)
   const section2SubTitle1 = rows[8]?.textContent?.trim() || '';
   // Row 9: Section 2 - table sub-title 2 (mid revenue)
