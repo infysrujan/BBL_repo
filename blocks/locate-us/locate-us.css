@@ -38,13 +38,21 @@
   text-align: center;
 }
 
-/* .locate-us .button, .button.primary, .button-primary, button[type="submit"], button.primary, .button-m.primary{
-  width: 100%;
-  margin-top: 16px;
-} */
+.locate-us-card button.locate-us-card-header{
+  height: unset;
+  line-height: normal;
+}
 
 .locate-us .cards-list-content {
   padding: 0;
+}
+
+.locate-us-fragment .section.card-list-container {
+  padding-inline: 0;
+}
+
+.locate-us-fragment .section.card-list-container.central-aligned .block{
+  margin-inline: auto;
 }
 
 .locate-us .cards-list-inner .cards-list-button {
@@ -360,26 +368,32 @@
   align-items: stretch;
   padding: 0;
   margin: 30px auto;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px;
+  grid-template-columns: 1fr;
+  gap: 0;
+  box-shadow: 0 2px 18px rgb(0 0 0 / 8%);
 }
 
 .locate-us .locate-us-card {
   display: flex;
   flex-direction: column;
-  border: 1px solid #e8e8e8;
+  border: none;
+  border-top: 1px solid #e8e8e8;
   border-radius: 0;
-  padding: 20px;
+  padding: 0 20px;
   box-sizing: border-box;
   background-color: #fff;
   cursor: pointer;
   position: relative;
 }
 
+.locate-us .locate-us-cards .locate-us-card:last-child {
+  border-bottom: 1px solid #e8e8e8;
+}
+
 .locate-us .locate-us-card-header {
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   padding: var(--bbl-space-200) 0;
   background: none;
@@ -391,10 +405,10 @@
 
 .locate-us .locate-us-card-name {
   flex: 1;
-  font-size: 23px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 400;
   color: var(--bbl-color-gray-121);
-  font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
 }
 
 .locate-us .locate-us-card-chevron {
@@ -419,20 +433,24 @@
 .locate-us .locate-us-card-detail {
   padding-bottom: var(--bbl-space-200);
   font-family: var(--bbl-font-family-primary);
+  position: relative;
 }
 
-/* nearest tag — sits above the table rows, right-aligned */
+/* nearest tag — right-aligned badge, positioned from card-detail top */
 .locate-us .locate-us-card-nearest-tag {
   display: block;
-  text-align: right;
+  align-self: flex-end;
   margin-bottom: var(--bbl-space-100);
-  position: absolute;
-  right: 0;
   background-color: #E0E6F8;
   border-radius: 4px 0 0 4px;
   color: #039;
   padding: 0 5px;
   font-size: 12px;
+  right: 0;
+  top: 2px;
+  white-space: nowrap;
+  position: absolute;
+  line-height: 22px;
 }
 
 /* Label + value rows — matching BBL's 60px td pattern */
@@ -462,6 +480,7 @@
   color: var(--bbl-color-status-other);
   font-size: 18px;
   font-family: var(--bbl-font-family-primary);
+  line-height: 22px;
 }
 
 .locate-us .locate-us-card-status-open {
@@ -506,6 +525,18 @@
 
 .locate-us .locate-us-card-directions:hover {
   text-decoration: underline;
+}
+
+.locate-us .locate-us-card-directions::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url('../../icons/icon_route.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex-shrink: 0;
 }
 
 /* ── Pagination ──────────────────────────────────────────────────────────────── */
@@ -882,7 +913,6 @@
   }
 
   .locate-us .locate-us-map {
-    /* flex: 0 0 65%; */
     height: 100%;
     width: 73.2%;
   }
@@ -908,20 +938,30 @@
     font-size: var(--bbl-font-size-b2);
   }
 
-  /* ── Cards — 3-column grid, always expanded ── */
+  /* ── Cards — 3-column grid on tablet, always expanded ── */
 
   .locate-us .locate-us-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--bbl-space-200);
     margin-top: var(--bbl-space-250);
+    align-items: stretch;
   }
 
   .locate-us .locate-us-card {
     padding: var(--bbl-space-250);
     background-color: var(--bbl-color-white);
     cursor: pointer;
+    border: 1px solid #e8e8e8;
     box-shadow: 0 2px 18px rgb(0 0 0 / 8%);
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+  }
+
+  .locate-us .locate-us-cards .locate-us-card:last-child {
+    border-bottom: 1px solid #e8e8e8;
   }
 
   .locate-us .locate-us-card-header {
@@ -931,16 +971,47 @@
   }
 
   .locate-us .locate-us-card-chevron {
-    display: none;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    background-image: url('../../icons/icon_nearme_disable.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-size: 0;
+    color: transparent;
+    transform: none;
   }
 
-  .locate-us .locate-us-card-body {
-    display: block
+  .locate-us .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron {
+    background-image: url('../../icons/icon_pin.svg');
+    transform: none;
+  }
+
+  /* Force card body visible on desktop regardless of hidden attribute */
+  .locate-us .locate-us-cards .locate-us-card-body,
+  .locate-us .locate-us-cards .locate-us-card-body[hidden] {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .locate-us .locate-us-card-detail {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding-bottom: 0;
+  }
+
+  .locate-us .locate-us-card-directions {
+    margin-top: auto;
+    padding-top: 0.625rem;
   }
 
   .locate-us .locate-us-card-hr {
-    margin-top: 14px;
-    margin-bottom: 18px;
+    margin-top: 10px;
+    margin-bottom: 14px;
     width: 64px;
     height: 1px;
     background: #9e9e9e;
@@ -957,9 +1028,17 @@
     margin: 0 0 var(--bbl-space-150);
   }
 
+  .locate-us .locate-us-card-nearest-tag{
+    margin-right: -20px;
+  }
+
 }
 
 @media (width > 64rem) {
+  .locate-us .locate-us-cards {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
   .locate-us .locate-us-filter-bar {
     margin: auto;
     max-width: 38.75rem;
@@ -989,12 +1068,12 @@
     margin: 0 0 18px;
   }
 
-   /* .locate-us .cards-list.cards-3 .cards-list-item{
-    flex: 1;
-  } */
-
   .locate-us-fragment .cards-list {
     flex-flow: unset;
     flex-direction: unset;
+  }
+
+  .locate-us .locate-us-card-nearest-tag{
+    margin-right: -20px;
   }
 }

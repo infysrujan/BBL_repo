@@ -270,6 +270,8 @@ export function renderCards(
 
     header.addEventListener('click', () => {
       if (window.matchMedia('(width > 47.5rem)').matches) {
+        cardsContainer.querySelectorAll('.locate-us-card-header').forEach((h) => h.setAttribute('aria-expanded', 'false'));
+        header.setAttribute('aria-expanded', 'true');
         onSelect(loc);
         scrollToMap();
         return;
