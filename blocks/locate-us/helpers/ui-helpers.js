@@ -49,7 +49,11 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   ]);
   const userLat = location.lat;
   const userLng = location.lng;
+  const serviceParamKeys = (configs?.serviceLocationCodes || '')
+    .split(',').map((s) => s.trim()).filter(Boolean);
+
   let selectedServiceCode = '';
+  let currentIsAtm = false;
   let currentPage = 1;
 
   const selectServiceText = placeholders?.selectServiceText || 'Select Service';
@@ -153,7 +157,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
   function onLocationSelect(loc) {
     updateMapIframe(mapContainer, loc, configs);
-    populateSidebar(mapSidebar, loc, placeholders, configs);
+    populateSidebar(mapSidebar, loc, placeholders, configs, currentIsAtm);
     const remark = document.createElement('p');
     remark.className = 'locate-us-map-remark';
     remark.textContent = searchRemarkText;
@@ -178,7 +182,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     resultsSection.hidden = false;
     onLocationSelect(allLocs[0]);
     // eslint-disable-next-line max-len
-    renderCards(allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs);
+    renderCards(allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs, currentIsAtm);
   }
 
   function buildProvinceList(provinces) {
@@ -270,6 +274,10 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
     selectedServiceCode = serviceCodeMap[selectedService] ?? configs?.defaultServiceCode;
 
+    const serviceIdx = services.indexOf(selectedService);
+    const serviceUrlCode = serviceParamKeys[serviceIdx] || '';
+    currentIsAtm = serviceUrlCode.toLowerCase().includes('atm');
+
     const isSpecial = serviceCodeMap[selectedService] === null;
     keywordInput.disabled = isSpecial;
     keywordInput.value = '';
@@ -354,9 +362,6 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   });
 
   // ── Auto-select service from URL query param ────────────────────────────────
-  const serviceParamKeys = (configs?.serviceLocationCodes || '')
-    .split(',').map((s) => s.trim()).filter(Boolean);
-
   const urlService = new URLSearchParams(window.location.search).get('service');
   if (urlService && serviceParamKeys.length) {
     const paramIndex = serviceParamKeys.indexOf(urlService);
