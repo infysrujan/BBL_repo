@@ -77,19 +77,9 @@ export function buildCardHtml(card, tag, placeholders = {}) {
 
 function buildPaginationHtml(current, total) {
   if (total <= 1) return '';
-  const pages = [];
-  for (let i = 1; i <= total; i += 1) {
-    if (i === 1 || i === total || Math.abs(i - current) <= 1) pages.push(i);
-  }
-  const items = [];
-  pages.forEach((p, idx) => {
-    if (idx > 0 && p - pages[idx - 1] > 1) items.push('ellipsis');
-    items.push(p);
-  });
-  const pageButtons = items.map((item) => {
-    if (item === 'ellipsis') return '<span class="promo-selector-ellipsis">&hellip;</span>';
-    const cls = item === current ? 'promo-selector-page is-active' : 'promo-selector-page';
-    return `<button class="${cls}" data-page="${item}">${item}</button>`;
+  const pageButtons = Array.from({ length: total }, (_, i) => i + 1).map((p) => {
+    const cls = p === current ? 'promo-selector-page is-active' : 'promo-selector-page';
+    return `<button class="${cls}" data-page="${p}">${p}</button>`;
   }).join('');
   const prevAttr = current === 1 ? ' disabled' : '';
   const nextAttr = current === total ? ' disabled' : '';
