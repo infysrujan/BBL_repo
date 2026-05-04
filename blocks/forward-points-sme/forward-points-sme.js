@@ -274,11 +274,11 @@ function renderBlock(
     <div class="fpsme-section1-bar">
       <div class="fpsme-section fpsme-section-currency">
         ${s1Controls}
+        <button type="button" class="fpsme-print-btn">
+          ${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i>
+        </button>
         ${renderCurrencyTable(fxRates, authoring)}
       </div>
-      <button type="button" class="fpsme-print-btn">
-        ${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i>
-      </button>
     </div>
 
     <div class="fpsme-section fpsme-section-fwd">
