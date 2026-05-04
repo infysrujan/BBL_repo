@@ -169,8 +169,12 @@ function evaluateFormula(formula, variables) {
 
   try {
     const result = safeEval(expr);
+    // eslint-disable-next-line no-console
+    console.log('[SME Calc] formula key:', Object.keys(variables).sort().join(','), '| expr:', expr, '| result:', result);
     return Number.isFinite(result) ? result : null;
-  } catch {
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('[SME Calc] parse error:', err.message, '| expr:', expr);
     return null;
   }
 }
