@@ -248,7 +248,11 @@ function richTextFromRow(row) {
 export default async function decorate(block) {
   const doc = block.ownerDocument;
   const rows = [...block.children];
-  const table = document.querySelector('.table');
+
+  const table = block.parentElement.parentElement.querySelector('.table');
+  table.classList.add('bcap-table');
+  if (!table) return;
+
   let funds = [];
   let calendarDate = new Date();
 
@@ -337,10 +341,6 @@ export default async function decorate(block) {
       },
     });
   }
-
-  if (!table) return;
-
-  table.classList.add('bcap-table');
 
   await refreshTableFromPrices(table, funds, calendarDate);
 
