@@ -50,6 +50,11 @@ function buildTile(row, doc) {
   const titleEl = doc.createElement('h2');
   titleEl.className = 'multi-column-tiles-title';
   titleEl.textContent = title;
+
+  const separatorEl = doc.createElement('span');
+  separatorEl.className = 'multi-column-tiles-separator';
+  titleEl.appendChild(separatorEl);
+
   tile.appendChild(titleEl);
 
   return tile;
