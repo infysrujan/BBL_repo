@@ -1,9 +1,17 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-
-const PROMOTIONS_JSON = 'https://publish-p185039-e1939903.adobeaemcloud.com/content/bangkokbank/en/credit-cards-promotions.allpromo.json';
-const PAGE_SIZE = 12;
+import { getLang } from '../../scripts/scripts.js';
+import { fetchConfigs } from '../../scripts/config.js';
 
 const fetchCache = {};
+
+const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
+
+const LOGO_ICONS = {
+  visa: '/icons/visa-new.svg',
+  mastercard: '/icons/mastercard-new.svg',
+  amex: '/icons/amex-new.svg',
+  unionpay: '/icons/upi-new.svg',
+};
 
 export async function fetchJson(url) {
   if (!fetchCache[url]) {
@@ -14,30 +22,23 @@ export async function fetchJson(url) {
   return fetchCache[url];
 }
 
-function formatDate(dateStr) {
+function formatDate(dateStr, locale = 'en-GB') {
   if (!dateStr) return '';
-  return new Date(dateStr).toLocaleDateString('en-GB', {
+  return new Date(dateStr).toLocaleDateString(locale, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
   });
 }
 
-function buildDateLine(card) {
-  const start = formatDate(card.promotionStartDate);
-  const end = formatDate(card.promotionEndDate);
+function buildDateLine(card, locale) {
+  const start = formatDate(card.promotionStartDate, locale);
+  const end = formatDate(card.promotionEndDate, locale);
   const label = card.dateValidityLabel || 'until';
   if (start && end) return `${start} ${label} ${end}`;
   if (end) return `${label} ${end}`;
   return '';
 }
-
-const LOGO_ICONS = {
-  visa: '/icons/visa-new.svg',
-  mastercard: '/icons/mastercard-new.svg',
-  amex: '/icons/amex-new.svg',
-  unionpay: '/icons/upi-new.svg',
-};
 
 function buildLogosHtml(logos) {
   if (!logos?.length) return '';
@@ -51,7 +52,8 @@ function buildLogosHtml(logos) {
 }
 
 export function buildCardHtml(card, tag, placeholders = {}) {
-  const dateLine = buildDateLine(card, placeholders);
+  const locale = LOCALE_MAP[getLang()] || 'en-GB';
+  const dateLine = buildDateLine(card, locale);
   const logoHtml = buildLogosHtml((card.cardTypes || []).map((t) => t.toLowerCase()));
   const target = card.targetLink === 'true' ? '_blank' : '_self';
   return `<div class="promo-selector-card-container">
@@ -67,7 +69,7 @@ export function buildCardHtml(card, tag, placeholders = {}) {
       ${dateLine ? `<p class="promo-selector-card-date">${dateLine}</p>` : ''}
     </div>
     <div class="promo-selector-card-footer">
-      <a href="${card.ctaLink || ''}" target="${target}" class="promo-selector-cta button primary">${card.ctaLabel || 'Learn More'}</a>
+      <a href="${card.ctaLink || ''}" target="${target}" class="promo-selector-cta button primary">${card.ctaLabel || placeholders.promoLearnMore || 'Learn More'}</a>
     </div>
   </div>
 </div>`;
@@ -313,9 +315,15 @@ function setupPanel(
 }
 
 export default async function decorate(block) {
+  const lang = getLang();
+  const configs = await fetchConfigs();
+  const baseUrl = configs?.promotionalCardSelector || '';
+  const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
+  const pageSize = parseInt(configs?.promotionalItemsPerPage, 10) || '';
+
   // Fetch all data once, shared across all tab panels
   const [tagsData, placeholders] = await Promise.all([
-    fetchJson(PROMOTIONS_JSON),
+    fetchJson(promotionsUrl),
     fetchPlaceholders(),
   ]);
   const allCards = tagsData?.cards || [];
@@ -340,7 +348,7 @@ export default async function decorate(block) {
     const category = catMeta.label || tabText;
     const subcategories = catMeta.subcategories || [];
 
-    setupPanel(panel, allCards, category, subcategories, cardTypes, areas, PAGE_SIZE, placeholders);
+    setupPanel(panel, allCards, category, subcategories, cardTypes, areas, pageSize, placeholders);
   });
 
   // Close all dropdowns on outside click (single listener for all panels)

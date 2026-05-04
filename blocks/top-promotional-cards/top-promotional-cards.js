@@ -1,7 +1,8 @@
 import { buildCardHtml, fetchJson, sortCards } from '../promo-card-listing/promo-card-listing.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { getLang } from '../../scripts/scripts.js';
+import { fetchConfigs } from '../../scripts/config.js';
 
-const PROMOTIONS_JSON = 'https://publish-p185039-e1939903.adobeaemcloud.com/content/bangkokbank/en/credit-cards-promotions.allpromo.json';
 function filterCards(activeCards, tabText) {
   if (tabText.toLowerCase().replace(/\s+/g, '') === 'toppromotions') {
     return activeCards.filter((card) => card.topPromotion === true);
@@ -59,9 +60,13 @@ function setupPanel(panel, activeCards, placeholders) {
 
 export default async function decorate(block) {
   const blockHref = block.querySelector('a')?.href || '#';
+  const lang = getLang();
+  const configs = await fetchConfigs();
+  const baseUrl = configs?.promotionalCardSelector || '';
+  const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 
   const [data, placeholders] = await Promise.all([
-    fetchJson(PROMOTIONS_JSON),
+    fetchJson(promotionsUrl),
     fetchPlaceholders(),
   ]);
 
