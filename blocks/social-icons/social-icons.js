@@ -71,7 +71,6 @@ export default function decorate(block) {
 
     const clonedIcon = icon.cloneNode(true);
     clonedIcon.querySelectorAll('img').forEach((img) => {
-      // eslint-disable-next-line no-param-reassign
       img.loading = 'eager';
     });
 
@@ -87,7 +86,6 @@ export default function decorate(block) {
     row.querySelectorAll('*').forEach((el) => {
       [...el.attributes]
         .filter(({ name }) => name.startsWith('data-aue-'))
-        // eslint-disable-next-line no-param-reassign
         .forEach(({ name }) => el.removeAttribute(name));
     });
   });

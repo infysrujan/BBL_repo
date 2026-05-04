@@ -11,8 +11,6 @@ async function fetchBreadcrumbData() {
   const configs = await fetchConfigs();
   const AEM_BASE_URL_FOR_BREADCRUMB = configs.aemBaseUrlForBreadcrumb;
   if (!AEM_BASE_URL_FOR_BREADCRUMB) {
-    // eslint-disable-next-line no-console
-    console.log('No Breadcrumb data');
     return { titleMap: {}, currentPageData: null, homepageData: null };
   }
   try {
