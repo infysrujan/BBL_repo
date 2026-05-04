@@ -125,11 +125,10 @@ function buildCalculator(block) {
     }
   });
 
-  const formula = parentValues[0] || '';
-  const buttonName = parentValues[1] || 'CALCULATE';
-  const resultTemplate = parentValues[2] || '';
-  const description = parentValues[3] || '';
-  const addToTableButtonName = parentValues[4] || 'ADD TO TABLE';
+  const buttonName = parentValues[0] || 'CALCULATE';
+  const resultTemplate = parentValues[1] || '';
+  const description = parentValues[2] || '';
+  const addToTableButtonName = parentValues[3] || 'ADD TO TABLE';
 
   const fields = fieldRows.map((cells, i) => ({
     id: cells[0]?.textContent.trim() || `field${i + 1}`,
@@ -240,7 +239,7 @@ function buildCalculator(block) {
       const input = wrapper.querySelector(`#sme-${field.id}`);
       variables[field.id] = parseFloat(input?.value) || 0;
     });
-    lastResult = evaluateFormula(formula, variables);
+    lastResult = evaluateFormula('', variables);
     resultLabel.textContent = `Result value: ${formatResult(resultTemplate, lastResult)}`;
     resultBox.classList.toggle('sme-calc-result--error', lastResult === null);
   });
@@ -251,7 +250,7 @@ function buildCalculator(block) {
       const input = wrapper.querySelector(`#sme-${field.id}`);
       variables[field.id] = parseFloat(input?.value) || 0;
     });
-    const result = lastResult !== null ? lastResult : evaluateFormula(formula, variables);
+    const result = lastResult !== null ? lastResult : evaluateFormula('', variables);
 
     const tr = document.createElement('tr');
     fields.forEach((field) => {
