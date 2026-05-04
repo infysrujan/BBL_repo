@@ -93,10 +93,9 @@ async function loadFonts() {
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
-async function buildAutoBlocks(main) {
+function buildAutoBlocks(main) {
   try {
     decorateTabs(main);
-    await buildCookieAlert(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -108,11 +107,11 @@ async function buildAutoBlocks(main) {
  * @param {Element} main The main element
  */
 // eslint-disable-next-line import/prefer-default-export
-export async function decorateMain(main) {
+export function decorateMain(main) {
   // hopefully forward compatible button decoration
   decorateButtons(main);
   decorateIcons(main);
-  await buildAutoBlocks(main);
+  buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
   decorateTerritoryButtons(main);
@@ -145,7 +144,7 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
-    await decorateMain(main);
+    decorateMain(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -167,6 +166,8 @@ async function loadEager(doc) {
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
+
+  await buildCookieAlert(main);
 
   // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
   decorateButtonsV1(main);
