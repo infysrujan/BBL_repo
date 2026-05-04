@@ -1,7 +1,4 @@
-// ─── API ────────────────────────────────────────────────────────────────────────
-
-const API_CALCULATE_TAX = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/FinancialCalculationAPI/DEVELOP/FinancialCalculator/v1.2/Calculator/TaxSavingCalculator/CalculateTaxWithReduce';
-const API_CALCULATE_SAVING = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/FinancialCalculationAPI/DEVELOP/FinancialCalculator/v1.2/Calculator/TaxSavingCalculator/CalculateSavingTaxBySelf';
+import { fetchConfigs } from '../../scripts/config.js';
 
 // ─── Utilities ─────────────────────────────────────────────────────────────────
 
@@ -76,7 +73,10 @@ function buildNotes(title, noteLines) {
 // ─── Data ───────────────────────────────────────────────────────────────────────
 
 async function loadData() {
-  const resp = await fetch('/taxsavings.json');
+  const [resp, siteConfig] = await Promise.all([
+    fetch('/taxsavings.json'),
+    fetchConfigs(),
+  ]);
   if (!resp.ok) throw new Error('Failed to load taxsavings.json');
   const json = await resp.json();
   const lang = getLang();
@@ -84,6 +84,8 @@ async function loadData() {
     fields: parseFieldSheet(json.taxSavings),
     i18n: buildI18nMap(json[lang] || json.en || {}),
     cfg: buildConfigMap(json.config || {}),
+    apiCalculateTax: siteConfig.calculateTaxWithReduce,
+    apiCalculateSaving: siteConfig.calculateSavingTaxBySelf,
   };
 }
 
@@ -696,6 +698,7 @@ function buildParentalCheckboxes(fieldDef, savedValue) {
 
 function renderJourney1(block, data, onNext, savedValues = {}) {
   block.innerHTML = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   const { fields, i18n, cfg } = data;
   const fieldDefs = getJourney1Fields(fields, i18n, cfg);
 
@@ -778,7 +781,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
         Donate: 0,
         Other: 0,
       };
-      const resp = await fetch(API_CALCULATE_TAX, {
+      const resp = await fetch(data.apiCalculateTax, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -801,6 +804,7 @@ const COMBINED_INSURANCE_MAX = 100000;
 
 function renderJourney2(block, data, state, onBack, onCalculate) {
   block.innerHTML = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   const { fields, i18n } = data;
   const { apiResponse, journey2 = {} } = state;
   const groups = getJourney2Groups(fields, i18n, apiResponse);
@@ -907,12 +911,12 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
     try {
       const payload = { ...state.journey1, ...values };
       const [resp1, resp2] = await Promise.all([
-        fetch(API_CALCULATE_TAX, {
+        fetch(data.apiCalculateTax, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         }),
-        fetch(API_CALCULATE_SAVING, {
+        fetch(data.apiCalculateSaving, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -934,6 +938,7 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
 
 function renderJourney3(block, data, state, onBack, onRecalculate) {
   block.innerHTML = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   const { i18n } = data;
   const {
     apiResult1, apiResult2, apiResult3, journey3 = {},
@@ -1194,7 +1199,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
           InputHealthInsure: j3Values.InputHealthInsure,
           InputInsure60: j3Values.InputInsure60,
         };
-        const resp = await fetch(API_CALCULATE_SAVING, {
+        const resp = await fetch(data.apiCalculateSaving, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
