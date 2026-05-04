@@ -7,11 +7,21 @@ function evaluateFormula(formula, variables) {
     const regex = new RegExp(`\\b${varName}\\b`, 'g');
     expr = expr.replace(regex, variables[varName]);
   });
+  // eslint-disable-next-line no-console
+  console.log('[SME Calc] raw formula:', JSON.stringify(formula));
+  // eslint-disable-next-line no-console
+  console.log('[SME Calc] variables:', variables);
+  // eslint-disable-next-line no-console
+  console.log('[SME Calc] expression to evaluate:', expr);
   try {
     // eslint-disable-next-line no-new-func
     const result = new Function(`return (${expr})`)();
+    // eslint-disable-next-line no-console
+    console.log('[SME Calc] result:', result);
     return Number.isFinite(result) ? result : null;
-  } catch {
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('[SME Calc] evaluation failed:', e.message);
     return null;
   }
 }
