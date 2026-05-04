@@ -265,7 +265,7 @@ function decorateButtonsV1(element) {
           && twoup.childNodes.length === 1
           && twoup.tagName === 'P'
         ) {
-          a.className = 'button-m primary';
+          a.className = 'primary button-m';
           twoup.classList.add('button-container');
         }
         if (
@@ -274,7 +274,7 @@ function decorateButtonsV1(element) {
           && twoup.childNodes.length === 1
           && twoup.tagName === 'P'
         ) {
-          a.className = 'button-m secondary';
+          a.className = 'secondary button-m ';
           twoup.classList.add('button-container');
         }
         if (up.childNodes.length === 1 && (up.tagName === 'P' || up.tagName === 'DIV')) {
@@ -343,6 +343,15 @@ function decorateSvgWithAltText(element) {
   });
 }
 
+function isAuthoringInstance(block) {
+  const section = block.closest('.section');
+  const hasAueAttrs = [block, section]
+    .filter(Boolean)
+    .some((el) => [...el.attributes].some(({ name }) => name.startsWith('data-aue-')));
+
+  return hasAueAttrs && window.self !== window.top;
+}
+
 if (Window.LAZY_PHASE) {
   handleGlobalLinkClicks();
 } else {
@@ -356,4 +365,5 @@ export {
   decorateButtonsV1,
   decorateSvgWithAltText,
   loadBreadcrumb,
+  isAuthoringInstance,
 };
