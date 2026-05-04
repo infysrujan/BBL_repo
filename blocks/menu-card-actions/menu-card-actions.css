@@ -23,9 +23,7 @@
   .menu-card-actions-container .default-content-wrapper :is(h1) {
     line-height: 2.4375rem;
   }
-}
 
-:lang(th) {
   .menu-card-actions-container .default-content-wrapper :is(h2) {
     line-height: 2.0625rem;
   }
@@ -230,21 +228,15 @@
     .menu-card-actions-container .default-content-wrapper :is(h1) {
       line-height: 5.5rem;
     }
-  }
 
-  :lang(th) {
     .menu-card-actions-container .default-content-wrapper :is(h2) {
       line-height: 4.875rem;
     }
-  }
 
-  :lang(th) {
     .menu-card-actions-container .default-content-wrapper :is(h3) {
       line-height: 3.75rem;
     }
-  }
 
-  :lang(th) {
     .menu-card-actions-container .default-content-wrapper :is(h4) {
       line-height: 2.5rem;
     }
