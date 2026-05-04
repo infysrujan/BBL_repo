@@ -182,12 +182,18 @@ function evaluateFormula(formula, variables) {
 async function fetchFormulaConfig() {
   try {
     const resp = await fetch('/en/config.json');
+    // eslint-disable-next-line no-console
+    console.log('[SME Calc] config fetch status:', resp.status, resp.ok);
     if (!resp.ok) return {};
     const json = await resp.json();
     const map = {};
     (json.data || []).forEach(({ Key, Value }) => { map[Key] = Value; });
+    // eslint-disable-next-line no-console
+    console.log('[SME Calc] config keys loaded:', Object.keys(map));
     return map;
-  } catch {
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('[SME Calc] config fetch failed:', err.message);
     return {};
   }
 }
@@ -247,10 +253,14 @@ async function buildCalculator(block) {
   // Determine which config key to use based on the set of field IDs
   const formulaKey = fields.map((f) => f.id).sort().join(',');
   const configKey = FIELD_KEY_MAP[formulaKey] || '';
+  // eslint-disable-next-line no-console
+  console.log('[SME Calc] field IDs:', fields.map((f) => f.id), '| formulaKey:', formulaKey, '| configKey:', configKey);
 
   // Fetch formula from /en/config.json
   const config = await fetchFormulaConfig();
   const formula = configKey ? (config[configKey] || '') : '';
+  // eslint-disable-next-line no-console
+  console.log('[SME Calc] formula:', formula || '(empty)');
 
   block.innerHTML = '';
 
