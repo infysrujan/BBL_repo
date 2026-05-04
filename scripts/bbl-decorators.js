@@ -264,8 +264,11 @@ function decorateButtonsV1(element) {
           twoup.classList.add('button-container');
         }
         if (up.childNodes.length === 1 && (up.tagName === 'P' || up.tagName === 'DIV')) {
-          a.className = 'button-tertiary';
-          up.classList.add('button-container');
+          const alreadyVariant = a.className.includes('primary') || a.className.includes('secondary');
+          if (!alreadyVariant) {
+            a.className = 'button-tertiary';
+            up.classList.add('button-container');
+          }
         }
       }
 

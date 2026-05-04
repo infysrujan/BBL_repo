@@ -61,6 +61,11 @@
   scroll-behavior: smooth;
 }
 
+.cards-list-button .button{
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .cards-list:is(.scrollable, .carousel) {
   flex-direction: row;
   align-items: stretch;
