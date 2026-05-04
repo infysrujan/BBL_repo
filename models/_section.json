@@ -210,7 +210,8 @@
         "card-comparator-results",
         "video",
         "carousel-video",
-        "forex-rates"
+        "forex-rates",
+        "multi-column-tiles"
       ]
     }
   ]

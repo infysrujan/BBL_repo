@@ -8559,6 +8559,52 @@
     ]
   },
   {
+    "id": "multi-column-tiles-item",
+    "fields": [
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "image",
+        "label": "Image (Smart crop)",
+        "description": "Select or upload a DAM image for tile variants: 4-tile (Small), 3-tile (Medium), or 2-tile (Large)",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imageMimeType"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+      },
+      {
+        "component": "aem-content",
+        "name": "imageLink",
+        "label": "Image Link",
+        "description": "Destination page when the image is clicked"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageLinkTitle",
+        "label": "Image Link Title",
+        "description": "Accessibility title attribute for the image link (optional)",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title",
+        "description": "Tile title displayed below the image with a separator"
+      }
+    ]
+  },
+  {
     "id": "popup-modal-card-offer",
     "fields": [
       {
