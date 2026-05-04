@@ -20,8 +20,8 @@
   width: auto;
   border: none;
   border-radius: 0;
-  padding: 20px;
-  box-shadow: 0 0 16px 0 rgb(0 0 0 / 10%);
+  padding: var(--bbl-space-250);
+  box-shadow: 0 0 var(--bbl-space-200) 0 rgb(0 0 0 / 10%);
 }
 
 .locate-us .cards-list.cards-3 .cards-list-item {
@@ -30,11 +30,11 @@
 }
 
 .locate-us .cards-list-title.has-title-underline :is(h1, h2, h3, h4, h5, h6)::before {
-  width: 64px;
+  width: 4rem;
 }
 
 .locate-us .card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-  font-size: 21px;
+  font-size: 1.3125rem;
   text-align: center;
 }
 
@@ -111,8 +111,8 @@
   border-radius: var(--bbl-radius-md);
   box-shadow: 0 0.25rem 0.75rem var(--bbl-color-black-alpha-10);
   list-style: none;
-  margin: 0;
-  padding: 0;
+  margin: var(--bbl-space-000);
+  padding: var(--bbl-space-000);
   max-height: 13.75rem;
   overflow-y: auto;
 }
@@ -239,8 +239,8 @@
 
 .locate-us .locate-us-province-list {
   list-style: none;
-  margin: 0;
-  padding: 0;
+  margin: var(--bbl-space-000);
+  padding: var(--bbl-space-000);
 }
 
 .locate-us .locate-us-province-item {
@@ -355,7 +355,7 @@
 }
 
 .locate-us .locate-us-map-remark {
-  margin: 0;
+  margin: var(--bbl-space-000);
   font-size: 0.9375rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
@@ -367,19 +367,19 @@
   display: grid;
   align-items: stretch;
   padding: 0;
-  margin: 30px auto;
+  margin: 1.875rem auto;
   grid-template-columns: 1fr;
   gap: 0;
-  box-shadow: 0 2px 18px rgb(0 0 0 / 8%);
+  box-shadow: 0 0.125rem 1.125rem rgb(0 0 0 / 8%);
 }
 
 .locate-us .locate-us-card {
   display: flex;
   flex-direction: column;
   border: none;
-  border-top: 1px solid #e8e8e8;
+  border-top: 0.0625rem solid #e8e8e8;
   border-radius: 0;
-  padding: 0 20px;
+  padding: 0 1.25rem;
   box-sizing: border-box;
   background-color: #fff;
   cursor: pointer;
@@ -387,7 +387,7 @@
 }
 
 .locate-us .locate-us-cards .locate-us-card:last-child {
-  border-bottom: 1px solid #e8e8e8;
+  border-bottom: 0.0625rem solid #e8e8e8;
 }
 
 .locate-us .locate-us-card-header {
@@ -405,10 +405,10 @@
 
 .locate-us .locate-us-card-name {
   flex: 1;
-  font-size: 18px;
-  font-weight: 400;
+  font-size: 1.125rem;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-gray-121);
-  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
 }
 
 .locate-us .locate-us-card-chevron {
@@ -442,15 +442,15 @@
   align-self: flex-end;
   margin-bottom: var(--bbl-space-100);
   background-color: #E0E6F8;
-  border-radius: 4px 0 0 4px;
+  border-radius: 0.25rem 0 0 0.25rem;
   color: #039;
-  padding: 0 5px;
-  font-size: 12px;
+  padding: 0 0.3125rem;
+  font-size: var(--bbl-body-b3-size);
   right: 0;
-  top: 2px;
+  top: 0.125rem;
   white-space: nowrap;
   position: absolute;
-  line-height: 22px;
+  line-height: 1.375rem;
 }
 
 /* Label + value rows — matching BBL's 60px td pattern */
@@ -462,7 +462,7 @@
 
 .locate-us .locate-us-card-label {
   min-width: 3.75rem;
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--bbl-color-gray-142);
   font-family: var(--bbl-font-family-primary);
   flex-shrink: 0;
@@ -478,9 +478,9 @@
 
 .locate-us .locate-us-card-status {
   color: var(--bbl-color-status-other);
-  font-size: 18px;
+  font-size: 1.125rem;
   font-family: var(--bbl-font-family-primary);
-  line-height: 22px;
+  line-height: 1.375rem;
 }
 
 .locate-us .locate-us-card-status-open {
@@ -488,7 +488,7 @@
 }
 
 .locate-us .locate-us-card-hours {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
 }
@@ -500,13 +500,13 @@
 
 .locate-us .locate-us-card-tel,
 .locate-us .locate-us-card-fax {
-  font-size: 16px;
+  font-size: 1rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
 }
 
 .locate-us .locate-us-card-address {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   margin: 0.625rem 0 var(--bbl-space-100);
@@ -517,7 +517,7 @@
   align-items: center;
   gap: var(--bbl-space-075);
   color: var(--bbl-color-blue-90);
-  font-size: 14px;
+  font-size: 0.875rem;
   text-decoration: none;
   font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   margin-top: 0.625rem;
@@ -530,8 +530,8 @@
 .locate-us .locate-us-card-directions::before {
   content: '';
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   background-image: url('../../icons/icon_route.svg');
   background-size: contain;
   background-repeat: no-repeat;
@@ -695,8 +695,8 @@
   border-radius: var(--bbl-radius-md);
   box-shadow: 0 0.25rem 0.75rem var(--bbl-color-black-alpha-10);
   list-style: none;
-  margin: 0;
-  padding: 0;
+  margin: var(--bbl-space-000);
+  padding: var(--bbl-space-000);
   max-height: 16.25rem;
   overflow-y: auto;
   width: fit-content;
@@ -808,7 +808,7 @@
   align-items: center;
   justify-content: center;
   line-height: 1;
-  padding: 0;
+  padding: var(--bbl-space-000);
 }
 
 /* ── Card appointment link ───────────────────────────────────────────────────── */
@@ -852,17 +852,17 @@
   }
 
   .locate-us .card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 21px;
+    font-size: 1.3125rem;
   }
 
   .locate-us .section{
-    padding: 0;
+    padding: var(--bbl-space-000);
   }
 
   .locate-us .locate-us-filter-bar {
     flex-direction: row;
     align-items: center;
-    padding: 0;
+    padding: var(--bbl-space-000);
     gap: 0.625rem;
   }
 
@@ -882,13 +882,13 @@
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
-    padding: 0;
+    padding: var(--bbl-space-000);
     flex: 1;
     margin: auto;
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-location-filter-row {
-    padding: 0;
+    padding: var(--bbl-space-000);
     margin-top: var(--bbl-space-200);
     max-width: 37.5rem;
   }
@@ -934,7 +934,7 @@
 
   .locate-us .locate-us-map-remark {
     padding: var(--bbl-space-250) 0.9375rem var(--bbl-space-250) 0;
-    margin: 0;
+    margin: var(--bbl-space-000);
     font-size: var(--bbl-font-size-b2);
   }
 
@@ -952,8 +952,8 @@
     padding: var(--bbl-space-250);
     background-color: var(--bbl-color-white);
     cursor: pointer;
-    border: 1px solid #e8e8e8;
-    box-shadow: 0 2px 18px rgb(0 0 0 / 8%);
+    border: 0.0625rem solid #e8e8e8;
+    box-shadow: 0 0.125rem 1.125rem rgb(0 0 0 / 8%);
     overflow: hidden;
     display: grid;
     grid-template-rows: subgrid;
@@ -961,7 +961,7 @@
   }
 
   .locate-us .locate-us-cards .locate-us-card:last-child {
-    border-bottom: 1px solid #e8e8e8;
+    border-bottom: 0.0625rem solid #e8e8e8;
   }
 
   .locate-us .locate-us-card-header {
@@ -972,10 +972,10 @@
 
   .locate-us .locate-us-card-chevron {
     display: inline-block;
-    width: 24px;
-    height: 24px;
+    width: 1.5rem;
+    height: 1.5rem;
     flex-shrink: 0;
-    margin-top: 2px;
+    margin-top: 0.125rem;
     background-image: url('../../icons/icon_nearme_disable.svg');
     background-size: contain;
     background-repeat: no-repeat;
@@ -1010,26 +1010,26 @@
   }
 
   .locate-us .locate-us-card-hr {
-    margin-top: 10px;
-    margin-bottom: 14px;
-    width: 64px;
-    height: 1px;
+    margin-top: 0.625rem;
+    margin-bottom: 0.875rem;
+    width: 4rem;
+    height: 0.0625rem;
     background: #9e9e9e;
   }
 
   /* ── Pagination ── */
 
   .locate-us .locate-us-pagination {
-    padding: 24px 40px;
+    padding: var(--bbl-space-300) var(--bbl-space-500);
   }
 
   .locate-us .locate-us-district-select {
-    font-size: 16px;
+    font-size: 1rem;
     margin: 0 0 var(--bbl-space-150);
   }
 
   .locate-us .locate-us-card-nearest-tag{
-    margin-right: -20px;
+    margin-right: -1.25rem;
   }
 
 }
@@ -1046,7 +1046,7 @@
 
   .locate-us .cards-list.cards-3 .cards-list-item {
     flex: 1;
-    max-width: 240px;
+    max-width: 15rem;
   }
 
   .locate-us .cards-list.cards-3 .cards-list-item .cards-list-image.cards-list-image-x-small {
@@ -1055,17 +1055,17 @@
 
   .locate-us .cards-list.cards-3 .cards-list-item .cards-list-image.cards-list-image-x-small img {
     height: auto;
-    margin-bottom: 10px;
-    padding: 14px 0;
+    margin-bottom: 0.625rem;
+    padding: 0.875rem 0;
   }
 
   .locate-us .card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 21px;
+    font-size: 1.3125rem;
   }
 
   .locate-us .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
-    padding: 0 25px 15px 0;
-    margin: 0 0 18px;
+    padding: 0 1.5625rem 0.9375rem 0;
+    margin: 0 0 1.125rem;
   }
 
   .locate-us-fragment .cards-list {
@@ -1074,6 +1074,6 @@
   }
 
   .locate-us .locate-us-card-nearest-tag{
-    margin-right: -20px;
+    margin-right: -1.25rem;
   }
 }
