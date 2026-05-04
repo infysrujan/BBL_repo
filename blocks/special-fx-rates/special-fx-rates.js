@@ -2,20 +2,15 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { normalizeRates } from '../forex-rates/helpers/api-helpers.js';
 import { parseApiDate } from '../forex-rates/helpers/date-helpers.js';
 
-const SORT_ORDER = ['JPY', 'USD1', 'USD5', 'USD50', 'EUR', 'GBP', 'SGD', 'HKD', 'AUD', 'CNY'];
-
-const REDUCE_CONFIG = {
-  AUD: { reduce: 0.10, decimal: 2 },
-  CNY: { reduce: 0.02, decimal: 2 },
-  EUR: { reduce: 0.10, decimal: 2 },
-  GBP: { reduce: 0.10, decimal: 2 },
-  HKD: { reduce: 0.02, decimal: 2 },
-  JPY: { reduce: 0.10, decimal: 2 },
-  SGD: { reduce: 0.10, decimal: 2 },
-  USD1: { reduce: 0.10, decimal: 2 },
-  USD5: { reduce: 0.10, decimal: 2 },
-  USD50: { reduce: 0.10, decimal: 2 },
-};
+async function fetchFxRatesConfig(url) {
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch {
+    return null;
+  }
+}
 
 function getFamilyLabel(family) {
   if (family === 'USD1') return 'USD: 1-2';
@@ -29,8 +24,8 @@ function getFlagFamily(family) {
   return family;
 }
 
-function calculateDiscountedRate(sellingRates, family) {
-  const config = REDUCE_CONFIG[family];
+function calculateDiscountedRate(sellingRates, family, reduceConfig) {
+  const config = reduceConfig[family];
   if (!config) return sellingRates;
   const selling = parseFloat(sellingRates);
   if (Number.isNaN(selling)) return sellingRates;
@@ -120,6 +115,17 @@ export default async function decorate(block) {
   const authoring = parseAuthoring(block);
   const configs = await fetchConfigs();
   const apiUrl = configs?.specialDiscountFxRate || '';
+  const configUrl = configs?.specialFxRatesConfig || '';
+  const fxConfig = await fetchFxRatesConfig(configUrl);
+  const [specialFxRateSortSheetName, specialFxRateReduceSheetName] = fxConfig?.[':names'] || [];
+  const sortOrder = (fxConfig?.[specialFxRateSortSheetName]?.data || []).map((row) => row.currency)
+    .filter(Boolean);
+  const reduceConfig = Object.fromEntries(
+    (fxConfig?.[specialFxRateReduceSheetName]?.data || []).map((row) => [row.currency, {
+      reduce: parseFloat(row.reduce),
+      decimal: parseInt(row.decimal, 10),
+    }]),
+  );
 
   block.textContent = '';
 
@@ -127,13 +133,13 @@ export default async function decorate(block) {
     const latest = await fetchFxBannerRates(apiUrl);
     const allRates = normalizeRates(latest);
 
-    const sorted = SORT_ORDER
+    const sorted = sortOrder
       .map((fam) => {
         const apiRate = allRates.find((r) => r.family === fam);
         if (!apiRate) return null;
         return {
           family: fam,
-          discountedRate: calculateDiscountedRate(apiRate.sellingRates, fam),
+          discountedRate: calculateDiscountedRate(apiRate.sellingRates, fam, reduceConfig),
         };
       })
       .filter(Boolean);
