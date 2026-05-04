@@ -16,8 +16,6 @@
  * `{ readOnly: false }`). Use `type="text"`. For a separate visible label, pass `labelElement`.
  */
 
-const STYLE_ID = 'bbl-calendar-picker-styles';
-
 const MONTHS_EN = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
@@ -90,123 +88,6 @@ function sameDay(a, b) {
     && a.getDate() === b.getDate();
 }
 
-function injectStyles(doc) {
-  if (doc.getElementById(STYLE_ID)) return;
-  const style = doc.createElement('style');
-  style.id = STYLE_ID;
-  style.textContent = `
-.bbl-calendar-picker-popover {
-  position: fixed;
-  z-index: 10050;
-  min-width: 280px;
-  padding: 16px;
-  background: var(--bbl-color-white, #fff);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
-  font-family: inherit;
-  box-sizing: border-box;
-}
-.bbl-calendar-picker-popover *,
-.bbl-calendar-picker-popover *::before,
-.bbl-calendar-picker-popover *::after { box-sizing: border-box; }
-
-.bbl-calendar-picker-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.bbl-calendar-picker-nav {
-  flex: 0 0 auto;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--bbl-color-grey-30, #DBDBDB);
-  border-radius: 50%;
-  background: var(--bbl-color-white, #fff);
-  color: var(--bbl-color-grey-100, #323238);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  line-height: 1;
-}
-.bbl-calendar-picker-nav:hover {
-  border-color: var(--bbl-color-grey-50, #A9A9AA);
-}
-.bbl-calendar-picker-nav:focus-visible {
-  outline: 2px solid var(--bbl-color-active-blue, #0064FF);
-  outline-offset: 2px;
-}
-
-.bbl-calendar-picker-title {
-  flex: 1 1 auto;
-  margin: 0;
-  text-align: center;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--bbl-color-blue-105, #003399);
-}
-
-.bbl-calendar-picker-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-bottom: 8px;
-}
-
-.bbl-calendar-picker-weekdays span {
-  text-align: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--bbl-color-black, #000);
-}
-
-.bbl-calendar-picker-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-}
-
-.bbl-calendar-picker-day {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-  max-height: 40px;
-  border: none;
-  background: transparent;
-  border-radius: 50%;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--bbl-color-grey-100, #323238);
-  cursor: pointer;
-  padding: 0;
-  margin: 0;
-}
-.bbl-calendar-picker-day--muted {
-  visibility: hidden;
-  pointer-events: none;
-}
-.bbl-calendar-picker-day:disabled {
-  color: var(--bbl-color-grey-45, #BBBBBB);
-  cursor: not-allowed;
-}
-.bbl-calendar-picker-day:not(:disabled):hover {
-  background: var(--bbl-color-grey-10, #F5F5F5);
-}
-.bbl-calendar-picker-day--selected {
-  background: var(--bbl-color-active-blue, #0064FF) !important;
-  color: var(--bbl-color-white, #fff) !important;
-}
-.bbl-calendar-picker-day--selected:hover {
-  background: var(--bbl-color-blue-70, #357EF8) !important;
-}
-`;
-  doc.head.append(style);
-}
-
 function positionPopover(trigger, popover, doc) {
   const rect = trigger.getBoundingClientRect();
   const { bottom, left: rectLeft, top } = rect;
@@ -245,6 +126,10 @@ function positionPopover(trigger, popover, doc) {
  * @property {HTMLElement} [labelElement] - If set, formatted date is written here instead of
  *   `input.value`
  * @property {boolean} [readOnly=true] - When true, sets `input.readOnly` so typing is disabled
+ * @property {(ctx: { year: number, month: number }) => Promise<number[] | null | undefined>}
+ *   [fetchEnabledDays] - When set, only days whose calendar date (1–31) appear in the resolved
+ *   array are selectable for the visible month (`month` is 0-based). Called when the popover
+ *   opens and whenever prev/next month is used. While loading, all days are disabled.
  */
 
 /**
@@ -262,6 +147,7 @@ export function attachCalendarPicker(options) {
     onChange,
     labelElement: labelElementOpt,
     readOnly: readOnlyOption = true,
+    fetchEnabledDays,
   } = options;
 
   const input = inputOption ?? triggerAlias;
@@ -273,12 +159,13 @@ export function attachCalendarPicker(options) {
     input.readOnly = true;
   }
 
-  injectStyles(doc);
-
   let selected = initialValue ? startOfDay(initialValue) : null;
   let viewYear = (selected || new Date()).getFullYear();
   let viewMonth = (selected || new Date()).getMonth();
   let isOpen = false;
+  /** @type {Set<number> | null} null while loading when fetchEnabledDays is used */
+  let enabledDaysInViewMonth = null;
+  let monthFetchGeneration = 0;
 
   const getLang = () => getCalendarLang(doc);
 
@@ -361,7 +248,7 @@ export function attachCalendarPicker(options) {
 
     for (let i = 0; i < startPad; i += 1) {
       const placeholder = doc.createElement('div');
-      placeholder.className = 'bbl-calendar-picker-day bbl-calendar-picker-day--muted';
+      placeholder.className = 'bbl-calendar-picker-day bbl-calendar-picker-day-muted';
       placeholder.setAttribute('aria-hidden', 'true');
       grid.append(placeholder);
     }
@@ -375,15 +262,46 @@ export function attachCalendarPicker(options) {
       btn.setAttribute('role', 'gridcell');
       btn.dataset.day = String(day);
 
-      const disabled = isDateDisabled(cellDate);
-      btn.disabled = disabled;
+      const disabledByPolicy = isDateDisabled(cellDate);
+      const disabledByFetch = Boolean(
+        fetchEnabledDays
+          && (enabledDaysInViewMonth === null || !enabledDaysInViewMonth.has(day)),
+      );
+      btn.disabled = disabledByPolicy || disabledByFetch;
 
       if (selected && sameDay(cellDate, selected)) {
-        btn.classList.add('bbl-calendar-picker-day--selected');
+        btn.classList.add('bbl-calendar-picker-day-selected');
       }
 
       grid.append(btn);
     }
+  }
+
+  function applyMonthAndFetchEnabledDays() {
+    if (!fetchEnabledDays) {
+      renderGrid();
+      return;
+    }
+    enabledDaysInViewMonth = null;
+    renderGrid();
+    monthFetchGeneration += 1;
+    const gen = monthFetchGeneration;
+    (async () => {
+      try {
+        const days = await fetchEnabledDays({ year: viewYear, month: viewMonth });
+        if (gen !== monthFetchGeneration) return;
+        const set = new Set();
+        (Array.isArray(days) ? days : []).forEach((n) => {
+          const dn = Number(n);
+          if (dn >= 1 && dn <= 31) set.add(dn);
+        });
+        enabledDaysInViewMonth = set;
+      } catch {
+        if (gen !== monthFetchGeneration) return;
+        enabledDaysInViewMonth = new Set();
+      }
+      renderGrid();
+    })();
   }
 
   function openPopover() {
@@ -395,7 +313,7 @@ export function attachCalendarPicker(options) {
       viewMonth = selected.getMonth();
     }
     renderWeekdayLabels();
-    renderGrid();
+    applyMonthAndFetchEnabledDays();
     positionPopover(input, popover, doc);
   }
 
@@ -418,7 +336,7 @@ export function attachCalendarPicker(options) {
     const d = new Date(viewYear, viewMonth + delta, 1);
     viewYear = d.getFullYear();
     viewMonth = d.getMonth();
-    renderGrid();
+    applyMonthAndFetchEnabledDays();
   }
 
   btnPrev.addEventListener('click', (e) => {
@@ -471,12 +389,17 @@ export function attachCalendarPicker(options) {
   input.addEventListener('click', onInputClick);
 
   syncLabel();
-  if (selected) renderGrid();
+  if (fetchEnabledDays) {
+    applyMonthAndFetchEnabledDays();
+  } else if (selected) {
+    renderGrid();
+  }
 
   return {
     open: openPopover,
     close: closePopover,
     destroy() {
+      monthFetchGeneration += 1;
       grid.removeEventListener('click', onGridClick);
       input.removeEventListener('focusin', onInputFocusIn);
       input.removeEventListener('click', onInputClick);
@@ -497,7 +420,10 @@ export function attachCalendarPicker(options) {
       }
       syncLabel();
       notifyInputCommitted();
-      if (isOpen) renderGrid();
+      if (isOpen) {
+        if (fetchEnabledDays) applyMonthAndFetchEnabledDays();
+        else renderGrid();
+      }
     },
   };
 }

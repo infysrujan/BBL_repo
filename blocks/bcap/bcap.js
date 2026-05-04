@@ -1,6 +1,78 @@
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 
 const ALL_FUND_NAMES_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/AllFundNames';
+const LATEST_DATE_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/LatestDate';
+const GET_UPDATE_IN_MONTH_BASE = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/GetUpdateInMonth';
+const ALL_FUND_PRICES_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/AllFundPrices/';
+
+/** NAV history is limited;
+ * calendar selections older than this (local calendar) skip the prices API. */
+const MAX_FUND_PRICE_HISTORY_YEARS = 3;
+
+let latestMdate = null;
+
+/** @param {Date} selectedDate - local calendar day */
+function isDateOlderThanFundHistoryLimit(selectedDate) {
+  const today = new Date();
+  const cutoff = new Date(
+    today.getFullYear() - MAX_FUND_PRICE_HISTORY_YEARS,
+    today.getMonth(),
+    today.getDate(),
+  );
+  const day = new Date(
+    selectedDate.getFullYear(),
+    selectedDate.getMonth(),
+    selectedDate.getDate(),
+  );
+  return day < cutoff;
+}
+function pad2(n) {
+  return String(n).padStart(2, '0');
+}
+
+/** @param {Date} date - local calendar day */
+function formatDateForFundPricesPath(date) {
+  return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}/${date.getFullYear()}`;
+}
+
+/** @param {Date} date */
+async function fetchAllFundPrices(date) {
+  const path = formatDateForFundPricesPath(date);
+  const url = `${ALL_FUND_PRICES_URL}${path}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`AllFundPrices API returned ${response.status}`);
+  }
+  const data = await response.json();
+  return Array.isArray(data) ? data : [];
+}
+
+/** @param {{ year: number, month: number }} ctx - month is 0-based (JS Date) */
+async function fetchNavEnabledDaysForMonth({ year, month }) {
+  const apiMonth = month + 1;
+  const url = `${GET_UPDATE_IN_MONTH_BASE}/${year}/${apiMonth}/0`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`GetUpdateInMonth returned ${response.status}`);
+  }
+  const data = await response.json();
+  if (!Array.isArray(data)) return [];
+  return data
+    .map((item) => (item && item.day != null ? Number(item.day) : NaN))
+    .filter((d) => !Number.isNaN(d));
+}
+
+/** Parse `YYYY-MM-DD` as a local calendar date (avoids UTC midnight shifts). */
+function parseLocalDateFromYmd(ymd) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd).trim());
+  if (!m) return null;
+  const y = Number(m[1]);
+  const mo = Number(m[2]) - 1;
+  const d = Number(m[3]);
+  const date = new Date(y, mo, d);
+  if (date.getFullYear() !== y || date.getMonth() !== mo || date.getDate() !== d) return null;
+  return date;
+}
 
 // Helper to normalize header text as keys
 function normalizeHeaderKey(header) {
@@ -28,135 +100,250 @@ const localizedHeaderMap = {
   totalnetassets: 'mf_sAUM',
 };
 
+function resolveColumnKey(normalizedKey, lang) {
+  const mapped = localizedHeaderMap[normalizedKey];
+  if (!mapped) return normalizedKey;
+  if (
+    typeof mapped === 'object'
+    && (normalizedKey === 'fundtype' || normalizedKey === 'openendfund')
+  ) {
+    return mapped[lang];
+  }
+  return mapped;
+}
+
+/** First-seen order of fund categories for stable grouping. */
+function buildCategoryOrder(rows, categoryKey) {
+  const order = [];
+  const seen = new Set();
+  rows.forEach((row) => {
+    const cate = row[categoryKey];
+    if (cate !== undefined && !seen.has(cate)) {
+      order.push(cate);
+      seen.add(cate);
+    }
+  });
+  return order;
+}
+
+function groupRowsByCategory(rows, categoryKey) {
+  return rows.reduce((acc, row) => {
+    const cate = row[categoryKey];
+    if (!acc[cate]) acc[cate] = [];
+    acc[cate].push(row);
+    return acc;
+  }, {});
+}
+
+function clearNonHeaderRows(tbody) {
+  tbody.querySelectorAll('tr:not(.header-row)').forEach((tr) => tr.remove());
+}
+
+/** Display text for a body cell
+ * (open-end fund column adds date suffix when row date ≠ selected). */
+function formatBodyCellText(normalizedKey, row, columnKey, selectedDate) {
+  if (normalizedKey === 'openendfund') {
+    const fundDate = row.mfr_dDataDate
+      ? row.mfr_dDataDate
+      : row.mf_dnav;
+    const dnav = row.mfr_dDataDate ? row.mfr_dDataDate : row.mf_dnav;
+    if (fundDate !== selectedDate && columnKey && row[columnKey] !== undefined) {
+      return `${row[columnKey]} <span class="dnav">${dnav}</span>`;
+    }
+    return `${row[columnKey]}`;
+  }
+  if (columnKey && row[columnKey] !== undefined) {
+    const value = String(row[columnKey]);
+    return value === 'null' ? 'N/A' : value;
+  }
+  return '';
+}
+
 function appendRowFromData(tableElement, dataArray) {
   const lang = getLang();
-
   const tbody = tableElement.querySelector('tbody');
-  const headerRow = tbody.querySelector('.header-row');
+  if (!tbody) {
+    return;
+  }
 
+  let headerRow = tbody.querySelector('.header-row');
   if (!headerRow) {
-    // eslint-disable-next-line no-console -- dev diagnostic when table markup is wrong
-    console.error('Header row not found');
+    const firstRow = tbody.querySelector('tr');
+    if (firstRow) {
+      headerRow = firstRow;
+      headerRow.classList.add('header-row');
+    }
+  }
+  if (!headerRow) {
+    return;
+  }
+
+  if (!Array.isArray(dataArray)) {
     return;
   }
 
   const headers = Array.from(headerRow.querySelectorAll('td'));
+  const categoryKey = lang === 'th' ? 'mf_cateTha' : 'mf_cateEng';
+  const categoryOrder = buildCategoryOrder(dataArray, categoryKey);
+  const groupedByCategory = groupRowsByCategory(dataArray, categoryKey);
 
-  // Ensure dataArray is an array
-  if (!Array.isArray(dataArray)) {
-    // eslint-disable-next-line no-console -- dev diagnostic for invalid API payload
-    console.error('appendRowFromData: dataArray is not an array');
-    return;
-  }
+  clearNonHeaderRows(tbody);
 
-  // Extract fund category order, use correct (Eng/Tha) fund type per lang
-  const mfCateKey = lang === 'th' ? 'mf_cateTha' : 'mf_cateEng';
-  const mfCateOrder = [];
-  const seenCategories = new Set();
-  dataArray.forEach((data) => {
-    const cate = data[mfCateKey];
-    if (cate !== undefined && !seenCategories.has(cate)) {
-      mfCateOrder.push(cate);
-      seenCategories.add(cate);
-    }
-  });
-
-  // Group dataArray by fund category (per lang)
-  const groupedByCate = {};
-  dataArray.forEach((data) => {
-    const cate = data[mfCateKey];
-    if (!groupedByCate[cate]) {
-      groupedByCate[cate] = [];
-    }
-    groupedByCate[cate].push(data);
-  });
-
-  // Clear all rows except header row before appending
-  Array.from(tbody.querySelectorAll('tr')).forEach((tr) => {
-    if (!tr.classList.contains('header-row')) tr.remove();
-  });
-
-  // Append rows in the order of fund type, each group together,
-  // merge "Fund Type" tds with rowspan
-  mfCateOrder.forEach((cate) => {
-    const group = groupedByCate[cate];
-    group.forEach((data, idx) => {
-      const newRow = document.createElement('tr');
+  categoryOrder.forEach((category) => {
+    const group = groupedByCategory[category];
+    group.forEach((row, rowIndex) => {
+      const tr = document.createElement('tr');
       headers.forEach((headerCell) => {
-        const headerText = headerCell.textContent.trim();
-        const normalizedKey = normalizeHeaderKey(headerText);
+        const normalizedKey = normalizeHeaderKey(headerCell.textContent.trim());
+        const columnKey = resolveColumnKey(normalizedKey, lang);
 
-        let columnKey;
-        // Get proper key per lang for columns with Eng/Tha variants (fundtype, openendfund)
-        if (localizedHeaderMap[normalizedKey]) {
-          if (
-            typeof localizedHeaderMap[normalizedKey] === 'object'
-            && (normalizedKey === 'fundtype' || normalizedKey === 'openendfund')
-          ) {
-            columnKey = localizedHeaderMap[normalizedKey][lang];
-          } else {
-            // Numeric/other columns
-            columnKey = localizedHeaderMap[normalizedKey];
-          }
-        } else {
-          // fallback: use normalizedKey directly
-          columnKey = normalizedKey;
-        }
-
-        // For the "Fund Type" column, only add the td (with rowspan) on the first row in the group
         if (normalizedKey === 'fundtype') {
-          if (idx === 0) {
+          if (rowIndex === 0) {
             const td = document.createElement('td');
-            td.textContent = data[columnKey] !== undefined ? data[columnKey] : '';
+            td.textContent = row[columnKey] !== undefined ? row[columnKey] : '';
             td.rowSpan = group.length;
             td.classList.add('merged-fund-type');
-            newRow.appendChild(td);
+            tr.appendChild(td);
           }
-          // skip appending a td for this header for all but the first in group
-        } else {
-          const td = document.createElement('td');
-          td.textContent = columnKey && data[columnKey] !== undefined ? data[columnKey] : '';
-          newRow.appendChild(td);
+          return;
         }
+
+        const td = document.createElement('td');
+        td.innerHTML = formatBodyCellText(normalizedKey, row, columnKey, latestMdate);
+        tr.appendChild(td);
       });
-      tbody.appendChild(newRow);
+      tbody.appendChild(tr);
     });
   });
 }
 
-export default async function decorate() {
+/** @param {HTMLElement} tableEl @param {unknown[]} fallbackFunds @param {Date} date */
+async function refreshTableFromPrices(tableEl, fallbackFunds, date) {
+  try {
+    const prices = await fetchAllFundPrices(date);
+    appendRowFromData(tableEl, prices);
+  } catch (error) {
+    appendRowFromData(tableEl, fallbackFunds);
+  }
+}
+/**
+ * Bcap block content model — see _bcap.json (field order).
+ * Rows map to: date-label, print-label, error-message, disclaimer-text (richtext).
+ */
+
+/**
+ * @param {Element | undefined} row
+ * @returns {string} Trimmed HTML from the first column cell, or the row itself.
+ */
+function richTextFromRow(row) {
+  if (!row) return '';
+  const cell = row.querySelector(':scope > div');
+  const source = cell ?? row;
+  return source.innerHTML.trim();
+}
+
+/**
+ * @param {HTMLElement} block
+ */
+export default async function decorate(block) {
+  const doc = block.ownerDocument;
+  const rows = [...block.children];
   const table = document.querySelector('.table');
-  const calendarLabel = document.querySelector('.table-container > .default-content-wrapper p:nth-child(2)');
-  if (calendarLabel) {
-    const input = document.createElement('input');
+  let funds = [];
+  let calendarDate = new Date();
+
+  const dateLabelHtml = richTextFromRow(rows[0]);
+  const printLabelHtml = richTextFromRow(rows[1]);
+  const errorMessageHtml = richTextFromRow(rows[2]);
+  const disclaimerHtml = richTextFromRow(rows[3]);
+
+  block.innerHTML = '';
+
+  const root = doc.createElement('div');
+  root.className = 'bcap-root';
+
+  const dateLabel = doc.createElement('div');
+  dateLabel.className = 'calendar-wrapper';
+  dateLabel.dataset.field = 'date-label';
+  dateLabel.innerHTML = dateLabelHtml;
+
+  const printLabel = doc.createElement('div');
+  printLabel.className = 'bcap-print-label';
+  printLabel.dataset.field = 'print-label';
+  printLabel.innerHTML = printLabelHtml;
+
+  const errorMessage = doc.createElement('div');
+  errorMessage.classList.add('bcap-error-message', 'hidden');
+  errorMessage.dataset.field = 'error-message';
+  errorMessage.setAttribute('role', 'alert');
+  errorMessage.setAttribute('aria-live', 'polite');
+  if (!errorMessageHtml) {
+    errorMessage.hidden = true;
+  }
+  errorMessage.innerHTML = errorMessageHtml;
+
+  const disclaimer = doc.createElement('div');
+  disclaimer.className = 'bcap-disclaimer-text';
+  disclaimer.dataset.field = 'disclaimer-text';
+  disclaimer.innerHTML = disclaimerHtml;
+
+  try {
+    const [namesResponse, latestResponse] = await Promise.all([
+      fetch(ALL_FUND_NAMES_URL),
+      fetch(LATEST_DATE_URL),
+    ]);
+
+    if (latestResponse.ok) {
+      const latestJson = await latestResponse.json();
+      latestMdate = latestJson?.mdate;
+      const parsed = latestJson?.mdate ? parseLocalDateFromYmd(latestJson.mdate) : null;
+      if (parsed) calendarDate = parsed;
+    } else {
+      console.error(`bcap: LatestDate API returned ${latestResponse.status}`);
+    }
+
+    if (!namesResponse.ok) {
+      throw new Error(`AllFundNames API returned ${namesResponse.status}`);
+    }
+    const data = await namesResponse.json();
+    funds = Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error('bcap: failed to load fund list', error);
+  }
+
+  if (dateLabel) {
+    const calendarInput = doc.createElement('div');
+    const input = doc.createElement('input');
     input.id = 'date-to';
     input.type = 'text';
     input.name = 'date-to';
-    calendarLabel.appendChild(input);
+    calendarInput.classList.add('icon-calendar');
+    calendarInput.appendChild(input);
+    dateLabel.appendChild(calendarInput);
     attachCalendarPicker({
       input,
-      value: new Date(),
-      onChange: () => {
-        // date picker wired; hook fetch/update here when API is ready
+      value: calendarDate,
+      fetchEnabledDays: fetchNavEnabledDaysForMonth,
+      onChange: (selectedDate) => {
+        if (!table) return;
+        if (errorMessage) {
+          if (isDateOlderThanFundHistoryLimit(selectedDate)) {
+            errorMessage.hidden = false;
+            return;
+          }
+          errorMessage.hidden = true;
+        }
+        refreshTableFromPrices(table, funds, selectedDate);
       },
     });
   }
+
   if (!table) return;
 
   table.classList.add('bcap-table');
 
-  let funds = [];
-  try {
-    const response = await fetch(ALL_FUND_NAMES_URL);
-    if (!response.ok) {
-      throw new Error(`AllFundNames API returned ${response.status}`);
-    }
-    const data = await response.json();
-    funds = Array.isArray(data) ? data : [];
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('bcap: failed to load fund list', error);
-  }
+  await refreshTableFromPrices(table, funds, calendarDate);
 
-  appendRowFromData(table, funds);
+  root.append(dateLabel, printLabel, errorMessage, table, disclaimer);
+  block.appendChild(root);
 }
