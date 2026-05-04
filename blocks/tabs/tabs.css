@@ -337,6 +337,10 @@
   color: var(--bbl-color-blue-90);
 }
 
+.tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button:hover {
+  color: var(--bbl-color-blue-90);
+}
+
 /* Left-aligned Tab Variant */
 .tabs-container.left .tabs-nav-wrapper .tabs-nav,
 .tabs-container.left .tabs-nav-wrapper .tabs-dropdown {
