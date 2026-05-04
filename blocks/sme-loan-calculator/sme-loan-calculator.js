@@ -1,27 +1,93 @@
+// CSP on AEM blocks eval/new Function — use a custom math expression parser instead.
+function safeEval(expr) {
+  const tokens = [];
+  let i = 0;
+  while (i < expr.length) {
+    const ch = expr[i];
+    if (/\s/.test(ch)) { i += 1; continue; } // eslint-disable-line no-continue
+    if (/[0-9]/.test(ch) || (ch === '.' && /[0-9]/.test(expr[i + 1] || ''))) {
+      let num = '';
+      while (i < expr.length && /[0-9.]/.test(expr[i])) { num += expr[i]; i += 1; }
+      tokens.push({ t: 'n', v: parseFloat(num) });
+    } else if (ch === '*' && expr[i + 1] === '*') {
+      tokens.push({ t: 'o', v: '**' }); i += 2;
+    } else if (ch === '(') { tokens.push({ t: '(', v: ch }); i += 1; }
+    else if (ch === ')') { tokens.push({ t: ')', v: ch }); i += 1; }
+    else if ('+-*/'.includes(ch)) { tokens.push({ t: 'o', v: ch }); i += 1; }
+    else throw new Error(`Unexpected: ${ch}`);
+  }
+
+  let pos = 0;
+  const peek = () => tokens[pos];
+  const next = () => tokens[pos++]; // eslint-disable-line no-plusplus
+
+  function addSub() {
+    let left = mulDiv();
+    while (peek()?.t === 'o' && (peek().v === '+' || peek().v === '-')) {
+      const op = next().v;
+      left = op === '+' ? left + mulDiv() : left - mulDiv();
+    }
+    return left;
+  }
+
+  function mulDiv() {
+    let left = power();
+    while (peek()?.t === 'o' && (peek().v === '*' || peek().v === '/')) {
+      const op = next().v;
+      left = op === '*' ? left * power() : left / power();
+    }
+    return left;
+  }
+
+  function power() {
+    const base = unary();
+    if (peek()?.t === 'o' && peek().v === '**') {
+      next();
+      return base ** power();
+    }
+    return base;
+  }
+
+  function unary() {
+    if (peek()?.t === 'o' && (peek().v === '-' || peek().v === '+')) {
+      const op = next().v;
+      return op === '-' ? -primary() : primary(); // eslint-disable-line no-use-before-define
+    }
+    return primary(); // eslint-disable-line no-use-before-define
+  }
+
+  function primary() {
+    const tok = peek();
+    if (!tok) throw new Error('Unexpected end');
+    if (tok.t === 'n') { next(); return tok.v; }
+    if (tok.t === '(') {
+      next();
+      const val = addSub();
+      if (peek()?.t !== ')') throw new Error('Missing )');
+      next();
+      return val;
+    }
+    throw new Error(`Unexpected token: ${tok.v}`);
+  }
+
+  return addSub();
+}
+
 function evaluateFormula(formula, variables) {
-  // Strip LHS assignment (e.g. "A = " or "WC = ") so only the RHS expression is evaluated
+  // Strip LHS assignment e.g. "A = " or "WC = "
   let expr = formula.replace(/^\s*\w+\s*=\s*/, '');
+  // Replace ^ with ** for exponentiation
   expr = expr.replace(/\^/g, '**');
+  // Substitute variables longest-first to avoid partial matches (e.g. WC before C)
   const sortedVars = Object.keys(variables).sort((a, b) => b.length - a.length);
   sortedVars.forEach((varName) => {
     const regex = new RegExp(`\\b${varName}\\b`, 'g');
     expr = expr.replace(regex, variables[varName]);
   });
-  // eslint-disable-next-line no-console
-  console.log('[SME Calc] raw formula:', JSON.stringify(formula));
-  // eslint-disable-next-line no-console
-  console.log('[SME Calc] variables:', variables);
-  // eslint-disable-next-line no-console
-  console.log('[SME Calc] expression to evaluate:', expr);
   try {
-    // eslint-disable-next-line no-new-func
-    const result = new Function(`return (${expr})`)();
-    // eslint-disable-next-line no-console
-    console.log('[SME Calc] result:', result);
+    const result = safeEval(expr);
     return Number.isFinite(result) ? result : null;
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error('[SME Calc] evaluation failed:', e.message);
+  } catch {
     return null;
   }
 }
