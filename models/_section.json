@@ -205,10 +205,14 @@
         "card-list-wealth",
         "privacy-modal",
         "external-redirect-popup",
+        "credit-card-selector",
+        "credit-card-comparator",
+        "card-comparator-results",
         "video",
         "carousel-video",
         "forex-rates",
-        "special-fx-rates"
+        "special-fx-rates",
+        "multi-column-tiles"
       ]
     }
   ]
