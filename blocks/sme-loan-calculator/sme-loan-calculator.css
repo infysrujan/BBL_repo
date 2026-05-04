@@ -130,6 +130,16 @@
   line-height: 1.6;
 }
 
+/* Formula description */
+.sme-calc-formula-description {
+  text-align: center;
+  font-size: 12px;
+  color: rgb(144 184 216 / 80%);
+  margin: -16px 0 28px;
+  line-height: 1.6;
+  font-style: italic;
+}
+
 /* Add to table button */
 .sme-calc-add-table-btn {
   display: block;

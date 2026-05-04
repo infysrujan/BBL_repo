@@ -8903,6 +8903,13 @@
         "name": "addToTableButtonName",
         "label": "Add to Table Button Name",
         "valueType": "string"
+      },
+      {
+        "component": "textarea",
+        "name": "formulaDescription",
+        "label": "Formula Description",
+        "description": "Describe the formula used (e.g. A = Loan Payment, P = Loan Balance, n = Term months, i = Interest Rate %)",
+        "valueType": "string"
       }
     ]
   },

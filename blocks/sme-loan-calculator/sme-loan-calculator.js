@@ -240,6 +240,7 @@ async function buildCalculator(block) {
   const resultTemplate = filteredParentValues[1] || '';
   const description = filteredParentValues[2] || '';
   const addToTableButtonName = filteredParentValues[3] || 'ADD TO TABLE';
+  const formulaDescription = filteredParentValues[4] || '';
 
   const fields = fieldRows.map(({ cells }, idx) => ({
     id: cells[0]?.textContent.trim() || `field${idx + 1}`,
@@ -329,6 +330,11 @@ async function buildCalculator(block) {
   descEl.className = 'sme-calc-description';
   descEl.textContent = description;
 
+  const formulaDescEl = document.createElement('p');
+  formulaDescEl.className = 'sme-calc-formula-description';
+  formulaDescEl.textContent = formulaDescription;
+  if (!formulaDescription) formulaDescEl.hidden = true;
+
   const addTableBtn = document.createElement('button');
   addTableBtn.className = 'sme-calc-add-table-btn';
   addTableBtn.textContent = addToTableButtonName;
@@ -396,6 +402,7 @@ async function buildCalculator(block) {
   block.appendChild(calcBtn);
   block.appendChild(resultBox);
   block.appendChild(descEl);
+  block.appendChild(formulaDescEl);
   block.appendChild(addTableBtn);
   block.appendChild(tableSection);
 }
