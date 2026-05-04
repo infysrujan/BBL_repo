@@ -6,27 +6,6 @@ import {
   decorateBlock,
   loadBlock,
 } from './aem.js';
-
-// Register early (module is imported before loadPage runs) so the event is
-// caught before any block modules are loaded. Dynamic import breaks the static
-// cycle with fragment.js → scripts.js.
-document.addEventListener('bbl:load-fragment', async (e) => {
-  const { path, callback } = e.detail;
-  if (!path) return;
-  try {
-    const { loadFragment } = await import('../blocks/fragment/fragment.js');
-    const fragment = await loadFragment(path);
-    if (fragment) {
-      document.body.appendChild(fragment);
-    }
-    if (typeof callback === 'function') {
-      callback(fragment);
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`[bbl-decorators] Failed to load fragment from event: ${path}`, error);
-  }
-});
 /**
  * Helper function to parse comma-separated URL strings from config
  * @param {string} urlString - Comma-separated URL string
@@ -207,11 +186,22 @@ function handleGlobalLinkClicks() {
       const excludedUrlArray = parseUrlString(configData.excludedurl || '');
       const fullUrlArray = parseUrlString(configData.fullurl || '');
 
+      // eslint-disable-next-line no-console
+      console.log('URL Check:', {
+        clickedUrl: href,
+        hostnameUrls: hostnameUrlArray,
+        excludedUrls: excludedUrlArray,
+        fullUrls: fullUrlArray,
+      });
+
       // Case 1: Check if URL is in hostnameurl or fullurl
       const matchesHostnameList = matchesHostname(href, hostnameUrlArray);
       const matchesFullUrlList = matchesFullUrl(href, fullUrlArray);
 
       if (matchesHostnameList || matchesFullUrlList) {
+        // CASE 1: Show privacy modal
+        // eslint-disable-next-line no-console
+        console.log('Case 1: URL matches config - Loading privacy modal');
         await loadPrivacyModal(href);
         return;
       }
@@ -220,6 +210,9 @@ function handleGlobalLinkClicks() {
       const isExcluded = matchesFullUrl(href, excludedUrlArray);
 
       if (!isExcluded) {
+        // CASE 2: Show external redirect popup
+        // eslint-disable-next-line no-console
+        console.log('Case 2: URL not in config and not excluded - Showing redirect popup');
         await loadAndShowExternalRedirectPopup(href);
         return;
       }
