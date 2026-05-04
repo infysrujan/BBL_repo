@@ -1,5 +1,7 @@
 function evaluateFormula(formula, variables) {
-  let expr = formula.replace(/\^/g, '**');
+  // Strip LHS assignment (e.g. "A = " or "WC = ") so only the RHS expression is evaluated
+  let expr = formula.replace(/^\s*\w+\s*=\s*/, '');
+  expr = expr.replace(/\^/g, '**');
   const sortedVars = Object.keys(variables).sort((a, b) => b.length - a.length);
   sortedVars.forEach((varName) => {
     const regex = new RegExp(`\\b${varName}\\b`, 'g');
@@ -113,7 +115,7 @@ function buildCalculator(block) {
   resultBox.className = 'sme-calc-result';
   const resultLabel = document.createElement('span');
   resultLabel.className = 'sme-calc-result-label';
-  resultLabel.textContent = 'RESULT VALUE';
+  resultLabel.textContent = resultTemplate || '0.00';
   resultBox.appendChild(resultLabel);
 
   const descEl = document.createElement('p');
