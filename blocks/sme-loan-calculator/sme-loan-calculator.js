@@ -17,32 +17,42 @@ function evaluateFormula(formula, variables) {
 function formatResult(template, value) {
   if (value === null) return 'Error';
   const formatted = Number.isInteger(value) ? value.toLocaleString() : value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return template ? template.replace(/\{\{result\}\}/g, formatted) : formatted;
+  if (template && template.includes('{{result}}')) return template.replace(/\{\{result\}\}/g, formatted);
+  return formatted;
 }
 
 function buildCalculator(block) {
   const rows = [...block.querySelectorAll(':scope > div')];
   if (!rows.length) return;
 
-  const parentCells = rows[0].querySelectorAll(':scope > div');
-  const formula = parentCells[0]?.textContent.trim() || '';
-  const buttonName = parentCells[1]?.textContent.trim() || 'CALCULATE';
-  const resultTemplate = parentCells[2]?.textContent.trim() || '{{result}}';
-  const description = parentCells[3]?.textContent.trim() || '';
-  const addToTableButtonName = parentCells[4]?.textContent.trim() || 'ADD TO TABLE';
+  // In AEM EDS, each parent model field renders as its own single-cell row.
+  // Child items (sme-field) render as multi-cell rows (one cell per field).
+  const parentValues = [];
+  const fieldRows = [];
 
-  const fields = [];
-  for (let i = 1; i < rows.length; i += 1) {
-    const cells = rows[i].querySelectorAll(':scope > div');
-    fields.push({
-      id: cells[0]?.textContent.trim() || `field${i}`,
-      label: cells[1]?.textContent.trim() || '',
-      maxLength: parseInt(cells[2]?.textContent.trim(), 10) || null,
-      topText: cells[3]?.textContent.trim() || '',
-      bottomText: cells[4]?.textContent.trim() || '',
-      valueType: cells[5]?.textContent.trim() || 'decimal',
-    });
-  }
+  rows.forEach((row) => {
+    const cells = [...row.querySelectorAll(':scope > div')];
+    if (cells.length <= 1) {
+      parentValues.push(cells[0]?.textContent.trim() || '');
+    } else {
+      fieldRows.push(cells);
+    }
+  });
+
+  const formula = parentValues[0] || '';
+  const buttonName = parentValues[1] || 'CALCULATE';
+  const resultTemplate = parentValues[2] || '';
+  const description = parentValues[3] || '';
+  const addToTableButtonName = parentValues[4] || 'ADD TO TABLE';
+
+  const fields = fieldRows.map((cells, i) => ({
+    id: cells[0]?.textContent.trim() || `field${i + 1}`,
+    label: cells[1]?.textContent.trim() || '',
+    maxLength: parseInt(cells[2]?.textContent.trim(), 10) || null,
+    topText: cells[3]?.textContent.trim() || '',
+    bottomText: cells[4]?.textContent.trim() || '',
+    valueType: cells[5]?.textContent.trim() || 'decimal',
+  }));
 
   block.innerHTML = '';
 
