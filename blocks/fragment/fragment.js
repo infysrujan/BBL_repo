@@ -49,8 +49,23 @@ export async function loadFragment(path) {
  * Allows other modules to load fragments without creating cyclic dependencies.
  * @listens bbl:load-fragment
  */
-// Note: the 'bbl:load-fragment' event listener is registered in scripts.js early
-// to avoid a timing issue where this module loads after the event is dispatched.
+document.addEventListener('bbl:load-fragment', async (e) => {
+  const { path, callback } = e.detail;
+  if (!path) return;
+
+  try {
+    const fragment = await loadFragment(path);
+    if (fragment) {
+      document.body.appendChild(fragment);
+    }
+    if (typeof callback === 'function') {
+      callback();
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`Failed to load fragment from event: ${path}`, error);
+  }
+});
 
 export default async function decorate(block) {
   const link = block.querySelector('a');
