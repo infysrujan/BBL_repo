@@ -102,10 +102,16 @@
   .search-modal-history-title :is(h1) {
     line-height: 2.4375rem;
   }
-}
 
-:lang(th) {
   .search-modal-history-title :is(h2) {
+    line-height: 2.0625rem;
+  }
+
+  .search-modal-panel-caption :is(h1) {
+    line-height: 2.4375rem;
+  }
+
+  .search-modal-panel-caption :is(h2) {
     line-height: 2.0625rem;
   }
 }
@@ -121,18 +127,6 @@
   padding-bottom: 0.9375rem;
   color: var(--bbl-color-black);
   min-height: 3.125rem;
-}
-
-:lang(th) {
-  .search-modal-panel-caption :is(h1) {
-    line-height: 2.4375rem;
-  }
-}
-
-:lang(th) {
-  .search-modal-panel-caption :is(h2) {
-    line-height: 2.0625rem;
-  }
 }
 
 .search-modal-panel-caption :is(h1, h2, h3, h4, h5, h6)::before {
@@ -328,21 +322,15 @@
     .search-modal-panel-caption :is(h1) {
       line-height: 5.5rem;
     }
-  }
 
-  :lang(th) {
     .search-modal-panel-caption :is(h2) {
       line-height: 4.875rem;
     }
-  }
 
-  :lang(th) {
     .search-modal-panel-caption :is(h3) {
       line-height: 3.75rem;
     }
-  }
 
-  :lang(th) {
     .search-modal-panel-caption :is(h4) {
       line-height: 2.5rem;
     }

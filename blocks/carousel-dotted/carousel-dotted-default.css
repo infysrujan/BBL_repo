@@ -507,10 +507,8 @@
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
     line-height: 2.4375rem;
   }
-}
 
-:lang(th) {
- .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
+  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
     line-height: 2.0625rem;
   }
 }
@@ -935,24 +933,18 @@
   }
 
   :lang(th) {
-      .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
       line-height: 5.5rem;
     }
-  }
 
-  :lang(th) {
-      .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
       line-height: 4.875rem;
     }
-  }
 
-  :lang(th) {
     .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h3) {
       line-height: 3.75rem;
     }
-  }
 
-  :lang(th) {
     .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h4) {
       line-height: 2.5rem;
     }
