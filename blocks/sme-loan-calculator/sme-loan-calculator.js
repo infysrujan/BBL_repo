@@ -115,7 +115,7 @@ function buildCalculator(block) {
   resultBox.className = 'sme-calc-result';
   const resultLabel = document.createElement('span');
   resultLabel.className = 'sme-calc-result-label';
-  resultLabel.textContent = resultTemplate || '0.00';
+  resultLabel.textContent = `Result value: ${resultTemplate || '0.00'}`;
   resultBox.appendChild(resultLabel);
 
   const descEl = document.createElement('p');
@@ -157,7 +157,7 @@ function buildCalculator(block) {
       variables[field.id] = parseFloat(input?.value) || 0;
     });
     lastResult = evaluateFormula(formula, variables);
-    resultLabel.textContent = formatResult(resultTemplate, lastResult);
+    resultLabel.textContent = `Result value: ${formatResult(resultTemplate, lastResult)}`;
     resultBox.classList.toggle('sme-calc-result--error', lastResult === null);
   });
 
