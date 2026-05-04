@@ -376,11 +376,14 @@ function getLang() {
  * @param {Element} main The container element
  */
 async function buildCookieAlert(main) {
+  /* Skip in Universal Editor — cookie consent UI must not appear while authoring. */
+  if (window.self !== window.top) return;
+
   /* Skip when called for a detached fragment main (loadFragment context). */
   if (!main.isConnected) return;
 
   /* Skip if consent already recorded */
-  if (getCookieValue('ConsentAlert') === 'true') return;
+  if (getCookieValue('ConsentAlert') === 'ALERT') return;
 
   /* Skip if a cookie-alert block was manually placed by the author */
   if (main.querySelector('.cookie-alert')) return;
