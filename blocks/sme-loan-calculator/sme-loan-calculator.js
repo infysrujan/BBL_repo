@@ -256,16 +256,8 @@ async function buildCalculator(block) {
     bottomText: cells[4]?.textContent.trim(),
   }));
 
-  // Save data-aue-* instrumentation from each field row before clearing DOM
-  const fieldInstrumentations = fieldRows.map(({ row }) => {
-    const attrs = {};
-    [...row.attributes].forEach((a) => {
-      if (a.name.startsWith('data-aue-') || a.name.startsWith('data-richtext-')) {
-        attrs[a.name] = a.value;
-      }
-    });
-    return attrs;
-  });
+  // Save instrumentation refs before clearing DOM (moveInstrumentation needs live elements)
+  const fieldRowElements = fieldRows.map(({ row }) => row);
 
   block.innerHTML = '';
 
@@ -276,9 +268,8 @@ async function buildCalculator(block) {
     const card = document.createElement('div');
     card.className = 'sme-calc-field';
 
-    // Re-apply instrumentation so UE content tree shows this child item
-    const instr = fieldInstrumentations[index] || {};
-    Object.entries(instr).forEach(([k, v]) => card.setAttribute(k, v));
+    // Move instrumentation from original row to new card so UE content tree shows the child
+    if (fieldRowElements[index]) moveInstrumentation(fieldRowElements[index], card);
 
     if (field.topText) {
       const top = document.createElement('span');
@@ -456,6 +447,5 @@ async function buildCalculator(block) {
 }
 
 export default async function decorate(block) {
-  moveInstrumentation(block);
   await buildCalculator(block);
 }
