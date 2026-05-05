@@ -320,7 +320,7 @@ export default async function decorate(block) {
   dateLabel.innerHTML = dateLabelHtml;
 
   const printLabel = doc.createElement('div');
-  printLabel.className = 'bcap-print-label';
+  printLabel.className = 'bcap-print-label icon-print';
   printLabel.dataset.field = 'print-label';
   printLabel.innerHTML = printLabelHtml;
 

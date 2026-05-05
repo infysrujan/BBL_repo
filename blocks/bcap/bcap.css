@@ -19,7 +19,7 @@
   align-items: center;
 }
 
-.calendar-input {
+.calendar-input input{
   padding-inline: 1.25rem 2.5rem;
   height: 2.5rem;
   border: 0.0625rem solid var(--bbl-color-grey-150);

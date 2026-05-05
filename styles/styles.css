@@ -549,3 +549,7 @@ body.bangkok-bankm-card main {
         line-height: 2.875rem;
     }
 }
+
+.hidden {
+    display: none;
+}
