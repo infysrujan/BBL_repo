@@ -1,6 +1,7 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
+let blockName = '';
 function buildTile(row, doc) {
   const [
     imgElDesktop,
@@ -13,7 +14,7 @@ function buildTile(row, doc) {
 
   let pictureHTML = '';
   if (pictureDesktop) {
-    const picture = createSmartImage(imgElDesktop, null, { textContent: existingAlt });
+    const picture = createSmartImage(imgElDesktop, null, { textContent: existingAlt }, blockName);
     pictureHTML = picture?.outerHTML || '';
   }
 
@@ -60,6 +61,7 @@ export default function decorate(block) {
   const doc = block.ownerDocument;
   const rows = [...block.children].slice(0, 4);
 
+  blockName = block.getAttribute('data-block-name');
   const wrapper = doc.createElement('div');
   wrapper.className = `multi-column-tiles-wrapper tiles-count-${rows.length}`;
 
