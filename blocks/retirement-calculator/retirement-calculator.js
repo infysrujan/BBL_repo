@@ -356,14 +356,28 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
     const currentAge = currentAgeField.getValue();
     const retirementAge = retirementAgeField.getValue();
     const lifeExpectancy = lifeExpectancyField.getValue();
+
+    const crossAgeMsg = i18n['validation-currentAgeRetirementAgeError'] || 'Your current age must be less than your retirement age';
+    const crossRetireMsg = i18n['validation-retirementAgeLifeExpectancyError'] || 'Your retirement age must be less than your life expectancy';
+
+    const ageErrEl = block.querySelector('#rc-err-currentAge');
+    const retireErrEl = block.querySelector('#rc-err-retirementAge');
+    const lifeErrEl = block.querySelector('#rc-err-lifeExpectancy');
+
+    if (ageErrEl.textContent === crossAgeMsg) currentAgeField.setError('');
+    if (retireErrEl.textContent === crossAgeMsg || retireErrEl.textContent === crossRetireMsg) retirementAgeField.setError('');
+    if (lifeErrEl.textContent === crossRetireMsg) lifeExpectancyField.setError('');
+
     const currentAgeErr = block.querySelector('#rc-err-currentAge').textContent;
     const retirementAgeErr = block.querySelector('#rc-err-retirementAge').textContent;
     const lifeExpectancyErr = block.querySelector('#rc-err-lifeExpectancy').textContent;
-    if (!currentAgeErr && !retirementAgeErr && currentAge >= retirementAge) {
-      currentAgeField.setError(i18n['validation-currentAgeRetirementAgeError'] || 'Your current age must be less than your retirement age');
-    }
-    if (!retirementAgeErr && !lifeExpectancyErr && retirementAge >= lifeExpectancy) {
-      retirementAgeField.setError(i18n['validation-retirementAgeLifeExpectancyError'] || 'Your retirement age must be less than your life expectancy');
+
+    if (currentAge >= retirementAge) {
+      if (!currentAgeErr) currentAgeField.setError(crossAgeMsg);
+      if (!retirementAgeErr) retirementAgeField.setError(crossAgeMsg);
+    } else if (retirementAge >= lifeExpectancy) {
+      if (!retirementAgeErr) retirementAgeField.setError(crossRetireMsg);
+      if (!lifeExpectancyErr) lifeExpectancyField.setError(crossRetireMsg);
     }
   };
 
