@@ -23,13 +23,16 @@
   align-items: center;
 }
 
-.calendar-input input{
+.calendar-input {
+  position: relative;
+}
+
+.calendar-input input {
   padding-inline: 1.25rem 2.5rem;
   height: 2.5rem;
   border: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: 0.4375rem;
   width: 10rem;
-  position: relative;
 }
 
 .calendar-input::before {
