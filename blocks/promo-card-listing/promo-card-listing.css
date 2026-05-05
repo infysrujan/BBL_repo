@@ -31,6 +31,18 @@
     line-height: 1.124rem;
 }
 
+.promo-selector-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding-bottom: 1.875rem;
+}
+
+.promo-selector-pagination:empty {
+    display: none;
+}
+
 @media (width > 47.5rem) {
     .promo-selector-grid:has(.promo-selector-empty) {
         width: 50%;
@@ -39,6 +51,10 @@
 
     .promo-selector-empty {
         font-size: var(--bbl-font-size-b2);
+    }
+
+    .promo-selector-pagination {
+        margin-inline: 0.625rem;
     }
 }
 
@@ -51,6 +67,10 @@
     .promo-selector-empty {
         font-size: var(--bbl-font-size-b1);
         line-height: 1rem;
+    }
+
+    .promo-selector-pagination {
+        margin-inline: 0.625rem;
     }
 }
 
