@@ -60,7 +60,7 @@
       {
         "component": "boolean",
         "name": "breadcrumb",
-        "value": "",
+        "value": true,
         "label": "Breadcrumb",
         "valueType": "boolean"
       }
@@ -393,6 +393,18 @@
         "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
         "valueType": "string",
         "required": true
+      }
+    ]
+  },
+  {
+    "id": "card-comparator-results",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "description",
+        "label": "Description",
+        "description": "Introductory text displayed above the comparison results table",
+        "valueType": "string"
       }
     ]
   },
@@ -787,11 +799,10 @@
         "value": false
       },
       {
-        "component": "text",
-        "name": "dataModal",
-        "label": "Data Modal",
+        "component": "aem-content",
+        "name": "fragmentPath",
+        "label": "Fragment path",
         "valueType": "string",
-        "description": "Fragment path for the overlay modal data-modal attribute",
         "condition": {
           "!!": [
             {
@@ -2426,6 +2437,169 @@
             "value": false
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "credit-card-comparator",
+    "fields": [
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Compare Link",
+        "description": "Destination URL for the Compare button"
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Compare Button Text",
+        "description": "Label text for the Compare button",
+        "required": true,
+        "value": "Compare"
+      },
+      {
+        "component": "text",
+        "name": "linkTitle",
+        "label": "Compare Button Title",
+        "description": "Accessibility title attribute for the Compare button (optional)"
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Compare Button Type",
+        "description": "Compare button style variant",
+        "valueType": "string",
+        "value": "primary",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target Settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the Compare button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "credit-card-selector",
+    "fields": [
+      {
+        "component": "text",
+        "name": "applyButtonText",
+        "label": "Apply Button Text",
+        "description": "Apply button label text (default: Apply)",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "applyButtonTitle",
+        "label": "Apply Button Title",
+        "description": "Accessibility title attribute for Apply button (optional)"
+      },
+      {
+        "component": "select",
+        "name": "applyButtonType",
+        "label": "Apply Button Type",
+        "description": "Apply button style variant",
+        "valueType": "string",
+        "value": "primary",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "startOverButtonText",
+        "label": "Start Over Button Text",
+        "description": "Start Over button label text (default: Start Over)",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "startOverButtonTitle",
+        "label": "Start Over Button Title",
+        "description": "Accessibility title attribute for Start Over button (optional)"
+      },
+      {
+        "component": "select",
+        "name": "startOverButtonType",
+        "label": "Start Over Button Type",
+        "description": "Start Over button style variant",
+        "valueType": "string",
+        "value": "secondary",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "credit-card-section",
+    "fields": [
+      {
+        "component": "text",
+        "name": "subSectionTitle",
+        "label": "Sub-section Title",
+        "description": "Title for the sub-section (e.g., Monthly Income, Lifestyles, Benefits)",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "content",
+        "label": "Content",
+        "description": "Rich text content for the sub-section",
+        "valueType": "string"
       }
     ]
   },
@@ -8393,6 +8567,52 @@
     ]
   },
   {
+    "id": "multi-column-tiles-item",
+    "fields": [
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "image",
+        "label": "Image (Smart crop)",
+        "description": "Select or upload a DAM image for tile variants: 4-tile (Small), 3-tile (Medium), or 2-tile (Large)",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imageMimeType"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+      },
+      {
+        "component": "aem-content",
+        "name": "imageLink",
+        "label": "Image Link",
+        "description": "Destination page when the image is clicked"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageLinkTitle",
+        "label": "Image Link Title",
+        "description": "Accessibility title attribute for the image link (optional)",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title",
+        "description": "Tile title displayed below the image with a separator"
+      }
+    ]
+  },
+  {
     "id": "popup-modal-card-offer",
     "fields": [
       {
@@ -8615,6 +8835,188 @@
             "value": false
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "promo-card-listing",
+    "fields": []
+  },
+  {
+    "id": "promotional-details",
+    "fields": [
+      {
+        "component": "text",
+        "name": "promoId",
+        "label": "Promo ID",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title (appears on the promotional page)"
+      },
+      {
+        "component": "select",
+        "name": "titleType",
+        "label": "Title Type ",
+        "options": [
+          {
+            "name": "h1",
+            "value": "h1"
+          },
+          {
+            "name": "h2",
+            "value": "h2"
+          },
+          {
+            "name": "h3",
+            "value": "h3"
+          },
+          {
+            "name": "h4",
+            "value": "h4"
+          },
+          {
+            "name": "h5",
+            "value": "h5"
+          },
+          {
+            "name": "h6",
+            "value": "h6"
+          }
+        ]
+      },
+      {
+        "component": "reference",
+        "name": "cardImageUrl",
+        "label": "Card Image",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "name": "detailImageUrl",
+        "label": "Detail Image (appears on the promotional page)",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "cardShortDescription",
+        "label": "Card Short Description",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "detailDescription",
+        "label": "Detail Description (appears on the promotional page)",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-tag",
+        "name": "cardTypes",
+        "label": "Card Types",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-tag",
+        "name": "category",
+        "label": "Category",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-tag",
+        "name": "subcategory",
+        "label": "Subcategory",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-tag",
+        "name": "area",
+        "label": "Area",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "dateValidityLabel",
+        "label": "Date Validity Label",
+        "valueType": "string"
+      },
+      {
+        "component": "date-time",
+        "name": "promotionStartDate",
+        "label": "Promotion Validity Start Date(appears on the promotional page)",
+        "valueType": "string"
+      },
+      {
+        "component": "date-time",
+        "name": "promotionEndDate",
+        "label": "Promotion Expiry Date (appears on the promotional page)",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "ctaLink",
+        "label": "Cta Link",
+        "description": "Destination URL for the button"
+      },
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "Cta Label",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "name": "topCategory",
+        "label": "Top Category",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "boolean",
+        "name": "topPromotion",
+        "label": "Top Promotion",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "boolean",
+        "name": "responsibleLendingDisclaimerEnabled",
+        "label": "Responsible Lending Disclaimer (appears on the promotional page)",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "richtext",
+        "name": "responsibleLendingDisclaimerText",
+        "label": "Disclaimer Text (appears on the promotional page)",
+        "valueType": "string",
+        "condition": {
+          "!!": [
+            {
+              "var": "responsibleLendingDisclaimerEnabled"
+            }
+          ]
+        }
       }
     ]
   },
@@ -9386,6 +9788,14 @@
           {
             "name": "Media Tab",
             "value": "media-tab"
+          },
+          {
+            "name": "Simple Tab carousel",
+            "value": "simple-tab-carousel"
+          },
+          {
+            "name": "Icon Tab carousel",
+            "value": "icon-tab-carousel"
           }
         ]
       },
@@ -9456,6 +9866,37 @@
               "var": "tab-variant"
             },
             "media-tab"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "tab-icon-carousel",
+        "label": "Tab Icon/Image",
+        "description": "Select the icon or image for the tab (Tiled Tab only)",
+        "valueType": "string",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "tab-variant"
+            },
+            "icon-tab-carousel"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "tab-icon-alt-carousel",
+        "label": "Icon/Image Alt Text",
+        "description": "Enter alt text for the icon/image (Tiled Tab only)",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "tab-variant"
+            },
+            "icon-tab-carousel"
           ]
         }
       },
@@ -9765,6 +10206,10 @@
         }
       }
     ]
+  },
+  {
+    "id": "top-promotional-cards",
+    "fields": []
   },
   {
     "id": "video",
