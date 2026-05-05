@@ -208,6 +208,11 @@ async function buildCalculator(block) {
   const buttonName = parentValues[0] || 'CALCULATE';
   const formula = parentValues[4] || '';
 
+  // eslint-disable-next-line no-console
+  console.log('[SME] parentValues:', parentValues);
+  // eslint-disable-next-line no-console
+  console.log('[SME] formula at [4]:', formula);
+
   const fields = fieldRows.map(({ cells }) => ({
     id: cells[0]?.textContent.trim(),
     label: cells[1]?.textContent.trim(),
@@ -252,6 +257,11 @@ async function buildCalculator(block) {
     if ('i' in vars) {
       vars.i = (vars.i / 100) / 12;
     }
+
+    // eslint-disable-next-line no-console
+    console.log('[SME] vars after conversion:', vars);
+    // eslint-disable-next-line no-console
+    console.log('[SME] evaluating formula:', formula);
 
     const result = evaluateFormula(formula, vars);
     const formatted = formatResult(result);
