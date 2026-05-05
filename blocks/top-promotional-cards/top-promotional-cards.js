@@ -1,4 +1,5 @@
-import { buildCardHtml, fetchJson, sortCards } from '../promo-card-listing/promo-card-listing.js';
+import { fetchJson, buildCardOptions } from '../promo-card-listing/promo-card-listing.js';
+import { buildCardHtml, sortCards } from '../../scripts/utils/card-helpers.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
@@ -47,7 +48,7 @@ function setupPanel(panel, activeCards, placeholders) {
   const grid = document.createElement('div');
   grid.className = 'promo-selector-grid top-promo-grid';
   grid.innerHTML = cards.length
-    ? cards.map((card) => buildCardHtml(card, card.category || tabText, placeholders)).join('')
+    ? cards.map((card) => buildCardHtml(card, card.category || tabText, placeholders, buildCardOptions(card))).join('')
     : `<p class="top-promo-empty">${noResultsText}</p>`;
 
   const footer = document.createElement('div');

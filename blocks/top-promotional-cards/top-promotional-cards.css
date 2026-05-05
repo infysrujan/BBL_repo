@@ -1,4 +1,15 @@
-@import url("../promo-card-listing/promo-card-listing.css");
+@import url("../../styles/components/listing-card.css");
+
+.top-promo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.top-promo-grid:has(.top-promo-empty),
+.top-promo-grid:has(.listing-card-container:only-child) {
+    justify-content: center;
+}
 
 .top-promo-footer {
     display: flex;
