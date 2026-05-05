@@ -48,10 +48,17 @@
       "card-list-wealth",
       "privacy-modal",
       "external-redirect-popup",
+      "credit-card-selector",
+      "credit-card-comparator",
+      "card-comparator-results",
       "video",
       "carousel-video",
       "forex-rates",
-      "tax-calculator"
+      "tax-calculator",
+      "promotional-details",
+      "promo-card-listing",
+      "top-promotional-cards",
+      "multi-column-tiles"
     ]
   },
   {
@@ -121,6 +128,12 @@
     "id": "content-insert-cards",
     "components": [
       "content-insert-card"
+    ]
+  },
+  {
+    "id": "credit-card-selector",
+    "components": [
+      "credit-card-section"
     ]
   },
   {
@@ -215,6 +228,12 @@
       "menu-card"
     ],
     "maxItems": 6
+  },
+  {
+    "id": "multi-column-tiles",
+    "components": [
+      "multi-column-tiles-item"
+    ]
   },
   {
     "id": "rate-card",
