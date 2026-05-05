@@ -117,11 +117,10 @@ export default async function decorate(block) {
   const apiUrl = configs?.specialDiscountFxRate || '';
   const configUrl = configs?.specialFxRatesConfig || '';
   const fxConfig = await fetchFxRatesConfig(configUrl);
-  const [specialFxRateSortSheetName, specialFxRateReduceSheetName] = fxConfig?.[':names'] || [];
-  const sortOrder = (fxConfig?.[specialFxRateSortSheetName]?.data || []).map((row) => row.currency)
+  const sortOrder = (fxConfig?.['special-fx-sort-order']?.data || []).map((row) => row.currency)
     .filter(Boolean);
   const reduceConfig = Object.fromEntries(
-    (fxConfig?.[specialFxRateReduceSheetName]?.data || []).map((row) => [row.currency, {
+    (fxConfig?.['special-fx-rate-reduce']?.data || []).map((row) => [row.currency, {
       reduce: parseFloat(row.reduce),
       decimal: parseInt(row.decimal, 10),
     }]),
