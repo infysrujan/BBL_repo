@@ -1,3 +1,7 @@
+.bcap-table.table {
+  margin: 1.25rem 0 2.5rem;
+}
+
 .bcap-toolbar {
   display: flex;
   justify-content: space-between;
@@ -36,10 +40,10 @@
 
 .bcap-print-label {
   display: flex;
-  gap: 0.625rem;
   align-items: center;
   position: relative;
   cursor: pointer;
+  padding-right: 1.75rem;
 }
 
 .bcap-print-label::before {
@@ -58,25 +62,25 @@
   margin-bottom: 1.25rem;
 }
 
-.bcap-table table.outline-border,
-.bcap-table table.border-bottom td {
+.bcap-table.table table.outline-border,
+.bcap-table.table table.border-bottom td {
   border-color: var(--bbl-color-grey-18);
 }
 
-.bcap-table table tr.header-row td {
+.bcap-table.table table tr.header-row td {
   font: 1rem Muli-Bold, Arial, sans-serif;
   color: var(--bbl-color-black);
   height: 2.875rem;
   vertical-align: middle;
 }
 
-.bcap-table table tr:not(.header-row) td {
+.bcap-table.table table tr:not(.header-row) td {
   color: var(--bbl-color-grey-70);
   font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   font-weight: 400;
 }
 
-.bcap-table table tr:not(.header-row) td span {
+.bcap-table.table table tr:not(.header-row) td span {
   font-style: italic;
   font-size: 0.6875rem;
   line-height: 1.63;

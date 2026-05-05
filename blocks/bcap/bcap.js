@@ -325,13 +325,12 @@ export default async function decorate(block) {
   printLabel.innerHTML = printLabelHtml;
 
   const errorMessage = doc.createElement('div');
+  // Always begins hidden, both by .hidden and .hidden attribute
   errorMessage.classList.add('bcap-error-message', 'hidden');
+  errorMessage.hidden = true;
   errorMessage.dataset.field = 'error-message';
   errorMessage.setAttribute('role', 'alert');
   errorMessage.setAttribute('aria-live', 'polite');
-  if (!errorMessageHtml) {
-    errorMessage.hidden = true;
-  }
   errorMessage.innerHTML = errorMessageHtml;
 
   const disclaimer = doc.createElement('div');
@@ -380,9 +379,11 @@ export default async function decorate(block) {
         if (!table) return;
         if (errorMessage) {
           if (isDateOlderThanFundHistoryLimit(selectedDate)) {
+            errorMessage.classList.remove('hidden');
             errorMessage.hidden = false;
             return;
           }
+          errorMessage.classList.add('hidden');
           errorMessage.hidden = true;
         }
         refreshTableFromPrices(table, funds, selectedDate);
