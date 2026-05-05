@@ -19,13 +19,20 @@ function normalizeFormula(formula, varIds) {
     f = f.replace(new RegExp(`\\bln${v}\\b`, 'g'), `ln(${v})`);
   });
 
-  // Pi → P*i
+  // Pi → P*i (known variable pairs)
   varIds.forEach((v1) => {
     varIds.forEach((v2) => {
       if (v1 !== v2) {
         f = f.replace(new RegExp(`\\b${v1}${v2}\\b`, 'g'), `${v1}*${v2}`);
       }
     });
+  });
+
+  // fallback: split any remaining 2-letter identifier that isn't a math function
+  // handles Pi → P*i when one variable isn't in varIds
+  f = f.replace(/\b([A-Za-z])([A-Za-z])\b(?!\s*\()/g, (match, l1, l2) => {
+    if (MATH_FUNS[match] || MATH_FUNS[match.toLowerCase()]) return match;
+    return `${l1}*${l2}`;
   });
 
   // implicit multiplication
@@ -155,11 +162,10 @@ function evaluateFormula(formula, variables) {
 
   let expr = formula.replace(/^\s*\w+\s*=\s*/, '');
 
-  // 🔥 FIX: auto-correct missing brackets for ln formula
   if (expr.includes('ln') && expr.includes('-') && expr.includes('/')) {
     expr = expr.replace(
       /ln\(([^)]+)\)\s*-\s*ln\(([^)]+)\)\s*\/\s*ln\(([^)]+)\)/,
-      '(ln($1) - ln($2)) / ln($3)'
+      '(ln($1) - ln($2)) / ln($3)',
     );
   }
 
@@ -172,21 +178,52 @@ function evaluateFormula(formula, variables) {
       expr = expr.replace(new RegExp(`\\b${v}\\b`, 'g'), variables[v]);
     });
 
+  // Detect unresolved variables (letters remaining after substitution)
+  const unresolved = [...new Set(
+    (expr.match(/\b[A-Za-z]+\b/g) || []).filter((t) => !MATH_FUNS[t]),
+  )];
+  if (unresolved.length) {
+    // eslint-disable-next-line no-console
+    console.warn('[SME] Unresolved variables in formula:', unresolved, '— check field IDs in UE');
+  }
+
   try {
     return safeEval(expr);
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error('Formula error:', e.message);
     return null;
   }
 }
 
+function substituteFormula(formula, variables) {
+  if (!formula) return '';
+  const lhs = formula.match(/^\s*([A-Za-z]+)\s*=/)?.[1] || '';
+  let rhs = formula.replace(/^\s*\w+\s*=\s*/, '');
+  rhs = normalizeFormula(rhs, Object.keys(variables));
+
+  Object.keys(variables)
+    .sort((a, b) => b.length - a.length)
+    .forEach((v) => {
+      const val = variables[v];
+      const display = Number.isInteger(val) ? val : parseFloat(val.toFixed(6));
+      rhs = rhs.replace(new RegExp(`\\b${v}\\b`, 'g'), display);
+    });
+
+  return lhs ? `${lhs} = ${rhs}` : rhs;
+}
+
 function formatResult(value) {
-  if (value === null || !isFinite(value)) return 'Error';
+  if (value === null || !isFinite(value)) return 'Cannot Calculate';
 
   return Number(value).toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+}
+
+function isInvalid(value) {
+  return value === null || !isFinite(value);
 }
 
 async function buildCalculator(block) {
@@ -206,12 +243,10 @@ async function buildCalculator(block) {
   });
 
   const buttonName = parentValues[0] || 'CALCULATE';
+  const resultTemplate = parentValues[1] || '';
+  const description = parentValues[2] || '';
+  const addTableBtnName = parentValues[3] || '';
   const formula = parentValues[4] || '';
-
-  // eslint-disable-next-line no-console
-  console.log('[SME] parentValues:', parentValues);
-  // eslint-disable-next-line no-console
-  console.log('[SME] formula at [4]:', formula);
 
   const fields = fieldRows.map(({ cells }) => ({
     id: cells[0]?.textContent.trim(),
@@ -221,14 +256,29 @@ async function buildCalculator(block) {
     bottomText: cells[4]?.textContent.trim(),
   }));
 
+  // Save data-aue-* instrumentation from each field row before clearing DOM
+  const fieldInstrumentations = fieldRows.map(({ row }) => {
+    const attrs = {};
+    [...row.attributes].forEach((a) => {
+      if (a.name.startsWith('data-aue-') || a.name.startsWith('data-richtext-')) {
+        attrs[a.name] = a.value;
+      }
+    });
+    return attrs;
+  });
+
   block.innerHTML = '';
 
   const wrapper = document.createElement('div');
   wrapper.className = 'sme-calc-wrapper';
 
-  fields.forEach((field) => {
+  fields.forEach((field, index) => {
     const card = document.createElement('div');
     card.className = 'sme-calc-field';
+
+    // Re-apply instrumentation so UE content tree shows this child item
+    const instr = fieldInstrumentations[index] || {};
+    Object.entries(instr).forEach(([k, v]) => card.setAttribute(k, v));
 
     if (field.topText) {
       const top = document.createElement('span');
@@ -246,8 +296,8 @@ async function buildCalculator(block) {
 
     const input = document.createElement('input');
     input.id = `sme-${field.id}`;
-    input.type = 'number';
-    input.placeholder = '0';
+    input.type = 'text';
+    input.value = '0';
     if (field.maxLength) input.maxLength = Number(field.maxLength);
 
     row.append(label, input);
@@ -271,56 +321,138 @@ async function buildCalculator(block) {
   resultBox.className = 'sme-calc-result';
   const resultLabel = document.createElement('span');
   resultLabel.className = 'sme-calc-result-label';
-  resultLabel.textContent = '';
+  if (resultTemplate.includes('{{result}}')) {
+    const parts = resultTemplate.split('{{result}}');
+    if (parts[0]) resultLabel.appendChild(document.createTextNode(parts[0]));
+    const initStrong = document.createElement('strong');
+    initStrong.textContent = '0.00';
+    resultLabel.appendChild(initStrong);
+    if (parts[1]) resultLabel.appendChild(document.createTextNode(parts[1]));
+  } else {
+    resultLabel.textContent = resultTemplate;
+  }
   resultBox.appendChild(resultLabel);
+
+  const substitutedBox = document.createElement('p');
+  substitutedBox.className = 'sme-calc-formula-description';
+  substitutedBox.hidden = true;
+
+  const descPara = document.createElement('p');
+  descPara.className = 'sme-calc-description';
+  descPara.textContent = description;
+
+  let addTableBtn = null;
+  let tableSection = null;
+  let tableBody = null;
+  let lastResult = null;
+  let lastVars = {};
+
+  if (addTableBtnName) {
+    addTableBtn = document.createElement('button');
+    addTableBtn.className = 'sme-calc-add-table-btn';
+    addTableBtn.textContent = addTableBtnName;
+
+    tableSection = document.createElement('div');
+    tableSection.className = 'sme-calc-table-section';
+    tableSection.hidden = true;
+
+    const table = document.createElement('table');
+    table.className = 'sme-calc-table';
+
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    fields.forEach((f) => {
+      const th = document.createElement('th');
+      th.textContent = f.label || f.id;
+      headerRow.appendChild(th);
+    });
+    const thResult = document.createElement('th');
+    thResult.textContent = 'Result';
+    headerRow.appendChild(thResult);
+    thead.appendChild(headerRow);
+
+    tableBody = document.createElement('tbody');
+    table.append(thead, tableBody);
+    tableSection.appendChild(table);
+
+    addTableBtn.addEventListener('click', () => {
+      if (lastResult === null) return;
+      const tr = document.createElement('tr');
+      fields.forEach((f) => {
+        const td = document.createElement('td');
+        td.textContent = lastVars[f.id] ?? '';
+        tr.appendChild(td);
+      });
+      const tdResult = document.createElement('td');
+      tdResult.textContent = formatResult(lastResult);
+      tr.appendChild(tdResult);
+      tableBody.appendChild(tr);
+      tableSection.hidden = false;
+    });
+  }
 
   btn.addEventListener('click', () => {
     const vars = {};
-
     fields.forEach((f) => {
-      vars[f.id] =
-        parseFloat(wrapper.querySelector(`#sme-${f.id}`).value) || 0;
+      vars[f.id] = parseFloat(wrapper.querySelector(`#sme-${f.id}`).value) || 0;
     });
 
-    // ✅ interest conversion
-    if ('i' in vars) {
-      vars.i = (vars.i / 100) / 12;
+    // If the formula doesn't already divide i by 100 (or 1200), convert annual % → monthly decimal
+    if (vars.i !== undefined && !/i\s*\/\s*10{2,4}/.test(formula)) {
+      vars.i = vars.i / 100 / 12;
     }
 
-    // eslint-disable-next-line no-console
-    console.log('[SME] vars after conversion:', vars);
-    // eslint-disable-next-line no-console
-    console.log('[SME] evaluating formula:', formula);
+    lastVars = { ...vars };
 
     const result = evaluateFormula(formula, vars);
+    lastResult = result;
     const formatted = formatResult(result);
 
-    const match = formula.match(/^\s*([A-Za-z]+)/);
-    const varName = match ? match[1] : '';
+    const setResultText = (prefix, value, suffix) => {
+      resultLabel.textContent = '';
+      if (prefix) resultLabel.appendChild(document.createTextNode(prefix));
+      const strong = document.createElement('strong');
+      strong.textContent = value;
+      resultLabel.appendChild(strong);
+      if (suffix) resultLabel.appendChild(document.createTextNode(suffix));
+    };
 
-    let message = '';
-
-    switch (varName) {
-      case 'A':
-        message = `Your Loan Payment (per month) is ${formatted} baht.`;
-        break;
-      case 'P':
-        message = `Your Loan Balance is ${formatted} baht.`;
-        break;
-      case 'n':
-        message = `Your Term/Period is ${Math.round(result)} month.`;
-        break;
-      case 'WC':
-        message = `Working Capital Needed is ${formatted} baht.`;
-        break;
-      default:
-        message = `Result value: ${formatted}`;
+    if (isInvalid(result)) {
+      resultLabel.textContent = 'Cannot Calculate';
+    } else if (resultTemplate && resultTemplate.includes('{{result}}')) {
+      const parts = resultTemplate.split('{{result}}');
+      setResultText(parts[0], formatted, parts[1] || '');
+    } else {
+      const match = formula.match(/^\s*([A-Za-z]+)/);
+      const varName = match ? match[1] : '';
+      switch (varName) {
+        case 'A':
+          setResultText('Your Loan Payment (per month) is ', formatted, ' baht.');
+          break;
+        case 'P':
+          setResultText('Your Loan Balance is ', formatted, ' baht.');
+          break;
+        case 'n':
+          setResultText('Your Term/Period is ', String(Math.round(result)), ' months.');
+          break;
+        case 'WC':
+          setResultText('Working Capital Need is ', formatted, ' baht.');
+          break;
+        default:
+          setResultText('Result: ', formatted, '');
+      }
     }
 
-    resultLabel.textContent = message;
+    substitutedBox.textContent = substituteFormula(formula, vars);
+    substitutedBox.hidden = false;
   });
 
-  block.append(wrapper, btn, resultBox);
+  const darkSection = document.createElement('div');
+  darkSection.className = 'sme-calc-dark-section';
+  darkSection.append(wrapper, btn);
+
+  block.append(darkSection, resultBox, substitutedBox, descPara);
+  if (addTableBtn) block.append(addTableBtn, tableSection);
 }
 
 export default async function decorate(block) {
