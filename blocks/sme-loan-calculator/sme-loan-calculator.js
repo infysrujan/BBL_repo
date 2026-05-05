@@ -28,16 +28,15 @@ function normalizeFormula(formula, varIds) {
     });
   });
 
-  // 🔥 FIX: implicit multiplication
-
-  // A( → A*(
+  // implicit multiplication
   f = f.replace(/([A-Za-z0-9])\s*\(/g, '$1*(');
-
-  // )( → )*(
   f = f.replace(/\)\s*\(/g, ')*(');
-
-  // )A → )*A
   f = f.replace(/\)\s*([A-Za-z])/g, ')*$1');
+
+  // restore math function calls broken by implicit multiplication (ln*( → ln()
+  Object.keys(MATH_FUNS).forEach((fn) => {
+    f = f.replace(new RegExp(`\\b${fn}\\*\\(`, 'g'), `${fn}(`);
+  });
 
   return f;
 }
@@ -50,28 +49,34 @@ function safeEval(expr) {
     const ch = expr[i];
 
     if (/\s/.test(ch)) i++;
+
     else if (/[0-9.]/.test(ch)) {
       let num = '';
       while (i < expr.length && /[0-9.]/.test(expr[i])) num += expr[i++];
       tokens.push({ t: 'n', v: parseFloat(num) });
     }
+
     else if (ch === '*' && expr[i + 1] === '*') {
       tokens.push({ t: 'o', v: '**' });
       i += 2;
     }
+
     else if (/[a-zA-Z]/.test(ch)) {
       let name = '';
       while (i < expr.length && /[a-zA-Z]/.test(expr[i])) name += expr[i++];
       tokens.push({ t: 'fn', v: name });
     }
+
     else if (ch === '(' || ch === ')') {
       tokens.push({ t: ch, v: ch });
       i++;
     }
+
     else if ('+-*/'.includes(ch)) {
       tokens.push({ t: 'o', v: ch });
       i++;
     }
+
     else {
       throw new Error(`Unexpected: ${ch}`);
     }
@@ -149,6 +154,15 @@ function evaluateFormula(formula, variables) {
   if (!formula) return null;
 
   let expr = formula.replace(/^\s*\w+\s*=\s*/, '');
+
+  // 🔥 FIX: auto-correct missing brackets for ln formula
+  if (expr.includes('ln') && expr.includes('-') && expr.includes('/')) {
+    expr = expr.replace(
+      /ln\(([^)]+)\)\s*-\s*ln\(([^)]+)\)\s*\/\s*ln\(([^)]+)\)/,
+      '(ln($1) - ln($2)) / ln($3)'
+    );
+  }
+
   expr = normalizeFormula(expr, Object.keys(variables));
   expr = expr.replace(/\^/g, '**');
 
@@ -167,7 +181,7 @@ function evaluateFormula(formula, variables) {
 }
 
 function formatResult(value) {
-  if (value === null) return 'Error';
+  if (value === null || !isFinite(value)) return 'Error';
 
   return Number(value).toLocaleString(undefined, {
     minimumFractionDigits: 2,
@@ -234,9 +248,9 @@ async function buildCalculator(block) {
         parseFloat(wrapper.querySelector(`#sme-${f.id}`).value) || 0;
     });
 
-    // 🔥 FIX: unit conversion
-    if (formula.includes('(1+i)')) {
-      if ('i' in vars) vars.i = (vars.i / 100) / 12;
+    // ✅ interest conversion
+    if ('i' in vars) {
+      vars.i = (vars.i / 100) / 12;
     }
 
     const result = evaluateFormula(formula, vars);
@@ -255,7 +269,7 @@ async function buildCalculator(block) {
         message = `Your Loan Balance is ${formatted} baht.`;
         break;
       case 'n':
-        message = `Loan Term is ${formatted} months.`;
+        message = `Your Term/Period is ${Math.round(result)} month.`;
         break;
       case 'WC':
         message = `Working Capital Needed is ${formatted} baht.`;
@@ -271,5 +285,6 @@ async function buildCalculator(block) {
 }
 
 export default async function decorate(block) {
+  moveInstrumentation(block);
   await buildCalculator(block);
 }
