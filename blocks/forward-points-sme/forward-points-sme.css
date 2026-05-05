@@ -365,8 +365,8 @@
 
 .forward-points-sme .fpsme-table thead th {
   padding: 0.75rem 0.625rem;
-  font-size: 1rem;
-  font-family: var(--bbl-font-family-medium);
+  font-size: 0.875rem;
+  font-family: Muli-Bold, sans-serif;
   color: var(--bbl-color-gray-142);
   text-align: center;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-24);
