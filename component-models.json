@@ -8831,6 +8831,188 @@
     ]
   },
   {
+    "id": "promo-card-listing",
+    "fields": []
+  },
+  {
+    "id": "promotional-details",
+    "fields": [
+      {
+        "component": "text",
+        "name": "promoId",
+        "label": "Promo ID",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title (appears on the promotional page)"
+      },
+      {
+        "component": "select",
+        "name": "titleType",
+        "label": "Title Type ",
+        "options": [
+          {
+            "name": "h1",
+            "value": "h1"
+          },
+          {
+            "name": "h2",
+            "value": "h2"
+          },
+          {
+            "name": "h3",
+            "value": "h3"
+          },
+          {
+            "name": "h4",
+            "value": "h4"
+          },
+          {
+            "name": "h5",
+            "value": "h5"
+          },
+          {
+            "name": "h6",
+            "value": "h6"
+          }
+        ]
+      },
+      {
+        "component": "reference",
+        "name": "cardImageUrl",
+        "label": "Card Image",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "name": "detailImageUrl",
+        "label": "Detail Image (appears on the promotional page)",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "cardShortDescription",
+        "label": "Card Short Description",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "detailDescription",
+        "label": "Detail Description (appears on the promotional page)",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-tag",
+        "name": "cardTypes",
+        "label": "Card Types",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-tag",
+        "name": "category",
+        "label": "Category",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-tag",
+        "name": "subcategory",
+        "label": "Subcategory",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-tag",
+        "name": "area",
+        "label": "Area",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "dateValidityLabel",
+        "label": "Date Validity Label",
+        "valueType": "string"
+      },
+      {
+        "component": "date-time",
+        "name": "promotionStartDate",
+        "label": "Promotion Validity Start Date(appears on the promotional page)",
+        "valueType": "string"
+      },
+      {
+        "component": "date-time",
+        "name": "promotionEndDate",
+        "label": "Promotion Expiry Date (appears on the promotional page)",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "ctaLink",
+        "label": "Cta Link",
+        "description": "Destination URL for the button"
+      },
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "Cta Label",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "name": "topCategory",
+        "label": "Top Category",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "boolean",
+        "name": "topPromotion",
+        "label": "Top Promotion",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "boolean",
+        "name": "responsibleLendingDisclaimerEnabled",
+        "label": "Responsible Lending Disclaimer (appears on the promotional page)",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "richtext",
+        "name": "responsibleLendingDisclaimerText",
+        "label": "Disclaimer Text (appears on the promotional page)",
+        "valueType": "string",
+        "condition": {
+          "!!": [
+            {
+              "var": "responsibleLendingDisclaimerEnabled"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
     "id": "rate-card-item",
     "fields": [
       {
@@ -9602,6 +9784,14 @@
           {
             "name": "Media Tab",
             "value": "media-tab"
+          },
+          {
+            "name": "Simple Tab carousel",
+            "value": "simple-tab-carousel"
+          },
+          {
+            "name": "Icon Tab carousel",
+            "value": "icon-tab-carousel"
           }
         ]
       },
@@ -9672,6 +9862,37 @@
               "var": "tab-variant"
             },
             "media-tab"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "tab-icon-carousel",
+        "label": "Tab Icon/Image",
+        "description": "Select the icon or image for the tab (Tiled Tab only)",
+        "valueType": "string",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "tab-variant"
+            },
+            "icon-tab-carousel"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "tab-icon-alt-carousel",
+        "label": "Icon/Image Alt Text",
+        "description": "Enter alt text for the icon/image (Tiled Tab only)",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "tab-variant"
+            },
+            "icon-tab-carousel"
           ]
         }
       },
@@ -9981,6 +10202,10 @@
         }
       }
     ]
+  },
+  {
+    "id": "top-promotional-cards",
+    "fields": []
   },
   {
     "id": "video",
