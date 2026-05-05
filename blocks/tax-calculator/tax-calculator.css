@@ -181,6 +181,7 @@
 
   /* left-1/2 */
   --tw-translate-x: -50%;
+
   transform: translate(var(--tw-translate-x), var(--tw-translate-y, 0)) rotate(var(--tw-rotate, 0)) skew(var(--tw-skew-x, 0)) skewY(var(--tw-skew-y, 0)) scaleX(var(--tw-scale-x, 1)) scaleY(var(--tw-scale-y, 1));
   margin-top: 0.5rem;
 
@@ -336,7 +337,9 @@
   position: absolute;
   left: 1rem;
   top: 50%;
+
   --tw-translate-y: -50%;
+
   transform: translate(var(--tw-translate-x, 0), var(--tw-translate-y)) rotate(var(--tw-rotate, 0)) skew(var(--tw-skew-x, 0)) skewY(var(--tw-skew-y, 0)) scaleX(var(--tw-scale-x, 1)) scaleY(var(--tw-scale-y, 1));
   width: 50%;
   font-size: 0.875rem;
@@ -388,12 +391,8 @@
 .tax-calculator .tax-calc-notes {
   padding-top: 0.25rem;
   max-width: 45rem;
-  /* Better readability for longer notes */
-}
 
-.tax-calculator .tax-calc-notes-step-1 .tax-calc-notes-body {
-  max-width: 21rem;
-  /* Forces Step 1 text into exactly 3 lines on desktop */
+  /* Better readability for longer notes */
 }
 
 .tax-calculator .tax-calc-notes-title {
@@ -411,6 +410,12 @@
   color: #000;
   line-height: 1.55;
   margin: 0 0 0.5rem;
+}
+
+.tax-calculator .tax-calc-notes-step-1 .tax-calc-notes-body {
+  max-width: 21rem;
+
+  /* Forces Step 1 text into exactly 3 lines on desktop */
 }
 
 .tax-calculator .tax-calc-notes-body a {
@@ -552,7 +557,9 @@
   position: absolute;
   left: 50%;
   top: calc(100% + 0.625rem);
+
   --tw-translate-x: -50%;
+
   transform: translate(var(--tw-translate-x), var(--tw-translate-y, 0)) rotate(var(--tw-rotate, 0)) skew(var(--tw-skew-x, 0)) skewY(var(--tw-skew-y, 0)) scaleX(var(--tw-scale-x, 1)) scaleY(var(--tw-scale-y, 1));
   width: 260px;
   max-width: calc(100vw - 2rem);
@@ -572,7 +579,9 @@
   position: absolute;
   top: -6px;
   left: 50%;
+
   --tw-translate-x: -50%;
+
   transform: translate(var(--tw-translate-x), var(--tw-translate-y, 0)) rotate(var(--tw-rotate, 0)) skew(var(--tw-skew-x, 0)) skewY(var(--tw-skew-y, 0)) scaleX(var(--tw-scale-x, 1)) scaleY(var(--tw-scale-y, 1));
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
@@ -583,7 +592,9 @@
   .tax-calculator .tax-calc-tooltip {
     position: absolute;
     inset: calc(100% + 0.625rem) auto auto 50%;
+
     --tw-translate-x: -50%;
+
     transform: translate(var(--tw-translate-x), var(--tw-translate-y, 0)) rotate(var(--tw-rotate, 0)) skew(var(--tw-skew-x, 0)) skewY(var(--tw-skew-y, 0)) scaleX(var(--tw-scale-x, 1)) scaleY(var(--tw-scale-y, 1));
     width: 280px;
     max-width: calc(100vw - 3rem);
@@ -690,9 +701,11 @@
   /* 1.5px thin stroke */
   border-top: none;
   border-left: none;
+
   --tw-translate-x: -50%;
   --tw-translate-y: -50%;
   --tw-rotate: 45deg;
+
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x, 0)) skewY(var(--tw-skew-y, 0)) scaleX(var(--tw-scale-x, 1)) scaleY(var(--tw-scale-y, 1));
 }
 
