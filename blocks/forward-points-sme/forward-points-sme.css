@@ -92,7 +92,7 @@
   font-weight: 400;
   color: var(--bbl-color-grey-85);
   background: var(--bbl-color-white);
-  border: 0.0625rem solid #919dab;
+  border: 0.0625rem solid var(--bbl-color-grey-23);
   border-radius: 0.4375rem;
   cursor: pointer;
   box-sizing: border-box;
@@ -175,9 +175,9 @@
   padding: 0 1.25rem;
   font-size: 0.95rem;
   font-family: var(--bbl-font-family-medium);
-  color: #fff;
-  background: #0064ff;
-  border: 0.0625rem solid #0064ff;
+  color: var(--bbl-color-white);
+  background: var(--bbl-color-active-blue);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
   border-radius: 0.4375rem;
   cursor: pointer;
   box-sizing: border-box;
@@ -185,8 +185,8 @@
 }
 
 .forward-points-sme .fpsme-go-btn:hover {
-  background: #0048b7;
-  border-color: #0048b7;
+  background: var(--bbl-color-blue-90);
+  border-color: var(--bbl-color-blue-90);
 }
 
 .forward-points-sme .fpsme-go-btn:disabled {
@@ -351,8 +351,8 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 1rem;
-  color: #606060;
-  border: 0.0625rem solid #e2e6e9;
+  color: var(--bbl-color-gray-142);
+  border: 0.0625rem solid var(--bbl-color-grey-24);
 }
 
 .forward-points-sme .fpsme-table-currency {
@@ -367,14 +367,14 @@
   padding: 0.75rem 0.625rem;
   font-size: 1rem;
   font-family: var(--bbl-font-family-medium);
-  color: #606060;
+  color: var(--bbl-color-gray-142);
   text-align: center;
-  border-bottom: 0.0625rem solid #e2e6e9;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-24);
   line-height: 1.4;
 }
 
 .forward-points-sme .fpsme-table tbody tr {
-  border-bottom: 0.0625rem solid #e2e6e9;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-24);
 }
 
 .forward-points-sme .fpsme-table tbody tr:last-child {
@@ -384,7 +384,7 @@
 .forward-points-sme .fpsme-table tbody td {
   padding: 0.75rem 0.625rem;
   font-size: 1rem;
-  color: #606060;
+  color: var(--bbl-color-gray-142);
   vertical-align: middle;
 }
 
@@ -503,7 +503,6 @@
   font-weight: 400;
   color: var(--bbl-color-grey-70);
   text-align: center;
-  margin: 1rem 0;
 }
 
 /* ── Flex-based forward points table (matches prod Rtable layout) */
@@ -511,7 +510,7 @@
 .forward-points-sme .fpsme-rt {
   display: flex;
   flex-direction: column;
-  border: 0.0625rem solid #e2e6e9;
+  border: 0.0625rem solid var(--bbl-color-grey-24);
   overflow: hidden;
 }
 
@@ -525,10 +524,10 @@
   width: 33.33%;
   padding: 0.75rem 0.625rem;
   font-size: 1rem;
-  color: #606060;
+  color: var(--bbl-color-gray-142);
   background: var(--bbl-color-white);
-  border-right: 0.0625rem solid #e2e6e9;
-  border-bottom: 0.0625rem solid #e2e6e9;
+  border-right: 0.0625rem solid var(--bbl-color-grey-24);
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-24);
   box-sizing: border-box;
   text-align: center;
   display: flex;
@@ -543,7 +542,7 @@
 
 /* Muted background — all header cells + Period data cells */
 .forward-points-sme .fpsme-rt-cell-muted {
-  background: #e6eef4;
+  background: var(--bbl-color-blue-steel-light);
 }
 
 /* Header row cells — match currency table <th> styling */
@@ -551,19 +550,19 @@
   font-size: 1rem;
   font-family: var(--bbl-font-family-medium);
   font-weight: 700;
-  color: #606060;
+  color: var(--bbl-color-gray-142);
   padding: 0.75rem 0.625rem;
 }
 
 /* Period data cells — same styling as header cells */
 .forward-points-sme .fpsme-rt-period {
   font-size: 1rem;
-  color: #606060;
+  color: var(--bbl-color-gray-142);
 }
 
 /* Value cells — center-aligned to match live site */
 .forward-points-sme .fpsme-rt-value {
-  color: #606060;
+  color: var(--bbl-color-gray-142);
 }
 
 /* Remove bottom border from last row */
