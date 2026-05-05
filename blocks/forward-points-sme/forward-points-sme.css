@@ -547,8 +547,8 @@
 
 /* Header row cells — match currency table <th> styling */
 .forward-points-sme .fpsme-rt-head {
-  font-size: 1rem;
-  font-family: var(--bbl-font-family-medium);
+  font-size: 0.875rem;
+  font-family: Muli-Bold, sans-serif;
   font-weight: 700;
   color: var(--bbl-color-gray-142);
   padding: 0.75rem 0.625rem;
