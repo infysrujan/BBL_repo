@@ -216,6 +216,9 @@ async function buildCalculator(block) {
   const fields = fieldRows.map(({ cells }) => ({
     id: cells[0]?.textContent.trim(),
     label: cells[1]?.textContent.trim(),
+    maxLength: cells[2]?.textContent.trim(),
+    topText: cells[3]?.textContent.trim(),
+    bottomText: cells[4]?.textContent.trim(),
   }));
 
   block.innerHTML = '';
@@ -224,25 +227,51 @@ async function buildCalculator(block) {
   wrapper.className = 'sme-calc-wrapper';
 
   fields.forEach((field) => {
-    const div = document.createElement('div');
+    const card = document.createElement('div');
+    card.className = 'sme-calc-field';
+
+    if (field.topText) {
+      const top = document.createElement('span');
+      top.className = 'sme-calc-field-top';
+      top.textContent = field.topText;
+      card.appendChild(top);
+    }
+
+    const row = document.createElement('div');
+    row.className = 'sme-calc-field-row';
 
     const label = document.createElement('label');
     label.textContent = field.label;
+    label.htmlFor = `sme-${field.id}`;
 
     const input = document.createElement('input');
     input.id = `sme-${field.id}`;
+    input.type = 'number';
     input.placeholder = '0';
+    if (field.maxLength) input.maxLength = Number(field.maxLength);
 
-    div.append(label, input);
-    wrapper.appendChild(div);
+    row.append(label, input);
+    card.appendChild(row);
+
+    if (field.bottomText) {
+      const bottom = document.createElement('span');
+      bottom.className = 'sme-calc-field-bottom';
+      bottom.textContent = field.bottomText;
+      card.appendChild(bottom);
+    }
+
+    wrapper.appendChild(card);
   });
 
   const btn = document.createElement('button');
+  btn.className = 'sme-calc-btn';
   btn.textContent = buttonName;
 
   const resultBox = document.createElement('div');
+  resultBox.className = 'sme-calc-result';
   const resultLabel = document.createElement('span');
-  resultLabel.textContent = 'Result value: 0.00';
+  resultLabel.className = 'sme-calc-result-label';
+  resultLabel.textContent = '';
   resultBox.appendChild(resultLabel);
 
   btn.addEventListener('click', () => {
