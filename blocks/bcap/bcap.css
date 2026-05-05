@@ -1,3 +1,116 @@
-.bacap {
-  line-height: 1;
+.bcap-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.calendar-wrapper p {
+  font-size: .8rem;
+  line-height: 1.375;
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-weight: 400;
+}
+
+.calendar-wrapper {
+  display: flex;
+  gap: 0.625rem;
+  align-items: center;
+}
+
+.calendar-input {
+  padding-inline: 1.25rem 2.5rem;
+  height: 2.5rem;
+  border: 0.0625rem solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem;
+  width: 10rem;
+  position: relative;
+}
+
+.calendar-input::before {
+  position: absolute;
+  right: 11%;
+  top: 27%;
+}
+
+.bcap-print-label {
+  display: flex;
+  gap: 0.625rem;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.bcap-print-label::before {
+  position: absolute;
+  right: 0;
+  top: 38%;
+}
+
+.bcap-print-label p {
+  font: 1rem BangkokBank-Medium, Arial, sans-serif;
+}
+
+.bcap-error-message p {
+  color: var(--bbl-color-red-130);
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.bcap-table table.outline-border,
+.bcap-table table.border-bottom td {
+  border-color: var(--bbl-color-grey-18);
+}
+
+.bcap-table table tr.header-row td {
+  font: 1rem Muli-Bold, Arial, sans-serif;
+  color: var(--bbl-color-black);
+  height: 2.875rem;
+  vertical-align: middle;
+}
+
+.bcap-table table tr:not(.header-row) td {
+  color: var(--bbl-color-grey-70);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+}
+
+.bcap-table table tr:not(.header-row) td span {
+  font-style: italic;
+  font-size: 0.6875rem;
+  line-height: 1.63;
+  letter-spacing: -0.0063rem;
+  padding-left: 0.3125rem;
+}
+
+/* Scoped print: only `.bcap-container` stays visible (see bcap.js printBcapContent). */
+@media print {
+  html.bcap-print-isolate body * {
+    visibility: hidden;
+  }
+
+  html.bcap-print-isolate body .bcap-container,
+  html.bcap-print-isolate body .bcap-container * {
+    visibility: visible;
+  }
+
+  html.bcap-print-isolate body .bcap-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  html.bcap-print-isolate .bcap-container .table {
+    overflow: visible;
+  }
+
+  html.bcap-print-isolate .bcap-container table {
+    break-inside: avoid;
+  }
+
+  html.bcap-print-isolate .bcap-container .bcap-print-label {
+    display: none !important;
+  }
 }

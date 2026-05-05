@@ -244,6 +244,53 @@ function richTextFromRow(row) {
 }
 
 /**
+ * Opens the print dialog for the block’s main content only (inside `.bcap-container`).
+ * Uses `html.bcap-print-isolate` + print CSS so the rest of the page is hidden.
+ * @param {HTMLElement} block
+ */
+function printBcapContent() {
+  const printSection = document.querySelector('.bcap-container');
+  if (!printSection) return;
+
+  // Clone to avoid changing DOM
+  const cloned = printSection.cloneNode(true);
+
+  // 1. Remove all print label(s)
+  cloned.querySelectorAll('.bcap-print-label').forEach((el) => el.remove());
+
+  // 2. Remove all error messages
+  cloned.querySelectorAll('.bcap-error-message').forEach((el) => el.remove());
+
+  // 3. Replace calendar input with its value as plain text
+  const input = cloned.querySelector('.calendar-wrapper .icon-calendar input');
+  if (input) {
+    const inputValue = input.value;
+    // Create a text node with the value and replace the input
+    const textNode = document.createTextNode(inputValue);
+
+    // Replace input with text node (append to parent, remove input)
+    const parent = input.parentNode;
+    if (parent) {
+      parent.replaceChild(textNode, input);
+    }
+  }
+
+  // Print only the modified clone, restoring DOM after print, without reload
+  const originalContent = document.body.innerHTML;
+  document.body.innerHTML = cloned.outerHTML;
+  window.print();
+  document.body.innerHTML = originalContent;
+  window.location.reload();
+}
+
+function attachBcapPrintHandler(printLabel) {
+  printLabel.addEventListener('click', (e) => {
+    e.preventDefault();
+    printBcapContent();
+  });
+}
+
+/**
  * @param {HTMLElement} block
  */
 export default async function decorate(block) {
@@ -322,7 +369,7 @@ export default async function decorate(block) {
     input.id = 'date-to';
     input.type = 'text';
     input.name = 'date-to';
-    calendarInput.classList.add('icon-calendar');
+    calendarInput.classList.add('calendar-input', 'icon-calendar');
     calendarInput.appendChild(input);
     dateLabel.appendChild(calendarInput);
     attachCalendarPicker({
@@ -345,11 +392,18 @@ export default async function decorate(block) {
 
   await refreshTableFromPrices(table, funds, calendarDate);
 
+  const toolbar = doc.createElement('div');
+  toolbar.className = 'bcap-toolbar';
+  toolbar.appendChild(dateLabel);
+  toolbar.appendChild(printLabel);
+
   if (isAuthoringInstance(block)) {
-    root.append(dateLabel, printLabel, errorMessage, disclaimer);
+    root.append(toolbar, errorMessage, disclaimer);
   } else {
-    root.append(dateLabel, printLabel, errorMessage, table, disclaimer);
+    root.append(toolbar, errorMessage, table, disclaimer);
   }
 
   block.appendChild(root);
+
+  attachBcapPrintHandler(printLabel);
 }

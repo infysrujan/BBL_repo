@@ -50,6 +50,10 @@
   --bbl-color-gray-600: #6a6a6a;
   --bbl-color-gray-300: #d6d6d6;
   --bbl-color-grey-22: #E5E5E7;
+  --bbl-color-grey-19: #F4F4F4;
+  --bbl-color-grey-21: #cacaca;
+  --bbl-color-grey-23: #d9d9d9;
+  --bbl-color-grey-24: #d3d3d3;
 
   /* =========================================================================
      BLUE SCALE
@@ -72,6 +76,7 @@
   --bbl-color-blue-130: #002087;
   --bbl-color-blue-140: #4890ff;
   --bbl-color-blue-steel-light: #E6EEF4;
+  --bbl-color-blue-steel-dark: #DEEAF6;
 
   /* =========================================================================
      RED SCALE

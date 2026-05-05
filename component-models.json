@@ -9122,6 +9122,10 @@
               {
                 "name": "Header Mixed Blue",
                 "value": "header-mixed-blue"
+              },
+              {
+                "name": "Header Light Gray",
+                "value": "header-light-gray"
               }
             ]
           },
