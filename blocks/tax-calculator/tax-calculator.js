@@ -656,14 +656,22 @@ function buildTooltipIcon(text) {
   const adjustPosition = () => {
     tooltip.style.left = '';
     tooltip.style.transform = '';
+    tooltip.style.setProperty('--arrow-shift', '0px');
+
     const rect = tooltip.getBoundingClientRect();
     const pad = 16; // 1rem padding from edges
+    let shift = 0;
+
     if (rect.left < pad) {
-      const shift = pad - rect.left;
-      tooltip.style.transform = `translateX(calc(-50% + ${shift}px))`;
+      shift = pad - rect.left;
     } else if (rect.right > window.innerWidth - pad) {
-      const shift = rect.right - (window.innerWidth - pad);
-      tooltip.style.transform = `translateX(calc(-50% - ${shift}px))`;
+      shift = (window.innerWidth - pad) - rect.right;
+    }
+
+    if (shift !== 0) {
+      tooltip.style.transform = `translateX(calc(-50% + ${shift}px))`;
+      // Shift arrow in opposite direction to keep it over the icon
+      tooltip.style.setProperty('--arrow-shift', `${-shift}px`);
     }
   };
 
@@ -758,7 +766,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   const { fields, i18n, cfg } = data;
   const fieldDefs = getJourney1Fields(fields, i18n, cfg);
 
-  const container = el('<div class="tax-calc"></div>');
+  const container = el('<div class="tax-calc tax-calc-step-1"></div>');
   container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepIndicator(i18n, 1));
 
@@ -870,7 +878,7 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
   const { apiResponse, journey2 = {} } = state;
   const groups = getJourney2Groups(fields, i18n, apiResponse);
 
-  const container = el('<div class="tax-calc"></div>');
+  const container = el('<div class="tax-calc tax-calc-step-2"></div>');
   container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepIndicator(i18n, 2));
 
@@ -1048,7 +1056,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
   const cardTaxRate = Math.round(((apiResult2 || apiResult1).MaxTaxRateStep || 0) * 100);
   const summaryTaxRate = Math.round((apiResult1.MaxTaxRateStep || 0) * 100);
 
-  const container = el('<div class="tax-calc tax-calc-results"></div>');
+  const container = el('<div class="tax-calc tax-calc-results tax-calc-step-3"></div>');
   container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepIndicator(i18n, 3));
 
