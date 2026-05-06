@@ -23,9 +23,7 @@
   .menu-card-actions-container .default-content-wrapper :is(h1) {
     line-height: 2.4375rem;
   }
-}
 
-:lang(th) {
   .menu-card-actions-container .default-content-wrapper :is(h2) {
     line-height: 2.0625rem;
   }
@@ -97,16 +95,17 @@
 }
 
 .menu-card-action-inner .button.primary {
-  border-radius: 0.4375rem;
-  box-sizing: border-box;
-  width: 100%;
-  padding: 0;
-  display: block;
-  text-align: center;
-  line-height: 2.75rem;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  margin-top: calc(var(--bbl-space-250) - 0.9375rem);
+    border-radius: 0.4375rem;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0;
+    display: block;
+    text-align: center;
+    line-height: 2.75rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-top: calc(var(--bbl-space-250) - 0.9375rem);
+    min-width: 100%;
 }
 
 .menu-card-action-inner .global-dropdown {
@@ -124,8 +123,9 @@
   font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-medium);
 }
 
-.menu-card-action-inner .menu-card-action-description~ :is(.button.primary, .global-dropdown, .button-tertiary) {
-  margin-top: var(--bbl-space-250);
+.menu-card-action-inner .menu-card-action-description ~ :is(.button.primary, .global-dropdown, .button-tertiary) {
+    margin-top: var(--bbl-space-250);
+    min-width: 100%;
 }
 
 .menu-card-action .menu-card-action-inner .button-tertiary:hover {
@@ -230,21 +230,15 @@
     .menu-card-actions-container .default-content-wrapper :is(h1) {
       line-height: 5.5rem;
     }
-  }
 
-  :lang(th) {
     .menu-card-actions-container .default-content-wrapper :is(h2) {
       line-height: 4.875rem;
     }
-  }
 
-  :lang(th) {
     .menu-card-actions-container .default-content-wrapper :is(h3) {
       line-height: 3.75rem;
     }
-  }
 
-  :lang(th) {
     .menu-card-actions-container .default-content-wrapper :is(h4) {
       line-height: 2.5rem;
     }

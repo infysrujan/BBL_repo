@@ -97,9 +97,7 @@
   .external-redirect-popup-title :is(h1) {
     line-height: 2.4375rem;
   }
-}
 
-:lang(th) {
   .external-redirect-popup-title :is(h2) {
     line-height: 2.0625rem;
   }
