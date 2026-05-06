@@ -9592,6 +9592,32 @@
     ]
   },
   {
+    "id": "special-fx-rates",
+    "fields": [
+      {
+        "component": "text",
+        "name": "updateDateLabel",
+        "label": "Update Date Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "forexColumnHeadings",
+        "label": "Forex Column Headings",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "story-card",
     "fields": [
       {
