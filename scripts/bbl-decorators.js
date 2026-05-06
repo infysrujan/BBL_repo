@@ -340,9 +340,74 @@ if (Window.LAZY_PHASE) {
   });
 }
 
+/**
+ * Returns the value of a cookie by name, or null if not set.
+ * @param {string} name
+ * @returns {string|null}
+ */
+function getCookieValue(name) {
+  const encoded = encodeURIComponent(name);
+  const match = document.cookie.split('; ').find((row) => row.startsWith(`${encoded}=`));
+  return match ? decodeURIComponent(match.split('=')[1]) : null;
+}
+
+/**
+ * Gets the language from the HTML tag.
+ * @returns {string} The language code (e.g., 'en', 'th')
+ */
+function getLang() {
+  return document.documentElement.lang || 'en';
+}
+
+/**
+ * Builds the cookie-alert synthetic block and appends it to main
+ * if the user has not yet given cookie consent.
+ * @param {Element} main The container element
+ */
+async function buildCookieAlert(main) {
+  /* Skip in Universal Editor — cookie consent UI must not appear while authoring. */
+  if (window.self !== window.top) return;
+
+  /* Skip when called for a detached fragment main (loadFragment context). */
+  if (!main.isConnected) return;
+
+  /* Skip if consent already recorded */
+  if (getCookieValue('ConsentAlert') === 'ALERT') return;
+
+  /* Skip if a cookie-alert block was manually placed by the author */
+  if (main.querySelector('.cookie-alert')) return;
+
+  const lang = getLang();
+  const fragmentPath = `/${lang}/fragments/cookie-alert`;
+
+  try {
+    // Use event-based fragment loading to avoid circular dependency.
+    // The listener is registered early in scripts.js so it is always available.
+    document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
+      detail: {
+        path: fragmentPath,
+        callback: (fragment) => {
+          if (!fragment) {
+            // eslint-disable-next-line no-console
+            console.warn('[cookie-alert] Fragment not found at', fragmentPath);
+            return;
+          }
+          // Move the decorated sections directly (preserves event listeners).
+          // Do NOT use innerHTML/outerHTML — that strips all JS event listeners.
+          [...fragment.querySelectorAll(':scope > .section')].forEach((s) => main.append(s));
+        },
+      },
+    }));
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn('[cookie-alert] Could not load fragment:', error);
+  }
+}
+
 export {
   decorateTerritoryButtons,
   decorateButtonsV1,
   decorateSvgWithAltText,
   loadBreadcrumb,
+  buildCookieAlert,
 };

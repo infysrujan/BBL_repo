@@ -57,7 +57,9 @@
       "promotional-details",
       "promo-card-listing",
       "top-promotional-cards",
-      "multi-column-tiles"
+      "multi-column-tiles",
+      "cookie-alert",
+      "cookie-modal"
     ]
   },
   {
@@ -127,6 +129,12 @@
     "id": "content-insert-cards",
     "components": [
       "content-insert-card"
+    ]
+  },
+  {
+    "id": "cookie-modal",
+    "components": [
+      "cookie-modal-accordion-item"
     ]
   },
   {

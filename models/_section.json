@@ -214,7 +214,9 @@
         "promotional-details",
         "promo-card-listing",
         "top-promotional-cards",
-        "multi-column-tiles"
+        "multi-column-tiles",
+        "cookie-alert",
+        "cookie-modal"
       ]
     }
   ]
