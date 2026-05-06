@@ -1,5 +1,5 @@
 export function buildCardHtml(card, tag, placeholders = {}, options = {}) {
-  const { dateLine = '', logoHtml = '' } = options;
+  const { dateLine = '', logoHtml = '', footerExtra = '' } = options;
   const target = card.targetLink === 'true' ? '_blank' : '_self';
   return `<div class="listing-card-container">
   <div class="listing-card">
@@ -15,6 +15,7 @@ export function buildCardHtml(card, tag, placeholders = {}, options = {}) {
     </div>
     <div class="listing-card-footer">
       <a href="${card.ctaLink || ''}" target="${target}" class="listing-card-cta button primary">${card.ctaLabel || placeholders.promoLearnMore || 'Learn More'}</a>
+      ${footerExtra}
     </div>
   </div>
 </div>`;
