@@ -14,6 +14,13 @@ const LOGO_ICONS = {
   unionpay: '/icons/upi-new.svg',
 };
 
+const CARD_TYPE_NORMALIZE = {
+  วีซ่า: 'visa',
+  มาสเตอร์การ์ด: 'mastercard',
+  แอมเอ็กซ์: 'amex',
+  ยูเนี่ยนเพย์: 'unionpay',
+};
+
 export async function fetchJson(url) {
   if (!fetchCache[url]) {
     fetchCache[url] = fetch(url, { headers: { Accept: 'application/json' } })
@@ -56,7 +63,9 @@ export function buildCardOptions(card) {
   const locale = LOCALE_MAP[getLang()] || 'en-GB';
   return {
     dateLine: buildDateLine(card, locale),
-    logoHtml: buildLogosHtml((card.cardTypes || []).map((t) => t.toLowerCase())),
+    logoHtml: buildLogosHtml(
+      (card.cardTypes || []).map((t) => CARD_TYPE_NORMALIZE[t] || t.toLowerCase()),
+    ),
   };
 }
 
