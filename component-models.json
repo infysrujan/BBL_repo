@@ -42,6 +42,10 @@
           {
             "name": "Bangkok Bankm Card",
             "value": "bangkok-bankm-card"
+          },
+          {
+            "name": "Error Page",
+            "value": "error-page"
           }
         ]
       },
