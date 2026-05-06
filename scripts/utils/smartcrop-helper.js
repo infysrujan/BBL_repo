@@ -59,7 +59,7 @@ export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt
 
     return picture;
   }
-  if (blockName == "multi-column-tiles") {
+  if (blockName === 'multi-column-tiles') {
     const img = createElement('img');
     img.setAttribute('loading', 'lazy');
     let allSrc = imgDesktop.getAttribute('src');
