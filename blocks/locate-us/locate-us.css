@@ -305,10 +305,6 @@
   flex-shrink: 0;
 }
 
-.locate-us .locate-us-district-wrapper .locate-us-district-btn {
-  height: 44px;
-}
-
 /* ── Results section ─────────────────────────────────────────────────────────── */
 
 .locate-us .locate-us-results {
@@ -421,7 +417,7 @@
   color: var(--bbl-color-gray-121);
   font-family: var(--bbl-font-family-medium);
   margin: 0;
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .locate-us .locate-us-card-chevron {
@@ -508,7 +504,7 @@
   font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 /* 10px spacer between status block and tel/fax — match BBL spacer row */
@@ -521,7 +517,7 @@
   font-size: 1rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .locate-us .locate-us-card-address {
@@ -529,7 +525,7 @@
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   margin: 0.625rem 0 var(--bbl-space-100);
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .locate-us .locate-us-card-directions {
@@ -929,62 +925,6 @@
     width: 100%;
   }
 
-  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
-    padding: var(--bbl-space-000);
-    flex: 1;
-    margin: 0 auto;
-    justify-content: center;
-    width: 100%;
-    max-width: 27.5rem;
-  }
-
-  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form {
-    max-width: 50%;
-    flex: 1;
-  }
-
-  .locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {
-    left: 0;
-    right: 0;
-    width: auto;
-  }
-
-  .locate-us:has(.locate-us-results-overseas) .locate-us-location-filter-row {
-    padding: var(--bbl-space-000);
-    margin-top: var(--bbl-space-200);
-    max-width: 27.5rem;
-  }
-
-  .locate-us:has(.locate-us-results-overseas) .locate-us-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--bbl-space-250);
-    width: auto;
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  /* 3 cards per row on tablet: use subgrid so all headers in a row share the same height */
-  .locate-us:has(.locate-us-results-overseas) .locate-us-card {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 2;
-    min-width: 0;
-  }
-
-  .locate-us:has(.locate-us-results-overseas) .locate-us-cards .locate-us-card-body[hidden] {
-    display: flex !important;
-    flex-direction: column;
-  }
-
-  .locate-us:has(.locate-us-results-overseas) .locate-us-card-header {
-    padding: 0;
-  }
-
-  .locate-us:has(.locate-us-results-overseas) .locate-us-card-hr {
-    margin-top: 0;
-  }
-
   .section.underline-title .default-content-wrapper #locate-us {
     font-size: 22.4px;
   }
@@ -996,6 +936,15 @@
 
   .locate-us .locate-us-district-btn {
     height: 44px;
+  }
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
+    padding: var(--bbl-space-000);
+    flex: 1;
+    margin: 0 auto;
+    justify-content: center;
+    width: 100%;
+    max-width: 27.5rem;
   }
 
   .locate-us .locate-us-keyword-wrapper:has(.locate-us-district-wrapper:not([hidden])) {
@@ -1043,14 +992,6 @@
     font-size: var(--bbl-font-size-b2);
   }
 
-  .locate-us .locate-us-map-sidebar .locate-us-card-header {
-    padding: 0 0 var(--bbl-space-150);
-  }
-
-  .locate-us .locate-us-map-sidebar .locate-us-card-hr {
-    margin-top: 0.625rem;
-  }
-
   /* ── Cards — 3-column grid on tablet, always expanded ── */
 
   .locate-us .locate-us-cards {
@@ -1068,6 +1009,14 @@
     border: 0.0625rem solid var(--bbl-color-gray-122);
     box-shadow: 0 0.125rem 1.125rem rgb(0 0 0 / 8%);
     overflow: hidden;
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    min-width: 0;
+  }
+
+  /* 3 cards per row on tablet: use subgrid so all headers in a row share the same height */
+  .locate-us:has(.locate-us-results-overseas) .locate-us-card {
     display: grid;
     grid-template-rows: subgrid;
     grid-row: span 2;
@@ -1139,6 +1088,14 @@
     background: #9e9e9e;
   }
 
+  .locate-us .locate-us-map-sidebar .locate-us-card-header {
+    padding: 0 0 var(--bbl-space-150);
+  }
+
+  .locate-us .locate-us-map-sidebar .locate-us-card-hr {
+    margin-top: 0.625rem;
+  }
+
   /* ── Pagination ── */
 
   .locate-us .locate-us-pagination {
@@ -1166,6 +1123,47 @@
     border: none;
   }
 
+  /* ── Overseas overrides ── */
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form {
+    max-width: 50%;
+    flex: 1;
+  }
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {
+    left: 0;
+    right: 0;
+    width: auto;
+  }
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-location-filter-row {
+    padding: var(--bbl-space-000);
+    margin-top: var(--bbl-space-200);
+    max-width: 27.5rem;
+  }
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--bbl-space-250);
+    width: auto;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-cards .locate-us-card-body[hidden] {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-card-header {
+    padding: 0;
+  }
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-card-hr {
+    margin-top: 0;
+  }
+
 }
 
 @media (width > 64rem) {
@@ -1173,13 +1171,13 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
+  .locate-us:has(.locate-us-results-overseas) .locate-us-cards {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
   /* Single card: keep 3-col layout so grid-column: 2 still centers it */
   .locate-us .locate-us-cards:has(> .locate-us-card:only-child) {
     grid-template-columns: repeat(3, 1fr);
-  }
-
-  .locate-us:has(.locate-us-results-overseas) .locate-us-cards {
-    grid-template-columns: repeat(4, 1fr);
   }
 
   /* 4 cards per row on desktop */
@@ -1219,7 +1217,7 @@
   }
 
   .locate-us .cards-list-content{
-        margin-block: 0 0px;
+        margin-block: 0;
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form{
