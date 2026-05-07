@@ -1,3 +1,11 @@
+/* ── Wrapper paragraph reset (must precede higher-specificity rules) ── */
+.sme-loan-calculator-wrapper > p {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 /* ── Page section background ──────────────────────────────── */
 .section.tabs-container {
   background: var(--bbl-color-truthful-dark-blue);
@@ -6,6 +14,12 @@
 
 .section.central-aligned {
   background-color: var(--bbl-color-white);
+}
+
+.section.central-aligned.full-bleed-bg {
+  position: relative;
+  bottom: 0.625rem;
+  padding-bottom: 0.625rem;
 }
 
 .section.central-aligned .default-content-wrapper p {
@@ -22,7 +36,7 @@ main {
 }
 
 /* ── Remark section ───────────────────────────────────────── */
-.section:not(.tabs-container):not(.center-title) .default-content-wrapper p {
+.section:not(.tabs-container, .center-title) .default-content-wrapper p {
   color: var(--bbl-color-grey-150);
   font-size: 0.6875rem;
   line-height: 1.63;
@@ -93,8 +107,7 @@ main {
 }
 
 /* ── Block + wrapper full width ──────────────────────────── */
-.sme-loan-calculator-wrapper,
-.sme-loan-calculator-wrapper > p {
+.sme-loan-calculator-wrapper {
   width: 100%;
   max-width: 100%;
   margin: 0;
@@ -143,8 +156,7 @@ main {
 
 /* ── Fields row ──────────────────────────────────────────── */
 .row.paddingmain {
-  column-gap: 1rem;
-  row-gap: 0;
+  gap: 0 1rem;
   margin-bottom: 2rem;
   align-items: flex-start;
 }
@@ -163,7 +175,7 @@ main {
   justify-content: space-between;
   gap: 0.75rem;
   flex: 1;
-  border: 0.0625rem solid var(--bbl-color-white-alpha-20);
+  border: 0.125rem solid var(--bbl-color-sme-section-bg);
   border-radius: 0.625rem;
   padding: 0.875rem 1.25rem 0.75rem;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -229,11 +241,13 @@ main {
 
 /* ── Calculate button ────────────────────────────────────── */
 .sme-calc-btn {
-  background-color: var(--bbl-color-white);
+  background-color: #f9f9f9;
   color: var(--bbl-color-truthful-dark-blue);
   border: none;
-  border-radius: 1.75rem;
-  padding: 0.875rem 4rem;
+  border-radius: 0.5rem;
+  min-width: 11.125rem;
+  height: 2.75rem;
+  padding: 0.0625rem 0.375rem;
   font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -388,7 +402,7 @@ main {
   }
 
   .sme-calc-result-section {
-    padding: 1.75rem 1rem 1.75rem;
+    padding: 1.75rem 1rem;
     border-radius: 0 0 0.5rem 0.5rem;
   }
 

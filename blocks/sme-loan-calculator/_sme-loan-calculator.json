@@ -39,7 +39,7 @@
 				{
 					"component": "text",
 					"name": "buttonName",
-					"label": "Button Name",
+					"label": "CTA Label 1st",
 					"valueType": "string"
 				},
 				{
@@ -58,14 +58,14 @@
 				{
 					"component": "text",
 					"name": "addToTableButtonName",
-					"label": "Add to Table Button Name",
+					"label": "CTA Label 2nd",
 					"valueType": "string"
 				},
 				{
 					"component": "textarea",
 					"name": "formulaDescription",
 					"label": "Formula Description",
-					"description": "Describe the formula used (e.g. A = Loan Payment, P = Loan Balance, n = Term months, i = Interest Rate %)",
+					"description": "Describe the formula used (e.g. A = B + C )",
 					"valueType": "string"
 				},
 				{

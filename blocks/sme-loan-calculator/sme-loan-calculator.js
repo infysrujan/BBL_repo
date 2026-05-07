@@ -1,4 +1,4 @@
-export default function decorate(block) {
+export default async function decorate(block) {
   // ── Helpers (defined first to satisfy no-use-before-define) ──
   function el(tag, cls) {
     const e = document.createElement(tag);
@@ -170,7 +170,7 @@ export default function decorate(block) {
   const resultValue = cellText(rows[1]) || '0.00';
   const description = cellText(rows[2]);
   const addToTableButtonName = cellText(rows[3]);
-  const formulaDescription = cellText(rows[4]);
+  const authoredFormula = cellText(rows[4]);
   const hasResultText = rows[5]?.children.length === 1;
   const resultText = hasResultText ? cellText(rows[5]) : '';
 
@@ -188,6 +188,27 @@ export default function decorate(block) {
   if (ids.includes('H')) calcType = 'wc';
   else if (ids.includes('A') && ids.includes('n') && !ids.includes('P')) calcType = 'loanbalance';
   else if (ids.includes('P') && ids.includes('A') && !ids.includes('n')) calcType = 'term';
+
+  const configKeyMap = {
+    monthly: 'sme-monthly-payment',
+    loanbalance: 'sme-loan-balance',
+    term: 'sme-term-period-monthly',
+    wc: 'sme-working-capital-needs',
+  };
+
+  let formulaDescription = '';
+  try {
+    const resp = await fetch('/en/config.json');
+    if (resp.ok) {
+      const json = await resp.json();
+      const key = configKeyMap[calcType];
+      const entry = (json.data || []).find((d) => (d.key || d.Key) === key);
+      formulaDescription = entry?.value || entry?.Value || '';
+    }
+  } catch {
+    // formula stays empty
+  }
+  if (!formulaDescription) formulaDescription = authoredFormula;
 
   const resultConfig = {
     monthly: { prefix: resultText, suffix: ' baht.', integer: false },
@@ -365,8 +386,9 @@ export default function decorate(block) {
       : fmt(lastResult);
     if (!resultNum) {
       resultLabel.textContent = '';
+      resultLabel.style.whiteSpace = 'pre-wrap';
       resultNum = el('strong', 'sme-result-number');
-      resultLabel.append(rc.prefix, resultNum, rc.suffix);
+      resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
     }
     resultNum.textContent = displayVal;
   });
