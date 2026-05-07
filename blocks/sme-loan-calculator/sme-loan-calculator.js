@@ -171,9 +171,10 @@ export default function decorate(block) {
   const description = cellText(rows[2]);
   const addToTableButtonName = cellText(rows[3]);
   const formulaDescription = cellText(rows[4]);
-  const resultText = cellText(rows[5]);
+  const hasResultText = rows[5]?.children.length === 1;
+  const resultText = hasResultText ? cellText(rows[5]) : '';
 
-  const fields = rows.slice(6).map((r) => ({
+  const fields = rows.slice(hasResultText ? 6 : 5).map((r) => ({
     id: cellText(r, 0),
     label: cellText(r, 1),
     maxLength: parseInt(cellText(r, 2), 10) || null,
