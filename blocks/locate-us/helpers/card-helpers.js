@@ -27,7 +27,7 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
   const card = createEl(`
     <article class="locate-us-card">
       <button type="button" class="locate-us-card-header" aria-expanded="false">
-        <span class="locate-us-card-name"></span>
+        <h3 class="locate-us-card-name"></h3>
         <span class="icon-dropdown locate-us-card-chevron" aria-hidden="true"></span>
       </button>
       <div class="locate-us-card-body" hidden>
@@ -98,7 +98,7 @@ export function buildOverseasCard(loc, placeholders) {
   const card = createEl(`
     <article class="locate-us-card">
       <button type="button" class="locate-us-card-header" aria-expanded="false">
-        <span class="locate-us-card-name"></span>
+        <h3 class="locate-us-card-name"></h3>
         <span class="icon-dropdown locate-us-card-chevron" aria-hidden="true"></span>
       </button>
       <div class="locate-us-card-body" hidden>
