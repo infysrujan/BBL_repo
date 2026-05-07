@@ -23,7 +23,6 @@ export default function decorate(block) {
   const budgeText = budgeTextEl?.textContent?.trim() || '';
   const titleName = titleEl?.textContent?.trim() || '';
   const description = descriptionEl?.querySelector('p')?.innerHTML?.trim() || '';
-  const anchor = buttonEl?.querySelector('a');
   const buttonHTML = buttonEl?.innerHTML?.trim() || '';
 
   block.innerHTML = `
