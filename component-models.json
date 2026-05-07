@@ -3139,6 +3139,13 @@
         "required": true
       },
       {
+        "component": "text",
+        "name": "ctaButtonLabel",
+        "label": "CTA Button Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
         "component": "richtext",
         "name": "tableHeading",
         "label": "Table Heading",
