@@ -1,0 +1,342 @@
+/* Source rows hidden after decoration — !important blocks UE inline-style overrides */
+.mf-results .mfr-source-row {
+  display: none !important;
+}
+
+/* ── Page wrapper ─────────────────────────────────────────────────────────── */
+
+.mfr-wrapper {
+  max-width: var(--bbl-layout-content-max-width-desktop, 77.5rem);
+  margin: 0 auto;
+  padding: var(--bbl-space-section-sm) var(--bbl-space-container-xs);
+  box-sizing: border-box;
+}
+
+@media (width >= 760px) {
+  .mfr-wrapper {
+    padding: var(--bbl-space-section-md) var(--bbl-space-container-md);
+  }
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+
+.mfr-header {
+  text-align: center;
+  margin-bottom: var(--bbl-space-layout-lg);
+}
+
+.mfr-title {
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-h2, 2rem);
+  line-height: 1.25;
+  color: var(--bbl-color-truthful-blue);
+  margin: 0 0 var(--bbl-space-200);
+}
+
+@media (width >= 760px) {
+  .mfr-title {
+    font-size: var(--bbl-font-size-h2-desktop, 2.5rem);
+  }
+}
+
+.mfr-title-divider {
+  display: block;
+  width: 2.5rem;
+  height: 0.125rem;
+  background: var(--bbl-color-grey-40);
+  margin: 0 auto var(--bbl-space-300);
+}
+
+.mfr-description {
+  font-size: var(--bbl-font-size-b1, 1rem);
+  color: var(--bbl-color-grey-70);
+  line-height: var(--bbl-line-height-body, 1.6);
+  max-width: 44rem;
+  margin: 0 auto;
+}
+
+.mfr-description p,
+.mfr-disclaimer p {
+  margin: 0 0 var(--bbl-space-component-sm);
+}
+
+.mfr-description p:last-child,
+.mfr-disclaimer p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Grid container ───────────────────────────────────────────────────────── */
+
+.mfr-grid-container {
+  margin-bottom: var(--bbl-space-layout-lg);
+}
+
+/* ── No results ───────────────────────────────────────────────────────────── */
+
+.mfr-no-results {
+  text-align: center;
+  padding: var(--bbl-space-layout-xl) var(--bbl-space-container-xs);
+  font-size: var(--bbl-font-size-b1, 1rem);
+  color: var(--bbl-color-grey-70);
+}
+
+/* ── Card grid — mobile: horizontal scroll; desktop: 3-column ────────────── */
+
+.mfr-grid {
+  display: flex;
+  flex-direction: row;
+  gap: var(--bbl-space-gap-lg);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: var(--bbl-space-100);
+}
+
+.mfr-grid::-webkit-scrollbar {
+  display: none;
+}
+
+@media (width >= 760px) {
+  .mfr-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    overflow-x: visible;
+    scroll-snap-type: none;
+    gap: var(--bbl-space-gap-lg);
+  }
+}
+
+/* ── Single MF card ───────────────────────────────────────────────────────── */
+
+.mfr-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-grey-22);
+  border-radius: var(--bbl-radius-card);
+  overflow: hidden;
+  flex: 0 0 17rem;
+  scroll-snap-align: start;
+  box-sizing: border-box;
+}
+
+@media (width >= 760px) {
+  .mfr-card {
+    flex: unset;
+    width: 100%;
+  }
+}
+
+/* ── Card image ───────────────────────────────────────────────────────────── */
+
+.mfr-card-image {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bbl-color-grey-10);
+}
+
+.mfr-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Card content area ────────────────────────────────────────────────────── */
+
+.mfr-card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: var(--bbl-space-component-lg);
+}
+
+/* ── Card title ───────────────────────────────────────────────────────────── */
+
+.mfr-card-title {
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-h5, 1.125rem);
+  line-height: 1.4;
+  color: var(--bbl-color-truthful-blue);
+  margin: 0 0 var(--bbl-space-component-sm);
+}
+
+/* ── Card title divider ───────────────────────────────────────────────────── */
+
+.mfr-card-divider {
+  display: block;
+  width: 2rem;
+  height: 0.125rem;
+  background: var(--bbl-color-grey-40);
+  margin-bottom: var(--bbl-space-component-md);
+}
+
+/* ── Card description ─────────────────────────────────────────────────────── */
+
+.mfr-card-desc {
+  font-size: var(--bbl-font-size-b2, 0.875rem);
+  color: var(--bbl-color-grey-70);
+  line-height: var(--bbl-line-height-body, 1.6);
+  margin: 0 0 var(--bbl-space-component-lg);
+  flex: 1;
+}
+
+/* ── Fund company logo ────────────────────────────────────────────────────── */
+
+.mfr-card-logo {
+  margin-bottom: var(--bbl-space-component-lg);
+}
+
+.mfr-card-logo img {
+  max-height: 2.5rem;
+  max-width: 8rem;
+  object-fit: contain;
+  display: block;
+}
+
+/* ── Action buttons ───────────────────────────────────────────────────────── */
+
+.mfr-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bbl-space-gap-sm);
+  margin-top: auto;
+}
+
+.mfr-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: var(--bbl-space-component-sm) var(--bbl-space-component-lg);
+  border-radius: var(--bbl-radius-button);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1, 1rem);
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  border: 0.0625rem solid transparent;
+  box-sizing: border-box;
+}
+
+/* Read more — solid blue */
+.mfr-btn-primary {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border-color: var(--bbl-color-active-blue);
+}
+
+.mfr-btn-primary:hover {
+  background: var(--bbl-color-blue-90);
+  border-color: var(--bbl-color-blue-90);
+}
+
+/* Compare — outlined */
+.mfr-btn-secondary {
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+.mfr-btn-secondary:hover {
+  background: var(--bbl-color-blue-10);
+}
+
+/* Compare button selected (is-comparing) state */
+.mfr-compare-btn.is-comparing {
+  background: var(--bbl-color-blue-10);
+  color: var(--bbl-color-active-blue);
+  cursor: default;
+}
+
+/* ── Mobile scroll dots ───────────────────────────────────────────────────── */
+
+.mfr-scroll-dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--bbl-space-100);
+  margin-top: var(--bbl-space-200);
+}
+
+@media (width >= 760px) {
+  .mfr-scroll-dots {
+    display: none;
+  }
+}
+
+.mfr-scroll-dot {
+  appearance: none;
+  width: var(--bbl-space-100);
+  height: var(--bbl-space-100);
+  border-radius: var(--bbl-radius-full);
+  border: 0.0625rem solid var(--bbl-color-grey-40);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 0;
+  transition: all 180ms ease;
+}
+
+.mfr-scroll-dot.is-active {
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+/* ── Footer CTAs ──────────────────────────────────────────────────────────── */
+
+.mfr-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bbl-space-gap-md);
+  align-items: center;
+  margin-bottom: var(--bbl-space-layout-md);
+}
+
+@media (width >= 760px) {
+  .mfr-footer {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.mfr-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  min-width: 11rem;
+  padding: var(--bbl-space-component-sm) var(--bbl-space-component-xl);
+  border-radius: var(--bbl-radius-button);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1, 1rem);
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s, color 0.2s;
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
+  box-sizing: border-box;
+}
+
+.mfr-cta:hover {
+  background: var(--bbl-color-blue-10);
+}
+
+/* ── Disclaimer ───────────────────────────────────────────────────────────── */
+
+.mfr-disclaimer {
+  border-top: 0.0625rem solid var(--bbl-color-grey-30);
+  padding-top: var(--bbl-space-layout-sm);
+  font-size: var(--bbl-font-size-b3, 0.8125rem);
+  color: var(--bbl-color-grey-70);
+  line-height: var(--bbl-line-height-body, 1.6);
+  text-align: center;
+}

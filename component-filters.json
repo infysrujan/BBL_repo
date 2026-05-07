@@ -60,7 +60,11 @@
       "top-promotional-cards",
       "multi-column-tiles",
       "cookie-alert",
-      "cookie-modal"
+      "cookie-modal",
+      "mf-results",
+      "mf-questionnaire",
+      "mf-comparator-results",
+      "mf-comparator"
     ]
   },
   {
@@ -236,6 +240,12 @@
       "menu-card"
     ],
     "maxItems": 6
+  },
+  {
+    "id": "mf-questionnaire",
+    "components": [
+      "mf-risk-option"
+    ]
   },
   {
     "id": "multi-column-tiles",
