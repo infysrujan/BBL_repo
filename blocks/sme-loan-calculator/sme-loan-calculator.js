@@ -171,8 +171,9 @@ export default function decorate(block) {
   const description = cellText(rows[2]);
   const addToTableButtonName = cellText(rows[3]);
   const formulaDescription = cellText(rows[4]);
+  const resultText = cellText(rows[5]);
 
-  const fields = rows.slice(5).map((r) => ({
+  const fields = rows.slice(6).map((r) => ({
     id: cellText(r, 0),
     label: cellText(r, 1),
     maxLength: parseInt(cellText(r, 2), 10) || null,
@@ -188,10 +189,10 @@ export default function decorate(block) {
   else if (ids.includes('P') && ids.includes('A') && !ids.includes('n')) calcType = 'term';
 
   const resultConfig = {
-    monthly: { prefix: 'Your Loan Payment (per month) is ', suffix: ' baht.', integer: false },
-    loanbalance: { prefix: 'Your Loan Balance is ', suffix: ' baht.', integer: false },
-    term: { prefix: 'Your Term/Period is ', suffix: ' month.', integer: true },
-    wc: { prefix: 'Your Working Capital Need is ', suffix: ' baht.', integer: false },
+    monthly: { prefix: resultText, suffix: ' baht.', integer: false },
+    loanbalance: { prefix: resultText, suffix: ' baht.', integer: false },
+    term: { prefix: resultText, suffix: ' month.', integer: true },
+    wc: { prefix: resultText, suffix: ' baht.', integer: false },
   };
   const rc = resultConfig[calcType];
 

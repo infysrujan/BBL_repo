@@ -45,7 +45,7 @@
 				{
 					"component": "text",
 					"name": "resultValue",
-					"label": "Result Value",
+					"label": "Default Result Value",
 					"description": "Use {{result}} as placeholder for the calculated value",
 					"valueType": "string"
 				},
@@ -66,6 +66,13 @@
 					"name": "formulaDescription",
 					"label": "Formula Description",
 					"description": "Describe the formula used (e.g. A = Loan Payment, P = Loan Balance, n = Term months, i = Interest Rate %)",
+					"valueType": "string"
+				},
+				{
+					"component": "text",
+					"name": "resultText",
+					"label": "Result Text",
+					"description": "can add the result text",
 					"valueType": "string"
 				}
 			]
@@ -95,13 +102,13 @@
 				{
 					"component": "text",
 					"name": "topText",
-					"label": "Top Text",
+					"label": "Group Title",
 					"valueType": "string"
 				},
 				{
 					"component": "text",
 					"name": "bottomText",
-					"label": "unit names",
+					"label": "unit name",
 					"valueType": "string"
 				},
 				{
