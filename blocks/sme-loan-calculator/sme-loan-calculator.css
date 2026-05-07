@@ -8,6 +8,10 @@
   background-color: var(--bbl-color-white);
 }
 
+.section.central-aligned .default-content-wrapper p {
+  text-align: center;
+}
+
 /* ── Title section ────────────────────────────────────────── */
 h2#sme-loan-calculator {
   color: var(--bbl-color-white);

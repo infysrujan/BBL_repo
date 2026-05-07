@@ -241,7 +241,7 @@ export default function decorate(block) {
   const resultSection = el('div', 'sme-calc-result-section');
 
   const resultLabel = el('p', 'sme-calc-result-label');
-  resultLabel.textContent = `Your result value is ${resultValue}`;
+  resultLabel.textContent = `${resultValue}`;
   resultSection.appendChild(resultLabel);
   let resultNum = null;
 

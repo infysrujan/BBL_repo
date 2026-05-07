@@ -101,7 +101,7 @@
 				{
 					"component": "text",
 					"name": "bottomText",
-					"label": "Bottom Text",
+					"label": "unit names",
 					"valueType": "string"
 				},
 				{
