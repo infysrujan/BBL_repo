@@ -1,0 +1,92 @@
+/* ── Source rows hidden ───────────────────────────────────────────────────── */
+.mf-questionnaire .mfq-source-row {
+  display: none !important;
+}
+
+/* ── Shared screen layout ─────────────────────────────────────────────────── */
+.mfq-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 32px 32px;
+  gap: 24px;
+}
+
+/* ── Title ────────────────────────────────────────────────────────────────── */
+.mfq-title {
+  font-size: var(--heading-font-size-m, 1.5rem);
+  font-weight: 700;
+  margin: 0;
+  max-width: 800px;
+}
+
+/* ── Divider ──────────────────────────────────────────────────────────────── */
+.mfq-divider {
+  display: block;
+  width: 48px;
+  height: 2px;
+  background-color: var(--color-gray-400, #ccc);
+  margin: 0 auto;
+}
+
+/* ── Description (bullet list below risk cards) ───────────────────────────── */
+.mfq-description {
+  text-align: left;
+  max-width: 600px;
+  width: 100%;
+  font-size: var(--body-font-size-s, 0.875rem);
+  line-height: 1.6;
+}
+
+.mfq-description ul {
+  padding-left: 1.25rem;
+  margin: 0;
+}
+
+.mfq-description li {
+  margin-bottom: 8px;
+}
+
+/* ── Yes / No actions ─────────────────────────────────────────────────────── */
+.mfq-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.mfq-btn {
+  width: 100%;
+  padding: 12px 24px;
+  border: 1px solid var(--color-brand-primary, #003087);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-brand-primary, #003087);
+  font-size: var(--body-font-size-m, 1rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.mfq-btn:hover,
+.mfq-btn:focus-visible {
+  background: var(--color-brand-primary, #003087);
+  color: var(--color-white, #fff);
+  outline: none;
+}
+
+/* ── Disclaimer ───────────────────────────────────────────────────────────── */
+.mfq-disclaimer {
+  font-size: var(--body-font-size-xs, 0.75rem);
+  color: var(--color-brand-primary, #003087);
+  max-width: 600px;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.mfq-disclaimer p {
+  margin: 0;
+}
