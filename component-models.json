@@ -3144,44 +3144,7 @@
         "label": "Table Heading",
         "valueType": "string",
         "value": "",
-        "required": true,
-        "rte": {
-          "toolbar": {
-            "format": [
-              "bold",
-              "italic",
-              "underline"
-            ],
-            "list": [
-              "bullet_list",
-              "ordered_list"
-            ],
-            "insert": [
-              "link",
-              "unlink",
-              "table"
-            ],
-            "editor": [
-              "removeformat"
-            ],
-            "sections": [
-              "format",
-              "list",
-              "insert",
-              "editor"
-            ]
-          },
-          "actions": {
-            "table": {
-              "label": "Insert Table",
-              "shortcut": "Mod-Alt-T",
-              "wrapInParagraphs": true
-            },
-            "link": {
-              "hideTarget": false
-            }
-          }
-        }
+        "required": true
       },
       {
         "component": "richtext",
