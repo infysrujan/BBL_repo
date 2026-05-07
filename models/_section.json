@@ -220,7 +220,8 @@
         "cookie-modal",
         "mf-results",
         "mf-comparator-results",
-        "mf-comparator"
+        "mf-comparator",
+        "mf-questionnaire"
       ]
     }
   ]
