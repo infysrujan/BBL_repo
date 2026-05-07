@@ -71,6 +71,7 @@
 					"name": "tableHeading",
 					"label": "Table Heading",
 					"valueType": "string",
+					"value": "",
 					"required": true,
 					"rte": {
 						"toolbar": {
