@@ -251,6 +251,8 @@ function createCardListItem(cardElement, doc) {
 }
 
 export default function decorate(block) {
+  if (block.querySelector('.cards-list')) return;
+
   const doc = block.ownerDocument;
   const [LayoutRow, Alignment, cardsPerRowEl, ...cardRows] = [...block.children];
   const cardListLayout = LayoutRow?.textContent?.trim();
@@ -261,13 +263,17 @@ export default function decorate(block) {
     doc,
   );
 
+  [LayoutRow, Alignment, cardsPerRowEl].forEach((row) => {
+    if (row) row.hidden = true;
+  });
+
   cardRows.forEach((row) => {
     const card = createCardListItem(row, doc);
     moveInstrumentation(row, card);
     container.appendChild(card);
+    row.remove();
   });
 
-  block.textContent = '';
   block.appendChild(container);
 
   block.addEventListener('click', (event) => {
