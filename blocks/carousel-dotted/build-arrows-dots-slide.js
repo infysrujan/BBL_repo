@@ -126,10 +126,10 @@ export default function buildSlideArrowsandDots(row, index) {
 
     if (ctaLinkCell && ctaLinkCell.textContent.trim()) {
       const linkWrap = document.createElement('div');
-      linkWrap.className = 'button-group';
+      linkWrap.className = 'button-container';
       const a = ctaLinkCell.querySelector('a');
       if (a) {
-        a.className = 'sub-title-medium link-primary';
+        a.className = 'sub-title-medium button primary';
         linkWrap.append(a);
       } else {
         while (ctaLinkCell.firstChild) linkWrap.append(ctaLinkCell.firstChild);
