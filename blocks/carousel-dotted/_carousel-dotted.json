@@ -999,9 +999,9 @@
           }
         },
         {
-          "component": "text",
-          "name": "step",
-          "label": "Step Text",
+          "component": "richtext",
+          "name": "descriptionDefaultImage",
+          "label": "Description",
           "valueType": "string",
           "condition": {
             "===": [
@@ -1013,10 +1013,69 @@
           }
         },
         {
-          "component": "richtext",
-          "name": "descriptionDefaultImage",
-          "label": "Description",
+          "component": "aem-content",
+          "name": "ctaLink",
+          "label": "Link",
+          "description": "Destination URL for the button",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "ctaLinkText",
+          "label": "Text",
+          "description": "Button label text",
+          "required": true,
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "ctaLinkTitle",
+          "label": "Title",
+          "description": "Accessibility title attribute (optional)",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "select",
+          "name": "ctaLinkType",
+          "label": "Type",
+          "description": "Button style variant",
           "valueType": "string",
+          "value": "",
+          "options": [
+            {
+              "name": "Primary",
+              "value": "primary"
+            },
+            {
+              "name": "Secondary",
+              "value": "secondary"
+            },
+            {
+              "name": "Tertiary",
+              "value": "tertiary"
+            }
+          ],
           "condition": {
             "===": [
               {

@@ -6,7 +6,8 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  *  cells[0] = variant (hidden), cells[1] = slideType (select)
  * slideType values:
  *   withDefaultImage: 0:variant, 1:slideType, 2:defaultImage, 3:titleDefaultImage,
- *                     4:step, 5:descriptionDefaultImage  (no link group → no merging)
+ *                     4:descriptionDefaultImage,
+ *                     5:ctaLink (merged — aem-content+text+text+select → 1 cell)
  *   withCircularImage: 0:variant, 1:slideType,
  *                      2-5: withDefaultImage fields (reserved, empty),
  *                      6:circularImage, 7:titleCircularImage, 8:descriptionCircularImage,
@@ -90,11 +91,11 @@ export default function buildSlideArrowsandDots(row, index) {
   if (slideType === 'withDefaultImage') {
     slide.className = 'carousel-dotted-item with-default-image item has-caption bgd-white';
 
-    // defaultImage (cell 2), title (cell 3), step (cell 4), description (cell 5)
+    // defaultImage (cell 2), title (cell 3), description (cell 4), ctaLink (cell 5)
     const defaultImageCell = cells[2];
     const titleCell = cells[3];
-    const stepCell = cells[4];
-    const descriptionCell = cells[5];
+    const descriptionCell = cells[4];
+    const ctaLinkCell = cells[5];
 
     // image
     const imageContainer = document.createElement('div');
@@ -114,25 +115,26 @@ export default function buildSlideArrowsandDots(row, index) {
       content.append(title);
     }
 
-    const hasTitle = titleCell && titleCell.textContent.trim();
-    const hasStep = stepCell && stepCell.textContent.trim();
     const hasDesc = descriptionCell && descriptionCell.textContent.trim();
 
-    if (hasTitle || hasStep || hasDesc) {
+    if (hasDesc) {
       const textWrap = document.createElement('div');
       textWrap.className = 'text-default editor pad-bot';
-
-      if (hasStep) {
-        const step = document.createElement('p');
-        step.className = 'text-large text-light';
-        step.innerHTML = stepCell.innerHTML;
-        textWrap.append(step);
-      }
-
-      if (hasDesc) {
-        while (descriptionCell.firstChild) textWrap.append(descriptionCell.firstChild);
-      }
+      while (descriptionCell.firstChild) textWrap.append(descriptionCell.firstChild);
       content.append(textWrap);
+    }
+
+    if (ctaLinkCell && ctaLinkCell.textContent.trim()) {
+      const linkWrap = document.createElement('div');
+      linkWrap.className = 'button-group';
+      const a = ctaLinkCell.querySelector('a');
+      if (a) {
+        a.className = 'sub-title-medium link-primary';
+        linkWrap.append(a);
+      } else {
+        while (ctaLinkCell.firstChild) linkWrap.append(ctaLinkCell.firstChild);
+      }
+      content.append(linkWrap);
     }
 
     slide.append(content);
