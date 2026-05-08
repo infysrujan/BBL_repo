@@ -1,3 +1,7 @@
+.section.central-aligned .block.all-carousel-fragment {
+    margin-inline: 0;
+}
+
 .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
     position: relative;
     display: flex;
@@ -123,7 +127,7 @@
     .carousel-dotted.all-carousel-fragment
         .carousel-dotted-item.carousel-fragment
         .cards-list {
-        gap: 0 var(--bbl-space-250);
+        gap: 0 var(--bbl-space-500);
     }
 
     .carousel-dotted.all-carousel-fragment
@@ -144,4 +148,3 @@
         right: -4.3125rem;
     }
 }
- 

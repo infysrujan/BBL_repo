@@ -134,6 +134,7 @@ function createCardListItem(cardElement, doc) {
     descDiv,
     remarkDiv,
     buttonDiv,
+    targetLinkDiv,
     imageLayoutDiv,
     enableTitleUnderlineDiv,
     isCardClickableDiv,
@@ -148,6 +149,7 @@ function createCardListItem(cardElement, doc) {
   const description = descDiv?.innerHTML;
   const remark = remarkDiv?.innerHTML;
   const buttonEl = buttonDiv?.querySelector('a');
+  const targetLink = parseBooleanFlag(targetLinkDiv?.textContent, false);
   const imageLayout = imageLayoutDiv?.textContent?.trim() || 'default';
   const enableTitleUnderline = parseBooleanFlag(enableTitleUnderlineDiv?.textContent, false);
   const isCardClickable = parseBooleanFlag(isCardClickableDiv?.textContent, true);
@@ -209,6 +211,10 @@ function createCardListItem(cardElement, doc) {
   if (buttonEl) {
     const buttonLink = buttonEl.cloneNode(true);
     buttonLink.removeAttribute('data-modal');
+    if (targetLink) {
+      buttonLink.setAttribute('target', '_blank');
+      buttonLink.setAttribute('rel', 'noopener noreferrer');
+    }
 
     if (enableOverlayModal && overlayHref) {
       buttonLink.removeAttribute('href');
