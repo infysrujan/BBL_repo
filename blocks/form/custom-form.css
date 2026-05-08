@@ -35,7 +35,8 @@ main h3::before {
   margin-left: -2.5rem;
   background: var(--bbl-color-grey-150);
 }
-/* 
+
+/*
 .form input,
 .form select,
 .form textarea {
@@ -88,6 +89,10 @@ main h3::before {
   font-weight: 400;
 }
 
+.field-invalid input {
+  border: 0.0625rem solid var(--bbl-color-orange-130);
+}
+
 .text-wrapper.field-wrapper input,
 .number-wrapper.field-wrapper input,
 .email-wrapper.field-wrapper input {
@@ -109,7 +114,6 @@ main h3::before {
 .number-wrapper.field-invalid input,
 .email-wrapper.field-invalid input,
 .text-wrapper.field-invalid input,
-.field-invalid input,
 .field-invalid select,
 .field-invalid textarea {
   border: 0.0625rem solid var(--bbl-color-orange-130);
@@ -155,6 +159,15 @@ main .form form p {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
+}
+
+.radio-group-wrapper legend.field-label {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
 }
 
 .form form .field-wrapper label,
@@ -237,6 +250,10 @@ form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper .field-description {
   padding: 1.375rem 1.25rem 0.75rem 3.125rem;
   color: var(--bbl-color-orange-130);
   font-size: 0.875rem;
+}
+
+.checkbox-wrapper.field-approvalcheckbox.field-wrapper input[type="checkbox"]:hover {
+  border: 1px solid var(--bbl-color-grey-125);
 }
 
 form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper input[type="checkbox"]:invalid {
@@ -337,13 +354,12 @@ form .email-wrapper {
   border: none;
 }
 
-.radio-group-wrapper legend.field-label {
-  display: block;
-  width: 100%;
-  margin-bottom: 0.5rem;
-  padding: 0;
-  font-size: 1.0625rem;
-  font-weight: 700;
+.radio-wrapper:last-child,
+.radio-wrapper:last-of-type,
+.field-invalid .radio-wrapper:last-child,
+.field-invalid .radio-wrapper:nth-last-child(2) {
+  border-top-right-radius: 0.625rem;
+  border-bottom-right-radius: 0.625rem;
 }
 
 .radio-group-wrapper.field-wrapper .radio-wrapper {
@@ -362,22 +378,10 @@ form .email-wrapper {
   gap:0;
 }
 
-.checkbox-wrapper.field-approvalcheckbox.field-wrapper input[type="checkbox"]:hover {
-  border: 1px solid var(--bbl-color-grey-125);
-}
-
 .radio-group-wrapper .radio-wrapper:first-of-type {
   border-left: 0.0625rem solid var(--bbl-color-grey-125);
   border-top-left-radius: 0.625rem;
   border-bottom-left-radius: 0.625rem;
-}
-
-.radio-wrapper:last-child,
-.field-invalid .radio-wrapper:last-child,
-.radio-wrapper:last-of-type,
-.field-invalid .radio-wrapper:nth-last-child(2) {
-  border-top-right-radius: 0.625rem;
-  border-bottom-right-radius: 0.625rem;
 }
 
 .radio-group-wrapper.field-convenienttime::after {
