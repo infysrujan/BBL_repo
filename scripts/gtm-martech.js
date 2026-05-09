@@ -1,7 +1,6 @@
 // eslint-disable-next-line import/no-relative-packages
 import GtmMartech from '../plugins/gtm-martech/src/index.js';
 import { getCookie } from './utils/cookies.js';
-import env from './utils/env.js';
 
 const GA_PROPERTY_CONFIG = {
     dev: "G-ZG7X6JC6DG",
@@ -13,8 +12,6 @@ const GA_PROPERTY_CONFIG = {
 const isConsentGiven = getCookie('AnalysisCookie') === 'Analysis';
 // For DA Preview support. Martech is enabled if the martech=off query parameter is not present.
 const isEnabled = !window.location.search.includes('martech=off');
-
-const env = env();
 
 // TODO: Update BBL's GA4 measurement ID and GTM Container Ids here
 const martech = new GtmMartech({

@@ -34,7 +34,7 @@ import {
   martechEager,
   martechLazy,
   martechDelayed,
-} from '../plugins/martech/src/index.js';
+} from '@adobe/aem-martech/src/index.js';
 
 /**
  * Import the gtm-martech plugin.

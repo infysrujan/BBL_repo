@@ -1,5 +1,5 @@
 import gtmMartech from './gtm-martech.js';
-import { updateUserConsent as updateAdobeConsent } from '../plugins/martech/src/index.js';
+import { updateUserConsent as updateAdobeConsent } from '@adobe/aem-martech/src/index.js';
 
 /**
  * Google Consent Mode update when the user accepts marketing-related storage

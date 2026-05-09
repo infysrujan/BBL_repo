@@ -17,7 +17,7 @@ export function getCookie(name) {
  * @param {number} days
  */
 export function setCookie(name, value, days) {
-    const expires = new Date(Date.now() + days * 864e5).toUTCString();
-    document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; `
-      + `expires=${expires}; path=/; SameSite=Lax`;
-  }
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; `
+    + `expires=${expires}; path=/; SameSite=Lax`;
+}
