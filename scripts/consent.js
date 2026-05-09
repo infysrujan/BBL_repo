@@ -64,7 +64,7 @@ export function initMarketingConsentListener() {
   if (consentListenerAttached) return;
   consentListenerAttached = true;
   // Listen for the cookie:consent-saved event from the cookie-modal block.
-  window.addEventListener('cookie:consent-saved', (event) => {
+  document.addEventListener('cookie:consent-saved', (event) => {
     // eslint-disable-next-line no-console
     console.debug('Consent update event received', event);
     const detail = event?.detail || {};
