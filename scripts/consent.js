@@ -26,12 +26,12 @@ let consentListenerAttached = false;
 
 /**
  * @typedef {Object} ConsentUpdateDetail
- * @property {boolean} [marketing] - When true, uses default granted payloads for gtag and Adobe unless
- *     overridden via `gtag` / `adobe`.
+ * @property {boolean} [marketing] - When true, default granted payloads apply for gtag and Adobe
+ *     unless overridden via `gtag` / `adobe`.
  * @property {Object} [gtag] - Passed to `gtag('consent', 'update', gtag)`. Overrides defaults when
  *     `marketing` is true.
- * @property {Object} [adobe] - Passed to Adobe `updateUserConsent`. Overrides defaults when `marketing`
- *     is true.
+ * @property {Object} [adobe] - Passed to Adobe `updateUserConsent`. Overrides defaults when
+ *     `marketing` is true.
  */
 
 /**
