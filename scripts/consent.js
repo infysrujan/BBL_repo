@@ -26,9 +26,12 @@ let consentListenerAttached = false;
 
 /**
  * @typedef {Object} ConsentUpdateDetail
- * @property {boolean} [marketing] - If true, applies default granted payloads for both gtag and Adobe (unless overridden).
- * @property {Object} [gtag] - Passed to `gtag('consent', 'update', gtag)`. Overrides default when `marketing` is true.
- * @property {Object} [adobe] - Passed to Adobe `updateUserConsent`. Overrides default when `marketing` is true.
+ * @property {boolean} [marketing] - When true, uses default granted payloads for gtag and Adobe unless
+ *     overridden via `gtag` / `adobe`.
+ * @property {Object} [gtag] - Passed to `gtag('consent', 'update', gtag)`. Overrides defaults when
+ *     `marketing` is true.
+ * @property {Object} [adobe] - Passed to Adobe `updateUserConsent`. Overrides defaults when `marketing`
+ *     is true.
  */
 
 /**
@@ -38,8 +41,10 @@ let consentListenerAttached = false;
  * @returns {Promise<void>}
  */
 export async function applyMarketingConsentUpdates(detail = {}) {
-  const gtagPayload = detail.gtag ?? (detail.marketing === true ? DEFAULT_GTAG_MARKETING_GRANTED : null);
-  const adobePayload = detail.adobe ?? (detail.marketing === true ? DEFAULT_ADOBE_MARKETING_GRANTED : null);
+  const gtagPayload = detail.gtag
+    ?? (detail.marketing === true ? DEFAULT_GTAG_MARKETING_GRANTED : null);
+  const adobePayload = detail.adobe
+    ?? (detail.marketing === true ? DEFAULT_ADOBE_MARKETING_GRANTED : null);
 
   if (gtagPayload && typeof window.gtag === 'function') {
     // eslint-disable-next-line no-console
@@ -69,7 +74,7 @@ export function initMarketingConsentListener() {
     // eslint-disable-next-line no-console
     console.debug('Consent update event received', event);
     const detail = event?.detail || {};
-    void applyMarketingConsentUpdates(detail).catch((error) => {
+    applyMarketingConsentUpdates(detail).catch((error) => {
       // eslint-disable-next-line no-console
       console.error('Error applying marketing consent updates', error);
       // Alloy may reject if not ready; CMP can retry or call `applyMarketingConsentUpdates` later.

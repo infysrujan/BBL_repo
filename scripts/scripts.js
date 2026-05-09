@@ -29,13 +29,14 @@ import { getCookie } from './utils/cookies.js';
  * Import the martech plugin.
  * See: https://github.com/adobe-rnd/aem-martech#launch-container-configuration for more information.
  */
-// eslint-disable-next-line import/no-relative-packages
+/* eslint-disable import/no-relative-packages -- martech lives under plugins/, not node_modules */
 import {
   initMartech,
   martechEager,
   martechLazy,
   martechDelayed,
 } from '../plugins/martech/src/index.js';
+/* eslint-enable import/no-relative-packages */
 
 /**
  * Import the gtm-martech plugin.
@@ -188,7 +189,7 @@ async function loadEager(doc) {
     // Docs: https://experienceleague.adobe.com/en/docs/experience-platform/web-sdk/commands/configure/overview#configure-js
     {
       datastreamId: dataStreamConfig[env],
-      orgId: orgId,
+      orgId,
       martechConfig: {
         analytics: isEnabled && isConsentGiven,
       },
