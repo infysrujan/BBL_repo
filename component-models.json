@@ -8889,7 +8889,7 @@
         "component": "text",
         "name": "resultValue",
         "label": "Default Result Value",
-        "description": "Use {{result}} as placeholder for the calculated value",
+        "description": "Default result text with a value (e.g., result value displayed as 0.00).",
         "valueType": "string"
       },
       {

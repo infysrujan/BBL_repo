@@ -374,7 +374,21 @@ export default async function decorate(block) {
 
   const compute = () => {
     const fieldValues = {};
-    fields.forEach((f) => { fieldValues[f.id] = getVal(f.id); });
+    fields.forEach((f) => {
+      fieldValues[f.id] = getVal(f.id);
+    });
+
+    if (calcType === 'term') {
+      // Formula from config: n = [lnA-ln(A-Pi)]/ln(1+i)
+      // A = monthly payment (field P), P = principal (field A), i = annual% / 1200
+      const result = formulaCompute(formulaDescription, {
+        A: fieldValues.P,
+        P: fieldValues.A,
+        i: fieldValues.i / 1200,
+      });
+      return Number.isFinite(result) ? result : 0;
+    }
+
     const result = formulaCompute(formulaDescription, fieldValues);
     return Number.isFinite(result) ? result : 0;
   };
