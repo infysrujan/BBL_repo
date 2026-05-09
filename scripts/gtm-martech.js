@@ -2,6 +2,7 @@
 import GtmMartech from '../plugins/gtm-martech/src/index.js';
 import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
+import { checkConsent } from './consent.js';
 
 const GA_PROPERTY_CONFIG = {
   dev: 'G-ZG7X6JC6DG',
@@ -25,9 +26,7 @@ const martech = new GtmMartech({
   // Passed to gtag('config', measurementId, …): page fields, transport_url, etc.
   gtagConfig: {},
   consent: isConsentGiven,
-  consentCallback: () => {
-    /* Function that handles consent processing, if consent is enabled, this must be specified */
-  },
+  consentCallback: checkConsent,
   decorateCallback: /* Function to call on each found or loaded Section/Block */ () => {},
 });
 

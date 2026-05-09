@@ -81,3 +81,19 @@ export function initMarketingConsentListener() {
     });
   });
 }
+
+export async function checkConsent() {
+    return new Promise((resolve) => {
+      // Perform the Consent popup check here.
+      // Not using a CMP, therefore we must resolve to the desired Consent State.
+  
+      resolve({
+        ad_storage: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
+        ad_user_data: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
+        ad_personalization: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
+        analytics_storage: getCookie('AnalyticsCooke') === 'Analytics' ? 'granted' : 'denied',
+        functionality_storage: getCookie('AnalyticsCooke') === 'Analytics' ? 'granted' : 'denied',
+        personalization_storage: getCookie('AnalyticsCooke') === 'Analytics' ? 'granted' : 'denied',
+      });
+    });
+  }
