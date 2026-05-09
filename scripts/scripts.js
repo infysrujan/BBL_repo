@@ -29,12 +29,13 @@ import { getCookie } from './utils/cookies.js';
  * Import the martech plugin.
  * See: https://github.com/adobe-rnd/aem-martech#launch-container-configuration for more information.
  */
+// eslint-disable-next-line import/no-relative-packages
 import {
   initMartech,
   martechEager,
   martechLazy,
   martechDelayed,
-} from '@adobe/aem-martech/src/index.js';
+} from '../plugins/martech/src/index.js';
 
 /**
  * Import the gtm-martech plugin.
@@ -46,7 +47,8 @@ import { initMarketingConsentListener } from './consent.js';
 
 initMarketingConsentListener();
 
-// Consent is given if the AnalysisCookie is set to 'On' and the martech=off query parameter is not present.
+// Consent when AnalysisCookie is 'Analysis' (cookie-modal / cookie-alert).
+// Load martech unless the URL query includes martech=off (DA preview).
 const isConsentGiven = getCookie('AnalysisCookie') === 'Analysis';
 const isEnabled = !window.location.search.includes('martech=off');
 
@@ -189,7 +191,7 @@ async function loadEager(doc) {
       orgId: orgId,
       martechConfig: {
         analytics: isEnabled && isConsentGiven,
-      }
+      },
     },
     // 2. Library Configuration
     {
@@ -199,7 +201,7 @@ async function loadEager(doc) {
       ],
     },
   );
-  
+
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
