@@ -1,8 +1,8 @@
 // eslint-disable-next-line import/no-relative-packages
 import GtmMartech from '../plugins/gtm-martech/src/index.js';
+import { checkConsent } from './check-consent.js';
 import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
-import { checkConsent } from './consent.js';
 
 const GA_PROPERTY_CONFIG = {
   dev: 'G-ZG7X6JC6DG',

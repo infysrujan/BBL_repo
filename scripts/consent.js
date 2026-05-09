@@ -1,7 +1,6 @@
 import gtmMartech from './gtm-martech.js';
 // eslint-disable-next-line import/no-relative-packages
 import { updateUserConsent as updateAdobeConsent } from '../plugins/martech/src/index.js';
-import { getCookie } from './utils/cookies.js';
 
 /**
  * Google Consent Mode update when the user accepts marketing-related storage
@@ -79,22 +78,6 @@ export function initMarketingConsentListener() {
       // eslint-disable-next-line no-console
       console.error('Error applying marketing consent updates', error);
       // Alloy may reject if not ready; CMP can retry or call `applyMarketingConsentUpdates` later.
-    });
-  });
-}
-
-export async function checkConsent() {
-  return new Promise((resolve) => {
-    // Perform the Consent popup check here.
-    // Not using a CMP, therefore we must resolve to the desired Consent State.
-
-    resolve({
-      ad_storage: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
-      ad_user_data: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
-      ad_personalization: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
-      analytics_storage: getCookie('AnalysisCookie') === 'Analysis' ? 'granted' : 'denied',
-      functionality_storage: getCookie('AnalysisCookie') === 'Analysis' ? 'granted' : 'denied',
-      personalization_storage: getCookie('AnalysisCookie') === 'Analysis' ? 'granted' : 'denied',
     });
   });
 }
