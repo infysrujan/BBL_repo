@@ -36,35 +36,6 @@ export function getPathParams(pathname = window.location.pathname) {
 }
 
 /**
- * Refreshes mutable fields on `window.cdp.data` from the current document and URL.
- * Call after `document.documentElement.lang` (or pathname) changes.
- */
-export function refreshCdpData() {
-  ensureCdpGlobal();
-  const { cdp } = window;
-  Object.assign(cdp.data, {
-    siteLanguage: document.documentElement.lang.toLowerCase(),
-    utmParams: getUtmParams(),
-    pathParams: getPathParams(),
-    init: pushInitialPageContext,
-  });
-}
-
-function ensureCdpGlobal() {
-  if (window.cdp) return;
-  window.cdp = {
-    platform: 'web',
-    environment: 'prod',
-    data: {},
-    track: {
-      pageView: trackPageView,
-      linkClick: trackLinkClick,
-      contactFormSubmit: trackContactFormSubmit,
-    },
-  };
-}
-
-/**
  * Initial page object: AEP `web` schema plus `_bangkokbank` extension for reporting.
  */
 export function pushInitialPageContext() {
@@ -145,6 +116,34 @@ export function trackLinkClick(event, element, fallback = '', linkType = 'other'
   }
 }
 
+function ensureCdpGlobal() {
+  if (window.cdp) return;
+  window.cdp = {
+    platform: 'web',
+    environment: 'prod',
+    data: {},
+    track: {
+      pageView: trackPageView,
+      linkClick: trackLinkClick,
+    },
+  };
+}
+
+/**
+ * Refreshes mutable fields on `window.cdp.data` from the current document and URL.
+ * Call after `document.documentElement.lang` (or pathname) changes.
+ */
+export function refreshCdpData() {
+  ensureCdpGlobal();
+  const { cdp } = window;
+  Object.assign(cdp.data, {
+    siteLanguage: document.documentElement.lang.toLowerCase(),
+    utmParams: getUtmParams(),
+    pathParams: getPathParams(),
+    init: pushInitialPageContext,
+  });
+}
+
 const LEAD_FORM_REQUIRED_FIELDS = [
   'name',
   'surname',
@@ -163,6 +162,7 @@ const LEAD_FORM_REQUIRED_FIELDS = [
 export function trackContactFormSubmit(event) {
   ensureCdpGlobal();
   refreshCdpData();
+  window.cdp.track.contactFormSubmit = trackContactFormSubmit;
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const form = event.currentTarget;
   const inputs = form.querySelectorAll('input,select');
@@ -170,8 +170,8 @@ export function trackContactFormSubmit(event) {
   const formFields = [];
   let customerEmailId = '';
 
-  for (const node of inputs) {
-    if (!node.dataset.scFieldName) continue;
+  Array.from(inputs).forEach((node) => {
+    if (!node.dataset.scFieldName) return;
     const fieldName = node.dataset.scFieldName.toLowerCase();
     let { value } = node;
     if (typeof value === 'string' && node.tagName === 'SELECT') {
@@ -182,13 +182,13 @@ export function trackContactFormSubmit(event) {
       if (node.checked) {
         formFields.push({ formFieldName: fieldName, formFieldInfo: value });
       }
-      continue;
+      return;
     }
     if (node.type === 'checkbox') {
       if (node.checked) {
         formFields.push({ formFieldName: fieldName, formFieldInfo: value });
       }
-      continue;
+      return;
     }
     if (node.type === 'email') {
       const normalized = String(value).toLowerCase();
@@ -196,10 +196,10 @@ export function trackContactFormSubmit(event) {
         formFields.push({ formFieldName: fieldName, formFieldInfo: normalized });
         customerEmailId = normalized;
       }
-      continue;
+      return;
     }
     formFields.push({ formFieldName: fieldName, formFieldInfo: value });
-  }
+  });
 
   const { cdp } = window;
   const fieldNames = formFields.map((field) => field.formFieldName);
@@ -231,6 +231,7 @@ export function initCdpEvents() {
   analyticsBootstrapped = true;
   ensureCdpGlobal();
   refreshCdpData();
+  window.cdp.track.contactFormSubmit = trackContactFormSubmit;
   window.cdp.data.init();
   window.dispatchEvent(new CustomEvent('cdp:ready', { detail: window.cdp.data }));
   trackPageView();
