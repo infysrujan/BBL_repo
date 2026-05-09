@@ -47,7 +47,7 @@ import { initMarketingConsentListener } from './consent.js';
 initMarketingConsentListener();
 
 // Consent is given if the AnalysisCookie is set to 'On' and the martech=off query parameter is not present.
-const isConsentGiven = getCookie('AnalysisCookie') === 'On';
+const isConsentGiven = getCookie('AnalysisCookie') === 'Analysis';
 const isEnabled = !window.location.search.includes('martech=off');
 
 /**

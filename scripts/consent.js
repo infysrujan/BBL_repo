@@ -63,8 +63,8 @@ export async function applyMarketingConsentUpdates(detail = {}) {
 export function initMarketingConsentListener() {
   if (consentListenerAttached) return;
   consentListenerAttached = true;
-  // TODO: Trigger consent:update event when the user accepts or rejects the consent.
-  window.addEventListener('consent:update', (event) => {
+  // Listen for the cookie:consent-saved event from the cookie-modal block.
+  window.addEventListener('cookie:consent-saved', (event) => {
     // eslint-disable-next-line no-console
     console.debug('Consent update event received', event);
     const detail = event?.detail || {};

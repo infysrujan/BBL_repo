@@ -2,8 +2,9 @@
 import GtmMartech from '../plugins/gtm-martech/src/index.js';
 import { getCookie } from './utils/cookies.js';
 
-// For DA Preview support. Consent is given if the AnalysisCookie is set to 'On' and the martech=off query parameter is not present.
-const isConsentGiven = getCookie('AnalysisCookie') === 'On';
+// Consent is given if the AnalysisCookie is set to 'Analysis' from the cookie-modal / cookie-alert blocks.
+const isConsentGiven = getCookie('AnalysisCookie') === 'Analysis';
+// For DA Preview support. Martech is enabled if the martech=off query parameter is not present.
 const isEnabled = !window.location.search.includes('martech=off');
 
 // TODO: Update BBL's GA4 measurement ID and GTM Container Ids here

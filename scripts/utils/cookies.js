@@ -5,18 +5,19 @@
  */
 export function getCookie(name) {
   if (!name) return '';
-  const parts = document.cookie.split(';');
-  for (const part of parts) {
-    const idx = part.indexOf('=');
-    if (idx === -1) continue;
-    const key = part.slice(0, idx).trim();
-    if (key !== name) continue;
-    const raw = part.slice(idx + 1).trim();
-    try {
-      return decodeURIComponent(raw.replace(/\+/g, ' '));
-    } catch {
-      return raw;
-    }
-  }
-  return '';
+  const encoded = encodeURIComponent(name);
+  const match = document.cookie.split('; ').find((row) => row.startsWith(`${encoded}=`));
+  return match ? decodeURIComponent(match.split('=')[1]) : '';
 }
+
+/**
+ * Sets a cookie with a given name, value, and expiry (in days).
+ * @param {string} name
+ * @param {string} value
+ * @param {number} days
+ */
+export function setCookie(name, value, days) {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; `
+      + `expires=${expires}; path=/; SameSite=Lax`;
+  }
