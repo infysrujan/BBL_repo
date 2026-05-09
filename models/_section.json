@@ -211,7 +211,13 @@
         "video",
         "carousel-video",
         "forex-rates",
-        "multi-column-tiles"
+        "special-fx-rates",
+        "promotional-details",
+        "promo-card-listing",
+        "top-promotional-cards",
+        "multi-column-tiles",
+        "cookie-alert",
+        "cookie-modal"
       ]
     }
   ]

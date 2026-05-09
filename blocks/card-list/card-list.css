@@ -9,13 +9,20 @@
   .card-list-container .default-content-wrapper :is(h1) {
     line-height: 2.4375rem;
   }
-}
 
-:lang(th) {
   .card-list-container .default-content-wrapper :is(h2) {
     line-height: 2.0625rem;
   }
+
+  .cards-list-title :is(h1) {
+    line-height: 2.4375rem;
+  }
+
+  .cards-list-title :is(h2) {
+    line-height: 2.0625rem;
+  }
 }
+
 .cards-list-remark p,
 .cards-list-description p {
   font-weight: var(--bbl-font-family-regular);
@@ -59,6 +66,11 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   scroll-behavior: smooth;
+}
+
+.cards-list-button .button{
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .cards-list:is(.scrollable, .carousel) {
@@ -236,17 +248,7 @@
   margin-block: 0 0.9375rem;
   overflow-wrap: anywhere;
 }
-:lang(th) {
-  .cards-list-title :is(h1) {
-    line-height: 2.4375rem;
-  }
-}
 
-:lang(th) {
-  .cards-list-title :is(h2) {
-    line-height: 2.0625rem;
-  }
-}
 .cards-list-title:not(.has-title-underline) :is(h1, h2, h3, h4, h5, h6) {
   min-height: auto;
   padding-bottom: 0;
@@ -363,7 +365,6 @@
 }
 
 @media (width > 47.5rem) {
-
   .cards-list-remark p,
   .cards-list-description p {
     font-size: var(--bbl-font-size-b2);
@@ -437,31 +438,24 @@
     font-size: 1.3125rem;
     line-height: 1.4219rem;
   }
-  
+
   :lang(th) {
     .cards-list-title :is(h1) {
       line-height: 5.5rem;
     }
-  }
 
-  :lang(th) {
     .cards-list-title :is(h2) {
       line-height: 4.875rem;
     }
-  }
 
-  :lang(th) {
     .cards-list-title :is(h3) {
       line-height: 3.75rem;
     }
-  }
 
-  :lang(th) {
     .cards-list-title :is(h4) {
       line-height: 2.5rem;
     }
   }
-
 
   .card-list-modal-title+.card-list-modal-text {
     font-size: 0.875rem;
@@ -487,31 +481,40 @@
     font-size: 3rem;
     line-height: 2.875rem;
   }
-  
-  :lang(th) {
-    .card-list-container .default-content-wrapper :is(h1) {
-       line-height: 5.5rem;
-    }
-  }
 
   :lang(th) {
+    .card-list-container .default-content-wrapper :is(h1) {
+      line-height: 5.5rem;
+    }
+
     .card-list-container .default-content-wrapper :is(h2) {
       line-height: 4.875rem;
     }
-  }
-  
-  :lang(th) {
-    .card-list-container .default-content-wrapper :is(h3) {
-       line-height: 3.75rem;
-    }
-  }
 
-  :lang(th) {
+    .card-list-container .default-content-wrapper :is(h3) {
+      line-height: 3.75rem;
+    }
+
     .card-list-container .default-content-wrapper :is(h4) {
       line-height: 2.5rem;
     }
-  }
 
+    .cards-list-title :is(h1) {
+      line-height: 5.5rem;
+    }
+
+    .cards-list-title :is(h2) {
+      line-height: 4.875rem;
+    }
+
+    .cards-list-title :is(h3) {
+      line-height: 3.75rem;
+    }
+
+    .cards-list-title :is(h4) {
+      line-height: 2.5rem;
+    }
+  }
 
   .cards-list-remark p,
   .cards-list-description p {
@@ -626,31 +629,6 @@
     font-size: var(--bbl-font-size-h5-desktop);
     line-height: 1.625rem;
   }
-  
-  :lang(th) {
-    .cards-list-title :is(h1) {
-      line-height: 5.5rem;
-    }
-  }
-
-  :lang(th) {
-    .cards-list-title :is(h2) {
-      line-height: 4.875rem;
-    }
-  }
-
-  :lang(th) {
-    .cards-list-title :is(h3) {
-      line-height: 3.75rem;
-    }
-  }
-
-  :lang(th) {
-    .cards-list-title :is(h4) {
-      line-height: 2.5rem;
-    }
-  }
-
 
   .card-list-modal-title {
     font-size: var(--bbl-font-size-h3-desktop);

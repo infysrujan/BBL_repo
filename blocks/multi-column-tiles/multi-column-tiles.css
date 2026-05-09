@@ -97,8 +97,7 @@
   transform: translateY(calc(-11vh - 8.125rem));
 }
 
-.multi-column-tiles-title::after {
-  content: '';
+.multi-column-tiles-separator {
   display: block;
   width: 1.3125rem;
   height: 0.0825rem;
@@ -106,8 +105,8 @@
   margin: 0 auto;
 }
 
-.multi-column-tiles-tile:hover .multi-column-tiles-title::after,
-.multi-column-tiles-tile.is-active .multi-column-tiles-title::after {
+.multi-column-tiles-tile:hover .multi-column-tiles-separator,
+.multi-column-tiles-tile.is-active .multi-column-tiles-separator {
   opacity: 0;
 }
 

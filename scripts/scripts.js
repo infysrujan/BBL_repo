@@ -18,6 +18,7 @@ import {
   decorateTerritoryButtons,
   decorateButtonsV1,
   loadBreadcrumb,
+  buildCookieAlert,
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
@@ -30,7 +31,6 @@ import { getCookie } from './utils/cookies.js';
  */
 import {
   initMartech,
-  updateUserConsent,
   martechEager,
   martechLazy,
   martechDelayed,
@@ -180,9 +180,6 @@ function getDocumentLangFromPath(pathname) {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  // Consider consent for analytics only if the AnalysisCookie is set to 'On'.
-  const isConsentGiven = !window.location.search.includes('martech=off') && getCookie('AnalysisCookie') === 'On';
-
   const martechLoadedPromise = initMartech(
     // WebSDK Configuration
     // TODO: Remove the below comment once the WebSDK Configuration is updated.
@@ -238,6 +235,7 @@ async function loadLazy(doc) {
 
   // Load the gtm-martech library in the lazy phase.
   await gtmMartech.lazy();
+  await buildCookieAlert(main);
 
   // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
   decorateButtonsV1(main);
@@ -278,7 +276,7 @@ function loadDelayed() {
     // Initialize the CDP events only if consent is given and martech is enabled.
     if (isEnabled && isConsentGiven) {
       initCdpEvents();
-    };
+    }
     import('./delayed.js');
   }, 3000);
   // load anything that can be postponed to the latest here
