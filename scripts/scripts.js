@@ -22,6 +22,8 @@ import {
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
 
+import env from './utils/env.js';
+import { getCookie } from './utils/cookies.js';
 /**
  * Import the martech plugin.
  * See: https://github.com/adobe-rnd/aem-martech#launch-container-configuration for more information.
@@ -39,6 +41,28 @@ import {
  * See: https://github.com/adobe-rnd/aem-gtm-martech#launch-container-configuration for more information.
  */
 import gtmMartech from './gtm-martech.js';
+import { initCdpEvents } from './analytics.js';
+import { initMarketingConsentListener } from './consent.js';
+
+initMarketingConsentListener();
+
+// Consent is given if the AnalysisCookie is set to 'On' and the martech=off query parameter is not present.
+const isConsentGiven = getCookie('AnalysisCookie') === 'On';
+const isEnabled = !window.location.search.includes('martech=off');
+
+/**
+ * Configuration for each environment.
+ * @type {Object}
+ */
+// TODO: Update BBL's Dev, Stage and Prod datastream IDs here
+const dataStreamConfig = {
+  dev: 'db3b9bf1-f8e7-4d57-9fdf-94494c1459c6',
+  stage: 'db3b9bf1-f8e7-4d57-9fdf-94494c1459c6',
+  prod: 'db3b9bf1-f8e7-4d57-9fdf-94494c1459c6',
+};
+
+const orgId = 'C735552962AB1A800A495FFD@AdobeOrg';
+
 /**
  * Gets the language from the HTML tag.
  * @returns {string} The language code (e.g., 'en', 'th')
@@ -152,34 +176,12 @@ function getDocumentLangFromPath(pathname) {
 }
 
 /**
- * Gets the environment from the hostname.
- * @returns {'dev'|'stage'|'prod'}
- */
-const env = (() => {
-  const host = window.location.hostname;
-  if (host.includes('localhost') || host.includes('--preview') || host.includes('dev')) return 'dev';
-  if (host.includes('stage') || host.includes('staging')) return 'stage';
-  return 'prod';
-})();
-
-/**
- * Configuration for each environment.
- * @type {Object}
- */
-// TODO: Update BBL's Dev, Stage and Prod datastream IDs here
-const dataStreamConfig = {
-  dev: 'db3b9bf1-f8e7-4d57-9fdf-94494c1459c6',
-  stage: 'db3b9bf1-f8e7-4d57-9fdf-94494c1459c6',
-  prod: 'db3b9bf1-f8e7-4d57-9fdf-94494c1459c6',
-};
-
-/**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  // TODO: Update consent logic here.
-  const isConsentGiven = false;
+  // Consider consent for analytics only if the AnalysisCookie is set to 'On'.
+  const isConsentGiven = !window.location.search.includes('martech=off') && getCookie('AnalysisCookie') === 'On';
 
   const martechLoadedPromise = initMartech(
     // WebSDK Configuration
@@ -187,14 +189,14 @@ async function loadEager(doc) {
     // Docs: https://experienceleague.adobe.com/en/docs/experience-platform/web-sdk/commands/configure/overview#configure-js
     {
       datastreamId: dataStreamConfig[env],
-      orgId: 'C735552962AB1A800A495FFD@AdobeOrg',
+      orgId: orgId,
       martechConfig: {
-        analytics: false, // setting to false as BBL uses GA through GTM
+        analytics: isEnabled && isConsentGiven,
       }
     },
     // 2. Library Configuration
     {
-      personalization: !!getMetadata('target') && isConsentGiven,
+      personalization: !!getMetadata('target') && isEnabled && isConsentGiven,
       launchUrls: [
         /* TODO: Add BBL's Launch script URLs here */
       ],
@@ -273,6 +275,10 @@ function loadDelayed() {
   window.setTimeout(() => {
     // Load the martech library in the delayed phase.
     martechDelayed();
+    // Initialize the CDP events only if consent is given and martech is enabled.
+    if (isEnabled && isConsentGiven) {
+      initCdpEvents();
+    };
     import('./delayed.js');
   }, 3000);
   // load anything that can be postponed to the latest here
