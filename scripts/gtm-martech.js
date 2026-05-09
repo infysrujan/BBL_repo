@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-relative-packages
 import GtmMartech from '../plugins/gtm-martech/src/index.js';
-import { checkConsent } from './check-consent.js';
+import checkConsent from './check-consent.js';
 import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
 

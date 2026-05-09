@@ -7,7 +7,7 @@ import { getCookie } from './utils/cookies.js';
  *
  * @returns {Promise<Object>} Consent types for gtag `consent` / default update payloads.
  */
-export async function checkConsent() {
+export default async function checkConsent() {
   return new Promise((resolve) => {
     // Perform the Consent popup check here.
     // Not using a CMP, therefore we must resolve to the desired Consent State.
