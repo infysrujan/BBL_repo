@@ -62,13 +62,6 @@
 					"valueType": "string"
 				},
 				{
-					"component": "textarea",
-					"name": "formulaDescription",
-					"label": "Formula Description",
-					"description": "Describe the formula used (e.g. A = B + C )",
-					"valueType": "string"
-				},
-				{
 					"component": "text",
 					"name": "resultText",
 					"label": "Result Text",
