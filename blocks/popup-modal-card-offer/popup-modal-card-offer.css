@@ -118,8 +118,6 @@
   min-width: 8.625rem;
   max-width: 8.625rem;
   width: 100%;
-  padding: 0;
-  font-weight: var(--bbl-font-weight-regular);
 }
 
 @media (width > 47.5rem) {
