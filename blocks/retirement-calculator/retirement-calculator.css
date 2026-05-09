@@ -1,24 +1,58 @@
 /* ============================================================
-   retirement-calculator block — mobile first, all values in rem
-   Breakpoints: 47.5rem / tablet (760px), 64rem / desktop (1024px)
+   retirement-calculator block — mobile-first, all values in rem
+   Breakpoints: 47.5rem (760px) tablet, 64rem (1024px) desktop
    1rem = 16px  |  tokens: colors, border-radius, spacing
    ============================================================ */
 
-/* ── Wrapper ──────────────────────────────────────────────── */
+/* ── Wrapper ───────────────────────────────────────────────── */
 
 .retirement-calculator .rc-container {
-  max-width: 60rem;
+  max-width: 100%;
   margin: 0 auto;
   padding: 2rem 1rem;
+  box-sizing: border-box;
 }
 
-/* ── Stepper ──────────────────────────────────────────────── */
+/* ── Header ────────────────────────────────────────────────── */
+
+.retirement-calculator .rc-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.retirement-calculator .rc-title {
+  font-size: clamp(1.4rem, 6vw, 3rem);
+  font-weight: 500;
+  text-align: center;
+  margin: 0 0 2.1875rem;
+  color: #000;
+}
+
+.retirement-calculator .rc-divider {
+  width: 6rem;
+  height: 1.5px;
+  background: var(--bbl-color-grey-20);
+  border-radius: 9999px;
+  margin-bottom: 0.875rem;
+}
+
+/* ── Stepper ───────────────────────────────────────────────── */
+
+.retirement-calculator .rc-journey-content {
+  display: flex;
+  flex-direction: column;
+}
 
 .retirement-calculator .rc-stepper {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 3.5rem;
+  width: min(100%, 78%);
+  margin: 0 auto 3.5rem;
+  padding-inline: 0.875rem;
 }
 
 .retirement-calculator .rc-step {
@@ -26,159 +60,133 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex: 0 1 auto;
 }
 
 .retirement-calculator .rc-step-circle {
   position: relative;
-  z-index: 1;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: var(--bbl-radius-full);
-  border: 0.125rem solid var(--bbl-color-grey-20);
-  background: var(--bbl-color-grey-20);
-  color: var(--bbl-color-grey-60);
+  z-index: 10;
+  width: 1.063rem;
+  height: 1.063rem;
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.6875rem;
+  font-size: 0.875rem;
   font-weight: 600;
+  line-height: 1;
+  border: 2px solid var(--bbl-color-grey-20);
+  background: var(--bbl-color-grey-20);
+  color: #6B7280;
 }
 
 .retirement-calculator .rc-step-active .rc-step-circle {
   background: var(--bbl-color-white);
-  border-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-active-blue);
+  border-color: #0064FF;
+  color: #0064FF;
 }
 
 .retirement-calculator .rc-step-done .rc-step-circle {
-  background: var(--bbl-color-active-blue);
-  border-color: var(--bbl-color-active-blue);
+  background: #0064FF;
+  border-color: #0064FF;
   color: var(--bbl-color-white);
 }
 
 .retirement-calculator .rc-step-label {
   position: absolute;
-  top: calc(100% + 0.5rem);
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
+  margin-top: 0.5rem;
   white-space: nowrap;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--bbl-color-grey-80);
-}
-
-.retirement-calculator .rc-step-active .rc-step-label,
-.retirement-calculator .rc-step-done .rc-step-label {
-  color: var(--bbl-color-active-blue);
   font-weight: 600;
+  font-size: 0.75rem;
+  color: #000;
 }
 
 .retirement-calculator .rc-step-connector {
-  flex: 1;
-  height: 0.0625rem;
-  min-width: 6rem;
-  max-width: 9rem;
-  background: var(--bbl-color-grey-20);
-  align-self: flex-start;
-  margin-top: 0.6875rem;
+  flex: 1 1 auto;
+  height: 1.5px;
+  background: var(--bbl-color-grey-40);
+  margin-left: -0.25rem;
+  margin-right: -0.25rem;
 }
 
 .retirement-calculator .rc-step-connector-done {
-  background: var(--bbl-color-active-blue);
+  background: #0064FF;
 }
 
-/* ── Income Card (J1 hero) ────────────────────────────────── */
+/* ── J1 Income Card (Hero) ─────────────────────────────────── */
 
 .retirement-calculator .rc-income-card {
   background: var(--bbl-color-truthful-blue);
-  border-radius: var(--bbl-radius-card);
-  padding: 1.5rem;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
   color: var(--bbl-color-white);
   margin-bottom: 2rem;
 }
 
 .retirement-calculator .rc-income-title {
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
-  white-space: pre-line;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
 }
 
 .retirement-calculator .rc-income-input-wrap {
   position: relative;
   display: flex;
-  align-items: flex-end;
+  align-items: baseline;
+  padding-bottom: 5px;
+  width: 100%;
+  border-bottom: 1px solid #fff;
 }
 
 .retirement-calculator .rc-income-input {
   flex: 1;
   background: transparent;
   border: none;
-  border-bottom: 0.125rem solid var(--bbl-color-white-alpha-30);
   outline: none;
   color: var(--bbl-color-white);
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 3rem;
+  font-weight: 500;
   text-align: right;
-  padding-bottom: 0.25rem;
-  padding-right: 2rem;
+  padding-right: 0.5rem;
+  padding-bottom: 0;
   width: 100%;
-  box-sizing: border-box;
-}
-
-.retirement-calculator .rc-income-input-error {
-  border-bottom-color: var(--bbl-state-error);
-  color: var(--bbl-state-error);
 }
 
 .retirement-calculator .rc-income-unit {
-  position: absolute;
-  right: 0;
-  bottom: 0.25rem;
-  font-size: 0.75rem;
-  color: var(--bbl-color-grey-60);
-  pointer-events: none;
-}
-
-.retirement-calculator .rc-income-divider {
-  border: none;
-  border-top: 0.0625rem solid var(--bbl-color-white-alpha-20);
-  margin: 0.75rem 0 0.5rem;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 700;
 }
 
 .retirement-calculator .rc-income-footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.retirement-calculator .rc-error-text {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--bbl-state-error);
-  min-height: 1.25rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
 }
 
 .retirement-calculator .rc-present-value {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: var(--bbl-color-system-green);
-  margin-left: auto;
+  color: #2DCD73;
+  width: 100%;
+  text-align: right;
 }
 
-/* ── Fields (J1 age inputs) ───────────────────────────────── */
+/* ── Fields ────────────────────────────────────────────────── */
 
 .retirement-calculator .rc-fields {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .retirement-calculator .rc-field {
   display: flex;
   flex-direction: column;
-  gap: 0.1875rem;
 }
 
 .retirement-calculator .rc-field-hidden {
@@ -186,500 +194,534 @@
 }
 
 .retirement-calculator .rc-field-inner {
-  position: relative;
   display: flex;
   align-items: center;
-  height: 3.5rem;
-  border: 0.0625rem solid var(--bbl-border-default);
-  border-radius: var(--bbl-radius-input);
+  justify-content: space-between;
+  height: 3.375rem;
+  border: 1px solid #000;
+  border-radius: 8px;
   background: var(--bbl-color-white);
-  transition: border-color 0.2s;
-  box-sizing: border-box;
+  padding: 0 1rem;
 }
 
 .retirement-calculator .rc-field-inner:focus-within {
-  border-color: var(--bbl-border-focus);
-}
-
-.retirement-calculator .rc-field-inner-error {
-  border-color: var(--bbl-state-error);
+  border-color: #0064FF;
 }
 
 .retirement-calculator .rc-field-input {
-  width: 100%;
-  height: 100%;
+  flex: 1;
   background: transparent;
   border: none;
   outline: none;
   font-size: 0.875rem;
-  color: var(--bbl-color-gray-121);
+  color: #000;
   text-align: right;
-  padding: 0 1rem;
-  box-sizing: border-box;
-}
-
-.retirement-calculator .rc-field-input-error {
-  color: var(--bbl-state-error);
 }
 
 .retirement-calculator .rc-field-label {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 50%;
+  flex: 0 0 auto;
   font-size: 0.875rem;
   color: var(--bbl-color-grey-60);
   pointer-events: none;
-  white-space: normal;
-  line-height: 1.3;
+  white-space: nowrap;
 }
 
 .retirement-calculator .rc-field-error {
-  font-size: 0.75rem;
-  color: var(--bbl-state-error);
+  font-size: 0.8125rem;
+  color: #ef4444;
   padding-left: 1rem;
-  margin: 0;
-  min-height: 1rem;
+  margin-top: 0.375rem;
 }
 
-/* ── Actions ──────────────────────────────────────────────── */
-
-.retirement-calculator .rc-actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  padding: 1.5rem 0 0.5rem;
-}
-
-/* ── Buttons ──────────────────────────────────────────────── */
-
-.retirement-calculator .rc-next-btn,
-.retirement-calculator .rc-calculate-btn,
-.retirement-calculator .rc-back-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 7.1875rem;
-  height: 2.5rem;
-  padding: 0 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border-radius: var(--bbl-radius-button);
-  border: 0.125rem solid transparent;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
-  box-sizing: border-box;
-}
-
-.retirement-calculator .rc-next-btn,
-.retirement-calculator .rc-calculate-btn {
-  background: var(--bbl-color-active-blue);
-  border-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-}
-
-.retirement-calculator .rc-next-btn:hover,
-.retirement-calculator .rc-calculate-btn:hover {
-  background: var(--bbl-color-blue-90);
-  border-color: var(--bbl-color-blue-90);
-}
-
-.retirement-calculator .rc-next-btn:disabled,
-.retirement-calculator .rc-calculate-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-  pointer-events: none;
-}
-
-.retirement-calculator .rc-back-btn {
-  background: transparent;
-  border-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-active-blue);
-}
-
-.retirement-calculator .rc-back-btn:hover {
-  background: var(--bbl-color-blue-10);
-}
-
-/* ── J1 Result Summary (top of J2) ───────────────────────── */
-
-.retirement-calculator .rc-j1-summary {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
+/* ── J2 Result Summary / Step 3 Top ───────────────────────── */
 .retirement-calculator .rc-j1-summary-card {
-  background: var(--bbl-color-grey-10);
-  border-radius: var(--bbl-radius-md);
+  background: #F4F4F4;
+  border-radius: 8px;
   padding: 1rem;
-  margin-bottom: 0.25rem;
 }
 
 .retirement-calculator .rc-j1-summary-row {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
 }
 
 .retirement-calculator .rc-j1-summary-label {
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  color: var(--bbl-color-gray-121);
+  color: #000;
   margin: 0;
-  text-align: left;
 }
 
 .retirement-calculator .rc-j1-summary-value {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--bbl-color-active-blue);
-  text-align: right;
+  color: #0064FF;
   margin: 0;
 }
 
 .retirement-calculator .rc-j1-summary-unit {
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: var(--bbl-color-gray-121);
-}
-
-.retirement-calculator .rc-j1-summary-divider {
-  border: none;
-  border-top: 0.0625rem solid var(--bbl-color-grey-18);
-  margin: 1rem 0;
+  font-size: 0.6rem;
+  color: #000;
 }
 
 .retirement-calculator .rc-j1-summary-note {
-  font-size: 0.8125rem;
-  color: var(--bbl-color-grey-60);
-  margin: 0;
-  text-align: left;
+  font-size: 0.8rem;
+  color: #6B7280;
+  line-height: 1.4;
+  margin: 0.5rem;
 }
 
-/* ── J2 Heading ───────────────────────────────────────────── */
+/* ── J2 Heading ────────────────────────────────────────────── */
 
 .retirement-calculator .rc-j2-heading {
   text-align: center;
-  margin-bottom: 2rem;
 }
 
 .retirement-calculator .rc-j2-heading-text {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--bbl-color-gray-121);
-  margin: 0;
-  line-height: 1.4;
-}
-
-/* ── J2 Sections ──────────────────────────────────────────── */
-
-.retirement-calculator .rc-content-sections {
-  display: flex;
-  flex-direction: column;
-}
-
-.retirement-calculator .rc-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 500;
+  color: #000;
+  margin: 2rem;
 }
 
 .retirement-calculator .rc-section-title {
   font-size: 1rem;
-  font-weight: 600;
-  color: var(--bbl-color-gray-121);
-  margin: 0 0 0.5rem;
+  font-weight: 500;
+  color: #000;
+  margin: 1.5rem 0 1rem;
 }
 
-/* ── Tablet: 47.5rem+ (760px) ─────────────────────────────── */
-
-@media (width > 47.5rem) {
-  .retirement-calculator .rc-savings-cards {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .retirement-calculator .rc-field-input {
-    font-size: 1rem;
-  }
-
-  .retirement-calculator .rc-field-label {
-    font-size: 1rem;
-  }
-
-  .retirement-calculator .rc-step-connector {
-    min-width: 8rem;
-    max-width: 9rem;
-  }
-
-  .retirement-calculator .rc-income-title {
-    font-size: 1.125rem;
-  }
-
-  .retirement-calculator .rc-income-input {
-    font-size: 2rem;
-  }
-}
-
-/* ── J3 Awesome Banner (Case 1) ───────────────────────────── */
-
-.retirement-calculator .rc-awesome-banner {
-  background: var(--bbl-color-truthful-blue);
-  border-radius: var(--bbl-radius-md);
-  padding: 2rem;
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.retirement-calculator .rc-awesome-text {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--bbl-color-white);
-  margin: 0;
-  white-space: pre-line;
-}
-
-/* ── J3 Savings Cards (Cases 2 & 3) ──────────────────────── */
+/* ── J3 Result Cards ───────────────────────────────────────── */
 
 .retirement-calculator .rc-savings-cards {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 0 0.25rem;
 }
 
 .retirement-calculator .rc-savings-card-recommended,
 .retirement-calculator .rc-savings-card-alt {
-  border-radius: var(--bbl-radius-md);
   padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+  color: #fff;
 }
 
 .retirement-calculator .rc-savings-card-recommended {
-  background: var(--bbl-color-truthful-blue);
+  background: #0064ff;
   color: var(--bbl-color-white);
 }
 
 .retirement-calculator .rc-savings-card-alt {
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  background: var(--bbl-color-white);
+  border: 1px solid #0064FF;
+  background: #fff;
 }
 
 .retirement-calculator .rc-savings-card-title {
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  margin: 0 0 0.5rem;
+  text-align: left;
   white-space: pre-line;
-  color: var(--bbl-color-white);
-}
-
-.retirement-calculator .rc-savings-card-title-alt {
-  color: var(--bbl-color-system-green);
+  word-break: break-word;
+  margin: 0 0 0.5rem;
+  line-height: 1.2;
 }
 
 .retirement-calculator .rc-savings-card-amount {
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 3rem;
+  font-weight: 600;
   text-align: right;
-  margin: 0 0 0.5rem;
-  color: var(--bbl-color-white);
+  white-space: nowrap;
+  margin: 0;
 }
 
-.retirement-calculator .rc-savings-card-amount-alt {
-  color: var(--bbl-color-gray-121);
+.retirement-calculator .rc-savings-card-recommended .rc-savings-card-amount {
+  color: #fff;
+}
+
+.retirement-calculator .rc-savings-card-alt .rc-savings-card-amount {
+  color: #000;
 }
 
 .retirement-calculator .rc-savings-card-unit {
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: var(--bbl-color-grey-80);
-}
-
-.retirement-calculator .rc-savings-card-unit-alt {
-  color: var(--bbl-color-grey-60);
+  font-family: var(--bbl-font-family-looped);
+  font-size: var(--bbl-body-b4-size, 0.625rem);
+  font-weight: 500;
+  color: var(--bbl-color-grey-40);
 }
 
 .retirement-calculator .rc-savings-card-note {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 500;
   text-align: right;
-  margin: 0;
-  color: var(--bbl-color-white);
+  margin-top: auto;
 }
 
-.retirement-calculator .rc-savings-card-note-alt {
-  color: var(--bbl-color-active-blue);
+.retirement-calculator .rc-savings-card-alt .rc-savings-card-note {
+  color: #0064ff;
+  font-weight: 600;
 }
 
-/* ── J3 Calculation Summary ───────────────────────────────── */
+.retirement-calculator .rc-savings-card-alt .rc-savings-card-title {
+  color: var(--bbl-color-system-green);
+}
+
+/* ── J3 Summary Table ─────────────────────────────────────── */
 
 .retirement-calculator .rc-calc-summary-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--bbl-color-gray-121);
+  font-size: 2rem;
+  font-weight: 500;
   text-align: center;
-  margin: 0 0 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.retirement-calculator .rc-calc-summary-title-desktop {
+  display: none;
 }
 
 .retirement-calculator .rc-summary-table {
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  border-radius: var(--bbl-radius-md);
+  border: 1px solid #0064FF;
+  border-radius: 8px;
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 2rem;
+}
+
+.retirement-calculator .rc-summary-rows {
+  display: flex;
+  flex-direction: column;
 }
 
 .retirement-calculator .rc-summary-row {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
 }
 
 .retirement-calculator .rc-summary-label {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: var(--bbl-color-gray-121);
-  margin: 0;
-}
-
-.retirement-calculator .rc-summary-sublabel {
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--bbl-color-active-blue);
   margin: 0;
 }
 
 .retirement-calculator .rc-summary-value {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--bbl-color-active-blue);
-  text-align: right;
-  margin: 0 0 0 auto;
-  white-space: nowrap;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #000;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-}
-
-.retirement-calculator .rc-summary-value-plain {
-  color: var(--bbl-color-gray-121);
-  font-weight: 400;
+  gap: 0.5rem;
+  margin: 0;
 }
 
 .retirement-calculator .rc-summary-value-arrow {
-  align-items: center;
-  gap: 0.25rem;
+  color: #0064FF;
 }
 
 .retirement-calculator .rc-summary-unit {
   font-size: 0.75rem;
-  font-weight: 400;
-  color: var(--bbl-color-grey-60);
+  color: #6B7280;
 }
 
-/* ── J3 Progress Bar (Case 3) ─────────────────────────────── */
-
-.retirement-calculator .rc-progress-wrap {
-  background: var(--bbl-color-grey-10);
-  border-radius: var(--bbl-radius-md);
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.retirement-calculator .rc-progress-label {
-  font-size: 1rem;
+.retirement-calculator .rc-summary-sublabel {
+  font-size: 0.9rem;
+  color: #0064FF;
+  margin: 0;
   font-weight: 600;
-  color: var(--bbl-color-gray-121);
-  margin: 0 0 0.5rem;
 }
 
-.retirement-calculator .rc-progress-amounts {
+/* ── Actions / Footer ──────────────────────────────────────── */
+
+.retirement-calculator .rc-actions {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  margin-bottom: 0.5rem;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 2.5rem 0;
 }
 
-.retirement-calculator .rc-progress-current {
-  font-size: 1.75rem;
+.retirement-calculator .rc-next-btn,
+.retirement-calculator .rc-calculate-btn {
+  background: #0064FF;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  height: 2.5rem;
+  padding: 0 2rem;
   font-weight: 700;
-  color: var(--bbl-color-active-blue);
-  margin: 0;
-  white-space: nowrap;
+  cursor: pointer;
 }
 
-.retirement-calculator .rc-progress-total {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--bbl-color-grey-60);
-  margin: 0;
-  white-space: nowrap;
+.retirement-calculator .rc-back-btn {
+  background: transparent;
+  color: #0064FF;
+  border: 1px solid #0064FF;
+  border-radius: 4px;
+  height: 2.5rem;
+  padding: 0 2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-.retirement-calculator .rc-progress-unit {
-  font-size: 0.75rem;
-  font-weight: 400;
+.retirement-calculator .rc-back-btn:hover {
+  background: #0064FF;
+  color: #fff;
 }
 
-.retirement-calculator .rc-progress-bar-track {
-  height: 1rem;
-  width: 100%;
-  border-radius: 9999px;
-  background: var(--bbl-color-grey-20);
-  overflow: hidden;
-  margin-top: 0.5rem;
-}
+/* ============================================================
+   Tablet: min-width 47.5rem (760px)
+   ============================================================ */
 
-.retirement-calculator .rc-progress-bar-fill {
-  height: 1rem;
-  background: linear-gradient(
-    to right,
-    #002d5b 0%,
-    #002d5b 30%,
-    var(--bbl-color-active-blue) 30%,
-    var(--bbl-color-active-blue) 60%,
-    #a0c8ff 60%,
-    #a0c8ff 100%
-  );
-  transition: width 0.6s ease;
-}
+@media (width > 47.5rem) {
+  .retirement-calculator .rc-container {
+    padding: 2rem 3rem;
+  }
 
-/* ── Desktop: 64rem+ (1024px) ─────────────────────────────── */
+  .retirement-calculator .rc-stepper {
+    width: min(100%, 68%);
+    margin-bottom: 4rem;
+  }
+
+  .retirement-calculator .rc-step-circle {
+    width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .retirement-calculator .rc-step-label {
+    font-size: 1rem;
+  }
+
+  .retirement-calculator .rc-step-connector {
+    max-width: 9.5rem;
+  }
+
+  .retirement-calculator .rc-income-card {
+    padding: 1.5rem;
+  }
+
+  .retirement-calculator .rc-income-input {
+    font-size: 2.5rem;
+    font-weight: 600;
+  }
+
+  .retirement-calculator .rc-j1-summary-card {
+    display: flex;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+  }
+
+  .retirement-calculator .rc-j1-summary-row {
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+    background: #F4F4F4;
+  }
+
+  .retirement-calculator .rc-j1-summary-row:first-child {
+    border-radius: 8px 0 0 8px;
+    border-right: 1px solid #E5E7EB;
+  }
+
+  .retirement-calculator .rc-j1-summary-row:last-child {
+    border-radius: 0 8px 8px 0;
+    align-items: flex-end;
+  }
+
+  .retirement-calculator .rc-j1-summary-value {
+    font-size: 2rem;
+    margin-top: 0.5rem;
+  }
+
+  .retirement-calculator .rc-savings-cards {
+    flex-direction: row;
+  }
+
+  .retirement-calculator .rc-savings-card-recommended,
+  .retirement-calculator .rc-savings-card-alt {
+    flex: 1;
+    height: 9rem;
+  }
+
+  .retirement-calculator .rc-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .retirement-calculator .rc-fields>.rc-field:first-child {
+    grid-column: span 2;
+  }
+}
 
 @media (width > 64rem) {
   .retirement-calculator .rc-container {
-    padding: 2rem 0;
+    max-width: 64rem;
+    padding: 2rem 5.25rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .retirement-calculator .rc-income-card {
+    padding: 1.5rem;
+    width: 53.5rem;
+    height: 10.74rem;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .retirement-calculator .rc-income-title {
+    margin-bottom: 0.5rem;
+  }
+
+  .retirement-calculator .rc-income-input-wrap {
+    border-bottom: 1px solid #fff;
+    width: 100%;
+    padding-bottom: 5px;
+  }
+
+  .retirement-calculator .rc-income-input {
+    font-size: 3rem;
+    height: 3.5rem;
+    font-weight: 600;
+  }
+
+  .retirement-calculator .rc-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .retirement-calculator .rc-fields>.rc-field:first-child {
+    grid-column: auto;
+  }
+
+  .retirement-calculator .rc-income-footer {
+    margin-top: 0.5rem;
+  }
+
+  .retirement-calculator .rc-field-input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    text-align: right;
+    outline: none;
+    color: #000;
+    font-weight: 500;
+    font-size: 1rem;
+  }
+
+  .retirement-calculator .rc-field-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: left;
+    pointer-events: none;
+    font-size: 1rem;
+    color: var(--bbl-color-grey-60);
+    font-weight: 500;
+  }
+
+  .retirement-calculator .rc-field-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 3.4rem;
+    background: #fff;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+  }
+
+  .retirement-calculator .rc-j1-summary,
+  .retirement-calculator .rc-j1-summary-card,
+  .retirement-calculator .rc-j1-summary-note {
+    margin: 0;
+  }
+
+  .retirement-calculator .rc-j1-summary-card {
+    padding: 0;
+  }
+
+  .retirement-calculator .rc-j1-summary-row {
+    padding: 1rem;
+  }
+
+  .retirement-calculator .rc-j1-summary-label {
+    font-size: 1.5rem;
+  }
+
+  .retirement-calculator .rc-j1-summary-value {
+    font-size: 3rem;
+    text-align: left;
+    white-space: nowrap;
+    color: #0064ff;
+  }
+
+
+
+  .retirement-calculator .rc-summary-value {
+    font-size: 1.5rem;
+  }
+
+  .retirement-calculator .rc-step-1 .rc-actions {
+    padding: 1rem 0;
+  }
+
+  .retirement-calculator .rc-step-2 .rc-actions {
+    padding: 2.8rem 0;
+  }
+
+  .retirement-calculator .rc-step-3 .rc-actions {
+    padding: 1.5rem 0;
+  }
+
+  .retirement-calculator .rc-calc-summary-title-desktop {
+    display: block;
+  }
+
+  .retirement-calculator .rc-calc-summary-title-mobile {
+    display: none;
   }
 
   .retirement-calculator .rc-next-btn,
   .retirement-calculator .rc-calculate-btn,
   .retirement-calculator .rc-back-btn {
+    padding: 0 1rem;
+    min-width: 7.1875rem;
     font-size: 1rem;
   }
 
-  .retirement-calculator .rc-j2-heading-text {
-    font-size: 1.5rem;
+  .retirement-calculator .rc-back-btn {
+    background: transparent;
+    color: #0064FF;
+    border: 2px solid;
   }
 
-  .retirement-calculator .rc-j1-summary-value {
-    font-size: 2rem;
+  .retirement-calculator .rc-next-btn:hover,
+  .retirement-calculator .rc-calculate-btn:hover,
+  .retirement-calculator .rc-back-btn:hover {
+    background: #0056e0;
+    border-color: #0056e0;
+    color: #fff;
   }
 
-  .retirement-calculator .rc-section-title {
-    font-size: 1.125rem;
-  }
-
-  .retirement-calculator .rc-field-error {
-    font-size: 0.8125rem;
-  }
-
-  .retirement-calculator .rc-income-input {
-    font-size: 2.25rem;
+  .retirement-calculator .rc-next-btn:disabled,
+  .retirement-calculator .rc-calculate-btn:disabled {
+    pointer-events: none;
+    opacity: 0.5;
   }
 }

@@ -40,6 +40,20 @@ async function loadData() {
   };
 }
 
+function renderPage(block, i18n, contentElement) {
+  block.innerHTML = '';
+  const container = el('<div class="rc-container"></div>');
+  const header = el(`
+    <div class="rc-header">
+      <h1 class="rc-title">${i18n['common-title'] || 'Plan your finances for retirement'}</h1>
+      <div class="rc-divider"></div>
+    </div>
+  `);
+  container.appendChild(header);
+  container.appendChild(contentElement);
+  block.appendChild(container);
+}
+
 // ─── Stepper ─────────────────────────────────────────────────────────────────────
 
 function buildStepper(i18n, activeStep) {
@@ -83,7 +97,6 @@ function buildIncomeCard(i18n, savedValue) {
           placeholder="1-999,999,999" maxlength="${fmt(999999999).length}" value="${fmt(savedValue ?? 20000)}">
         <span class="rc-income-unit">${i18n['common-unit'] || 'baht'}</span>
       </div>
-      <hr class="rc-income-divider">
       <div class="rc-income-footer">
         <span class="rc-error-text" id="rc-err-monthlyIncome"></span>
         <span class="rc-present-value">${i18n['steps-step1-currentValueNote'] || 'At present value'}</span>
@@ -311,25 +324,31 @@ function buildSectionHeader(title) {
 function initProgressiveReveal(sectionEl) {
   const fields = [...sectionEl.querySelectorAll('.rc-field')];
   if (fields.length <= 1) return;
+
+  // Initially hide all but the first field
   fields.slice(1).forEach((f) => f.classList.add('rc-field-hidden'));
+
   const firstInput = fields[0].querySelector('input');
-  if (!firstInput) return;
-  firstInput.addEventListener('focus', () => {
-    fields.forEach((f) => f.classList.remove('rc-field-hidden'));
-  }, { once: true });
+  if (firstInput) {
+    const revealAllInSection = () => {
+      fields.slice(1).forEach((f) => f.classList.remove('rc-field-hidden'));
+    };
+
+    // If the user clicks or focuses the first field, reveal the whole section block
+    firstInput.addEventListener('focus', revealAllInSection, { once: true });
+    firstInput.addEventListener('click', revealAllInSection, { once: true });
+    firstInput.addEventListener('input', revealAllInSection, { once: true });
+  }
 }
 
 // ─── Journey 1 ───────────────────────────────────────────────────────────────────
 
 function renderJourney1(block, data, onNext, savedValues = {}) {
-  block.innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const { i18n, apiUrl } = data;
 
-  const container = el('<div class="rc-container"></div>');
-  container.appendChild(buildStepper(i18n, 1));
-
-  const content = el('<div class="rc-content"></div>');
+  const content = el('<div class="rc-journey-content rc-step-1"></div>');
+  content.appendChild(buildStepper(i18n, 1));
   content.appendChild(buildIncomeCard(i18n, savedValues.monthlyIncome));
 
   const fieldsWrap = el('<div class="rc-fields"></div>');
@@ -340,15 +359,15 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   fieldsWrap.appendChild(retirementAgeField);
   fieldsWrap.appendChild(lifeExpectancyField);
   content.appendChild(fieldsWrap);
-  container.appendChild(content);
 
   const footer = el(`
     <div class="rc-actions">
       <button type="button" class="rc-next-btn">${i18n['buttons-nextButton'] || 'Next'}</button>
     </div>
   `);
-  container.appendChild(footer);
-  block.appendChild(container);
+  content.appendChild(footer);
+
+  renderPage(block, i18n, content);
 
   const nextBtn = footer.querySelector('.rc-next-btn');
 
@@ -360,17 +379,17 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
     const crossAgeMsg = i18n['validation-currentAgeRetirementAgeError'] || 'Your current age must be less than your retirement age';
     const crossRetireMsg = i18n['validation-retirementAgeLifeExpectancyError'] || 'Your retirement age must be less than your life expectancy';
 
-    const ageErrEl = block.querySelector('#rc-err-currentAge');
-    const retireErrEl = block.querySelector('#rc-err-retirementAge');
-    const lifeErrEl = block.querySelector('#rc-err-lifeExpectancy');
+    const ageErrEl = content.querySelector('#rc-err-currentAge');
+    const retireErrEl = content.querySelector('#rc-err-retirementAge');
+    const lifeErrEl = content.querySelector('#rc-err-lifeExpectancy');
 
     if (ageErrEl.textContent === crossAgeMsg) currentAgeField.setError('');
     if (retireErrEl.textContent === crossAgeMsg || retireErrEl.textContent === crossRetireMsg) retirementAgeField.setError('');
     if (lifeErrEl.textContent === crossRetireMsg) lifeExpectancyField.setError('');
 
-    const currentAgeErr = block.querySelector('#rc-err-currentAge').textContent;
-    const retirementAgeErr = block.querySelector('#rc-err-retirementAge').textContent;
-    const lifeExpectancyErr = block.querySelector('#rc-err-lifeExpectancy').textContent;
+    const currentAgeErr = content.querySelector('#rc-err-currentAge').textContent;
+    const retirementAgeErr = content.querySelector('#rc-err-retirementAge').textContent;
+    const lifeExpectancyErr = content.querySelector('#rc-err-lifeExpectancy').textContent;
 
     if (currentAge >= retirementAge) {
       if (!currentAgeErr) currentAgeField.setError(crossAgeMsg);
@@ -382,13 +401,14 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   };
 
   const syncBtnState = () => {
-    nextBtn.disabled = !!block.querySelector('.rc-field-error:not(:empty), #rc-err-monthlyIncome:not(:empty)');
+    nextBtn.disabled = !!content.querySelector('.rc-field-error:not(:empty), #rc-err-monthlyIncome:not(:empty)');
   };
 
-  container.addEventListener('input', () => { validateCrossFields(); syncBtnState(); });
+  content.addEventListener('input', () => { validateCrossFields(); syncBtnState(); });
+  syncBtnState();
 
   nextBtn.addEventListener('click', async () => {
-    const monthlyIncome = parseFloat(raw(block.querySelector('#rc-monthlyIncome')?.value || '0')) || 0;
+    const monthlyIncome = parseFloat(raw(content.querySelector('#rc-monthlyIncome')?.value || '0')) || 0;
     const currentAge = currentAgeField.getValue();
     const retirementAge = retirementAgeField.getValue();
     const lifeExpectancy = lifeExpectancyField.getValue();
@@ -438,14 +458,13 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
 // ─── Journey 2 ───────────────────────────────────────────────────────────────────
 
 function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {}) {
-  block.innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const { i18n, apiUrl } = data;
 
-  const container = el('<div class="rc-container"></div>');
-  container.appendChild(buildStepper(i18n, 2));
+  const content = el('<div class="rc-journey-content rc-step-2"></div>');
+  content.appendChild(buildStepper(i18n, 2));
 
-  const content = el('<div class="rc-content rc-content--sections"></div>');
+  const sectionsWrap = el('<div class="rc-content rc-content--sections"></div>');
 
   // ── J1 result summary ──
   const j1Result = state.j1ApiResult || {};
@@ -467,10 +486,10 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
       <p class="rc-j1-summary-note">${i18n['steps-step2-inflationNote'] || 'Including an inflation rate of 1.5% p.a., the return on investment after retirement is assumed to be 3% p.a.'}</p>
     </div>
   `);
-  content.appendChild(summaryCard);
+  sectionsWrap.appendChild(summaryCard);
 
   // ── J2 heading ──
-  content.appendChild(el(`
+  sectionsWrap.appendChild(el(`
     <div class="rc-j2-heading">
       <h2 class="rc-j2-heading-text">
         <span>${i18n['steps-step2-moreInfoTitle'] || 'Give us more information'}</span><br>
@@ -489,7 +508,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   savingsWrap.appendChild(savingsReturnRateField);
   savingsWrap.appendChild(savingsIncreaseRateField);
   initProgressiveReveal(savingsWrap);
-  content.appendChild(savingsWrap);
+  sectionsWrap.appendChild(savingsWrap);
 
   // ── Provident Fund ──
   const pvdWrap = el('<div class="rc-section"></div>');
@@ -505,7 +524,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   pvdWrap.appendChild(salaryIncreaseField);
   pvdWrap.appendChild(pvdContribField);
   initProgressiveReveal(pvdWrap);
-  content.appendChild(pvdWrap);
+  sectionsWrap.appendChild(pvdWrap);
 
   // ── RMF ──
   const rmfWrap = el('<div class="rc-section"></div>');
@@ -517,7 +536,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   rmfWrap.appendChild(rmfAnnualField);
   rmfWrap.appendChild(rmfReturnRateField);
   initProgressiveReveal(rmfWrap);
-  content.appendChild(rmfWrap);
+  sectionsWrap.appendChild(rmfWrap);
 
   // ── Lump Sum ──
   const lumpSumWrap = el('<div class="rc-section"></div>');
@@ -529,9 +548,9 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   lumpSumWrap.appendChild(annualInvestmentField);
   lumpSumWrap.appendChild(lumpSumReturnRateField);
   initProgressiveReveal(lumpSumWrap);
-  content.appendChild(lumpSumWrap);
+  sectionsWrap.appendChild(lumpSumWrap);
 
-  container.appendChild(content);
+  content.appendChild(sectionsWrap);
 
   const footer = el(`
     <div class="rc-actions">
@@ -539,15 +558,15 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
       <button type="button" class="rc-calculate-btn">${i18n['buttons-calculateButton'] || 'Calculate'}</button>
     </div>
   `);
-  container.appendChild(footer);
-  block.appendChild(container);
+  content.appendChild(footer);
+  renderPage(block, i18n, content);
 
   const calcBtn = footer.querySelector('.rc-calculate-btn');
 
   const validateSavingsCross = () => {
     const returnRate = savingsReturnRateField.getValue();
     const increaseRate = savingsIncreaseRateField.getValue();
-    const increaseErr = block.querySelector('#rc-err-savingsIncreaseRate').textContent;
+    const increaseErr = content.querySelector('#rc-err-savingsIncreaseRate').textContent;
     if (!increaseErr && increaseRate > returnRate) {
       savingsIncreaseRateField.setError(
         i18n['validation-annualSavingsIncreaseRateError']
@@ -557,10 +576,11 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   };
 
   const syncBtnState = () => {
-    calcBtn.disabled = !!block.querySelector('.rc-field-error:not(:empty)');
+    calcBtn.disabled = !!content.querySelector('.rc-field-error:not(:empty)');
   };
 
-  container.addEventListener('input', () => { validateSavingsCross(); syncBtnState(); });
+  content.addEventListener('input', () => { validateSavingsCross(); syncBtnState(); });
+  syncBtnState();
 
   footer.querySelector('.rc-back-btn').addEventListener('click', onBack);
 
@@ -625,7 +645,6 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
 // ─── Journey 3 ───────────────────────────────────────────────────────────────────
 
 function renderJourney3(block, data, state, onBack) {
-  block.innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const { i18n } = data;
   const result1 = state.j2ApiResult1 || {};
@@ -637,10 +656,10 @@ function renderJourney3(block, data, state, onBack) {
   const currentSavings = state.journey2?.SavingBeginAmount || 0;
   const alreadySaved = savingMonth1 < 0;
 
-  const container = el('<div class="rc-container"></div>');
-  container.appendChild(buildStepper(i18n, 3));
+  const content = el('<div class="rc-journey-content rc-step-3"></div>');
+  content.appendChild(buildStepper(i18n, 3));
 
-  const content = el('<div class="rc-content"></div>');
+  const journeyContent = el('<div class="rc-content"></div>');
 
   // ── Summary card (same as J2) ──
   const summaryCard = el(`
@@ -669,11 +688,11 @@ function renderJourney3(block, data, state, onBack) {
       </p>
     </div>
   `);
-  content.appendChild(summaryCard);
+  journeyContent.appendChild(summaryCard);
 
   if (alreadySaved) {
     // ── Case 1: already saved enough ──
-    content.appendChild(el(`
+    journeyContent.appendChild(el(`
       <div class="rc-awesome-banner">
         <p class="rc-awesome-text">
           ${i18n['steps-step3-alreadySavedMessage'] || 'Awesome! After the calculation, you will have enough money for your retirement'}
@@ -684,9 +703,7 @@ function renderJourney3(block, data, state, onBack) {
     // ── Cases 2 & 3: savings cards ──
     const altCard = savingMonth2 >= 0 ? `
         <div class="rc-savings-card-alt">
-          <p class="rc-savings-card-title rc-savings-card-title-alt">
-            ${i18n['steps-step3-orSaveJustLabel'] || 'Or\nsave just'}
-          </p>
+          <p class="rc-savings-card-title rc-savings-card-title-alt">${i18n['steps-step3-orSaveJustLabel'] || 'Or\nsave just'}</p>
           <p class="rc-savings-card-amount rc-savings-card-amount-alt">
             ${fmt(savingMonth2)} <span class="rc-savings-card-unit rc-savings-card-unit-alt">${i18n['common-bahtUnit'] || 'baht'}</span>
           </p>
@@ -694,12 +711,10 @@ function renderJourney3(block, data, state, onBack) {
             ${i18n['steps-step3-savingsReturnNote5'] || 'If you invest with an annual return of 5%'}
           </p>
         </div>` : '';
-    content.appendChild(el(`
+    journeyContent.appendChild(el(`
       <div class="rc-savings-cards">
         <div class="rc-savings-card-recommended">
-          <p class="rc-savings-card-title">
-            ${i18n['steps-step3-recommendedMonthlySavingsLabel'] || 'Recommended\nmonthly savings'}
-          </p>
+          <p class="rc-savings-card-title">${i18n['steps-step3-recommendedMonthlySavingsLabel'] || 'Recommended\nmonthly savings'}</p>
           <p class="rc-savings-card-amount">
             ${fmt(savingMonth1)} <span class="rc-savings-card-unit">${i18n['common-bahtUnit'] || 'baht'}</span>
           </p>
@@ -712,25 +727,29 @@ function renderJourney3(block, data, state, onBack) {
     `));
 
     // ── Calculation summary heading ──
-    content.appendChild(el(`
-      <h2 class="rc-calc-summary-title">
-        ${i18n['steps-step3-calculationSummaryLabel'] || 'Calculation summary'}
-      </h2>
+    const currentSavingsDisplay = currentSavings > 0 ? fmt(currentSavings) : '-';
+    const baht = i18n['common-bahtUnit'] || 'baht';
+
+    // We render two titles, one outside (for desktop) and one inside (for mobile)
+    journeyContent.appendChild(el(`
+      <h2 class="rc-calc-summary-title rc-calc-summary-title-desktop">${i18n['steps-step3-calculationSummaryLabel'] || 'Calculation summary'}</h2>
     `));
+
+    const summaryTable = el(`
+      <div class="rc-summary-table">
+        <h2 class="rc-calc-summary-title rc-calc-summary-title-mobile">${i18n['steps-step3-calculationSummaryLabel'] || 'Calculation summary'}</h2>
+      </div>
+    `);
 
     // ── Case 3: progress bar ──
     if (currentSavings > 0) {
       const pct = Math.min((currentSavings / totalNeeded) * 100, 100);
-      content.appendChild(el(`
+      summaryTable.appendChild(el(`
         <div class="rc-progress-wrap">
           <p class="rc-progress-label">${i18n['steps-step3-currentSavingsAmountLabel'] || 'Current savings amount'}</p>
           <div class="rc-progress-amounts">
-            <p class="rc-progress-current">
-              ${fmt(currentSavings)} <span class="rc-progress-unit">${i18n['common-bahtUnit'] || 'baht'}</span>
-            </p>
-            <p class="rc-progress-total">
-              /${fmt(totalNeeded)} <span class="rc-progress-unit">${i18n['common-bahtUnit'] || 'baht'}</span>
-            </p>
+            <p class="rc-progress-current">${fmt(currentSavings)} <span class="rc-progress-unit">${i18n['common-bahtUnit'] || 'baht'}</span></p>
+            <p class="rc-progress-total">/${fmt(totalNeeded)} <span class="rc-progress-unit">${i18n['common-bahtUnit'] || 'baht'}</span></p>
           </div>
           <div class="rc-progress-bar-track">
             <div class="rc-progress-bar-fill" style="width:${pct}%"></div>
@@ -739,35 +758,20 @@ function renderJourney3(block, data, state, onBack) {
       `));
     }
 
-    // ── Summary table ──
-    const currentSavingsDisplay = currentSavings > 0 ? fmt(currentSavings) : '-';
-    const baht = i18n['common-bahtUnit'] || 'baht';
-    content.appendChild(el(`
-      <div class="rc-summary-table">
+    summaryTable.appendChild(el(`
+      <div class="rc-summary-rows">
         <div class="rc-summary-row">
-          <p class="rc-summary-label">
-            ${i18n['steps-step3-totalAmountNeededSummaryLabel'] || 'Total amount needed'}
-          </p>
-          <p class="rc-summary-value">
-            ${fmt(totalNeeded)} <span class="rc-summary-unit">${baht}</span>
-          </p>
+          <p class="rc-summary-label">${i18n['steps-step3-totalAmountNeededSummaryLabel'] || 'Total amount needed'}</p>
+          <p class="rc-summary-value">${fmt(totalNeeded)} <span class="rc-summary-unit">${baht}</span></p>
         </div>
         <div class="rc-summary-row">
-          <p class="rc-summary-label">
-            ${i18n['steps-step3-currentSavingsAmountLabel'] || 'Current savings amount'}
-          </p>
-          <p class="rc-summary-value rc-summary-value-plain">
-            ${currentSavingsDisplay} <span class="rc-summary-unit">${baht}</span>
-          </p>
+          <p class="rc-summary-label">${i18n['steps-step3-currentSavingsAmountLabel'] || 'Current savings amount'}</p>
+          <p class="rc-summary-value rc-summary-value-plain">${currentSavingsDisplay} <span class="rc-summary-unit">${baht}</span></p>
         </div>
         <div class="rc-summary-row">
           <span>
-            <p class="rc-summary-label">
-              ${i18n['steps-step3-recommendedMonthlySavingsSummaryLabel'] || 'Recommended monthly savings'}
-            </p>
-            <p class="rc-summary-sublabel">
-              ${i18n['steps-step3-investConsistentlyNote'] || 'You can save less each month by investing consistently'}
-            </p>
+            <p class="rc-summary-label">${i18n['steps-step3-recommendedMonthlySavingsSummaryLabel'] || 'Recommended monthly savings'}</p>
+            <p class="rc-summary-sublabel">${i18n['steps-step3-investConsistentlyNote'] || 'You can save less each month by investing consistently'}</p>
           </span>
           <p class="rc-summary-value rc-summary-value-arrow">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -779,17 +783,18 @@ function renderJourney3(block, data, state, onBack) {
         </div>
       </div>
     `));
+    journeyContent.appendChild(summaryTable);
   }
 
-  container.appendChild(content);
+  content.appendChild(journeyContent);
 
   const footer = el(`
     <div class="rc-actions">
       <button type="button" class="rc-back-btn">${i18n['buttons-backButton'] || 'Back'}</button>
     </div>
   `);
-  container.appendChild(footer);
-  block.appendChild(container);
+  content.appendChild(footer);
+  renderPage(block, i18n, content);
 
   footer.querySelector('.rc-back-btn').addEventListener('click', onBack);
 }
