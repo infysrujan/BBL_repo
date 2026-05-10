@@ -253,7 +253,7 @@ form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper .field-description {
 }
 
 .checkbox-wrapper.field-approvalcheckbox.field-wrapper input[type="checkbox"]:hover {
-  border: 1px solid var(--bbl-color-grey-125);
+  border: 0.0625rem solid var(--bbl-color-grey-125);
 }
 
 form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper input[type="checkbox"]:invalid {
