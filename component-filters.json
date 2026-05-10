@@ -54,12 +54,15 @@
       "video",
       "carousel-video",
       "forex-rates",
+      "special-fx-rates",
       "promotional-details",
       "promo-card-listing",
       "top-promotional-cards",
       "multi-column-tiles",
       "property-for-sale-details",
-      "property-for-sale"
+      "property-for-sale",
+      "cookie-alert",
+      "cookie-modal"
     ]
   },
   {
@@ -129,6 +132,12 @@
     "id": "content-insert-cards",
     "components": [
       "content-insert-card"
+    ]
+  },
+  {
+    "id": "cookie-modal",
+    "components": [
+      "cookie-modal-accordion-item"
     ]
   },
   {
