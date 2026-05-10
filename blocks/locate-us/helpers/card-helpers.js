@@ -238,6 +238,7 @@ export function renderCards(
   onSelect,
   configs,
   isAtm = false,
+  autoSelect = true,
 ) {
   cardsContainer.innerHTML = '';
   const start = (page - 1) * CARDS_PER_PAGE;
@@ -293,7 +294,7 @@ export function renderCards(
     if (idx === 0) {
       body.hidden = false;
       header.setAttribute('aria-expanded', 'true');
-      onSelect(loc);
+      if (autoSelect) onSelect(loc);
     }
 
     cardsContainer.appendChild(card);
@@ -301,7 +302,7 @@ export function renderCards(
 
   renderPagination(paginationEl, allResults.length, page, (newPage) => {
     // eslint-disable-next-line max-len
-    renderCards(allResults, cardsContainer, paginationEl, newPage, placeholders, onSelect, configs, isAtm);
+    renderCards(allResults, cardsContainer, paginationEl, newPage, placeholders, onSelect, configs, isAtm, false);
     scrollToMap();
   }, placeholders);
 }
