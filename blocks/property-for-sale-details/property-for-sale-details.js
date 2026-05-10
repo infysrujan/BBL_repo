@@ -1,6 +1,5 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-
-const API_BASE = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/PropertyForSaleService/GetPropertyDetail';
+import { fetchConfigs } from '../../scripts/config.js';
 
 function getFileId() {
   return new URLSearchParams(window.location.search).get('FILE_ID') || '';
@@ -71,34 +70,37 @@ function buildLocation(data) {
   return parts.join(' ') || '-';
 }
 
-function buildMapLink(data, label) {
+function buildMapLink(data, label, mapBaseUrl) {
   const lat = data.GPS_LATITUDE;
   const lng = data.GPS_LONGTITUDE;
-  if (!lat || !lng) return '-';
-  return `<a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="prop-for-sale-map-link">${label}<img src="/icons/google-map-open.ico" alt="" class="prop-for-sale-map-icon"></a>`;
+  if (!lat || !lng || !mapBaseUrl) return '-';
+  const href = `${mapBaseUrl}N ${lat} E ${lng}`;
+  return `<a href="${href}" target="_blank" class="prop-for-sale-map-link">${label}<img src="/icons/google-map-open.ico" alt="" class="prop-for-sale-map-icon"></a>`;
 }
 
-function buildDetailHtml(data, placeholders) {
-  const p = placeholders;
-  const currency = p.pfsCurrency || 'บาท';
-  const startingPrice = data.PR_PRICE
-    ? `${formatPrice(data.PR_PRICE)} ${currency}` : '-';
-  const specialPrice = data.SPECIAL_PRICE
-    ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
+function getFieldValue(field, data, currency, openMapLabel, mapBaseUrl) {
+  switch (field) {
+    case 'FILE_ID': return data.FILE_ID ? `${data.FILE_ID}${data.OLD_FILE_ID ? ` หรือ ${data.OLD_FILE_ID}` : ''}` : '-';
+    case 'AREA': return formatArea(data);
+    case 'LOCATION': return buildLocation(data);
+    case 'PR_PRICE': return data.PR_PRICE ? `${formatPrice(data.PR_PRICE)} ${currency}` : '-';
+    case 'SPECIAL_PRICE': return data.SPECIAL_PRICE ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
+    case 'MAP': return buildMapLink(data, openMapLabel, mapBaseUrl);
+    default: return data[field] || '-';
+  }
+}
 
-  const rows = [
-    { label: p.pfsFileId || 'รหัสแฟ้ม', value: data.FILE_ID ? `${data.FILE_ID}${data.OLD_FILE_ID ? ` หรือ ${data.OLD_FILE_ID}` : ''}` : '-' },
-    { label: p.pfsPropertyType || 'ประเภททรัพย์', value: data.MAIN_ASSET || '-' },
-    { label: p.pfsArea || 'ไร่-งาน-ตร.วา-ตร.ม.', value: formatArea(data) },
-    { label: p.pfsTotalAssets || 'จำนวนแปลง', value: data.ASSET_COUNT || '-' },
-    { label: p.pfsCertificate || 'เลขที่เอกสารสิทธิ์', value: data.CERTIFICATE_NO || '-' },
-    { label: p.pfsLocation || 'ที่ตั้งทรัพย์', value: buildLocation(data) },
-    { label: p.pfsStartingPrice || 'ราคาเริ่มต้น', value: startingPrice, starting: true },
-    { label: p.pfsSpecialPrice || 'ราคาพิเศษ', value: specialPrice, special: true },
-    { label: p.pfsMapLocation || 'ตำแหน่งที่ตั้ง', value: buildMapLink(data, p.pfsOpenMap || 'เปิด google map') },
-    { label: p.pfsSaleCondition || 'เงื่อนไข', value: data.SALE_CONDITION_DESC || '-' },
-    { label: p.pfsRemark || 'หมายเหตุ', value: data.WEBSITE_REMARK || '-' },
-  ];
+function buildDetailHtml(data, placeholders, detailRows, mapBaseUrl) {
+  const p = placeholders;
+  const currency = p.propertyForSaleCurrency || 'บาท';
+  const openMapLabel = p.propertyForSaleOpenMap || 'เปิด google map';
+
+  const rows = detailRows.map(({ Label: label, Field: field }) => ({
+    label,
+    value: getFieldValue(field, data, currency, openMapLabel, mapBaseUrl),
+    special: field === 'SPECIAL_PRICE',
+    starting: field === 'PR_PRICE',
+  }));
 
   const rowsHtml = rows.map(({
     label, value, special, starting,
@@ -118,20 +120,20 @@ function buildDetailHtml(data, placeholders) {
 
   const contactBody = [
     contactParts ? `<p class="prop-for-sale-contact-name">${contactParts}</p>` : '',
-    data.WEB_TELEPHONE ? `<p class="prop-for-sale-contact-tel">${p.pfsPhone || 'โทรศัพท์'}: ${data.WEB_TELEPHONE.trim()}</p>` : '',
-    data.WEB_EMAIL ? `<p class="prop-for-sale-contact-email">${p.pfsEmail || 'อีเมล'}: ${data.WEB_EMAIL.trim()}</p>` : '',
+    data.WEB_TELEPHONE ? `<p class="prop-for-sale-contact-tel">${p.propertyForSalePhone || 'โทรศัพท์'}: ${data.WEB_TELEPHONE.trim()}</p>` : '',
+    data.WEB_EMAIL ? `<p class="prop-for-sale-contact-email">${p.propertyForSaleEmail || 'อีเมล'}: ${data.WEB_EMAIL.trim()}</p>` : '',
   ].filter(Boolean).join('');
 
   const contactHtml = contactBody ? `
     <div class="prop-for-sale-contact-title-wrapper">
-      <h3 class="prop-for-sale-contact-title">${p.pfsContactTitle || 'การติดต่อ'}</h3>
+      <h3 class="prop-for-sale-contact-title">${p.propertyForSaleContactTitle || 'การติดต่อ'}</h3>
     </div>
     <div class="prop-for-sale-contact-body">${contactBody}</div>` : '';
 
   return `<div class="prop-for-sale-grid">${rowsHtml}</div>${contactHtml}`;
 }
 
-function initCarousel(block) {
+function initCarousel(block, interval) {
   const slides = [...block.querySelectorAll('.prop-for-sale-slide')];
   const dots = [...block.querySelectorAll('.prop-for-sale-dot')];
   if (slides.length <= 1) return;
@@ -150,7 +152,7 @@ function initCarousel(block) {
 
   function startAuto() {
     clearInterval(autoTimer);
-    autoTimer = setInterval(() => goTo(current + 1, 1), 10000);
+    autoTimer = setInterval(() => goTo(current + 1, 1), interval);
   }
 
   block.querySelector('.prop-for-sale-nav-prev')?.addEventListener('click', () => { goTo(current - 1, -1); startAuto(); });
@@ -188,17 +190,31 @@ export default async function decorate(block) {
     return;
   }
 
-  const [resp, placeholders] = await Promise.all([
-    fetch(`${API_BASE}/${fileId}`, { headers: { Accept: 'application/json' } })
+  const [placeholders, configs] = await Promise.all([
+    fetchPlaceholders(),
+    fetchConfigs(),
+  ]);
+
+  const apiBase = (configs?.propertyForSaleBaseUrl || '').replace(/\/$/, '');
+  const pfsConfigUrl = configs?.propertyForSaleConfigUrl || '';
+  const mapBaseUrl = configs?.propertyForSaleMapUrl || '';
+
+  const [resp, configJson] = await Promise.all([
+    fetch(`${apiBase}/GetPropertyDetail/${fileId}`, { headers: { Accept: 'application/json' } })
       .then((r) => (r.ok ? r.json() : null))
       .catch(() => null),
-    fetchPlaceholders(),
+    fetch(pfsConfigUrl)
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null),
   ]);
+
+  const detailRows = (configJson?.['detail-page-rows']?.data || []).filter((r) => r.Label && r.Field);
+  const carouselInterval = parseInt(placeholders.propertyForSaleCarouselInterval, 10) || 10000;
 
   const data = Array.isArray(resp) ? resp[0] : resp;
 
   if (!data) {
-    block.innerHTML = `<p class="prop-for-sale-error">${placeholders.pfsNotFound || 'ไม่พบข้อมูลทรัพย์สิน'}</p>`;
+    block.innerHTML = `<p class="prop-for-sale-error">${placeholders.propertyForSaleNotFound || 'ไม่พบข้อมูลทรัพย์สิน'}</p>`;
     return;
   }
 
@@ -206,7 +222,7 @@ export default async function decorate(block) {
 
   block.innerHTML = `
     ${buildCarousel(photos)}
-    <div class="prop-for-sale-detail">${buildDetailHtml(data, placeholders)}</div>`;
+    <div class="prop-for-sale-detail">${buildDetailHtml(data, placeholders, detailRows, mapBaseUrl)}</div>`;
 
-  initCarousel(block);
+  initCarousel(block, carouselInterval);
 }

@@ -129,7 +129,19 @@
 .listing-card-pages {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
     margin-top: 0.3125rem;
+}
+
+.listing-card-ellipsis {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 var(--bbl-space-050);
+    color: var(--bbl-color-grey-60);
+    font-size: 1.1875rem;
+    line-height: 2.25rem;
+    pointer-events: none;
 }
 
 .listing-card-arrow {
