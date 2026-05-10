@@ -115,26 +115,72 @@ export default function buildSlideArrowsandDots(row, index) {
       content.append(title);
     }
 
-    const hasDesc = descriptionCell && descriptionCell.textContent.trim();
+    // A step-number paragraph has text content of just a number+period e.g. "1."
+    const isStepNum = (p) => /^\d+\.\s*$/.test(p.textContent.trim());
 
+    // Build step wrappers from a source HTML string into content element
+    const buildStepContent = (html) => {
+      const temp = document.createElement('div');
+      temp.innerHTML = html;
+      const allParas = [...temp.querySelectorAll('p')];
+      let wrap = null;
+      allParas.forEach((p) => {
+        if (isStepNum(p)) {
+          wrap = document.createElement('div');
+          wrap.className = 'text-default editor pad-bot';
+          p.innerHTML = p.textContent; // strip any <strong> from number
+          p.className = 'text-large text-light';
+          wrap.append(p);
+          content.append(wrap);
+        } else {
+          if (!wrap) {
+            wrap = document.createElement('div');
+            wrap.className = 'text-default editor pad-bot';
+            content.append(wrap);
+          }
+          wrap.append(p);
+        }
+      });
+    };
+
+    const hasDesc = descriptionCell && descriptionCell.textContent.trim();
     if (hasDesc) {
-      const textWrap = document.createElement('div');
-      textWrap.className = 'text-default editor pad-bot';
-      while (descriptionCell.firstChild) textWrap.append(descriptionCell.firstChild);
-      content.append(textWrap);
+      const temp = document.createElement('div');
+      temp.innerHTML = descriptionCell.innerHTML;
+      const allParas = [...temp.querySelectorAll('p')];
+      if (allParas.some(isStepNum)) {
+        buildStepContent(descriptionCell.innerHTML);
+      } else {
+        const textWrap = document.createElement('div');
+        textWrap.className = 'text-default editor pad-bot';
+        textWrap.innerHTML = temp.innerHTML;
+        content.append(textWrap);
+      }
     }
 
     if (ctaLinkCell && ctaLinkCell.textContent.trim()) {
-      const linkWrap = document.createElement('div');
-      linkWrap.className = 'button-container';
       const a = ctaLinkCell.querySelector('a');
       if (a) {
+        // It's a real CTA button
+        const linkWrap = document.createElement('div');
+        linkWrap.className = 'button-container';
         a.className = 'sub-title-medium button primary';
         linkWrap.append(a);
+        content.append(linkWrap);
       } else {
-        while (ctaLinkCell.firstChild) linkWrap.append(ctaLinkCell.firstChild);
+        // No link — check if it contains step content (authored in wrong cell)
+        const ctaTemp = document.createElement('div');
+        ctaTemp.innerHTML = ctaLinkCell.innerHTML;
+        const ctaParas = [...ctaTemp.querySelectorAll('p')];
+        if (ctaParas.some(isStepNum)) {
+          buildStepContent(ctaLinkCell.innerHTML);
+        } else if (ctaLinkCell.textContent.trim()) {
+          const linkWrap = document.createElement('div');
+          linkWrap.className = 'button-container';
+          linkWrap.innerHTML = ctaTemp.innerHTML;
+          content.append(linkWrap);
+        }
       }
-      content.append(linkWrap);
     }
 
     slide.append(content);
