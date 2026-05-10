@@ -376,8 +376,8 @@ main {
 
 .tablelong.fontcomparetable .lineth {
   background: none;
-  color: var(--bbl-color-black);
-  font-size: 0.875rem;
+  color: var(--bbl-color-gray-121);
+  font-size: 1rem;
   font-weight: 700;
   padding: 0 0.3125rem;
   text-align: center;

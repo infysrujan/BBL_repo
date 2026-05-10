@@ -88,12 +88,6 @@
 				},
 				{
 					"component": "text",
-					"name": "maxLength",
-					"label": "Max Length",
-					"valueType": "number"
-				},
-				{
-					"component": "text",
 					"name": "topText",
 					"label": "Group Title",
 					"valueType": "string"
