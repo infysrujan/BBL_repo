@@ -353,8 +353,8 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
 
   const fieldsWrap = el('<div class="rc-fields"></div>');
   const currentAgeField = buildAgeField('currentAge', i18n['steps-step1-currentAge'] || 'How old are you?', savedValues.currentAge ?? 30, i18n);
-  const retirementAgeField = buildAgeField('retirementAge', i18n['steps-step1-retirementAge'] || 'What age do you plan to retire?', savedValues.retirementAge ?? 60, i18n);
-  const lifeExpectancyField = buildAgeField('lifeExpectancy', i18n['steps-step1-lifeExpectancy'] || 'Until what age do you expect to live?', savedValues.lifeExpectancy ?? 80, i18n);
+  const retirementAgeField = buildAgeField('retirementAge', i18n['steps-step1-retirementAge'] || 'What age do you plan to<br>retire?', savedValues.retirementAge ?? 60, i18n);
+  const lifeExpectancyField = buildAgeField('lifeExpectancy', i18n['steps-step1-lifeExpectancy'] || 'Until what age do you<br>expect to live?', savedValues.lifeExpectancy ?? 80, i18n);
   fieldsWrap.appendChild(currentAgeField);
   fieldsWrap.appendChild(retirementAgeField);
   fieldsWrap.appendChild(lifeExpectancyField);
@@ -730,14 +730,15 @@ function renderJourney3(block, data, state, onBack) {
     const currentSavingsDisplay = currentSavings > 0 ? fmt(currentSavings) : '-';
     const baht = i18n['common-bahtUnit'] || 'baht';
 
-    // We render two titles, one outside (for desktop) and one inside (for mobile)
     journeyContent.appendChild(el(`
       <h2 class="rc-calc-summary-title rc-calc-summary-title-desktop">${i18n['steps-step3-calculationSummaryLabel'] || 'Calculation summary'}</h2>
+    `));
+    journeyContent.appendChild(el(`
+      <h2 class="rc-calc-summary-title rc-calc-summary-title-mobile">${i18n['steps-step3-calculationSummaryLabel'] || 'Calculation summary'}</h2>
     `));
 
     const summaryTable = el(`
       <div class="rc-summary-table">
-        <h2 class="rc-calc-summary-title rc-calc-summary-title-mobile">${i18n['steps-step3-calculationSummaryLabel'] || 'Calculation summary'}</h2>
       </div>
     `);
 
@@ -762,13 +763,13 @@ function renderJourney3(block, data, state, onBack) {
       <div class="rc-summary-rows">
         <div class="rc-summary-row">
           <p class="rc-summary-label">${i18n['steps-step3-totalAmountNeededSummaryLabel'] || 'Total amount needed'}</p>
-          <p class="rc-summary-value">${fmt(totalNeeded)} <span class="rc-summary-unit">${baht}</span></p>
+          <p class="rc-summary-value rc-summary-value-plain">${fmt(totalNeeded)} <span class="rc-summary-unit">${baht}</span></p>
         </div>
         <div class="rc-summary-row">
           <p class="rc-summary-label">${i18n['steps-step3-currentSavingsAmountLabel'] || 'Current savings amount'}</p>
           <p class="rc-summary-value rc-summary-value-plain">${currentSavingsDisplay} <span class="rc-summary-unit">${baht}</span></p>
         </div>
-        <div class="rc-summary-row">
+        <div class="rc-summary-row rc-summary-row-stacked">
           <span>
             <p class="rc-summary-label">${i18n['steps-step3-recommendedMonthlySavingsSummaryLabel'] || 'Recommended monthly savings'}</p>
             <p class="rc-summary-sublabel">${i18n['steps-step3-investConsistentlyNote'] || 'You can save less each month by investing consistently'}</p>
