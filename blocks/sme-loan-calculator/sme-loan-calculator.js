@@ -67,6 +67,10 @@ export default async function decorate(block) {
       },
       parsePower() {
         const base = this.parseUnary();
+        if (this.pos < str.length && this.peek() === '^') {
+          this.pos += 1;
+          return base ** this.parsePower();
+        }
         if (this.pos < str.length && this.peek() === '*' && str[this.pos + 1] === '*') {
           this.pos += 2;
           return base ** this.parsePower();
@@ -109,7 +113,6 @@ export default async function decorate(block) {
     let expr = formulaStr.slice(eqIdx + 1).trim();
 
     expr = expr.replace(/\[/g, '(').replace(/\]/g, ')');
-    expr = expr.replace(/\^/g, '**');
     expr = expr.replace(/\bln\s*\(/g, 'Math.log(');
     expr = expr.replace(/\bln([A-Za-z])\b/g, 'Math.log($1)');
     expr = expr.replace(/\s+/g, '');
@@ -384,6 +387,16 @@ export default async function decorate(block) {
       const result = formulaCompute(formulaDescription, {
         A: fieldValues.P,
         P: fieldValues.A,
+        i: fieldValues.i / 1200,
+      });
+      return Number.isFinite(result) ? result : 0;
+    }
+
+    if (calcType === 'loanbalance') {
+      // Formula from config: P = A*((1+i)^n-1)/(i(1+i)^n)
+      // i = annual% / 1200
+      const result = formulaCompute(formulaDescription, {
+        ...fieldValues,
         i: fieldValues.i / 1200,
       });
       return Number.isFinite(result) ? result : 0;
