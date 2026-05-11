@@ -56,7 +56,7 @@ function createThumbItem(picture, index, { strip = false, active = false } = {})
   if (picture) {
     if (strip) stripInstrumentation(picture);
     const img = picture.querySelector('img');
-    if (img) { img.className = 'hero-banner-thumbnail-img'; img.loading = 'lazy'; item.append(img); }
+    if (img) { img.className = 'hero-banner-thumbnail-img'; img.loading = 'eager'; item.append(img); }
   }
   return item;
 }
@@ -184,7 +184,9 @@ export default function decorate(block) {
         thumbImg.setAttribute('aria-hidden', 'true');
         bannerItem.append(thumbImg);
       }
-      thumbnailList.append(createThumbItem(cloned, i, { strip: true, active: i === defaultIndex }));
+      if (i !== defaultIndex) {
+        thumbnailList.append(createThumbItem(cloned, i, { strip: true, active: false }));
+      }
     }
 
     moveInstrumentation(row, bannerItem);

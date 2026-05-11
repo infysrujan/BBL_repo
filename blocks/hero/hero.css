@@ -51,7 +51,17 @@
     object-position: center;
 }
 
+.hero-banner-video {
+    width: 100%;
+    display: block;
+    border: 0;
+}
+
 .hero-banner-hero-with-thumbnail-images .hero-banner-img {
+    aspect-ratio: 5/4;
+}
+
+.hero-banner-hero-with-thumbnail-images .hero-banner-video {
     aspect-ratio: 5/4;
 }
 
@@ -160,9 +170,6 @@
     width: calc((((100vw - 2.8125rem) / 4) * 1.5));
 }
 
-.hero-banner-thumbnail-item:first-child {
-    display: none;
-}
 
 .hero-banner-thumbnail-img {
     display: block;
@@ -433,6 +440,11 @@
     }
 
     .hero-banner-hero-with-thumbnail-images .hero-banner-img {
+        aspect-ratio: 192 / 85;
+        height: 53.125rem;
+    }
+
+    .hero-banner-hero-with-thumbnail-images .hero-banner-video {
         aspect-ratio: 192 / 85;
         height: 53.125rem;
     }
