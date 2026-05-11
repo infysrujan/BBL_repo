@@ -36,9 +36,9 @@
 .credit-card-selector .card-selector-title {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-h3-mobile);
-  font-weight: var(--bbl-font-weight-medium);
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 2rem;
-  color: var(--bbl-color-grey-110);
+  color: #1e1e21;
   margin: 0;
 }
 
@@ -85,15 +85,15 @@
 .credit-card-selector .filter-group-title {
   font-family: var(--bbl-font-family-medium);
   font-size: 1.286rem;
-  font-weight: var(--bbl-font-weight-medium);
-  color: var(--bbl-color-grey-110);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-black);
   margin: 0;
 }
 
 /* Hint text shown alongside the Lifestyles heading */
 .credit-card-selector .filter-group-hint {
-  font-size: var(--bbl-font-size-b2);
-  color: var(--bbl-color-grey-70);
+  font-size: var(--bbl-font-size-b1);
+  color: var(--bbl-color-black);
 }
 
 /* ==========================================================================
@@ -122,9 +122,9 @@
   padding-bottom: var(--bbl-space-100);
 }
 
-/* Fixed-width cards keep a consistent 8.5 rem tile on mobile scroll */
+/* Fixed-width cards keep a consistent ~131px tile on mobile scroll */
 .credit-card-selector .option-list-three-column .option-item {
-  flex: 0 0 8.5rem;
+  flex: 0 0 8.1875rem;
 }
 
 /* ==========================================================================
@@ -310,7 +310,7 @@
   border-radius: 0.4375rem;
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-medium);
+  font-weight: var(--bbl-font-weight-regular);
   cursor: pointer;
   white-space: nowrap;
   box-sizing: border-box;
@@ -329,8 +329,9 @@
 }
 
 .credit-card-selector .selector-button-primary:disabled {
-  background-color: var(--bbl-color-grey-20);
+  background-color: #D6D6D6;
   color: var(--bbl-color-grey-60);
+  border: 0.0625rem solid #D6D6D6;
   cursor: not-allowed;
 }
 
@@ -392,38 +393,19 @@
   background-color: var(--bbl-color-white);
 }
 
-/* Toggle button: 50 px tall, anchored to the collapsible's bottom edge.
-   Top 20 px overlap the gray section — transparent so it blends with any
-   section background without needing a colour match.
-   Bottom 30 px sit in the white toggle bar and show the gray teardrop box
-   (drawn by ::before, only covering those bottom 30 px).
-   overflow-y: hidden on the collapsible clips it to 30 px when collapsed. */
+/* Toggle button: full-width, centered — matches live site layout.
+   Sits in the white toggle bar below the entire filter section. */
 .credit-card-selector .collapse-toggle-button {
-  position: absolute;
-  bottom: 0;
-  right: 0;
+  position: static;
   background: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
-  width: var(--bbl-space-600);
-  height: 3.125rem;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: var(--bbl-space-075);
-}
-
-/* Gray rounded box — only the bottom 30 px (the visible teardrop portion) */
-.credit-card-selector .collapse-toggle-button::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
   height: 1.875rem;
-  background: var(--bbl-color-grey-10);
-  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Chevron icon — sits above the ::before box */
@@ -483,8 +465,8 @@
 .ccs-results-title {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-h3-mobile);
-  font-weight: var(--bbl-font-weight-medium);
-  color: var(--bbl-color-grey-110);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-black);
   margin: 0;
   line-height: 1.2;
 }
@@ -522,11 +504,16 @@
 /* ── Card title h3 ───────────────────────────────────────────────────────── */
 
 .card-list.credit-card .cards-list-title h3 {
-  font-size: 1.1375rem;
   line-height: 1.3;
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
   overflow-wrap: anywhere;
+}
+
+/* ── Card description — ensure grey-70 colour matching live site ─────────── */
+
+.card-list.credit-card .cards-list-description p {
+  color: var(--bbl-color-grey-70);
 }
 
 /* ── Button area: stack Learn More above Compare, no extra padding ───────── */
@@ -537,7 +524,7 @@
   gap: 0.625rem;
 }
 
-/* Learn More — full-width solid blue (primary)
+/* Learn More — full-width outlined blue (secondary)
    Suppress card-list's default tertiary arrow ::before icon               */
 
 .card-list.credit-card .cards-list-button a {
@@ -549,13 +536,14 @@
   padding: 0 var(--bbl-space-200);
   box-sizing: border-box;
   border-radius: 0.4375rem;
-  background-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
+  background-color: transparent;
+  color: var(--bbl-color-active-blue);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-medium);
+  font-weight: var(--bbl-font-weight-regular);
   text-decoration: none;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .card-list.credit-card .cards-list-button a::before,
@@ -564,8 +552,8 @@
 }
 
 .card-list.credit-card .cards-list-button a:hover {
-  background-color: var(--bbl-color-blue-90);
-  border: none;
+  background-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
   text-decoration: none;
 }
 
@@ -701,8 +689,8 @@
   cursor: pointer;
   color: var(--bbl-color-active-blue);
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-medium);
+  font-size: 1.2rem;
+  font-weight: var(--bbl-font-weight-regular);
   padding: var(--bbl-space-100) var(--bbl-space-200);
   border-radius: 0.4375rem;
   transition: background-color 0.2s ease;
@@ -729,9 +717,9 @@
   margin-top: var(--bbl-space-300);
   padding-top: var(--bbl-space-300);
   border-top: 0.0625rem solid var(--bbl-color-grey-30);
-  text-align: center;
-  font-size: var(--bbl-font-size-b2);
-  color: var(--bbl-color-grey-70);
+  text-align: left;
+  font-size: var(--bbl-font-size-b1);
+  color: #4E4E4E;
   line-height: 1.6;
 }
 
@@ -837,6 +825,12 @@
   /* Desktop: section titles step up to 1.5 rem */
   .credit-card-selector .filter-group-title {
     font-size: var(--bbl-font-size-h5-desktop);
+  }
+
+  /* Desktop: card title matches live 24px */
+  .card-list.credit-card .cards-list-title h3 {
+    font-size: var(--bbl-font-size-h5-desktop);
+    line-height: 1.625rem;
   }
 
   .credit-card-selector .card-selector-content {

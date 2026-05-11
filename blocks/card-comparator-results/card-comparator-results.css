@@ -1,5 +1,28 @@
+/* ── Back link ────────────────────────────────────────────────────────────── */
+
+.card-comparator-results .ccr-back-link {
+  display: block;
+  margin-bottom: var(--bbl-space-300);
+  color: var(--bbl-color-grey-70);
+  font-size: var(--bbl-font-size-b2);
+  font-family: var(--bbl-font-family-medium);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+}
+
+.card-comparator-results .ccr-back-link:hover {
+  color: var(--bbl-color-active-blue);
+  text-decoration: underline;
+}
+
 .card-comparator-results .ccr-description {
   text-align: center;
+  padding-bottom: 1.875rem;
+}
+
+.card-comparator-results .ccr-description :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--bbl-color-black);
+  line-height: 2.875rem;
 }
 
 /* ── Comparison grid — scrollable on mobile (matches card-list scrollable) ── */
@@ -26,8 +49,8 @@
   display: flex;
   flex-direction: column;
   background: var(--bbl-color-white);
-  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
-  border-radius: var(--bbl-radius-md);
+  border: none;
+  border-radius: 0;
   overflow: hidden;
   flex: 0 0 16.875rem;
   scroll-snap-align: start;
@@ -122,7 +145,7 @@
   min-height: 2.75rem;
   padding: 0.3125rem 0;
   box-sizing: border-box;
-  border-radius: var(--bbl-radius-md);
+  border-radius: 0.4375rem;
   border: 0.0625rem solid var(--bbl-color-active-blue);
   background: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
