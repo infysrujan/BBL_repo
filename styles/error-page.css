@@ -1,3 +1,7 @@
+.error-page .section {
+  padding-inline: 0;
+}
+
 .default-content-wrapper > p:first-child {
   margin: 0;
   max-width: 100%;
@@ -6,7 +10,6 @@
 .error-page .default-content-wrapper :is(h1,h2,h3,h4,h5,h6) {
   margin: 0 auto;
   padding: 0;
-  color: var(--bbl-color-truthful-blue);
   font-family: var(--bbl-font-family-medium);
   font-size: 1.3125rem;
   font-weight: var(--bbl-font-weight-regular);
@@ -30,29 +33,42 @@
   background-color: var(--bbl-color-grey-150);
 }
 
-.error-page .default-content-wrapper > p:not(:has(picture)) {
-  width: auto;
+.error-page .default-content-wrapper > p:not(.button-container, :has(picture)) {
   margin: 0 auto;
-  padding-bottom: 1.875rem;
-  color: var(--bbl-color-grey-85);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-body-b1-size);
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-font-size-b2);
   line-height: 1.125rem;
+  max-width: 100%;
+  font-family: var(--bbl-font-family-primary);
+  padding-bottom: 1.875rem;
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
 }
 
-.error-page .section:last-of-type .default-content-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 0.2rem;
-  padding: 0;
+.error-page .default-content-wrapper {
+  text-align: center;
 }
 
-.error-page .default-content-wrapper .button-container {
-  display: flex;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
+.error-page .default-content-wrapper > .button-container {
+  display: inline-flex;
+  margin: 0 0.2rem;
+}
+
+.error-page .default-content-wrapper > p.button-container strong .button-m.primary {
+  padding: 0 1.25rem;
+  min-height: 2.75rem;
+  width: auto;
+  align-content: center;
+  min-width: 8.3313rem;
+  color: var(--bbl-color-white);
+}
+
+.error-page .default-content-wrapper > p.button-container strong .button-m.secondary {
+  padding: 0 1.25rem;
+  min-height: 2.75rem;
+  width: auto;
+  align-content: center;
+  border: 0.0625rem solid var(--bbl-color-active-blue);
+  min-width: 8.3313rem;
 }
 
 @media (width > 47.5rem) {
@@ -78,5 +94,11 @@
   .error-page .default-content-wrapper :is(h1,h2,h3,h4,h5,h6) {
     font-size: 1.5rem;
     line-height: 1.625rem;
+  }
+
+  .error-page .default-content-wrapper > p:not(.button-container, :has(picture)) {
+    width: 65%;
+    font-size: var(--bbl-font-size-b1);
+    font-weight: var(--bbl-font-weight-regular);
   }
 }
