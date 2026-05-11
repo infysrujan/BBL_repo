@@ -58,6 +58,7 @@ function createThumbItem(picture, index, { strip = false, active = false } = {})
 }
 
 export default function decorate(block) {
+  const isMobile = window.matchMedia('(width <= 47.5rem)').matches;
   const variant = block.children[0]?.textContent?.trim() || 'default';
   const bannerList = createElement('ul', 'hero-banner-list');
   let thumbnailList = '';
@@ -89,20 +90,20 @@ export default function decorate(block) {
     // col 0 = mediaType; isDefault boolean only produces a DOM cell when checked
     let col = 1;
     const possibleIsDefault = row.children[col]?.textContent?.trim();
-    if (possibleIsDefault === 'true' || possibleIsDefault === 'false') col++;
+    if (possibleIsDefault === 'true' || possibleIsDefault === 'false') col += 1;
 
     // All 5 conditional media cells are always present in the DOM (empty when unused)
-    const imageCellDesktop = row.children[col++];
-    const imageCellMobile = row.children[col++];
-    const imageAlt = row.children[col++];
-    const youtubeUrlCell = row.children[col++];
-    const damVideoCell = row.children[col++];
+    const imageCellDesktop = row.children[col]; col += 1;
+    const imageCellMobile = row.children[col]; col += 1;
+    const imageAlt = row.children[col]; col += 1;
+    const youtubeUrlCell = row.children[col]; col += 1;
+    const damVideoCell = row.children[col]; col += 1;
 
-    const logoImageCell = row.children[col++];
-    const thumbImgCell = row.children[col++];
-    const headingCell = row.children[col++];
-    const textCell = row.children[col++];
-    const linkCell = row.children[col++];
+    const logoImageCell = row.children[col]; col += 1;
+    const thumbImgCell = row.children[col]; col += 1;
+    const headingCell = row.children[col]; col += 1;
+    const textCell = row.children[col]; col += 1;
+    const linkCell = row.children[col]; col += 1;
 
     if (mediaType === 'bg-video') {
       const youtubeUrl = youtubeUrlCell?.querySelector('a')?.href
@@ -113,7 +114,7 @@ export default function decorate(block) {
       if (youtubeUrl) {
         const ytId = getYouTubeId(youtubeUrl);
         const iframe = document.createElement('iframe');
-        iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}` : youtubeUrl;
+        iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?${isMobile ? '' : 'autoplay=1&'}mute=1&loop=1&playlist=${ytId}` : youtubeUrl;
         iframe.className = 'hero-banner-video';
         iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
         iframe.setAttribute('allowfullscreen', '');
@@ -122,10 +123,11 @@ export default function decorate(block) {
       } else if (damVideoSrc) {
         const video = document.createElement('video');
         video.className = 'hero-banner-video';
-        video.autoplay = true;
+        video.autoplay = !isMobile;
         video.muted = true;
         video.loop = true;
         video.playsInline = true;
+        if (isMobile) video.controls = true;
         const source = document.createElement('source');
         source.src = damVideoSrc;
         source.type = 'video/mp4';
