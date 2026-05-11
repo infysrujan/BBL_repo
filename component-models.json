@@ -7654,6 +7654,14 @@
         ]
       },
       {
+        "component": "boolean",
+        "name": "isDefault",
+        "label": "Set as Default",
+        "description": "Enable to display this item as the active item on page load.",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
         "component": "custom-asset-namespace:custom-asset",
         "name": "imagePickerDesktop",
         "label": "Image (Desktop)",

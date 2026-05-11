@@ -70,26 +70,43 @@ export default function decorate(block) {
     thumbnailList = createElement('ul', 'hero-banner-thumbnail-list', 'content');
   }
 
-  [...block.children].slice(1, 9).forEach((row, i) => {
-    const [
-      mediaTypeCell,
-      imageCellDesktop,
-      imageCellMobile,
-      imageAlt,
-      youtubeUrlCell,
-      damVideoCell,
-      logoImageCell,
-      thumbImgCell,
-      headingCell,
-      textCell,
-      linkCell,
-    ] = row.children;
+  const heroRows = [...block.children].slice(1, 9);
 
+  // Pre-pass: find which item has isDefault checked (stored as "true" at children[1])
+  let defaultIndex = 0;
+  const hasExplicitDefault = heroRows.some((row, i) => {
+    if (row.children[1]?.textContent?.trim() === 'true') {
+      defaultIndex = i;
+      return true;
+    }
+    return false;
+  });
+  if (!hasExplicitDefault) defaultIndex = 0;
+
+  heroRows.forEach((row, i) => {
     const bannerItem = createElement('li', 'hero-banner-item');
-    if (i === 0) bannerItem.classList.add('hero-banner-item-active');
+    if (i === defaultIndex) bannerItem.classList.add('hero-banner-item-active');
     bannerItem.dataset.index = i;
 
-    const mediaType = mediaTypeCell?.textContent?.trim() || 'images';
+    const mediaType = row.children[0]?.textContent?.trim() || 'images';
+
+    // col 0 = mediaType; isDefault boolean only produces a DOM cell when checked
+    let col = 1;
+    const possibleIsDefault = row.children[col]?.textContent?.trim();
+    if (possibleIsDefault === 'true' || possibleIsDefault === 'false') col++;
+
+    // All 5 conditional media cells are always present in the DOM (empty when unused)
+    const imageCellDesktop = row.children[col++];
+    const imageCellMobile = row.children[col++];
+    const imageAlt = row.children[col++];
+    const youtubeUrlCell = row.children[col++];
+    const damVideoCell = row.children[col++];
+
+    const logoImageCell = row.children[col++];
+    const thumbImgCell = row.children[col++];
+    const headingCell = row.children[col++];
+    const textCell = row.children[col++];
+    const linkCell = row.children[col++];
 
     if (mediaType === 'bg-video') {
       const youtubeUrl = youtubeUrlCell?.querySelector('a')?.href
@@ -126,9 +143,11 @@ export default function decorate(block) {
       if (pictureDesktop || pictureMobile) {
         const heroPicture = createSmartImage(pictureDesktop, pictureMobile, imageAlt);
         if (heroPicture) {
-          const img = heroPicture?.querySelector('img');
-          img.className = 'hero-banner-img';
-          img.loading = 'lazy';
+          const img = heroPicture.querySelector('img');
+          if (img) {
+            img.className = 'hero-banner-img';
+            img.loading = 'lazy';
+          }
           bannerItem.append(heroPicture);
         }
       }
@@ -165,7 +184,7 @@ export default function decorate(block) {
         thumbImg.setAttribute('aria-hidden', 'true');
         bannerItem.append(thumbImg);
       }
-      thumbnailList.append(createThumbItem(cloned, i, { strip: true, active: i === 0 }));
+      thumbnailList.append(createThumbItem(cloned, i, { strip: true, active: i === defaultIndex }));
     }
 
     moveInstrumentation(row, bannerItem);
