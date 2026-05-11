@@ -1,3 +1,3 @@
 export default function decorate(block) {
-  block.textContent = '';
+  block.classList.add('anm-details-block');
 }
