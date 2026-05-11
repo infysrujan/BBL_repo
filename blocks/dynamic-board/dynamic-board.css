@@ -10,7 +10,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.625rem;
-  margin-bottom: 1rem;
+  margin-bottom: var(--bbl-space-200);
 }
 
 .dynamic-board .db-controls-left {
@@ -31,7 +31,7 @@
 
 .dynamic-board .db-cal-label {
   width: 100%;
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-grey-85);
   margin-bottom: 0.625rem;
@@ -49,8 +49,8 @@
 .dynamic-board .db-date-display {
   width: 100%;
   height: 2.75rem;
-  padding: 0 2.5rem 0 1.25rem;
-  font-size: 0.875rem;
+  padding: 0 var(--bbl-space-500) 0 var(--bbl-space-250);
+  font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-gray-121);
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-40);
@@ -82,7 +82,7 @@
   align-items: center;
   justify-content: center;
   color: var(--bbl-color-gray-142);
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b2);
 }
 
 .dynamic-board .db-cal-icon:hover {
@@ -101,7 +101,7 @@
   border-radius: var(--bbl-rounded-100);
   box-shadow: 0 0.5rem 2rem var(--bbl-color-black-alpha-14);
   z-index: 300;
-  padding: 1rem;
+  padding: var(--bbl-space-200);
   box-sizing: border-box;
 }
 
@@ -109,7 +109,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 auto 0.75rem;
+  margin: 0 auto var(--bbl-space-150);
   width: 92%;
 }
 
@@ -129,7 +129,7 @@
 }
 
 .dynamic-board .db-cal-nav .icon-arrow-left {
-  font-size: 0.75rem;
+  font-size: var(--bbl-font-size-b3);
 }
 
 .dynamic-board .db-cal-prev .icon-arrow-left {
@@ -152,8 +152,8 @@
 
 .dynamic-board .db-cal-title {
   display: flex;
-  gap: 0.375rem;
-  font-size: 0.875rem;
+  gap: var(--bbl-space-075);
+  font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-blue-105);
 }
@@ -165,8 +165,8 @@
 }
 
 .dynamic-board .db-cal-table thead th {
-  padding: 0.25rem 0 0.5rem;
-  font-size: 0.875rem;
+  padding: var(--bbl-space-050) 0 var(--bbl-space-100);
+  font-size: var(--bbl-font-size-b2);
   font-weight: 600;
   color: var(--bbl-color-black);
   text-align: center;
@@ -236,8 +236,8 @@
   justify-content: space-between;
   width: 100%;
   height: 2.75rem;
-  padding: 0 0.9375rem 0 1.25rem;
-  font-size: 0.875rem;
+  padding: 0 0.9375rem 0 var(--bbl-space-250);
+  font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-grey-85);
   background: var(--bbl-color-white);
@@ -268,7 +268,7 @@
   font-size: 0.375rem;
   color: var(--bbl-color-black);
   flex-shrink: 0;
-  margin-left: 0.5rem;
+  margin-left: var(--bbl-space-100);
   pointer-events: none;
 }
 
@@ -286,7 +286,7 @@
   box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 12%);
   z-index: 400;
   margin: 0;
-  padding: 0.5rem 0;
+  padding: var(--bbl-space-100) 0;
   list-style: none;
   box-sizing: border-box;
 }
@@ -297,7 +297,7 @@
 
 .dynamic-board .db-time-item {
   padding: 0.625rem 1.875rem;
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-black);
   cursor: pointer;
@@ -320,8 +320,8 @@
 .dynamic-board .db-go-btn {
   min-width: 8.4375rem;
   height: 2.75rem;
-  padding: 0 1.5rem;
-  font-size: 0.875rem;
+  padding: 0 var(--bbl-space-300);
+  font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-white);
   background: var(--bbl-color-active-blue);
@@ -351,7 +351,7 @@
   gap: 0.625rem;
   background: none;
   border: none;
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-grey-70);
   cursor: pointer;
@@ -371,7 +371,7 @@
 }
 
 .dynamic-board .db-print-btn .icon-print {
-  font-size: 1rem;
+  font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-70);
 }
 
@@ -389,7 +389,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: var(--bbl-space-200);
   box-sizing: border-box;
 }
 
@@ -406,12 +406,12 @@
   max-height: 90vh;
   background: var(--bbl-color-white);
   border-radius: 0.25rem;
-  padding: 1.25rem;
+  padding: var(--bbl-space-250);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 33%);
+  gap: var(--bbl-space-150);
+  box-shadow: 0 var(--bbl-space-025) var(--bbl-space-100) rgb(0 0 0 / 33%);
 }
 
 .dynamic-board .db-filter-close {
@@ -434,7 +434,7 @@
 }
 
 .dynamic-board .db-filter-title {
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b2);
   margin: 0;
   color: var(--bbl-color-black);
 }
@@ -449,11 +449,11 @@
 .dynamic-board .db-filter-panel > .db-filter-divider:last-of-type {
   height: 0.0625rem;
   background: var(--bbl-color-grey-40);
-  margin: 0.25rem 0;
+  margin: var(--bbl-space-050) 0;
 }
 
 .dynamic-board .db-filter-section-label {
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-grey-85);
   margin: 0;
@@ -462,7 +462,7 @@
 .dynamic-board .db-filter-date-wrap {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--bbl-space-150);
 }
 
 .dynamic-board .db-filter-row {
@@ -473,8 +473,8 @@
 .dynamic-board .db-filter-lbl {
   width: 30%;
   flex-shrink: 0;
-  font-size: 0.875rem;
-  font-weight: 400;
+  font-size: var(--bbl-font-size-b2);
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-85);
 }
 
@@ -488,8 +488,8 @@
 .dynamic-board .db-mp-input {
   width: 100%;
   height: 2.75rem;
-  padding: 0 2.5rem 0 1rem;
-  font-size: 0.875rem;
+  padding: 0 var(--bbl-space-500) 0 var(--bbl-space-200);
+  font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-gray-121);
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-40);
@@ -544,7 +544,7 @@
   border-radius: 0.5rem;
   box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 12%);
   z-index: 700;
-  padding: 1rem 0.75rem 0.75rem;
+  padding: var(--bbl-space-200) var(--bbl-space-150) var(--bbl-space-150);
   box-sizing: border-box;
 }
 
@@ -556,7 +556,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--bbl-space-100);
 }
 
 .dynamic-board .db-mp-nav {
@@ -571,7 +571,7 @@
   border-radius: var(--bbl-rounded-full);
   color: var(--bbl-color-gray-142);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: var(--bbl-font-size-b1);
   line-height: 1;
 }
 
@@ -582,7 +582,7 @@
 }
 
 .dynamic-board .db-mp-title {
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-blue-105);
   background: none;
@@ -594,12 +594,12 @@
 .dynamic-board .db-mp-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.25rem;
+  gap: var(--bbl-space-050);
 }
 
 .dynamic-board .db-mp-cell {
   height: 2.25rem;
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-grey-70);
   background: none;
   border: 0.0625rem solid transparent;
@@ -622,15 +622,15 @@
 .dynamic-board .db-filter-radio-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--bbl-space-100);
   margin-top: -0.75rem;
 }
 
 .dynamic-board .db-filter-radio-row label {
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-grey-85);
   cursor: pointer;
-  margin: 0.125rem 0;
+  margin: var(--bbl-space-025) 0;
   display: inline-block;
 }
 
@@ -682,16 +682,16 @@
 .dynamic-board .db-filter-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--bbl-space-150);
   margin-top: auto;
-  padding-top: 0.5rem;
+  padding-top: var(--bbl-space-100);
 }
 
 .dynamic-board .db-filter-apply,
 .dynamic-board .db-filter-reset {
   width: 100%;
   height: 2.75rem;
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   border-radius: 0.375rem;
   cursor: pointer;
@@ -724,7 +724,7 @@
 .dynamic-board .db-table-wrap {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  margin-top: 0.75rem;
+  margin-top: var(--bbl-space-150);
   max-height: 40rem;
 }
 
@@ -755,7 +755,7 @@
 
 .dynamic-board .db-table thead th {
   padding: 0.625rem 0.9rem;
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-black);
   text-align: center;
@@ -793,13 +793,17 @@
   user-select: none;
 }
 
+.dynamic-board .db-th-sorted {
+  color: var(--bbl-color-active-blue);
+}
+
 .dynamic-board .db-th-group {
   border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
 }
 
 .dynamic-board .db-sort-icon {
   display: inline-block;
-  margin-left: 0.25rem;
+  margin-left: var(--bbl-space-050);
   vertical-align: middle;
   flex-shrink: 0;
 }
@@ -825,8 +829,8 @@
 }
 
 .dynamic-board .db-table tbody td {
-  padding: 0.625rem 0.75rem;
-  font-size: 0.875rem;
+  padding: 0.625rem var(--bbl-space-150);
+  font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-grey-70);
   vertical-align: middle;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
@@ -873,7 +877,7 @@
 }
 
 .dynamic-board .db-no-results {
-  padding: 2rem 1rem;
+  padding: var(--bbl-space-400) var(--bbl-space-200);
   text-align: center;
   color: var(--bbl-color-grey-40);
 }
@@ -905,13 +909,13 @@
 
 .dynamic-board .db-remarks {
   position: relative;
-  margin-top: 1.25rem;
+  margin-top: var(--bbl-space-250);
 }
 
 .dynamic-board .db-remarks-content {
   height: 9.375rem; /* 150px — collapsed height matching BBL */
   overflow: hidden;
-  font-size: 1rem;
+  font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-150);
   line-height: 1.6;
 }
@@ -921,7 +925,7 @@
 }
 
 .dynamic-board .db-remarks-content p {
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--bbl-space-100);
 }
 
 .dynamic-board .db-remarks-content p:last-child {
@@ -940,19 +944,19 @@
 }
 
 .dynamic-board .db-remarks-controls {
-  padding-top: 0.5rem;
+  padding-top: var(--bbl-space-100);
 }
 
 .dynamic-board .db-remarks-toggle {
   background: none;
   border: none;
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-grey-150);
   cursor: pointer;
-  padding: 0.25rem 0;
+  padding: var(--bbl-space-050) 0;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--bbl-space-050);
   opacity: 0.5;
   width: fit-content;
 }
@@ -1027,7 +1031,7 @@
 
   .dynamic-board .db-cal-header {
     width: 70%;
-    margin: 0 auto 0.75rem;
+    margin: 0 auto var(--bbl-space-150);
   }
 
   .dynamic-board .db-cal-title {
@@ -1038,7 +1042,7 @@
   .dynamic-board .db-cal-day span {
     width: 2.5rem;
     height: 2.5rem;
-    font-size: 0.875rem;
+    font-size: var(--bbl-font-size-b2);
   }
 
   .dynamic-board .db-remarks-content {
@@ -1052,11 +1056,11 @@
   }
 
   .dynamic-board .db-table thead th {
-    font-size: 0.875rem;
+    font-size: var(--bbl-font-size-b2);
   }
 
   .dynamic-board .db-table tbody td {
-    font-size: 0.875rem;
+    font-size: var(--bbl-font-size-b2);
   }
 }
 
@@ -1076,7 +1080,7 @@
 
   .dynamic-board .db-filter-date-wrap {
     flex-direction: row;
-    gap: 1rem;
+    gap: var(--bbl-space-200);
   }
 
   .dynamic-board .db-filter-date-wrap .db-filter-row {
@@ -1085,7 +1089,7 @@
   }
 
   .dynamic-board .db-filter-title {
-    font-size: 1rem;
+    font-size: var(--bbl-font-size-b1);
   }
 
   .dynamic-board .db-filter-panel > .db-filter-divider:first-of-type {
@@ -1096,30 +1100,30 @@
   }
 
   .dynamic-board .db-filter-section-label {
-    font-size: 1rem;
+    font-size: var(--bbl-font-size-b1);
   }
 
   .dynamic-board .db-filter-lbl {
-    font-size: 1rem;
+    font-size: var(--bbl-font-size-b1);
   }
 
   .dynamic-board .db-filter-radio-row label {
-    font-size: 1rem;
+    font-size: var(--bbl-font-size-b1);
   }
 
   .dynamic-board .db-filter-apply,
   .dynamic-board .db-filter-reset {
-    font-size: 1rem;
+    font-size: var(--bbl-font-size-b1);
   }
 
   .dynamic-board .db-cal-label {
-    font-size: 1rem;
+    font-size: var(--bbl-font-size-b1);
   }
 
   .dynamic-board .db-date-display,
   .dynamic-board .db-time-select,
   .dynamic-board .db-go-btn {
-    font-size: 1rem;
+    font-size: var(--bbl-font-size-b1);
   }
 
   .dynamic-board .db-calendar {
@@ -1135,16 +1139,16 @@
   .dynamic-board .db-cal-day span {
     width: 2.75rem;
     height: 2.75rem;
-    font-size: 1rem;
+    font-size: var(--bbl-font-size-b1);
   }
 
   .dynamic-board .db-cal-table thead th {
-    font-size: 1rem;
-    padding-bottom: 0.75rem;
+    font-size: var(--bbl-font-size-b1);
+    padding-bottom: var(--bbl-space-150);
   }
 
   .dynamic-board .db-remarks-content {
-    font-size: 1rem;
+    font-size: var(--bbl-font-size-b1);
   }
 }
 
@@ -1165,7 +1169,7 @@
 
   .dynamic-board .db-table {
     min-width: 0;
-    font-size: 0.75rem;
+    font-size: var(--bbl-font-size-b3);
   }
 
   .dynamic-board .db-calendar,
