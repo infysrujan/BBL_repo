@@ -22,8 +22,8 @@
       "fields": [
         {
           "component": "text",
-          "name": "aboutUsId",
-          "label": "Promo ID",
+          "name": "about-us-id",
+          "label": "About Us Id",
           "valueType": "string",
           "required": true
         },
@@ -65,27 +65,27 @@
         },
         {
           "component": "reference",
-          "name": "cardImageUrl",
-          "label": "Card Image",
+          "name": "card-image-url",
+          "label": "Card Image Url",
           "valueType": "string",
           "multi": false
         },
         {
           "component": "reference",
-          "name": "detailImageUrl",
+          "name": "detail-image-url",
           "label": "Detail Image (appears on the about us detail page)",
           "valueType": "string",
           "multi": false
         },
         {
           "component": "richtext",
-          "name": "cardShortDescription",
+          "name": "card-short-description",
           "label": "Card Short Description",
           "valueType": "string"
         },
         {
           "component": "richtext",
-          "name": "detailDescription",
+          "name": "detail-description",
           "label": "Detail Description (appears on the about us detail page)",
           "valueType": "string"
         },
@@ -97,31 +97,31 @@
         },
         {
           "component": "date-time",
-          "name": "publishDate",
+          "name": "publish-date",
           "label": "publish Date (appears on the about us detail page)",
           "valueType": "string"
         },
         {
           "component": "aem-content",
-          "name": "ctaLink",
+          "name": "cta-link",
           "label": "Cta Link",
           "description": "Destination URL for the button"
         },
         {
           "component": "text",
-          "name": "ctaLabel",
+          "name": "cta-label",
           "label": "Cta Label",
           "description": "Button label text",
           "required": true
         },
         {
           "component": "container",
-          "name": "targetSettings",
+          "name": "target-settings",
           "label": "Target settings",
           "fields": [
             {
               "component": "boolean",
-              "name": "targetLink",
+              "name": "target-link",
               "label": "Open link in new tab",
               "description": "Enable to open the button link in a new browser tab",
               "valueType": "boolean",
