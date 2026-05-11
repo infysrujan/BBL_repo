@@ -607,7 +607,7 @@ function buildInputField(def, savedValue) {
       errorEl.textContent = '';
       if (hintEl) {
         hintEl.textContent = def.allUsedMsg || 'All tax deductions have been used.';
-        hintEl.classList.remove('tax-calc-field-hint-warning'); // Remove orange warning
+        hintEl.classList.add('tax-calc-field-hint-error');
         hintEl.hidden = false;
       }
     } else {
@@ -619,6 +619,7 @@ function buildInputField(def, savedValue) {
       if (hintEl) {
         hintEl.textContent = def.hint.replace('{max}', fmt(newMax));
         hintEl.classList.remove('tax-calc-field-hint-warning');
+        hintEl.classList.remove('tax-calc-field-hint-error');
         hintEl.hidden = false;
       }
       const val = parseFloat(raw(input.value)) || 0;
