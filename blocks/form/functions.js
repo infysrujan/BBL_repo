@@ -235,11 +235,45 @@ function addCustomHeader(payload, headerName, headerValue) {
   };
 }
 
+/**
+ * Fetches province names in English from the LocationSearchService API
+ *
+ * @async
+ * @returns {Promise<Array>} - Array of province names or empty array on error
+ */
+async function getProvinceEnAsArray() {
+  const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/LocationSearchService/GetProvinceEn';
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    // Parse JSON response
+    const data = await response.json();
+
+    // Convert response into JS Array
+    const jsArray = Array.isArray(data) ? data : Object.values(data);
+
+    // eslint-disable-next-line no-console
+    console.log(jsArray);
+
+    return jsArray;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error fetching provinces:', error);
+    return [];
+  }
+}
+ 
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
   days,
   submitFormArrayToString,
+  getProvinceEnAsArray,
   fetchCsrfToken,
   addCsrfToken,
   addCustomHeader,
