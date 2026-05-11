@@ -100,6 +100,9 @@
 
 .hero-banner-content-inner .button-container {
     margin: 2.0625rem 0 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
 }
 
 .hero-banner-private-wealth-banking .button-container {
@@ -293,6 +296,14 @@
     -webkit-text-fill-color: transparent;
 }
 
+@media (width <= 47.5rem) {
+    .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
+        position: static;
+        color: var(--bbl-color-black);
+        padding: var(--bbl-space-200);
+    }
+}
+
 @media (width > 47.5rem) {
     .hero-banner::after {
         width: calc(100% - 6rem);
@@ -402,6 +413,8 @@
 
     .hero-banner-content-inner .button-container {
         margin: 2.25rem 0 0;
+        text-align: left;
+        justify-content: flex-start;
     }
 
     .hero-banner-thumbnail-outer {

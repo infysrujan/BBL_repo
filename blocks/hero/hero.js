@@ -28,11 +28,7 @@ function changeBanner(block) {
 }
 
 function lazyLoadThumbnails(block) {
-  const load = () => {
-    block.querySelector('.hero-banner-thumbnail-outer')?.classList.add('hero-banner-thumbnail-outer-active');
-    window.removeEventListener('scroll', load);
-  };
-  window.addEventListener('scroll', load, { passive: true });
+  block.querySelector('.hero-banner-thumbnail-outer')?.classList.add('hero-banner-thumbnail-outer-active');
 }
 
 function stripInstrumentation(el) {
