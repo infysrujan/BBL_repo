@@ -58,6 +58,9 @@
      BLUE SCALE
      ========================================================================= */
 
+  --bbl-color-blue-3: #f8f9fc;
+  --bbl-color-blue-6: #f1f3f9;
+  --bbl-color-blue-9: #e5e8f4;
   --bbl-color-blue-10: #E8F1FF;
   --bbl-color-blue-20: #D9E8FF;
   --bbl-color-blue-30: #C9DEFF;
@@ -74,6 +77,7 @@
   --bbl-color-blue-120: #031D37;
   --bbl-color-blue-130: #002087;
   --bbl-color-blue-140: #4890ff;
+  --bbl-color-blue-steel: #e5edf4;
   --bbl-color-blue-steel-light: #E6EEF4;
  
 

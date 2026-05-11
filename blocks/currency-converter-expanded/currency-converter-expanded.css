@@ -308,7 +308,6 @@
 /* Calculate button */
 .currency-converter-expanded .converter-expanded-btn {
   padding-right: 3.75rem;
-  position: relative;
   width: 100%;
   max-width: min-content;
   height: 2.75rem;
