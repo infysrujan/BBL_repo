@@ -2,6 +2,19 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
+function getYouTubeId(url) {
+  const regex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
+  const match = url.match(regex);
+  return match ? match[1] : null;
+}
+
+function getAssetSrc(cell) {
+  return cell?.querySelector('a')?.href
+    || cell?.querySelector('img')?.src
+    || cell?.textContent?.trim()
+    || '';
+}
+
 function changeBanner(block) {
   block.addEventListener('mouseenter', (e) => {
     const thumbnail = e.target.closest('.hero-banner-thumbnail-item');
@@ -59,9 +72,12 @@ export default function decorate(block) {
 
   [...block.children].slice(1, 9).forEach((row, i) => {
     const [
+      mediaTypeCell,
       imageCellDesktop,
       imageCellMobile,
       imageAlt,
+      youtubeUrlCell,
+      damVideoCell,
       logoImageCell,
       thumbImgCell,
       headingCell,
@@ -73,16 +89,48 @@ export default function decorate(block) {
     if (i === 0) bannerItem.classList.add('hero-banner-item-active');
     bannerItem.dataset.index = i;
 
-    const pictureDesktop = imageCellDesktop?.querySelector('picture');
-    const pictureMobile = imageCellMobile?.querySelector('picture');
+    const mediaType = mediaTypeCell?.textContent?.trim() || 'images';
 
-    if (pictureDesktop || pictureMobile) {
-      const heroPicture = createSmartImage(pictureDesktop, pictureMobile, imageAlt);
-      if (heroPicture) {
-        const img = heroPicture?.querySelector('img');
-        img.className = 'hero-banner-img';
-        img.loading = 'lazy';
-        bannerItem.append(heroPicture);
+    if (mediaType === 'bg-video') {
+      const youtubeUrl = youtubeUrlCell?.querySelector('a')?.href
+        || youtubeUrlCell?.textContent?.trim()
+        || '';
+      const damVideoSrc = getAssetSrc(damVideoCell);
+
+      if (youtubeUrl) {
+        const ytId = getYouTubeId(youtubeUrl);
+        const iframe = document.createElement('iframe');
+        iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}` : youtubeUrl;
+        iframe.className = 'hero-banner-video';
+        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.setAttribute('loading', 'lazy');
+        bannerItem.append(iframe);
+      } else if (damVideoSrc) {
+        const video = document.createElement('video');
+        video.className = 'hero-banner-video';
+        video.autoplay = true;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        const source = document.createElement('source');
+        source.src = damVideoSrc;
+        source.type = 'video/mp4';
+        video.append(source);
+        bannerItem.append(video);
+      }
+    } else {
+      const pictureDesktop = imageCellDesktop?.querySelector('picture');
+      const pictureMobile = imageCellMobile?.querySelector('picture');
+
+      if (pictureDesktop || pictureMobile) {
+        const heroPicture = createSmartImage(pictureDesktop, pictureMobile, imageAlt);
+        if (heroPicture) {
+          const img = heroPicture?.querySelector('img');
+          img.className = 'hero-banner-img';
+          img.loading = 'lazy';
+          bannerItem.append(heroPicture);
+        }
       }
     }
 
