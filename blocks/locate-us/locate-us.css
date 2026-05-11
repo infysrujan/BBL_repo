@@ -403,7 +403,7 @@
   justify-content: space-between;
   padding: var(--bbl-space-200) 0;
   background: none;
-      flex-grow: 1;
+  flex-grow: 1;
   border: none;
   cursor: pointer;
   text-align: left;
