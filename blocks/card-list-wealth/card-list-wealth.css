@@ -106,7 +106,9 @@
   align-items: center;
   text-align: center;
   text-decoration: none;
-  width: 11.875rem;
+
+  /* width: 11.875rem; */
+  width:100%;
   padding: 0.3125rem 1.25rem;
   min-height: 2.75rem;
   height: auto;
@@ -132,7 +134,6 @@
   .card-list-wealth {
     gap: 1.5rem;
     padding: 0 2.5rem;
-    overflow-x: unset;
   }
 
   .card-list-wealth-card {
@@ -155,6 +156,7 @@
   .card-list-wealth {
     gap: 2.1875rem;
     padding: 0 5.25rem;
+    overflow-x: unset;
   }
 
   .card-list-wealth-card {
