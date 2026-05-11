@@ -30,8 +30,7 @@
     margin-block: 0;
 }
 
-.stock-ticker-container .default-content-wrapper p,
-.stock-ticker-container .default-content-wrapper a {
+.stock-ticker-container .default-content-wrapper :is(p, a) {
     color: var(--bbl-color-grey-85);
     font-weight: var(--bbl-font-weight-regular);
     line-height: 1.2031rem;
@@ -59,8 +58,7 @@
         line-height: 2.875rem;
     }
 
-    .stock-ticker-container .default-content-wrapper p,
-    .stock-ticker-container .default-content-wrapper a {
+    .stock-ticker-container .default-content-wrapper :is(p, a) {
         line-height: 1.375rem;
     }
 }
