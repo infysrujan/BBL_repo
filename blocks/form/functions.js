@@ -236,10 +236,70 @@ function addCustomHeader(payload, headerName, headerValue) {
 }
 
 /**
- * Fetches province names in English from the LocationSearchService API
+ * Fetches province names in English from the LocationSearchService API.
+ * This function retrieves a list of provinces from the backend service and returns them as an array.
+ * Returns an empty array if the fetch fails or encounters an error.
  *
  * @async
- * @returns {Promise<Array>} - Array of province names or empty array on error
+ * @returns {Promise<Array<string>>} - Array of province names (strings) or empty array on error
+ *
+ * @example
+ * // Usage 1: Populate a dropdown field with provinces on form load
+ * {
+ *   "fieldType": "drop-down",
+ *   "name": "province",
+ *   "label": { "value": "Select Province" },
+ *   "events": {
+ *     "custom:setOptions": [
+ *       "const provinces = await getProvinceEnAsArray();",
+ *       "$field.enum = provinces;",
+ *       "$field.enumNames = provinces;"
+ *     ]
+ *   }
+ * }
+ *
+ * @example
+ * // Usage 2: Load provinces when another field changes
+ * {
+ *   "fieldType": "drop-down",
+ *   "name": "country",
+ *   "events": {
+ *     "change": [
+ *       "if ($field.$value === 'Thailand') {",
+ *       "  const provinces = await getProvinceEnAsArray();",
+ *       "  provinceField.enum = provinces;",
+ *       "  provinceField.enumNames = provinces;",
+ *       "}"
+ *     ]
+ *   }
+ * }
+ *
+ * @example
+ * // Usage 3: Use in a custom function to filter provinces
+ * {
+ *   "events": {
+ *     "custom:loadData": [
+ *       "const allProvinces = await getProvinceEnAsArray();",
+ *       "const filteredProvinces = allProvinces.filter(p => p.startsWith('B'));",
+ *       "$field.enum = filteredProvinces;",
+ *       "$field.enumNames = filteredProvinces;"
+ *     ]
+ *   }
+ * }
+ *
+ * @example
+ * // Usage 4: Validate province selection against API data
+ * {
+ *   "events": {
+ *     "change": [
+ *       "const validProvinces = await getProvinceEnAsArray();",
+ *       "if (!validProvinces.includes($field.$value)) {",
+ *       "  $field.valid = false;",
+ *       "  $field.errorMessage = 'Invalid province selected';",
+ *       "}"
+ *     ]
+ *   }
+ * }
  */
 async function getProvinceEnAsArray() {
   const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/LocationSearchService/GetProvinceEn';
