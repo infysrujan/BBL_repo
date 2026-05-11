@@ -28,11 +28,11 @@
           "value": "1. How would you rate the level of risk you are willing to accept from investing in mutual funds?"
         },
         {
-          "component": "aem-content",
+          "component": "richtext",
           "name": "screen1FragmentPath",
-          "label": "Screen 1 – Risk Options Fragment",
-          "description": "Fragment page containing the risk option cards (Low, Medium to Low, etc.)",
-          "required": true
+          "label": "Screen 1 – Risk Options",
+          "description": "Bullet points for risk option cards (Low, Medium to Low, etc.)",
+          "valueType": "string"
         },
         {
           "component": "richtext",
@@ -99,5 +99,6 @@
         }
       ]
     }
-  ]
+  ],
+  "filters": []
 }
