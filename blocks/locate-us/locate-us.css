@@ -1314,16 +1314,17 @@
     font-size: 1.5rem;
   }
 
-  .locate-us .cards-list-title {
+  .locate-us .cards-list-title h3{
     height: 100%;
     margin-bottom: 1.875rem;
+    font-family: 'BangkokBank-Bold', Tahoma, Helvetica, Arial, sans-serif;
   }
 
   .locate-us .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
     height: 100%;
     display: flex;
     margin: 0;
-    padding: 0;
+    padding: 0px 25px 15px 0px;
     padding-bottom: 0.9375rem;
   }
 
