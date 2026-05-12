@@ -1,5 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { openModal, closeModal, createModal } from '../../scripts/utils/modal-helpers.js';
+import buildThumbSquareList from '../../scripts/utils/thumb-square-list.js';
 
 // ── sessionStorage keys (shared with mf-comparator-results) ───────────────────
 const SESSION = {
@@ -32,6 +33,20 @@ function readUrl(row) {
 
 function readListItems(row) {
   return [...(cell(row)?.querySelectorAll('li') ?? [])].map((li) => li.textContent.trim()).filter(Boolean);
+}
+
+// Returns { iconEl, label } for each <li> in the risk options row.
+// Icon is the decorated <span class="icon ..."> (may have an <img> child after decorateIcons).
+function readRiskItems(row) {
+  return [...(cell(row)?.querySelectorAll('li') ?? [])].map((li) => {
+    const iconEl = li.querySelector('span.icon') ?? null;
+    // Label = text content with icon text stripped
+    const label = [...li.childNodes]
+      .filter((n) => n.nodeType === Node.TEXT_NODE)
+      .map((n) => n.textContent.trim())
+      .join('') || li.textContent.trim();
+    return { iconEl, label };
+  }).filter(({ label }) => label);
 }
 
 // ── Build screen 2 / screen 3 modal content ───────────────────────────────────
@@ -93,7 +108,7 @@ export default async function decorate(block) {
   const cfg = {
     screen1Title: readText(rows[0]),
     screen1FragmentPath: screen1FragmentPath.startsWith('/') ? screen1FragmentPath : '',
-    screen1RiskOptions: readListItems(rows[1]),
+    screen1RiskItems: readRiskItems(rows[1]),
     screen1RiskDescriptions: readListItems(rows[2]),
     screen1Description: readHtml(rows[2]),
     screen2Title: readText(rows[3]),
@@ -160,25 +175,14 @@ export default async function decorate(block) {
     const wrap = document.createElement('div');
     wrap.className = 'mfq-screen mfq-risk-options';
 
-    // Horizontal card row (label only — matching live site)
-    const cardRow = document.createElement('div');
-    cardRow.className = 'mfq-risk-cards';
+    const listItems = cfg.screen1RiskItems.map(({ iconEl, label }) => ({
+      iconEl,
+      label,
+      dataset: { riskValue: label.toLowerCase().replace(/\s+/g, '-') },
+    }));
 
-    cfg.screen1RiskOptions.forEach((label) => {
-      const card = document.createElement('button');
-      card.type = 'button';
-      card.className = 'mfq-risk-card';
-      card.dataset.riskValue = label.toLowerCase().replace(/\s+/g, '-');
-
-      const name = document.createElement('span');
-      name.className = 'mfq-risk-label';
-      name.textContent = label;
-      card.appendChild(name);
-
-      cardRow.appendChild(card);
-    });
-
-    wrap.appendChild(cardRow);
+    const cardList = buildThumbSquareList(listItems, document);
+    wrap.appendChild(cardList);
 
     // Descriptions as bullet list below the cards
     if (cfg.screen1RiskDescriptions.length) {
