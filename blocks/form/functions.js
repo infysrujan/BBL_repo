@@ -236,13 +236,15 @@ function addCustomHeader(payload, headerName, headerValue) {
 }
 
 /**
-* Fetches the province list once and normalizes it for dropdown use.
-* Expected output from the API can be:
-* - array of strings: ["A", "B"]
-* - array of objects: [{ value: "A", label: "Alberta" }]
+* Fetches and normalizes province data.
+* Expected API shape:
+* [
+*   { "Province": "Bangkok" },
+*   { "Province": "Chiang Mai" }
+* ]
 *
 * @private
-* @returns {Object[]}
+* @returns {Array<{value: string, label: string}>}
 */
 function getProvinceData() {
   const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/LocationSearchService/GetProvinceEn';
@@ -262,25 +264,21 @@ function getProvinceData() {
     return [];
   }
 
-  // Normalize common API shapes into [{ value, label }]
-  return response.map((item) => {
-    if (typeof item === 'string' || typeof item === 'number') {
-      return {
-        value: String(item),
-        label: String(item),
-      };
-    }
+  return response
+    .map((item) => {
+      const province = item && item.Province ? String(item.Province) : '';
 
-    return {
-      value: String(item.value || item.code || item.id || item.provinceCode || item.provinceEn || ''),
-      label: String(item.label || item.name || item.title || item.provinceName || item.provinceEn || ''),
-    };
-  }).filter((item) => item.value !== '' && item.label !== '');
+      return {
+        value: province,
+        label: province,
+      };
+    })
+    .filter((item) => item.value !== '');
 }
 
 /**
 * Returns the stored dropdown values for Province.
-* Maps to the field's enum property.
+* Maps to enum.
 *
 * @name getProvinceEnum
 * @returns {string[]}
@@ -292,7 +290,7 @@ function getProvinceEnum() {
 
 /**
 * Returns the display labels for Province.
-* Maps to the field's enumNames property.
+* Maps to enumNames.
 *
 * @name getProvinceEnumNames
 * @returns {string[]}
