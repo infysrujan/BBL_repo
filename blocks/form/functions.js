@@ -302,6 +302,33 @@ function getProvinceEnumNames() {
   return data.map((item) => item.label);
 }
 
+/**
+ * Validates Thai Citizen ID using the official algorithm
+ * @name validateThaiCitizenID
+ * @param {string} id - The 13-digit Thai Citizen ID to validate
+ * @returns {boolean} - Returns true if the ID is valid, false otherwise
+ *
+ * @example
+ * // Usage in form validation
+ * validateThaiCitizenID('1234567890123') // returns true or false
+ */
+function validateThaiCitizenID(id) {
+  if (
+    id.length !== 13
+    || id.charAt(0).match(/[09]/)
+  ) return false;
+
+  let sum = 0;
+  for (let i = 0; i < 12; i += 1) {
+    sum += parseInt(id.charAt(i), 10) * (13 - i);
+  }
+
+  if ((11 - (sum % 11)) % 10 !== parseInt(id.charAt(12), 10)) {
+    return false;
+  }
+  return true;
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -309,6 +336,7 @@ export {
   submitFormArrayToString,
   getProvinceEnum,
   getProvinceEnumNames,
+  validateThaiCitizenID,
   fetchCsrfToken,
   addCsrfToken,
   addCustomHeader,
