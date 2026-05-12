@@ -49,6 +49,7 @@ function buildPopupElement(config, doc) {
   inner.appendChild(cardBody);
 
   if (config.linkElement) {
+    config.linkElement.classList.add('button-m');
     inner.appendChild(config.linkElement);
   }
 
