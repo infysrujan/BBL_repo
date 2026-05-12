@@ -236,104 +236,79 @@ function addCustomHeader(payload, headerName, headerValue) {
 }
 
 /**
- * Fetches province names in English from the LocationSearchService API.
- * This function retrieves a list of provinces from the backend service and returns them as an array.
- * Returns an empty array if the fetch fails or encounters an error.
- *
- * @async
- * @returns {Promise<Array<string>>} - Array of province names (strings) or empty array on error
- *
- * @example
- * // Usage 1: Populate a dropdown field with provinces on form load
- * {
- *   "fieldType": "drop-down",
- *   "name": "province",
- *   "label": { "value": "Select Province" },
- *   "events": {
- *     "custom:setOptions": [
- *       "const provinces = await getProvinceEnAsArray();",
- *       "$field.enum = provinces;",
- *       "$field.enumNames = provinces;"
- *     ]
- *   }
- * }
- *
- * @example
- * // Usage 2: Load provinces when another field changes
- * {
- *   "fieldType": "drop-down",
- *   "name": "country",
- *   "events": {
- *     "change": [
- *       "if ($field.$value === 'Thailand') {",
- *       "  const provinces = await getProvinceEnAsArray();",
- *       "  provinceField.enum = provinces;",
- *       "  provinceField.enumNames = provinces;",
- *       "}"
- *     ]
- *   }
- * }
- *
- * @example
- * // Usage 3: Use in a custom function to filter provinces
- * {
- *   "events": {
- *     "custom:loadData": [
- *       "const allProvinces = await getProvinceEnAsArray();",
- *       "const filteredProvinces = allProvinces.filter(p => p.startsWith('B'));",
- *       "$field.enum = filteredProvinces;",
- *       "$field.enumNames = filteredProvinces;"
- *     ]
- *   }
- * }
- *
- * @example
- * // Usage 4: Validate province selection against API data
- * {
- *   "events": {
- *     "change": [
- *       "const validProvinces = await getProvinceEnAsArray();",
- *       "if (!validProvinces.includes($field.$value)) {",
- *       "  $field.valid = false;",
- *       "  $field.errorMessage = 'Invalid province selected';",
- *       "}"
- *     ]
- *   }
- * }
- */
-async function getProvinceEnAsArray() {
+* Fetches the province list once and normalizes it for dropdown use.
+* Expected output from the API can be:
+* - array of strings: ["A", "B"]
+* - array of objects: [{ value: "A", label: "Alberta" }]
+*
+* @private
+* @returns {Object[]}
+*/
+function getProvinceData() {
   const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/LocationSearchService/GetProvinceEn';
+  const xhr = new XMLHttpRequest();
 
-  try {
-    const response = await fetch(url);
+  xhr.open('GET', url, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    // Parse JSON response
-    const data = await response.json();
-
-    // Convert response into JS Array
-    const jsArray = Array.isArray(data) ? data : Object.values(data);
-
-    // eslint-disable-next-line no-console
-    console.log(jsArray);
-
-    return jsArray;
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Error fetching provinces:', error);
+  if (xhr.status < 200 || xhr.status >= 300) {
     return [];
   }
+
+  const response = JSON.parse(xhr.responseText);
+
+  if (!Array.isArray(response)) {
+    return [];
+  }
+
+  // Normalize common API shapes into [{ value, label }]
+  return response.map((item) => {
+    if (typeof item === 'string' || typeof item === 'number') {
+      return {
+        value: String(item),
+        label: String(item),
+      };
+    }
+
+    return {
+      value: String(item.value || item.code || item.id || item.provinceCode || item.provinceEn || ''),
+      label: String(item.label || item.name || item.title || item.provinceName || item.provinceEn || ''),
+    };
+  }).filter((item) => item.value !== '' && item.label !== '');
 }
- 
+
+/**
+* Returns the stored dropdown values for Province.
+* Maps to the field's enum property.
+*
+* @name getProvinceEnum
+* @returns {string[]}
+*/
+function getProvinceEnum() {
+  const data = getProvinceData();
+  return data.map((item) => item.value);
+}
+
+/**
+* Returns the display labels for Province.
+* Maps to the field's enumNames property.
+*
+* @name getProvinceEnumNames
+* @returns {string[]}
+*/
+function getProvinceEnumNames() {
+  const data = getProvinceData();
+  return data.map((item) => item.label);
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
   days,
   submitFormArrayToString,
-  getProvinceEnAsArray,
+  getProvinceEnum,
+  getProvinceEnumNames,
   fetchCsrfToken,
   addCsrfToken,
   addCustomHeader,
