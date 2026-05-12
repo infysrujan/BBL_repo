@@ -88,33 +88,19 @@
           "value": false
         },
         {
-          "component": "custom-asset-namespace:custom-asset",
-          "name": "imagePickerDesktop",
-          "label": "Image (Desktop)",
-          "description": "Select an image shown at desktop breakpoints",
-          "configUrl": "/content/dam/image.config.json",
-          "valueType": "string",
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopField",
           "condition": { "===": [{ "var": "mediaType" }, "images"] }
         },
         {
-          "component": "custom-asset-namespace:custom-asset-mimetype",
-          "valueType": "string",
-          "name": "imagePickerDesktopMimeType",
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopMimeTypeField",
           "condition": { "===": [{ "var": "mediaType" }, "images"] }
         },
         {
-          "component": "custom-asset-namespace:custom-asset",
-          "name": "imagePickerMobile",
-          "label": "Image (Mobile)",
-          "description": "Select an image shown at mobile breakpoints",
-          "configUrl": "/content/dam/image.config.json",
-          "valueType": "string",
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
           "condition": { "===": [{ "var": "mediaType" }, "images"] }
         },
         {
-          "component": "custom-asset-namespace:custom-asset-mimetype",
-          "valueType": "string",
-          "name": "imagePickerMobileMimeType",
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
           "condition": { "===": [{ "var": "mediaType" }, "images"] }
         },
         {
