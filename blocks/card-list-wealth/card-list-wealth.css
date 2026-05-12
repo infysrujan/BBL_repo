@@ -23,6 +23,7 @@
 /* ── Logo area ─────────────────────────────────────────── */
 .card-logo {
   height: 5rem;
+  box-sizing: border-box;
   padding: 1.25rem;
   display: flex;
   align-items: center;
@@ -155,7 +156,7 @@
 @media (width > 64rem) {
   .card-list-wealth {
     gap: 2.1875rem;
-    padding: 0 5.25rem;
+    padding: 0 1.25rem;
   }
 
   .card-list-wealth-card {
