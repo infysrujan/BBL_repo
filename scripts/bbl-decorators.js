@@ -404,10 +404,19 @@ async function buildCookieAlert(main) {
   }
 }
 
+function isAuthoringInstance(block) {
+  const section = block.closest('.section');
+  const hasAueAttrs = [block, section]
+    .filter(Boolean)
+    .some((el) => [...el.attributes].some(({ name }) => name.startsWith('data-aue-')));
+  return hasAueAttrs && window.self !== window.top;
+}
+
 export {
   decorateTerritoryButtons,
   decorateButtonsV1,
   decorateSvgWithAltText,
   loadBreadcrumb,
   buildCookieAlert,
+  isAuthoringInstance,
 };

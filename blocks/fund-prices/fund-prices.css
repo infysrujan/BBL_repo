@@ -1,0 +1,587 @@
+.fund-prices-table.table {
+  margin: 1.25rem 0 2.5rem;
+}
+
+.fund-prices-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.calendar-wrapper p {
+  font-size: .8rem;
+  line-height: 1.375;
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-weight: 400;
+}
+
+.calendar-wrapper {
+  display: flex;
+  gap: 0.625rem;
+  align-items: center;
+}
+
+.calendar-input {
+  position: relative;
+}
+
+.calendar-input input {
+  padding-inline: 1.25rem 2.5rem;
+  height: 2.5rem;
+  border: 0.0625rem solid var(--bbl-color-grey-150);
+  border-radius: 0.4375rem;
+  width: 10rem;
+}
+
+.calendar-input::before {
+  position: absolute;
+  right: 11%;
+  top: 27%;
+}
+
+.fund-prices-print-label {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  padding-right: 1.75rem;
+}
+
+.fund-prices-print-label::before {
+  position: absolute;
+  right: 0;
+  top: 38%;
+}
+
+.fund-prices-print-label p {
+  font: 1rem BangkokBank-Medium, Arial, sans-serif;
+}
+
+.fund-prices-error-message p {
+  color: var(--bbl-color-red-130);
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+td.merged-fund-type {
+  vertical-align: top;
+}
+
+/* ── Low-specificity td/span/li rules ────────────────────────────
+   These must appear before the high-specificity .fund-prices-table
+   rules below to satisfy no-descending-specificity. ── */
+
+.stat-table td {
+  border: 1px solid var(--bbl-color-grey-30);
+  padding: 0.5rem 0.75rem;
+  color: var(--bbl-color-grey-70);
+}
+
+.detail-hist-table td {
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--bbl-color-grey-18);
+  color: var(--bbl-color-grey-70);
+  text-align: right;
+}
+
+.stat-table td:first-child {
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  color: var(--bbl-color-grey-85);
+  white-space: nowrap;
+}
+
+.detail-hist-table td:first-child {
+  text-align: left;
+  color: var(--bbl-color-grey-85);
+}
+
+.detail-hist-table tr:hover td {
+  background: var(--bbl-color-grey-10);
+}
+
+.bbl-cal-popup .cal-grid span {
+  text-align: center;
+  padding: 0.3rem 0;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: default;
+}
+
+/* ── High-specificity fund-prices-table rules ────────────────── */
+
+.fund-prices-table.table table.outline-border,
+.fund-prices-table.table table.border-bottom td {
+  border-color: var(--bbl-color-grey-18);
+}
+
+.fund-prices-table.table table tr.header-row td {
+  font: 1rem Muli-Bold, Arial, sans-serif;
+  color: var(--bbl-color-black);
+  height: 2.875rem;
+  vertical-align: middle;
+}
+
+.fund-prices-table.table table tr:not(.header-row) td {
+  color: var(--bbl-color-grey-70);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+}
+
+.fund-prices-table.table table tr:not(.header-row) td span {
+  font-style: italic;
+  font-size: 0.6875rem;
+  line-height: 1.63;
+  letter-spacing: -0.0063rem;
+  padding-left: 0.3125rem;
+}
+
+/* ── Fund selector search bar ────────────────────────────────── */
+.fund-prices-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bbl-color-truthful-blue);
+  padding: 0.75rem 2rem;
+  flex-wrap: wrap;
+}
+
+.fund-prices-search-bar label {
+  color: var(--bbl-color-white);
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+
+.fund-select-wrapper {
+  position: relative;
+  flex: 0 1 22rem;
+}
+
+.fund-select-btn {
+  width: 100%;
+  padding: 0.45rem 2.5rem 0.45rem 0.85rem;
+  border: 1.5px solid rgb(255 255 255 / 60%);
+  border-radius: 4px;
+  background: rgb(255 255 255 / 8%);
+  color: var(--bbl-color-white);
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+}
+
+.fund-select-btn .icon-dropdown::before {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--bbl-color-white);
+  font-size: 0.7rem;
+}
+
+.fund-dropdown {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  min-width: 100%;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--bbl-color-grey-40);
+  border-radius: 0 0 4px 4px;
+  max-height: 18rem;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 12%);
+  list-style: none;
+}
+
+.fund-dropdown.open {
+  display: block;
+}
+
+.fund-dropdown li {
+  padding: 0.6rem 1rem;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  color: var(--bbl-color-grey-100);
+}
+
+/* period-dropdown-list li must come before fund-dropdown li:hover */
+.period-dropdown-list li {
+  padding: 0.6rem 1rem;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  color: var(--bbl-color-grey-85);
+}
+
+.fund-dropdown li:hover,
+.fund-dropdown li.active {
+  color: var(--bbl-color-active-blue);
+}
+
+.fund-search-go-btn {
+  padding: 0.5rem 1.75rem;
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border: none;
+  border-radius: 4px;
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.fund-search-go-btn:hover {
+  background: #0050cc;
+}
+
+/* ── Detail view ─────────────────────────────────────────────── */
+.fund-detail-view {
+  padding: 1.5rem 0;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.detail-title {
+  font-family: BangkokBank-Bold, Arial, sans-serif;
+  font-size: 1.5rem;
+  color: var(--bbl-color-black);
+  margin-bottom: 0.25rem;
+}
+
+.detail-fund-label {
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-70);
+}
+
+/* ── Period selector ─────────────────────────────────────────── */
+.detail-period-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.period-select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.period-select-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--bbl-color-grey-30);
+  border-radius: 6px;
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-grey-85);
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  min-width: 8rem;
+  justify-content: space-between;
+}
+
+.period-dropdown-list {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--bbl-color-grey-30);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+  min-width: 10rem;
+  z-index: 500;
+  list-style: none;
+  display: none;
+}
+
+.period-dropdown-list.open {
+  display: block;
+}
+
+.period-dropdown-list li:hover,
+.period-dropdown-list li.active {
+  color: var(--bbl-color-active-blue);
+}
+
+.period-date-range {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.period-date-range label {
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-85);
+}
+
+.detail-range-error {
+  color: var(--bbl-color-red-130);
+  font-size: 0.875rem;
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+}
+
+/* ── Stat tables ─────────────────────────────────────────────── */
+.stat-tables-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (width <= 700px) {
+  .stat-tables-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-table-heading {
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-size: 0.9375rem;
+  color: var(--bbl-color-black);
+  font-weight: 400;
+  margin-bottom: 0.25rem;
+}
+
+.stat-table-subheading {
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-70);
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+
+.stat-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.875rem;
+}
+
+.stat-table th {
+  background: var(--bbl-color-grey-10);
+  color: var(--bbl-color-black);
+  font-family: Muli-Bold, Arial, sans-serif;
+  font-weight: 400;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--bbl-color-grey-30);
+}
+
+.stat-nav-val {
+  font-size: 1.05rem;
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  color: var(--bbl-color-black);
+}
+
+/* ── Tabs ────────────────────────────────────────────────────── */
+.tab-switcher {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.tab-btn {
+  padding: 0.5rem 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-size: 0.9375rem;
+  color: var(--bbl-color-grey-70);
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn.active {
+  color: var(--bbl-color-active-blue);
+  border-bottom-color: var(--bbl-color-active-blue);
+}
+
+/* ── Chart ───────────────────────────────────────────────────── */
+.chart-wrap {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--bbl-color-grey-18);
+  border-radius: 4px;
+  padding: 1.25rem 1.25rem 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.chart-subtitle {
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-85);
+}
+
+.chart-nav-labels {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.chart-nav-item {
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-size: 0.9375rem;
+  color: #f60;
+}
+
+.detail-chart-svg {
+  display: block;
+  width: 100%;
+  min-width: 520px;
+}
+
+/* ── History table ───────────────────────────────────────────── */
+.detail-hist-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: 0.9375rem;
+}
+
+.detail-hist-table th {
+  background: var(--bbl-color-grey-10);
+  font-family: Muli-Bold, Arial, sans-serif;
+  font-weight: 400;
+  color: var(--bbl-color-black);
+  padding: 1.1rem 1.25rem;
+  border-top: 1px solid var(--bbl-color-grey-30);
+  border-bottom: 1px solid var(--bbl-color-grey-30);
+  text-align: left;
+}
+
+.detail-hist-table th:not(:first-child) {
+  text-align: right;
+}
+
+/* ── Calendar popup ──────────────────────────────────────────── */
+.bbl-cal-popup {
+  position: absolute;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--bbl-color-grey-125, #ccc);
+  border-radius: 0.4375rem;
+  padding: 0.75rem;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  z-index: 2000;
+  display: none;
+  width: 17rem;
+  font-family: BangkokBank-Regular, Arial, sans-serif;
+}
+
+.bbl-cal-popup.open {
+  display: block;
+}
+
+.bbl-cal-popup header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.bbl-cal-popup header button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0 0.3rem;
+  color: var(--bbl-color-grey-85);
+}
+
+.bbl-cal-popup .cal-label {
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-size: 0.9rem;
+  color: var(--bbl-color-grey-100);
+}
+
+.bbl-cal-popup .cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.bbl-cal-popup .cal-day-name {
+  font-family: BangkokBank-Medium, Arial, sans-serif;
+  color: var(--bbl-color-grey-85);
+}
+
+.bbl-cal-popup .cal-enabled {
+  cursor: pointer;
+}
+
+.bbl-cal-popup .cal-enabled:hover {
+  background: var(--bbl-color-blue-steel-light, #e6eef4);
+}
+
+.bbl-cal-popup .cal-selected {
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+}
+
+.bbl-cal-popup .cal-disabled {
+  color: var(--bbl-color-grey-40);
+}
+
+/* ── Utility ─────────────────────────────────────────────────── */
+.hidden {
+  display: none !important;
+}
+
+@media print {
+  html.fund-prices-print-isolate body * {
+    visibility: hidden;
+  }
+
+  html.fund-prices-print-isolate body .fund-prices-container,
+  html.fund-prices-print-isolate body .fund-prices-container * {
+    visibility: visible;
+  }
+
+  html.fund-prices-print-isolate body .fund-prices-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  html.fund-prices-print-isolate .fund-prices-container .table {
+    overflow: visible;
+  }
+
+  html.fund-prices-print-isolate .fund-prices-container table {
+    break-inside: avoid;
+  }
+
+  html.fund-prices-print-isolate .fund-prices-container .fund-prices-print-label {
+    display: none !important;
+  }
+}
