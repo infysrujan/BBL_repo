@@ -86,10 +86,10 @@ function buildCarouselAuthoringNav(validTabs, firstVariant) {
   carouselNav.appendChild(prevBtn);
   carouselNav.appendChild(tabsNav);
   carouselNav.appendChild(nextBtn);
-  requestAnimationFrame(updateArrows);
 
   tabsWrapper.appendChild(carouselNav);
   validTabs[0].section.insertAdjacentElement('beforebegin', tabsWrapper);
+  requestAnimationFrame(updateArrows);
 }
 
 export default function buildAuthoringNav(tabGroups) {
