@@ -495,8 +495,6 @@
     }
 }
 
-/* stylelint-disable no-descending-specificity */
-
 /* Authoring-only: carousel nav wrapper */
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav {
     position: relative;
@@ -597,4 +595,3 @@
     margin: 0;
     display: block;
 }
-/* stylelint-enable no-descending-specificity */
