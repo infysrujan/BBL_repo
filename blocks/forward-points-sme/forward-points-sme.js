@@ -632,10 +632,10 @@ export default async function decorate(block) {
   const authoring = parseAuthoring(block);
   const [placeholders, configs] = await Promise.all([fetchPlaceholders(), fetchConfigs()]);
 
-  const prevLabel = placeholders?.forexRatesPrevMonth || 'Previous month';
-  const nextLabel = placeholders?.forexRatesNextMonth || 'Next month';
-  const openCalendarLabel = placeholders?.openCalendar || 'Open calendar';
-  const selectTimeLabel = placeholders?.selectTime || 'Select time';
+  const prevLabel = placeholders?.forwardPointsSmePrevMonth;
+  const nextLabel = placeholders?.forwardPointsSmeNextMonth;
+  const openCalendarLabel = placeholders?.openCalendar;
+  const selectTimeLabel = placeholders?.selectTime;
   const language = getLang();
   const monthLabels = parseCsvConfigList(configs?.monthLabels, buildIntlMonthLabels(language));
   const dayLabels = parseCsvConfigList(configs?.dayLabels, buildIntlDayLabels(language));
