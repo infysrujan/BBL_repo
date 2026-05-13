@@ -10,6 +10,7 @@ export default function buildAuthoringNav(tabGroups) {
 
     const tabsNavWrapper = document.createElement('div');
     tabsNavWrapper.className = 'tabs-nav-wrapper';
+    tabsNavWrapper.dataset.blockStatus = 'loaded';
 
     const tabsNav = document.createElement('div');
     tabsNav.className = 'tabs-nav';
