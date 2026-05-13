@@ -327,6 +327,45 @@ function validateThaiCitizenID(id) {
   return true;
 }
 
+/**
+ * Validates credit card number using the Luhn algorithm (Mod 10)
+ * @name validateCreditCardNumber
+ * @param {string|number} inputNum - The credit card number to validate
+ * @returns {boolean} - Returns true if the credit card number is valid, false otherwise
+ *
+ * @example
+ * // Usage in form validation
+ * validateCreditCardNumber('4532015112830366') // returns true or false
+ * validateCreditCardNumber(4532015112830366) // returns true or false
+ */
+function validateCreditCardNumber(inputNum) {
+  if (inputNum.length < 16) {
+    return false;
+  }
+
+  let flag = true;
+  let sum = 0;
+  const digits = (`${inputNum}`).split('').reverse();
+
+  for (let i = 0; i < digits.length; i += 1) {
+    let digit = digits[i];
+    digit = parseInt(digit, 10);
+
+    // eslint-disable-next-line no-cond-assign
+    if ((flag = !flag)) {
+      digit *= 2;
+    }
+
+    if (digit > 9) {
+      digit -= 9;
+    }
+
+    sum += digit;
+  }
+
+  return sum % 10 === 0;
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -335,6 +374,7 @@ export {
   getProvinceEnum,
   getProvinceEnumNames,
   validateThaiCitizenID,
+  validateCreditCardNumber,
   fetchCsrfToken,
   addCsrfToken,
   addCustomHeader,
