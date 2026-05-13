@@ -3,6 +3,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 import {
   buildCardHtml,
   buildPaginationHtml,
+  bindPaginationClick,
 } from '../../scripts/utils/card-helpers.js';
 
 function initFilterToggles(container) {
@@ -203,8 +204,9 @@ async function fetchJson(rawUrl, { useCache = true } = {}) {
   }
   try {
     const ctrl = new AbortController();
-    setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+    const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
     const resp = await fetch(url, { headers: { Accept: 'application/json' }, signal: ctrl.signal });
+    clearTimeout(timer);
     if (!resp.ok) return null;
     const data = await resp.json();
     if (useCache) setCache(url, data);
@@ -262,14 +264,14 @@ function setupPanel(panel, state, config) {
   panel.appendChild(gridEl);
   panel.appendChild(paginationEl);
 
-  let currentPage = 1;
+  const pageRef = { page: 1 };
   let allItems = [];
   let hasSearched = false;
   let hasLoaded = false;
   let observer;
 
   function renderPage() {
-    const start = (currentPage - 1) * pageSize;
+    const start = (pageRef.page - 1) * pageSize;
     const pageItems = allItems.slice(start, start + pageSize);
 
     gridEl.innerHTML = pageItems.length
@@ -277,7 +279,7 @@ function setupPanel(panel, state, config) {
       : `<p class="listing-card-empty">${placeholders.propertyForSaleNotFound || 'ขออภัย ไม่พบข้อมูลตามที่ท่านระบุ'}</p>`;
 
     const totalPages = Math.max(1, Math.ceil(allItems.length / pageSize));
-    paginationEl.innerHTML = buildPaginationHtml(currentPage, totalPages);
+    paginationEl.innerHTML = buildPaginationHtml(pageRef.page, totalPages);
   }
 
   async function render() {
@@ -311,7 +313,7 @@ function setupPanel(panel, state, config) {
         pfsData.tabIndexCategory,
       );
       allItems = items;
-      currentPage = 1;
+      pageRef.page = 1;
       renderPage();
     } finally {
       onLoadEnd?.();
@@ -327,30 +329,12 @@ function setupPanel(panel, state, config) {
     render();
   }
 
-  paginationEl.addEventListener('click', (e) => {
-    const pageBtn = e.target.closest('.listing-card-page');
-    const arrowBtn = e.target.closest('.listing-card-arrow');
-    let changed = false;
-    if (pageBtn) {
-      currentPage = parseInt(pageBtn.dataset.page, 10);
-      changed = true;
-    } else if (arrowBtn?.dataset.dir === 'prev' && currentPage > 1) {
-      currentPage -= 1;
-      changed = true;
-    } else if (arrowBtn?.dataset.dir === 'next') {
-      currentPage += 1;
-      changed = true;
-    }
-    if (changed) {
-      renderPage();
-      gridEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
+  bindPaginationClick(paginationEl, pageRef, renderPage, gridEl);
 
   function reset() {
     if (observer) { observer.disconnect(); observer = null; }
     hasSearched = true;
-    currentPage = 1;
+    pageRef.page = 1;
     allItems = [];
     render();
   }

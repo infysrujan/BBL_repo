@@ -47,6 +47,28 @@ export function buildPaginationHtml(current, total) {
     <button class="listing-card-arrow listing-card-arrow-next" data-dir="next"${nextAttr} aria-label="Next"><i class="icon-arrow-left" aria-hidden="true"></i></button>`;
 }
 
+export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollTarget) {
+  paginationEl?.addEventListener('click', (e) => {
+    const pageBtn = e.target.closest('.listing-card-page');
+    const arrowBtn = e.target.closest('.listing-card-arrow');
+    let changed = false;
+    if (pageBtn) {
+      pageRef.page = parseInt(pageBtn.dataset.page, 10);
+      changed = true;
+    } else if (arrowBtn?.dataset.dir === 'prev' && pageRef.page > 1) {
+      pageRef.page -= 1;
+      changed = true;
+    } else if (arrowBtn?.dataset.dir === 'next') {
+      pageRef.page += 1;
+      changed = true;
+    }
+    if (changed) {
+      onPageChange();
+      scrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+}
+
 export function sortCards(cards) {
   return [...cards].sort((a, b) => {
     const aStart = a.promotionStartDate ? new Date(a.promotionStartDate).getTime() : 0;

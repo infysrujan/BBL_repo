@@ -1,7 +1,9 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
-import { buildCardHtml, buildPaginationHtml, sortCards } from '../../scripts/utils/card-helpers.js';
+import {
+  buildCardHtml, buildPaginationHtml, sortCards, bindPaginationClick,
+} from '../../scripts/utils/card-helpers.js';
 
 const fetchCache = {};
 
@@ -252,25 +254,7 @@ function setupPanel(
     render();
   });
 
-  paginationEl.addEventListener('click', (e) => {
-    const pageBtn = e.target.closest('.listing-card-page');
-    const arrowBtn = e.target.closest('.listing-card-arrow');
-    let changed = false;
-    if (pageBtn) {
-      state.page = parseInt(pageBtn.dataset.page, 10);
-      changed = true;
-    } else if (arrowBtn?.dataset.dir === 'prev' && state.page > 1) {
-      state.page -= 1;
-      changed = true;
-    } else if (arrowBtn?.dataset.dir === 'next') {
-      state.page += 1;
-      changed = true;
-    }
-    if (changed) {
-      render();
-      gridEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
+  bindPaginationClick(paginationEl, state, render, gridEl);
 }
 
 export default async function decorate(block) {
