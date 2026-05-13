@@ -305,13 +305,11 @@ function initScrollDots(grid, doc) {
 
 /**
  * Block row mapping (matches _mf-results.json model):
- *   Row 0  title           – "Funds Suggestion"
- *   Row 1  description     – Richtext intro text
- *   Row 2  viewAllLabel    – "View All Categories"
- *   Row 3  viewAllUrl      – aem-content: link to MF listing page
- *   Row 4  startOverLabel  – "Start Over"
- *   Row 5  startOverUrl    – aem-content: MF listing page (fallback redirect target)
- *   Row 6  disclaimer      – Richtext: disclaimer text shown at bottom
+ *   Row 0  viewAllLabel    – "View All Categories"
+ *   Row 1  viewAllUrl      – aem-content: link to MF listing page
+ *   Row 2  startOverLabel  – "Start Over"
+ *   Row 3  startOverUrl    – aem-content: MF listing page (fallback redirect target)
+ *   Row 4  disclaimer      – Richtext: disclaimer text shown at bottom
  */
 export default async function decorate(block) {
   const doc = block.ownerDocument;
@@ -321,13 +319,11 @@ export default async function decorate(block) {
 
   // Read config
   const cfg = {
-    title: readText(rows[0]),
-    description: readHtml(rows[1]),
-    viewAllLabel: readText(rows[2]),
-    viewAllUrl: readUrl(rows[3]),
-    startOverLabel: readText(rows[4]),
-    startOverUrl: readUrl(rows[5]),
-    disclaimer: readHtml(rows[6]),
+    viewAllLabel: readText(rows[0]),
+    viewAllUrl: readUrl(rows[1]),
+    startOverLabel: readText(rows[2]),
+    startOverUrl: readUrl(rows[3]),
+    disclaimer: readHtml(rows[4]),
   };
 
   // Move UE instrumentation attrs from source rows to block element
@@ -344,31 +340,6 @@ export default async function decorate(block) {
   // ── Build page structure ───────────────────────────────────────────────────
   const wrapper = doc.createElement('div');
   wrapper.className = 'mfr-wrapper';
-
-  // Header: title + divider + description
-  const header = doc.createElement('div');
-  header.className = 'mfr-header';
-
-  if (cfg.title) {
-    const titleEl = doc.createElement('h1');
-    titleEl.className = 'mfr-title';
-    titleEl.textContent = cfg.title;
-    header.appendChild(titleEl);
-
-    const divider = doc.createElement('span');
-    divider.className = 'mfr-title-divider';
-    divider.setAttribute('aria-hidden', 'true');
-    header.appendChild(divider);
-  }
-
-  if (cfg.description) {
-    const descEl = doc.createElement('div');
-    descEl.className = 'mfr-description';
-    descEl.innerHTML = cfg.description;
-    header.appendChild(descEl);
-  }
-
-  wrapper.appendChild(header);
 
   // Card grid container (filled asynchronously after data loads)
   const gridContainer = doc.createElement('div');

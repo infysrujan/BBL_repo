@@ -32,7 +32,7 @@ function readUrl(row) {
 }
 
 function readListItems(row) {
-  return [...(cell(row)?.querySelectorAll('li') ?? [])].map((li) => li.textContent.trim()).filter(Boolean);
+  return [...(cell(row)?.querySelectorAll('li') ?? [])].map((li) => li.innerHTML.trim()).filter(Boolean);
 }
 
 // Returns { iconEl, label } for each <li> in the risk options row.
@@ -191,7 +191,7 @@ export default async function decorate(block) {
       const ul = document.createElement('ul');
       cfg.screen1RiskDescriptions.forEach((desc) => {
         const li = document.createElement('li');
-        li.textContent = desc;
+        li.innerHTML = desc;
         ul.appendChild(li);
       });
       descEl.appendChild(ul);
