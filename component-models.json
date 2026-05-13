@@ -10091,6 +10091,10 @@
                 "value": "bg-truthful-blue"
               },
               {
+                "name": "Truthful Dark Blue",
+                "value": "bg-truthful-dark-blue"
+              },
+              {
                 "name": "Ice Blue",
                 "value": "bg-ice-blue"
               },
@@ -10105,6 +10109,66 @@
               {
                 "name": "Grey 100",
                 "value": "bg-grey-100"
+              }
+            ]
+          },
+          {
+            "name": "Padding",
+            "children": [
+              {
+                "name": "Padding Top",
+                "value": "pad-top-30"
+              },
+              {
+                "name": "Padding Bottom",
+                "value": "pad-bot-30"
+              }
+            ]
+          },
+          {
+            "name": "Layout",
+            "children": [
+              {
+                "name": "Columns 3",
+                "value": "columns-3"
+              },
+              {
+                "name": "Columns 2(75-25)",
+                "value": "columns-2-75"
+              },
+              {
+                "name": "Columns 2(50-50)",
+                "value": "columns-2-50"
+              }
+            ]
+          },
+          {
+            "name": "Style",
+            "children": [
+              {
+                "name": "Underline Title",
+                "value": "underline-title"
+              },
+              {
+                "name": "Center Title",
+                "value": "center-title"
+              },
+              {
+                "name": "Center Content",
+                "value": "center-content"
+              }
+            ]
+          },
+          {
+            "name": "Theme",
+            "children": [
+              {
+                "name": "Background Wealth",
+                "value": "background-wealth"
+              },
+              {
+                "name": "Background Private Banking",
+                "value": "background-privatebanking"
               }
             ]
           }
