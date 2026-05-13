@@ -8145,7 +8145,7 @@
         "description": "Only used for 'Hero With Thumbnail Images' variant"
       },
       {
-        "component": "text",
+        "component": "richtext",
         "valueType": "string",
         "name": "preTitle",
         "label": "Pre Title",
