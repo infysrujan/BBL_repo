@@ -5,18 +5,11 @@ export function trimValue(value) {
 }
 
 async function fetchJson(url) {
-  // eslint-disable-next-line no-console
-  console.log('[fpsme] API call:', url);
   const response = await fetch(url);
   if (!response.ok) {
-    // eslint-disable-next-line no-console
-    console.error('[fpsme] API error:', url, response.status);
     throw new Error(`Request failed with status ${response.status}`);
   }
-  const data = await response.json();
-  // eslint-disable-next-line no-console
-  console.log('[fpsme] API response:', url, data);
-  return data;
+  return response.json();
 }
 
 function replaceTemplateTokens(url, values) {
@@ -54,21 +47,6 @@ export function createApiEndpoints(configs) {
   const fwdDayInMonthTemplate = configs?.fwbRateServiceGetFwdDayInMonth || '';
   const fwdUpdateInDayTemplate = configs?.fwbRateServiceGetFwdUpdateInDay || '';
   const fwdRatesTemplate = configs?.fwbRateServiceGetFwdfxrates || '';
-
-  // eslint-disable-next-line no-console
-  console.log('[fpsme] config keys (s1):', {
-    fwbRateServiceGetLatestFxrates: latestFxRatesUrl,
-    fwbRateServiceGetDayInMonth: dayInMonthTemplate,
-    fwbRateServiceGetUpdateInDay: updateInDayTemplate,
-    fwbRateServiceGetFxrates: fxRatesTemplate,
-  });
-  // eslint-disable-next-line no-console
-  console.log('[fpsme] config keys (s2):', {
-    fwbRateServiceGetFwdDateTimeLastUpdate: fwdLatestUrl,
-    fwbRateServiceGetFwdDayInMonth: fwdDayInMonthTemplate,
-    fwbRateServiceGetFwdUpdateInDay: fwdUpdateInDayTemplate,
-    fwbRateServiceGetFwdfxrates: fwdRatesTemplate,
-  });
 
   return {
     // Section 1
@@ -141,16 +119,12 @@ export function normalizeFwdRates(list) {
 
 export async function getLatestFxRates(endpoints) {
   const url = endpoints.latestFxRates();
-  // eslint-disable-next-line no-console
-  console.log('[fpsme] getLatestFxRates url:', url);
   if (!url) return [];
   return fetchJson(url);
 }
 
 export async function getLatestFwdUpdate(endpoints) {
   const url = endpoints.fwdLatest();
-  // eslint-disable-next-line no-console
-  console.log('[fpsme] getLatestFwdUpdate url:', url);
   if (!url) return null;
   try {
     const data = await fetchJson(url);
@@ -161,8 +135,6 @@ export async function getLatestFwdUpdate(endpoints) {
 }
 
 export async function getEnabledDays(url) {
-  // eslint-disable-next-line no-console
-  console.log('[fpsme] getEnabledDays url:', url);
   if (!url) return [];
   try {
     const data = await fetchJson(url);
@@ -176,8 +148,6 @@ export async function getEnabledDays(url) {
 }
 
 export async function getUpdatesInDay(url) {
-  // eslint-disable-next-line no-console
-  console.log('[fpsme] getUpdatesInDay url:', url);
   if (!url) return [];
   try {
     const data = await fetchJson(url);
@@ -188,8 +158,6 @@ export async function getUpdatesInDay(url) {
 }
 
 export async function getFxRates(url) {
-  // eslint-disable-next-line no-console
-  console.log('[fpsme] getFxRates url:', url);
   if (!url) return [];
   try {
     return await fetchJson(url);
