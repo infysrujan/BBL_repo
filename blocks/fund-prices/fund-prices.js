@@ -1,10 +1,12 @@
 import attachCalendarPicker from '../../scripts/utils/calendar-picker.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
+import {
+  ALL_FUND_NAMES_URL,
+  LATEST_DATE_URL,
+  fetchNavEnabledDaysForMonth,
+  parseLocalDateFromYmd,
+} from '../fund-prices-table/fund-prices-table.js';
 
-const ALL_FUND_NAMES_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/AllFundNames';
-const LATEST_DATE_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/LatestDate';
-const GET_UPDATE_IN_MONTH_BASE = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/GetUpdateInMonth';
-const ALL_FUND_PRICES_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/AllFundPrices/';
 const FUND_DETAIL_STATS_BASE = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/FundMaxMinNav';
 const FUND_DETAIL_HISTORY_BASE = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/NavHistory';
 
@@ -20,31 +22,12 @@ const PERIOD_OPTIONS = [
   { code: 'DR', label: 'Date Range' },
 ];
 
-const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-let latestMdate = null;
-let allFundsData = [];
-
 function pad2(n) {
   return String(n).padStart(2, '0');
 }
 
-function formatDatePath(date) {
-  return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}/${date.getFullYear()}`;
-}
-
 function formatDMY(date) {
   return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}/${date.getFullYear()}`;
-}
-
-function parseLocalDateFromYmd(ymd) {
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd).trim());
-  if (!m) return null;
-  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
-  const valid = d.getFullYear() === Number(m[1])
-    && d.getMonth() === Number(m[2]) - 1
-    && d.getDate() === Number(m[3]);
-  return valid ? d : null;
 }
 
 function isDateOlderThanFundHistoryLimit(date) {
@@ -66,19 +49,8 @@ function isRangeExceedsLimit(fromDate, toDate) {
   return fromDate < limitedFrom;
 }
 
-async function fetchAllFundPrices(date) {
-  const res = await fetch(`${ALL_FUND_PRICES_URL}${formatDatePath(date)}`);
-  if (!res.ok) throw new Error(`AllFundPrices ${res.status}`);
-  const data = await res.json();
-  return Array.isArray(data) ? data : [];
-}
-
-async function fetchNavEnabledDaysForMonth({ year, month }) {
-  const res = await fetch(`${GET_UPDATE_IN_MONTH_BASE}/${year}/${month + 1}/0`);
-  if (!res.ok) throw new Error(`GetUpdateInMonth ${res.status}`);
-  const data = await res.json();
-  if (!Array.isArray(data)) return [];
-  return data.map((i) => (i?.day != null ? Number(i.day) : NaN)).filter((d) => !Number.isNaN(d));
+function formatDatePath(date) {
+  return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}/${date.getFullYear()}`;
 }
 
 async function fetchFundDetailStats(fundId, fromDate, toDate) {
@@ -98,139 +70,11 @@ async function fetchFundDetailHistory(fundId, fromDate, toDate) {
   return Array.isArray(data) ? data : [];
 }
 
-function normalizeHeaderKey(header) {
-  return header.toLowerCase().replace(/[^a-z0-9]/g, '');
-}
-
 function getLang() {
   const lang = typeof document !== 'undefined'
     ? document.documentElement.getAttribute('lang')
     : null;
   return lang && lang.toLowerCase().startsWith('th') ? 'th' : 'en';
-}
-
-const localizedHeaderMap = {
-  fundtype: { en: 'mf_cateEng', th: 'mf_cateTha' },
-  openendfund: { en: 'mf_sEng', th: 'mf_sTha' },
-  nav: 'mfr_fNav',
-  sellingprice: 'mfr_fBuy',
-  redemptionprice: 'mfr_fSel',
-  totalnetassets: 'mf_sAUM',
-};
-
-function resolveColumnKey(normalizedKey, lang) {
-  const mapped = localizedHeaderMap[normalizedKey];
-  if (!mapped) return normalizedKey;
-  return typeof mapped === 'object' ? mapped[lang] : mapped;
-}
-
-function buildCategoryOrder(rows, categoryKey) {
-  const order = [];
-  const seen = new Set();
-  rows.forEach((row) => {
-    if (row[categoryKey] !== undefined && !seen.has(row[categoryKey])) {
-      order.push(row[categoryKey]);
-      seen.add(row[categoryKey]);
-    }
-  });
-  return order;
-}
-
-function groupRowsByCategory(rows, categoryKey) {
-  return rows.reduce((acc, row) => {
-    const cat = row[categoryKey];
-    if (!acc[cat]) acc[cat] = [];
-    acc[cat].push(row);
-    return acc;
-  }, {});
-}
-
-function clearNonHeaderRows(tbody) {
-  tbody.querySelectorAll('tr:not(.header-row)').forEach((tr) => tr.remove());
-}
-
-function formatBackdate(iso) {
-  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
-  if (!m) return iso;
-  return `${m[3]} ${MONTHS_SHORT[Number(m[2]) - 1]} ${m[1]}`;
-}
-
-function formatBodyCellText(normalizedKey, row, columnKey) {
-  if (normalizedKey === 'openendfund') {
-    const rawDate = row.mf_backdate || row.mfr_dDataDate || row.mf_dnav;
-    if (rawDate && row[columnKey] !== undefined) {
-      const datePart = rawDate.split('T')[0];
-      if (datePart !== latestMdate) {
-        const label = row.mf_backdate ? formatBackdate(rawDate) : rawDate;
-        return `${row[columnKey]} <span class="dnav">${label}</span>`;
-      }
-    }
-    return row[columnKey] !== undefined ? `${row[columnKey]}` : '';
-  }
-  if (columnKey && row[columnKey] !== undefined) {
-    const value = String(row[columnKey]);
-    const num = parseFloat(value);
-    if (!Number.isNaN(num) && Math.abs(num) >= 1000) {
-      return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
-    }
-    return value === 'null' ? 'N/A' : value;
-  }
-  return '';
-}
-
-function appendRowFromData(tableEl, dataArray) {
-  const lang = getLang();
-  const tbody = tableEl.querySelector('tbody');
-  if (!tbody || !Array.isArray(dataArray)) return;
-
-  let headerRow = tbody.querySelector('.header-row');
-  if (!headerRow) {
-    const first = tbody.querySelector('tr');
-    if (first) { headerRow = first; headerRow.classList.add('header-row'); }
-  }
-  if (!headerRow) return;
-
-  const headers = [...headerRow.querySelectorAll('td')];
-  const categoryKey = lang === 'th' ? 'mf_cateTha' : 'mf_cateEng';
-  const order = buildCategoryOrder(dataArray, categoryKey);
-  const groups = groupRowsByCategory(dataArray, categoryKey);
-
-  clearNonHeaderRows(tbody);
-
-  order.forEach((category) => {
-    const group = groups[category];
-    group.forEach((row, idx) => {
-      const tr = tableEl.ownerDocument.createElement('tr');
-      headers.forEach((headerCell) => {
-        const nk = normalizeHeaderKey(headerCell.textContent.trim());
-        const ck = resolveColumnKey(nk, lang);
-        if (nk === 'fundtype') {
-          if (idx === 0) {
-            const td = tableEl.ownerDocument.createElement('td');
-            td.textContent = row[ck] !== undefined ? row[ck] : '';
-            td.rowSpan = group.length;
-            td.classList.add('merged-fund-type');
-            tr.appendChild(td);
-          }
-          return;
-        }
-        const td = tableEl.ownerDocument.createElement('td');
-        td.innerHTML = formatBodyCellText(nk, row, ck);
-        tr.appendChild(td);
-      });
-      tbody.appendChild(tr);
-    });
-  });
-}
-
-async function refreshTableFromPrices(tableEl, fallbackFunds, date) {
-  try {
-    const prices = await fetchAllFundPrices(date);
-    allFundsData = prices.length ? prices : fallbackFunds;
-  } catch {
-    allFundsData = fallbackFunds;
-  }
-  appendRowFromData(tableEl, allFundsData);
 }
 
 function richTextFromRow(row) {
@@ -255,22 +99,6 @@ function printContent(containerEl) {
 
 /* ── Detail view helpers ─────────────────────────────────────── */
 
-function periodDateRange(periodCode) {
-  const end = latestMdate ? (parseLocalDateFromYmd(latestMdate) ?? new Date()) : new Date();
-  const y = end.getFullYear();
-  const mo = end.getMonth();
-  const d = end.getDate();
-  const from = {
-    '1W': new Date(y, mo, d - 7),
-    '1M': new Date(y, mo - 1, d),
-    '3M': new Date(y, mo - 3, d),
-    '6M': new Date(y, mo - 6, d),
-    '1Y': new Date(y - 1, mo, d),
-    '3Y': new Date(y - 3, mo, d),
-  }[periodCode] ?? end;
-  return { from, to: end };
-}
-
 function fmtNav(v) {
   return typeof v === 'number' ? v.toFixed(4) : (v ?? 'N/A');
 }
@@ -283,32 +111,17 @@ function fmtHistDate(ymd) {
 
 function renderStatTables(stats, highTbody, lowTbody) {
   const rows = [
-    {
-      label: 'In the selected period',
-      hi: [stats.MaxSelected_fNav, stats.MaxSelected_fBuy, stats.MaxSelected_fSel],
-      lo: [stats.MinSelected_fNav, stats.MinSelected_fBuy, stats.MinSelected_fSel],
-    },
-    {
-      label: 'During the last 12 months',
-      hi: [stats.MaxYear_fNav, stats.MaxYear_fBuy, stats.MaxYear_fSel],
-      lo: [stats.MinYear_fNav, stats.MinYear_fBuy, stats.MinYear_fSel],
-    },
-    {
-      label: 'Since Inception',
-      hi: [stats.MaxSince_fNav, stats.MaxSince_fBuy, stats.MaxSince_fSel],
-      lo: [stats.MinSince_fNav, stats.MinSince_fBuy, stats.MinSince_fSel],
-    },
+    { label: 'In the selected period', hi: stats.MaxSelected_fNav, lo: stats.MinSelected_fNav },
+    { label: 'During the last 12 months', hi: stats.MaxYear_fNav, lo: stats.MinYear_fNav },
+    { label: 'Since Inception', hi: stats.MaxSince_fNav, lo: stats.MinSince_fNav },
   ];
 
   [highTbody, lowTbody].forEach((tbody) => { tbody.innerHTML = ''; });
 
   rows.forEach(({ label, hi, lo }) => {
-    [[highTbody, hi], [lowTbody, lo]].forEach(([tbody, vals]) => {
+    [[highTbody, hi], [lowTbody, lo]].forEach(([tbody, val]) => {
       const tr = tbody.ownerDocument.createElement('tr');
-      tr.innerHTML = `<td>${label}</td>`
-        + `<td class="stat-nav-val">${fmtNav(vals[0])}</td>`
-        + `<td>${fmtNav(vals[1])}</td>`
-        + `<td>${fmtNav(vals[2])}</td>`;
+      tr.innerHTML = `<td>${label}</td><td class="stat-nav-val">${fmtNav(val)}</td>`;
       tbody.appendChild(tr);
     });
   });
@@ -596,18 +409,14 @@ function buildDetailView(doc) {
 
     <div class="stat-tables-row">
       <div class="stat-table-card">
-        <h3 class="stat-table-heading">Highest Fund Price</h3>
-        <h4 class="stat-table-subheading">NAV</h4>
         <table class="stat-table" id="stat-high-table">
-          <thead><tr><th>Period</th><th>NAV</th><th>Selling Price</th><th>Redemption Price</th></tr></thead>
+          <thead><tr><th>Highest Fund Price</th><th class="stat-th-nav">NAV</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
       <div class="stat-table-card">
-        <h3 class="stat-table-heading">Lowest Fund Price</h3>
-        <h4 class="stat-table-subheading">NAV</h4>
         <table class="stat-table" id="stat-low-table">
-          <thead><tr><th>Period</th><th>NAV</th><th>Selling Price</th><th>Redemption Price</th></tr></thead>
+          <thead><tr><th>Lowest Fund Price</th><th class="stat-th-nav">NAV</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -647,10 +456,7 @@ function buildDetailView(doc) {
 export default async function decorate(block) {
   const doc = block.ownerDocument;
   const rows = [...block.children];
-
-  const table = block.parentElement.parentElement.querySelector('.table');
-  if (!table) return;
-  table.classList.add('fund-prices-table');
+  const section = block.closest('.section');
 
   const dateLabelHtml = richTextFromRow(rows[0]);
   const printLabelHtml = richTextFromRow(rows[1]);
@@ -677,8 +483,12 @@ export default async function decorate(block) {
     return;
   }
 
+  const ftBlock = section?.querySelector('.fund-prices-table');
+
   let funds = [];
+  let latestMdate = null;
   let calendarDate = new Date();
+  let currentDate = calendarDate;
 
   try {
     const [namesRes, latestRes] = await Promise.all([
@@ -689,7 +499,7 @@ export default async function decorate(block) {
       const lj = await latestRes.json();
       latestMdate = lj?.mdate;
       const parsed = lj?.mdate ? parseLocalDateFromYmd(lj.mdate) : null;
-      if (parsed) calendarDate = parsed;
+      if (parsed) { calendarDate = parsed; currentDate = parsed; }
     }
     if (namesRes.ok) {
       const data = await namesRes.json();
@@ -699,6 +509,14 @@ export default async function decorate(block) {
     // eslint-disable-next-line no-console
     console.error('fund-prices: init failed', e);
   }
+
+  function dispatchTableRefresh(date) {
+    ftBlock?.dispatchEvent(new CustomEvent('fund-prices-table:refresh', {
+      detail: { date, latestDate: latestMdate },
+    }));
+  }
+
+  dispatchTableRefresh(calendarDate);
 
   /* ── Root ── */
   const root = doc.createElement('div');
@@ -756,18 +574,17 @@ export default async function decorate(block) {
       }
       errorMessage.classList.add('hidden');
       errorMessage.hidden = true;
-      refreshTableFromPrices(table, funds, selectedDate);
+      currentDate = selectedDate;
+      dispatchTableRefresh(selectedDate);
     },
   });
-
-  await refreshTableFromPrices(table, funds, calendarDate);
 
   const toolbar = doc.createElement('div');
   toolbar.className = 'fund-prices-toolbar';
   toolbar.appendChild(calendarWrapper);
   toolbar.appendChild(printLabel);
 
-  mainView.append(toolbar, errorMessage, table, disclaimer);
+  mainView.append(toolbar, errorMessage, disclaimer);
   root.appendChild(mainView);
 
   /* ── Detail view ── */
@@ -777,7 +594,10 @@ export default async function decorate(block) {
   block.appendChild(root);
 
   /* ── Print handlers ── */
-  printLabel.addEventListener('click', (e) => { e.preventDefault(); printContent(root); });
+  printLabel.addEventListener('click', (e) => {
+    e.preventDefault();
+    printContent(section ?? root);
+  });
   detailView.querySelector('.fund-prices-print-label')
     .addEventListener('click', (e) => { e.preventDefault(); printContent(detailView); });
 
@@ -809,6 +629,22 @@ export default async function decorate(block) {
   const todayDate = new Date();
   drFrom = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
   drTo = new Date();
+
+  function periodDateRange(periodCode) {
+    const end = latestMdate ? (parseLocalDateFromYmd(latestMdate) ?? new Date()) : new Date();
+    const y = end.getFullYear();
+    const mo = end.getMonth();
+    const d = end.getDate();
+    const from = {
+      '1W': new Date(y, mo, d - 7),
+      '1M': new Date(y, mo - 1, d),
+      '3M': new Date(y, mo - 3, d),
+      '6M': new Date(y, mo - 6, d),
+      '1Y': new Date(y - 1, mo, d),
+      '3Y': new Date(y - 3, mo, d),
+    }[periodCode] ?? end;
+    return { from, to: end };
+  }
 
   function buildSubtitle(fromDate, toDate) {
     return `"${currentFund?.name}" Open-end Fund : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
@@ -908,9 +744,9 @@ export default async function decorate(block) {
   /* GO button */
   function showMainView() {
     mainView.classList.remove('hidden');
+    if (ftBlock) ftBlock.classList.remove('hidden');
     detailView.classList.add('hidden');
     detailView.hidden = true;
-    fundSelector.el.querySelector('.fund-prices-search-bar-subtitle')?.remove();
   }
 
   function showDetailView(fund) {
@@ -927,6 +763,7 @@ export default async function decorate(block) {
     tablePanel.classList.add('hidden');
 
     mainView.classList.add('hidden');
+    if (ftBlock) ftBlock.classList.add('hidden');
     detailView.classList.remove('hidden');
     detailView.hidden = false;
 
@@ -939,7 +776,7 @@ export default async function decorate(block) {
       showDetailView(selected);
     } else {
       showMainView();
-      appendRowFromData(table, allFundsData);
+      dispatchTableRefresh(currentDate);
     }
   });
 }

@@ -8040,6 +8040,32 @@
     ]
   },
   {
+    "id": "fund-prices-table",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "tableContent",
+        "label": "Table Content",
+        "valueType": "string",
+        "value": "",
+        "rte": {
+          "toolbar": {
+            "insert": [
+              "table"
+            ],
+            "editor": [
+              "removeformat"
+            ],
+            "sections": [
+              "insert",
+              "editor"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
     "id": "fund-prices",
     "fields": [
       {

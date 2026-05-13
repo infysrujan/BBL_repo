@@ -467,27 +467,23 @@
     .stat-table-card table th {
       background: var(--bbl-color-grey-10);
       color: var(--bbl-color-black);
-      font-family: Muli-Bold, var(--bbl-font-family-bold);
+      font: 1rem Muli-Bold, var(--bbl-font-family-bold);
       font-weight: 400; text-align: left;
-      padding: 0.5rem 0.75rem;
-      border: 1px solid var(--bbl-color-grey-30);
+      height: 2.875rem; vertical-align: middle;
+      padding: 0 1rem;
+      border: none;
+      border-bottom: 1px solid var(--bbl-color-grey-18);
     }
+    .stat-table-card table th.stat-th-nav { text-align: right; }
     .stat-table-card table td {
-      border: 1px solid var(--bbl-color-grey-30);
-      padding: 0.5rem 0.75rem;
+      border: none;
+      border-bottom: 1px solid var(--bbl-color-grey-18);
+      padding: 0.75rem 1rem;
       color: var(--bbl-color-grey-70);
-      vertical-align: middle;
+      font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+      font-weight: 400;
     }
-    .stat-table-card table td:first-child {
-      font-family: var(--bbl-font-family-medium);
-      color: var(--bbl-color-grey-85);
-      white-space: nowrap;
-    }
-    .stat-nav-val {
-      font-size: 1.05rem;
-      font-family: var(--bbl-font-family-medium);
-      color: var(--bbl-color-black);
-    }
+    .stat-nav-val { text-align: right; }
 
     /* Tab switcher */
     .tab-switcher {
@@ -651,28 +647,22 @@
 
   <div class="stat-tables-row">
     <div class="stat-table-card">
-      <h3>Highest Fund Price</h3>
-      <table id="stat-high-table">
+      <table id="stat-high-table" class="stat-table">
         <thead>
           <tr>
-            <th>Period</th>
-            <th>NAV</th>
-            <th>Selling Price</th>
-            <th>Redemption Price</th>
+            <th>Highest Fund Price</th>
+            <th class="stat-th-nav">NAV</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
     <div class="stat-table-card">
-      <h3>Lowest Fund Price</h3>
-      <table id="stat-low-table">
+      <table id="stat-low-table" class="stat-table">
         <thead>
           <tr>
-            <th>Period</th>
-            <th>NAV</th>
-            <th>Selling Price</th>
-            <th>Redemption Price</th>
+            <th>Lowest Fund Price</th>
+            <th class="stat-th-nav">NAV</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -1306,27 +1296,20 @@ function fmtHistDate(ymd) {
 
 function renderStatTables(stats) {
   const rows = [
-    ['Selected Period', stats.MaxSelected_fNav, stats.MaxSelected_fBuy, stats.MaxSelected_fSel,
-                        stats.MinSelected_fNav, stats.MinSelected_fBuy, stats.MinSelected_fSel],
-    ['Year',            stats.MaxYear_fNav,    stats.MaxYear_fBuy,    stats.MaxYear_fSel,
-                        stats.MinYear_fNav,    stats.MinYear_fBuy,    stats.MinYear_fSel],
-    ['Since Inception', stats.MaxSince_fNav,   stats.MaxSince_fBuy,   stats.MaxSince_fSel,
-                        stats.MinSince_fNav,   stats.MinSince_fBuy,   stats.MinSince_fSel],
+    { label: 'Selected Period', hi: stats.MaxSelected_fNav, lo: stats.MinSelected_fNav },
+    { label: 'Year',            hi: stats.MaxYear_fNav,     lo: stats.MinYear_fNav },
+    { label: 'Since Inception', hi: stats.MaxSince_fNav,    lo: stats.MinSince_fNav },
   ];
 
   ['stat-high-table', 'stat-low-table'].forEach(id => {
     document.getElementById(id).querySelector('tbody').innerHTML = '';
   });
 
-  rows.forEach(([label, hmNav, hmBuy, hmSel, lmNav, lmBuy, lmSel]) => {
-    ['high','low'].forEach(type => {
+  rows.forEach(({ label, hi, lo }) => {
+    ['high', 'low'].forEach(type => {
       const tbody = document.getElementById(`stat-${type}-table`).querySelector('tbody');
       const tr = document.createElement('tr');
-      const [nav, buy, sel] = type === 'high' ? [hmNav, hmBuy, hmSel] : [lmNav, lmBuy, lmSel];
-      tr.innerHTML = `<td>${label}</td>
-        <td class="stat-nav-val">${fmtNav(nav)}</td>
-        <td>${fmtNav(buy)}</td>
-        <td>${fmtNav(sel)}</td>`;
+      tr.innerHTML = `<td>${label}</td><td class="stat-nav-val">${fmtNav(type === 'high' ? hi : lo)}</td>`;
       tbody.appendChild(tr);
     });
   });

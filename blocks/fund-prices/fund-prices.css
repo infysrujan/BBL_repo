@@ -1,7 +1,3 @@
-.fund-prices-table.table {
-  margin: 1.25rem 0 2.5rem;
-}
-
 .fund-prices-toolbar {
   display: flex;
   justify-content: space-between;
@@ -65,18 +61,16 @@
   margin-bottom: 1.25rem;
 }
 
-td.merged-fund-type {
-  vertical-align: top;
-}
-
-/* ── Low-specificity td/span/li rules ────────────────────────────
-   These must appear before the high-specificity .fund-prices-table
-   rules below to satisfy no-descending-specificity. ── */
-
+/* ── Low-specificity td/span rules ───────────────────────────── */
 .stat-table td {
-  border: 1px solid var(--bbl-color-grey-30);
-  padding: 0.5rem 0.75rem;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 1px solid var(--bbl-color-grey-18);
+  padding: 0.75rem 1rem;
   color: var(--bbl-color-grey-70);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-weight: 400;
 }
 
 .detail-hist-table td {
@@ -84,12 +78,6 @@ td.merged-fund-type {
   border-bottom: 1px solid var(--bbl-color-grey-18);
   color: var(--bbl-color-grey-70);
   text-align: right;
-}
-
-.stat-table td:first-child {
-  font-family: BangkokBank-Medium, Arial, sans-serif;
-  color: var(--bbl-color-grey-85);
-  white-space: nowrap;
 }
 
 .detail-hist-table td:first-child {
@@ -107,34 +95,6 @@ td.merged-fund-type {
   border-radius: 4px;
   font-size: 0.8rem;
   cursor: default;
-}
-
-/* ── High-specificity fund-prices-table rules ────────────────── */
-
-.fund-prices-table.table table.outline-border,
-.fund-prices-table.table table.border-bottom td {
-  border-color: var(--bbl-color-grey-18);
-}
-
-.fund-prices-table.table table tr.header-row td {
-  font: 1rem Muli-Bold, Arial, sans-serif;
-  color: var(--bbl-color-black);
-  height: 2.875rem;
-  vertical-align: middle;
-}
-
-.fund-prices-table.table table tr:not(.header-row) td {
-  color: var(--bbl-color-grey-70);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  font-weight: 400;
-}
-
-.fund-prices-table.table table tr:not(.header-row) td span {
-  font-style: italic;
-  font-size: 0.6875rem;
-  line-height: 1.63;
-  letter-spacing: -0.0063rem;
-  padding-left: 0.3125rem;
 }
 
 /* ── Fund selector search bar ────────────────────────────────── */
@@ -354,43 +314,42 @@ td.merged-fund-type {
   }
 }
 
-.stat-table-heading {
-  font-family: BangkokBank-Medium, Arial, sans-serif;
-  font-size: 0.9375rem;
-  color: var(--bbl-color-black);
-  font-weight: 400;
-  margin-bottom: 0.25rem;
-}
 
-.stat-table-subheading {
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-  font-size: 0.875rem;
-  color: var(--bbl-color-grey-70);
-  font-weight: 400;
-  margin-bottom: 0.5rem;
+.stat-table-card {
+  overflow: hidden;
 }
 
 .stat-table {
   width: 100%;
   border-collapse: collapse;
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-  font-size: 0.875rem;
+  border: none;
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
 }
 
 .stat-table th {
   background: var(--bbl-color-grey-10);
   color: var(--bbl-color-black);
-  font-family: Muli-Bold, Arial, sans-serif;
+  font: 1rem Muli-Bold, Arial, sans-serif;
   font-weight: 400;
   text-align: left;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--bbl-color-grey-30);
+  height: 2.875rem;
+  vertical-align: middle;
+  padding: 0 1rem;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 1px solid var(--bbl-color-grey-18);
+}
+
+.stat-th-nav {
+  text-align: right;
 }
 
 .stat-nav-val {
-  font-size: 1.05rem;
-  font-family: BangkokBank-Medium, Arial, sans-serif;
-  color: var(--bbl-color-black);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  color: var(--bbl-color-grey-70);
+  text-align: right;
 }
 
 /* ── Tabs ────────────────────────────────────────────────────── */
