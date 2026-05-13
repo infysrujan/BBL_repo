@@ -286,9 +286,10 @@ export default async function decorate(block) {
   if (parentStyles.includes('scroll')) {
     block.classList.add('scroll');
   }
-  const nestedTableId = rows[0].children[1]?.textContent.trim();
-  const parentTable = rows[1].querySelector('table');
-  if (!parentTable) return;
+  const tableRowIndex = rows.findIndex((row, i) => i > 0 && row.querySelector('table'));
+  if (tableRowIndex === -1) return;
+  const parentTable = rows[tableRowIndex].querySelector('table');
+  const nestedTableId = tableRowIndex > 1 ? rows[1]?.children[0]?.textContent.trim() : null;
 
   applyVariationClasses(parentTable, parentStyles);
   if (nestedTableId) parentTable.classList.add(toClassName(nestedTableId));
@@ -299,11 +300,11 @@ export default async function decorate(block) {
     markHeaderRows(parentTable);
     applyMixedBlueHeader(parentTable);
     highlightDashCells(parentTable);
-    moveInstrumentation(rows[1], parentTable);
+    moveInstrumentation(rows[tableRowIndex], parentTable);
     block.textContent = '';
     block.append(parentTable);
     if (isAuthoring) {
-      rows.slice(2).forEach((row) => block.append(row));
+      rows.slice(tableRowIndex + 1).forEach((row) => block.append(row));
     }
     scheduleResolveAdjacentNestedTables(block);
     return;
@@ -315,7 +316,7 @@ export default async function decorate(block) {
   applyMixedBlueHeader(parentTable);
   highlightDashCells(parentTable);
 
-  moveInstrumentation(rows[1], parentTable);
+  moveInstrumentation(rows[tableRowIndex], parentTable);
 
   block.textContent = '';
   block.append(parentTable);
