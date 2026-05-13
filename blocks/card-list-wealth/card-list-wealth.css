@@ -24,6 +24,7 @@
 /* ── Logo area ─────────────────────────────────────────── */
 .card-logo {
   height: 5rem;
+  box-sizing: border-box;
   padding: 1.25rem;
   display: flex;
   align-items: center;
@@ -55,8 +56,9 @@
 }
 
 .card-title {
-  font-size: 1.5rem;
-  line-height: 1.5rem;
+  font-size: 1.3125rem;
+  font-weight: 400;
+  line-height: 1.4219rem;
   margin: 0 0 1.25rem;
 }
 
@@ -67,12 +69,12 @@
 }
 
 .card-eyebrow {
-  font-size: 1.23rem;
+  font-size: 0.875rem;
   font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
   font-weight: 400;
   line-height: 1.375;
   margin: 1.25rem 0;
-  color: inherit;
+  color: #78787d;
 }
 
 /* ── Benefits list ─────────────────────────────────────── */
@@ -155,7 +157,7 @@
 @media (width > 64rem) {
   .card-list-wealth {
     gap: 2.1875rem;
-    padding: 0 5.25rem;
+    padding: 0 1.25rem;
   }
 
   .card-list-wealth-card {
