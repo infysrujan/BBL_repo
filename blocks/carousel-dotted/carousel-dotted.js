@@ -4,8 +4,9 @@ import {
   readPosition,
 } from '../../scripts/utils/carousel-helpers.js';
 import buildCardListFragmentSlides, {
-  handleCardListLoopTransition,
+  updateFragmentTrack,
   setCardListTrackPosition,
+  isFragmentNoScroll,
   tabletMin,
 } from './card-list-carousel.js';
 import buildContentCardsSlide from './build-content-cards-slide.js';
@@ -100,7 +101,7 @@ function initializeDragSwipe(
         } else {
           nextIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : currentIndex;
         }
-        if (nextIndex !== currentIndex) setActive(nextIndex);
+        if (nextIndex !== currentIndex) setActive(nextIndex, 'forward');
       } else if (deltaX > dragThreshold) {
         let prevIndex;
         if (enableLooping) {
@@ -108,7 +109,7 @@ function initializeDragSwipe(
         } else {
           prevIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex;
         }
-        if (prevIndex !== currentIndex) setActive(prevIndex);
+        if (prevIndex !== currentIndex) setActive(prevIndex, 'backward');
       }
     }
 
@@ -170,7 +171,7 @@ function initializeAutoScroll(
       const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
       let nextIdx = currentIndex + itemsPerScroll;
       if (nextIdx >= slideEls.length) nextIdx = 0;
-      setActive(nextIdx);
+      setActive(nextIdx, 'forward');
     }, delay);
   };
 
@@ -390,7 +391,7 @@ export default async function decorate(block) {
 
   let isFirstLoad = true;
 
-  function setActive(index) {
+  function setActive(index, direction = null) {
     const prevIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
 
     const isHeroVariant = block.classList.contains('all-hero-banner-image-carousel')
@@ -404,7 +405,6 @@ export default async function decorate(block) {
       && slidesTextAnimation === 0;
 
     const isLoopingForward = index === 0 && prevIndex === slideEls.length - 1;
-    const isLoopingBackward = index === slideEls.length - 1 && prevIndex === 0;
 
     slideEls.forEach((slide, i) => {
       const active = i === index;
@@ -441,17 +441,15 @@ export default async function decorate(block) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       if (trackWrapper) {
         if (allFragmentTrack) {
-          const handledLoop = handleCardListLoopTransition(
+          updateFragmentTrack(
             block,
             trackWrapper,
             slideEls,
-            isLoopingForward,
-            isLoopingBackward,
+            index,
+            prevIndex,
+            direction,
             shouldCloneFragmentSlide,
           );
-          if (!handledLoop) {
-            setCardListTrackPosition(block, trackWrapper, slideEls, index);
-          }
         } else {
           const slideWidth = trackWrapper.offsetWidth;
 
@@ -483,9 +481,9 @@ export default async function decorate(block) {
     if (showArrows && arrowTrackVariant) {
       // Enable circular navigation for showArrowsDots variant
       const prevIndex = currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1;
-      setActive(prevIndex);
+      setActive(prevIndex, 'backward');
     } else if (currentIndex > 0) {
-      setActive(currentIndex - 1);
+      setActive(currentIndex - 1, 'backward');
     }
   });
 
@@ -494,9 +492,9 @@ export default async function decorate(block) {
     if (showArrows && arrowTrackVariant) {
       // Enable circular navigation for showArrowsDots variant
       const nextSlideIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0;
-      setActive(nextSlideIndex);
+      setActive(nextSlideIndex, 'forward');
     } else if (currentIndex < slideEls.length - 1) {
-      setActive(currentIndex + 1);
+      setActive(currentIndex + 1, 'forward');
     }
   });
   dotButtons = slideEls.map((slide, index) => {
@@ -564,17 +562,23 @@ export default async function decorate(block) {
     block.replaceChildren(...slideEls);
   }
 
+  const noNav = allFragmentTrack && isFragmentNoScroll(slideEls);
+
   if (showArrows) {
     if (arrowTrackVariant) {
       const trackContainer = allFragmentTrack
         ? block.querySelector('.carousel-track-viewport')
         : block.querySelector('.carousel-track-wrapper');
-      block.replaceChildren(prevArrow, trackContainer, nextArrow, dots);
+      if (!noNav) {
+        block.replaceChildren(prevArrow, trackContainer, nextArrow, dots);
+      }
     } else {
       block.append(dots, prevArrow, nextArrow);
     }
   } else if (showDots || slidesContentCards > 0) {
-    block.append(dots);
+    if (!noNav) {
+      block.append(dots);
+    }
   }
 
   if (seeMoreLink) {
