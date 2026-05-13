@@ -117,6 +117,14 @@
                 {
                   "name": "Columns 3",
                   "value": "columns-3"
+                },
+                {
+                  "name":"Columns 2(75-25)",
+                  "value": "columns-2-75"
+                },
+                {
+                  "name":"Columns 2(50-50)",
+                  "value": "columns-2-50"
                 }
               ]
             },
@@ -197,9 +205,20 @@
         "card-list-wealth",
         "privacy-modal",
         "external-redirect-popup",
+        "credit-card-selector",
+        "credit-card-comparator",
+        "card-comparator-results",
         "video",
         "carousel-video",
-        "forex-rates"
+        "forex-rates",
+        "special-fx-rates",
+        "promotional-details",
+        "promo-card-listing",
+        "top-promotional-cards",
+        "multi-column-tiles",
+        "stock-ticker",
+        "cookie-alert",
+        "cookie-modal"
       ]
     }
   ]

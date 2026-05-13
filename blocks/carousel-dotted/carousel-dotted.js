@@ -6,6 +6,7 @@ import {
 import buildCardListFragmentSlides, {
   handleCardListLoopTransition,
   setCardListTrackPosition,
+  tabletMin,
 } from './card-list-carousel.js';
 import buildContentCardsSlide from './build-content-cards-slide.js';
 import buildImageSlide from './build-image-slide.js';
@@ -579,8 +580,12 @@ export default async function decorate(block) {
   if (seeMoreLink) {
     const moreWrap = document.createElement('div');
     moreWrap.className = 'carousel-dotted-more';
-    seeMoreLink.classList.add('icon-arrow-left');
-    moreWrap.append(seeMoreLink);
+    seeMoreLink.classList.add('button-tertiary', 'icon-arrow-left');
+    // Wrap in <span> so decorateButtonsV1 (which only matches P/DIV parents)
+    // does not replace the className and strip icon-arrow-left
+    const linkWrap = document.createElement('span');
+    linkWrap.append(seeMoreLink);
+    moreWrap.append(linkWrap);
     block.append(moreWrap);
   }
 
@@ -622,4 +627,19 @@ export default async function decorate(block) {
     || slidesDefaultImage > 0
     || slidesFragment > 0;
   initializeDragSwipe(block, slideEls, setActive, 50, enableLooping);
+
+  if (allFragmentTrack) {
+    const breakpoint = window.matchMedia(`(max-width: ${tabletMin})`);
+    breakpoint.addEventListener('change', () => {
+      const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
+      const trackWrapper = block.querySelector('.carousel-track-wrapper');
+      if (trackWrapper) {
+        trackWrapper.style.transition = 'none';
+        const idx = currentIndex >= 0 ? currentIndex : 0;
+        setCardListTrackPosition(block, trackWrapper, slideEls, idx);
+        trackWrapper.getBoundingClientRect();
+        trackWrapper.style.transition = '';
+      }
+    });
+  }
 }

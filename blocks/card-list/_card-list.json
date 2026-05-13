@@ -212,19 +212,12 @@
           ]
         },
         {
-          "component": "container",
-          "name": "targetSettings",
-          "label": "Target settings",
-          "fields": [
-            {
-              "component": "boolean",
-              "name": "targetLink",
-              "label": "Open link in new tab",
-              "description": "Enable to open the button link in a new browser tab",
-              "valueType": "boolean",
-              "value": false
-            }
-          ]
+          "component": "boolean",
+          "name": "targetLink",
+          "label": "Open link in new tab",
+          "description": "Enable to open the button link in a new browser tab",
+          "valueType": "boolean",
+          "value": false
         },
         {
           "component": "select",
@@ -302,11 +295,10 @@
           "value": false
         },
         {
-          "component": "text",
-          "name": "dataModal",
-          "label": "Data Modal",
+          "component": "aem-content",
+          "name": "fragmentPath",
+          "label": "Fragment path",
           "valueType": "string",
-          "description": "Fragment path for the overlay modal data-modal attribute",
           "condition": {
             "!!": [
               {
