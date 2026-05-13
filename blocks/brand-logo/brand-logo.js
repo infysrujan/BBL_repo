@@ -16,10 +16,9 @@ export default function decorate(block) {
   const img = block.querySelector('img');
   const altText = img?.alt || 'Brand Logo';
 
-  // Extract print logo picture from row 3 (optional field)
+  // Extract print logo picture from row 3 and its alt text from row 4 (optional fields)
   const printLogoPicture = rows[3]?.querySelector('picture, img');
-  // eslint-disable-next-line no-console
-  console.log('[brand-logo] total rows:', rows.length, '| row[3]:', rows[3], '| printLogoPicture:', printLogoPicture);
+  const printLogoAltText = rows[4]?.textContent?.trim() || '';
 
   // Clear the block content
   block.textContent = '';
@@ -62,9 +61,11 @@ export default function decorate(block) {
   if (printLogoPicture) {
     const printContainer = document.createElement('div');
     printContainer.className = 'brand-logo-print-logo';
-    const clonedLogo = printLogoPicture.tagName === 'IMG'
-      ? printLogoPicture.cloneNode(true)
-      : printLogoPicture.cloneNode(true);
+    const clonedLogo = printLogoPicture.cloneNode(true);
+    if (printLogoAltText) {
+      const clonedImg = clonedLogo.tagName === 'IMG' ? clonedLogo : clonedLogo.querySelector('img');
+      if (clonedImg) clonedImg.alt = printLogoAltText;
+    }
     printContainer.appendChild(clonedLogo);
     block.appendChild(printContainer);
   }
