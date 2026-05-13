@@ -532,6 +532,10 @@
     border: none;
     background: transparent;
     cursor: pointer;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+    min-width: max-content;
 }
 
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav .tabs-nav button.active {
@@ -590,7 +594,7 @@
     box-sizing: border-box;
     height: 3.75rem;
     padding: var(--bbl-space-050);
-    margin: 0 auto var(--bbl-space-050);
+    margin: 0;
     display: block;
 }
 /* stylelint-enable no-descending-specificity */
