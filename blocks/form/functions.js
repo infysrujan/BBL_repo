@@ -267,7 +267,7 @@ async function getProvinceEnAsArray() {
     return [];
   }
 }
- 
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,

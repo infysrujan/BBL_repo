@@ -61,7 +61,8 @@
       "multi-column-tiles",
       "stock-ticker",
       "cookie-alert",
-      "cookie-modal"
+      "cookie-modal",
+      "welcome-banner"
     ]
   },
   {
@@ -378,6 +379,12 @@
     "id": "video",
     "components": [
       "video"
+    ]
+  },
+  {
+    "id": "welcome-banner",
+    "components": [
+      "button"
     ]
   }
 ]
