@@ -10750,14 +10750,14 @@
       {
         "component": "date-time",
         "valueType": "date-time",
-        "name": "content-modified-time",
+        "name": "Publish-Date",
         "label": "Publish Date",
         "placeholder": "YYYY-MM-DD HH:mm:ss"
       },
       {
         "component": "date-time",
         "valueType": "date-time",
-        "name": "content-modified-time",
+        "name": "Unpublish-Date",
         "label": "Unpublish Date",
         "placeholder": "YYYY-MM-DD HH:mm:ss"
       }
