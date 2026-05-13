@@ -72,13 +72,13 @@
 .tax-calculator .tax-calc-step-circle {
   position: relative;
   z-index: 10;
-  width: 1.063rem;
-  height: 1.063rem;
-  border-radius: 9999px;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
   line-height: 1;
   border: 2px solid var(--bbl-color-grey-20);
@@ -87,17 +87,13 @@
 }
 
 .tax-calculator .tax-calc-step-circle span {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: block;
+  line-height: 1;
 }
 
 .tax-calculator .tax-calc-step-done .tax-calc-step-circle span {
   font-size: 0.75rem;
   font-weight: 700;
-  line-height: 1;
-  transform: translate(-50%, -52%);
 }
 
 .tax-calculator .tax-calc-step-active .tax-calc-step-circle {
@@ -569,14 +565,14 @@
 .tax-calculator .tax-calc-tax-card-original {
   background: var(--bbl-color-grey-10);
   padding: 0.875rem;
-  height: 5rem;
+  height: 5.5rem;
 }
 
 .tax-calculator .tax-calc-tax-card-new {
   background: var(--bbl-color-truthful-blue);
   color: var(--bbl-color-white);
   padding: 0.875rem;
-  height: 5rem;
+  height: 5.5rem;
 }
 
 .tax-calculator .tax-calc-tax-card-title {
@@ -601,6 +597,7 @@
   text-align: right;
   color: var(--bbl-color-active-blue);
   margin-top: auto;
+  margin-bottom: 0;
   line-height: 1;
 }
 
@@ -627,7 +624,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   margin-top: auto;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
   flex-wrap: wrap;
   text-align: right;
 }
@@ -635,6 +632,8 @@
 .tax-calculator .tax-calc-tax-card-saved p {
   margin: 0;
 }
+
+
 
 .tax-calculator .tax-calc-tax-card-saved svg {
   flex-shrink: 0;
@@ -679,7 +678,7 @@
 }
 
 .tax-calculator .tax-calc-summary-value {
-  font-size: clamp(1.1rem, 5vw, 1.5rem);
+  font-size: clamp(1.1rem, 4.8vw, 1.5rem);
   font-weight: 600;
   color: var(--bbl-color-black);
   text-align: right;
@@ -710,8 +709,8 @@
 /* ── Journey 3: Invest table ───────────────────────────────── */
 
 .tax-calculator .tax-calc-invest-title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 500;
   color: var(--bbl-color-gray-121);
 }
 
@@ -1294,6 +1293,16 @@
     font-size: 3rem;
     line-height: 1;
     font-weight: 600;
+    margin-top: auto;
+  }
+
+  .tax-calculator .tax-calc-tax-card-saved {
+    margin-top: auto;
+    margin-bottom: 0;
+  }
+
+  .tax-calculator .tax-calc-tax-card-saved p {
+    margin: 0;
   }
 
   .tax-calculator .tax-calc-tax-card-original .tax-calc-tax-card-title {
