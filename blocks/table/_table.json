@@ -138,7 +138,7 @@
 					"label": "Nested Table ID",
 					"valueType": "string",
 					"required": false,
-					"condition": { "style": "nested-table" }
+					"condition": { "in": ["nested-table", { "var": "style" }] }
 				},
 				{
 					"component": "richtext",

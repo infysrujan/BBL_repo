@@ -9855,7 +9855,12 @@
         "valueType": "string",
         "required": false,
         "condition": {
-          "style": "nested-table"
+          "in": [
+            "nested-table",
+            {
+              "var": "style"
+            }
+          ]
         }
       },
       {
