@@ -278,11 +278,8 @@ function renderBlock(
     : allFxRates.filter((r) => r.family.toUpperCase() === 'USD').slice(0, 1);
   const fwdRates = normalizeFwdRates(s2State.rates);
 
-  const brandLogoPrintEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img');
-  const printLogoHtml = brandLogoPrintEl?.outerHTML || '';
-
   block.innerHTML = `<div class="fpsme-wrapper">
-    ${printLogoHtml ? `<div class="fpsme-print-logo">${printLogoHtml}</div>` : ''}
+    <div class="fpsme-print-logo"></div>
     <div class="fpsme-section1-bar">
       <div class="fpsme-section fpsme-section-currency">
         ${s1Controls}
@@ -668,6 +665,37 @@ export default async function decorate(block) {
 
   const s1State = createSectionState();
   const s2State = createSectionState();
+
+  // Inject brand logo into the print-logo slot right before the browser
+  // renders the print layout — guaranteed to run after full page decoration.
+  window.addEventListener('beforeprint', () => {
+    // eslint-disable-next-line no-console
+    console.log('[fpsme] beforeprint fired');
+    const printLogoDiv = block.querySelector('.fpsme-print-logo');
+    // eslint-disable-next-line no-console
+    console.log('[fpsme] .fpsme-print-logo div:', printLogoDiv);
+
+    if (!printLogoDiv) return;
+    printLogoDiv.innerHTML = '';
+
+    const printLogoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img');
+    const headerLogoEl = document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+    // eslint-disable-next-line no-console
+    console.log('[fpsme] .brand-logo-print-logo element:', printLogoEl);
+    // eslint-disable-next-line no-console
+    console.log('[fpsme] .brand-logo-container element (fallback):', headerLogoEl);
+
+    const logoEl = printLogoEl || headerLogoEl;
+    // eslint-disable-next-line no-console
+    console.log('[fpsme] logo element used:', logoEl);
+
+    if (!logoEl) return;
+    const cloned = logoEl.cloneNode(true);
+    cloned.querySelectorAll('img').forEach((i) => { i.loading = 'eager'; });
+    printLogoDiv.appendChild(cloned);
+    // eslint-disable-next-line no-console
+    console.log('[fpsme] logo injected into .fpsme-print-logo:', cloned);
+  });
 
   const render = () => {
     renderBlock(

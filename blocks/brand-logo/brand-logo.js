@@ -17,7 +17,9 @@ export default function decorate(block) {
   const altText = img?.alt || 'Brand Logo';
 
   // Extract print logo picture from row 3 (optional field)
-  const printLogoPicture = rows[3]?.querySelector('picture');
+  const printLogoPicture = rows[3]?.querySelector('picture, img');
+  // eslint-disable-next-line no-console
+  console.log('[brand-logo] total rows:', rows.length, '| row[3]:', rows[3], '| printLogoPicture:', printLogoPicture);
 
   // Clear the block content
   block.textContent = '';
@@ -60,7 +62,10 @@ export default function decorate(block) {
   if (printLogoPicture) {
     const printContainer = document.createElement('div');
     printContainer.className = 'brand-logo-print-logo';
-    printContainer.appendChild(printLogoPicture.cloneNode(true));
+    const clonedLogo = printLogoPicture.tagName === 'IMG'
+      ? printLogoPicture.cloneNode(true)
+      : printLogoPicture.cloneNode(true);
+    printContainer.appendChild(clonedLogo);
     block.appendChild(printContainer);
   }
 }
