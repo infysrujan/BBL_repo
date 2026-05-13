@@ -286,10 +286,12 @@ export default async function decorate(block) {
   if (parentStyles.includes('scroll')) {
     block.classList.add('scroll');
   }
+  const nestedTableId = rows[0].children[1]?.textContent.trim();
   const parentTable = rows[1].querySelector('table');
   if (!parentTable) return;
 
   applyVariationClasses(parentTable, parentStyles);
+  if (nestedTableId) parentTable.classList.add(toClassName(nestedTableId));
 
   // Non-hierarchical nested table: render normally and schedule section-level resolution
   if (parentStyles.includes('nested-table')) {

@@ -9849,6 +9849,16 @@
         ]
       },
       {
+        "component": "text",
+        "name": "nestedTableId",
+        "label": "Nested Table ID",
+        "valueType": "string",
+        "required": false,
+        "condition": {
+          "style": "nested-table"
+        }
+      },
+      {
         "component": "richtext",
         "name": "tableContent",
         "label": "Table Content",
