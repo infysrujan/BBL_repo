@@ -4,8 +4,10 @@
  * @param {Element} block The brand-logo block element
  */
 export default function decorate(block) {
-  // Extract the picture element (logo image)
-  const picture = block.querySelector('picture');
+  const rows = [...block.children];
+
+  // Extract the picture element (logo image) from first row
+  const picture = rows[0]?.querySelector('picture');
 
   // Extract the link (typically the home page URL)
   const anchor = block.querySelector('a');
@@ -13,6 +15,9 @@ export default function decorate(block) {
   // Extract alt text from the block data or image
   const img = block.querySelector('img');
   const altText = img?.alt || 'Brand Logo';
+
+  // Extract print logo picture from row 3 (optional field)
+  const printLogoPicture = rows[3]?.querySelector('picture');
 
   // Clear the block content
   block.textContent = '';
@@ -50,4 +55,12 @@ export default function decorate(block) {
   }
 
   block.appendChild(logoContainer);
+
+  // Render print logo in a hidden container (visible only during print)
+  if (printLogoPicture) {
+    const printContainer = document.createElement('div');
+    printContainer.className = 'brand-logo-print-logo';
+    printContainer.appendChild(printLogoPicture.cloneNode(true));
+    block.appendChild(printContainer);
+  }
 }

@@ -23,6 +23,7 @@ import {
   trimValue,
 } from './helpers/api-helpers.js';
 import parseAuthoring from './helpers/authoring-helpers.js';
+import { getLang } from '../../scripts/scripts.js';
 
 function escapeHtml(value) {
   return String(value)
@@ -118,6 +119,8 @@ function renderControlsRow(
   buddhistYearOffset,
   prevLabel,
   nextLabel,
+  openCalendarLabel,
+  selectTimeLabel,
 ) {
   const selectedUpdateObj = state.updates.find(
     (item) => trimValue(item.Update) === state.selectedUpdate,
@@ -142,7 +145,7 @@ function renderControlsRow(
     <span class="fpsme-update-label">${escapeHtml(calendarLabel)}</span>
     <div class="fpsme-date-group fpsme-date-group-${sid}">
       <input id="fpsme-date-input-${sid}" class="fpsme-date-input" type="text" inputmode="text" placeholder="DD MMM YYYY" value="${escapeHtml(state.typedDate)}" aria-label="${escapeHtml(calendarLabel)} date">
-      <button type="button" class="fpsme-date-trigger fpsme-date-trigger-${sid} icon-calendar" aria-label="Open calendar"></button>
+      <button type="button" class="fpsme-date-trigger fpsme-date-trigger-${sid} icon-calendar" aria-label="${escapeHtml(openCalendarLabel)}"></button>
       ${renderDatepicker(
     state,
     sid,
@@ -155,7 +158,7 @@ function renderControlsRow(
     </div>
     <div class="fpsme-time-wrap">
       <div class="fpsme-time-dropdown fpsme-time-dropdown-${sid}${timeDropdownOpen}${timeDisabled}" role="combobox" aria-expanded="${state.timeDropdownOpen}" aria-haspopup="listbox">
-        <button type="button" class="fpsme-time-trigger" aria-label="Select time"${state.updates.length ? '' : ' disabled'}>
+        <button type="button" class="fpsme-time-trigger" aria-label="${escapeHtml(selectTimeLabel)}"${state.updates.length ? '' : ' disabled'}>
           <span class="fpsme-time-label">${escapeHtml(selectedLabel)}</span>
           <i class="icon-dropdown fpsme-time-chevron" aria-hidden="true"></i>
         </button>
@@ -236,6 +239,8 @@ function renderBlock(
   buddhistYearOffset,
   prevLabel,
   nextLabel,
+  openCalendarLabel,
+  selectTimeLabel,
 ) {
   const s1Controls = renderControlsRow(
     s1State,
@@ -247,6 +252,8 @@ function renderBlock(
     buddhistYearOffset,
     prevLabel,
     nextLabel,
+    openCalendarLabel,
+    selectTimeLabel,
   );
   const s2Controls = renderControlsRow(
     s2State,
@@ -258,6 +265,8 @@ function renderBlock(
     buddhistYearOffset,
     prevLabel,
     nextLabel,
+    openCalendarLabel,
+    selectTimeLabel,
   );
 
   const allFxRates = normalizeFxRates(s1State.rates);
@@ -269,8 +278,11 @@ function renderBlock(
     : allFxRates.filter((r) => r.family.toUpperCase() === 'USD').slice(0, 1);
   const fwdRates = normalizeFwdRates(s2State.rates);
 
+  const brandLogoPrintEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img');
+  const printLogoHtml = brandLogoPrintEl?.outerHTML || '';
+
   block.innerHTML = `<div class="fpsme-wrapper">
-    ${authoring.printLogoHtml ? `<div class="fpsme-print-logo">${authoring.printLogoHtml}</div>` : ''}
+    ${printLogoHtml ? `<div class="fpsme-print-logo">${printLogoHtml}</div>` : ''}
     <div class="fpsme-section1-bar">
       <div class="fpsme-section fpsme-section-currency">
         ${s1Controls}
@@ -631,7 +643,9 @@ export default async function decorate(block) {
 
   const prevLabel = placeholders?.forexRatesPrevMonth || 'Previous month';
   const nextLabel = placeholders?.forexRatesNextMonth || 'Next month';
-  const language = document.documentElement.lang?.split('-')[0] || 'en';
+  const openCalendarLabel = placeholders?.openCalendar || 'Open calendar';
+  const selectTimeLabel = placeholders?.selectTime || 'Select time';
+  const language = getLang();
   const monthLabels = parseCsvConfigList(configs?.monthLabels, buildIntlMonthLabels(language));
   const dayLabels = parseCsvConfigList(configs?.dayLabels, buildIntlDayLabels(language));
   const buddhistYearOffset = Number(configs?.buddhistYearOffset) || 0;
@@ -666,6 +680,8 @@ export default async function decorate(block) {
       buddhistYearOffset,
       prevLabel,
       nextLabel,
+      openCalendarLabel,
+      selectTimeLabel,
     );
     setupSection(
       block,

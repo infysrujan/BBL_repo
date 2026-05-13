@@ -42,9 +42,6 @@ export default function parseAuthoring(block) {
   const section2UnitLabel = rows[12]?.textContent?.trim() || '';
   // Row 13: Remark / disclaimer text (richtext)
   const remarkHtml = rows[13]?.firstElementChild?.innerHTML || '';
-  // Row 14: Print logo (image reference — renders as picture/img element)
-  const printLogoEl = rows[14]?.querySelector('picture, img');
-  const printLogoHtml = printLogoEl?.outerHTML || '';
 
   return {
     section1CalendarLabel,
@@ -61,6 +58,5 @@ export default function parseAuthoring(block) {
     section2Rows,
     section2UnitLabel,
     remarkHtml,
-    printLogoHtml,
   };
 }
