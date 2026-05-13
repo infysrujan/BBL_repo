@@ -429,6 +429,17 @@ function getJourney3InvestFields(apiResult1, i18n) {
   ];
 }
 
+// ─── Header ─────────────────────────────────────────────────────────────────────
+
+function buildHeader(i18n) {
+  const header = el('<div class="tax-calc-header"></div>');
+  const title = el(`<h1 class="tax-calc-title">${t(i18n, 'config-title', 'Plan your tax saving')}</h1>`);
+  const divider = el('<div class="tax-calc-divider"></div>');
+  header.appendChild(title);
+  header.appendChild(divider);
+  return header;
+}
+
 // ─── Step Indicator ─────────────────────────────────────────────────────────────
 
 function buildStepIndicator(i18n, activeStep) {
@@ -490,7 +501,6 @@ function buildInputField(def, savedValue) {
           placeholder="${displayPlaceholder}"
           value="${displayVal}"
           maxlength="${maxLength}"
-          ${isEmptyRange && def.disableWhenEmpty ? 'disabled' : ''}
           ${isEmptyRange && !def.disableWhenEmpty ? 'readonly' : ''}
         />
         <label class="tax-calc-label" for="tc-${def.id}">${def.label}</label>
@@ -505,13 +515,22 @@ function buildInputField(def, savedValue) {
   const hintEl = def.hint ? field.querySelector(`#tc-hint-${def.id}`) : null;
   const errorEl = field.querySelector('.tax-calc-field-error');
 
-  // Only digits allowed
-  input.addEventListener('keypress', (e) => {
-    if (!/[\d]/.test(e.key)) e.preventDefault();
+  // Block any input if the field is frozen
+  input.addEventListener('beforeinput', (e) => {
+    if (input.classList.contains('tax-calc-input-frozen')) e.preventDefault();
   });
 
-  // Skip over commas on backspace instead of deleting them
+  // Only digits allowed + skip commas on backspace
   input.addEventListener('keydown', (e) => {
+    if (input.classList.contains('tax-calc-input-frozen')) {
+      if (!['ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'].includes(e.key)) {
+        e.preventDefault();
+      }
+      return;
+    }
+    if (!/[\d]|Backspace|Delete|ArrowLeft|ArrowRight|Tab|Home|End/.test(e.key) && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+    }
     if (e.key === 'Backspace' && input.selectionStart === input.selectionEnd) {
       const pos = input.selectionStart;
       if (pos > 0 && input.value[pos - 1] === ',') {
@@ -522,7 +541,7 @@ function buildInputField(def, savedValue) {
   });
 
   input.addEventListener('focus', () => {
-    if (raw(input.value) === '0') input.value = '';
+    if (raw(input.value) === '0' && !input.classList.contains('tax-calc-input-frozen')) input.value = '';
     if (!wrap.classList.contains('tax-calc-input-wrap-error')) {
       wrap.classList.add('tax-calc-input-wrap-focus');
     }
@@ -537,6 +556,10 @@ function buildInputField(def, savedValue) {
 
   // Live reformat + max validation
   input.addEventListener('input', () => {
+    if (input.classList.contains('tax-calc-input-frozen')) {
+      input.value = fmt(0);
+      return;
+    }
     const pos = input.selectionStart;
     const digitsBeforeCursor = input.value.substring(0, pos).replace(/,/g, '').length;
     const rawVal = raw(input.value);
@@ -576,29 +599,27 @@ function buildInputField(def, savedValue) {
     if (newMax <= 0) {
       input.placeholder = '0';
       input.value = fmt(0);
-      if (def.disableWhenEmpty) {
-        input.disabled = true;
-        input.removeAttribute('readonly');
-      } else {
-        input.readOnly = true;
-        input.disabled = false;
-      }
+      input.classList.add('tax-calc-input-frozen');
+      input.readOnly = false; // Allow focus/cursor
+      input.disabled = false;
       wrap.classList.remove('tax-calc-input-wrap-error');
       input.classList.remove('tax-calc-input-error');
       errorEl.textContent = '';
       if (hintEl) {
         hintEl.textContent = def.allUsedMsg || 'All tax deductions have been used.';
-        hintEl.classList.add('tax-calc-field-hint-warning');
+        hintEl.classList.add('tax-calc-field-hint-error');
         hintEl.hidden = false;
       }
     } else {
       input.disabled = false;
       input.readOnly = false;
+      input.classList.remove('tax-calc-input-frozen');
       input.maxLength = fmt(Math.round(newMax)).length;
       input.placeholder = `${fmt(def.min || 0)} - ${fmt(newMax)}`;
       if (hintEl) {
         hintEl.textContent = def.hint.replace('{max}', fmt(newMax));
         hintEl.classList.remove('tax-calc-field-hint-warning');
+        hintEl.classList.remove('tax-calc-field-hint-error');
         hintEl.hidden = false;
       }
       const val = parseFloat(raw(input.value)) || 0;
@@ -631,15 +652,59 @@ function buildTooltipIcon(text) {
 
   const trigger = wrap.querySelector('.tax-calc-tooltip-trigger');
   const tooltip = wrap.querySelector('.tax-calc-tooltip');
+  let isClicked = false;
+
+  const adjustPosition = () => {
+    tooltip.style.left = '';
+    tooltip.style.transform = '';
+    tooltip.style.setProperty('--arrow-shift', '0px');
+
+    const rect = tooltip.getBoundingClientRect();
+    const pad = 16; // 1rem padding from edges
+    let shift = 0;
+
+    if (rect.left < pad) {
+      shift = pad - rect.left;
+    } else if (rect.right > window.innerWidth - pad) {
+      shift = (window.innerWidth - pad) - rect.right;
+    }
+
+    if (shift !== 0) {
+      tooltip.style.transform = `translateX(calc(-50% + ${shift}px))`;
+      // Shift arrow in opposite direction to keep it over the icon
+      tooltip.style.setProperty('--arrow-shift', `${-shift}px`);
+    }
+  };
+
+  trigger.addEventListener('mouseenter', () => {
+    tooltip.classList.add('tax-calc-tooltip-open');
+    adjustPosition();
+  });
+
+  trigger.addEventListener('mouseleave', () => {
+    if (!isClicked) {
+      tooltip.classList.remove('tax-calc-tooltip-open');
+    }
+  });
 
   trigger.addEventListener('click', (e) => {
     e.stopPropagation();
-    const isOpen = tooltip.classList.contains('tax-calc-tooltip-open');
-    document.querySelectorAll('.tax-calc-tooltip-open').forEach((tip) => tip.classList.remove('tax-calc-tooltip-open'));
-    if (!isOpen) tooltip.classList.add('tax-calc-tooltip-open');
+    isClicked = !isClicked;
+    if (isClicked) {
+      document.querySelectorAll('.tax-calc-tooltip-open').forEach((tip) => {
+        if (tip !== tooltip) tip.classList.remove('tax-calc-tooltip-open');
+      });
+      tooltip.classList.add('tax-calc-tooltip-open');
+      adjustPosition();
+    } else {
+      tooltip.classList.remove('tax-calc-tooltip-open');
+    }
   });
 
-  document.addEventListener('click', () => tooltip.classList.remove('tax-calc-tooltip-open'));
+  document.addEventListener('click', () => {
+    isClicked = false;
+    tooltip.classList.remove('tax-calc-tooltip-open');
+  });
 
   return wrap;
 }
@@ -702,11 +767,11 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   const { fields, i18n, cfg } = data;
   const fieldDefs = getJourney1Fields(fields, i18n, cfg);
 
-  const container = el('<div class="tax-calc"></div>');
+  const container = el('<div class="tax-calc tax-calc-step-1"></div>');
+  container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepIndicator(i18n, 1));
 
-  const card = el('<div class="tax-calc-card"></div>');
-  const cardBody = el('<div class="tax-calc-body"></div>');
+  const body = el('<div class="tax-calc-body"></div>');
   const fieldsWrap = el('<div class="tax-calc-fields"></div>');
 
   fieldDefs.forEach((def) => {
@@ -717,22 +782,23 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
     fieldsWrap.appendChild(buildInputField(def, savedVal));
   });
 
-  cardBody.appendChild(fieldsWrap);
+  body.appendChild(fieldsWrap);
 
-  cardBody.appendChild(buildNotes(
+  const notesSection = buildNotes(
     t(i18n, 'config-notes-title', 'Notes'),
     [t(i18n, 'common-noteText', '*Enter only taxable income without deducting personal allowances and Social Security contributions.')],
-  ));
+  );
+  notesSection.classList.add('tax-calc-notes-step-1');
+  body.appendChild(notesSection);
 
-  card.appendChild(cardBody);
+  container.appendChild(body);
 
   const footer = el(`
     <div class="tax-calc-footer">
       <button type="button" class="tax-calc-btn tax-calc-btn-primary">${t(i18n, 'buttons-nextButton', 'Next')}</button>
     </div>
   `);
-  card.appendChild(footer);
-  container.appendChild(card);
+  container.appendChild(footer);
   block.appendChild(container);
 
   const primaryBtn = footer.querySelector('.tax-calc-btn-primary');
@@ -767,7 +833,8 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
       values[def.id] = val * def.factor;
     });
 
-    btn.disabled = true;
+    btn.classList.add('tax-calc-btn-loading');
+
     try {
       const payload = {
         ...values,
@@ -796,8 +863,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Tax calculator API error:', err);
-    } finally {
-      btn.disabled = false;
+      btn.classList.remove('tax-calc-btn-loading');
     }
   });
 }
@@ -813,26 +879,26 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
   const { apiResponse, journey2 = {} } = state;
   const groups = getJourney2Groups(fields, i18n, apiResponse);
 
-  const container = el('<div class="tax-calc"></div>');
+  const container = el('<div class="tax-calc tax-calc-step-2"></div>');
+  container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepIndicator(i18n, 2));
 
-  const card = el('<div class="tax-calc-card"></div>');
-  const cardBody = el('<div class="tax-calc-body"></div>');
+  const body = el('<div class="tax-calc-body"></div>');
 
   groups.forEach((group) => {
-    cardBody.appendChild(buildSectionHeader(group.label, group.tooltip));
+    body.appendChild(buildSectionHeader(group.label, group.tooltip));
 
     group.fields.forEach((def) => {
       if (def.type === 'checkbox') {
-        cardBody.appendChild(buildParentalCheckboxes(def, journey2[def.id]));
+        body.appendChild(buildParentalCheckboxes(def, journey2[def.id]));
       } else {
         const savedVal = journey2[def.id] !== undefined ? journey2[def.id] : null;
-        cardBody.appendChild(buildInputField(def, savedVal));
+        body.appendChild(buildInputField(def, savedVal));
       }
     });
   });
 
-  cardBody.appendChild(buildNotes(
+  body.appendChild(buildNotes(
     t(i18n, 'config-notes-title', 'Notes'),
     [
       t(i18n, 'config-notes-taxNote', '• Life insurance premiums, pension insurance premiums, health insurance premiums, RMF, Thai ESG, and donations must not exceed the allowable personal income tax deduction limits, as specified by the Revenue Department.'),
@@ -840,7 +906,7 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
     ],
   ));
 
-  card.appendChild(cardBody);
+  container.appendChild(body);
 
   const footer = el(`
     <div class="tax-calc-footer">
@@ -848,8 +914,7 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
       <button type="button" class="tax-calc-btn tax-calc-btn-primary">${t(i18n, 'buttons-calculateButton', 'Calculate')}</button>
     </div>
   `);
-  card.appendChild(footer);
-  container.appendChild(card);
+  container.appendChild(footer);
   block.appendChild(container);
 
   const j2PrimaryBtn = footer.querySelector('.tax-calc-btn-primary');
@@ -917,29 +982,61 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
       });
     });
 
-    btn.disabled = true;
+    btn.classList.add('tax-calc-btn-loading');
+
     try {
-      const payload = { ...state.journey1, ...values };
-      const [resp1, resp2] = await Promise.all([
+      // Robust payload construction: Merge Step 1 (state.journey1) with Step 2 (values)
+      const payload = {
+        // Default values for fields not in Step 1/2
+        Spouse: 0,
+        ChildBornBefore61Other: 0,
+        ChildBorn61OnWardsOther: 0,
+        FatherInsure: 0,
+        // Step 1 values
+        ...state.journey1,
+        // Step 2 values (with correct API mapping)
+        ChildBornBefore61: values.NumberOfChildeBornBefore61 || 0,
+        ChildBorn61OnWards: values.NumberOfChildeBorn61OnWards || 0,
+        FatherMother: values.FatherMother || 0,
+        HomeInterest: values.HomeInterest || 0,
+        Insure: values.Insure || 0,
+        PensionInsure: values.PensionInsure || 0,
+        HealthInsure: values.HealthInsure || 0,
+        ReduceSSF: values.ReduceSSF || 0,
+        ReduceRMF: values.ReduceRMF || 0,
+        ReduceESG: values.ReduceESG || 0,
+        Donate: values.Donate || 0,
+        Other: values.Other || 0,
+      };
+
+      const promises = [
         fetch(data.apiCalculateTax, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
-        }),
-        fetch(data.apiCalculateSaving, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        }),
-      ]);
-      if (!resp1.ok || !resp2.ok) throw new Error('API error');
-      const [result1, result2] = await Promise.all([resp1.json(), resp2.json()]);
+        }).then((r) => { if (!r.ok) throw new Error('Primary API error'); return r.json(); }),
+      ];
+
+      // Second API is optional or might not be configured
+      if (data.apiCalculateSaving) {
+        promises.push(
+          fetch(data.apiCalculateSaving, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+        );
+      }
+
+      const [result1, result2] = await Promise.all(promises);
       onCalculate(values, result1, result2);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Tax calculator API error:', err);
+      // eslint-disable-next-line no-alert
+      alert(t(i18n, 'errors-calculationFailed', 'Calculation failed. Please try again.'));
     } finally {
-      btn.disabled = false;
+      btn.classList.remove('tax-calc-btn-loading');
     }
   });
 }
@@ -960,11 +1057,11 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
   const cardTaxRate = Math.round(((apiResult2 || apiResult1).MaxTaxRateStep || 0) * 100);
   const summaryTaxRate = Math.round((apiResult1.MaxTaxRateStep || 0) * 100);
 
-  const container = el('<div class="tax-calc"></div>');
+  const container = el('<div class="tax-calc tax-calc-results tax-calc-step-3"></div>');
+  container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepIndicator(i18n, 3));
 
-  const card = el('<div class="tax-calc-card"></div>');
-  const cardBody = el('<div class="tax-calc-body"></div>');
+  const body = el('<div class="tax-calc-body"></div>');
 
   // ── Tax card(s) ──
   const bahtUnit = t(i18n, 'common-unit', 'baht');
@@ -972,7 +1069,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
   const taxRateTpl = t(i18n, 'results-taxRateLabel', '(Tax rate {rate}%)');
 
   if (noTax) {
-    cardBody.appendChild(el(`
+    body.appendChild(el(`
       <div class="tax-calc-no-tax">
         <p class="tax-calc-no-tax-text">${noTaxLabel}</p>
       </div>
@@ -984,7 +1081,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
     const cardRateStr = taxRateTpl.replace('{rate}', cardTaxRate);
     const newRateStr = taxRateTpl.replace('{rate}', newTaxRate);
     const savedLabel = t(i18n, 'results-taxSavedLabel', 'Saved');
-    cardBody.appendChild(el(`
+    body.appendChild(el(`
       <div class="tax-calc-tax-cards tax-calc-tax-cards-two">
         <div class="tax-calc-tax-card-wrap">
           <div class="tax-calc-tax-card tax-calc-tax-card-original">
@@ -1016,7 +1113,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
     `));
   } else {
     const cardRateStr = taxRateTpl.replace('{rate}', cardTaxRate);
-    cardBody.appendChild(el(`
+    body.appendChild(el(`
       <div class="tax-calc-tax-cards">
         <div class="tax-calc-tax-card-wrap">
           <div class="tax-calc-tax-card tax-calc-tax-card-original">
@@ -1038,7 +1135,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
     ? noTaxLabel
     : summaryRateTpl.replace('{rate}', summaryTaxRate);
 
-  cardBody.appendChild(el(`
+  body.appendChild(el(`
     <div class="tax-calc-summary-box">
       <div class="tax-calc-summary-row">
         <p class="tax-calc-summary-label">${t(i18n, 'results-maxTaxSavingsResult', 'You can save tax up to')}</p>
@@ -1071,7 +1168,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
   if (!noTax) {
     const investFieldDefs = getJourney3InvestFields(apiResult1, i18n);
 
-    cardBody.appendChild(el(`
+    body.appendChild(el(`
       <div class="tax-calc-invest-heading">
         <h2 class="tax-calc-invest-title">${t(i18n, 'results-chooseMoreInvestmentLabel', 'Save more on tax by investing or buying insurance')}</h2>
       </div>
@@ -1117,10 +1214,9 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
       totalEls[def.id] = row.querySelector('.tax-calc-invest-total');
     });
 
-    cardBody.appendChild(tableWrap);
-    cardBody.appendChild(notesEl);
-
-    card.appendChild(cardBody);
+    body.appendChild(tableWrap);
+    body.appendChild(notesEl);
+    container.appendChild(body);
 
     const hasJ3Values = investFieldDefs.some((def) => (journey3[def.id] || 0) > 0);
     const footer = el(`
@@ -1129,8 +1225,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
         <button type="button" class="tax-calc-btn tax-calc-btn-primary" id="tc-recalculate" ${hasJ3Values ? '' : 'disabled'}>${t(i18n, 'buttons-recalculateButton', 'Recalculate')}</button>
       </div>
     `);
-    card.appendChild(footer);
-    container.appendChild(card);
+    container.appendChild(footer);
     block.appendChild(container);
 
     // Live total column updates (J2 base + J3 input)
@@ -1225,16 +1320,15 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
       }
     });
   } else {
-    cardBody.appendChild(notesEl);
-    card.appendChild(cardBody);
+    body.appendChild(notesEl);
+    container.appendChild(body);
 
     const footer = el(`
       <div class="tax-calc-footer">
         <button type="button" class="tax-calc-btn tax-calc-btn-primary">${t(i18n, 'buttons-backButton', 'Back')}</button>
       </div>
     `);
-    card.appendChild(footer);
-    container.appendChild(card);
+    container.appendChild(footer);
     block.appendChild(container);
 
     footer.querySelector('.tax-calc-btn-primary').addEventListener('click', onBack);
