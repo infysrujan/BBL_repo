@@ -60,7 +60,7 @@ function buildCarouselAuthoringNav(validTabs, firstVariant) {
   });
 
   const prevBtn = document.createElement('button');
-  prevBtn.className = 'tabs-nav-prev icon-arrow-left';
+  prevBtn.className = 'tabs-nav-prev icon-arrow-left hidden';
   prevBtn.setAttribute('aria-label', 'Previous tabs');
 
   const nextBtn = document.createElement('button');
@@ -89,7 +89,6 @@ function buildCarouselAuthoringNav(validTabs, firstVariant) {
 
   tabsWrapper.appendChild(carouselNav);
   validTabs[0].section.insertAdjacentElement('beforebegin', tabsWrapper);
-  requestAnimationFrame(updateArrows);
 }
 
 export default function buildAuthoringNav(tabGroups) {
