@@ -237,14 +237,18 @@ function getSectionNestedTableMap(section) {
 
 function resolveAdjacentNestedTables(block) {
   const section = block.closest('.section');
-  if (!section || section.dataset.adjacentNestedResolved) return;
-  section.dataset.adjacentNestedResolved = 'true';
+  if (!section) return;
+
+  const authoring = isAuthoringInstance(block);
+  if (!authoring) {
+    if (section.dataset.adjacentNestedResolved) return;
+    section.dataset.adjacentNestedResolved = 'true';
+  }
 
   const nestedEntries = getSectionNestedTableMap(section);
   if (nestedEntries.size === 0) return;
 
   const tableMap = new Map([...nestedEntries.entries()].map(([id, { table }]) => [id, table]));
-  const authoring = isAuthoringInstance(block);
 
   [...section.querySelectorAll('.table.block')].forEach((tableBlock) => {
     const table = tableBlock.querySelector('table');
