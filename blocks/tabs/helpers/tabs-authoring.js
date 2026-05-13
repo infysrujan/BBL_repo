@@ -17,6 +17,25 @@ function createAuthoringButton(tabName, tabVariant, tabIcon, tabIconAlt, index) 
   return button;
 }
 
+function createMediaImages(validTabs) {
+  const imagesContainer = document.createElement('div');
+  imagesContainer.className = 'tabs-images';
+
+  validTabs.forEach(({ tabIcon, tabIconAlt }, index) => {
+    const imageItem = document.createElement('div');
+    if (index === 0) imageItem.classList.add('active');
+    if (tabIcon) {
+      const img = document.createElement('img');
+      img.src = tabIcon;
+      img.alt = tabIconAlt || '';
+      imageItem.appendChild(img);
+    }
+    imagesContainer.appendChild(imageItem);
+  });
+
+  return imagesContainer;
+}
+
 export default function buildAuthoringNav(tabGroups) {
   tabGroups.forEach((group) => {
     const validTabs = group.filter((tab) => tab.tabName && tab.tabName.trim() !== '');
@@ -26,6 +45,10 @@ export default function buildAuthoringNav(tabGroups) {
 
     const tabsWrapper = document.createElement('div');
     tabsWrapper.className = `tabs ${firstVariant}`;
+
+    if (firstVariant === 'media-tab') {
+      tabsWrapper.appendChild(createMediaImages(validTabs));
+    }
 
     const tabsNavWrapper = document.createElement('div');
     tabsNavWrapper.className = 'tabs';
