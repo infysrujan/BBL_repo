@@ -229,7 +229,7 @@ function getSectionNestedTableMap(section) {
   [...section.querySelectorAll('.table.block')].forEach((tableBlock) => {
     const table = tableBlock.querySelector('table');
     if (!table || !table.classList.contains('nested-table')) return;
-    const nestedId = [...table.classList].find((cls) => cls !== 'nested-table');
+    const { nestedId } = table.dataset;
     if (nestedId) map.set(nestedId, { table, block: tableBlock });
   });
   return map;
@@ -292,7 +292,7 @@ export default async function decorate(block) {
   const nestedTableId = tableRowIndex > 1 ? rows[1]?.children[0]?.textContent.trim() : null;
 
   applyVariationClasses(parentTable, parentStyles);
-  if (nestedTableId) parentTable.classList.add(toClassName(nestedTableId));
+  if (nestedTableId) parentTable.dataset.nestedId = nestedTableId;
 
   // Non-hierarchical nested table: render normally and schedule section-level resolution
   if (parentStyles.includes('nested-table')) {
