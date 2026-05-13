@@ -36,33 +36,6 @@ function applyVariationClasses(table, styles) {
   table.classList.add(...styles);
 }
 
-function getNestedTables(rows) {
-  const nestedTables = new Map();
-
-  rows.forEach((row) => {
-    const cols = [...row.children];
-    const nestedId = getCellText(cols[0]);
-    const variationStyles = parseVariationClasses(cols[1]);
-    const nestedTable = cols[2]?.querySelector('table');
-
-    if (!nestedId || !nestedTable) return;
-
-    applyVariationClasses(nestedTable, variationStyles);
-    nestedTables.set(nestedId, nestedTable);
-  });
-
-  return nestedTables;
-}
-
-function hasUnresolvedPlaceholders(table, nestedTables) {
-  const walker = document.createTreeWalker(table, NodeFilter.SHOW_TEXT);
-  while (walker.nextNode()) {
-    const match = /\{\{\s*([-\w]+)\s*\}\}/.exec(walker.currentNode.textContent);
-    if (match && !nestedTables.has(match[1])) return true;
-  }
-  return false;
-}
-
 function replaceNestedTablePlaceholders(parentTable, nestedTables, cloneAll = false) {
   const usageCount = new Map();
   const walker = document.createTreeWalker(parentTable, NodeFilter.SHOW_TEXT);
@@ -242,6 +215,58 @@ function mergeTablesInSection(block) {
   highlightDashCells(targetTable);
 }
 
+function hasMatchingPlaceholders(table, nestedTables) {
+  const walker = document.createTreeWalker(table, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) {
+    const match = /\{\{\s*([-\w]+)\s*\}\}/.exec(walker.currentNode.textContent);
+    if (match && nestedTables.has(match[1])) return true;
+  }
+  return false;
+}
+
+function getSectionNestedTableMap(section) {
+  const map = new Map();
+  [...section.querySelectorAll('.table.block')].forEach((tableBlock) => {
+    const table = tableBlock.querySelector('table');
+    if (!table || !table.classList.contains('nested-table')) return;
+    const nestedId = [...table.classList].find((cls) => cls !== 'nested-table');
+    if (nestedId) map.set(nestedId, { table, block: tableBlock });
+  });
+  return map;
+}
+
+function resolveAdjacentNestedTables(block) {
+  const section = block.closest('.section');
+  if (!section || section.dataset.adjacentNestedResolved) return;
+  section.dataset.adjacentNestedResolved = 'true';
+
+  const nestedEntries = getSectionNestedTableMap(section);
+  if (nestedEntries.size === 0) return;
+
+  const tableMap = new Map([...nestedEntries.entries()].map(([id, { table }]) => [id, table]));
+  const authoring = isAuthoringInstance(block);
+
+  [...section.querySelectorAll('.table.block')].forEach((tableBlock) => {
+    const table = tableBlock.querySelector('table');
+    if (!table || table.classList.contains('nested-table')) return;
+    if (!hasMatchingPlaceholders(table, tableMap)) return;
+
+    replaceNestedTablePlaceholders(table, tableMap, authoring);
+
+    if (!authoring) {
+      nestedEntries.forEach(({ block: nestedBlock }) => nestedBlock.remove());
+    }
+  });
+}
+
+function scheduleResolveAdjacentNestedTables(block) {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      resolveAdjacentNestedTables(block);
+    });
+  });
+}
+
 function scheduleMergeTables(block, parentTable) {
   if (!parentTable.classList.contains('merge-tables')) return;
   if (isAuthoringInstance(block)) return;
@@ -266,18 +291,20 @@ export default async function decorate(block) {
 
   applyVariationClasses(parentTable, parentStyles);
 
-  const nestedRows = rows.slice(2);
-  const isAuthoring = block.hasAttribute('data-aue-resource');
-
-  const nestedTables = getNestedTables(nestedRows);
-
-  if (isAuthoring) {
-    // In authoring: copy nested tables to placeholders, keep nested structure outside
-    replaceNestedTablePlaceholders(parentTable, nestedTables, true);
-  } else {
-    // In dev site: process normally like before
-    if (hasUnresolvedPlaceholders(parentTable, nestedTables)) return;
-    replaceNestedTablePlaceholders(parentTable, nestedTables, false);
+  // Non-hierarchical nested table: render normally and schedule section-level resolution
+  if (parentStyles.includes('nested-table')) {
+    const isAuthoring = block.hasAttribute('data-aue-resource');
+    markHeaderRows(parentTable);
+    applyMixedBlueHeader(parentTable);
+    highlightDashCells(parentTable);
+    moveInstrumentation(rows[1], parentTable);
+    block.textContent = '';
+    block.append(parentTable);
+    if (isAuthoring) {
+      rows.slice(2).forEach((row) => block.append(row));
+    }
+    scheduleResolveAdjacentNestedTables(block);
+    return;
   }
 
   await transformDownloadMarkers(parentTable);
@@ -291,12 +318,6 @@ export default async function decorate(block) {
   block.textContent = '';
   block.append(parentTable);
 
-  // In authoring mode, preserve and display nested table rows
-  if (isAuthoring && nestedRows.length > 0) {
-    nestedRows.forEach((row) => {
-      block.append(row);
-    });
-  }
-
   scheduleMergeTables(block, parentTable);
+  scheduleResolveAdjacentNestedTables(block);
 }
