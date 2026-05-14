@@ -5,19 +5,19 @@ import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
 
 const GTM_CONTAINER_CONFIG = {
-    dev: {
-        lazy: ['GTM-NQNDNXRR'],
-        delayed: [],
-    },
-    stage: {
-        lazy: ['GTM-NQNDNXRR'],
-        delayed: [],
-    },
-    prod: {
-        lazy: ['GTM-NQNDNXRR'],
-        delayed: [],
-    },
-}
+  dev: {
+    lazy: ['GTM-NQNDNXRR'],
+    delayed: [],
+  },
+  stage: {
+    lazy: ['GTM-NQNDNXRR'],
+    delayed: [],
+  },
+  prod: {
+    lazy: ['GTM-NQNDNXRR'],
+    delayed: [],
+  },
+};
 
 const GA_PROPERTY_CONFIG = {
   dev: 'G-ZG7X6JC6DG',
