@@ -64,6 +64,12 @@
           "value": true,
           "label": "Breadcrumb",
           "valueType": "boolean"
+        },
+        {
+          "component": "boolean",
+          "label": "Enable Welcome Banner",
+          "name": "isWelcomeBanner",
+          "valueType": "boolean"
         }
       ]
     }
