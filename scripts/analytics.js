@@ -200,7 +200,7 @@ export function trackContactFormSubmit(event) {
       }
       return;
     }
-    // TODO: The form fields may contain firstName, lastName and other PII data - 
+    // TODO: The form fields may contain firstName, lastName and other PII data -
     //                  cannot be stored in CDP in naked format.
     // Check internal PII policy and apply sanitization if necessary.
     formFields.push({ formFieldName: fieldName, formFieldInfo: value });
