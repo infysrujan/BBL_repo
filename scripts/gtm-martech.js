@@ -4,6 +4,21 @@ import checkConsent from './check-consent.js';
 import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
 
+const GTM_CONTAINER_CONFIG = {
+    dev: {
+        lazy: ['GTM-5T5G6Q5'],
+        delayed: [],
+    },
+    stage: {
+        lazy: ['GTM-5T5G6Q5'],
+        delayed: [],
+    },
+    prod: {
+        lazy: ['GTM-5T5G6Q5'],
+        delayed: [],
+    },
+}
+
 const GA_PROPERTY_CONFIG = {
   dev: 'G-ZG7X6JC6DG',
   stage: 'G-ZG7X6JC6DG',
@@ -20,8 +35,8 @@ const martech = new GtmMartech({
   analytics: isEnabled && isConsentGiven,
   tags: [GA_PROPERTY_CONFIG[env]],
   containers: {
-    lazy: [/* Zero or more GTM Container Ids to load during Lazy Phase */],
-    delayed: [/* Zero or more GTM Container Ids to load during Delayed Phase */],
+    lazy: GTM_CONTAINER_CONFIG[env].lazy,
+    delayed: GTM_CONTAINER_CONFIG[env].delayed,
   },
   // Passed to gtag('config', measurementId, …): page fields, transport_url, etc.
   gtagConfig: {},
