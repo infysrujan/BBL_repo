@@ -91,7 +91,7 @@ export function trackPageView() {
  * @param {string} [fallback]
  * @param {string} [linkType]
  */
-// TODO: Check if this is still required in the new implementation.
+// TODO: Should all the links be tracked? Is this triggered on all link clicks?
 export function trackLinkClick(event, element, fallback = '', linkType = 'other') {
   event.preventDefault();
   const href = element.getAttribute('href');
@@ -163,6 +163,8 @@ export function trackContactFormSubmit(event) {
   ensureCdpGlobal();
   refreshCdpData();
   window.cdp.track.contactFormSubmit = trackContactFormSubmit;
+  // TODO: Hash this email address before storing it in the data layer.
+  // Check internal PII policy and apply sanitization if necessary.
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const form = event.currentTarget;
   const inputs = form.querySelectorAll('input,select');
@@ -198,6 +200,8 @@ export function trackContactFormSubmit(event) {
       }
       return;
     }
+    // TODO: The form fields may contain firstName, lastName and other PII data - cannot be stored in CDP in naked format. Check with BBL.
+    // Check internal PII policy and apply sanitization if necessary.
     formFields.push({ formFieldName: fieldName, formFieldInfo: value });
   });
 
