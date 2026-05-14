@@ -1,7 +1,8 @@
+import { getMetadata } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 const COOKIE_NAME = 'bbl-welcome-banner';
-const COOKIE_MINUTES = 1;
+const COOKIE_MINUTES = 20;
 
 function setCookie(name, value, minutes) {
   const expires = new Date(Date.now() + minutes * 60e3).toUTCString();
@@ -31,6 +32,12 @@ function isBannerActive(startStr, endStr) {
 }
 
 export default function decorate(block) {
+  const isWelcomeBanner = getMetadata('iswelcomebanner');
+  if (isWelcomeBanner !== 'true') {
+    block.closest('.section')?.remove();
+    return;
+  }
+
   const doc = block.ownerDocument;
 
   const rows = [...block.children];

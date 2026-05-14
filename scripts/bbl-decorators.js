@@ -216,6 +216,17 @@ function handleGlobalLinkClicks() {
   }, true); // Use capture phase
 }
 
+async function loadWelcomeBanner(doc) {
+  const isWelcomeBanner = getMetadata('iswelcomebanner');
+  if (isWelcomeBanner !== 'true') {
+    doc.querySelectorAll('.welcome-banner-wrapper').forEach((wrapper) => {
+      const section = wrapper.closest('.section');
+      if (section) section.remove();
+      else wrapper.remove();
+    });
+  }
+}
+
 async function loadBreadcrumb(doc) {
   const breadcrumbsMeta = getMetadata('breadcrumbs') || 'true';
   if (breadcrumbsMeta.toLowerCase() === 'true') {
@@ -409,5 +420,6 @@ export {
   decorateButtonsV1,
   decorateSvgWithAltText,
   loadBreadcrumb,
+  loadWelcomeBanner,
   buildCookieAlert,
 };
