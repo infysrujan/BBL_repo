@@ -1,4 +1,3 @@
-import { getMetadata } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 const COOKIE_NAME = 'bbl-welcome-banner';
@@ -32,8 +31,6 @@ function isBannerActive(startStr, endStr) {
 }
 
 export default function decorate(block) {
-  if (getMetadata('iswelcomebanner') !== 'true') return;
-
   const doc = block.ownerDocument;
 
   const rows = [...block.children];
