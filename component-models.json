@@ -42,6 +42,10 @@
           {
             "name": "Bangkok Bankm Card",
             "value": "bangkok-bankm-card"
+          },
+          {
+            "name": "Error Page",
+            "value": "error-page"
           }
         ]
       },
@@ -701,19 +705,12 @@
         ]
       },
       {
-        "component": "container",
-        "name": "targetSettings",
-        "label": "Target settings",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "targetLink",
-            "label": "Open link in new tab",
-            "description": "Enable to open the button link in a new browser tab",
-            "valueType": "boolean",
-            "value": false
-          }
-        ]
+        "component": "boolean",
+        "name": "targetLink",
+        "label": "Open link in new tab",
+        "description": "Enable to open the button link in a new browser tab",
+        "valueType": "boolean",
+        "value": false
       },
       {
         "component": "select",
@@ -8221,6 +8218,69 @@
     ]
   },
   {
+    "id": "locate-us",
+    "fields": [
+      {
+        "component": "select",
+        "name": "locationType",
+        "label": "Location Type",
+        "valueType": "string",
+        "value": "thailand",
+        "options": [
+          {
+            "name": "Thailand",
+            "value": "thailand"
+          },
+          {
+            "name": "Overseas",
+            "value": "overseas"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "services",
+        "label": "Services",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "serviceName",
+        "label": "Service Name",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "serviceFragment",
+        "label": "Service Fragment",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
+      }
+    ]
+  },
+  {
     "id": "location",
     "fields": [
       {
@@ -9614,6 +9674,19 @@
         "label": "Disclaimer Text",
         "valueType": "string",
         "required": true
+      }
+    ]
+  },
+  {
+    "id": "stock-ticker",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "embedHtml",
+        "label": "Stock Ticker HTML",
+        "description": "Author iframe HTML, links, and supporting notes.",
+        "valueType": "string",
+        "value": ""
       }
     ]
   },
