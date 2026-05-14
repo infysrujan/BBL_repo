@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fund Prices – Preview</title>
+  <link rel="stylesheet" href="../fund-prices-dropdown/fund-prices-dropdown.css" />
   <style>
     /* ── BBL Fonts ─────────────────────────────────────────────── */
     @font-face {
@@ -355,203 +356,8 @@
     #dp-grid span.selected { background: var(--bbl-color-active-blue); color: var(--bbl-color-white); }
     #dp-grid span.disabled { color: var(--bbl-color-grey-40); }
 
-    /* ── Detail view ──────────────────────────────────────────── */
-    #detail-view { display: none; padding: 2rem; background: var(--bbl-color-white); }
-    #detail-view.active { display: block; }
-
-    .detail-back-btn {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      background: none; border: none; cursor: pointer;
-      color: var(--bbl-color-active-blue);
-      font-family: var(--bbl-font-family-medium);
-      font-size: 0.875rem; margin-bottom: 1.25rem; padding: 0;
-    }
-    .detail-back-btn::before {
-      content: '‹'; font-size: 1.2rem; line-height: 1;
-    }
-
-    .detail-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem;
-    }
-    .detail-fund-name {
-      font-family: var(--bbl-font-family-bold);
-      font-size: 1.5rem; font-weight: 400;
-      color: var(--bbl-color-black); margin-bottom: 0.25rem;
-    }
-    .detail-date-range {
-      font-family: var(--bbl-font-family-primary);
-      font-size: 0.875rem; color: var(--bbl-color-grey-70);
-    }
-    .detail-actions { display: flex; align-items: center; gap: 1rem; }
-
-    /* Period selector dropdown */
-    .period-selector {
-      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;
-    }
-    .period-select-wrapper { position: relative; display: inline-block; }
-    .period-select-btn {
-      display: flex; align-items: center; gap: 0.5rem;
-      padding: 0.45rem 1rem;
-      border: 1px solid var(--bbl-color-grey-30);
-      border-radius: 6px;
-      background: var(--bbl-color-white);
-      color: var(--bbl-color-grey-85);
-      font-family: var(--bbl-font-family-primary);
-      font-size: 0.9375rem; cursor: pointer;
-      white-space: nowrap; min-width: 8rem;
-      justify-content: space-between;
-    }
-    .period-select-btn .icon-dropdown::before {
-      font-size: 0.65rem; color: var(--bbl-color-grey-85);
-    }
-    .period-dropdown-list {
-      position: absolute; top: calc(100% + 2px); left: 0;
-      background: var(--bbl-color-white);
-      border: 1px solid var(--bbl-color-grey-30);
-      border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(0,0,0,.1);
-      min-width: 10rem; z-index: 500;
-      list-style: none; display: none; overflow: hidden;
-    }
-    .period-dropdown-list.open { display: block; }
-    .period-dropdown-list li {
-      padding: 0.6rem 1rem;
-      font-family: var(--bbl-font-family-primary);
-      font-size: 0.9375rem; cursor: pointer;
-      color: var(--bbl-color-grey-85);
-    }
-    .period-dropdown-list li:hover,
-    .period-dropdown-list li.active { color: var(--bbl-color-active-blue); }
-
-    /* Date Range pickers */
-    .period-date-range {
-      display: none; align-items: center; gap: 0.75rem; flex-wrap: wrap;
-    }
-    .period-date-range.visible { display: flex; }
-    .period-date-range label {
-      font-family: var(--bbl-font-family-primary);
-      font-size: 0.875rem; color: var(--bbl-color-grey-85);
-    }
-    .period-date-range .calendar-input { position: relative; }
-    .period-date-range .calendar-input input {
-      padding: 0.4rem 2.5rem 0.4rem 0.75rem;
-      border: 1px solid var(--bbl-color-grey-30);
-      border-radius: 6px;
-      font-family: var(--bbl-font-family-primary);
-      font-size: 0.875rem; color: var(--bbl-color-grey-85);
-      width: 9.5rem; cursor: pointer; background: var(--bbl-color-white);
-    }
-    .period-date-range .calendar-input.icon-calendar::before {
-      position: absolute; right: 0.6rem; top: 50%;
-      transform: translateY(-50%);
-      font-size: 1rem; color: var(--bbl-color-grey-85);
-    }
-
-    /* Stat tables side by side */
-    .stat-tables-row {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 1.5rem; margin-bottom: 1.5rem;
-    }
-    @media (max-width: 700px) { .stat-tables-row { grid-template-columns: 1fr; } }
-    .stat-table-card h3 {
-      font-family: var(--bbl-font-family-medium);
-      font-size: 0.9375rem; color: var(--bbl-color-black);
-      margin-bottom: 0.5rem; font-weight: 400;
-    }
-    .stat-table-card table {
-      width: 100%; border-collapse: collapse;
-      font-family: var(--bbl-font-family-primary);
-      font-size: 0.875rem;
-    }
-    .stat-table-card table th {
-      background: var(--bbl-color-grey-10);
-      color: var(--bbl-color-black);
-      font: 1rem Muli-Bold, var(--bbl-font-family-bold);
-      font-weight: 400; text-align: left;
-      height: 2.875rem; vertical-align: middle;
-      padding: 0 1rem;
-      border: none;
-      border-bottom: 1px solid var(--bbl-color-grey-18);
-    }
-    .stat-table-card table th.stat-th-nav { text-align: right; }
-    .stat-table-card table td {
-      border: none;
-      border-bottom: 1px solid var(--bbl-color-grey-18);
-      padding: 0.75rem 1rem;
-      color: var(--bbl-color-grey-70);
-      font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-      font-weight: 400;
-    }
-    .stat-nav-val { text-align: right; }
-
-    /* Tab switcher */
-    .tab-switcher {
-      display: flex; gap: 0; margin-bottom: 1rem;
-      justify-content: center;
-    }
-    .tab-btn {
-      padding: 0.5rem 1.5rem;
-      background: none; border: none; cursor: pointer;
-      font-family: var(--bbl-font-family-medium);
-      font-size: 0.9375rem;
-      color: var(--bbl-color-grey-70);
-      border-bottom: 2px solid transparent;
-    }
-    .tab-btn.active {
-      color: var(--bbl-color-active-blue);
-      border-bottom-color: var(--bbl-color-active-blue);
-    }
-
-    /* Chart area */
-    .chart-wrap {
-      width: 100%; overflow-x: auto;
-      background: var(--bbl-color-white);
-      border: 1px solid var(--bbl-color-grey-18);
-      border-radius: 4px; padding: 1.25rem 1.25rem 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-    .chart-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;
-    }
-    .chart-subtitle-text {
-      font-family: var(--bbl-font-family-primary);
-      font-size: 0.875rem; color: var(--bbl-color-grey-85);
-    }
-    .chart-nav-labels {
-      display: flex; gap: 1.5rem; flex-wrap: wrap;
-    }
-    .chart-nav-item {
-      font-family: var(--bbl-font-family-medium);
-      font-size: 0.9375rem; color: #FF6600;
-    }
-    .chart-wrap svg { display: block; width: 100%; min-width: 520px; }
-
-    /* Detail historical table */
-    #detail-table-panel { display: none; }
-    .detail-hist-table {
-      width: 100%; border-collapse: collapse;
-      font-family: var(--bbl-font-family-primary); font-size: 0.9375rem;
-    }
-    .detail-hist-table th {
-      background: var(--bbl-color-grey-10);
-      font-family: Muli-Bold, var(--bbl-font-family-bold);
-      font-weight: 400; color: var(--bbl-color-black);
-      padding: 1.1rem 1.25rem;
-      border-top: 1px solid var(--bbl-color-grey-30);
-      border-bottom: 1px solid var(--bbl-color-grey-30);
-      text-align: left;
-    }
-    .detail-hist-table th:not(:first-child) { text-align: right; }
-    .detail-hist-table td {
-      padding: 1.1rem 1.25rem;
-      border-bottom: 1px solid var(--bbl-color-grey-18);
-      color: var(--bbl-color-grey-70);
-      text-align: right;
-    }
-    .detail-hist-table td:first-child { text-align: left; color: var(--bbl-color-grey-85); }
-    .detail-hist-table tr:hover td { background: var(--bbl-color-grey-10); }
+    /* ── fund-prices-dropdown block container ──────────────────── */
+    .fund-prices-dropdown { padding: 0 2rem 2rem; background: var(--bbl-color-white); }
   </style>
 </head>
 <body>
@@ -601,107 +407,12 @@
   </div>
 </div>
 
-<!-- ── Fund Price Details view ────────────────────────────────── -->
-<div id="detail-view" style="display:none">
-  <button class="detail-back-btn" id="detail-back-btn">Fund Prices</button>
+<!-- ── Fund Prices Dropdown block ─────────────────────────────── -->
+<div id="fdd-block" class="block fund-prices-dropdown"></div>
 
-  <div class="detail-header">
-    <div>
-      <div class="detail-fund-name" id="detail-fund-name"></div>
-      <div class="detail-date-range" id="detail-date-range"></div>
-    </div>
-    <div class="detail-actions">
-      <div class="fund-prices-print-label icon-print" id="detail-print-btn" style="cursor:pointer">
-        <p>Print</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="period-selector" id="period-selector">
-    <div class="period-select-wrapper">
-      <button class="period-select-btn" id="period-select-btn">
-        <span id="period-select-label">1 Week</span>
-        <span class="icon-dropdown"></span>
-      </button>
-      <ul class="period-dropdown-list" id="period-dropdown-list">
-        <li class="active" data-period="1W">1 Week</li>
-        <li data-period="1M">1 Month</li>
-        <li data-period="3M">3 Months</li>
-        <li data-period="6M">6 Months</li>
-        <li data-period="1Y">1 Year</li>
-        <li data-period="3Y">3 Years</li>
-        <li data-period="DR">Date Range</li>
-      </ul>
-    </div>
-    <div class="period-date-range" id="period-date-range">
-      <label>From</label>
-      <div class="calendar-input icon-calendar">
-        <input type="text" id="dr-from" readonly />
-      </div>
-      <label>To</label>
-      <div class="calendar-input icon-calendar">
-        <input type="text" id="dr-to" readonly />
-      </div>
-    </div>
-  </div>
-
-  <div class="stat-tables-row">
-    <div class="stat-table-card">
-      <table id="stat-high-table" class="stat-table">
-        <thead>
-          <tr>
-            <th>Highest Fund Price</th>
-            <th class="stat-th-nav">NAV</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <div class="stat-table-card">
-      <table id="stat-low-table" class="stat-table">
-        <thead>
-          <tr>
-            <th>Lowest Fund Price</th>
-            <th class="stat-th-nav">NAV</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="tab-switcher">
-    <button class="tab-btn active" id="tab-graph-btn">GRAPH</button>
-    <button class="tab-btn" id="tab-table-btn">VIEW TABLE DATA</button>
-  </div>
-
-  <div id="detail-chart-panel">
-    <div class="chart-wrap">
-      <div class="chart-header">
-        <span class="chart-subtitle-text" id="chart-subtitle"></span>
-        <div class="chart-nav-labels">
-          <span class="chart-nav-item">Beginning NAV <span id="chart-begin-nav"></span></span>
-          <span class="chart-nav-item">Ending NAV <span id="chart-end-nav"></span></span>
-        </div>
-      </div>
-      <svg id="detail-svg" viewBox="0 0 940 300" preserveAspectRatio="xMidYMid meet"></svg>
-    </div>
-  </div>
-
-  <div id="detail-table-panel">
-    <table class="detail-hist-table" id="detail-hist-table">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>NAV</th>
-          <th>Selling Price</th>
-          <th>Redemption Price</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</div>
+<!-- placeholder kept to avoid breaking the date picker popup reference below
+<div style="display:none"><table><thead><tr><th>Date</th><th>NAV</th><th>Selling Price</th><th>Redemption Price</th></tr>
+      </thead></table></div> -->
 
 <!-- Date picker popup -->
 <div id="date-picker-popup">
@@ -853,28 +564,31 @@ const FUND_NAMES = [
 ];
 
 /* ── Build dropdown ──────────────────────────────────────────── */
-let selectedFundName = 'All Funds';
+let selectedFund = null; // { id, name } or null for All Funds
 const dropdownEl = document.getElementById('fund-dropdown');
 const selectBtn  = document.getElementById('fund-select-btn');
 
-function setSelected(name) {
-  selectedFundName = name;
-  selectBtn.childNodes[0].textContent = name + ' ';
+function setSelected(fund) {
+  selectedFund = fund;
+  selectBtn.childNodes[0].textContent = (fund ? fund.name : 'ALL FUNDS') + ' ';
   dropdownEl.querySelectorAll('li').forEach(l => l.classList.remove('active'));
-  dropdownEl.querySelector(`li[data-name="${CSS.escape(name)}"]`)?.classList.add('active');
+  dropdownEl.querySelector(`li[data-fund-id="${fund ? fund.id : ''}"]`)?.classList.add('active');
+  if (!fund) dropdownEl.querySelector('li[data-fund-id=""]')?.classList.add('active');
   dropdownEl.classList.remove('open');
   selectBtn.setAttribute('aria-expanded', 'false');
 }
 
-FUND_NAMES.forEach((name) => {
-  const li = document.createElement('li');
-  li.textContent = name;
-  li.setAttribute('role', 'option');
-  li.setAttribute('data-name', name);
-  if (name === 'All Funds') li.classList.add('active');
-  li.addEventListener('click', () => setSelected(name));
-  dropdownEl.appendChild(li);
-});
+// "All Funds" option
+const allLi = document.createElement('li');
+allLi.textContent = 'ALL FUNDS';
+allLi.setAttribute('role', 'option');
+allLi.setAttribute('data-fund-id', '');
+allLi.classList.add('active');
+allLi.addEventListener('click', () => setSelected(null));
+dropdownEl.appendChild(allLi);
+
+// Per-fund options built from MOCK_FUNDS (available via the fetch mock data defined above)
+// They are added after MOCK_FUNDS is defined — see the DOMContentLoaded block below
 
 selectBtn.addEventListener('click', (e) => {
   e.stopPropagation();
@@ -887,66 +601,86 @@ document.addEventListener('click', () => {
 });
 
 /* ── Mock data & fetch intercept ────────────────────────────── */
-const MOCK_LATEST = { mdate: '2026-05-07' };
-const MOCK_FUNDS = [
-  // Money Market
-  { mf_iNumber:"265", mf_sEng:"Bualuang Treasury Fund",                                          mf_sTha:"บัวหลวงตราสารหนี้ภาครัฐ",          mf_cateEng:"Money Market Funds",      mf_cateTha:"ตลาดเงิน",           mfr_fNav:11.8478, mfr_fBuy:11.8479, mfr_fSel:11.8478, mf_sAUM:41684573492.64 },
-  // Fixed Income
-  { mf_iNumber:"11",  mf_sEng:"Bualuang Thanatavee Fixed Income Fund",                           mf_sTha:"บัวหลวงธนทวี",                      mf_cateEng:"Fixed Income Funds",      mf_cateTha:"ตราสารหนี้",         mfr_fNav:14.1215, mfr_fBuy:14.1216, mfr_fSel:14.1215, mf_sAUM:100071678038.45 },
-  { mf_iNumber:"449", mf_sEng:"Bualuang Short Term Fixed Income Fund",                           mf_sTha:"บัวหลวงตราสารหนี้ระยะสั้น",        mf_cateEng:"Fixed Income Funds",      mf_cateTha:"ตราสารหนี้",         mfr_fNav:10.3296, mfr_fBuy:10.3297, mfr_fSel:10.3296, mf_sAUM:36695838659.42 },
-  { mf_iNumber:"517", mf_sEng:"Bualuang Short Term Fixed Income Plus Fund",                      mf_sTha:"บัวหลวงตราสารหนี้ระยะสั้นพลัส",   mf_cateEng:"Fixed Income Funds",      mf_cateTha:"ตราสารหนี้",         mfr_fNav:10.0874, mfr_fBuy:10.0875, mfr_fSel:10.0874, mf_sAUM:15901619844.48 },
-  { mf_iNumber:"252", mf_sEng:"Bualuang Fixed Income Fund",                                      mf_sTha:"บัวหลวงตราสารหนี้",                mf_cateEng:"Fixed Income Funds",      mf_cateTha:"ตราสารหนี้",         mfr_fNav:13.5345, mfr_fBuy:13.5346, mfr_fSel:13.5345, mf_sAUM:33584848715.59 },
-  { mf_iNumber:"302", mf_sEng:"Bualuang Enhanced Fixed Income Fund**",                           mf_sTha:"บัวหลวงเพิ่มพูน**",                mf_cateEng:"Fixed Income Funds",      mf_cateTha:"ตราสารหนี้",         mfr_fNav:10.6081, mfr_fBuy:10.6081, mfr_fSel:10.6082, mf_sAUM:581183163.77, mf_backdate:"2026-05-07T00:00:00" },
-  // Mixed
-  { mf_iNumber:"9",   mf_sEng:"B-Flex Open-end Fund",                                            mf_sTha:"บีเฟล็กซ์",                         mf_cateEng:"Mixed Funds",             mf_cateTha:"ผสม",                mfr_fNav:17.7217, mfr_fBuy:17.6774, mfr_fSel:17.7218, mf_sAUM:340767120.65 },
-  { mf_iNumber:"10",  mf_sEng:"B-Active Open-end Fund",                                          mf_sTha:"บีแอ็คทีฟ",                         mf_cateEng:"Mixed Funds",             mf_cateTha:"ผสม",                mfr_fNav:19.7928, mfr_fBuy:19.5949, mfr_fSel:19.7929, mf_sAUM:136724229.60 },
-  { mf_iNumber:"41",  mf_sEng:"Bualuang Mixed 75/25 Fund*",                                      mf_sTha:"บัวหลวงผสม 75/25*",                mf_cateEng:"Mixed Funds",             mf_cateTha:"ผสม",                mfr_fNav:24.6729, mfr_fBuy:24.6729, mfr_fSel:24.673,  mf_sAUM:7894519383.05 },
-  { mf_iNumber:"269", mf_sEng:"B Senior Citizen Mixed Fund",                                     mf_sTha:"บีซีเนียร์สำหรับวัยเกษียณ",        mf_cateEng:"Mixed Funds",             mf_cateTha:"ผสม",                mfr_fNav:14.0739, mfr_fBuy:14.0739, mfr_fSel:14.074,  mf_sAUM:9825015755.31 },
-  { mf_iNumber:"303", mf_sEng:"B Senior Citizen Extra Mixed Fund**",                             mf_sTha:"บีซีเนียร์สำหรับวัยเกษียณ เอ็กซ์ตร้า**", mf_cateEng:"Mixed Funds",       mf_cateTha:"ผสม",                mfr_fNav:10.4583, mfr_fBuy:10.4583, mfr_fSel:10.4584, mf_sAUM:1250124885.25, mf_backdate:"2026-05-06T00:00:00" },
-  { mf_iNumber:"304", mf_sEng:"Bualuang Income Fund**",                                          mf_sTha:"บัวหลวงอินคัม**",                   mf_cateEng:"Mixed Funds",             mf_cateTha:"ผสม",                mfr_fNav:12.6658, mfr_fBuy:12.6658, mfr_fSel:12.7292, mf_sAUM:3345154015.98, mf_backdate:"2026-05-06T00:00:00" },
-  { mf_iNumber:"315", mf_sEng:"BUALUANG MAPS 25**",                                              mf_sTha:"บัวหลวงบีแมพส์ 25**",               mf_cateEng:"Mixed Funds",             mf_cateTha:"ผสม",                mfr_fNav:11.0998, mfr_fBuy:11.0998, mfr_fSel:11.1554, mf_sAUM:285430650.04, mf_backdate:"2026-05-06T00:00:00" },
-  { mf_iNumber:"316", mf_sEng:"BUALUANG MAPS 55**",                                              mf_sTha:"บัวหลวงบีแมพส์ 55**",               mf_cateEng:"Mixed Funds",             mf_cateTha:"ผสม",                mfr_fNav:11.881,  mfr_fBuy:11.881,  mfr_fSel:11.9405, mf_sAUM:318361125.53, mf_backdate:"2026-05-06T00:00:00" },
-  { mf_iNumber:"317", mf_sEng:"BUALUANG MAPS 100**",                                             mf_sTha:"บัวหลวงบีแมพส์ 100**",              mf_cateEng:"Mixed Funds",             mf_cateTha:"ผสม",                mfr_fNav:13.2391, mfr_fBuy:13.2391, mfr_fSel:13.3054, mf_sAUM:204681865.73, mf_backdate:"2026-05-06T00:00:00" },
-  // Equity
-  { mf_iNumber:"3",   mf_sEng:"Buakaew Income Fund",                                             mf_sTha:"บัวแก้วปันผล",                      mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:3.187,   mfr_fBuy:3.1552,  mfr_fSel:3.1871,  mf_sAUM:2691094022.85 },
-  { mf_iNumber:"263", mf_sEng:"Bualuang Siriphol Corporate Governance",                          mf_sTha:"บัวหลวงสิริผลบรรษัทภิบาล",        mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:7.1295,  mfr_fBuy:7.0582,  mfr_fSel:7.1296,  mf_sAUM:2283346139.78 },
-  { mf_iNumber:"270", mf_sEng:"Bualuang Basic Open-end Fund",                                    mf_sTha:"บัวหลวงปัจจัย 4",                  mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:13.4231, mfr_fBuy:13.2889, mfr_fSel:13.4232, mf_sAUM:749929509.99 },
-  { mf_iNumber:"289", mf_sEng:"Bualuang Basic Plus Fund*",                                       mf_sTha:"บัวหลวงปัจจัย 4 พลัส*",            mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:6.0197,  mfr_fBuy:6.0197,  mfr_fSel:6.0198,  mf_sAUM:1868514113.83 },
-  { mf_iNumber:"1",   mf_sEng:"Buakaew Open-end Fund",                                           mf_sTha:"บัวแก้ว",                           mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:44.5414, mfr_fBuy:44.096,  mfr_fSel:44.5415, mf_sAUM:1751783522.68 },
-  { mf_iNumber:"16",  mf_sEng:"Bualuang Equity Fund*",                                           mf_sTha:"บัวหลวงหุ้นทุน*",                  mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:34.6007, mfr_fBuy:34.6007, mfr_fSel:34.6008, mf_sAUM:14803692177.26 },
-  { mf_iNumber:"272", mf_sEng:"BKIND Fund",                                                      mf_sTha:"คนไทยใจดี",                         mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:11.1292, mfr_fBuy:11.018,  mfr_fSel:11.1293, mf_sAUM:277198462.16, mf_backdate:"2026-05-06T00:00:00" },
-  { mf_iNumber:"6",   mf_sEng:"Bualuang Top-Ten Fund",                                           mf_sTha:"บัวหลวงทศพล",                      mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:36.6258, mfr_fBuy:36.2596, mfr_fSel:36.6259, mf_sAUM:5306219670.01 },
-  // FIF
-  { mf_iNumber:"392", mf_sEng:"Bualuang Dynamic Bond Fund**",                                    mf_sTha:"บัวหลวงไดนามิก บอนด์**",           mf_cateEng:"FIF",                     mf_cateTha:"FIF",                mfr_fNav:10.4023, mfr_fBuy:10.4023, mfr_fSel:10.4544, mf_sAUM:8164629750.89, mf_backdate:"2026-05-06T00:00:00" },
-  { mf_iNumber:"290", mf_sEng:"Bualuang High Yield Fund (Hedged75) not for Retail Investors**",  mf_sTha:"บัวหลวงไฮยิลด์ (เฮดจ์75)**",      mf_cateEng:"FIF",                     mf_cateTha:"FIF",                mfr_fNav:12.6185, mfr_fBuy:12.6185, mfr_fSel:12.6816, mf_sAUM:120055163.88, mf_backdate:"2026-05-06T00:00:00" },
-  { mf_iNumber:"460", mf_sEng:"Bualuang US Equity Passive Fund**",                               mf_sTha:"บัวหลวงหุ้นยูเอสพาสซีฟ**",        mf_cateEng:"FIF",                     mf_cateTha:"FIF",                mfr_fNav:12.7893, mfr_fBuy:12.7893, mfr_fSel:12.8533, mf_sAUM:1471517343.18, mf_backdate:"2026-05-07T00:00:00" },
-  { mf_iNumber:"305", mf_sEng:"Bualuang Bharata Fund**",                                         mf_sTha:"บัวหลวงภารตะ**",                   mf_cateEng:"FIF",                     mf_cateTha:"FIF",                mfr_fNav:14.6268, mfr_fBuy:14.6268, mfr_fSel:14.7731, mf_sAUM:2956896508.47, mf_backdate:"2026-05-07T00:00:00" },
-  { mf_iNumber:"306", mf_sEng:"Bualuang China Equity Fund**",                                    mf_sTha:"บัวหลวงหุ้นจีน**",                 mf_cateEng:"FIF",                     mf_cateTha:"FIF",                mfr_fNav:9.0797,  mfr_fBuy:9.0797,  mfr_fSel:9.1706,  mf_sAUM:6242054599.80, mf_backdate:"2026-05-07T00:00:00" },
-  { mf_iNumber:"274", mf_sEng:"Bualuang Asia Equity Fund**",                                     mf_sTha:"บัวหลวงหุ้นเอเชีย**",              mf_cateEng:"FIF",                     mf_cateTha:"FIF",                mfr_fNav:20.0833, mfr_fBuy:20.0833, mfr_fSel:20.2842, mf_sAUM:6620924354.94, mf_backdate:"2026-05-07T00:00:00" },
-  { mf_iNumber:"276", mf_sEng:"Bualuang Global Equity Fund**",                                   mf_sTha:"บัวหลวงหุ้นโกลบอล**",              mf_cateEng:"FIF",                     mf_cateTha:"FIF",                mfr_fNav:22.2636, mfr_fBuy:22.2636, mfr_fSel:22.4863, mf_sAUM:6209099625.43, mf_backdate:"2026-05-06T00:00:00" },
-  { mf_iNumber:"292", mf_sEng:"Bualuang Global Innovation & Technology Fund**",                  mf_sTha:"บัวหลวงโกลบอลอินโนเวชั่นและเทคโนโลยี**", mf_cateEng:"FIF",             mf_cateTha:"FIF",                mfr_fNav:41.2586, mfr_fBuy:41.2586, mfr_fSel:41.6712, mf_sAUM:14417299369.06, mf_backdate:"2026-05-06T00:00:00" },
-  // Alternative
-  { mf_iNumber:"217", mf_sEng:"Bualuang Gold Fund**",                                            mf_sTha:"บัวหลวงโกลด์ฟันด์**",              mf_cateEng:"Alternative Asset Funds", mf_cateTha:"ทรัพย์สินทางเลือก", mfr_fNav:32.2672, mfr_fBuy:32.2285, mfr_fSel:32.306,  mf_sAUM:6995406777.61 },
-  { mf_iNumber:"299", mf_sEng:"Bualuang Infrastructure and Real Estate Fund of Funds**",         mf_sTha:"ฟันด์ออฟฟันด์บัวหลวงโครงสร้างพื้นฐาน**", mf_cateEng:"Alternative Asset Funds", mf_cateTha:"ทรัพย์สินทางเลือก", mfr_fNav:9.2346, mfr_fBuy:9.2346, mfr_fSel:9.2808, mf_sAUM:1009430282.63 },
-  // RMF
-  { mf_iNumber:"151", mf_sEng:"Bualuang Money Market RMF*",                                      mf_sTha:"บัวหลวงมันนี่มาร์เก็ตเพื่อการเลี้ยงชีพ*", mf_cateEng:"RMF",            mf_cateTha:"RMF",                mfr_fNav:12.3599, mfr_fBuy:12.3599, mfr_fSel:12.36,   mf_sAUM:11454741548.43 },
-  { mf_iNumber:"15",  mf_sEng:"Bualuang Fixed-income RMF*",                                      mf_sTha:"บัวหลวงตราสารหนี้เพื่อการเลี้ยงชีพ*", mf_cateEng:"RMF",               mf_cateTha:"RMF",                mfr_fNav:16.4393, mfr_fBuy:16.4393, mfr_fSel:16.4394, mf_sAUM:13809366318.81 },
-  { mf_iNumber:"401", mf_sEng:"Bualuang Dynamic Bond RMF*,**",                                   mf_sTha:"บัวหลวง ไดนามิก บอนด์ เพื่อการเลี้ยงชีพ*,**", mf_cateEng:"RMF",        mf_cateTha:"RMF",                mfr_fNav:10.5271, mfr_fBuy:10.5271, mfr_fSel:10.5272, mf_sAUM:770075002.60, mf_backdate:"2026-05-06T00:00:00" },
-  { mf_iNumber:"14",  mf_sEng:"Bualuang Flexible RMF*",                                          mf_sTha:"บัวหลวงเฟล็กซิเบิ้ลเพื่อการเลี้ยงชีพ*", mf_cateEng:"RMF",             mf_cateTha:"RMF",                mfr_fNav:51.7436, mfr_fBuy:51.7436, mfr_fSel:51.7437, mf_sAUM:15273805033.00 },
+/* ── Mock: AllFundsName (fund list for dropdown, NAV values are 0) ── */
+const MOCK_ALL_FUNDS_NAME = [
+  { mf_iNumber:"265", mf_sEng:"Bualuang Treasury Fund",                                         mf_sTha:"บัวหลวงตราสารหนี้ภาครัฐ",          mf_catenumber:8,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"11",  mf_sEng:"Bualuang Thanatavee Fixed Income Fund",                          mf_sTha:"บัวหลวงธนทวี",                      mf_catenumber:1,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"449", mf_sEng:"Bualuang Short Term Fixed Income Fund",                          mf_sTha:"บัวหลวงตราสารหนี้ระยะสั้น",        mf_catenumber:1,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"252", mf_sEng:"Bualuang Fixed Income Fund",                                     mf_sTha:"บัวหลวงตราสารหนี้",                mf_catenumber:1,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"9",   mf_sEng:"B-Flex Open-end Fund",                                           mf_sTha:"บีเฟล็กซ์",                         mf_catenumber:2,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"41",  mf_sEng:"Bualuang Mixed 75/25 Fund*",                                     mf_sTha:"บัวหลวงผสม 75/25*",                mf_catenumber:2,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"3",   mf_sEng:"Buakaew Income Fund",                                            mf_sTha:"บัวแก้วปันผล",                      mf_catenumber:3,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"16",  mf_sEng:"Bualuang Equity Fund*",                                          mf_sTha:"บัวหลวงหุ้นทุน*",                  mf_catenumber:0,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"6",   mf_sEng:"Bualuang Top-Ten Fund",                                          mf_sTha:"บัวหลวงทศพล",                      mf_catenumber:3,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"392", mf_sEng:"Bualuang Dynamic Bond Fund**",                                   mf_sTha:"บัวหลวงไดนามิก บอนด์**",           mf_catenumber:4,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"217", mf_sEng:"Bualuang Gold Fund**",                                           mf_sTha:"บัวหลวงโกลด์ฟันด์**",              mf_catenumber:5,  mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"151", mf_sEng:"Bualuang Money Market RMF*",                                     mf_sTha:"บัวหลวงมันนี่มาร์เก็ตเพื่อการเลี้ยงชีพ*", mf_catenumber:6, mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
+  { mf_iNumber:"14",  mf_sEng:"Bualuang Flexible RMF*",                                         mf_sTha:"บัวหลวงเฟล็กซิเบิ้ลเพื่อการเลี้ยงชีพ*", mf_catenumber:6, mfr_fNav:0.0, mfr_fSel:0.0, mfr_fBuy:0.0, mfr_sAUM:0.0 },
 ];
-const MOCK_ENABLED_DAYS = [1,2,5,6,7,12,13,14,19,20,21,26,27,28];
+
+/* ── Mock: AllFundPrices by year (full data with categories and real NAV) ── */
+const MOCK_FUNDS = [
+  { mf_iNumber:"265", mf_sEng:"Bualuang Treasury Fund",                   mf_sTha:"บัวหลวงตราสารหนี้ภาครัฐ",          mf_cateEng:"Money Market Funds",      mf_cateTha:"ตลาดเงิน",           mfr_fNav:11.849,  mfr_fBuy:11.849,  mfr_fSel:11.8491, mf_sAUM:41885025253.3 },
+  { mf_iNumber:"11",  mf_sEng:"Bualuang Thanatavee Fixed Income Fund",    mf_sTha:"บัวหลวงธนทวี",                      mf_cateEng:"Fixed Income Funds",      mf_cateTha:"ตราสารหนี้",         mfr_fNav:14.1215, mfr_fBuy:14.1216, mfr_fSel:14.1215, mf_sAUM:100071678038.45 },
+  { mf_iNumber:"449", mf_sEng:"Bualuang Short Term Fixed Income Fund",    mf_sTha:"บัวหลวงตราสารหนี้ระยะสั้น",        mf_cateEng:"Fixed Income Funds",      mf_cateTha:"ตราสารหนี้",         mfr_fNav:10.3296, mfr_fBuy:10.3297, mfr_fSel:10.3296, mf_sAUM:36695838659.42 },
+  { mf_iNumber:"252", mf_sEng:"Bualuang Fixed Income Fund",               mf_sTha:"บัวหลวงตราสารหนี้",                mf_cateEng:"Fixed Income Funds",      mf_cateTha:"ตราสารหนี้",         mfr_fNav:13.5345, mfr_fBuy:13.5346, mfr_fSel:13.5345, mf_sAUM:33584848715.59 },
+  { mf_iNumber:"9",   mf_sEng:"B-Flex Open-end Fund",                     mf_sTha:"บีเฟล็กซ์",                         mf_cateEng:"Mixed Funds",             mf_cateTha:"ผสม",                mfr_fNav:17.7217, mfr_fBuy:17.6774, mfr_fSel:17.7218, mf_sAUM:340767120.65 },
+  { mf_iNumber:"41",  mf_sEng:"Bualuang Mixed 75/25 Fund*",               mf_sTha:"บัวหลวงผสม 75/25*",                mf_cateEng:"Mixed Funds",             mf_cateTha:"ผสม",                mfr_fNav:24.6729, mfr_fBuy:24.6729, mfr_fSel:24.673,  mf_sAUM:7894519383.05 },
+  { mf_iNumber:"3",   mf_sEng:"Buakaew Income Fund",                      mf_sTha:"บัวแก้วปันผล",                      mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:3.187,   mfr_fBuy:3.1552,  mfr_fSel:3.1871,  mf_sAUM:2691094022.85 },
+  { mf_iNumber:"16",  mf_sEng:"Bualuang Equity Fund*",                    mf_sTha:"บัวหลวงหุ้นทุน*",                  mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:34.6007, mfr_fBuy:34.6007, mfr_fSel:34.6008, mf_sAUM:14803692177.26 },
+  { mf_iNumber:"6",   mf_sEng:"Bualuang Top-Ten Fund",                    mf_sTha:"บัวหลวงทศพล",                      mf_cateEng:"Equity Funds",            mf_cateTha:"หุ้น",               mfr_fNav:36.6258, mfr_fBuy:36.2596, mfr_fSel:36.6259, mf_sAUM:5306219670.01 },
+  { mf_iNumber:"392", mf_sEng:"Bualuang Dynamic Bond Fund**",             mf_sTha:"บัวหลวงไดนามิก บอนด์**",           mf_cateEng:"FIF",                     mf_cateTha:"FIF",                mfr_fNav:10.4023, mfr_fBuy:10.4023, mfr_fSel:10.4544, mf_sAUM:8164629750.89, mf_backdate:"2026-05-12T00:00:00" },
+  { mf_iNumber:"217", mf_sEng:"Bualuang Gold Fund**",                     mf_sTha:"บัวหลวงโกลด์ฟันด์**",              mf_cateEng:"Alternative Asset Funds", mf_cateTha:"ทรัพย์สินทางเลือก", mfr_fNav:32.2672, mfr_fBuy:32.2285, mfr_fSel:32.306,  mf_sAUM:6995406777.61 },
+  { mf_iNumber:"151", mf_sEng:"Bualuang Money Market RMF*",               mf_sTha:"บัวหลวงมันนี่มาร์เก็ตเพื่อการเลี้ยงชีพ*", mf_cateEng:"RMF",            mf_cateTha:"RMF",                mfr_fNav:12.3599, mfr_fBuy:12.3599, mfr_fSel:12.36,   mf_sAUM:11454741548.43 },
+  { mf_iNumber:"14",  mf_sEng:"Bualuang Flexible RMF*",                   mf_sTha:"บัวหลวงเฟล็กซิเบิ้ลเพื่อการเลี้ยงชีพ*", mf_cateEng:"RMF",             mf_cateTha:"RMF",                mfr_fNav:51.7436, mfr_fBuy:51.7436, mfr_fSel:51.7437, mf_sAUM:15273805033.00 },
+];
+// Build per-fund dropdown items from MOCK_FUNDS
+MOCK_FUNDS.forEach((f) => {
+  const name = f.mf_sEng || f.mf_sTha;
+  if (!name) return;
+  const li = document.createElement('li');
+  li.textContent = name;
+  li.setAttribute('role', 'option');
+  li.setAttribute('data-fund-id', f.mf_iNumber);
+  li.addEventListener('click', () => setSelected({ id: String(f.mf_iNumber), name }));
+  dropdownEl.appendChild(li);
+});
+
+const MOCK_FUND_HISTORY = [
+  { mfr_iId:356363, mf_iNumber:265, mfr_fNav:11.849,  mfr_fSel:11.8491, mfr_fBuy:11.849,  mfr_dDataDate:'2026-05-13T00:00:00', mf_sEng:'Bualuang Treasury Fund', mf_sTha:'บัวหลวงตราสารหนี้ภาครัฐ' },
+  { mfr_iId:356234, mf_iNumber:265, mfr_fNav:11.8488, mfr_fSel:11.8489, mfr_fBuy:11.8488, mfr_dDataDate:'2026-05-12T00:00:00', mf_sEng:'Bualuang Treasury Fund', mf_sTha:'บัวหลวงตราสารหนี้ภาครัฐ' },
+  { mfr_iId:356105, mf_iNumber:265, mfr_fNav:11.8486, mfr_fSel:11.8487, mfr_fBuy:11.8486, mfr_dDataDate:'2026-05-11T00:00:00', mf_sEng:'Bualuang Treasury Fund', mf_sTha:'บัวหลวงตราสารหนี้ภาครัฐ' },
+  { mfr_iId:355976, mf_iNumber:265, mfr_fNav:11.8479, mfr_fSel:11.848,  mfr_fBuy:11.8479, mfr_dDataDate:'2026-05-08T00:00:00', mf_sEng:'Bualuang Treasury Fund', mf_sTha:'บัวหลวงตราสารหนี้ภาครัฐ' },
+  { mfr_iId:355847, mf_iNumber:265, mfr_fNav:11.8478, mfr_fSel:11.8479, mfr_fBuy:11.8478, mfr_dDataDate:'2026-05-07T00:00:00', mf_sEng:'Bualuang Treasury Fund', mf_sTha:'บัวหลวงตราสารหนี้ภาครัฐ' },
+  { mfr_iId:355718, mf_iNumber:265, mfr_fNav:11.8475, mfr_fSel:11.8476, mfr_fBuy:11.8475, mfr_dDataDate:'2026-05-06T00:00:00', mf_sEng:'Bualuang Treasury Fund', mf_sTha:'บัวหลวงตราสารหนี้ภาครัฐ' },
+];
+
+const MOCK_FUND_MINMAX = {
+  MinSelected_mfr_fNav:11.8475, MinSelected_mfr_dDataDate:'2026-05-06T00:00:00',
+  MaxSelected_mfr_fNav:11.849,  MaxSelected_mfr_dDataDate:'2026-05-13T00:00:00',
+  MinYear_mfr_fNav:11.7287,     MinYear_mfr_dDataDate:'2025-05-13T00:00:00',
+  MaxYear_mfr_fNav:11.849,      MaxYear_mfr_dDataDate:'2026-05-13T00:00:00',
+  MinSince_mfr_fNav:10.073,     MinSince_mfr_dDataDate:'2012-11-19T00:00:00',
+  MaxSince_mfr_fNav:11.849,     MaxSince_mfr_dDataDate:'2026-05-13T00:00:00',
+  Begin_mfr_fNav:11.8475,       Begin_mfr_dDataDate:'2026-05-06T00:00:00',
+  End_mfr_fNav:11.849,          End_mfr_dDataDate:'2026-05-13T00:00:00',
+};
 
 const _realFetch = window.fetch.bind(window);
 window.fetch = async (url, opts) => {
   const s = String(url);
-  if (s.includes('/api/nav/LatestDate'))
-    return new Response(JSON.stringify(MOCK_LATEST), { status:200, headers:{'Content-Type':'application/json'} });
-  if (s.includes('/api/nav/AllFundNames'))
+  if (s.includes('/api/fundpriceservice/LatestDate'))
+    return new Response(JSON.stringify([{ mDate:'2026-05-13T00:00:00' }]), { status:200, headers:{'Content-Type':'application/json'} });
+  if (s.includes('/api/fundpriceservice/AllFundsName'))
+    return new Response(JSON.stringify(MOCK_ALL_FUNDS_NAME), { status:200, headers:{'Content-Type':'application/json'} });
+  if (s.includes('/api/fundpriceservice/GetUpdateInMonth'))
+    return new Response(JSON.stringify([{Day:13},{Day:12},{Day:11},{Day:8},{Day:7},{Day:6},{Day:5}]), { status:200, headers:{'Content-Type':'application/json'} });
+  if (s.includes('/api/fundpriceservice/FundMinMax'))
+    return new Response(JSON.stringify(MOCK_FUND_MINMAX), { status:200, headers:{'Content-Type':'application/json'} });
+  if (s.includes('/api/fundpriceservice/FundPrice'))
+    return new Response(JSON.stringify(MOCK_FUND_HISTORY), { status:200, headers:{'Content-Type':'application/json'} });
+  if (/\/api\/fundpriceservice\/\d{4}$/.test(s))
     return new Response(JSON.stringify(MOCK_FUNDS), { status:200, headers:{'Content-Type':'application/json'} });
-  if (s.includes('/api/nav/AllFundPrices'))
-    return new Response(JSON.stringify(MOCK_FUNDS), { status:200, headers:{'Content-Type':'application/json'} });
-  if (s.includes('/api/nav/GetUpdateInMonth'))
-    return new Response(JSON.stringify(MOCK_ENABLED_DAYS.map(d => ({ day: d }))), { status:200, headers:{'Content-Type':'application/json'} });
   return _realFetch(url, opts);
 };
 
@@ -966,7 +700,8 @@ function attachCalendarPicker({ input, value, fetchEnabledDays, onChange }) {
     return `${String(d.getDate()).padStart(2,'0')} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
   }
   async function loadGrid(y, m) {
-    enabledDays = await fetchEnabledDays({ year:y, month:m }).catch(() => []);
+    const raw = await fetchEnabledDays({ year:y, month:m }).catch(() => []);
+    enabledDays = Array.isArray(raw) ? raw.map(i => i?.Day ?? i?.day ?? i).filter(Number.isInteger) : raw;
     renderGrid(y, m);
   }
   function renderGrid(y, m) {
@@ -1021,10 +756,10 @@ function attachCalendarPicker({ input, value, fetchEnabledDays, onChange }) {
 function isAuthoringInstance() { return false; }
 
 /* ── Fund-prices block logic ─────────────────────────────────── */
-const ALL_FUND_NAMES_URL       = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/AllFundNames';
-const LATEST_DATE_URL          = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/LatestDate';
-const GET_UPDATE_IN_MONTH_BASE = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/GetUpdateInMonth';
-const ALL_FUND_PRICES_URL      = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/AllFundPrices/';
+const ALL_FUND_NAMES_URL       = 'https://www.bangkokbank.com/api/fundpriceservice/AllFundsName';
+const LATEST_DATE_URL          = 'https://www.bangkokbank.com/api/fundpriceservice/LatestDate';
+const GET_UPDATE_IN_MONTH_BASE = 'https://www.bangkokbank.com/api/fundpriceservice/GetUpdateInMonth';
+const ALL_FUND_PRICES_URL      = 'https://www.bangkokbank.com/api/fundpriceservice/';
 const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 let latestMdate  = null;
 let allFundsData = [];
@@ -1039,9 +774,10 @@ function pad2(n) { return String(n).padStart(2,'0'); }
 function fmtPath(d) { return `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`; }
 
 async function fetchAllFundPrices(date) {
-  const res = await fetch(`${ALL_FUND_PRICES_URL}${fmtPath(date)}`);
+  const res = await fetch(`${ALL_FUND_PRICES_URL}${date.getFullYear()}`);
   if (!res.ok) throw new Error(`AllFundPrices ${res.status}`);
-  return Array.isArray(await res.json()) ? await res.clone().json() : [];
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
 }
 async function fetchNavEnabledDaysForMonth({ year, month }) {
   const res = await fetch(`${GET_UPDATE_IN_MONTH_BASE}/${year}/${month+1}/0`);
@@ -1162,17 +898,17 @@ function appendRowFromData(tableElement, dataArray) {
   });
 }
 
-function filterFunds(data, fundName) {
-  if (!fundName || fundName === 'All Funds') return data;
-  return data.filter(r => r.mf_sEng === fundName || r.mf_sTha === fundName);
+function filterFunds(data, fund) {
+  if (!fund) return data;
+  return data.filter(r => r.mf_iNumber === fund.id || r.mf_sEng === fund.name || r.mf_sTha === fund.name);
 }
 
 async function refreshTableFromPrices(tableEl, fallback, date) {
   try {
-    const prices = await fetch(`${ALL_FUND_PRICES_URL}${fmtPath(date)}`).then(r => r.json());
+    const prices = await fetch(`${ALL_FUND_PRICES_URL}${date.getFullYear()}`).then(r => r.json());
     allFundsData = Array.isArray(prices) ? prices : fallback;
   } catch { allFundsData = fallback; }
-  appendRowFromData(tableEl, filterFunds(allFundsData, selectedFundName));
+  appendRowFromData(tableEl, filterFunds(allFundsData, selectedFund));
 }
 
 function richTextFromRow(row) {
@@ -1196,8 +932,23 @@ function printFundPricesContent() {
   window.location.reload();
 }
 
-/* ── Mock detail data (iNumber 265 – Bualuang Treasury Fund) ─── */
-const MOCK_DETAIL_STATS_BY_PERIOD = {
+/* ── GO button ───────────────────────────────────────────────── */
+document.getElementById('search-go-btn').addEventListener('click', () => {
+  const fddBlock = document.getElementById('fdd-block');
+  if (selectedFund) {
+    document.querySelector('.page-body').style.display = 'none';
+    fddBlock.dispatchEvent(new CustomEvent('fund-prices-dropdown:show', {
+      detail: { fund: selectedFund, mdate: latestMdate },
+    }));
+  } else {
+    document.querySelector('.page-body').style.display = '';
+    fddBlock.dispatchEvent(new CustomEvent('fund-prices-dropdown:hide'));
+    if (_tableEl) appendRowFromData(_tableEl, filterFunds(allFundsData, null));
+  }
+});
+
+/* ── REMOVED (now handled by fund-prices-dropdown.js module) ──── */
+const MOCK_DETAIL_STATS_BY_PERIOD_UNUSED_DO_NOT_USE = {
   '1W': {
     MaxSelected_fNav: 11.8478, MaxSelected_fBuy: 11.8479, MaxSelected_fSel: 11.8478,
     MinSelected_fNav: 11.8301, MinSelected_fBuy: 11.8302, MinSelected_fSel: 11.8301,
@@ -1282,337 +1033,11 @@ const MOCK_DETAIL_HISTORY_BY_PERIOD = {
   ],
 };
 
-/* ── Detail view state ───────────────────────────────────────── */
-let currentPeriod = '1W';
-let currentDetailFund = null;
+/* ── Old detail view state/functions removed — now handled by fund-prices-dropdown.js ── */
+// (renderStatTables, renderChart, renderHistTable, periodDateRange, renderDetailView,
+//  showDetailView, hideDetailView, period dropdown wiring, DR pickers, tab wiring,
+//  back button handler, and old GO handler all removed — handled by fund-prices-dropdown.js)
 
-function fmtNav(v) { return typeof v === 'number' ? v.toFixed(4) : (v ?? 'N/A'); }
-
-function fmtHistDate(ymd) {
-  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(ymd);
-  if (!m) return ymd;
-  return `${m[3]}/${m[2]}/${m[1]}`;
-}
-
-function renderStatTables(stats) {
-  const rows = [
-    { label: 'Selected Period', hi: stats.MaxSelected_fNav, lo: stats.MinSelected_fNav },
-    { label: 'Year',            hi: stats.MaxYear_fNav,     lo: stats.MinYear_fNav },
-    { label: 'Since Inception', hi: stats.MaxSince_fNav,    lo: stats.MinSince_fNav },
-  ];
-
-  ['stat-high-table', 'stat-low-table'].forEach(id => {
-    document.getElementById(id).querySelector('tbody').innerHTML = '';
-  });
-
-  rows.forEach(({ label, hi, lo }) => {
-    ['high', 'low'].forEach(type => {
-      const tbody = document.getElementById(`stat-${type}-table`).querySelector('tbody');
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${label}</td><td class="stat-nav-val">${fmtNav(type === 'high' ? hi : lo)}</td>`;
-      tbody.appendChild(tr);
-    });
-  });
-}
-
-function renderChart(history, stats) {
-  const svg = document.getElementById('detail-svg');
-  svg.innerHTML = '';
-
-  // Update above-chart header
-  document.getElementById('chart-subtitle').textContent =
-    document.getElementById('detail-date-range').textContent;
-  document.getElementById('chart-begin-nav').textContent = fmtNav(stats.Begin_fNav);
-  document.getElementById('chart-end-nav').textContent   = fmtNav(stats.End_fNav);
-
-  if (!history || history.length < 2) {
-    svg.innerHTML = '<text x="50%" y="50%" text-anchor="middle" font-size="14" fill="#999">No data</text>';
-    return;
-  }
-
-  const W = 940, H = 300, padL = 58, padR = 20, padT = 20, padB = 44;
-  const innerW = W - padL - padR;
-  const innerH = H - padT - padB;
-
-  const navs = history.map(d => d.mfr_fNav);
-  const rawMin = Math.min(...navs);
-  const rawMax = Math.max(...navs);
-
-  // Nice rounded Y-axis ticks (0.5 steps)
-  const tickStep = 0.5;
-  const yMin = Math.floor(rawMin / tickStep) * tickStep - tickStep * 0.5;
-  const yMax = Math.ceil(rawMax  / tickStep) * tickStep + tickStep * 0.5;
-
-  function xPos(i) { return padL + (i / (history.length - 1)) * innerW; }
-  function yPos(v) { return padT + (1 - (v - yMin) / (yMax - yMin)) * innerH; }
-
-  const ns = 'http://www.w3.org/2000/svg';
-  function el(tag, attrs, parent) {
-    const e = document.createElementNS(ns, tag);
-    Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
-    if (parent) parent.appendChild(e);
-    return e;
-  }
-
-  // Y-axis grid lines + labels
-  const numYTicks = Math.round((yMax - yMin) / tickStep);
-  for (let i = 0; i <= numYTicks; i++) {
-    const v = yMin + i * tickStep;
-    const y = yPos(v);
-    el('line', { x1: padL, y1: y, x2: W - padR, y2: y, stroke: '#E8E8E8', 'stroke-width': 1 }, svg);
-    el('text', { x: padL - 8, y: y + 4, 'text-anchor': 'end', 'font-size': 11,
-      fill: '#78787D', 'font-family': 'BangkokBank-Regular,Arial,sans-serif' }, svg)
-      .textContent = v.toFixed(1);
-  }
-
-  // X-axis vertical grid lines + date labels
-  history.forEach((d, i) => {
-    const x = xPos(i);
-    el('line', { x1: x, y1: padT, x2: x, y2: H - padB, stroke: '#E8E8E8', 'stroke-width': 1 }, svg);
-    el('text', { x, y: H - padB + 16, 'text-anchor': 'middle', 'font-size': 11,
-      fill: '#78787D', 'font-family': 'BangkokBank-Regular,Arial,sans-serif' }, svg)
-      .textContent = fmtHistDate(d.mfr_dDataDate);
-  });
-
-  // NAV line — dark navy
-  const pts = history.map((d, i) => `${xPos(i)},${yPos(d.mfr_fNav)}`).join(' ');
-  el('polyline', { points: pts, fill: 'none', stroke: '#002850',
-    'stroke-width': 2.5, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
-
-  // Tooltip (hidden by default, rendered last so it's on top)
-  const tooltipG = el('g', { style: 'display:none; pointer-events:none' }, svg);
-  const tooltipRect = el('rect', { width: 120, height: 54, rx: 6, fill: '#1a2e4a' }, tooltipG);
-  const tooltipDateEl = el('text', { x: 10, y: 20, fill: '#b0c4d8', 'font-size': 11,
-    'font-family': 'BangkokBank-Regular,Arial,sans-serif' }, tooltipG);
-  const tooltipValEl  = el('text', { x: 10, y: 42, fill: '#ffffff', 'font-size': 15,
-    'font-family': 'BangkokBank-Medium,Arial,sans-serif', 'font-weight': '600' }, tooltipG);
-
-  // Data point circles + invisible hit areas
-  history.forEach((d, i) => {
-    const cx = xPos(i), cy = yPos(d.mfr_fNav);
-    el('circle', { cx, cy, r: 4, fill: '#002850', stroke: '#fff', 'stroke-width': 2 }, svg);
-
-    const hit = el('circle', { cx, cy, r: 14, fill: 'transparent', style: 'cursor:pointer' }, svg);
-    hit.addEventListener('mouseenter', () => {
-      tooltipG.style.display = '';
-      let tx = cx + 12, ty = cy - 62;
-      if (tx + 124 > W) tx = cx - 132;
-      if (ty < 0) ty = cy + 10;
-      tooltipG.setAttribute('transform', `translate(${tx},${ty})`);
-      tooltipDateEl.textContent = fmtHistDate(d.mfr_dDataDate);
-      tooltipValEl.textContent  = fmtNav(d.mfr_fNav);
-    });
-    hit.addEventListener('mouseleave', () => { tooltipG.style.display = 'none'; });
-  });
-}
-
-function renderHistTable(history) {
-  const tbody = document.getElementById('detail-hist-table').querySelector('tbody');
-  tbody.innerHTML = '';
-  history.forEach(d => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${fmtHistDate(d.mfr_dDataDate)}</td>
-      <td>${fmtNav(d.mfr_fNav)}</td>
-      <td>${fmtNav(d.mfr_fBuy)}</td>
-      <td>${fmtNav(d.mfr_fSel)}</td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-function periodDateRange(period) {
-  const endDate = latestMdate ? parseLocalDateFromYmd(latestMdate) : new Date();
-  const end = endDate || new Date();
-  let from;
-  if      (period === '1W') from = new Date(end.getFullYear(), end.getMonth(), end.getDate() - 7);
-  else if (period === '1M') from = new Date(end.getFullYear(), end.getMonth() - 1, end.getDate());
-  else if (period === '3M') from = new Date(end.getFullYear(), end.getMonth() - 3, end.getDate());
-  else if (period === '6M') from = new Date(end.getFullYear(), end.getMonth() - 6, end.getDate());
-  else if (period === '1Y') from = new Date(end.getFullYear() - 1, end.getMonth(), end.getDate());
-  else if (period === '3Y') from = new Date(end.getFullYear() - 3, end.getMonth(), end.getDate());
-  else from = end;
-  return { from, to: end };
-}
-
-function fmtDayMonthYear(d) {
-  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-}
-
-function renderDetailView(fundName, period) {
-  const stats   = MOCK_DETAIL_STATS_BY_PERIOD[period] || MOCK_DETAIL_STATS_BY_PERIOD['1W'];
-  const history = MOCK_DETAIL_HISTORY_BY_PERIOD[period] || [];
-
-  document.getElementById('detail-fund-name').textContent = fundName;
-
-  // Build subtitle: "[Fund Name]" Open-end Fund : [Period] : DD/MM/YYYY - DD/MM/YYYY
-  let subtitle;
-  if (period === 'DR') {
-    const fromVal = document.getElementById('dr-from').value;
-    const toVal   = document.getElementById('dr-to').value;
-    subtitle = `"${fundName}" Open-end Fund : Date Range : ${fromVal} - ${toVal}`;
-  } else {
-    const periodLabel = { '1W':'1 Week','1M':'1 Month','3M':'3 Months','6M':'6 Months','1Y':'1 Year','3Y':'3 Years' }[period] || period;
-    const { from, to } = periodDateRange(period);
-    subtitle = `"${fundName}" Open-end Fund : ${periodLabel} : ${fmtDayMonthYear(from)} - ${fmtDayMonthYear(to)}`;
-  }
-  document.getElementById('detail-date-range').textContent = subtitle;
-
-  const sorted = [...history].sort((a, b) => a.mfr_dDataDate.localeCompare(b.mfr_dDataDate));
-  renderStatTables(stats);
-  renderChart(sorted, stats);
-  renderHistTable([...sorted].reverse());
-}
-
-function showDetailView(fundName) {
-  currentDetailFund = fundName;
-  currentPeriod = '1W';
-  // Reset period dropdown to 1 Week
-  document.getElementById('period-select-label').textContent = '1 Week';
-  periodDateRangeEl.classList.remove('visible');
-  document.querySelectorAll('#period-dropdown-list li').forEach(l => l.classList.toggle('active', l.dataset.period === '1W'));
-  // Reset tabs to GRAPH
-  document.getElementById('tab-graph-btn').classList.add('active');
-  document.getElementById('tab-table-btn').classList.remove('active');
-  document.getElementById('detail-chart-panel').style.display = 'block';
-  document.getElementById('detail-table-panel').style.display = 'none';
-  document.getElementById('detail-view').style.display = 'block';
-  document.querySelector('.page-body').style.display = 'none';
-  renderDetailView(fundName, currentPeriod);
-}
-
-function hideDetailView() {
-  document.getElementById('detail-view').style.display = 'none';
-  document.querySelector('.page-body').style.display = '';
-}
-
-/* Period dropdown */
-const periodSelectBtn  = document.getElementById('period-select-btn');
-const periodDropList   = document.getElementById('period-dropdown-list');
-const periodSelectLabel = document.getElementById('period-select-label');
-const periodDateRangeEl = document.getElementById('period-date-range');
-
-const PERIOD_LABELS = { '1W':'1 Week','1M':'1 Month','3M':'3 Months','6M':'6 Months','1Y':'1 Year','3Y':'3 Years','DR':'Date Range' };
-
-periodSelectBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  periodDropList.classList.toggle('open');
-});
-document.addEventListener('click', () => periodDropList.classList.remove('open'));
-
-periodDropList.addEventListener('click', (e) => {
-  const li = e.target.closest('li');
-  if (!li) return;
-  const period = li.dataset.period;
-  periodDropList.querySelectorAll('li').forEach(l => l.classList.toggle('active', l === li));
-  periodSelectLabel.textContent = PERIOD_LABELS[period] || period;
-  periodDropList.classList.remove('open');
-
-  if (period === 'DR') {
-    periodDateRangeEl.classList.add('visible');
-    return;
-  }
-  periodDateRangeEl.classList.remove('visible');
-  currentPeriod = period;
-  if (currentDetailFund) renderDetailView(currentDetailFund, currentPeriod);
-});
-
-/* Date Range pickers — simple text input with calendar popup */
-(function initDrPickers() {
-  const today = new Date();
-  const fromDefault = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-  const toDefault   = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-  const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  function fmtDr(d) { return `${String(d.getDate()).padStart(2,'0')} ${MONTHS_SHORT[d.getMonth()]} ${d.getFullYear()}`; }
-
-  const fromInput = document.getElementById('dr-from');
-  const toInput   = document.getElementById('dr-to');
-  fromInput.value = fmtDr(fromDefault);
-  toInput.value   = fmtDr(toDefault);
-
-  // Reuse the existing date-picker popup for DR pickers
-  function openDrPicker(inputEl, initialDate, onPick) {
-    const popup = document.getElementById('date-picker-popup');
-    const grid  = document.getElementById('dp-grid');
-    const label = document.getElementById('dp-month-year');
-    let cur = new Date(initialDate);
-
-    function renderDrGrid(y, m) {
-      label.textContent = `${MONTHS_FULL[m]} ${y}`;
-      grid.innerHTML = '';
-      ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(n => {
-        const s = document.createElement('span'); s.className = 'day-name'; s.textContent = n; grid.appendChild(s);
-      });
-      const first = new Date(y, m, 1).getDay();
-      for (let i = 0; i < first; i++) grid.appendChild(document.createElement('span'));
-      const days = new Date(y, m + 1, 0).getDate();
-      for (let d = 1; d <= days; d++) {
-        const s = document.createElement('span');
-        s.textContent = d; s.classList.add('enabled');
-        s.addEventListener('click', () => {
-          const picked = new Date(y, m, d);
-          inputEl.value = fmtDr(picked);
-          popup.classList.remove('open');
-          onPick(picked);
-        });
-        grid.appendChild(s);
-      }
-    }
-
-    const rect = inputEl.getBoundingClientRect();
-    popup.style.top  = (rect.bottom + 4) + 'px';
-    popup.style.left = rect.left + 'px';
-    popup.classList.add('open');
-    renderDrGrid(cur.getFullYear(), cur.getMonth());
-
-    // rebind prev/next for this picker session
-    const prev = document.getElementById('dp-prev');
-    const next = document.getElementById('dp-next');
-    const prevClone = prev.cloneNode(true); prev.parentNode.replaceChild(prevClone, prev);
-    const nextClone = next.cloneNode(true); next.parentNode.replaceChild(nextClone, next);
-    prevClone.addEventListener('click', () => { cur = new Date(cur.getFullYear(), cur.getMonth() - 1, 1); renderDrGrid(cur.getFullYear(), cur.getMonth()); });
-    nextClone.addEventListener('click', () => { cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1); renderDrGrid(cur.getFullYear(), cur.getMonth()); });
-  }
-
-  function onDatePicked() {
-    if (currentDetailFund) renderDetailView(currentDetailFund, 'DR');
-  }
-  fromInput.addEventListener('click', (e) => {
-    e.stopPropagation();
-    openDrPicker(fromInput, fromDefault, onDatePicked);
-  });
-  toInput.addEventListener('click', (e) => {
-    e.stopPropagation();
-    openDrPicker(toInput, toDefault, onDatePicked);
-  });
-})();
-
-/* Tab switcher */
-document.getElementById('tab-graph-btn').addEventListener('click', () => {
-  document.getElementById('tab-graph-btn').classList.add('active');
-  document.getElementById('tab-table-btn').classList.remove('active');
-  document.getElementById('detail-chart-panel').style.display = 'block';
-  document.getElementById('detail-table-panel').style.display = 'none';
-});
-document.getElementById('tab-table-btn').addEventListener('click', () => {
-  document.getElementById('tab-table-btn').classList.add('active');
-  document.getElementById('tab-graph-btn').classList.remove('active');
-  document.getElementById('detail-table-panel').style.display = 'block';
-  document.getElementById('detail-chart-panel').style.display = 'none';
-});
-
-/* Back button */
-document.getElementById('detail-back-btn').addEventListener('click', hideDetailView);
-
-/* ── GO button ───────────────────────────────────────────────── */
-document.getElementById('search-go-btn').addEventListener('click', () => {
-  if (!_tableEl || !allFundsData.length) return;
-  if (selectedFundName && selectedFundName !== 'All Funds') {
-    showDetailView(selectedFundName);
-  } else {
-    hideDetailView();
-    appendRowFromData(_tableEl, filterFunds(allFundsData, selectedFundName));
-  }
-});
 
 /* ── Decorate ────────────────────────────────────────────────── */
 async function decorate(block) {
@@ -1657,8 +1082,9 @@ async function decorate(block) {
     const [namesRes, latestRes] = await Promise.all([fetch(ALL_FUND_NAMES_URL), fetch(LATEST_DATE_URL)]);
     if (latestRes.ok) {
       const lj = await latestRes.json();
-      latestMdate = lj?.mdate;
-      const parsed = lj?.mdate ? parseLocalDateFromYmd(lj.mdate) : null;
+      const rawDate = Array.isArray(lj) ? lj[0]?.mDate : lj?.mDate;
+      latestMdate = rawDate ? rawDate.split('T')[0] : null;
+      const parsed = latestMdate ? parseLocalDateFromYmd(latestMdate) : null;
       if (parsed) calendarDate = parsed;
     }
     if (namesRes.ok) {
@@ -1700,6 +1126,22 @@ async function decorate(block) {
 }
 
 decorate(document.getElementById('fund-prices-block'));
+</script>
+
+<script type="module">
+/* ── Load and wire fund-prices-dropdown block ────────────────── */
+import decorateFdd from '../fund-prices-dropdown/fund-prices-dropdown.js';
+
+const fddBlock = document.getElementById('fdd-block');
+await decorateFdd(fddBlock);
+
+/* When the back button inside the dropdown fires, restore the main view */
+fddBlock.addEventListener('fund-prices-dropdown:back', () => {
+  document.querySelector('.page-body').style.display = '';
+  // Reset fund selector to All Funds
+  const allLi = document.querySelector('#fund-dropdown li[data-fund-id=""]');
+  allLi?.click();
+});
 </script>
 </body>
 </html>

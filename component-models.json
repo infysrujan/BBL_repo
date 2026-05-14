@@ -8037,6 +8037,10 @@
     ]
   },
   {
+    "id": "fund-prices-dropdown",
+    "fields": []
+  },
+  {
     "id": "fund-prices-table",
     "fields": [
       {

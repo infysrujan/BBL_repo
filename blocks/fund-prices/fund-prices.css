@@ -61,42 +61,6 @@
   margin-bottom: 1.25rem;
 }
 
-/* ── Low-specificity td/span rules ───────────────────────────── */
-.stat-table td {
-  border-top: none;
-  border-right: none;
-  border-left: none;
-  border-bottom: 1px solid var(--bbl-color-grey-18);
-  padding: 0.75rem 1rem;
-  color: var(--bbl-color-grey-70);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  font-weight: 400;
-}
-
-.detail-hist-table td {
-  padding: 1.1rem 1.25rem;
-  border-bottom: 1px solid var(--bbl-color-grey-18);
-  color: var(--bbl-color-grey-70);
-  text-align: right;
-}
-
-.detail-hist-table td:first-child {
-  text-align: left;
-  color: var(--bbl-color-grey-85);
-}
-
-.detail-hist-table tr:hover td {
-  background: var(--bbl-color-grey-10);
-}
-
-.bbl-cal-popup .cal-grid span {
-  text-align: center;
-  padding: 0.3rem 0;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  cursor: default;
-}
-
 /* ── Fund selector search bar ────────────────────────────────── */
 .fund-prices-search-bar {
   display: flex;
@@ -172,14 +136,6 @@
   color: var(--bbl-color-grey-100);
 }
 
-/* period-dropdown-list li must come before fund-dropdown li:hover */
-.period-dropdown-list li {
-  padding: 0.6rem 1rem;
-  font-size: 0.9375rem;
-  cursor: pointer;
-  color: var(--bbl-color-grey-85);
-}
-
 .fund-dropdown li:hover,
 .fund-dropdown li.active {
   color: var(--bbl-color-active-blue);
@@ -199,247 +155,6 @@
 
 .fund-search-go-btn:hover {
   background: #0050cc;
-}
-
-/* ── Detail view ─────────────────────────────────────────────── */
-.fund-detail-view {
-  padding: 1.5rem 0;
-}
-
-.detail-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-bottom: 1.25rem;
-}
-
-.detail-title {
-  font-family: BangkokBank-Bold, Arial, sans-serif;
-  font-size: 1.5rem;
-  color: var(--bbl-color-black);
-  margin-bottom: 0.25rem;
-}
-
-.detail-fund-label {
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-  font-size: 0.875rem;
-  color: var(--bbl-color-grey-70);
-}
-
-/* ── Period selector ─────────────────────────────────────────── */
-.detail-period-bar {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
-}
-
-.period-select-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.period-select-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 1rem;
-  border: 1px solid var(--bbl-color-grey-30);
-  border-radius: 6px;
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-grey-85);
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-  font-size: 0.9375rem;
-  cursor: pointer;
-  min-width: 8rem;
-  justify-content: space-between;
-}
-
-.period-dropdown-list {
-  position: absolute;
-  top: calc(100% + 2px);
-  left: 0;
-  background: var(--bbl-color-white);
-  border: 1px solid var(--bbl-color-grey-30);
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
-  min-width: 10rem;
-  z-index: 500;
-  list-style: none;
-  display: none;
-}
-
-.period-dropdown-list.open {
-  display: block;
-}
-
-.period-dropdown-list li:hover,
-.period-dropdown-list li.active {
-  color: var(--bbl-color-active-blue);
-}
-
-.period-date-range {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.period-date-range label {
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-  font-size: 0.875rem;
-  color: var(--bbl-color-grey-85);
-}
-
-.detail-range-error {
-  color: var(--bbl-color-red-130);
-  font-size: 0.875rem;
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-}
-
-/* ── Stat tables ─────────────────────────────────────────────── */
-.stat-tables-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-@media (width <= 700px) {
-  .stat-tables-row {
-    grid-template-columns: 1fr;
-  }
-}
-
-
-.stat-table-card {
-  overflow: hidden;
-}
-
-.stat-table {
-  width: 100%;
-  border-collapse: collapse;
-  border: none;
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  font-size: 1rem;
-}
-
-.stat-table th {
-  background: var(--bbl-color-grey-10);
-  color: var(--bbl-color-black);
-  font: 1rem Muli-Bold, Arial, sans-serif;
-  font-weight: 400;
-  text-align: left;
-  height: 2.875rem;
-  vertical-align: middle;
-  padding: 0 1rem;
-  border-top: none;
-  border-right: none;
-  border-left: none;
-  border-bottom: 1px solid var(--bbl-color-grey-18);
-}
-
-.stat-th-nav {
-  text-align: right;
-}
-
-.stat-nav-val {
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  color: var(--bbl-color-grey-70);
-  text-align: right;
-}
-
-/* ── Tabs ────────────────────────────────────────────────────── */
-.tab-switcher {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
-}
-
-.tab-btn {
-  padding: 0.5rem 1.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: BangkokBank-Medium, Arial, sans-serif;
-  font-size: 0.9375rem;
-  color: var(--bbl-color-grey-70);
-  border-bottom: 2px solid transparent;
-}
-
-.tab-btn.active {
-  color: var(--bbl-color-active-blue);
-  border-bottom-color: var(--bbl-color-active-blue);
-}
-
-/* ── Chart ───────────────────────────────────────────────────── */
-.chart-wrap {
-  width: 100%;
-  overflow-x: auto;
-  background: var(--bbl-color-white);
-  border: 1px solid var(--bbl-color-grey-18);
-  border-radius: 4px;
-  padding: 1.25rem 1.25rem 0.75rem;
-  margin-bottom: 1.5rem;
-}
-
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.chart-subtitle {
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-  font-size: 0.875rem;
-  color: var(--bbl-color-grey-85);
-}
-
-.chart-nav-labels {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.chart-nav-item {
-  font-family: BangkokBank-Medium, Arial, sans-serif;
-  font-size: 0.9375rem;
-  color: #f60;
-}
-
-.detail-chart-svg {
-  display: block;
-  width: 100%;
-  min-width: 520px;
-}
-
-/* ── History table ───────────────────────────────────────────── */
-.detail-hist-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-  font-size: 0.9375rem;
-}
-
-.detail-hist-table th {
-  background: var(--bbl-color-grey-10);
-  font-family: Muli-Bold, Arial, sans-serif;
-  font-weight: 400;
-  color: var(--bbl-color-black);
-  padding: 1.1rem 1.25rem;
-  border-top: 1px solid var(--bbl-color-grey-30);
-  border-bottom: 1px solid var(--bbl-color-grey-30);
-  text-align: left;
-}
-
-.detail-hist-table th:not(:first-child) {
-  text-align: right;
 }
 
 /* ── Calendar popup ──────────────────────────────────────────── */
@@ -486,6 +201,14 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 2px;
+}
+
+.bbl-cal-popup .cal-grid span {
+  text-align: center;
+  padding: 0.3rem 0;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: default;
 }
 
 .bbl-cal-popup .cal-day-name {

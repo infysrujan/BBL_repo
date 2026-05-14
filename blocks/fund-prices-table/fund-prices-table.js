@@ -1,7 +1,8 @@
-export const ALL_FUND_NAMES_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/AllFundNames';
-export const LATEST_DATE_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/LatestDate';
-export const GET_UPDATE_IN_MONTH_BASE = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/GetUpdateInMonth';
-const ALL_FUND_PRICES_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/AllFundPrices/';
+const BBL_API_BASE = 'https://www.bangkokbank.com/api/fundpriceservice';
+export const ALL_FUND_NAMES_URL = `${BBL_API_BASE}/AllFundsName`;
+export const LATEST_DATE_URL = `${BBL_API_BASE}/LatestDate`;
+export const GET_UPDATE_IN_MONTH_BASE = `${BBL_API_BASE}/GetUpdateInMonth`;
+const ALL_FUND_PRICES_URL = `${BBL_API_BASE}/`;
 
 const MONTHS_SHORT = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -9,14 +10,6 @@ const MONTHS_SHORT = [
 ];
 
 let latestMdate = null;
-
-function pad2(n) {
-  return String(n).padStart(2, '0');
-}
-
-function formatDatePath(date) {
-  return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}/${date.getFullYear()}`;
-}
 
 export function parseLocalDateFromYmd(ymd) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd).trim());
@@ -29,7 +22,7 @@ export function parseLocalDateFromYmd(ymd) {
 }
 
 async function fetchAllFundPrices(date) {
-  const res = await fetch(`${ALL_FUND_PRICES_URL}${formatDatePath(date)}`);
+  const res = await fetch(`${ALL_FUND_PRICES_URL}${date.getFullYear()}`);
   if (!res.ok) throw new Error(`AllFundPrices ${res.status}`);
   const data = await res.json();
   return Array.isArray(data) ? data : [];
@@ -40,7 +33,7 @@ export async function fetchNavEnabledDaysForMonth({ year, month }) {
   if (!res.ok) throw new Error(`GetUpdateInMonth ${res.status}`);
   const data = await res.json();
   if (!Array.isArray(data)) return [];
-  return data.map((i) => (i?.day != null ? Number(i.day) : NaN)).filter((d) => !Number.isNaN(d));
+  return data.map((i) => (i?.Day != null ? Number(i.Day) : NaN)).filter((d) => !Number.isNaN(d));
 }
 
 function getLang() {
@@ -221,8 +214,9 @@ export default async function decorate(block) {
     let date = new Date();
     if (latestRes.ok) {
       const lj = await latestRes.json();
-      latestMdate = lj?.mdate;
-      const parsed = lj?.mdate ? parseLocalDateFromYmd(lj.mdate) : null;
+      const rawDate = Array.isArray(lj) ? lj[0]?.mDate : lj?.mDate;
+      latestMdate = rawDate ? rawDate.split('T')[0] : null;
+      const parsed = latestMdate ? parseLocalDateFromYmd(latestMdate) : null;
       if (parsed) date = parsed;
     }
     if (namesRes.ok) {

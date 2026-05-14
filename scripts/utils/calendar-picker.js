@@ -133,7 +133,9 @@ export default function attachCalendarPicker({
   input.value = formatDisplay(selected);
   input.readOnly = true;
 
-  input.addEventListener('click', (e) => {
+  const wrapper = input.closest('.calendar-input') ?? input;
+
+  wrapper.addEventListener('click', (e) => {
     e.stopPropagation();
     if (popup.classList.contains('open') && popupAttachedInput === input) {
       popup.classList.remove('open');
@@ -142,5 +144,7 @@ export default function attachCalendarPicker({
     }
   });
 
-  doc.addEventListener('click', () => popup.classList.remove('open'));
+  doc.addEventListener('click', (e) => {
+    if (!popup.contains(e.target)) popup.classList.remove('open');
+  });
 }
