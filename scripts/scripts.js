@@ -75,7 +75,7 @@ const launchConfig = {
   prod: [],
 };
 
-const orgId = 'C735552962AB1A800A495FFD@AdobeOrg';
+const orgId = '599F1E47665EC45B0A495E73@AdobeOrg';
 
 /**
  * Gets the language from the HTML tag.
