@@ -68,13 +68,7 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
     bindPaginationClick(paginationEl, state, render, gridEl);
   }
 
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) {
-      observer.disconnect();
-      render();
-    }
-  }, { rootMargin: '100px' });
-  observer.observe(panel);
+  render();
 }
 
 export default async function decorate(block) {
