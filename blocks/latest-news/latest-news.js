@@ -43,7 +43,7 @@ export default async function decorate(block) {
   grid.innerHTML = latest.length
     ? latest.map((c) => {
       const ctaLink = c.ctaLink && c.aboutUsId ? `${c.ctaLink}?ID=${c.aboutUsId}` : (c.ctaLink || '');
-      const normalized = { ...c, title: c.Title || '', ctaLink };
+      const normalized = { ...c, ctaLink };
       const dateLine = formatDate(c.publishDate, locale);
       return buildCardHtml(normalized, '', placeholders, { dateLine });
     }).join('')

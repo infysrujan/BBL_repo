@@ -38,13 +38,13 @@ async function renderNewsDetail(block) {
   }
 
   const title = card.title
-    ? `<div class="news-media-detail-title pad-bot-30">${card.Title}</div>`
+    ? `<div class="news-media-detail-title pad-bot-30">${card.title}</div>`
     : '';
   const date = card.publishDate
     ? `<p class="news-media-detail-date pad-bot-30">${formatDate(card.publishDate, locale)}</p>`
     : '';
   const imageHtml = card.detailImageUrl
-    ? `<div class="news-media-detail-image"><img src="${card.detailImageUrl}" alt="${card.Title || ''}" loading="lazy"></div>`
+    ? `<div class="news-media-detail-image"><img src="${card.detailImageUrl}" alt="${card.title || ''}" loading="lazy"></div>`
     : '';
   const description = card.detailDescription
     ? `<div class="news-media-detail-description">${card.detailDescription}</div>`
