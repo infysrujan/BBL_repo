@@ -6,15 +6,15 @@ import { getCookie } from './utils/cookies.js';
 
 const GTM_CONTAINER_CONFIG = {
     dev: {
-        lazy: ['GTM-5T5G6Q5'],
+        lazy: ['GTM-NQNDNXRR'],
         delayed: [],
     },
     stage: {
-        lazy: ['GTM-5T5G6Q5'],
+        lazy: ['GTM-NQNDNXRR'],
         delayed: [],
     },
     prod: {
-        lazy: ['GTM-5T5G6Q5'],
+        lazy: ['GTM-NQNDNXRR'],
         delayed: [],
     },
 }
