@@ -556,15 +556,11 @@ function buildInputField(fieldDef, savedValue) {
 
 // ─── Tooltip Icon ───────────────────────────────────────────────────────────────
 
-function buildTooltipIcon(text) {
+function buildTooltipIcon(text, ariaLabel) {
   const tooltipContainer = parseHTML(`
     <div class="tax-calc-tooltip-wrap">
-      <button type="button" class="tax-calc-tooltip-trigger" aria-label="More information">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#0064FF" stroke-width="2" stroke-miterlimit="10"/>
-          <path d="M12 17V11" stroke="#0064FF" stroke-width="2" stroke-miterlimit="10"/>
-          <path d="M12 7.5C12.4418 7.5 12.7997 7.85807 12.7998 8.2998C12.7998 8.74163 12.4418 9.09961 12 9.09961C11.5583 9.0995 11.2002 8.74157 11.2002 8.2998C11.2003 7.85813 11.5583 7.50011 12 7.5Z" fill="#0064FF" stroke="#0064FF" stroke-miterlimit="10"/>
-        </svg>
+      <button type="button" class="tax-calc-tooltip-trigger" aria-label="${ariaLabel}">
+        <img src="/icons/icon-info.svg" aria-hidden="true" width="20" height="20">
       </button>
       <div class="tax-calc-tooltip" role="tooltip">${text.replace(/\\n|\n/g, '<br>')}</div>
     </div>
@@ -631,9 +627,9 @@ function buildTooltipIcon(text) {
 
 // ─── Section Header ─────────────────────────────────────────────────────────────
 
-function buildSectionHeader(label, tooltipText) {
+function buildSectionHeader(label, tooltipText, ariaLabel) {
   const header = parseHTML(`<div class="tax-calc-section-header"><h3 class="tax-calc-section-title">${label}</h3></div>`);
-  header.appendChild(buildTooltipIcon(tooltipText));
+  header.appendChild(buildTooltipIcon(tooltipText, ariaLabel));
   return header;
 }
 
@@ -805,8 +801,9 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
 
   const body = parseHTML('<div class="tax-calc-body"></div>');
 
+  const tooltipAriaLabel = getString(labels, 'commonTooltipAriaLabel', 'More information');
   groups.forEach((group) => {
-    body.appendChild(buildSectionHeader(group.label, group.tooltip));
+    body.appendChild(buildSectionHeader(group.label, group.tooltip, tooltipAriaLabel));
 
     group.fields.forEach((fieldDef) => {
       if (fieldDef.type === 'checkbox') {
