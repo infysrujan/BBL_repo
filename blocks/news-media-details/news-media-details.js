@@ -12,8 +12,8 @@ async function fetchNewsCard(url, newsId) {
   try {
     const resp = await fetch(url);
     if (!resp.ok) return null;
-    const { cards } = await resp.json();
-    return cards?.find((c) => c.aboutUsId === newsId) || null;
+    const { news } = await resp.json();
+    return news?.find((c) => c.aboutUsId === newsId) || null;
   } catch {
     return null;
   }
@@ -27,10 +27,8 @@ async function renderNewsDetail(block) {
   const newsId = params.get('ID') || '';
 
   const configs = await fetchConfigs();
-  const configUrl = configs?.aboutNewsMediaDetails;
-  const dataUrl = configUrl
-    ? configUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json')
-    : '/blocks/about-news-media-details/dummy-news-data.json';
+  const baseUrl = configs?.newsMediaBaseUrl || '';
+  const dataUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 
   const card = await fetchNewsCard(dataUrl, newsId);
 
@@ -39,22 +37,22 @@ async function renderNewsDetail(block) {
     return;
   }
 
-  const title = card.Title
-    ? `<div class="anm-detail-title pad-bot-30">${card.Title}</div>`
+  const title = card.title
+    ? `<div class="news-media-detail-title pad-bot-30">${card.Title}</div>`
     : '';
   const date = card.publishDate
-    ? `<p class="anm-detail-date pad-bot-30">${formatDate(card.publishDate, locale)}</p>`
+    ? `<p class="news-media-detail-date pad-bot-30">${formatDate(card.publishDate, locale)}</p>`
     : '';
   const imageHtml = card.detailImageUrl
-    ? `<div class="anm-detail-image"><img src="${card.detailImageUrl}" alt="${card.Title || ''}" loading="lazy"></div>`
+    ? `<div class="news-media-detail-image"><img src="${card.detailImageUrl}" alt="${card.Title || ''}" loading="lazy"></div>`
     : '';
   const description = card.detailDescription
-    ? `<div class="anm-detail-description">${card.detailDescription}</div>`
+    ? `<div class="news-media-detail-description">${card.detailDescription}</div>`
     : '';
 
   block.innerHTML = `
-    <div class="anm-detail-inner">
-      <div class="anm-detail-content">
+    <div class="news-media-detail-inner">
+      <div class="news-media-detail-content">
         ${title}
         ${date}
         ${imageHtml}

@@ -1,10 +1,9 @@
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { buildCardHtml, buildPaginationHtml, bindPaginationClick } from '../../scripts/utils/cards-healpers.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
-const FALLBACK_URL = '/blocks/about-news-media-details/dummy-news-data.json';
-const DEFAULT_PAGE_SIZE = 10;
 
 const fetchCache = {};
 
@@ -41,14 +40,14 @@ function filterAndPage(allCards, category, page, pageSize) {
   return { cards: sorted.slice(start, start + pageSize), total };
 }
 
-function setupPanel(panel, allCards, category, locale, pageSize) {
+function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
   panel.innerHTML = `
-    <div class="anm-content">
-      <div class="anm-grid"></div>
+    <div class="news-media-content">
+      <div class="news-media-grid"></div>
       <div class="listing-card-pagination"></div>
     </div>`;
 
-  const gridEl = panel.querySelector('.anm-grid');
+  const gridEl = panel.querySelector('.news-media-grid');
   const paginationEl = panel.querySelector('.listing-card-pagination');
   const state = { page: 1 };
 
@@ -63,7 +62,7 @@ function setupPanel(panel, allCards, category, locale, pageSize) {
         const dateLine = formatDate(c.publishDate, locale);
         return buildCardHtml(normalized, '', {}, { dateLine });
       }).join('')
-      : '<p class="listing-card-empty">No results found.</p>';
+      : `<p class="listing-card-empty">${placeholders.newsMediaNoResults || 'No results found.'}</p>`;
 
     paginationEl.innerHTML = buildPaginationHtml(state.page, totalPages);
     bindPaginationClick(paginationEl, state, render, gridEl);
@@ -82,18 +81,15 @@ export default async function decorate(block) {
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-US';
   const configs = await fetchConfigs();
-  const configUrl = configs?.aboutNewsMedia;
-  const dataUrl = configUrl
-    ? configUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json')
-    : FALLBACK_URL;
-  const pageSize = parseInt(configs?.aboutNewsMediaPageSize, 10) || DEFAULT_PAGE_SIZE;
+  const baseUrl = configs?.newsMediaBaseUrl || '';
+  const dataUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
+  const pageSize = parseInt(configs?.newsMediaPageSize, 10) || 20;
 
-  const primary = await fetchJson(dataUrl);
-  const data = primary || (dataUrl !== FALLBACK_URL ? await fetchJson(FALLBACK_URL) : null);
-  const allCards = data?.cards || [];
+  const [data, placeholders] = await Promise.all([fetchJson(dataUrl), fetchPlaceholders()]);
+  const allCards = data?.news || [];
   const categories = data?.categories || [];
 
-  document.querySelector('.tabs.block')?.classList.add('anm-tabs');
+  document.querySelector('.tabs.block')?.classList.add('news-media-tabs');
 
   const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
   tabPanels.forEach((panel) => {
@@ -104,8 +100,20 @@ export default async function decorate(block) {
     const catMeta = categories.find((c) => c.label.toLowerCase() === tabText.toLowerCase()) || {};
     const category = catMeta.label || tabText;
 
-    setupPanel(panel, allCards, category, locale, pageSize);
+    setupPanel(panel, allCards, category, locale, pageSize, placeholders);
   });
+
+  const tabBtns = [...document.querySelectorAll('.news-media-tabs .tabs-nav button')];
+  tabBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const params = new URLSearchParams(window.location.search);
+      params.set('year', btn.textContent.trim());
+      window.history.replaceState(null, '', `?${params.toString()}`);
+    });
+  });
+
+  const yearParam = new URLSearchParams(window.location.search).get('year');
+  tabBtns.find((btn) => btn.textContent.trim() === yearParam)?.click();
 
   block.hidden = true;
 }
