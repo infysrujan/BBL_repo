@@ -59,9 +59,20 @@ const isEnabled = !window.location.search.includes('martech=off');
  */
 // TODO: Update BBL's Dev, Stage and Prod datastream IDs here
 const dataStreamConfig = {
-  dev: 'db3b9bf1-f8e7-4d57-9fdf-94494c1459c6',
-  stage: 'db3b9bf1-f8e7-4d57-9fdf-94494c1459c6',
-  prod: 'db3b9bf1-f8e7-4d57-9fdf-94494c1459c6',
+  dev: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
+  stage: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
+  prod: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
+};
+
+// TODO: Update BBL's Launch script URLs here
+const launchConfig = {
+  dev: [
+    'https://assets.adobedtm.com/0e4712067e10/8a225ec96e9d/launch-f3f44b9a5684-development.min.js',
+  ],
+  stage: [
+    'https://assets.adobedtm.com/0e4712067e10/8a225ec96e9d/launch-f3f44b9a5684-development.min.js',
+  ],
+  prod: []
 };
 
 const orgId = 'C735552962AB1A800A495FFD@AdobeOrg';
@@ -197,9 +208,7 @@ async function loadEager(doc) {
     // 2. Library Configuration
     {
       personalization: !!getMetadata('target') && isEnabled && isConsentGiven,
-      launchUrls: [
-        /* TODO: Add BBL's Launch script URLs here */
-      ],
+      launchUrls: launchConfig[env],
     },
   );
 
