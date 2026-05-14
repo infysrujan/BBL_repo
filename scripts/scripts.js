@@ -278,7 +278,7 @@ async function loadLazy(doc) {
  */
 function loadDelayed() {
   // Load the gtm-martech library in the delayed phase.
-  window.setTimeout(gtmMartech.delayed, 1000);
+  window.setTimeout(() => void gtmMartech.delayed(), 1000);
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => {
     // Load the martech library in the delayed phase.
