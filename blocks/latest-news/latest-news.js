@@ -1,3 +1,4 @@
+import { loadCSS } from '../../scripts/aem.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
@@ -53,5 +54,7 @@ async function renderLatestNews(block) {
 }
 
 export default function decorate(block) {
+  loadCSS('/styles/components/listing-card.css');
+  loadCSS('/blocks/news-media/news-media.css');
   renderLatestNews(block);
 }
