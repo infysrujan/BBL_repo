@@ -201,12 +201,10 @@ async function loadEager(doc) {
     {
       datastreamId: dataStreamConfig[env],
       orgId,
-      martechConfig: {
-        analytics: isEnabled && isConsentGiven,
-      },
     },
     // 2. Library Configuration
     {
+      analytics: isEnabled && isConsentGiven,
       personalization: !!getMetadata('target') && isEnabled && isConsentGiven,
       launchUrls: launchConfig[env],
     },
