@@ -4,7 +4,7 @@ import { buildCardHtml, buildPaginationHtml, bindPaginationClick } from '../../s
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
 const FALLBACK_URL = '/blocks/about-news-media-details/dummy-news-data.json';
-const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_SIZE = 10;
 
 const fetchCache = {};
 
@@ -41,49 +41,41 @@ function filterAndPage(allCards, category, page, pageSize) {
   return { cards: sorted.slice(start, start + pageSize), total };
 }
 
-function render(block, allCards, categories, state, locale, pageSize) {
-  const { category, page } = state;
-  const { cards, total } = filterAndPage(allCards, category, page, pageSize);
-  const totalPages = Math.ceil(total / pageSize);
-
-  const pillsHtml = categories.map(({ label }) => {
-    const active = label === category ? ' is-active' : '';
-    return `<button class="anm-category-pill${active}" data-category="${label}">${label}</button>`;
-  }).join('');
-
-  const gridHtml = cards.length
-    ? cards.map((c) => {
-      const normalized = { ...c, title: c.Title || '' };
-      const tag = Array.isArray(c.category) ? c.category[0] : (c.category || '');
-      const dateLine = formatDate(c.publishDate, locale);
-      return buildCardHtml(normalized, tag, {}, { dateLine });
-    }).join('')
-    : '<p class="listing-card-empty">No results found.</p>';
-
-  block.innerHTML = `
-    <div class="anm-filters">
-      <div class="anm-category-pills">${pillsHtml}</div>
-    </div>
+function setupPanel(panel, allCards, category, locale, pageSize) {
+  panel.innerHTML = `
     <div class="anm-content">
-      <div class="anm-grid">${gridHtml}</div>
-      <div class="listing-card-pagination">${buildPaginationHtml(page, totalPages)}</div>
+      <div class="anm-grid"></div>
+      <div class="listing-card-pagination"></div>
     </div>`;
 
-  block.querySelectorAll('.anm-category-pill').forEach((pill) => {
-    pill.addEventListener('click', () => {
-      const isActive = pill.classList.contains('is-active');
-      state.category = isActive ? '' : pill.dataset.category;
-      state.page = 1;
-      render(block, allCards, categories, state, locale, pageSize);
-    });
-  });
+  const gridEl = panel.querySelector('.anm-grid');
+  const paginationEl = panel.querySelector('.listing-card-pagination');
+  const state = { page: 1 };
 
-  bindPaginationClick(
-    block.querySelector('.listing-card-pagination'),
-    state,
-    () => render(block, allCards, categories, state, locale, pageSize),
-    block.querySelector('.anm-grid'),
-  );
+  function render() {
+    const { cards, total } = filterAndPage(allCards, category, state.page, pageSize);
+    const totalPages = Math.ceil(total / pageSize);
+
+    gridEl.innerHTML = cards.length
+      ? cards.map((c) => {
+        const ctaLink = c.ctaLink && c.aboutUsId ? `${c.ctaLink}?ID=${c.aboutUsId}` : (c.ctaLink || '');
+        const normalized = { ...c, title: c.Title || '', ctaLink };
+        const dateLine = formatDate(c.publishDate, locale);
+        return buildCardHtml(normalized, '', {}, { dateLine });
+      }).join('')
+      : '<p class="listing-card-empty">No results found.</p>';
+
+    paginationEl.innerHTML = buildPaginationHtml(state.page, totalPages);
+    bindPaginationClick(paginationEl, state, render, gridEl);
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      observer.disconnect();
+      render();
+    }
+  }, { rootMargin: '100px' });
+  observer.observe(panel);
 }
 
 export default async function decorate(block) {
@@ -101,6 +93,19 @@ export default async function decorate(block) {
   const allCards = data?.cards || [];
   const categories = data?.categories || [];
 
-  const state = { category: '', page: 1 };
-  render(block, allCards, categories, state, locale, pageSize);
+  document.querySelector('.tabs.block')?.classList.add('anm-tabs');
+
+  const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
+  tabPanels.forEach((panel) => {
+    const tabBtnId = panel.getAttribute('aria-labelledby');
+    const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
+    const tabText = tabBtn?.textContent?.trim() || '';
+
+    const catMeta = categories.find((c) => c.label.toLowerCase() === tabText.toLowerCase()) || {};
+    const category = catMeta.label || tabText;
+
+    setupPanel(panel, allCards, category, locale, pageSize);
+  });
+
+  block.hidden = true;
 }

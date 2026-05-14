@@ -218,8 +218,8 @@
         "multi-column-tiles",
         "cookie-alert",
         "cookie-modal",
-        "about-news-media-details",
-        "about-news-media"
+        "news-media-details",
+        "news-media"
       ]
     }
   ]

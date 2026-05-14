@@ -331,44 +331,44 @@
     ]
   },
   {
-    "id": "about-news-media-details",
+    "id": "news-media-details",
     "fields": [
       {
         "component": "text",
-        "name": "about-us-id",
+        "name": "aboutUsId",
         "label": "About Us Id",
         "valueType": "string",
         "required": true
       },
       {
         "component": "richtext",
-        "name": "Title",
+        "name": "title",
         "label": "Title (appears on the about us detail page)",
         "valueType": "string"
       },
       {
         "component": "reference",
-        "name": "card-image-url",
+        "name": "cardImageUrl",
         "label": "Card Image Url",
         "valueType": "string",
         "multi": false
       },
       {
         "component": "reference",
-        "name": "detail-image-url",
+        "name": "detailImageUrl",
         "label": "Detail Image (appears on the about us detail page)",
         "valueType": "string",
         "multi": false
       },
       {
         "component": "richtext",
-        "name": "card-short-description",
+        "name": "cardShortDescription",
         "label": "Card Short Description",
         "valueType": "string"
       },
       {
         "component": "richtext",
-        "name": "detail-description",
+        "name": "detailDescription",
         "label": "Detail Description (appears on the about us detail page)",
         "valueType": "string"
       },
@@ -380,31 +380,31 @@
       },
       {
         "component": "date-time",
-        "name": "publish-date",
+        "name": "publishDate",
         "label": "publish Date (appears on the about us detail page)",
         "valueType": "string"
       },
       {
         "component": "aem-content",
-        "name": "cta-link",
+        "name": "ctaLink",
         "label": "Cta Link",
         "description": "Destination URL for the button"
       },
       {
         "component": "text",
-        "name": "cta-label",
+        "name": "ctaLabel",
         "label": "Cta Label",
         "description": "Button label text",
         "required": true
       },
       {
         "component": "container",
-        "name": "target-settings",
+        "name": "targetSettings",
         "label": "Target settings",
         "fields": [
           {
             "component": "boolean",
-            "name": "target-link",
+            "name": "targetLink",
             "label": "Open link in new tab",
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
@@ -413,10 +413,6 @@
         ]
       }
     ]
-  },
-  {
-    "id": "about-news-media",
-    "fields": []
   },
   {
     "id": "accordion-block",
@@ -8964,6 +8960,10 @@
         "description": "Tile title displayed below the image with a separator"
       }
     ]
+  },
+  {
+    "id": "news-media",
+    "fields": []
   },
   {
     "id": "popup-modal-card-offer",
