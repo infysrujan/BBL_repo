@@ -19,7 +19,7 @@ function formatDate(dateStr, locale = 'en-US') {
   return new Date(dateStr).toLocaleDateString(locale, { day: '2-digit', month: 'long', year: 'numeric' });
 }
 
-export default async function decorate(block) {
+async function renderLatestNews(block) {
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-US';
   const configs = await fetchConfigs();
@@ -50,4 +50,8 @@ export default async function decorate(block) {
     : `<p class="listing-card-empty">${placeholders.newsMediaNoResults || 'No results found.'}</p>`;
 
   block.replaceChildren(grid);
+}
+
+export default function decorate(block) {
+  renderLatestNews(block);
 }

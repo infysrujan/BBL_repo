@@ -71,7 +71,7 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
   render();
 }
 
-export default async function decorate(block) {
+async function renderNewsMedia(block) {
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-US';
   const configs = await fetchConfigs();
@@ -110,4 +110,8 @@ export default async function decorate(block) {
   tabBtns.find((btn) => btn.textContent.trim() === yearParam)?.click();
 
   block.hidden = true;
+}
+
+export default function decorate(block) {
+  renderNewsMedia(block);
 }
