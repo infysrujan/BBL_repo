@@ -93,8 +93,8 @@ async function openModal(doc, fragmentPath) {
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
     doc.body.classList.add('modal-open');
-  } catch (error) {
-    console.error('Failed to load modal content', error);
+  } catch {
+    // fragment failed to load — modal stays closed
   }
 }
 
@@ -141,8 +141,14 @@ function createCardListItem(cardElement, doc) {
   const imageLayout = cells[base]?.textContent?.trim() || 'default';
   const enableTitleUnderline = parseBooleanFlag(cells[base + 1]?.textContent, false);
   const isCardClickable = parseBooleanFlag(cells[base + 2]?.textContent, true);
-  const overlayHref = getOverlayHref(cells[base + 5]);
-  const enableOverlayModal = parseBooleanFlag(cells[base + 4]?.textContent, true);
+  const cell4Text = cells[base + 4]?.textContent?.trim();
+  const isCell4Boolean = isBooleanLikeValue(cell4Text);
+  const overlayHref = isCell4Boolean
+    ? getOverlayHref(cells[base + 5])
+    : getOverlayHref(cells[base + 4]);
+  const enableOverlayModal = isCell4Boolean
+    ? parseBooleanFlag(cell4Text, true)
+    : !!overlayHref;
   const cardLinkAnchor = cells[base + 3]?.querySelector('a');
   const cardLinkHref = cardLinkAnchor?.href || '';
   const cardLinkTarget = cardLinkAnchor?.target || '';
