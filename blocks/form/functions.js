@@ -368,6 +368,61 @@ function getProvinceEnumNamesTh() {
 
 
 /**
+ * Fetches BBL branch locations for a given Thai province.
+ * Calls the LocationSearchService endpoint with BRC (Branch) type.
+ *
+ * @name fetchBranchesByProvince
+ * @param {string} province - Thai province name, e.g. "กรุงเทพมหานคร"
+ * @returns {Array} - Array of branch objects from the API, or [] on error
+ *
+ * @example
+ * // Usage in a Province dropdown's change event (form JSON):
+ * {
+ *   "fieldType": "drop-down",
+ *   "name": "province",
+ *   "events": {
+ *     "change": [
+ *       "$form.branchField.$enum = fetchBranchesByProvince($field.$value).map(b => b.LocationCode)",
+ *       "$form.branchField.$enumNames = fetchBranchesByProvince($field.$value).map(b => b.LocationNameTH)"
+ *     ]
+ *   }
+ * }
+ *
+ * @example
+ * // Simplified: store result in a variable first, then set enum + enumNames
+ * {
+ *   "events": {
+ *     "change": [
+ *       "vars.branches = fetchBranchesByProvince($field.$value)",
+ *       "$form.branchField.$enum = vars.branches.map(b => b.LocationCode)",
+ *       "$form.branchField.$enumNames = vars.branches.map(b => b.LocationNameTH)"
+ *     ]
+ *   }
+ * }
+ */
+function fetchBranchesByProvince(province) {
+  if (!province) return [];
+
+  const baseUrl = 'https://publish-p185039-e1939903.adobeaemcloud.com';
+  const encoded = encodeURIComponent(province);
+  const url = `${baseUrl}/api/LocationSearchService/SearchThaiLandThWithLocation/${encoded}/0/0/0/BRC`;
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    // eslint-disable-next-line no-console
+    console.error('Branches API error:', xhr.status, 'for province:', province);
+    return [];
+  }
+
+  const data = JSON.parse(xhr.responseText);
+  return Array.isArray(data) ? data : [];
+}
+
+/**
  * Validates Thai Citizen ID using the official algorithm
  * @name validateThaiCitizenID
  * @param {string} id - The 13-digit Thai Citizen ID to validate
@@ -448,4 +503,5 @@ export {
   addCsrfToken,
   addCustomHeader,
   generatePayloadHash,
+  fetchBranchesByProvince,
 };
