@@ -300,6 +300,73 @@ function getProvinceEnumNames() {
   return data.map((item) => item.label);
 }
 
+
+/**
+* Fetches and normalizes province data in TH.
+* Expected API shape:
+* [
+*   { "Province": "กรุงเทพมหานคร" },
+*   { "Province": "กระบี่" }
+* ]
+*
+* @private
+* @returns {Array<{value: string, label: string}>}
+*/
+function getProvinceDataTh() {
+  const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/LocationSearchService/GetProvinceTh';
+  const xhr = new XMLHttpRequest();
+
+  xhr.open('GET', url, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    return [];
+  }
+
+  const response = JSON.parse(xhr.responseText);
+
+  if (!Array.isArray(response)) {
+    return [];
+  }
+
+  return response
+    .map((item) => {
+      const province = item && item.Province ? String(item.Province) : '';
+
+      return {
+        value: province,
+        label: province,
+      };
+    })
+    .filter((item) => item.value !== '');
+}
+
+/**
+* Returns the stored dropdown values for Province.
+* Maps to enum.
+*
+* @name getProvinceEnumTh
+* @returns {string[]}
+*/
+function getProvinceEnumTh() {
+  const data = getProvinceDataTh();
+  return data.map((item) => item.value);
+}
+
+/**
+* Returns the display labels for Province.
+* Maps to enumNames.
+*
+* @name getProvinceEnumNamesTh
+* @returns {string[]}
+*/
+function getProvinceEnumNamesTh() {
+  const data = getProvinceDataTh();
+  return data.map((item) => item.label);
+}
+
+
 /**
  * Validates Thai Citizen ID using the official algorithm
  * @name validateThaiCitizenID
@@ -373,6 +440,8 @@ export {
   submitFormArrayToString,
   getProvinceEnum,
   getProvinceEnumNames,
+  getProvinceEnumTh,
+  getProvinceEnumNamesTh,
   validateThaiCitizenID,
   validateCreditCardNumber,
   fetchCsrfToken,
