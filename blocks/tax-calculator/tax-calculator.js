@@ -1,69 +1,33 @@
+import fetchBlockConfig from '../../scripts/block-config.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
 // ─── Utilities ─────────────────────────────────────────────────────────────────
 
-function toPascalCase(str) {
-  return str.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('');
-}
-
-function buildI18nMap(sheet) {
-  const map = {};
-  (sheet?.data || []).forEach(({ Key, Value }) => { map[Key] = Value; });
-  return map;
-}
-
-function buildConfigMap(sheet) {
-  const map = {};
-  (sheet?.data || []).forEach(({ Key, Value }) => {
-    const num = parseFloat(Value);
-    map[toPascalCase(Key)] = Number.isNaN(num) ? Value : num;
-  });
-  return map;
-}
-
-function parseFieldSheet(sheet) {
-  if (!sheet?.data?.length) return [];
-  return sheet.data.map((row) => {
-    const obj = {};
-    Object.keys(row).forEach((key) => { obj[toPascalCase(key)] = row[key]; });
-    return obj;
-  });
-}
-
-function getLang() {
-  return (document.documentElement.lang || 'en').startsWith('th') ? 'th' : 'en';
-}
-
-function fmt(val) {
+function formatNumber(val) {
   const n = parseFloat(String(val ?? '').replace(/,/g, ''));
   if (Number.isNaN(n)) return '';
   return n.toLocaleString('en-US');
 }
 
-function raw(str) {
+function stripCommas(str) {
   return String(str ?? '').replace(/,/g, '');
 }
 
-function t(i18n, key, fallback = '') {
-  return i18n[key] || fallback;
+function getString(labels, key, fallback = '') {
+  return labels[key] || fallback;
 }
 
-function el(html) {
-  const wrap = document.createElement('div');
-  wrap.innerHTML = html.trim();
-  return wrap.firstElementChild;
+function parseHTML(html) {
+  return new DOMParser().parseFromString(html.trim(), 'text/html').body.firstElementChild;
 }
 
 function buildNotes(title, noteLines) {
-  const div = document.createElement('div');
-  div.className = 'tax-calc-notes';
-  const titleEl = document.createElement('p');
-  titleEl.className = 'tax-calc-notes-title';
-  titleEl.textContent = title;
-  div.appendChild(titleEl);
+  const div = parseHTML('<div class="tax-calc-notes"></div>');
+  const titleElement = parseHTML('<p class="tax-calc-notes-title"></p>');
+  titleElement.textContent = title;
+  div.appendChild(titleElement);
   noteLines.forEach((line) => {
-    const p = document.createElement('p');
-    p.className = 'tax-calc-notes-body';
+    const p = parseHTML('<p class="tax-calc-notes-body"></p>');
     p.innerHTML = line;
     div.appendChild(p);
   });
@@ -73,50 +37,26 @@ function buildNotes(title, noteLines) {
 // ─── Data ───────────────────────────────────────────────────────────────────────
 
 async function loadData() {
-  const [resp, siteConfig] = await Promise.all([
-    fetch('/taxsavings.json'),
+  const [siteConfig, labels] = await Promise.all([
     fetchConfigs(),
+    fetchBlockConfig('/tax-savings-config.json'),
   ]);
-  if (!resp.ok) throw new Error('Failed to load taxsavings.json');
-  const json = await resp.json();
-  const lang = getLang();
   return {
-    fields: parseFieldSheet(json.taxSavings),
-    i18n: buildI18nMap(json[lang] || json.en || {}),
-    cfg: buildConfigMap(json.config || {}),
+    labels,
     apiCalculateTax: siteConfig.calculateTaxWithReduce,
     apiCalculateSaving: siteConfig.calculateSavingTaxBySelf,
   };
 }
 
 // ─── Journey 1 field definitions ───────────────────────────────────────────────
-// Pulled from taxSavings sheet; cfg provides defaults when sheet is empty.
 
-function getJourney1Fields(fields, i18n, cfg) {
-  const sheetFields = fields.filter((f) => !f.GroupId);
-
-  if (sheetFields.length) {
-    return sheetFields.map((f) => ({
-      id: f.Id,
-      label: f.Label,
-      placeholder: (f.Placeholder || '{{column-min-value}} - {{column-max-value}}')
-        .replace('{{column-min-value}}', fmt(f.MinValue))
-        .replace('{{column-max-value}}', fmt(f.MaxValue)),
-      defaultValue: parseFloat(f.Value) ?? 0,
-      maxLength: f.MaxLength ? Number(f.MaxLength) : null,
-      min: parseFloat(f.MinValue) || 0,
-      max: parseFloat(f.MaxValue),
-      factor: parseFloat(f.MultiplicativeFactor) || 1,
-      errorMsg: f.MaxValidationErrorMessage || '',
-    }));
-  }
-
+function getJourney1Fields(labels) {
   return [
     {
       id: 'Income',
-      label: t(i18n, 'steps-step1-currentMonthlyIncomeLabel', 'Salary*'),
-      placeholder: `0 - ${fmt(999999999)}`,
-      defaultValue: cfg.DefaultsCurrentMonthlyIncome,
+      label: getString(labels, 'stepsStep1CurrentMonthlyIncomeLabel', 'Salary*'),
+      placeholder: `0 - ${formatNumber(999999999)}`,
+      defaultValue: parseFloat(labels.defaultsCurrentMonthlyIncome) || 0,
       maxLength: 11,
       min: 0,
       max: 999999999,
@@ -125,8 +65,8 @@ function getJourney1Fields(fields, i18n, cfg) {
     },
     {
       id: 'OtherIncome',
-      label: t(i18n, 'steps-step1-otherIncomeLabel', 'Other annual income (non-salary)*'),
-      placeholder: `0 - ${fmt(999999999)}`,
+      label: getString(labels, 'stepsStep1OtherIncomeLabel', 'Other annual income (non-salary)*'),
+      placeholder: `0 - ${formatNumber(999999999)}`,
       defaultValue: null,
       maxLength: 11,
       min: 0,
@@ -136,9 +76,9 @@ function getJourney1Fields(fields, i18n, cfg) {
     },
     {
       id: 'Bonus',
-      label: t(i18n, 'steps-step1-annualBonusLabel', 'Annual bonus'),
-      placeholder: `0 - ${fmt(999999999)}`,
-      defaultValue: cfg.DefaultsAnnualBonus,
+      label: getString(labels, 'stepsStep1AnnualBonusLabel', 'Annual bonus'),
+      placeholder: `0 - ${formatNumber(999999999)}`,
+      defaultValue: parseFloat(labels.defaultsAnnualBonus) || 0,
       maxLength: 11,
       min: 0,
       max: 999999999,
@@ -147,14 +87,14 @@ function getJourney1Fields(fields, i18n, cfg) {
     },
     {
       id: 'ProvidentFund',
-      label: t(i18n, 'steps-step1-providentFundContributionRateLabel', 'Percentage of provident fund contribution (%)'),
+      label: getString(labels, 'stepsStep1ProvidentFundContributionRateLabel', 'Percentage of provident fund contribution (%)'),
       placeholder: '0 - 15',
-      defaultValue: cfg.DefaultsProvidentFundContributionRate,
+      defaultValue: parseFloat(labels.defaultsProvidentFundContributionRate) || 0,
       maxLength: null,
       min: 0,
       max: 15,
       factor: 0.01,
-      errorMsg: t(i18n, 'config-validation-maxValueError', 'Maximum up to {max}'),
+      errorMsg: getString(labels, 'configValidationMaxValueError', 'Maximum up to {max}'),
     },
   ];
 }
@@ -162,30 +102,25 @@ function getJourney1Fields(fields, i18n, cfg) {
 // ─── Journey 2 field groups ─────────────────────────────────────────────────────
 // hint uses {max} as a placeholder — resolved dynamically by buildInputField.
 
-function getJourney2Groups(fields, i18n, apiResponse) {
-  const sheetFields = fields.filter((f) => f.GroupId);
-  if (sheetFields.length) {
-    // TODO: derive groups from sheet data when published
-  }
-
-  const allUsedMsg = t(i18n, 'results-noRemainDeduction', 'All tax deductions have been used.');
-  const maxErrMsg = t(i18n, 'config-validation-maxValueError', 'Maximum up to {max}');
-  const insureHint = t(i18n, 'steps-step2-lifeInsurancePremiumMax', 'Max allowance {max} baht');
-  const healthHint = t(i18n, 'steps-step2-healthInsurancePremiumMax', 'Max allowance {max} baht');
-  const pensionHint = t(i18n, 'steps-step2-lifePensionInsurancePremiumMax', 'Max allowance {max} baht');
-  const fatherInsureHint = t(i18n, 'steps-step2-healthParentInsurancePremiumMax', 'Max allowance {max} baht');
-  const rmfHint = t(i18n, 'steps-step2-rmfSavingsMax', 'Max allowance {max} baht');
-  const esgHint = t(i18n, 'steps-step2-thaiEsgSavingsMax', 'Max allowance {max} baht');
+function getJourney2Groups(labels, apiResponse) {
+  const allUsedMsg = getString(labels, 'resultsNoRemainDeduction', 'All tax deductions have been used.');
+  const maxErrMsg = getString(labels, 'configValidationMaxValueError', 'Maximum up to {max}');
+  const insureHint = getString(labels, 'stepsStep2LifeInsurancePremiumMax', 'Max allowance {max} baht');
+  const healthHint = getString(labels, 'stepsStep2HealthInsurancePremiumMax', 'Max allowance {max} baht');
+  const pensionHint = getString(labels, 'stepsStep2LifePensionInsurancePremiumMax', 'Max allowance {max} baht');
+  const fatherInsureHint = getString(labels, 'stepsStep2HealthParentInsurancePremiumMax', 'Max allowance {max} baht');
+  const rmfHint = getString(labels, 'stepsStep2RmfSavingsMax', 'Max allowance {max} baht');
+  const esgHint = getString(labels, 'stepsStep2ThaiEsgSavingsMax', 'Max allowance {max} baht');
 
   return [
     {
       id: 'family',
-      label: t(i18n, 'steps-step2-familyDeductionLabel', 'Family'),
-      tooltip: t(i18n, 'steps-step2-familyDeductionHint', 'The amount entered must not exceed the amount actually paid and not be more than the tax allowance threshold as specified by the Revenue Department.'),
+      label: getString(labels, 'stepsStep2FamilyDeductionLabel', 'Family'),
+      tooltip: getString(labels, 'stepsStep2FamilyDeductionHint', 'The amount entered must not exceed the amount actually paid and not be more than the tax allowance threshold as specified by the Revenue Department.'),
       fields: [
         {
           id: 'NumberOfChildeBornBefore61',
-          label: t(i18n, 'steps-step2-numberOfChildrenBefore2561Label', 'Number of children (born before 2018)'),
+          label: getString(labels, 'stepsStep2NumberOfChildrenBefore2561Label', 'Number of children (born before 2018)'),
           placeholder: '0 - 10',
           defaultValue: 0,
           maxLength: 2,
@@ -196,7 +131,7 @@ function getJourney2Groups(fields, i18n, apiResponse) {
         },
         {
           id: 'NumberOfChildeBorn61OnWards',
-          label: t(i18n, 'steps-step2-numberOfChildrenAfter2561Label', 'Number of children (born in or after 2018)'),
+          label: getString(labels, 'stepsStep2NumberOfChildrenAfter2561Label', 'Number of children (born in or after 2018)'),
           placeholder: '0 - 10',
           defaultValue: 0,
           maxLength: 2,
@@ -208,22 +143,22 @@ function getJourney2Groups(fields, i18n, apiResponse) {
         {
           id: 'FatherMother',
           type: 'checkbox',
-          selfLabel: t(i18n, 'steps-step2-parentalDeductionSelfLabel', 'Claim tax deduction for supporting parents (self)'),
-          spouseLabel: t(i18n, 'steps-step2-parentalDeductionSpouseLabel', "Claim tax deduction for supporting parents (spouse's)"),
-          fatherLabel: t(i18n, 'common-fatherLabel', 'Father'),
-          motherLabel: t(i18n, 'common-motherLabel', 'Mother'),
+          selfLabel: getString(labels, 'stepsStep2ParentalDeductionSelfLabel', 'Claim tax deduction for supporting parents (self)'),
+          spouseLabel: getString(labels, 'stepsStep2ParentalDeductionSpouseLabel', "Claim tax deduction for supporting parents (spouse's)"),
+          fatherLabel: getString(labels, 'commonFatherLabel', 'Father'),
+          motherLabel: getString(labels, 'commonMotherLabel', 'Mother'),
         },
       ],
     },
     {
       id: 'insurance',
-      label: t(i18n, 'steps-step2-insuranceSectionLabel', 'Insurance'),
-      tooltip: t(i18n, 'steps-step2-insuranceSectionHint', 'The amount entered must not exceed the amount actually paid and not be more than the tax allowance threshold as specified by the Revenue Department.'),
+      label: getString(labels, 'stepsStep2InsuranceSectionLabel', 'Insurance'),
+      tooltip: getString(labels, 'stepsStep2InsuranceSectionHint', 'The amount entered must not exceed the amount actually paid and not be more than the tax allowance threshold as specified by the Revenue Department.'),
       fields: [
         {
           id: 'Insure',
-          label: t(i18n, 'steps-step2-lifeInsurancePremiumLabel', 'Life insurance premiums'),
-          placeholder: `0 - ${fmt(apiResponse.MaxInsure)}`,
+          label: getString(labels, 'stepsStep2LifeInsurancePremiumLabel', 'Life insurance premiums'),
+          placeholder: `0 - ${formatNumber(apiResponse.MaxInsure)}`,
           defaultValue: 0,
           maxLength: 7,
           min: 0,
@@ -235,8 +170,8 @@ function getJourney2Groups(fields, i18n, apiResponse) {
         },
         {
           id: 'HealthInsure',
-          label: t(i18n, 'steps-step2-healthInsurancePremiumLabel', 'Health insurance premiums'),
-          placeholder: `0 - ${fmt(apiResponse.MaxHealthInsure)}`,
+          label: getString(labels, 'stepsStep2HealthInsurancePremiumLabel', 'Health insurance premiums'),
+          placeholder: `0 - ${formatNumber(apiResponse.MaxHealthInsure)}`,
           defaultValue: 0,
           maxLength: 6,
           min: 0,
@@ -248,8 +183,8 @@ function getJourney2Groups(fields, i18n, apiResponse) {
         },
         {
           id: 'PensionInsure',
-          label: t(i18n, 'steps-step2-lifePensionInsurancePremiumLabel', 'Pension insurance premiums'),
-          placeholder: `0 - ${fmt(apiResponse.MaxInsure60)}`,
+          label: getString(labels, 'stepsStep2LifePensionInsurancePremiumLabel', 'Pension insurance premiums'),
+          placeholder: `0 - ${formatNumber(apiResponse.MaxInsure60)}`,
           defaultValue: 0,
           maxLength: 7,
           min: 0,
@@ -260,8 +195,8 @@ function getJourney2Groups(fields, i18n, apiResponse) {
         },
         {
           id: 'FatherInsure',
-          label: t(i18n, 'steps-step2-healthParentInsurancePremiumLabel', "Parents' Health Insurance Premiums"),
-          placeholder: `0 - ${fmt(15000)}`,
+          label: getString(labels, 'stepsStep2HealthParentInsurancePremiumLabel', "Parents' Health Insurance Premiums"),
+          placeholder: `0 - ${formatNumber(15000)}`,
           defaultValue: 0,
           maxLength: 6,
           min: 0,
@@ -274,13 +209,13 @@ function getJourney2Groups(fields, i18n, apiResponse) {
     },
     {
       id: 'investment',
-      label: t(i18n, 'steps-step2-investmentSectionLabel', 'Investment'),
-      tooltip: t(i18n, 'steps-step2-investmentSectionHint', 'The amount entered must not exceed the amount actually paid and not be more than the tax allowance threshold as specified by the Revenue Department.'),
+      label: getString(labels, 'stepsStep2InvestmentSectionLabel', 'Investment'),
+      tooltip: getString(labels, 'stepsStep2InvestmentSectionHint', 'The amount entered must not exceed the amount actually paid and not be more than the tax allowance threshold as specified by the Revenue Department.'),
       fields: [
         {
           id: 'ReduceRMF',
-          label: t(i18n, 'steps-step2-rmfSavingsLabel', 'RMF'),
-          placeholder: `0 - ${fmt(apiResponse.MaxRMF)}`,
+          label: getString(labels, 'stepsStep2RmfSavingsLabel', 'RMF'),
+          placeholder: `0 - ${formatNumber(apiResponse.MaxRMF)}`,
           defaultValue: 0,
           maxLength: 7,
           min: 0,
@@ -291,8 +226,8 @@ function getJourney2Groups(fields, i18n, apiResponse) {
         },
         {
           id: 'ReduceESG',
-          label: t(i18n, 'steps-step2-thaiEsgSavingsLabel', 'Thai ESG'),
-          placeholder: `0 - ${fmt(apiResponse.MaxESG)}`,
+          label: getString(labels, 'stepsStep2ThaiEsgSavingsLabel', 'Thai ESG'),
+          placeholder: `0 - ${formatNumber(apiResponse.MaxESG)}`,
           defaultValue: 0,
           maxLength: 7,
           min: 0,
@@ -305,13 +240,13 @@ function getJourney2Groups(fields, i18n, apiResponse) {
     },
     {
       id: 'other',
-      label: t(i18n, 'steps-step2-otherDeductionsSectionLabel', 'Other allowances'),
-      tooltip: t(i18n, 'steps-step2-otherDeductionsSectionHint', '• The amount entered must not exceed the amount actually paid and not be more than the tax allowance threshold as specified by the Revenue Department.\n• For donations eligible for double deduction, enter double the calculated amount, but it must not exceed the tax allowance threshold as specified by the Revenue Department.\n• Enter the eligible amount as specified by the Revenue Department for some other types of tax allowances.'),
+      label: getString(labels, 'stepsStep2OtherDeductionsSectionLabel', 'Other allowances'),
+      tooltip: getString(labels, 'stepsStep2OtherDeductionsSectionHint', '• The amount entered must not exceed the amount actually paid and not be more than the tax allowance threshold as specified by the Revenue Department.\n• For donations eligible for double deduction, enter double the calculated amount, but it must not exceed the tax allowance threshold as specified by the Revenue Department.\n• Enter the eligible amount as specified by the Revenue Department for some other types of tax allowances.'),
       fields: [
         {
           id: 'HomeInterest',
-          label: t(i18n, 'steps-step2-homeLoanInterestLabel', 'Mortgage loan interest'),
-          placeholder: `0 - ${fmt(100000)}`,
+          label: getString(labels, 'stepsStep2HomeLoanInterestLabel', 'Mortgage loan interest'),
+          placeholder: `0 - ${formatNumber(100000)}`,
           defaultValue: 0,
           maxLength: 7,
           min: 0,
@@ -321,8 +256,8 @@ function getJourney2Groups(fields, i18n, apiResponse) {
         },
         {
           id: 'Donate',
-          label: t(i18n, 'steps-step2-donationLabel', 'Donations'),
-          placeholder: `0 - ${fmt(999999999)}`,
+          label: getString(labels, 'stepsStep2DonationLabel', 'Donations'),
+          placeholder: `0 - ${formatNumber(999999999)}`,
           defaultValue: 0,
           maxLength: 11,
           min: 0,
@@ -332,8 +267,8 @@ function getJourney2Groups(fields, i18n, apiResponse) {
         },
         {
           id: 'Other',
-          label: t(i18n, 'steps-step2-otherDeductionsLabel', 'Other'),
-          placeholder: `0 - ${fmt(1000000)}`,
+          label: getString(labels, 'stepsStep2OtherDeductionsLabel', 'Other'),
+          placeholder: `0 - ${formatNumber(1000000)}`,
           defaultValue: 0,
           maxLength: 9,
           min: 0,
@@ -348,18 +283,18 @@ function getJourney2Groups(fields, i18n, apiResponse) {
 
 // ─── Journey 3 field definitions ───────────────────────────────────────────────
 
-function getJourney3InvestFields(apiResult1, i18n) {
-  const allUsedMsg = t(i18n, 'results-noRemainDeduction', 'All tax deductions have been used.');
-  const upTo = t(i18n, 'results-canInvestMoreLabel', 'Up to');
-  const unit = t(i18n, 'common-unit', 'baht');
+function getJourney3InvestFields(apiResult1, labels) {
+  const allUsedMsg = getString(labels, 'resultsNoRemainDeduction', 'All tax deductions have been used.');
+  const upTo = getString(labels, 'resultsCanInvestMoreLabel', 'Up to');
+  const unit = getString(labels, 'commonUnit', 'baht');
   const hintTemplate = `${upTo} {max} ${unit}`;
-  const maxErrMsg = t(i18n, 'config-validation-maxValueError', 'Maximum up to {max}');
+  const maxErrMsg = getString(labels, 'configValidationMaxValueError', 'Maximum up to {max}');
 
   return [
     {
       id: 'InputRMF',
-      label: t(i18n, 'results-rmfLabel', 'RMF*'),
-      placeholder: `0 - ${fmt(apiResult1.MaxRMF)}`,
+      label: getString(labels, 'resultsRmfLabel', 'RMF*'),
+      placeholder: `0 - ${formatNumber(apiResult1.MaxRMF)}`,
       defaultValue: 0,
       maxLength: 7,
       min: 0,
@@ -372,8 +307,8 @@ function getJourney3InvestFields(apiResult1, i18n) {
     },
     {
       id: 'InputESG',
-      label: t(i18n, 'results-thaiEsgLabel', 'Thai ESG***'),
-      placeholder: `0 - ${fmt(apiResult1.MaxESG)}`,
+      label: getString(labels, 'resultsThaiEsgLabel', 'Thai ESG***'),
+      placeholder: `0 - ${formatNumber(apiResult1.MaxESG)}`,
       defaultValue: 0,
       maxLength: 7,
       min: 0,
@@ -386,8 +321,8 @@ function getJourney3InvestFields(apiResult1, i18n) {
     },
     {
       id: 'InputInsure',
-      label: t(i18n, 'results-lifeInsuranceLabel', 'Life insurance premiums**'),
-      placeholder: `0 - ${fmt(apiResult1.MaxInsure)}`,
+      label: getString(labels, 'resultsLifeInsuranceLabel', 'Life insurance premiums**'),
+      placeholder: `0 - ${formatNumber(apiResult1.MaxInsure)}`,
       defaultValue: 0,
       maxLength: 7,
       min: 0,
@@ -400,8 +335,8 @@ function getJourney3InvestFields(apiResult1, i18n) {
     },
     {
       id: 'InputHealthInsure',
-      label: t(i18n, 'results-healthInsuranceLabel', 'Health insurance premiums**'),
-      placeholder: `0 - ${fmt(apiResult1.MaxHealthInsure)}`,
+      label: getString(labels, 'resultsHealthInsuranceLabel', 'Health insurance premiums**'),
+      placeholder: `0 - ${formatNumber(apiResult1.MaxHealthInsure)}`,
       defaultValue: 0,
       maxLength: 6,
       min: 0,
@@ -414,8 +349,8 @@ function getJourney3InvestFields(apiResult1, i18n) {
     },
     {
       id: 'InputInsure60',
-      label: t(i18n, 'results-pensionInsuranceLabel', 'Pension insurance premiums*'),
-      placeholder: `0 - ${fmt(apiResult1.MaxInsure60)}`,
+      label: getString(labels, 'resultsPensionInsuranceLabel', 'Pension insurance premiums*'),
+      placeholder: `0 - ${formatNumber(apiResult1.MaxInsure60)}`,
       defaultValue: 0,
       maxLength: 7,
       min: 0,
@@ -431,10 +366,10 @@ function getJourney3InvestFields(apiResult1, i18n) {
 
 // ─── Header ─────────────────────────────────────────────────────────────────────
 
-function buildHeader(i18n) {
-  const header = el('<div class="tax-calc-header"></div>');
-  const title = el(`<h1 class="tax-calc-title">${t(i18n, 'config-title', 'Plan your tax saving')}</h1>`);
-  const divider = el('<div class="tax-calc-divider"></div>');
+function buildHeader(labels) {
+  const header = parseHTML('<div class="tax-calc-header"></div>');
+  const title = parseHTML(`<h1 class="tax-calc-title">${getString(labels, 'configTitle', 'Plan your tax saving')}</h1>`);
+  const divider = parseHTML('<div class="tax-calc-divider"></div>');
   header.appendChild(title);
   header.appendChild(divider);
   return header;
@@ -442,92 +377,86 @@ function buildHeader(i18n) {
 
 // ─── Step Indicator ─────────────────────────────────────────────────────────────
 
-function buildStepIndicator(i18n, activeStep) {
+function buildStepIndicator(labels, activeStep) {
   const steps = [
-    t(i18n, 'common-step1Label', 'Income'),
-    t(i18n, 'common-step2Label', 'Allowance'),
-    t(i18n, 'common-step3Label', 'Result'),
+    getString(labels, 'commonStep1Label', 'Income'),
+    getString(labels, 'commonStep2Label', 'Allowance'),
+    getString(labels, 'commonStep3Label', 'Result'),
   ];
 
-  const wrap = el('<div class="tax-calc-steps"></div>');
+  const stepsContainer = parseHTML('<div class="tax-calc-steps"></div>');
 
-  steps.forEach((label, idx) => {
-    const num = idx + 1;
-    let mod = '';
-    if (num === activeStep) mod = 'tax-calc-step-active';
-    else if (num < activeStep) mod = 'tax-calc-step-done';
-    const step = el(`
-      <div class="tax-calc-step ${mod}">
-        <div class="tax-calc-step-circle"><span>${num < activeStep ? '✓' : num}</span></div>
+  steps.forEach((label, index) => {
+    const stepNumber = index + 1;
+    let stepModifier = '';
+    if (stepNumber === activeStep) stepModifier = 'tax-calc-step-active';
+    else if (stepNumber < activeStep) stepModifier = 'tax-calc-step-done';
+    const step = parseHTML(`
+      <div class="tax-calc-step ${stepModifier}">
+        <div class="tax-calc-step-circle"><span>${stepNumber < activeStep ? '✓' : stepNumber}</span></div>
         <div class="tax-calc-step-label">${label}</div>
       </div>
     `);
-    wrap.appendChild(step);
+    stepsContainer.appendChild(step);
 
-    if (idx < steps.length - 1) {
-      wrap.appendChild(el(`<div class="tax-calc-connector${num < activeStep ? ' tax-calc-connector-done' : ''}"></div>`));
+    if (index < steps.length - 1) {
+      stepsContainer.appendChild(parseHTML(`<div class="tax-calc-connector${stepNumber < activeStep ? ' tax-calc-connector-done' : ''}"></div>`));
     }
   });
 
-  return wrap;
+  return stepsContainer;
 }
 
 // ─── Input Field ────────────────────────────────────────────────────────────────
 
-function buildInputField(def, savedValue) {
-  let displayVal = fmt(0);
+function buildInputField(fieldDef, savedValue) {
+  let displayVal = formatNumber(0);
   if (savedValue !== undefined && savedValue !== null) {
-    displayVal = fmt(savedValue);
-  } else if (def.defaultValue !== null && def.defaultValue !== undefined) {
-    displayVal = fmt(def.defaultValue);
+    displayVal = formatNumber(savedValue);
+  } else if (fieldDef.defaultValue !== null && fieldDef.defaultValue !== undefined) {
+    displayVal = formatNumber(fieldDef.defaultValue);
   }
 
-  const isEmptyRange = def.max <= 0;
-  const displayPlaceholder = isEmptyRange ? '0' : def.placeholder;
-  const maxLength = def.max > 0 ? fmt(Math.round(def.max)).length : 1;
+  const isEmptyRange = fieldDef.max <= 0;
+  const disabledInitially = isEmptyRange && !!fieldDef.disableWhenEmpty;
+  const displayPlaceholder = isEmptyRange ? '0' : fieldDef.placeholder;
+  const maxLength = fieldDef.max > 0 ? formatNumber(Math.round(fieldDef.max)).length : 1;
 
-  const hintHtml = def.hint
-    ? `<p class="tax-calc-field-hint" id="tc-hint-${def.id}">${def.hint.replace('{max}', fmt(def.max))}</p>`
+  const initialHintText = disabledInitially
+    ? (fieldDef.allUsedMsg || 'All tax deductions have been used.')
+    : fieldDef.hint?.replace('{max}', formatNumber(fieldDef.max)) ?? '';
+  const hintHtml = fieldDef.hint
+    ? `<p class="tax-calc-field-hint${disabledInitially ? ' tax-calc-field-hint-used' : ''}" id="tc-hint-${fieldDef.id}">${initialHintText}</p>`
     : '';
 
-  const field = el(`
-    <div class="tax-calc-field" data-id="${def.id}">
+  const field = parseHTML(`
+    <div class="tax-calc-field" data-id="${fieldDef.id}">
       <div class="tax-calc-input-wrap">
         <input
           type="text"
-          id="tc-${def.id}"
-          name="${def.id}"
+          id="tc-${fieldDef.id}"
+          name="${fieldDef.id}"
           class="tax-calc-input"
           placeholder="${displayPlaceholder}"
           value="${displayVal}"
           maxlength="${maxLength}"
-          ${isEmptyRange && !def.disableWhenEmpty ? 'readonly' : ''}
+          ${isEmptyRange && !fieldDef.disableWhenEmpty ? 'readonly' : ''}
+          ${disabledInitially ? 'disabled' : ''}
         />
-        <label class="tax-calc-label" for="tc-${def.id}">${def.label}</label>
+        <label class="tax-calc-label" for="tc-${fieldDef.id}">${fieldDef.label}</label>
       </div>
       ${hintHtml}
-      <p class="tax-calc-field-error" id="tc-err-${def.id}"></p>
+      <p class="tax-calc-field-error" id="tc-err-${fieldDef.id}"></p>
     </div>
   `);
 
-  const wrap = field.querySelector('.tax-calc-input-wrap');
+  const inputWrapper = field.querySelector('.tax-calc-input-wrap');
   const input = field.querySelector('.tax-calc-input');
-  const hintEl = def.hint ? field.querySelector(`#tc-hint-${def.id}`) : null;
-  const errorEl = field.querySelector('.tax-calc-field-error');
-
-  // Block any input if the field is frozen
-  input.addEventListener('beforeinput', (e) => {
-    if (input.classList.contains('tax-calc-input-frozen')) e.preventDefault();
-  });
+  const hintElement = fieldDef.hint ? field.querySelector(`#tc-hint-${fieldDef.id}`) : null;
+  const errorElement = field.querySelector('.tax-calc-field-error');
 
   // Only digits allowed + skip commas on backspace
   input.addEventListener('keydown', (e) => {
-    if (input.classList.contains('tax-calc-input-frozen')) {
-      if (!['ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'].includes(e.key)) {
-        e.preventDefault();
-      }
-      return;
-    }
     if (!/[\d]|Backspace|Delete|ArrowLeft|ArrowRight|Tab|Home|End/.test(e.key) && !e.ctrlKey && !e.metaKey) {
       e.preventDefault();
     }
@@ -541,29 +470,25 @@ function buildInputField(def, savedValue) {
   });
 
   input.addEventListener('focus', () => {
-    if (raw(input.value) === '0' && !input.classList.contains('tax-calc-input-frozen')) input.value = '';
-    if (!wrap.classList.contains('tax-calc-input-wrap-error')) {
-      wrap.classList.add('tax-calc-input-wrap-focus');
+    if (stripCommas(input.value) === '0') input.value = '';
+    if (!inputWrapper.classList.contains('tax-calc-input-wrap-error')) {
+      inputWrapper.classList.add('tax-calc-input-wrap-focus');
     }
   });
 
   // Empty on blur → 0, then reformat
   input.addEventListener('blur', () => {
-    const val = raw(input.value).trim();
-    input.value = fmt(val === '' ? 0 : val);
-    wrap.classList.remove('tax-calc-input-wrap-focus');
+    const val = stripCommas(input.value).trim();
+    input.value = formatNumber(val === '' ? 0 : val);
+    inputWrapper.classList.remove('tax-calc-input-wrap-focus');
   });
 
-  // Live reformat + max validation
+  // Live reformat + max validation — disabled inputs never fire this, no guard needed
   input.addEventListener('input', () => {
-    if (input.classList.contains('tax-calc-input-frozen')) {
-      input.value = fmt(0);
-      return;
-    }
     const pos = input.selectionStart;
     const digitsBeforeCursor = input.value.substring(0, pos).replace(/,/g, '').length;
-    const rawVal = raw(input.value);
-    const formatted = rawVal === '' ? '' : fmt(rawVal);
+    const rawVal = stripCommas(input.value);
+    const formatted = rawVal === '' ? '' : formatNumber(rawVal);
     input.value = formatted;
 
     // Restore cursor position accounting for shifted commas
@@ -576,57 +501,52 @@ function buildInputField(def, savedValue) {
     input.setSelectionRange(newPos, newPos);
 
     const val = parseFloat(rawVal) || 0;
-    if (val > def.max) {
-      const msg = (def.errorMsg || t({}, 'config-validation-maxValueError', 'Maximum up to {max}'))
-        .replace('{max}', fmt(def.max))
-        .replace('{{column-max-value}}', fmt(def.max));
-      wrap.classList.add('tax-calc-input-wrap-error');
-      wrap.classList.remove('tax-calc-input-wrap-focus');
+    if (val > fieldDef.max) {
+      const msg = (fieldDef.errorMsg || getString({}, 'configValidationMaxValueError', 'Maximum up to {max}'))
+        .replace('{max}', formatNumber(fieldDef.max))
+        .replace('{{column-max-value}}', formatNumber(fieldDef.max));
+      inputWrapper.classList.add('tax-calc-input-wrap-error');
+      inputWrapper.classList.remove('tax-calc-input-wrap-focus');
       input.classList.add('tax-calc-input-error');
-      errorEl.textContent = msg;
-      if (hintEl) hintEl.hidden = true;
+      errorElement.textContent = msg;
+      if (hintElement) hintElement.hidden = true;
     } else {
-      wrap.classList.remove('tax-calc-input-wrap-error');
+      inputWrapper.classList.remove('tax-calc-input-wrap-error');
       input.classList.remove('tax-calc-input-error');
-      errorEl.textContent = '';
-      if (hintEl) hintEl.hidden = false;
+      errorElement.textContent = '';
+      if (hintElement) hintElement.hidden = false;
     }
   });
 
   // Allows external callers to update the max value and hint text dynamically
   field.updateMax = (newMax) => {
-    def.max = newMax;
+    fieldDef.max = newMax;
     if (newMax <= 0) {
       input.placeholder = '0';
-      input.value = fmt(0);
-      input.classList.add('tax-calc-input-frozen');
-      input.readOnly = false; // Allow focus/cursor
-      input.disabled = false;
-      wrap.classList.remove('tax-calc-input-wrap-error');
+      input.value = formatNumber(0);
+      input.disabled = true;
+      inputWrapper.classList.remove('tax-calc-input-wrap-error');
       input.classList.remove('tax-calc-input-error');
-      errorEl.textContent = '';
-      if (hintEl) {
-        hintEl.textContent = def.allUsedMsg || 'All tax deductions have been used.';
-        hintEl.classList.add('tax-calc-field-hint-error');
-        hintEl.hidden = false;
+      errorElement.textContent = '';
+      if (hintElement) {
+        hintElement.textContent = fieldDef.allUsedMsg || 'All tax deductions have been used.';
+        hintElement.classList.add('tax-calc-field-hint-used');
+        hintElement.hidden = false;
       }
     } else {
       input.disabled = false;
-      input.readOnly = false;
-      input.classList.remove('tax-calc-input-frozen');
-      input.maxLength = fmt(Math.round(newMax)).length;
-      input.placeholder = `${fmt(def.min || 0)} - ${fmt(newMax)}`;
-      if (hintEl) {
-        hintEl.textContent = def.hint.replace('{max}', fmt(newMax));
-        hintEl.classList.remove('tax-calc-field-hint-warning');
-        hintEl.classList.remove('tax-calc-field-hint-error');
-        hintEl.hidden = false;
+      input.maxLength = formatNumber(Math.round(newMax)).length;
+      input.placeholder = `${formatNumber(fieldDef.min || 0)} - ${formatNumber(newMax)}`;
+      if (hintElement) {
+        hintElement.textContent = fieldDef.hint.replace('{max}', formatNumber(newMax));
+        hintElement.classList.remove('tax-calc-field-hint-used');
+        hintElement.hidden = false;
       }
-      const val = parseFloat(raw(input.value)) || 0;
+      const val = parseFloat(stripCommas(input.value)) || 0;
       if (val <= newMax) {
-        wrap.classList.remove('tax-calc-input-wrap-error');
+        inputWrapper.classList.remove('tax-calc-input-wrap-error');
         input.classList.remove('tax-calc-input-error');
-        errorEl.textContent = '';
+        errorElement.textContent = '';
       }
     }
   };
@@ -637,7 +557,7 @@ function buildInputField(def, savedValue) {
 // ─── Tooltip Icon ───────────────────────────────────────────────────────────────
 
 function buildTooltipIcon(text) {
-  const wrap = el(`
+  const tooltipContainer = parseHTML(`
     <div class="tax-calc-tooltip-wrap">
       <button type="button" class="tax-calc-tooltip-trigger" aria-label="More information">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -650,8 +570,8 @@ function buildTooltipIcon(text) {
     </div>
   `);
 
-  const trigger = wrap.querySelector('.tax-calc-tooltip-trigger');
-  const tooltip = wrap.querySelector('.tax-calc-tooltip');
+  const trigger = tooltipContainer.querySelector('.tax-calc-tooltip-trigger');
+  const tooltip = tooltipContainer.querySelector('.tax-calc-tooltip');
   let isClicked = false;
 
   const adjustPosition = () => {
@@ -691,7 +611,7 @@ function buildTooltipIcon(text) {
     e.stopPropagation();
     isClicked = !isClicked;
     if (isClicked) {
-      document.querySelectorAll('.tax-calc-tooltip-open').forEach((tip) => {
+      tooltipContainer.closest('.tax-calc')?.querySelectorAll('.tax-calc-tooltip-open').forEach((tip) => {
         if (tip !== tooltip) tip.classList.remove('tax-calc-tooltip-open');
       });
       tooltip.classList.add('tax-calc-tooltip-open');
@@ -701,18 +621,18 @@ function buildTooltipIcon(text) {
     }
   });
 
-  document.addEventListener('click', () => {
+  window.addEventListener('click', () => {
     isClicked = false;
     tooltip.classList.remove('tax-calc-tooltip-open');
   });
 
-  return wrap;
+  return tooltipContainer;
 }
 
 // ─── Section Header ─────────────────────────────────────────────────────────────
 
 function buildSectionHeader(label, tooltipText) {
-  const header = el(`<div class="tax-calc-section-header"><h3 class="tax-calc-section-title">${label}</h3></div>`);
+  const header = parseHTML(`<div class="tax-calc-section-header"><h3 class="tax-calc-section-title">${label}</h3></div>`);
   header.appendChild(buildTooltipIcon(tooltipText));
   return header;
 }
@@ -723,11 +643,11 @@ function buildParentalCheckboxes(fieldDef, savedValue) {
   const {
     selfLabel, spouseLabel, fatherLabel, motherLabel,
   } = fieldDef;
-  const saved = savedValue || 0;
-  const checks = [false, false, false, false];
-  for (let i = 0; i < saved && i < 4; i += 1) checks[i] = true;
+  const checks = Array.isArray(savedValue)
+    ? savedValue
+    : [false, false, false, false];
 
-  return el(`
+  return parseHTML(`
     <div class="tax-calc-parental">
       <div class="tax-calc-parental-group">
         <p class="tax-calc-parental-title">${selfLabel}</p>
@@ -764,62 +684,62 @@ function buildParentalCheckboxes(fieldDef, savedValue) {
 function renderJourney1(block, data, onNext, savedValues = {}) {
   block.innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  const { fields, i18n, cfg } = data;
-  const fieldDefs = getJourney1Fields(fields, i18n, cfg);
+  const { labels } = data;
+  const fieldDefinitions = getJourney1Fields(labels);
 
-  const container = el('<div class="tax-calc tax-calc-step-1"></div>');
-  container.appendChild(buildHeader(i18n));
-  container.appendChild(buildStepIndicator(i18n, 1));
+  const container = parseHTML('<div class="tax-calc tax-calc-step-1"></div>');
+  container.appendChild(buildHeader(labels));
+  container.appendChild(buildStepIndicator(labels, 1));
 
-  const body = el('<div class="tax-calc-body"></div>');
-  const fieldsWrap = el('<div class="tax-calc-fields"></div>');
+  const body = parseHTML('<div class="tax-calc-body"></div>');
+  const fieldsWrap = parseHTML('<div class="tax-calc-fields"></div>');
 
-  fieldDefs.forEach((def) => {
+  fieldDefinitions.forEach((fieldDef) => {
     // ProvidentFund is stored as decimal (0.05); display as percent (5)
-    const savedVal = def.id === 'ProvidentFund' && savedValues[def.id] !== undefined
-      ? savedValues[def.id] * 100
-      : savedValues[def.id];
-    fieldsWrap.appendChild(buildInputField(def, savedVal));
+    const savedVal = fieldDef.id === 'ProvidentFund' && savedValues[fieldDef.id] !== undefined
+      ? savedValues[fieldDef.id] * 100
+      : savedValues[fieldDef.id];
+    fieldsWrap.appendChild(buildInputField(fieldDef, savedVal));
   });
 
   body.appendChild(fieldsWrap);
 
   const notesSection = buildNotes(
-    t(i18n, 'config-notes-title', 'Notes'),
-    [t(i18n, 'common-noteText', '*Enter only taxable income without deducting personal allowances and Social Security contributions.')],
+    getString(labels, 'configNotesTitle', 'Notes'),
+    [getString(labels, 'commonNoteText', '*Enter only taxable income without deducting personal allowances and Social Security contributions.')],
   );
   notesSection.classList.add('tax-calc-notes-step-1');
   body.appendChild(notesSection);
 
   container.appendChild(body);
 
-  const footer = el(`
+  const footer = parseHTML(`
     <div class="tax-calc-footer">
-      <button type="button" class="tax-calc-btn tax-calc-btn-primary">${t(i18n, 'buttons-nextButton', 'Next')}</button>
+      <button type="button" class="tax-calc-btn tax-calc-btn-primary">${getString(labels, 'buttonsNextButton', 'Next')}</button>
     </div>
   `);
   container.appendChild(footer);
   block.appendChild(container);
 
-  const primaryBtn = footer.querySelector('.tax-calc-btn-primary');
-  const syncBtnState = () => { primaryBtn.disabled = !!block.querySelector('.tax-calc-field-error:not(:empty)'); };
-  container.addEventListener('input', syncBtnState);
+  const primaryButton = footer.querySelector('.tax-calc-btn-primary');
+  const syncButtonState = () => { primaryButton.disabled = !!block.querySelector('.tax-calc-field-error:not(:empty)'); };
+  container.addEventListener('input', syncButtonState);
 
   footer.querySelector('.tax-calc-btn-primary').addEventListener('click', async (e) => {
-    const btn = e.currentTarget;
+    const button = e.currentTarget;
     let valid = true;
 
-    fieldDefs.forEach((def) => {
-      const input = block.querySelector(`#tc-${def.id}`);
-      const wrap = input.closest('.tax-calc-input-wrap');
-      const errorEl = block.querySelector(`#tc-err-${def.id}`);
-      const val = parseFloat(raw(input.value)) || 0;
+    fieldDefinitions.forEach((fieldDef) => {
+      const input = block.querySelector(`#tc-${fieldDef.id}`);
+      const inputWrapper = input.closest('.tax-calc-input-wrap');
+      const errorElement = block.querySelector(`#tc-err-${fieldDef.id}`);
+      const val = parseFloat(stripCommas(input.value)) || 0;
 
-      if (val > def.max) {
-        const msg = (def.errorMsg || 'Maximum up to {max}').replace('{max}', fmt(def.max));
-        wrap.classList.add('tax-calc-input-wrap-error');
+      if (val > fieldDef.max) {
+        const msg = (fieldDef.errorMsg || 'Maximum up to {max}').replace('{max}', formatNumber(fieldDef.max));
+        inputWrapper.classList.add('tax-calc-input-wrap-error');
         input.classList.add('tax-calc-input-error');
-        errorEl.textContent = msg;
+        errorElement.textContent = msg;
         valid = false;
       }
     });
@@ -827,13 +747,13 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
     if (!valid) return;
 
     const values = {};
-    fieldDefs.forEach((def) => {
-      const input = block.querySelector(`#tc-${def.id}`);
-      const val = parseFloat(raw(input.value)) || 0;
-      values[def.id] = val * def.factor;
+    fieldDefinitions.forEach((fieldDef) => {
+      const input = block.querySelector(`#tc-${fieldDef.id}`);
+      const val = parseFloat(stripCommas(input.value)) || 0;
+      values[fieldDef.id] = val * fieldDef.factor;
     });
 
-    btn.classList.add('tax-calc-btn-loading');
+    button.classList.add('tax-calc-btn-loading');
 
     try {
       const payload = {
@@ -852,18 +772,18 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
         Donate: 0,
         Other: 0,
       };
-      const resp = await fetch(data.apiCalculateTax, {
+      const response = await fetch(data.apiCalculateTax, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      if (!resp.ok) throw new Error('API error');
-      const result = await resp.json();
+      if (!response.ok) throw new Error('API error');
+      const result = await response.json();
       onNext(values, result);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Tax calculator API error:', err);
-      btn.classList.remove('tax-calc-btn-loading');
+      button.classList.remove('tax-calc-btn-loading');
     }
   });
 }
@@ -875,51 +795,51 @@ const COMBINED_INSURANCE_MAX = 100000;
 function renderJourney2(block, data, state, onBack, onCalculate) {
   block.innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  const { fields, i18n } = data;
+  const { labels } = data;
   const { apiResponse, journey2 = {} } = state;
-  const groups = getJourney2Groups(fields, i18n, apiResponse);
+  const groups = getJourney2Groups(labels, apiResponse);
 
-  const container = el('<div class="tax-calc tax-calc-step-2"></div>');
-  container.appendChild(buildHeader(i18n));
-  container.appendChild(buildStepIndicator(i18n, 2));
+  const container = parseHTML('<div class="tax-calc tax-calc-step-2"></div>');
+  container.appendChild(buildHeader(labels));
+  container.appendChild(buildStepIndicator(labels, 2));
 
-  const body = el('<div class="tax-calc-body"></div>');
+  const body = parseHTML('<div class="tax-calc-body"></div>');
 
   groups.forEach((group) => {
     body.appendChild(buildSectionHeader(group.label, group.tooltip));
 
-    group.fields.forEach((def) => {
-      if (def.type === 'checkbox') {
-        body.appendChild(buildParentalCheckboxes(def, journey2[def.id]));
+    group.fields.forEach((fieldDef) => {
+      if (fieldDef.type === 'checkbox') {
+        body.appendChild(buildParentalCheckboxes(fieldDef, journey2[fieldDef.id]));
       } else {
-        const savedVal = journey2[def.id] !== undefined ? journey2[def.id] : null;
-        body.appendChild(buildInputField(def, savedVal));
+        const savedVal = journey2[fieldDef.id] !== undefined ? journey2[fieldDef.id] : null;
+        body.appendChild(buildInputField(fieldDef, savedVal));
       }
     });
   });
 
   body.appendChild(buildNotes(
-    t(i18n, 'config-notes-title', 'Notes'),
+    getString(labels, 'configNotesTitle', 'Notes'),
     [
-      t(i18n, 'config-notes-taxNote', '• Life insurance premiums, pension insurance premiums, health insurance premiums, RMF, Thai ESG, and donations must not exceed the allowable personal income tax deduction limits, as specified by the Revenue Department.'),
-      t(i18n, 'config-notes-thaiEsgNote', '• If you have invested in Thai ESGX, please enter the amount in the "Other" field. The entered amount must comply with the conditions as specified by the Revenue Department.'),
+      getString(labels, 'configNotesTaxNote', '• Life insurance premiums, pension insurance premiums, health insurance premiums, RMF, Thai ESG, and donations must not exceed the allowable personal income tax deduction limits, as specified by the Revenue Department.'),
+      getString(labels, 'configNotesThaiEsgNote', '• If you have invested in Thai ESGX, please enter the amount in the "Other" field. The entered amount must comply with the conditions as specified by the Revenue Department.'),
     ],
   ));
 
   container.appendChild(body);
 
-  const footer = el(`
+  const footer = parseHTML(`
     <div class="tax-calc-footer">
-      <button type="button" class="tax-calc-btn tax-calc-btn-outline">${t(i18n, 'buttons-backButton', 'Back')}</button>
-      <button type="button" class="tax-calc-btn tax-calc-btn-primary">${t(i18n, 'buttons-calculateButton', 'Calculate')}</button>
+      <button type="button" class="tax-calc-btn tax-calc-btn-outline">${getString(labels, 'buttonsBackButton', 'Back')}</button>
+      <button type="button" class="tax-calc-btn tax-calc-btn-primary">${getString(labels, 'buttonsCalculateButton', 'Calculate')}</button>
     </div>
   `);
   container.appendChild(footer);
   block.appendChild(container);
 
-  const j2PrimaryBtn = footer.querySelector('.tax-calc-btn-primary');
-  const syncJ2BtnState = () => { j2PrimaryBtn.disabled = !!block.querySelector('.tax-calc-field-error:not(:empty)'); };
-  container.addEventListener('input', syncJ2BtnState);
+  const step2PrimaryButton = footer.querySelector('.tax-calc-btn-primary');
+  const syncStep2ButtonState = () => { step2PrimaryButton.disabled = !!block.querySelector('.tax-calc-field-error:not(:empty)'); };
+  container.addEventListener('input', syncStep2ButtonState);
 
   // Wire Insure + HealthInsure combined max constraint
   const insureField = block.querySelector('[data-id="Insure"]');
@@ -929,40 +849,40 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
 
   if (insureInput && healthInsureInput) {
     insureInput.addEventListener('input', () => {
-      const val = parseFloat(raw(insureInput.value)) || 0;
+      const val = parseFloat(stripCommas(insureInput.value)) || 0;
       const newMax = Math.min(apiResponse.MaxHealthInsure, COMBINED_INSURANCE_MAX - val);
       if (healthInsureField?.updateMax) healthInsureField.updateMax(Math.max(0, newMax));
-      syncJ2BtnState();
+      syncStep2ButtonState();
     });
 
     healthInsureInput.addEventListener('input', () => {
-      const val = parseFloat(raw(healthInsureInput.value)) || 0;
+      const val = parseFloat(stripCommas(healthInsureInput.value)) || 0;
       const newMax = Math.min(apiResponse.MaxInsure, COMBINED_INSURANCE_MAX - val);
       if (insureField?.updateMax) insureField.updateMax(Math.max(0, newMax));
-      syncJ2BtnState();
+      syncStep2ButtonState();
     });
   }
 
   footer.querySelector('.tax-calc-btn-outline').addEventListener('click', onBack);
 
   footer.querySelector('.tax-calc-btn-primary').addEventListener('click', async (e) => {
-    const btn = e.currentTarget;
+    const button = e.currentTarget;
     let valid = true;
 
     groups.forEach((group) => {
-      group.fields.forEach((def) => {
-        if (def.type === 'checkbox') return;
-        const input = block.querySelector(`#tc-${def.id}`);
+      group.fields.forEach((fieldDef) => {
+        if (fieldDef.type === 'checkbox') return;
+        const input = block.querySelector(`#tc-${fieldDef.id}`);
         if (!input) return;
-        const wrap = input.closest('.tax-calc-input-wrap');
-        const errorEl = block.querySelector(`#tc-err-${def.id}`);
-        const val = parseFloat(raw(input.value)) || 0;
+        const inputWrapper = input.closest('.tax-calc-input-wrap');
+        const errorElement = block.querySelector(`#tc-err-${fieldDef.id}`);
+        const val = parseFloat(stripCommas(input.value)) || 0;
 
-        if (val > def.max) {
-          const msg = (def.errorMsg || 'Maximum up to {max}').replace('{max}', fmt(def.max));
-          wrap.classList.add('tax-calc-input-wrap-error');
+        if (val > fieldDef.max) {
+          const msg = (fieldDef.errorMsg || 'Maximum up to {max}').replace('{max}', formatNumber(fieldDef.max));
+          inputWrapper.classList.add('tax-calc-input-wrap-error');
           input.classList.add('tax-calc-input-error');
-          errorEl.textContent = msg;
+          errorElement.textContent = msg;
           valid = false;
         }
       });
@@ -972,17 +892,18 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
 
     const values = {};
     groups.forEach((group) => {
-      group.fields.forEach((def) => {
-        if (def.type === 'checkbox') {
-          values[def.id] = block.querySelectorAll('.tax-calc-parental .tax-calc-checkbox:checked').length;
+      group.fields.forEach((fieldDef) => {
+        if (fieldDef.type === 'checkbox') {
+          values[fieldDef.id] = [...block.querySelectorAll('.tax-calc-parental .tax-calc-checkbox')]
+            .map((c) => c.checked);
         } else {
-          const input = block.querySelector(`#tc-${def.id}`);
-          values[def.id] = parseFloat(raw(input.value)) || 0;
+          const input = block.querySelector(`#tc-${fieldDef.id}`);
+          values[fieldDef.id] = parseFloat(stripCommas(input.value)) || 0;
         }
       });
     });
 
-    btn.classList.add('tax-calc-btn-loading');
+    button.classList.add('tax-calc-btn-loading');
 
     try {
       // Robust payload construction: Merge Step 1 (state.journey1) with Step 2 (values)
@@ -997,7 +918,7 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
         // Step 2 values (with correct API mapping)
         ChildBornBefore61: values.NumberOfChildeBornBefore61 || 0,
         ChildBorn61OnWards: values.NumberOfChildeBorn61OnWards || 0,
-        FatherMother: values.FatherMother || 0,
+        FatherMother: (values.FatherMother || []).filter(Boolean).length,
         HomeInterest: values.HomeInterest || 0,
         Insure: values.Insure || 0,
         PensionInsure: values.PensionInsure || 0,
@@ -1034,9 +955,9 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
       // eslint-disable-next-line no-console
       console.error('Tax calculator API error:', err);
       // eslint-disable-next-line no-alert
-      alert(t(i18n, 'errors-calculationFailed', 'Calculation failed. Please try again.'));
+      alert(getString(labels, 'errorsCalculationFailed', 'Calculation failed. Please try again.'));
     } finally {
-      btn.classList.remove('tax-calc-btn-loading');
+      button.classList.remove('tax-calc-btn-loading');
     }
   });
 }
@@ -1046,7 +967,7 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
 function renderJourney3(block, data, state, onBack, onRecalculate) {
   block.innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  const { i18n } = data;
+  const { labels } = data;
   const {
     apiResult1, apiResult2, apiResult3, journey3 = {},
   } = state;
@@ -1057,19 +978,19 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
   const cardTaxRate = Math.round(((apiResult2 || apiResult1).MaxTaxRateStep || 0) * 100);
   const summaryTaxRate = Math.round((apiResult1.MaxTaxRateStep || 0) * 100);
 
-  const container = el('<div class="tax-calc tax-calc-results tax-calc-step-3"></div>');
-  container.appendChild(buildHeader(i18n));
-  container.appendChild(buildStepIndicator(i18n, 3));
+  const container = parseHTML('<div class="tax-calc tax-calc-results tax-calc-step-3"></div>');
+  container.appendChild(buildHeader(labels));
+  container.appendChild(buildStepIndicator(labels, 3));
 
-  const body = el('<div class="tax-calc-body"></div>');
+  const body = parseHTML('<div class="tax-calc-body"></div>');
 
   // ── Tax card(s) ──
-  const bahtUnit = t(i18n, 'common-unit', 'baht');
-  const noTaxLabel = t(i18n, 'results-noTaxPayable', 'No Tax Payable');
-  const taxRateTpl = t(i18n, 'results-taxRateLabel', '(Tax rate {rate}%)');
+  const bahtUnit = getString(labels, 'commonUnit', 'baht');
+  const noTaxLabel = getString(labels, 'resultsNoTaxPayable', 'No Tax Payable');
+  const taxRateTpl = getString(labels, 'resultsTaxRateLabel', '(Tax rate {rate}%)');
 
   if (noTax) {
-    body.appendChild(el(`
+    body.appendChild(parseHTML(`
       <div class="tax-calc-no-tax">
         <p class="tax-calc-no-tax-text">${noTaxLabel}</p>
       </div>
@@ -1080,32 +1001,32 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
     const newTaxRate = Math.round((apiResult3.MaxTaxRateStep || 0) * 100);
     const cardRateStr = taxRateTpl.replace('{rate}', cardTaxRate);
     const newRateStr = taxRateTpl.replace('{rate}', newTaxRate);
-    const savedLabel = t(i18n, 'results-taxSavedLabel', 'Saved');
-    body.appendChild(el(`
+    const savedLabel = getString(labels, 'resultsTaxSavedLabel', 'Saved');
+    body.appendChild(parseHTML(`
       <div class="tax-calc-tax-cards tax-calc-tax-cards-two">
         <div class="tax-calc-tax-card-wrap">
           <div class="tax-calc-tax-card tax-calc-tax-card-original">
-            <p class="tax-calc-tax-card-title">${t(i18n, 'results-taxToBePaidOriginalLabel', 'Tax payable')}</p>
+            <p class="tax-calc-tax-card-title">${getString(labels, 'resultsTaxToBePaidOriginalLabel', 'Tax payable')}</p>
             <div class="tax-calc-tax-card-saved tax-calc-tax-card-saved-placeholder" aria-hidden="true">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" stroke="#2DCD73"/>
               </svg>
               <p></p>
             </div>
-            <p class="tax-calc-tax-card-amount">${fmt(taxPayment)} <span class="tax-calc-tax-card-unit">${bahtUnit}</span></p>
+            <p class="tax-calc-tax-card-amount">${formatNumber(taxPayment)} <span class="tax-calc-tax-card-unit">${bahtUnit}</span></p>
           </div>
           <p class="tax-calc-tax-rate">${cardRateStr}</p>
         </div>
         <div class="tax-calc-tax-card-wrap">
           <div class="tax-calc-tax-card tax-calc-tax-card-new">
-            <p class="tax-calc-tax-card-title">${t(i18n, 'results-taxToBePaidNewLabel', 'New tax payable')}</p>
+            <p class="tax-calc-tax-card-title">${getString(labels, 'resultsTaxToBePaidNewLabel', 'New tax payable')}</p>
             <div class="tax-calc-tax-card-saved">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" stroke="#2DCD73"/>
               </svg>
-              <p>${savedLabel} -${fmt(savedAmount)} <span class="tax-calc-tax-card-unit">${bahtUnit}</span></p>
+              <p>${savedLabel} -${formatNumber(savedAmount)} <span class="tax-calc-tax-card-unit">${bahtUnit}</span></p>
             </div>
-            <p class="tax-calc-tax-card-amount">${fmt(newTaxAmount)} <span class="tax-calc-tax-card-unit">${bahtUnit}</span></p>
+            <p class="tax-calc-tax-card-amount">${formatNumber(newTaxAmount)} <span class="tax-calc-tax-card-unit">${bahtUnit}</span></p>
           </div>
           <p class="tax-calc-tax-rate">${newRateStr}</p>
         </div>
@@ -1113,12 +1034,12 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
     `));
   } else {
     const cardRateStr = taxRateTpl.replace('{rate}', cardTaxRate);
-    body.appendChild(el(`
+    body.appendChild(parseHTML(`
       <div class="tax-calc-tax-cards">
         <div class="tax-calc-tax-card-wrap">
           <div class="tax-calc-tax-card tax-calc-tax-card-original">
-            <p class="tax-calc-tax-card-title">${t(i18n, 'results-taxToBePaidLabel', 'Tax payable')}</p>
-            <p class="tax-calc-tax-card-amount">${fmt(taxPayment)} <span class="tax-calc-tax-card-unit">${bahtUnit}</span></p>
+            <p class="tax-calc-tax-card-title">${getString(labels, 'resultsTaxToBePaidLabel', 'Tax payable')}</p>
+            <p class="tax-calc-tax-card-amount">${formatNumber(taxPayment)} <span class="tax-calc-tax-card-unit">${bahtUnit}</span></p>
           </div>
           <p class="tax-calc-tax-rate">${cardRateStr}</p>
         </div>
@@ -1130,24 +1051,24 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
   const savingTax = Math.round(apiResult1.SavingTax || 0);
   const budget = Math.round(apiResult1.Budget || 0);
   const taxPaymentReduce = Math.round(apiResult1.TaxPaymentReduce || 0);
-  const summaryRateTpl = t(i18n, 'results-taxRateRemainLabel', '(The maximum tax base {rate}%)');
+  const summaryRateTpl = getString(labels, 'resultsTaxRateRemainLabel', '(The maximum tax base {rate}%)');
   const summarySubtitle = (noTax || taxPaymentReduce === 0)
     ? noTaxLabel
     : summaryRateTpl.replace('{rate}', summaryTaxRate);
 
-  body.appendChild(el(`
+  body.appendChild(parseHTML(`
     <div class="tax-calc-summary-box">
       <div class="tax-calc-summary-row">
-        <p class="tax-calc-summary-label">${t(i18n, 'results-maxTaxSavingsResult', 'You can save tax up to')}</p>
-        <p class="tax-calc-summary-value"><span>${fmt(savingTax)}</span> <span class="tax-calc-summary-unit">${bahtUnit}</span></p>
+        <p class="tax-calc-summary-label">${getString(labels, 'resultsMaxTaxSavingsResult', 'You can save tax up to')}</p>
+        <p class="tax-calc-summary-value"><span>${formatNumber(savingTax)}</span> <span class="tax-calc-summary-unit">${bahtUnit}</span></p>
       </div>
       <div class="tax-calc-summary-row">
-        <p class="tax-calc-summary-label">${t(i18n, 'results-maxInvestmentSavingsResult', 'By investing only')}</p>
-        <p class="tax-calc-summary-value"><span>${fmt(budget)}</span> <span class="tax-calc-summary-unit">${bahtUnit}</span></p>
+        <p class="tax-calc-summary-label">${getString(labels, 'resultsMaxInvestmentSavingsResult', 'By investing only')}</p>
+        <p class="tax-calc-summary-value"><span>${formatNumber(budget)}</span> <span class="tax-calc-summary-unit">${bahtUnit}</span></p>
       </div>
       <div class="tax-calc-summary-row">
-        <p class="tax-calc-summary-label">${t(i18n, 'results-remainingTaxResult', 'Remaining tax')}</p>
-        <p class="tax-calc-summary-value"><span>${fmt(taxPaymentReduce)}</span> <span class="tax-calc-summary-unit">${bahtUnit}</span></p>
+        <p class="tax-calc-summary-label">${getString(labels, 'resultsRemainingTaxResult', 'Remaining tax')}</p>
+        <p class="tax-calc-summary-value"><span>${formatNumber(taxPaymentReduce)}</span> <span class="tax-calc-summary-unit">${bahtUnit}</span></p>
       </div>
       <p class="tax-calc-summary-subtitle">${summarySubtitle}</p>
     </div>
@@ -1155,34 +1076,34 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
 
   // ── Invest table (only when tax is payable) ──
   const rmfPensionMax = (apiResult1.MaxRMF || 0) + (apiResult1.MaxInsure60 || 0);
-  const notesEl = buildNotes(
-    t(i18n, 'config-notes-title', 'Notes'),
+  const notesElement = buildNotes(
+    getString(labels, 'configNotesTitle', 'Notes'),
     [
-      t(i18n, 'config-notes-investmentCalculation', 'Calculate the maximum amount that you can invest according to the conditions of the Revenue Department.'),
-      t(i18n, 'config-notes-rmfAndPension', `* The combined amount of RMF and pension insurance premiums must not exceed ${fmt(rmfPensionMax)} baht`).replace('{combinedRMFPensionMax}', fmt(rmfPensionMax)),
-      t(i18n, 'config-notes-lifeAndHealthInsurance', `** The combined amount of life insurance premiums and health insurance premiums must not exceed ${fmt(COMBINED_INSURANCE_MAX)} baht`).replace('{combinedLifeHealthMax}', fmt(COMBINED_INSURANCE_MAX)),
-      t(i18n, 'config-notes-thaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${fmt(apiResult1.MaxESG)} baht whichever is lower`).replace('{thaiEsgMax}', fmt(apiResult1.MaxESG)),
+      getString(labels, 'configNotesInvestmentCalculation', 'Calculate the maximum amount that you can invest according to the conditions of the Revenue Department.'),
+      getString(labels, 'configNotesRmfAndPension', `* The combined amount of RMF and pension insurance premiums must not exceed ${formatNumber(rmfPensionMax)} baht`).replace('{combinedRMFPensionMax}', formatNumber(rmfPensionMax)),
+      getString(labels, 'configNotesLifeAndHealthInsurance', `** The combined amount of life insurance premiums and health insurance premiums must not exceed ${formatNumber(COMBINED_INSURANCE_MAX)} baht`).replace('{combinedLifeHealthMax}', formatNumber(COMBINED_INSURANCE_MAX)),
+      getString(labels, 'configNotesThaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${formatNumber(apiResult1.MaxESG)} baht whichever is lower`).replace('{thaiEsgMax}', formatNumber(apiResult1.MaxESG)),
     ],
   );
 
   if (!noTax) {
-    const investFieldDefs = getJourney3InvestFields(apiResult1, i18n);
+    const investFieldDefs = getJourney3InvestFields(apiResult1, labels);
 
-    body.appendChild(el(`
+    body.appendChild(parseHTML(`
       <div class="tax-calc-invest-heading">
-        <h2 class="tax-calc-invest-title">${t(i18n, 'results-chooseMoreInvestmentLabel', 'Save more on tax by investing or buying insurance')}</h2>
+        <h2 class="tax-calc-invest-title">${getString(labels, 'resultsChooseMoreInvestmentLabel', 'Save more on tax by investing or buying insurance')}</h2>
       </div>
     `));
 
-    const tableWrap = el('<div class="tax-calc-invest-table"></div>');
-    tableWrap.appendChild(el(`
+    const tableWrap = parseHTML('<div class="tax-calc-invest-table"></div>');
+    tableWrap.appendChild(parseHTML(`
       <div class="tax-calc-invest-header">
-        <div class="tax-calc-invest-header-cell">${t(i18n, 'results-investmentAmountLabel', 'Additional investment or insurance (baht)')}</div>
-        <div class="tax-calc-invest-header-cell">${t(i18n, 'results-totalInvestmentLabel', 'Total amount for each item (baht)')}</div>
+        <div class="tax-calc-invest-header-cell">${getString(labels, 'resultsInvestmentAmountLabel', 'Additional investment or insurance (baht)')}</div>
+        <div class="tax-calc-invest-header-cell">${getString(labels, 'resultsTotalInvestmentLabel', 'Total amount for each item (baht)')}</div>
       </div>
     `));
 
-    const j3ToJ2 = {
+    const journey3ToJourney2Map = {
       InputRMF: 'ReduceRMF',
       InputESG: 'ReduceESG',
       InputInsure: 'Insure',
@@ -1190,89 +1111,92 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
       InputInsure60: 'PensionInsure',
     };
 
-    const fieldEls = {};
-    const totalEls = {};
+    const fieldElements = {};
+    const totalElements = {};
 
-    investFieldDefs.forEach((def) => {
-      const j2Key = j3ToJ2[def.id];
-      const j2Val = state.journey2?.[j2Key] ?? 0;
-      const savedJ3Val = journey3[def.id] !== undefined ? journey3[def.id] : null;
-      const inputField = buildInputField(def, savedJ3Val);
-      const j3Val = parseFloat(raw(inputField.querySelector('.tax-calc-input')?.value || '0')) || 0;
-      const initialTotal = j2Val + j3Val;
+    investFieldDefs.forEach((fieldDef) => {
+      const journey2Key = journey3ToJourney2Map[fieldDef.id];
+      const journey2Value = state.journey2?.[journey2Key] ?? 0;
+      const savedJourney3Val = journey3[fieldDef.id] !== undefined ? journey3[fieldDef.id] : null;
+      const inputField = buildInputField(fieldDef, savedJourney3Val);
+      const journey3Value = parseFloat(stripCommas(inputField.querySelector('.tax-calc-input')?.value || '0')) || 0;
+      const initialTotal = journey2Value + journey3Value;
 
-      const row = el(`
+      const row = parseHTML(`
         <div class="tax-calc-invest-row">
           <div class="tax-calc-invest-input-col"></div>
-          <div class="tax-calc-invest-total-col"><span class="tax-calc-invest-total">${fmt(initialTotal)}</span></div>
+          <div class="tax-calc-invest-total-col"><span class="tax-calc-invest-total">${formatNumber(initialTotal)}</span></div>
         </div>
       `);
       row.querySelector('.tax-calc-invest-input-col').appendChild(inputField);
       tableWrap.appendChild(row);
 
-      fieldEls[def.id] = inputField;
-      totalEls[def.id] = row.querySelector('.tax-calc-invest-total');
+      fieldElements[fieldDef.id] = inputField;
+      totalElements[fieldDef.id] = row.querySelector('.tax-calc-invest-total');
     });
 
     body.appendChild(tableWrap);
-    body.appendChild(notesEl);
+    body.appendChild(notesElement);
     container.appendChild(body);
 
-    const hasJ3Values = investFieldDefs.some((def) => (journey3[def.id] || 0) > 0);
-    const footer = el(`
+    const hasJourney3Values = investFieldDefs.some((fieldDef) => (journey3[fieldDef.id] || 0) > 0);
+    const footer = parseHTML(`
       <div class="tax-calc-footer">
-        <button type="button" class="tax-calc-btn tax-calc-btn-outline">${t(i18n, 'buttons-backButton', 'Back')}</button>
-        <button type="button" class="tax-calc-btn tax-calc-btn-primary" id="tc-recalculate" ${hasJ3Values ? '' : 'disabled'}>${t(i18n, 'buttons-recalculateButton', 'Recalculate')}</button>
+        <button type="button" class="tax-calc-btn tax-calc-btn-outline">${getString(labels, 'buttonsBackButton', 'Back')}</button>
+        <button type="button" class="tax-calc-btn tax-calc-btn-primary" id="tc-recalculate" ${hasJourney3Values ? '' : 'disabled'}>${getString(labels, 'buttonsRecalculateButton', 'Recalculate')}</button>
       </div>
     `);
     container.appendChild(footer);
     block.appendChild(container);
 
-    // Live total column updates (J2 base + J3 input)
-    investFieldDefs.forEach((def) => {
-      const inp = fieldEls[def.id]?.querySelector('.tax-calc-input');
-      if (!inp) return;
-      const j2Base = state.journey2?.[j3ToJ2[def.id]] ?? 0;
-      inp.addEventListener('input', () => {
-        const j3Val = parseFloat(raw(inp.value)) || 0;
-        if (totalEls[def.id]) totalEls[def.id].textContent = fmt(j2Base + j3Val);
+    // Live total column updates (journey2 base + journey3 input)
+    investFieldDefs.forEach((fieldDef) => {
+      const inputEl = fieldElements[fieldDef.id]?.querySelector('.tax-calc-input');
+      if (!inputEl) return;
+      const journey2Base = state.journey2?.[journey3ToJourney2Map[fieldDef.id]] ?? 0;
+      inputEl.addEventListener('input', () => {
+        const journey3Value = parseFloat(stripCommas(inputEl.value)) || 0;
+        if (totalElements[fieldDef.id]) {
+          totalElements[fieldDef.id].textContent = formatNumber(journey2Base + journey3Value);
+        }
       });
     });
 
     // InputInsure + InputHealthInsure combined max constraint.
-    // The 100k cap spans J2 + J3 together, so remaining room for J3 inputs is:
-    // COMBINED_INSURANCE_MAX - J2_Insure - J2_HealthInsure
-    const j2InsureBase = state.journey2?.Insure ?? 0;
-    const j2HealthBase = state.journey2?.HealthInsure ?? 0;
-    const remainingCombined = Math.max(0, COMBINED_INSURANCE_MAX - j2InsureBase - j2HealthBase);
+    // The 100k cap spans journey2 + journey3 together, so remaining room for journey3 inputs is:
+    // COMBINED_INSURANCE_MAX - journey2_Insure - journey2_HealthInsure
+    const journey2InsureBase = state.journey2?.Insure ?? 0;
+    const journey2HealthBase = state.journey2?.HealthInsure ?? 0;
+    const usedInsuranceCap = journey2InsureBase + journey2HealthBase;
+    const remainingCombined = Math.max(0, COMBINED_INSURANCE_MAX - usedInsuranceCap);
 
-    const insureField = fieldEls.InputInsure;
-    const healthField = fieldEls.InputHealthInsure;
+    const insureField = fieldElements.InputInsure;
+    const healthField = fieldElements.InputHealthInsure;
     const insureInput = insureField?.querySelector('#tc-InputInsure');
     const healthInput = healthField?.querySelector('#tc-InputHealthInsure');
 
     // Enable/disable recalculate
-    const recalcBtn = footer.querySelector('#tc-recalculate');
+    const recalculateButton = footer.querySelector('#tc-recalculate');
     const checkRecalcEnabled = () => {
       const hasErrors = !!block.querySelector('.tax-calc-invest-table .tax-calc-field-error:not(:empty)');
-      const anyNonZero = investFieldDefs.some((def) => {
-        const inp = block.querySelector(`#tc-${def.id}`);
-        return inp && (parseFloat(raw(inp.value)) || 0) > 0;
+      const anyNonZero = investFieldDefs.some((fieldDef) => {
+        const inputEl = block.querySelector(`#tc-${fieldDef.id}`);
+        return inputEl && (parseFloat(stripCommas(inputEl.value)) || 0) > 0;
       });
-      recalcBtn.disabled = !anyNonZero || hasErrors;
+      recalculateButton.disabled = !anyNonZero || hasErrors;
     };
-    block.querySelectorAll('.tax-calc-invest-table .tax-calc-input').forEach((inp) => {
-      inp.addEventListener('input', checkRecalcEnabled);
+    block.querySelectorAll('.tax-calc-invest-table .tax-calc-input').forEach((inputEl) => {
+      inputEl.addEventListener('input', checkRecalcEnabled);
     });
 
     if (insureInput && healthInput) {
       const syncHealthMax = () => {
-        const insureVal = parseFloat(raw(insureInput.value)) || 0;
+        const insureVal = parseFloat(stripCommas(insureInput.value)) || 0;
         const cap = Math.min(apiResult1.MaxHealthInsure, remainingCombined - insureVal);
         if (healthField?.updateMax) healthField.updateMax(Math.max(0, cap));
       };
       const syncInsureMax = () => {
-        const healthVal = parseFloat(raw(healthInput.value)) || 0;
+        const healthVal = parseFloat(stripCommas(healthInput.value)) || 0;
         const cap = Math.min(apiResult1.MaxInsure, remainingCombined - healthVal);
         if (insureField?.updateMax) insureField.updateMax(Math.max(0, cap));
       };
@@ -1280,52 +1204,53 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
       insureInput.addEventListener('input', () => { syncHealthMax(); checkRecalcEnabled(); });
       healthInput.addEventListener('input', () => { syncInsureMax(); checkRecalcEnabled(); });
 
-      // Apply immediately so pre-populated J2 values are reflected on first render
+      // Apply immediately so pre-populated journey2 values are reflected on first render
       syncHealthMax();
       syncInsureMax();
     }
 
     footer.querySelector('.tax-calc-btn-outline').addEventListener('click', onBack);
 
-    recalcBtn.addEventListener('click', async () => {
-      const j3Values = {};
-      investFieldDefs.forEach((def) => {
-        const inp = block.querySelector(`#tc-${def.id}`);
-        j3Values[def.id] = parseFloat(raw(inp?.value || '0')) || 0;
+    recalculateButton.addEventListener('click', async () => {
+      const journey3Values = {};
+      investFieldDefs.forEach((fieldDef) => {
+        const inputEl = block.querySelector(`#tc-${fieldDef.id}`);
+        journey3Values[fieldDef.id] = parseFloat(stripCommas(inputEl?.value || '0')) || 0;
       });
 
-      recalcBtn.disabled = true;
+      recalculateButton.disabled = true;
       try {
         const payload = {
           ...state.journey1,
           ...state.journey2,
-          InputRMF: j3Values.InputRMF,
-          InputESG: j3Values.InputESG,
-          InputInsure: j3Values.InputInsure,
-          InputHealthInsure: j3Values.InputHealthInsure,
-          InputInsure60: j3Values.InputInsure60,
+          FatherMother: (state.journey2.FatherMother || []).filter(Boolean).length,
+          InputRMF: journey3Values.InputRMF,
+          InputESG: journey3Values.InputESG,
+          InputInsure: journey3Values.InputInsure,
+          InputHealthInsure: journey3Values.InputHealthInsure,
+          InputInsure60: journey3Values.InputInsure60,
         };
-        const resp = await fetch(data.apiCalculateSaving, {
+        const response = await fetch(data.apiCalculateSaving, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
-        if (!resp.ok) throw new Error('API error');
-        const apiResult3Result = await resp.json();
-        onRecalculate(j3Values, apiResult3Result);
+        if (!response.ok) throw new Error('API error');
+        const apiResult3Result = await response.json();
+        onRecalculate(journey3Values, apiResult3Result);
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error('Tax calculator API error:', err);
-        recalcBtn.disabled = false;
+        recalculateButton.disabled = false;
       }
     });
   } else {
-    body.appendChild(notesEl);
+    body.appendChild(notesElement);
     container.appendChild(body);
 
-    const footer = el(`
+    const footer = parseHTML(`
       <div class="tax-calc-footer">
-        <button type="button" class="tax-calc-btn tax-calc-btn-primary">${t(i18n, 'buttons-backButton', 'Back')}</button>
+        <button type="button" class="tax-calc-btn tax-calc-btn-primary">${getString(labels, 'buttonsBackButton', 'Back')}</button>
       </div>
     `);
     container.appendChild(footer);
@@ -1353,8 +1278,8 @@ export default async function decorate(block) {
 
     const goToJourney3 = () => {
       // eslint-disable-next-line no-use-before-define
-      renderJourney3(block, data, state, goToJourney2, (j3Values, apiResult3) => {
-        state.journey3 = j3Values;
+      renderJourney3(block, data, state, goToJourney2, (journey3Values, apiResult3) => {
+        state.journey3 = journey3Values;
         state.apiResult3 = apiResult3;
         goToJourney3();
       });

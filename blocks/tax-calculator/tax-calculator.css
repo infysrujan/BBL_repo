@@ -203,7 +203,23 @@
   color: var(--bbl-color-system-red);
 }
 
-.tax-calculator .tax-calc-input:disabled {
+.tax-calculator .tax-calc-invest-table .tax-calc-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  text-align: right;
+  font-weight: 400;
+  outline: none;
+  padding: 0;
+  color: var(--bbl-color-black);
+  border: none;
+  box-sizing: border-box;
+  font-size: 0.8125rem;
+}
+
+.tax-calculator .tax-calc-invest-table .tax-calc-input:disabled {
   color: var(--bbl-text-disabled);
   cursor: not-allowed;
 }
@@ -241,6 +257,10 @@
 
 .tax-calculator .tax-calc-field-hint-error {
   color: var(--bbl-color-system-green);
+}
+
+.tax-calculator .tax-calc-field-hint-used {
+  color: var(--bbl-color-grey-40);
 }
 
 /* ── Field error ───────────────────────────────────────────── */
@@ -572,7 +592,6 @@
   background: var(--bbl-color-truthful-blue);
   color: var(--bbl-color-white);
   padding: 0.875rem;
-  height: 5.5rem;
 }
 
 .tax-calculator .tax-calc-tax-card-title {
@@ -589,6 +608,7 @@
 
 .tax-calculator .tax-calc-tax-card-new .tax-calc-tax-card-title {
   color: var(--bbl-color-white);
+  margin-bottom: 1.75rem;
 }
 
 .tax-calculator .tax-calc-tax-card-amount {
@@ -765,22 +785,6 @@
   color: var(--bbl-color-active-blue);
   overflow-wrap: anywhere;
   text-align: center;
-}
-
-.tax-calculator .tax-calc-invest-table .tax-calc-input {
-  flex: 1 1 auto;
-  min-width: 0;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  text-align: right;
-  font-weight: 400;
-  outline: none;
-  padding: 0;
-  color: var(--bbl-color-black);
-  border: none;
-  box-sizing: border-box;
-  font-size: 0.8125rem;
 }
 
 .tax-calculator .tax-calc-invest-table .tax-calc-input::placeholder {
