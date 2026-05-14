@@ -368,44 +368,46 @@ function getProvinceEnumNamesTh() {
 
 
 /**
- * Fetches BBL branch locations for a given Thai province.
+ * Fetches BBL branch locations for a given province.
  * Calls the LocationSearchService endpoint with BRC (Branch) type.
+ * Supports both Thai ('th') and English ('en') language endpoints.
  *
  * @name fetchBranchesByProvince
- * @param {string} province - Thai province name, e.g. "กรุงเทพมหานคร"
+ * @param {string} province - Province name matching the selected language
+ * @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
  * @returns {Array} - Array of branch objects from the API, or [] on error
  *
  * @example
- * // Usage in a Province dropdown's change event (form JSON):
- * {
- *   "fieldType": "drop-down",
- *   "name": "province",
- *   "events": {
- *     "change": [
- *       "$form.branchField.$enum = fetchBranchesByProvince($field.$value).map(b => b.LocationCode)",
- *       "$form.branchField.$enumNames = fetchBranchesByProvince($field.$value).map(b => b.LocationNameTH)"
- *     ]
- *   }
- * }
- *
- * @example
- * // Simplified: store result in a variable first, then set enum + enumNames
+ * // Thai (default) — province value from getProvinceEnumTh
  * {
  *   "events": {
  *     "change": [
  *       "vars.branches = fetchBranchesByProvince($field.$value)",
- *       "$form.branchField.$enum = vars.branches.map(b => b.LocationCode)",
- *       "$form.branchField.$enumNames = vars.branches.map(b => b.LocationNameTH)"
+ *       "$form.branchField.$enum = vars.branches.map(b => b.BranchNo)",
+ *       "$form.branchField.$enumNames = vars.branches.map(b => b.BranchName)"
+ *     ]
+ *   }
+ * }
+ *
+ * @example
+ * // English — province value from getProvinceEnum
+ * {
+ *   "events": {
+ *     "change": [
+ *       "vars.branches = fetchBranchesByProvince($field.$value, 'en')",
+ *       "$form.branchField.$enum = vars.branches.map(b => b.BranchNo)",
+ *       "$form.branchField.$enumNames = vars.branches.map(b => b.BranchName)"
  *     ]
  *   }
  * }
  */
-function fetchBranchesByProvince(province) {
+function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
 
   const baseUrl = 'https://publish-p185039-e1939903.adobeaemcloud.com';
   const encoded = encodeURIComponent(province);
-  const url = `${baseUrl}/api/LocationSearchService/SearchThaiLandThWithLocation/${encoded}/0/0/0/BRC`;
+  const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
+  const url = `${baseUrl}/api/LocationSearchService/${segment}/${encoded}/0/0/0/BRC`;
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', url, false);
@@ -420,6 +422,34 @@ function fetchBranchesByProvince(province) {
 
   const data = JSON.parse(xhr.responseText);
   return Array.isArray(data) ? data : [];
+}
+
+/**
+* Returns BranchNo values for a given province.
+* Maps to enum for branch dropdown.
+*
+* @name getBranchEnum
+* @param {string} province - Province name matching the selected language
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string[]}
+*/
+function getBranchEnum(province, lang = 'th') {
+  const data = fetchBranchesByProvince(province, lang);
+  return data.map((item) => item.BranchNo);
+}
+
+/**
+* Returns BranchName display labels for a given province.
+* Maps to enumNames for branch dropdown.
+*
+* @name getBranchEnumNames
+* @param {string} province - Province name matching the selected language
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string[]}
+*/
+function getBranchEnumNames(province, lang = 'th') {
+  const data = fetchBranchesByProvince(province, lang);
+  return data.map((item) => item.BranchName);
 }
 
 /**
@@ -504,4 +534,6 @@ export {
   addCustomHeader,
   generatePayloadHash,
   fetchBranchesByProvince,
+  getBranchEnum,
+  getBranchEnumNames,
 };
