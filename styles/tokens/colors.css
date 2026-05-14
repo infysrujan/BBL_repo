@@ -52,6 +52,9 @@
   --bbl-color-grey-22: #E5E5E7;
   --bbl-color-grey-23: #919dab;
   --bbl-color-grey-24: #e2e6e9;
+  --bbl-color-grey-25: #919dab;
+  --bbl-color-grey-78: #787878;
+  --bbl-color-grey-152: #dcdcdc;
 
   /* =========================================================================
      BLUE SCALE
@@ -74,6 +77,8 @@
   --bbl-color-blue-130: #002087;
   --bbl-color-blue-140: #4890ff;
   --bbl-color-blue-steel-light: #E6EEF4;
+  --bbl-color-blue-145: #E5EDF4;
+  --bbl-color-blue-222: #E0E6F8;
 
   /* =========================================================================
      RED SCALE
@@ -160,6 +165,7 @@
   --bbl-color-orange-100: #7E330B;
   --bbl-color-orange-110: #401906;
   --bbl-color-orange-120: #2B0F05;
+  --bbl-color-orange-130:#d9534f;
 
   /* =========================================================================
      SEMANTIC COLORS (System Feedback)
@@ -201,6 +207,7 @@
   --bbl-color-white-alpha-60: rgba(255, 255, 255, 0.60);
   --bbl-color-white-alpha-50: rgba(255, 255, 255, 0.5);
   --bbl-color-white-alpha-80: rgba(255, 255, 255, 0.80);
+  --bbl-color-white-alpha-158-70: rgba(158, 158, 158, 0.7);
 
   /* =========================================================================
      SEMANTIC ALIASES (For Easier Use)
@@ -242,5 +249,16 @@
   --bbl-private-gold-86: #EBDCC6;
   --bbl-red-overlay-strong: rgb(70.6% 2% 2% / 45%);
   --bbl-red-overlay-light: rgb(100% 0% 0% / 15%);
+
+  /* =========================================================================
+     COMPONENT UTILITY COLORS
+     Colors used by specific components that have no match in the scale above
+     ========================================================================= */
+
+  --bbl-color-map-bg: #e5ecf3;             /* Locate Us — map area background */
+  --bbl-color-status-open: #67bb7f;        /* Locate Us — branch open status */
+  --bbl-color-status-closed: #e53935;      /* Locate Us — branch closed status */
+  --bbl-color-toast-error: #b85c5c;        /* Locate Us — error toast background */
+  --bbl-color-status-other: #bb6967;       /* Locate Us — branch status non-open */
 }
 

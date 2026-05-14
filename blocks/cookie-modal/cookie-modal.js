@@ -207,64 +207,29 @@ function setupUEBlockRefresh(blockEl) {
   const ueEvents = ['aue:content-patch', 'aue:content-update', 'aue:content-add'];
 
   const handler = async (event) => {
-    const itemResource = event.detail?.request?.target?.resource;
-    const containerResource = event.detail?.request?.target?.container?.resource;
+    const resource = event.detail?.request?.target?.resource
+      || event.detail?.request?.target?.container?.resource;
+    if (!resource) return;
 
     const blockResource = blockEl.getAttribute('data-aue-resource');
     const sectionResource = blockEl.closest('[data-aue-resource]')?.getAttribute('data-aue-resource');
-
-    // Original matching: patch/update on the block or section directly.
-    // Preserves || short-circuit so section-level block additions stay with editor-support.js.
-    const effectiveResource = itemResource || containerResource;
-    const isDirectMatch = effectiveResource === blockResource
-      || effectiveResource === sectionResource;
-
-    // Accordion item added to this block:
-    // target.resource = new child item (not yet in DOM); target.container.resource = this block.
-    const isItemAddToBlock = event.type === 'aue:content-add'
-      && !!containerResource && !!blockResource
-      && containerResource === blockResource
-      && itemResource !== blockResource;
-
-    if (!isDirectMatch && !isItemAddToBlock) return;
+    if (resource !== blockResource && resource !== sectionResource) return;
 
     // Matched — stop editor-support.js from running its insert-then-remove
-    // (causes duplicate blocks) and its premature reload before CDN cache clears.
+    // which causes UE to snapshot both old and new blocks as duplicates.
     ueEvents.forEach((e) => document.removeEventListener(e, handler, { capture: true }));
     event.stopImmediatePropagation();
 
-    // 1. Use the AEM event payload first — the response already embeds the updated
-    //    block HTML (including the new accordion item) with no server round-trip.
-    const updatedContent = event.detail?.response?.updates?.[0]?.content;
-    if (updatedContent) {
-      const parsed = new DOMParser().parseFromString(updatedContent, 'text/html');
-      const newBlock = (blockResource && parsed.querySelector(`[data-aue-resource="${blockResource}"]`))
-        || parsed.querySelector('.cookie-modal');
-      if (newBlock) {
-        blockEl.replaceWith(newBlock);
-        setupUEBlockRefresh(newBlock);
-        return;
-      }
-    }
-
-    // 2. For content-add: CDN edge cache may not be purged yet so a normal fetch
-    //    returns stale HTML. Use a cache-busting URL to force origin to respond.
-    //    For patch/update: normal URL is reliable (CDN purge precedes the event).
-    let fetchUrl = window.location.href;
-    if (event.type === 'aue:content-add') {
-      const u = new URL(window.location.href);
-      u.searchParams.set('_t', Date.now());
-      fetchUrl = u.toString();
-    }
-
+    // Block-level refresh: fetch the current page, extract only the updated
+    // cookie-modal block, and swap it in atomically. No full page reload.
     try {
-      const res = await fetch(fetchUrl, { cache: 'no-store' });
+      const res = await fetch(window.location.href);
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const newBlock = doc.querySelector('.cookie-modal');
       if (newBlock) {
         blockEl.replaceWith(newBlock);
-        setupUEBlockRefresh(newBlock);
+        setupUEBlockRefresh(newBlock); // re-register for subsequent edits
         return;
       }
     } catch {
