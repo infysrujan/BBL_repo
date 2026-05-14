@@ -56,9 +56,14 @@
       "forex-rates",
       "multi-column-tiles",
       "retirement-calculator",
+      "special-fx-rates",
       "promotional-details",
       "promo-card-listing",
-      "top-promotional-cards"
+      "top-promotional-cards",
+      "multi-column-tiles",
+      "stock-ticker",
+      "cookie-alert",
+      "cookie-modal"
     ]
   },
   {
@@ -128,6 +133,12 @@
     "id": "content-insert-cards",
     "components": [
       "content-insert-card"
+    ]
+  },
+  {
+    "id": "cookie-modal",
+    "components": [
+      "cookie-modal-accordion-item"
     ]
   },
   {

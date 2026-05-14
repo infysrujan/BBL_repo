@@ -1,28 +1,25 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
+let blockName = '';
 function buildTile(row, doc) {
   const [
     imgElDesktop,
-    imgElMobile,
-    imgAlt,
     imageLinkDiv,
-    imageLinkTitleDiv,
     titleDiv,
   ] = row.children;
 
   const pictureDesktop = imgElDesktop?.querySelector('picture');
-  const pictureMobile = imgElMobile?.querySelector('picture');
+  const existingAlt = imgElDesktop?.querySelector('img')?.getAttribute('alt') || '';
 
   let pictureHTML = '';
-  if (pictureDesktop || pictureMobile) {
-    const picture = createSmartImage(imgElDesktop, imgElMobile, imgAlt);
+  if (pictureDesktop) {
+    const picture = createSmartImage(imgElDesktop, null, { textContent: existingAlt }, blockName);
     pictureHTML = picture?.outerHTML || '';
   }
 
   const linkAnchor = imageLinkDiv?.querySelector('a');
   const linkHref = linkAnchor?.getAttribute('href') || imageLinkDiv?.textContent?.trim() || '';
-  const linkTitle = imageLinkTitleDiv?.textContent?.trim() || linkAnchor?.getAttribute('title') || '';
   const title = titleDiv?.textContent?.trim() || '';
 
   const tile = doc.createElement('div');
@@ -39,8 +36,8 @@ function buildTile(row, doc) {
     const anchor = doc.createElement('a');
     anchor.href = linkHref;
     anchor.className = 'multi-column-tiles-link';
-    if (linkTitle) anchor.setAttribute('title', linkTitle);
-    anchor.setAttribute('aria-label', title || linkTitle);
+    if (title) anchor.setAttribute('title', title);
+    anchor.setAttribute('aria-label', title);
     anchor.appendChild(imageWrapper);
     tile.appendChild(anchor);
   } else {
@@ -50,6 +47,11 @@ function buildTile(row, doc) {
   const titleEl = doc.createElement('h2');
   titleEl.className = 'multi-column-tiles-title';
   titleEl.textContent = title;
+
+  const separatorEl = doc.createElement('span');
+  separatorEl.className = 'multi-column-tiles-separator';
+  titleEl.appendChild(separatorEl);
+
   tile.appendChild(titleEl);
 
   return tile;
@@ -59,6 +61,7 @@ export default function decorate(block) {
   const doc = block.ownerDocument;
   const rows = [...block.children].slice(0, 4);
 
+  blockName = block.getAttribute('data-block-name');
   const wrapper = doc.createElement('div');
   wrapper.className = `multi-column-tiles-wrapper tiles-count-${rows.length}`;
 
