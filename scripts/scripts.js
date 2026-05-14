@@ -59,7 +59,7 @@ const isEnabled = !window.location.search.includes('martech=off');
  */
 // TODO: Update BBL's Dev, Stage and Prod datastream IDs here
 const dataStreamConfig = {
-  dev: '301f247f-d644-4557-a2ec-f12fe5ca37a1',
+  dev: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
   stage: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
   prod: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
 };
@@ -67,10 +67,10 @@ const dataStreamConfig = {
 // TODO: Update BBL's Launch script URLs here
 const launchConfig = {
   dev: [
-    'https://assets.adobedtm.com/058c753ec3a9/461484a33d0b/launch-ba107e8e9270-development.min.js',
+    'https://assets.adobedtm.com/0e4712067e10/8a225ec96e9d/launch-f3f44b9a5684-development.min.js',
   ],
   stage: [
-    'https://assets.adobedtm.com/058c753ec3a9/461484a33d0b/launch-ba107e8e9270-development.min.js',
+    'https://assets.adobedtm.com/0e4712067e10/8a225ec96e9d/launch-f3f44b9a5684-development.min.js',
   ],
   prod: [],
 };
