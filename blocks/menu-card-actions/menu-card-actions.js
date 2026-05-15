@@ -129,6 +129,7 @@ function createMenuCardItem(cardElement, doc) {
     dropdownLinksDiv,
     isCardClickableDiv,
     cardLinkDiv,
+    cardLinkTitleDiv,
     enableOverlayModalDiv,
     overlayHrefDiv,
   ] = [...cardElement.children];
@@ -149,7 +150,7 @@ function createMenuCardItem(cardElement, doc) {
   const cardLinkAnchor = cardLinkDiv?.querySelector('a');
   const cardLinkHref = cardLinkAnchor?.href || '';
   const cardLinkTarget = cardLinkAnchor?.target || '';
-  const cardLinkTitle = cardLinkAnchor?.title || '';
+  const cardLinkTitle = cardLinkTitleDiv?.textContent?.trim() || cardLinkAnchor?.title || '';
   const enableOverlayModal = parseBooleanFlag(enableOverlayModalDiv?.textContent, true);
   const overlayHref = getOverlayHref(overlayHrefDiv);
 
