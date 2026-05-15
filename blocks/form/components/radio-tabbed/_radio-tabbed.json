@@ -8,8 +8,18 @@
           "page": {
             "resourceType": "core/fd/components/form/radiobutton/v1/radiobutton",
             "template": {
-              "name": "Radio Tabbed",
-              "model": "radio-tabbed"
+              "jcr:title": "Radio Tabbed",
+              "fieldType": "radio-group",
+              "fd:viewType": "radio-tabbed",
+              "enum": [
+                "0",
+                "1"
+              ],
+              "enumNames": [
+                "Item 1",
+                "Item 2"
+              ],
+              "orientation": "horizontal"
             }
           }
         }
