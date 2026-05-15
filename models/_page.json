@@ -68,6 +68,38 @@
           "value": true,
           "label": "Breadcrumb",
           "valueType": "boolean"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "ogImage",
+          "label": "OG Image",
+          "description": "Select the image asset to use for the Open Graph og:image meta tag."
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "ogImageSmartCrop",
+          "label": "OG Image Smart Crop",
+          "description": "Optional Smart Crop profile to apply when building the og:image delivery URL.",
+          "options": [
+            {
+              "name": "None",
+              "value": ""
+            },
+            {
+              "name": "Large",
+              "value": "Large"
+            },
+            {
+              "name": "Medium",
+              "value": "Medium"
+            },
+            {
+              "name": "Small",
+              "value": "Small"
+            }
+          ]
         }
       ]
     }
