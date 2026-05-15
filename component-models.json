@@ -8907,7 +8907,27 @@
         "component": "aem-content",
         "name": "cardLink",
         "label": "Card Link",
-        "description": "Destination URL when the card is clicked"
+        "description": "Destination URL when the card is clicked",
+        "condition": {
+          "!!": [
+            {
+              "var": "isCardClickable"
+            }
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "cardLinkTitle",
+        "label": "Card Link Title",
+        "description": "Accessibility title attribute for the clickable card (optional)",
+        "condition": {
+          "!!": [
+            {
+              "var": "isCardClickable"
+            }
+          ]
+        }
       },
       {
         "component": "boolean",
@@ -8915,13 +8935,20 @@
         "label": "Enable Overlay Modal",
         "description": "Open card link in a modal overlay instead of navigating",
         "valueType": "boolean",
-        "value": true
+        "value": false
       },
       {
-        "component": "text",
+        "component": "aem-content",
         "name": "overlayHref",
         "label": "Overlay Fragment Path",
-        "description": "Path to the fragment shown in the modal overlay"
+        "description": "Path to the fragment shown in the modal overlay",
+        "condition": {
+          "!!": [
+            {
+              "var": "enableOverlayModal"
+            }
+          ]
+        }
       }
     ]
   },
