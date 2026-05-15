@@ -355,26 +355,29 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
 
 /**
  * Block row mapping (matches _mf-comparator-results.json model):
- *   Row 0: description (richtext — intro text above the comparison grid)
+ *   Row 0: notes (richtext — notes text displayed below the comparison grid)
  */
 export default async function decorate(block) {
   const doc = block.ownerDocument;
   const ph = await fetchPlaceholders();
   const labels = {
-    readMore: ph.mfReadMore || 'Read more',
-    description: ph.mfCompareDescription || 'Description',
-    fundType: ph.mfCompareFundType || 'Fund Type',
-    noResults: ph.mfNoResultsFound || 'No results found',
+    readMore: ph.mfReadMoreText,
+    description: ph.mfCompareDescription,
+    fundType: ph.mfCompareFundType,
+    noResults: ph.mfNoResultsText,
   };
 
-  const descriptionRow = block.children[0];
-  if (descriptionRow) {
-    descriptionRow.classList.add('mfcr-description');
-  }
+  const notesRow = block.children[0];
 
   const innerContainer = doc.createElement('div');
   innerContainer.className = 'inner-container';
   block.appendChild(innerContainer);
+
+  // Notes appear below the comparison grid
+  if (notesRow) {
+    notesRow.classList.add('mfcr-notes');
+    block.appendChild(notesRow);
+  }
 
   const container = doc.createElement('div');
   container.className = 'mfcr-grid';

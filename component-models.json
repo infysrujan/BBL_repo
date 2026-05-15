@@ -8836,9 +8836,9 @@
     "fields": [
       {
         "component": "richtext",
-        "name": "description",
-        "label": "Description",
-        "description": "Introductory text displayed above the MF comparison grid",
+        "name": "notes",
+        "label": "Notes",
+        "description": "Notes text displayed below the MF comparison grid",
         "valueType": "string"
       }
     ]

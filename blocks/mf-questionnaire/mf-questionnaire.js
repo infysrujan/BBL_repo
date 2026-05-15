@@ -2,12 +2,26 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 import { openModal, closeModal, createModal } from '../../scripts/utils/modal-helpers.js';
 import buildThumbSquareList from '../../scripts/utils/thumb-square-list.js';
 
-// ── sessionStorage keys (shared with mf-comparator-results) ───────────────────
-const SESSION = {
-  riskLevel: 'mfRiskLevel',
-  fxRisk: 'mfFxRisk',
-  taxBenefit: 'mfTaxBenefit',
-};
+// ── Survey answers cookie ──────────────────────────────────────────────────────
+// All three questionnaire answers are stored as one JSON cookie: mfSurveyAnswers
+// { riskLevel: 'low', fxRisk: 'yes', taxBenefit: 'yes' }
+
+const COOKIE_NAME = 'mfSurveyAnswers';
+
+function getSurveyAnswers() {
+  try {
+    const match = document.cookie.split('; ').find((row) => row.startsWith(`${COOKIE_NAME}=`));
+    return match ? JSON.parse(decodeURIComponent(match.split('=')[1])) : {};
+  } catch { return {}; }
+}
+
+function setSurveyAnswer(key, value) {
+  try {
+    const current = getSurveyAnswers();
+    current[key] = value;
+    document.cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(current))};path=/;SameSite=Lax`;
+  } catch { /* ignore */ }
+}
 
 // ── Row-reading helpers ────────────────────────────────────────────────────────
 
@@ -133,12 +147,12 @@ export default async function decorate(block) {
       noLabel: cfg.screen3No,
       disclaimer: cfg.disclaimer,
       onYes: () => {
-        try { sessionStorage.setItem(SESSION.taxBenefit, 'yes'); } catch { /* ignore */ }
+        setSurveyAnswer('taxBenefit', 'yes');
         closeModal(document);
         if (cfg.resultsUrl) window.location.href = cfg.resultsUrl;
       },
       onNo: () => {
-        try { sessionStorage.setItem(SESSION.taxBenefit, 'no'); } catch { /* ignore */ }
+        setSurveyAnswer('taxBenefit', 'no');
         closeModal(document);
         if (cfg.resultsUrl) window.location.href = cfg.resultsUrl;
       },
@@ -157,11 +171,11 @@ export default async function decorate(block) {
       noLabel: cfg.screen2No,
       disclaimer: cfg.disclaimer,
       onYes: () => {
-        try { sessionStorage.setItem(SESSION.fxRisk, 'yes'); } catch { /* ignore */ }
+        setSurveyAnswer('fxRisk', 'yes');
         openScreen3();
       },
       onNo: () => {
-        try { sessionStorage.setItem(SESSION.fxRisk, 'no'); } catch { /* ignore */ }
+        setSurveyAnswer('fxRisk', 'no');
         openScreen3();
       },
     });
@@ -253,9 +267,7 @@ export default async function decorate(block) {
       const card = e.target.closest('[data-risk-value]');
       if (!card) return;
       e.preventDefault();
-      try {
-        sessionStorage.setItem(SESSION.riskLevel, card.dataset.riskValue);
-      } catch { /* ignore */ }
+      setSurveyAnswer('riskLevel', card.dataset.riskValue);
       openScreen2();
     });
   }
@@ -275,9 +287,24 @@ export default async function decorate(block) {
     const observer = new MutationObserver(() => {
       if (block.closest('.modal-body')) {
         observer.disconnect();
+        // If user came back from results page via Start Over, auto-open
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('mf-start-over') === '1') {
+          // Clean the URL param without a page reload
+          params.delete('mf-start-over');
+          const cleanUrl = `${window.location.pathname}${params.toString() ? `?${params}` : ''}${window.location.hash}`;
+          window.history.replaceState(null, '', cleanUrl);
+        }
         openScreen1();
       }
     });
     observer.observe(document.body, { childList: true, subtree: true });
+  } else if (new URLSearchParams(window.location.search).get('mf-start-over') === '1') {
+    // Block already in DOM (not a fragment) — open immediately
+    const params = new URLSearchParams(window.location.search);
+    params.delete('mf-start-over');
+    const cleanUrl = `${window.location.pathname}${params.toString() ? `?${params}` : ''}${window.location.hash}`;
+    window.history.replaceState(null, '', cleanUrl);
+    openScreen1();
   }
 }
