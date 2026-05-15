@@ -44,9 +44,9 @@ async function loadData() {
 
 function buildStepper(i18n, activeStep) {
   const steps = [
-    i18n['common-step1Label'],
-    i18n['common-step2Label'],
-    i18n['common-step3Label'],
+    i18n['common-step1Label'] || 'Your goal',
+    i18n['common-step2Label'] || 'Savings & investments',
+    i18n['common-step3Label'] || 'Result',
   ];
   const wrap = el('<div class="rc-stepper"></div>');
   steps.forEach((label, idx) => {

@@ -522,8 +522,8 @@
 /* ── J3 Savings Cards (Cases 2 & 3) ──────────────────────── */
 
 .retirement-calculator .rc-savings-cards {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
@@ -814,14 +814,15 @@
   }
 
   .retirement-calculator .rc-savings-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: row;
     gap: 1rem;
     margin-bottom: 2rem;
   }
 
   .retirement-calculator .rc-savings-card-recommended,
   .retirement-calculator .rc-savings-card-alt {
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -1130,8 +1131,8 @@
   }
 
   .retirement-calculator .rc-savings-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: row;
     gap: 1rem;
     margin-bottom: 2rem;
   }
@@ -1139,6 +1140,7 @@
   /* ── Savings cards: desktop side-by-side layout ── */
   .retirement-calculator .rc-savings-card-recommended,
   .retirement-calculator .rc-savings-card-alt {
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
