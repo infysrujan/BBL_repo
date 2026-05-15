@@ -368,6 +368,91 @@ function getProvinceEnumNamesTh() {
 
 
 /**
+ * Fetches BBL branch locations for a given province.
+ * Calls the LocationSearchService endpoint with BRC (Branch) type.
+ * Supports both Thai ('th') and English ('en') language endpoints.
+ *
+ * @name fetchBranchesByProvince
+ * @param {string} province - Province name matching the selected language
+ * @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+ * @returns {Array} - Array of branch objects from the API, or [] on error
+ *
+ * @example
+ * // Thai (default) — province value from getProvinceEnumTh
+ * {
+ *   "events": {
+ *     "change": [
+ *       "vars.branches = fetchBranchesByProvince($field.$value)",
+ *       "$form.branchField.$enum = vars.branches.map(b => b.BranchNo)",
+ *       "$form.branchField.$enumNames = vars.branches.map(b => b.BranchName)"
+ *     ]
+ *   }
+ * }
+ *
+ * @example
+ * // English — province value from getProvinceEnum
+ * {
+ *   "events": {
+ *     "change": [
+ *       "vars.branches = fetchBranchesByProvince($field.$value, 'en')",
+ *       "$form.branchField.$enum = vars.branches.map(b => b.BranchNo)",
+ *       "$form.branchField.$enumNames = vars.branches.map(b => b.BranchName)"
+ *     ]
+ *   }
+ * }
+ */
+function fetchBranchesByProvince(province, lang = 'th') {
+  if (!province) return [];
+
+  const baseUrl = 'https://publish-p185039-e1939903.adobeaemcloud.com';
+  const encoded = encodeURIComponent(province);
+  const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
+  const url = `${baseUrl}/api/LocationSearchService/${segment}/${encoded}/0/0/0/BRC`;
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    // eslint-disable-next-line no-console
+    console.error('Branches API error:', xhr.status, 'for province:', province);
+    return [];
+  }
+
+  const data = JSON.parse(xhr.responseText);
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+* Returns BranchNo values for a given province.
+* Maps to enum for branch dropdown.
+*
+* @name getBranchEnum
+* @param {string} province - Province name matching the selected language
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string[]}
+*/
+function getBranchEnum(province, lang = 'th') {
+  const data = fetchBranchesByProvince(province, lang);
+  return data.map((item) => item.BranchNo);
+}
+
+/**
+* Returns BranchName display labels for a given province.
+* Maps to enumNames for branch dropdown.
+*
+* @name getBranchEnumNames
+* @param {string} province - Province name matching the selected language
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string[]}
+*/
+function getBranchEnumNames(province, lang = 'th') {
+  const data = fetchBranchesByProvince(province, lang);
+  return data.map((item) => item.BranchName);
+}
+
+/**
  * Validates Thai Citizen ID using the official algorithm
  * @name validateThaiCitizenID
  * @param {string} id - The 13-digit Thai Citizen ID to validate
@@ -448,4 +533,7 @@ export {
   addCsrfToken,
   addCustomHeader,
   generatePayloadHash,
+  fetchBranchesByProvince,
+  getBranchEnum,
+  getBranchEnumNames,
 };
