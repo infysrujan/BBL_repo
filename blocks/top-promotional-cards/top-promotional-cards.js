@@ -19,8 +19,6 @@ function filterCards(activeCards, tabText) {
 }
 
 function setupPanel(panel, activeCards, placeholders) {
-  const viewAllHref = placeholders.promoViewAllHref || '#';
-  const viewAllText = placeholders.promoViewAll || 'View all promotions';
   const noResultsText = placeholders.promoNoResults || 'No results found.';
   const btnId = panel.getAttribute('aria-labelledby');
   const btn = btnId ? document.getElementById(btnId) : null;
@@ -51,16 +49,10 @@ function setupPanel(panel, activeCards, placeholders) {
     ? cards.map((card) => buildCardHtml(card, card.category || tabText, placeholders, buildCardOptions(card))).join('')
     : `<p class="top-promo-empty">${noResultsText}</p>`;
 
-  const footer = document.createElement('div');
-  footer.className = 'top-promo-footer pad-bot-30';
-  footer.innerHTML = `<span><a href="${viewAllHref}">${viewAllText}</a></span>`;
-  footer.querySelector('a').className = 'button secondary';
-
-  panel.append(footer, grid);
+  panel.append(grid);
 }
 
 export default async function decorate(block) {
-  const blockHref = block.querySelector('a')?.href || '#';
   const lang = getLang();
   const configs = await fetchConfigs();
   const baseUrl = configs?.promotionalCardSelector || '';
@@ -71,8 +63,6 @@ export default async function decorate(block) {
     fetchPlaceholders(),
   ]);
 
-  if (!placeholders.promoViewAllHref) placeholders.promoViewAllHref = blockHref;
-
   const allCards = data?.cards || [];
 
   const today = new Date();
@@ -82,6 +72,13 @@ export default async function decorate(block) {
 
   const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
   tabPanels.forEach((panel) => setupPanel(panel, activeCards, placeholders));
+
+  const btnContainer = block.closest('.section')?.querySelector('.button-container');
+  const tabsContent = document.querySelector('.tabs-content');
+  if (btnContainer && tabsContent) {
+    btnContainer.classList.add('top-promo-view-all', 'pad-bot-30');
+    tabsContent.before(btnContainer);
+  }
 
   block.hidden = true;
 
