@@ -7343,6 +7343,41 @@
     ]
   },
   {
+    "id": "radio-tabbed",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style Variant",
+        "description": "Visual style for the radio selection. Variants can be combined (e.g. pill + vertical).",
+        "valueType": "string",
+        "required": false,
+        "options": [
+          {
+            "name": "Pill",
+            "value": "pill"
+          },
+          {
+            "name": "Segment",
+            "value": "segment"
+          },
+          {
+            "name": "Outlined",
+            "value": "outlined"
+          },
+          {
+            "name": "Filled",
+            "value": "filled"
+          },
+          {
+            "name": "Vertical",
+            "value": "vertical"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "range",
     "fields": [
       {
@@ -8859,6 +8894,34 @@
             }
           ]
         }
+      },
+      {
+        "component": "boolean",
+        "name": "isCardClickable",
+        "label": "Is Card Clickable",
+        "description": "Enable to make the entire card a clickable link",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "aem-content",
+        "name": "cardLink",
+        "label": "Card Link",
+        "description": "Destination URL when the card is clicked"
+      },
+      {
+        "component": "boolean",
+        "name": "enableOverlayModal",
+        "label": "Enable Overlay Modal",
+        "description": "Open card link in a modal overlay instead of navigating",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "text",
+        "name": "overlayHref",
+        "label": "Overlay Fragment Path",
+        "description": "Path to the fragment shown in the modal overlay"
       }
     ]
   },
@@ -10775,41 +10838,6 @@
         "validation": {
           "customErrorMsg": "Please enter a valid end date and time for unpublishing the content"
         }
-      }
-    ]
-  },
-  {
-    "id": "radio-tabbed",
-    "fields": [
-      {
-        "component": "multiselect",
-        "name": "style",
-        "label": "Style Variant",
-        "description": "Visual style for the radio selection. Variants can be combined (e.g. pill + vertical).",
-        "valueType": "string",
-        "required": false,
-        "options": [
-          {
-            "name": "Pill",
-            "value": "pill"
-          },
-          {
-            "name": "Segment",
-            "value": "segment"
-          },
-          {
-            "name": "Outlined",
-            "value": "outlined"
-          },
-          {
-            "name": "Filled",
-            "value": "filled"
-          },
-          {
-            "name": "Vertical",
-            "value": "vertical"
-          }
-        ]
       }
     ]
   }
