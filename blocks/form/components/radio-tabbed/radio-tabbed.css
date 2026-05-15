@@ -8,17 +8,19 @@
     margin: -1px;
     padding: 0;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
 }
 
-/* ── Nav container ── */
+/* ── Nav container (default: underline variant) ── */
 .radio-tabbed .radio-tabbed-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--bbl-space-100);
+    gap: 0;
     margin-bottom: var(--bbl-space-400);
+    border-bottom: 0.0625rem solid var(--bbl-color-grey-20, #e0e0e0);
+    padding-bottom: 0;
 }
 
 /* ── Base label (tab trigger) ── */
@@ -36,41 +38,14 @@
     line-height: 1.25rem;
     color: var(--bbl-color-black);
     white-space: nowrap;
+
+    /* default underline variant positioning */
+    position: relative;
+    padding: var(--bbl-space-200) var(--bbl-space-300);
 }
 
 .radio-tabbed .radio-tabbed-nav label:hover {
     color: var(--bbl-color-active-blue);
-}
-
-/* ── Focus-visible ring (shown when navigating by keyboard) ── */
-.radio-tabbed .radio-tabbed-nav input[type="radio"]:focus-visible + label {
-    outline: 0.125rem solid var(--bbl-color-active-blue);
-    outline-offset: 0.125rem;
-    border-radius: 0.125rem;
-}
-
-/* ── Content panels ── */
-.radio-tabbed .radio-tabbed-content .radio-tabbed-panel {
-    display: none;
-}
-
-.radio-tabbed .radio-tabbed-content .radio-tabbed-panel.active {
-    display: block;
-}
-
-/* ================================================================
-   VARIANT: default (underline)
-   Add no extra class — this is the base style
-   ================================================================ */
-.radio-tabbed .radio-tabbed-nav {
-    border-bottom: 0.0625rem solid var(--bbl-color-grey-20, #e0e0e0);
-    padding-bottom: 0;
-    gap: 0;
-}
-
-.radio-tabbed .radio-tabbed-nav label {
-    position: relative;
-    padding: var(--bbl-space-200) var(--bbl-space-300);
 }
 
 .radio-tabbed .radio-tabbed-nav label::after {
@@ -92,10 +67,18 @@
     width: 100%;
 }
 
+/* ── Content panels ── */
+.radio-tabbed .radio-tabbed-content .radio-tabbed-panel {
+    display: none;
+}
+
+.radio-tabbed .radio-tabbed-content .radio-tabbed-panel.active {
+    display: block;
+}
+
 /* ================================================================
-   VARIANT: pill
-   Usage: Radio Tabbed (pill)
-   Renders each label as a rounded pill button
+   VARIANTS: nav overrides
+   pill | segment | outlined | filled
    ================================================================ */
 .radio-tabbed.pill .radio-tabbed-nav {
     border-bottom: none;
@@ -103,6 +86,30 @@
     padding-bottom: 0;
 }
 
+.radio-tabbed.segment .radio-tabbed-nav {
+    border-bottom: none;
+    gap: 0;
+    padding: var(--bbl-space-050);
+    background: var(--bbl-color-grey-05, #f5f5f5);
+    border-radius: var(--bbl-rounded-200, 0.5rem);
+    display: inline-flex;
+    flex-wrap: nowrap;
+}
+
+.radio-tabbed.outlined .radio-tabbed-nav {
+    border-bottom: none;
+    gap: var(--bbl-space-100);
+}
+
+.radio-tabbed.filled .radio-tabbed-nav {
+    border-bottom: none;
+    gap: var(--bbl-space-100);
+}
+
+/* ================================================================
+   VARIANTS: label base styles
+   All (0,3,1) rules must precede any (0,4,1) hover/active rules
+   ================================================================ */
 .radio-tabbed.pill .radio-tabbed-nav label {
     padding: var(--bbl-space-150) var(--bbl-space-300);
     border-radius: 6.25rem;
@@ -113,32 +120,6 @@
 
 .radio-tabbed.pill .radio-tabbed-nav label::after {
     display: none;
-}
-
-.radio-tabbed.pill .radio-tabbed-nav label:hover {
-    border-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-active-blue);
-}
-
-.radio-tabbed.pill .radio-tabbed-nav label.active {
-    background: var(--bbl-color-active-blue);
-    border-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-white);
-}
-
-/* ================================================================
-   VARIANT: segment
-   Usage: Radio Tabbed (segment)
-   A connected group — like a segmented control / iOS segment picker
-   ================================================================ */
-.radio-tabbed.segment .radio-tabbed-nav {
-    border-bottom: none;
-    gap: 0;
-    padding: var(--bbl-space-050);
-    background: var(--bbl-color-grey-05, #f5f5f5);
-    border-radius: var(--bbl-rounded-200, 0.5rem);
-    display: inline-flex;
-    flex-wrap: nowrap;
 }
 
 .radio-tabbed.segment .radio-tabbed-nav label {
@@ -154,26 +135,6 @@
     display: none;
 }
 
-.radio-tabbed.segment .radio-tabbed-nav label:hover {
-    color: var(--bbl-color-black);
-}
-
-.radio-tabbed.segment .radio-tabbed-nav label.active {
-    background: var(--bbl-color-white);
-    color: var(--bbl-color-active-blue);
-    box-shadow: 0 0.0625rem 0.25rem 0 rgb(0 0 0 / 15%);
-}
-
-/* ================================================================
-   VARIANT: outlined
-   Usage: Radio Tabbed (outlined)
-   Bordered buttons; active gets a filled outline
-   ================================================================ */
-.radio-tabbed.outlined .radio-tabbed-nav {
-    border-bottom: none;
-    gap: var(--bbl-space-100);
-}
-
 .radio-tabbed.outlined .radio-tabbed-nav label {
     padding: var(--bbl-space-150) var(--bbl-space-300);
     border: 0.0625rem solid var(--bbl-color-grey-20, #d6d6d6);
@@ -184,27 +145,6 @@
 
 .radio-tabbed.outlined .radio-tabbed-nav label::after {
     display: none;
-}
-
-.radio-tabbed.outlined .radio-tabbed-nav label:hover {
-    border-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-active-blue);
-}
-
-.radio-tabbed.outlined .radio-tabbed-nav label.active {
-    border-color: var(--bbl-color-active-blue);
-    color: var(--bbl-color-active-blue);
-    background: rgb(0 51 153 / 5%);
-}
-
-/* ================================================================
-   VARIANT: filled
-   Usage: Radio Tabbed (filled)
-   Solid filled buttons; active has deep brand colour
-   ================================================================ */
-.radio-tabbed.filled .radio-tabbed-nav {
-    border-bottom: none;
-    gap: var(--bbl-space-100);
 }
 
 .radio-tabbed.filled .radio-tabbed-nav label {
@@ -219,6 +159,41 @@
     display: none;
 }
 
+/* ================================================================
+   VARIANTS: hover and active states
+   ================================================================ */
+.radio-tabbed.pill .radio-tabbed-nav label:hover {
+    border-color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-active-blue);
+}
+
+.radio-tabbed.pill .radio-tabbed-nav label.active {
+    background: var(--bbl-color-active-blue);
+    border-color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-white);
+}
+
+.radio-tabbed.segment .radio-tabbed-nav label:hover {
+    color: var(--bbl-color-black);
+}
+
+.radio-tabbed.segment .radio-tabbed-nav label.active {
+    background: var(--bbl-color-white);
+    color: var(--bbl-color-active-blue);
+    box-shadow: 0 0.0625rem 0.25rem 0 rgb(0 0 0 / 15%);
+}
+
+.radio-tabbed.outlined .radio-tabbed-nav label:hover {
+    border-color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-active-blue);
+}
+
+.radio-tabbed.outlined .radio-tabbed-nav label.active {
+    border-color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-active-blue);
+    background: rgb(0 51 153 / 5%);
+}
+
 .radio-tabbed.filled .radio-tabbed-nav label:hover {
     background: var(--bbl-color-grey-20, #d6d6d6);
     color: var(--bbl-color-black);
@@ -227,6 +202,13 @@
 .radio-tabbed.filled .radio-tabbed-nav label.active {
     background: var(--bbl-color-active-blue);
     color: var(--bbl-color-white);
+}
+
+/* ── Focus-visible ring (shown when navigating by keyboard) ── */
+.radio-tabbed .radio-tabbed-nav input[type="radio"]:focus-visible + label {
+    outline: 0.125rem solid var(--bbl-color-active-blue);
+    outline-offset: 0.125rem;
+    border-radius: 0.125rem;
 }
 
 /* ================================================================
