@@ -97,7 +97,7 @@ function buildIncomeCard(i18n, savedValue) {
 
   const setError = (msg) => {
     errorEl.textContent = msg;
-    inputWrap.classList.toggle('rc-income-input-wrap--error', !!msg);
+    inputWrap.classList.toggle('rc-income-input-wrap-error', !!msg);
     input.classList.toggle('rc-income-input-error', !!msg);
   };
 
@@ -319,6 +319,15 @@ function initProgressiveReveal(sectionEl) {
   }, { once: true });
 }
 
+function buildHeader(i18n) {
+  return el(`
+    <div class="rc-header">
+      <h1 class="rc-title">${i18n['common-title'] || 'Plan your finances for retirement'}</h1>
+      <div class="rc-divider"></div>
+    </div>
+  `);
+}
+
 // ─── Journey 1 ───────────────────────────────────────────────────────────────────
 
 function renderJourney1(block, data, onNext, savedValues = {}) {
@@ -326,7 +335,8 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const { i18n, apiUrl } = data;
 
-  const container = el('<div class="rc-container"></div>');
+  const container = el('<div class="rc-container rc-step-1"></div>');
+  container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepper(i18n, 1));
 
   const content = el('<div class="rc-content"></div>');
@@ -382,7 +392,9 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   };
 
   const syncBtnState = () => {
-    nextBtn.disabled = !!block.querySelector('.rc-field-error:not(:empty), #rc-err-monthlyIncome:not(:empty)');
+    const hasError = !!block.querySelector('.rc-field-error:not(:empty), #rc-err-monthlyIncome:not(:empty)');
+    nextBtn.disabled = hasError;
+    nextBtn.classList.toggle('rc-btn-error', hasError);
   };
 
   container.addEventListener('input', () => { validateCrossFields(); syncBtnState(); });
@@ -442,10 +454,11 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const { i18n, apiUrl } = data;
 
-  const container = el('<div class="rc-container"></div>');
+  const container = el('<div class="rc-container rc-step-2"></div>');
+  container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepper(i18n, 2));
 
-  const content = el('<div class="rc-content rc-content--sections"></div>');
+  const content = el('<div class="rc-content rc-content-sections"></div>');
 
   // ── J1 result summary ──
   const j1Result = state.j1ApiResult || {};
@@ -557,7 +570,9 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   };
 
   const syncBtnState = () => {
-    calcBtn.disabled = !!block.querySelector('.rc-field-error:not(:empty)');
+    const hasError = !!block.querySelector('.rc-field-error:not(:empty)');
+    calcBtn.disabled = hasError;
+    calcBtn.classList.toggle('rc-btn-error', hasError);
   };
 
   container.addEventListener('input', () => { validateSavingsCross(); syncBtnState(); });
@@ -637,7 +652,8 @@ function renderJourney3(block, data, state, onBack) {
   const currentSavings = state.journey2?.SavingBeginAmount || 0;
   const alreadySaved = savingMonth1 < 0;
 
-  const container = el('<div class="rc-container"></div>');
+  const container = el('<div class="rc-container rc-step-3"></div>');
+  container.appendChild(buildHeader(i18n));
   container.appendChild(buildStepper(i18n, 3));
 
   const content = el('<div class="rc-content"></div>');
@@ -684,9 +700,9 @@ function renderJourney3(block, data, state, onBack) {
     // ── Cases 2 & 3: savings cards ──
     const altCard = savingMonth2 >= 0 ? `
         <div class="rc-savings-card-alt">
-          <p class="rc-savings-card-title rc-savings-card-title-alt">
-            ${i18n['steps-step3-orSaveJustLabel'] || 'Or\nsave just'}
-          </p>
+          <p class="rc-savings-card-title rc-savings-card-title-alt">${
+  i18n['steps-step3-orSaveJustLabel'] || 'Or\nsave just'
+}</p>
           <p class="rc-savings-card-amount rc-savings-card-amount-alt">
             ${fmt(savingMonth2)} <span class="rc-savings-card-unit rc-savings-card-unit-alt">${i18n['common-bahtUnit'] || 'baht'}</span>
           </p>
@@ -697,9 +713,9 @@ function renderJourney3(block, data, state, onBack) {
     content.appendChild(el(`
       <div class="rc-savings-cards">
         <div class="rc-savings-card-recommended">
-          <p class="rc-savings-card-title">
-            ${i18n['steps-step3-recommendedMonthlySavingsLabel'] || 'Recommended\nmonthly savings'}
-          </p>
+          <p class="rc-savings-card-title">${
+  i18n['steps-step3-recommendedMonthlySavingsLabel'] || 'Recommended\nmonthly savings'
+}</p>
           <p class="rc-savings-card-amount">
             ${fmt(savingMonth1)} <span class="rc-savings-card-unit">${i18n['common-bahtUnit'] || 'baht'}</span>
           </p>
@@ -733,7 +749,7 @@ function renderJourney3(block, data, state, onBack) {
             </p>
           </div>
           <div class="rc-progress-bar-track">
-            <div class="rc-progress-bar-fill" style="width:${pct}%"></div>
+            <div class="rc-progress-bar-fill rc-progress-bar-fill-animated" style="width:${pct}%"></div>
           </div>
         </div>
       `));
@@ -752,7 +768,7 @@ function renderJourney3(block, data, state, onBack) {
             ${fmt(totalNeeded)} <span class="rc-summary-unit">${baht}</span>
           </p>
         </div>
-        <div class="rc-summary-row">
+        <div class="rc-summary-row rc-summary-row-secondary">
           <p class="rc-summary-label">
             ${i18n['steps-step3-currentSavingsAmountLabel'] || 'Current savings amount'}
           </p>
