@@ -127,6 +127,7 @@ function createMenuCardItem(cardElement, doc) {
     downloadButtonDivB,
     dropdownLabletDiv,
     dropdownLinksDiv,
+    multipleDownloadLinksDiv,
     isCardClickableDiv,
     cardLinkDiv,
     cardLinkTitleDiv,
@@ -146,7 +147,8 @@ function createMenuCardItem(cardElement, doc) {
   const downloadButton = downloadButtonDiv?.querySelector('a');
   const dropdownLable = dropdownLabletDiv?.textContent?.trim();
   const dropdownLinks = dropdownLinksDiv?.innerHTML;
-  const isCardClickable = parseBooleanFlag(isCardClickableDiv?.textContent, true);
+  const multipleDownloadLinks = multipleDownloadLinksDiv?.innerHTML;
+  const isCardClickable = parseBooleanFlag(isCardClickableDiv?.textContent, false);
   const cardLinkAnchor = cardLinkDiv?.querySelector('a');
   const cardLinkHref = cardLinkAnchor?.href || '';
   const cardLinkTarget = cardLinkAnchor?.target || '';
@@ -205,6 +207,15 @@ function createMenuCardItem(cardElement, doc) {
   /* ---------------- ACTION : DOWNLOAD ---------------- */
   if (actionTypeText === 'download' && downloadButton) {
     inner.appendChild(createDownloadLink(downloadButton, doc));
+  }
+
+  /* ---------------- ACTION : MULTIPLE DOWNLOAD ---------------- */
+  if (actionTypeText === 'multiple-download' && multipleDownloadLinks) {
+    const temp = createElementFromHTML(`<div>${multipleDownloadLinks}</div>`, doc);
+    temp.querySelectorAll('a').forEach((anchor) => {
+      const downloadLink = createDownloadLink(anchor, doc);
+      if (downloadLink) inner.appendChild(downloadLink);
+    });
   }
 
   /* ---------------- ACTION : DROPDOWN ---------------- */

@@ -8695,6 +8695,10 @@
             "value": "download"
           },
           {
+            "name": "Multiple Download",
+            "value": "multiple-download"
+          },
+          {
             "name": "Select Dropdown",
             "value": "select-dropdown"
           }
@@ -8896,12 +8900,27 @@
         }
       },
       {
+        "component": "richtext",
+        "name": "multipleDownloadLinks",
+        "value": "",
+        "label": "Multiple Download Links",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "multiple-download"
+          ]
+        }
+      },
+      {
         "component": "boolean",
         "name": "isCardClickable",
         "label": "Is Card Clickable",
         "description": "Enable to make the entire card a clickable link",
         "valueType": "boolean",
-        "value": true
+        "value": false
       },
       {
         "component": "aem-content",
@@ -8909,10 +8928,11 @@
         "label": "Card Link",
         "description": "Destination URL when the card is clicked",
         "condition": {
-          "!!": [
+          "===": [
             {
               "var": "isCardClickable"
-            }
+            },
+            true
           ]
         }
       },
@@ -8922,10 +8942,11 @@
         "label": "Card Link Title",
         "description": "Accessibility title attribute for the clickable card (optional)",
         "condition": {
-          "!!": [
+          "===": [
             {
               "var": "isCardClickable"
-            }
+            },
+            true
           ]
         }
       },
@@ -8943,10 +8964,11 @@
         "label": "Overlay Fragment Path",
         "description": "Path to the fragment shown in the modal overlay",
         "condition": {
-          "!!": [
+          "===": [
             {
               "var": "enableOverlayModal"
-            }
+            },
+            true
           ]
         }
       }
