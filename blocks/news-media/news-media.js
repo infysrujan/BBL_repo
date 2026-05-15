@@ -97,23 +97,18 @@ async function renderNewsMedia(block) {
     setupPanel(panel, allCards, category, locale, pageSize, placeholders);
   });
 
-  const isThai = lang === 'th';
-  const toUrlYear = (tabYear) => (isThai ? String(parseInt(tabYear, 10) - 543) : tabYear);
-  const toTabYear = (urlYear) => (isThai ? String(parseInt(urlYear, 10) + 543) : urlYear);
-
   const tabBtns = [...document.querySelectorAll('.news-media-tabs .tabs-nav button')];
   tabBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const params = new URLSearchParams(window.location.search);
-      params.set('year', toUrlYear(btn.textContent.trim()));
+      params.set('year', btn.textContent.trim());
       window.history.replaceState(null, '', `?${params.toString()}`);
     });
   });
 
   const yearParam = new URLSearchParams(window.location.search).get('year');
   if (yearParam) {
-    const tabYear = toTabYear(yearParam);
-    tabBtns.find((btn) => btn.textContent.trim() === tabYear)?.click();
+    tabBtns.find((btn) => btn.textContent.trim() === yearParam)?.click();
   }
 
   block.hidden = true;
