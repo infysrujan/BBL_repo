@@ -730,7 +730,7 @@
 .retirement-calculator .rc-progress-bar-track {
   height: var(--bbl-space-200);
   width: 100%;
-  border-radius: var(--bbl-radius-full);
+  border-radius: 625rem;
   background: var(--bbl-color-grey-20);
   overflow: hidden;
   margin-top: var(--bbl-space-100);
