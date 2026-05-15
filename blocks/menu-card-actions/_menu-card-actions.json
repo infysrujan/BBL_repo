@@ -346,7 +346,7 @@
           "value": true
         },
         {
-          "component": "text",
+          "component": "aem-content",
           "name": "overlayHref",
           "label": "Overlay Fragment Path",
           "description": "Path to the fragment shown in the modal overlay"
