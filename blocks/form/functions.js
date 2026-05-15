@@ -300,7 +300,6 @@ function getProvinceEnumNames() {
   return data.map((item) => item.label);
 }
 
-
 /**
 * Fetches and normalizes province data in TH.
 * Expected API shape:
@@ -365,7 +364,6 @@ function getProvinceEnumNamesTh() {
   const data = getProvinceDataTh();
   return data.map((item) => item.label);
 }
-
 
 /**
  * Fetches BBL branch locations for a given province.
