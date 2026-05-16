@@ -231,7 +231,7 @@ function createMenuCardItem(cardElement, doc) {
     if (cardLinkTarget === '_blank') wrapper.setAttribute('rel', 'noopener noreferrer');
     if (enableOverlayModal && overlayHref) {
       wrapper.setAttribute('data-modal', overlayHref);
-    } else {
+    } else if (!enableOverlayModal) {
       wrapper.setAttribute('href', cardLinkHref);
     }
     wrapper.appendChild(inner);
