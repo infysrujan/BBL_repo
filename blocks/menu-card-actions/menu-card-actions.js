@@ -130,9 +130,9 @@ function createMenuCardItem(cardElement, doc) {
     multipleDownloadLinksDiv,
     isCardClickableDiv,
     cardLinkDiv,
-    cardLinkTitleDiv,
     enableOverlayModalDiv,
     overlayHrefDiv,
+    dateTextDiv,
   ] = [...cardElement.children];
 
   const downloadButtonDiv = downloadButtonDivA?.querySelector('a')
@@ -152,9 +152,14 @@ function createMenuCardItem(cardElement, doc) {
   const cardLinkAnchor = cardLinkDiv?.querySelector('a');
   const cardLinkHref = cardLinkAnchor?.href || '';
   const cardLinkTarget = cardLinkAnchor?.target || '';
-  const cardLinkTitle = cardLinkTitleDiv?.textContent?.trim() || cardLinkAnchor?.title || '';
-  const enableOverlayModal = parseBooleanFlag(enableOverlayModalDiv?.textContent, true);
-  const overlayHref = getOverlayHref(overlayHrefDiv);
+  const cardLinkTitle = cardLinkAnchor?.title?.trim() || '';
+  const enableOverlayModal = isBooleanLikeValue(enableOverlayModalDiv?.textContent)
+    ? parseBooleanFlag(enableOverlayModalDiv?.textContent, false)
+    : !!getOverlayHref(enableOverlayModalDiv);
+  const overlayHref = isBooleanLikeValue(enableOverlayModalDiv?.textContent)
+    ? getOverlayHref(overlayHrefDiv)
+    : getOverlayHref(enableOverlayModalDiv);
+  const dateText = dateTextDiv?.innerHTML?.trim();
 
   const card = createElementFromHTML(
     '<div class="menu-card-action-item"></div>',
@@ -206,7 +211,9 @@ function createMenuCardItem(cardElement, doc) {
 
   /* ---------------- ACTION : DOWNLOAD ---------------- */
   if (actionTypeText === 'download' && downloadButton) {
-    inner.appendChild(createDownloadLink(downloadButton, doc));
+    const dlLink = createDownloadLink(downloadButton, doc);
+    dlLink?.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
+    inner.appendChild(dlLink);
   }
 
   /* ---------------- ACTION : MULTIPLE DOWNLOAD ---------------- */
@@ -214,7 +221,11 @@ function createMenuCardItem(cardElement, doc) {
     const temp = createElementFromHTML(`<div>${multipleDownloadLinks}</div>`, doc);
     temp.querySelectorAll('a').forEach((anchor) => {
       const downloadLink = createDownloadLink(anchor, doc);
-      if (downloadLink) inner.appendChild(downloadLink);
+      if (downloadLink) {
+        downloadLink.classList.add('multiple-download-wrapper');
+        downloadLink.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
+        inner.appendChild(downloadLink);
+      }
     });
   }
 
@@ -222,6 +233,16 @@ function createMenuCardItem(cardElement, doc) {
   if (actionTypeText === 'select-dropdown') {
     const dropdown = createGlobalDropdown(dropdownLable || 'Select', dropdownLinks, doc);
     inner.appendChild(dropdown);
+  }
+
+  /* ---------------- DATE TEXT ---------------- */
+  if (dateText) {
+    inner.appendChild(
+      createElementFromHTML(
+        `<div class="menu-card-action-date pad-top-30">${dateText}</div>`,
+        doc,
+      ),
+    );
   }
 
   if (isCardClickable && cardLinkHref) {
