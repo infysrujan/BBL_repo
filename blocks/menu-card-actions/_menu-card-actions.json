@@ -396,6 +396,14 @@
               true
             ]
           }
+        },
+        {
+          "component": "richtext",
+          "name": "dateText",
+          "value": "",
+          "label": "Date Text",
+          "description": "Optional date text displayed at the bottom of the card",
+          "valueType": "string"
         }
       ]
     }

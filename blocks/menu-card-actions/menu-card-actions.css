@@ -235,7 +235,7 @@
 
 .menu-card-action-date p {
   line-height: 1.203rem;
-  color: var(--bbl-color-grey-60);
+  color: var(--bbl-color-grey-85);
   margin: 0;
 }
 
@@ -270,7 +270,7 @@
   }
 
   .menu-card-action-date p {
-    font-size: var(--bbl-font-size-b1);
+    font-size: var(--bbl-font-size-b2);
   }
 }
 
@@ -338,6 +338,7 @@
   }
 
   .menu-card-action-date p {
+    font-size: var(--bbl-font-size-b1);
     line-height: 1.375rem;
   }
 }
