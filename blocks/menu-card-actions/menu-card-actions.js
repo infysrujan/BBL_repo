@@ -110,13 +110,13 @@ async function openModal(doc, fragmentPath) {
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
     doc.body.classList.add('modal-open');
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to load modal content', error);
+  } catch {
+    // Modal content failed to load; keep the current page state unchanged.
   }
 }
 
 function createMenuCardItem(cardElement, doc) {
+  const cells = [...cardElement.children];
   const [
     imageDiv,
     titleDiv,
@@ -132,8 +132,7 @@ function createMenuCardItem(cardElement, doc) {
     cardLinkDiv,
     enableOverlayModalDiv,
     overlayHrefDiv,
-    dateTextDiv,
-  ] = [...cardElement.children];
+  ] = cells;
 
   const downloadButtonDiv = downloadButtonDivA?.querySelector('a')
     ? downloadButtonDivA
@@ -159,7 +158,7 @@ function createMenuCardItem(cardElement, doc) {
   const overlayHref = isBooleanLikeValue(enableOverlayModalDiv?.textContent)
     ? getOverlayHref(overlayHrefDiv)
     : getOverlayHref(enableOverlayModalDiv);
-  const dateText = dateTextDiv?.innerHTML?.trim();
+  const dateText = cells.at(-1)?.innerHTML?.trim() || '';
 
   const card = createElementFromHTML(
     '<div class="menu-card-action-item"></div>',
@@ -237,12 +236,10 @@ function createMenuCardItem(cardElement, doc) {
 
   /* ---------------- DATE TEXT ---------------- */
   if (dateText) {
-    inner.appendChild(
-      createElementFromHTML(
-        `<div class="menu-card-action-date pad-top-30">${dateText}</div>`,
-        doc,
-      ),
-    );
+    const dateTextWrapper = doc.createElement('div');
+    dateTextWrapper.className = 'menu-card-action-date pad-top-30';
+    dateTextWrapper.innerHTML = dateText;
+    inner.appendChild(dateTextWrapper);
   }
 
   if (isCardClickable && cardLinkHref) {

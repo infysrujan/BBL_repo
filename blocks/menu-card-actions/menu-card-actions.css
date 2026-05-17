@@ -239,6 +239,11 @@
   margin: 0;
 }
 
+.menu-card-action-date {
+  margin-top: auto;
+  padding-top: var(--bbl-space-250);
+}
+
 .menu-card-action-inner .download-button-wrapper {
   margin-top: var(--bbl-space-250);
 }
