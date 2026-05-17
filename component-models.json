@@ -679,8 +679,8 @@
         "label": "Button ActionType",
         "options": [
           {
-            "name": "Default",
-            "value": "default"
+            "name": "Default Button",
+            "value": "default-button"
           },
           {
             "name": "Multiple Download",
@@ -698,7 +698,7 @@
             {
               "var": "buttonActionType"
             },
-            "default"
+            "default-button"
           ]
         }
       },
@@ -713,7 +713,7 @@
             {
               "var": "buttonActionType"
             },
-            "default"
+            "default-button"
           ]
         }
       },
@@ -727,7 +727,7 @@
             {
               "var": "buttonActionType"
             },
-            "default"
+            "default-button"
           ]
         }
       },
@@ -757,7 +757,7 @@
             {
               "var": "buttonActionType"
             },
-            "default"
+            "default-button"
           ]
         }
       },
@@ -773,7 +773,7 @@
             {
               "var": "buttonActionType"
             },
-            "default"
+            "default-button"
           ]
         }
       },
