@@ -42,6 +42,10 @@
           {
             "name": "Bangkok Bankm Card",
             "value": "bangkok-bankm-card"
+          },
+          {
+            "name": "Error Page",
+            "value": "error-page"
           }
         ]
       },
@@ -7339,6 +7343,41 @@
     ]
   },
   {
+    "id": "radio-tabbed",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style Variant",
+        "description": "Visual style for the radio selection. Variants can be combined (e.g. pill + vertical).",
+        "valueType": "string",
+        "required": false,
+        "options": [
+          {
+            "name": "Pill",
+            "value": "pill"
+          },
+          {
+            "name": "Segment",
+            "value": "segment"
+          },
+          {
+            "name": "Outlined",
+            "value": "outlined"
+          },
+          {
+            "name": "Filled",
+            "value": "filled"
+          },
+          {
+            "name": "Vertical",
+            "value": "vertical"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "range",
     "fields": [
       {
@@ -8142,6 +8181,13 @@
       },
       {
         "component": "richtext",
+        "valueType": "string",
+        "name": "preTitle",
+        "label": "Pre Title",
+        "value": ""
+      },
+      {
+        "component": "richtext",
         "name": "title",
         "value": "",
         "label": "Title",
@@ -8210,6 +8256,69 @@
             "value": false
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "locate-us",
+    "fields": [
+      {
+        "component": "select",
+        "name": "locationType",
+        "label": "Location Type",
+        "valueType": "string",
+        "value": "thailand",
+        "options": [
+          {
+            "name": "Thailand",
+            "value": "thailand"
+          },
+          {
+            "name": "Overseas",
+            "value": "overseas"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "services",
+        "label": "Services",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "serviceName",
+        "label": "Service Name",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "serviceFragment",
+        "label": "Service Fragment",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
       }
     ]
   },
@@ -9607,6 +9716,19 @@
         "label": "Disclaimer Text",
         "valueType": "string",
         "required": true
+      }
+    ]
+  },
+  {
+    "id": "stock-ticker",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "embedHtml",
+        "label": "Stock Ticker HTML",
+        "description": "Author iframe HTML, links, and supporting notes.",
+        "valueType": "string",
+        "value": ""
       }
     ]
   },

@@ -367,6 +367,7 @@ export default async function decorate(block) {
     && slidesHeroBanner === 0
     && slidesTextAnimation === 0;
   const arrowTrackVariant = circularOrDefaultImage || allFragmentTrack;
+  const isSimpleCarousel = slideEls.some((s) => s.classList.contains('simple-carousel'));
   const shouldCloneFragmentSlide = allFragmentTrack && slideEls.length > 1;
 
   function triggerBgZoom(slideEl) {
@@ -432,6 +433,9 @@ export default async function decorate(block) {
     if (showArrows && arrowTrackVariant) {
       prevArrow.disabled = false;
       nextArrow.disabled = false;
+    } else if (showArrows && isSimpleCarousel) {
+      prevArrow.disabled = false;
+      nextArrow.disabled = false;
     } else {
       prevArrow.disabled = index === 0;
       nextArrow.disabled = index === slideEls.length - 1;
@@ -482,6 +486,8 @@ export default async function decorate(block) {
       // Enable circular navigation for showArrowsDots variant
       const prevIndex = currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1;
       setActive(prevIndex, 'backward');
+    } else if (showArrows && isSimpleCarousel) {
+      setActive(currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1);
     } else if (currentIndex > 0) {
       setActive(currentIndex - 1, 'backward');
     }
@@ -493,6 +499,8 @@ export default async function decorate(block) {
       // Enable circular navigation for showArrowsDots variant
       const nextSlideIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0;
       setActive(nextSlideIndex, 'forward');
+    } else if (showArrows && isSimpleCarousel) {
+      setActive(currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0);
     } else if (currentIndex < slideEls.length - 1) {
       setActive(currentIndex + 1, 'forward');
     }
