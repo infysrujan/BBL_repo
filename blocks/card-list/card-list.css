@@ -32,7 +32,20 @@
 
 .cards-list-subtitle p {
   line-height: 1.203rem;
-  margin-block: 0 0.625rem;
+  margin-block: 0;
+  position: relative;
+  padding-bottom: 0.9375rem;
+  margin-bottom: 0.9375rem;
+}
+
+.cards-list-subtitle p::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 1.3125rem;
+  bottom: 0;
+  height: 0.0625rem;
+  background: var(--bbl-color-grey-60);
 }
 
 .cards-list-remark p {
@@ -288,7 +301,7 @@
 }
 
 .cards-list-title:not(.has-title-underline) :is(h1, h2, h3, h4, h5, h6) {
-  min-height: auto;
+  min-height: 4.4375rem;
   padding-bottom: 0;
   margin-bottom: 0;
 }
@@ -400,6 +413,14 @@
 
 .modal-body .section.central-aligned .block {
   margin-inline: 0;
+}
+
+.cards-list-inner:has(.cards-list-downloads) {
+  flex: none;
+}
+
+.cards-list-inner:has(.cards-list-downloads) .cards-list-button {
+  margin-top: 0;
 }
 
 @media (width > 47.5rem) {
