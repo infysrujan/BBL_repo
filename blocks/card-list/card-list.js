@@ -1,4 +1,5 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
+import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 function decorateModalContent(modalBody) {
@@ -93,8 +94,8 @@ async function openModal(doc, fragmentPath) {
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
     doc.body.classList.add('modal-open');
-  } catch (error) {
-    console.error('Failed to load modal content', error);
+  } catch {
+    // fragment failed to load — modal stays closed
   }
 }
 
@@ -127,22 +128,41 @@ function getOverlayHref(linkDiv) {
 
 function createCardListItem(cardElement, doc) {
   const cells = [...cardElement.children];
-  const [imageDiv, promoTagDiv, titleDiv, descDiv, remarkDiv, buttonDiv] = cells;
+  const [
+    imageDiv,
+    promoTagDiv,
+    titleDiv,
+    subtitleDiv,
+    descDiv,
+    remarkDiv,
+    actionTypeTextDiv,
+    defaultButtonDiv,
+    multipleDownloadLinksDiv,
+  ] = cells;
 
-  const relIdx = cells.slice(6).findIndex((c) => !isBooleanLikeValue(c.textContent?.trim() ?? ''));
-  const base = relIdx === -1 ? cells.length : 6 + relIdx;
+  const relIdx = cells.slice(9).findIndex((c) => !isBooleanLikeValue(c.textContent?.trim() ?? ''));
+  const base = relIdx === -1 ? cells.length : 9 + relIdx;
 
   const img = imageDiv?.querySelector('img');
   const promoTag = promoTagDiv?.textContent?.trim();
   const title = titleDiv?.innerHTML?.trim();
+  const subtitle = subtitleDiv?.textContent?.trim() || '';
   const description = descDiv?.innerHTML;
   const remark = remarkDiv?.innerHTML;
-  const buttonEl = buttonDiv?.querySelector('a');
+  const actionTypeText = actionTypeTextDiv?.textContent?.trim() || 'default';
+  const defaultButton = defaultButtonDiv?.querySelector('a');
+  const multipleDownloadLinks = multipleDownloadLinksDiv?.innerHTML;
   const imageLayout = cells[base]?.textContent?.trim() || 'default';
   const enableTitleUnderline = parseBooleanFlag(cells[base + 1]?.textContent, false);
   const isCardClickable = parseBooleanFlag(cells[base + 2]?.textContent, true);
-  const overlayHref = getOverlayHref(cells[base + 5]);
-  const enableOverlayModal = parseBooleanFlag(cells[base + 4]?.textContent, true);
+  const cell4Text = cells[base + 4]?.textContent?.trim();
+  const isCell4Boolean = isBooleanLikeValue(cell4Text);
+  const overlayHref = isCell4Boolean
+    ? getOverlayHref(cells[base + 5])
+    : getOverlayHref(cells[base + 4]);
+  const enableOverlayModal = isCell4Boolean
+    ? parseBooleanFlag(cell4Text, true)
+    : !!overlayHref;
   const cardLinkAnchor = cells[base + 3]?.querySelector('a');
   const cardLinkHref = cardLinkAnchor?.href || '';
   const cardLinkTarget = cardLinkAnchor?.target || '';
@@ -179,6 +199,12 @@ function createCardListItem(cardElement, doc) {
     );
   }
 
+  if (subtitle) {
+    content.appendChild(
+      createElementFromHTML(`<div class="cards-list-subtitle"><p>${subtitle}</p></div>`, doc),
+    );
+  }
+
   if (description) {
     content.appendChild(
       createElementFromHTML(`<div class="cards-list-description">${description}</div>`, doc),
@@ -196,8 +222,8 @@ function createCardListItem(cardElement, doc) {
     inner.appendChild(content);
   }
 
-  if (buttonEl) {
-    const buttonLink = buttonEl.cloneNode(true);
+  if (actionTypeText === 'default' && defaultButton) {
+    const buttonLink = defaultButton.cloneNode(true);
     buttonLink.removeAttribute('data-modal');
 
     if (enableOverlayModal && overlayHref) {
@@ -210,6 +236,27 @@ function createCardListItem(cardElement, doc) {
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
     buttonWrapper.appendChild(buttonLink);
     inner.appendChild(buttonWrapper);
+  }
+
+  if (actionTypeText === 'multiple-download' && multipleDownloadLinks) {
+    const temp = createElementFromHTML(`<div>${multipleDownloadLinks}</div>`, doc);
+    const buttonWrapper = createElementFromHTML(
+      '<div class="cards-list-button cards-list-downloads"></div>',
+      doc,
+    );
+
+    temp.querySelectorAll('a').forEach((anchor) => {
+      const downloadLink = createDownloadLink(anchor, doc);
+      if (downloadLink) {
+        downloadLink.classList.add('multiple-download-wrapper');
+        downloadLink.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
+        buttonWrapper.appendChild(downloadLink);
+      }
+    });
+
+    if (buttonWrapper.children.length) {
+      inner.appendChild(buttonWrapper);
+    }
   }
 
   if (isCardClickable && cardLinkHref) {
