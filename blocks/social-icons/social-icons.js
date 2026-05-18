@@ -143,7 +143,16 @@ export default function decorate(block) {
       e.preventDefault();
       e.stopPropagation();
 
-      window.open(a.href, 'share', 'width=600,height=400');
+      const pageUrl = encodeURIComponent(window.location.href);
+      let shareUrl = a.href;
+      if (a.classList.contains('platform-facebook')) {
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+      } else if (a.classList.contains('platform-x')) {
+        shareUrl = `https://x.com/intent/post?url=${pageUrl}`;
+      } else if (a.classList.contains('platform-line')) {
+        shareUrl = `https://social-plugins.line.me/lineit/share?url=${pageUrl}`;
+      }
+      window.open(shareUrl, 'share', 'width=600,height=400');
     });
   });
 
