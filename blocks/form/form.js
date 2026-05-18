@@ -103,6 +103,17 @@ function createRadioOrCheckboxGroup(fd) {
   if (fd.tooltip) {
     wrapper.title = stripTags(fd.tooltip, '');
   }
+  // Apply style variant classes from the model's style property (set via Universal Editor)
+  const styleVariant = fd.properties?.style;
+  if (styleVariant) {
+    const styleClasses = Array.isArray(styleVariant)
+      ? styleVariant
+      : styleVariant.split(' ');
+    styleClasses
+      .map((cls) => cls.trim())
+      .filter((cls) => cls.length > 0)
+      .forEach((cls) => wrapper.classList.add(cls));
+  }
   setConstraintsMessage(wrapper, fd.constraintMessages);
   return wrapper;
 }
