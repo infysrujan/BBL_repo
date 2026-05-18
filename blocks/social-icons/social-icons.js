@@ -59,13 +59,8 @@ export default function decorate(block) {
     moveInstrumentation(row, li);
     const a = document.createElement('a');
 
-    if (url) {
-      a.href = url;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-    } else {
-      a.href = '#';
-    }
+    a.href = '#';
+    if (url) a.dataset.shareHref = url;
     a.className = `platform-${platform}`;
     a.setAttribute('aria-label', `Share on ${platform}`);
 
@@ -144,7 +139,7 @@ export default function decorate(block) {
       e.stopPropagation();
 
       const pageUrl = encodeURIComponent(window.location.href);
-      let shareUrl = a.href;
+      let shareUrl = a.dataset.shareHref || '';
       if (a.classList.contains('platform-facebook')) {
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
       } else if (a.classList.contains('platform-x')) {
