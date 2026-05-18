@@ -59,6 +59,7 @@
       "promo-card-listing",
       "top-promotional-cards",
       "multi-column-tiles",
+      "stock-ticker",
       "cookie-alert",
       "cookie-modal"
     ]
@@ -171,7 +172,10 @@
       "text-input",
       "tnc",
       "wizard",
-      "range"
+      "range",
+      "radio-tabbed",
+      "menu-card-actions",
+      "button"
     ]
   },
   {
