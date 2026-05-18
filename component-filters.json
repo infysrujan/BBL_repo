@@ -174,7 +174,9 @@
       "tnc",
       "wizard",
       "range",
-      "radio-tabbed"
+      "radio-tabbed",
+      "menu-card-actions",
+      "button"
     ]
   },
   {
