@@ -148,9 +148,9 @@ export default function decorate(block) {
       if (a.classList.contains('platform-facebook')) {
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
       } else if (a.classList.contains('platform-x')) {
-        shareUrl = `https://x.com/intent/post?url=${pageUrl}`;
+        shareUrl = `https://x.com/intent/tweet?url=${pageUrl}`;
       } else if (a.classList.contains('platform-line')) {
-        shareUrl = `https://social-plugins.line.me/lineit/share?url=${pageUrl}`;
+        shareUrl = `https://lineit.line.me/share/ui?url=${pageUrl}`;
       }
       window.open(shareUrl, 'share', 'width=600,height=400');
     });
