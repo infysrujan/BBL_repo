@@ -128,6 +128,10 @@ export default function decorate(block) {
     const clickedShareLink = e.target.closest('.icons-container a');
     const clickedClose = e.target.classList.contains('icon-close');
 
+    if (clickedClose) {
+      e.preventDefault();
+    }
+
     if (!active) {
       block.classList.add('active');
     } else if (clickedClose || !clickedShareLink) {
