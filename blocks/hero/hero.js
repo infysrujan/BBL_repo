@@ -31,8 +31,9 @@ function lazyLoadThumbnails(block) {
   const outer = block.querySelector('.hero-banner-thumbnail-outer');
   if (!outer) return;
   function onScroll() {
+    if (window.scrollY <= 0) return;
     outer.classList.add('hero-banner-thumbnail-outer-active');
-    window.removeEventListener('scroll', onScroll, { passive: true });
+    window.removeEventListener('scroll', onScroll);
   }
   window.addEventListener('scroll', onScroll, { passive: true });
 }
