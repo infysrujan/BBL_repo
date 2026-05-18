@@ -83,7 +83,7 @@
 
 /* Mobile / tablet: ~1.286 rem matches original site's 1.286em at this viewport */
 .credit-card-selector .filter-group-title {
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-primary);
   font-size: 1.286rem;
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
@@ -92,7 +92,7 @@
 
 /* Hint text shown alongside the Lifestyles heading */
 .credit-card-selector .filter-group-hint {
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1rem;
   color: var(--bbl-color-black);
 }
 
@@ -305,10 +305,10 @@
   justify-content: center;
   height: 2.75rem;
   width: auto;
-  min-width: 9rem;
+  min-width: 9.6875rem;
   padding: 0 var(--bbl-space-400);
   border-radius: 0.4375rem;
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b1);
   font-weight: var(--bbl-font-weight-regular);
   cursor: pointer;
@@ -773,7 +773,7 @@
   }
 
   .credit-card-selector .option-list-three-column .option-item {
-    flex: 0 0 calc(33.333% - 0.1875rem);
+    flex: 0 0 8.1875rem;
   }
 
   /* Actions: right-aligned on tablet+ */
