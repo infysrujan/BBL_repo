@@ -135,21 +135,6 @@ function getDocumentLangFromPath(pathname) {
   return 'th';
 }
 
-function decorateOgImage() {
-  const ogImagePath = getMetadata('ogImage') || getMetadata('ogimage');
-  if (!ogImagePath) return;
-
-  const url = ogImagePath.startsWith('http') ? ogImagePath : `${window.location.origin}${ogImagePath}`;
-
-  let meta = document.head.querySelector('meta[property="og:image"]');
-  if (!meta) {
-    meta = document.createElement('meta');
-    meta.setAttribute('property', 'og:image');
-    document.head.append(meta);
-  }
-  meta.setAttribute('content', url);
-}
-
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -157,7 +142,6 @@ function decorateOgImage() {
 async function loadEager(doc) {
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   decorateTemplateAndTheme();
-  decorateOgImage();
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
