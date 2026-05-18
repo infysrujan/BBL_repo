@@ -6049,10 +6049,14 @@
         "component": "multiselect",
         "name": "style",
         "label": "Style Variant",
-        "description": "Additional CSS classes for styling the radio group. Variants can be combined (e.g. pill + vertical).",
+        "description": "Select additional CSS style classes for the radio group. Leave empty (no selection) to use the default radio button appearance.",
         "valueType": "string",
         "required": false,
         "options": [
+          {
+            "name": "— Default (standard radio buttons) —",
+            "value": ""
+          },
           {
             "name": "Pill",
             "value": "pill"
