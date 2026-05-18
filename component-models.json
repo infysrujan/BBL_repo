@@ -67,6 +67,13 @@
         "value": true,
         "label": "Breadcrumb",
         "valueType": "boolean"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "ogImage",
+        "label": "OG Image",
+        "description": "Select the image asset to use for the Open Graph og:image meta tag."
       }
     ]
   },
@@ -7343,6 +7350,41 @@
     ]
   },
   {
+    "id": "radio-tabbed",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style Variant",
+        "description": "Visual style for the radio selection. Variants can be combined (e.g. pill + vertical).",
+        "valueType": "string",
+        "required": false,
+        "options": [
+          {
+            "name": "Pill",
+            "value": "pill"
+          },
+          {
+            "name": "Segment",
+            "value": "segment"
+          },
+          {
+            "name": "Outlined",
+            "value": "outlined"
+          },
+          {
+            "name": "Filled",
+            "value": "filled"
+          },
+          {
+            "name": "Vertical",
+            "value": "vertical"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "range",
     "fields": [
       {
@@ -10775,41 +10817,6 @@
         "validation": {
           "customErrorMsg": "Please enter a valid end date and time for unpublishing the content"
         }
-      }
-    ]
-  },
-  {
-    "id": "radio-tabbed",
-    "fields": [
-      {
-        "component": "multiselect",
-        "name": "style",
-        "label": "Style Variant",
-        "description": "Visual style for the radio selection. Variants can be combined (e.g. pill + vertical).",
-        "valueType": "string",
-        "required": false,
-        "options": [
-          {
-            "name": "Pill",
-            "value": "pill"
-          },
-          {
-            "name": "Segment",
-            "value": "segment"
-          },
-          {
-            "name": "Outlined",
-            "value": "outlined"
-          },
-          {
-            "name": "Filled",
-            "value": "filled"
-          },
-          {
-            "name": "Vertical",
-            "value": "vertical"
-          }
-        ]
       }
     ]
   }
