@@ -1,12 +1,9 @@
-const MARKET_SUMMARY_URL = [
-  'https://publish-p185039-e1938068.adobeaemcloud.com',
-  '/api/MarketService/GetMarketsum',
-].join('');
+import { fetchConfigs } from '../../scripts/config.js';
 
-const MARKET_LOAN_RATE_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/interestratesservice/GetLoanRate';
-const MARKET_DEPOSIT_RATE_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/interestratesservice/GetDepositRate';
 const ALL_MAPPED_CODES = new Set([
   'RR',
+  'DR',
+  'LR',
   'USIR',
   'MMR',
   'USTS',
@@ -84,8 +81,8 @@ export function buildMarketReportModel(payload) {
   };
 }
 
-async function fetchMarketSummary() {
-  const response = await fetch(MARKET_SUMMARY_URL);
+async function fetchMarketSummary(url) {
+  const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`MarketService GetMarketsum failed: ${response.status}`);
   }
@@ -156,7 +153,13 @@ function padToColumnCount(values, colCount) {
 function fillInterestRateRowCells(tr, texts) {
   const cells = tr.querySelectorAll('td');
   texts.forEach((text, j) => {
-    if (cells[j]) cells[j].textContent = text;
+    if (cells[j]) {
+      if (j === 1) {
+        cells[j].textContent = `${text}%`;
+      } else {
+        cells[j].textContent = text;
+      }
+    }
   });
 }
 
@@ -166,9 +169,14 @@ function fillInterestRateRowCells(tr, texts) {
  */
 function createInterestRateRow(texts) {
   const tr = document.createElement('tr');
-  texts.forEach((text) => {
+  texts.forEach((text, i) => {
     const td = document.createElement('td');
-    td.textContent = text;
+    if (i === 1) {
+      td.textContent = `${text}%`;
+    } else {
+      td.textContent = text;
+    }
+    // td.textContent = text;
     tr.appendChild(td);
   });
   return tr;
@@ -269,7 +277,11 @@ function populateHeaderClassTable(table, tableId, tableData) {
     for (let j = 1; j < tds.length; j += 1) {
       const dataIndex = i * (tds.length - 1) + (j - 1);
       if (tableData[dataIndex]) {
-        tds[j].textContent = tableData[dataIndex].mktvalue;
+        if (tableId === 'GTHB' || tableId === 'USTS' || tableId === 'TSB') {
+          tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
+        } else {
+          tds[j].textContent = tableData[dataIndex].mktvalue;
+        }
       }
     }
   });
@@ -295,7 +307,13 @@ function populateStandardLayoutTable(table, tableId, tableData) {
       for (let j = 1; j < tds.length; j += 1) {
         const dataIndex = (i * (tds.length - 1)) + (j - 1) + 1;
         if (tableData[dataIndex]) {
-          tds[j].textContent = tableData[dataIndex].mktvalue;
+          if (j === 1) {
+            tds[j].textContent = `${tableData[dataIndex].mktvalue} $/Barrel`;
+          } else if (j === 2) {
+            tds[j].textContent = `${tableData[dataIndex].mktvalue} $/Ounce`;
+          } else {
+            tds[j].textContent = tableData[dataIndex].mktvalue;
+          }
         }
       }
     });
@@ -307,7 +325,13 @@ function populateStandardLayoutTable(table, tableId, tableData) {
     for (let j = 1; j < tds.length; j += 1) {
       const dataIndex = i * (tds.length - 1) + (j - 1);
       if (tableData[dataIndex]) {
-        tds[j].textContent = tableData[dataIndex].mktvalue;
+        if (tableId === 'MMR' || tableId === 'USIR') {
+          tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
+        } else if (tableId === 'RR') {
+          tds[j].textContent = `${tableData[dataIndex].mktvalue} Baht`;
+        } else {
+          tds[j].textContent = tableData[dataIndex].mktvalue;
+        }
       }
     }
   });
@@ -342,11 +366,13 @@ function appendMktValuesAsHtml(container, rows) {
   rows.forEach((r) => {
     const html = r?.mktvalue?.trim();
     if (!html) return;
+    // Insert a space before the very first non-empty value
     if (nonEmptyIndex === 0) {
       container.append(document.createTextNode(' '));
-    } else if (nonEmptyIndex === 1) {
+    } else if (nonEmptyIndex === 1) { // Insert a line break before the second non-empty value
       container.append(document.createElement('br'));
     }
+    // Parse the HTML string and append its nodes
     const tpl = document.createElement('template');
     tpl.innerHTML = html;
     container.append(tpl.content);
@@ -359,10 +385,11 @@ function appendMktValuesAsHtml(container, rows) {
  * @param {HTMLElement} tableWrapper
  * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
  */
-export function populateFxmo(tableWrapper, tableData) {
+export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
   const row = tableWrapper.children[0];
   if (!row) return;
   appendMktValuesAsHtml(row, tableData.FXMO);
+  wrapperDiv.appendChild(row);
 }
 
 /**
@@ -370,10 +397,11 @@ export function populateFxmo(tableWrapper, tableData) {
  * @param {HTMLElement} tableWrapper
  * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
  */
-export function populateTbmo(tableWrapper, tableData) {
-  const row = tableWrapper.children[1];
+export function populateTbmo(tableWrapper, tableData, wrapperDiv) {
+  const row = tableWrapper.children[0];
   if (!row) return;
   appendMktValuesAsHtml(row, tableData.TBMO);
+  wrapperDiv.appendChild(row);
 }
 
 /**
@@ -472,30 +500,288 @@ function applyTableWrapperPageLayout(tableWrapper) {
 }
 
 /**
- * @param {HTMLElement} block
+ * Month names for the market report date
  */
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+/**
+ * Convert API date `DD/MM/YYYY` to display form `D Month YYYY`.
+ * @param {string | null | undefined} mktdate
+ * @returns {string}
+ */
+function formatMarketReportDate(mktdate) {
+  if (!mktdate) return '';
+  const parts = mktdate.split('/');
+  if (parts.length !== 3) return mktdate;
+  const [day, month, year] = parts;
+  const monthIndex = parseInt(month, 10) - 1;
+  if (monthIndex < 0 || monthIndex > 11) return mktdate;
+  return `${parseInt(day, 10)} ${MONTH_NAMES[monthIndex]} ${year}`;
+}
+
+/**
+ * @returns {Promise<{
+ *   model: ReturnType<typeof buildMarketReportModel>,
+ *   loanRows: unknown[] | null,
+ *   depositRows: unknown[] | null,
+ * }>}
+ */
+async function fetchMarketReportData() {
+  const [configs] = await Promise.all([fetchConfigs()]);
+  const [summaryPayload, loanRows, depositRows] = await Promise.all([
+    fetchMarketSummary(configs.marketReportSummaryUrl),
+    fetchInterestRateArray(configs.marketReportLoanRateUrl),
+    fetchInterestRateArray(configs.marketReportDepositRateUrl),
+  ]);
+  return {
+    model: buildMarketReportModel(summaryPayload),
+    loanRows,
+    depositRows,
+  };
+}
+
+/* Get the first tab panel */
+/** @returns {HTMLElement | null} */
+function getFirstTabPanel() {
+  return document.querySelector('[role="tabpanel"]');
+}
+
+/* Style the headings before the button containers (Title & More) */
+/** @param {ParentNode} panel */
+function styleHeadingsBeforeButtonContainers(panel) {
+  panel.querySelectorAll('.button-container').forEach((btnContainer) => {
+    const prevElem = btnContainer.previousElementSibling;
+    if (prevElem?.tagName?.match(/^H[1-6]$/)) {
+      prevElem.style.display = 'inline-block';
+    }
+  });
+}
+/**
+ * Style the text-small class to the paragraphs following the tables
+ */
+/** @param {ParentNode} panel */
+function applyTextSmallToTableFollowParagraphs(panel) {
+  const followingPTags = panel.querySelectorAll('.table + p');
+  followingPTags.forEach((pTag, idx) => {
+    if (idx < followingPTags.length - 1) {
+      pTag.classList.add('text-small');
+    }
+  });
+}
+
+const MARKET_REPORT_PRINT_AREA_ID = 'market-report-print-area';
+
+/**
+ * Snapshot logo, hero copy, and left column into a print-only root, then call print.
+ * @param {HTMLElement | null | undefined} tableWrapper
+ */
+function printMarketReport(tableWrapper) {
+  document.getElementById(MARKET_REPORT_PRINT_AREA_ID)?.remove();
+
+  const logoImg = document.querySelector('.brand-logo-image');
+  const titleP = document.querySelector('main > section > .default-content-wrapper p') ?? document.querySelector('main > .section > .default-content-wrapper p');
+  const descriptionP = document.querySelector('main > .section > .default-content-wrapper p:nth-of-type(2)') ?? document.querySelector('main > section > .default-content-wrapper p:nth-of-type(2)');
+
+  const leftCol = tableWrapper?.querySelector(
+    '.market-report-col.market-report-col--left',
+  );
+
+  const area = document.createElement('div');
+  area.id = MARKET_REPORT_PRINT_AREA_ID;
+  area.className = 'market-report-print-area';
+  area.setAttribute('aria-hidden', 'true');
+
+  const header = document.createElement('div');
+  header.className = 'market-report-print-header';
+
+  if (logoImg) {
+    const logoWrap = document.createElement('div');
+    logoWrap.className = 'market-report-print-logo';
+    const pic = logoImg.closest('picture');
+    logoWrap.appendChild((pic ?? logoImg).cloneNode(true));
+    header.appendChild(logoWrap);
+  }
+
+  if (titleP) {
+    const t = document.createElement('p');
+    t.className = 'market-report-print-title';
+    t.textContent = titleP.textContent;
+    header.appendChild(t);
+  }
+
+  if (descriptionP) {
+    const d = document.createElement('p');
+    d.className = 'market-report-print-description';
+    d.textContent = descriptionP.textContent;
+    header.appendChild(d);
+  }
+
+  area.appendChild(header);
+
+  if (leftCol) {
+    const body = document.createElement('div');
+    body.className = 'market-report-print-body';
+    const leftClone = leftCol.cloneNode(true);
+    leftClone.querySelectorAll('.print-button').forEach((el) => el.remove());
+    body.appendChild(leftClone);
+    area.appendChild(body);
+  }
+
+  document.body.appendChild(area);
+
+  let cleaned = false;
+  const cleanup = () => {
+    if (cleaned) return;
+    cleaned = true;
+    document.getElementById(MARKET_REPORT_PRINT_AREA_ID)?.remove();
+    window.removeEventListener('afterprint', cleanup);
+  };
+  window.addEventListener('afterprint', cleanup);
+
+  window.print();
+
+  window.setTimeout(() => {
+    if (!cleaned && document.getElementById(MARKET_REPORT_PRINT_AREA_ID)) cleanup();
+  }, 3000);
+}
+
+/* Create the top row of the market report */
+/**
+ * @param {string} formattedDate
+ * @param {HTMLElement} tableWrapper
+ * @returns {HTMLDivElement}
+ */
+function createMarketReportTopRow(formattedDate, tableWrapper) {
+  const topRow = document.createElement('div');
+  topRow.className = 'market-report-top-row';
+
+  const dateDiv = document.createElement('div');
+  dateDiv.className = 'market-report-date';
+  dateDiv.textContent = formattedDate;
+
+  const printButton = document.createElement('a');
+  printButton.className = 'print-button icon-print';
+  printButton.href = '#';
+  printButton.textContent = 'Print';
+  printButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    printMarketReport(tableWrapper);
+  });
+
+  topRow.append(dateDiv, printButton);
+  return topRow;
+}
+
+/* Decorate the table wrapper */
+/**
+ * @param {HTMLElement} tableWrapper
+ * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} byMktCode
+ * @param {HTMLDivElement} topRow
+ */
+function decorateTableWrapper(tableWrapper, byMktCode, topRow) {
+  const writtenBy = document.createElement('div');
+  writtenBy.classList.add('market-report-written-by');
+  populateFxmo(tableWrapper, byMktCode, writtenBy);
+  populateTbmo(tableWrapper, byMktCode, writtenBy);
+  applyTableWrapperPageLayout(tableWrapper);
+
+  const leftCol = tableWrapper.querySelector('.market-report-col--left');
+  if (!leftCol) return;
+
+  leftCol.insertBefore(writtenBy, leftCol.firstChild);
+  leftCol.insertBefore(topRow, writtenBy);
+}
+
+/* Populate the panel tables */
+/**
+ * @param {ParentNode} panel
+ * @param {ReturnType<typeof buildMarketReportModel>} model
+ * @param {unknown[] | null} loanRows
+ * @param {unknown[] | null} depositRows
+ */
+function populatePanelTables(panel, model, loanRows, depositRows) {
+  populateTablesInPanel(panel, model.byMktCode);
+  populateLoanAndDepositTables(panel, loanRows, depositRows);
+}
+
+function createMarketReportColumns({
+  leftHeading,
+  leftTable,
+  rightHeading,
+  rightTable,
+  rightPTag,
+  afterElement,
+}) {
+  const columnsWrapper = document.createElement('div');
+  columnsWrapper.classList.add('market-report-col');
+  columnsWrapper.style.display = 'flex';
+  columnsWrapper.style.gap = '2rem';
+
+  const leftCol = document.createElement('div');
+  leftCol.classList.add('market-report-col--left');
+  leftCol.style.flex = '2 1 0';
+
+  const rightCol = document.createElement('div');
+  rightCol.classList.add('market-report-col--right');
+  rightCol.style.flex = '2 1 0';
+
+  if (leftHeading) leftCol.appendChild(leftHeading);
+  if (leftTable) leftCol.appendChild(leftTable);
+
+  if (rightHeading) rightCol.appendChild(rightHeading);
+  if (rightTable) rightCol.appendChild(rightTable);
+  if (rightPTag) rightCol.appendChild(rightPTag);
+
+  columnsWrapper.appendChild(leftCol);
+  columnsWrapper.appendChild(rightCol);
+
+  if (afterElement && afterElement.parentNode) {
+    afterElement.after(columnsWrapper);
+  }
+}
+
+/* Setup the Othbis and Gthb columns */
+/** @param {ParentNode} panel */
+function setupOthbisGthbColumns(panel) {
+  const othbisTable = panel.querySelector('table#othbis');
+  const gthbTable = panel.querySelector('table#gthb');
+  const insertAfter = panel.querySelector('table#wgs')?.parentElement;
+  if (!othbisTable || !gthbTable || !insertAfter) return;
+
+  const othbisParent = othbisTable.parentElement;
+  const gthbParent = gthbTable.parentElement;
+  createMarketReportColumns({
+    leftHeading: othbisParent?.previousElementSibling ?? null,
+    leftTable: othbisParent,
+    rightHeading: gthbParent?.previousElementSibling ?? null,
+    rightTable: gthbParent,
+    rightPTag: gthbParent?.nextElementSibling ?? null,
+    afterElement: insertAfter,
+  });
+}
+
 export default async function decorate() {
   try {
-    const [summaryPayload, loanRows, depositRows] = await Promise.all([
-      fetchMarketSummary(),
-      fetchInterestRateArray(MARKET_LOAN_RATE_URL),
-      fetchInterestRateArray(MARKET_DEPOSIT_RATE_URL),
-    ]);
-    const model = buildMarketReportModel(summaryPayload);
-    const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
-    const firstPanel = tabPanels[0];
+    const panel = getFirstTabPanel();
+    if (!panel) return;
 
-    if (firstPanel) {
-      populateTablesInPanel(firstPanel, model.byMktCode);
-      populateLoanAndDepositTables(firstPanel, loanRows, depositRows);
-    }
+    const { model, loanRows, depositRows } = await fetchMarketReportData();
+    const formattedDate = formatMarketReportDate(model.mktdate);
 
-    const tableWrapper = firstPanel?.querySelector('.table-wrapper');
-    if (tableWrapper) {
-      populateFxmo(tableWrapper, model.byMktCode);
-      populateTbmo(tableWrapper, model.byMktCode);
-      applyTableWrapperPageLayout(tableWrapper);
-    }
+    populatePanelTables(panel, model, loanRows, depositRows);
+
+    styleHeadingsBeforeButtonContainers(panel);
+    applyTextSmallToTableFollowParagraphs(panel);
+    setupOthbisGthbColumns(panel);
+
+    const tableWrapper = panel.querySelector('.table-wrapper');
+    if (!tableWrapper) return;
+
+    const topRow = createMarketReportTopRow(formattedDate, tableWrapper);
+    decorateTableWrapper(tableWrapper, model.byMktCode, topRow);
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('market-report:', err);
