@@ -1,5 +1,5 @@
-.market-report-col--left :is(h1, h2, h3, h4, h5, h6),
-.market-report-col--right :is(h1, h2, h3, h4, h5, h6) {
+.market-report-col-left :is(h1, h2, h3, h4, h5, h6),
+.market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
   font-size: 1rem;
   line-height: 1.375rem;
   font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
@@ -17,7 +17,7 @@
   color: var(--bbl-color-black);
   font-size: 1.5rem;
   line-height: 1.625rem;
-  font-family: BangkokBank-Medium;
+  font-family: BangkokBank-Medium, sans-serif;
   font-weight: 400;
 }
 
@@ -26,7 +26,7 @@
 }
 
 a.print-button.icon-print {
-  font: 1rem BangkokBank-Medium;
+  font: 1rem BangkokBank-Medium, sans-serif;
   color: var(--bbl-color-black);
   text-transform: uppercase;
   display: block;
@@ -49,15 +49,15 @@ a.print-button.icon-print::before {
   width: 25%;
 }
 
+.market-report-page .table table tr td:first-child {
+  text-align: left;
+  width: 50%;
+}
+
 .market-report-page .table table[class*="header-"] tr.header-row td {
   height: 2.875rem;
   color: var(--bbl-color-black);
   font-weight: 700;
-}
-
-.market-report-page .table table tr td:first-child {
-  text-align: left;
-  width: 50%;
 }
 
 .market-report-page .table.block {
@@ -65,7 +65,7 @@ a.print-button.icon-print::before {
 }
 
 .market-report-page .button-container a {
-  font: 1rem BangkokBank-Medium;
+  font: 1rem BangkokBank-Medium, sans-serif;
   color: var(--bbl-color-black);
 }
 
@@ -85,7 +85,7 @@ h4#deposit-rate {
 p.text-small {
   font-size: 0.6875rem;
   line-height: 1.63;
-  letter-spacing: -0.00625rem;
+  letter-spacing: -0.0063rem;
   margin-block: -1.875rem 1.875rem;
 }
 
@@ -158,7 +158,7 @@ p.text-small {
     width: 100%;
   }
 
-  .market-report-print-body>.market-report-col--left {
+  .market-report-print-body>.market-report-col-left {
     float: none;
     width: 100%;
     flex: none !important;
@@ -197,6 +197,6 @@ p.text-small {
 
   .market-report-print-body .market-report-page .table.block {
     margin: 0.75rem 0 1.25rem;
-    page-break-inside: avoid;
+    break-inside: avoid;
   }
 }

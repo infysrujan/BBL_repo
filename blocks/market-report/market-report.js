@@ -455,12 +455,12 @@ function buildTwoColumnPageLayout(leftNodes, rightNodes) {
   pageLayout.classList.add('market-report-page');
 
   const leftCol = document.createElement('div');
-  leftCol.className = 'market-report-col market-report-col--left';
+  leftCol.className = 'market-report-col market-report-col-left';
   leftCol.style.flex = '4 1 0';
   leftNodes.forEach((node) => leftCol.appendChild(node));
 
   const rightCol = document.createElement('div');
-  rightCol.className = 'market-report-col market-report-col--right';
+  rightCol.className = 'market-report-col market-report-col-right';
   rightCol.style.flex = '1 1 0';
   rightNodes.forEach((node) => rightCol.appendChild(node));
 
@@ -586,7 +586,7 @@ function printMarketReport(tableWrapper) {
   const descriptionP = document.querySelector('main > .section > .default-content-wrapper p:nth-of-type(2)') ?? document.querySelector('main > section > .default-content-wrapper p:nth-of-type(2)');
 
   const leftCol = tableWrapper?.querySelector(
-    '.market-report-col.market-report-col--left',
+    '.market-report-col.market-report-col-left',
   );
 
   const area = document.createElement('div');
@@ -688,7 +688,7 @@ function decorateTableWrapper(tableWrapper, byMktCode, topRow) {
   populateTbmo(tableWrapper, byMktCode, writtenBy);
   applyTableWrapperPageLayout(tableWrapper);
 
-  const leftCol = tableWrapper.querySelector('.market-report-col--left');
+  const leftCol = tableWrapper.querySelector('.market-report-col-left');
   if (!leftCol) return;
 
   leftCol.insertBefore(writtenBy, leftCol.firstChild);
@@ -721,11 +721,11 @@ function createMarketReportColumns({
   columnsWrapper.style.gap = '2rem';
 
   const leftCol = document.createElement('div');
-  leftCol.classList.add('market-report-col--left');
+  leftCol.classList.add('market-report-col-left');
   leftCol.style.flex = '2 1 0';
 
   const rightCol = document.createElement('div');
-  rightCol.classList.add('market-report-col--right');
+  rightCol.classList.add('market-report-col-right');
   rightCol.style.flex = '2 1 0';
 
   if (leftHeading) leftCol.appendChild(leftHeading);
