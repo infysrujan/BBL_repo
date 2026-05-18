@@ -3443,6 +3443,33 @@
       },
       {
         "component": "tab",
+        "label": "Style",
+        "name": "style"
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Button Style",
+        "description": "Visual style variant for the button, extending the Sites button model properties",
+        "valueType": "string",
+        "value": "primary",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "tab",
         "label": "Help Content",
         "name": "help"
       },
@@ -6017,6 +6044,44 @@
           }
         ],
         "value": "default"
+      },
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style Variant",
+        "description": "Additional CSS classes for styling the radio group. Variants can be combined (e.g. pill + vertical).",
+        "valueType": "string",
+        "required": false,
+        "options": [
+          {
+            "name": "Pill",
+            "value": "pill"
+          },
+          {
+            "name": "Segment",
+            "value": "segment"
+          },
+          {
+            "name": "Outlined",
+            "value": "outlined"
+          },
+          {
+            "name": "Filled",
+            "value": "filled"
+          },
+          {
+            "name": "Vertical",
+            "value": "vertical"
+          },
+          {
+            "name": "Icon",
+            "value": "icon"
+          },
+          {
+            "name": "Button",
+            "value": "button"
+          }
+        ]
       },
       {
         "component": "select",
@@ -10775,41 +10840,6 @@
         "validation": {
           "customErrorMsg": "Please enter a valid end date and time for unpublishing the content"
         }
-      }
-    ]
-  },
-  {
-    "id": "radio-tabbed",
-    "fields": [
-      {
-        "component": "multiselect",
-        "name": "style",
-        "label": "Style Variant",
-        "description": "Visual style for the radio selection. Variants can be combined (e.g. pill + vertical).",
-        "valueType": "string",
-        "required": false,
-        "options": [
-          {
-            "name": "Pill",
-            "value": "pill"
-          },
-          {
-            "name": "Segment",
-            "value": "segment"
-          },
-          {
-            "name": "Outlined",
-            "value": "outlined"
-          },
-          {
-            "name": "Filled",
-            "value": "filled"
-          },
-          {
-            "name": "Vertical",
-            "value": "vertical"
-          }
-        ]
       }
     ]
   }
