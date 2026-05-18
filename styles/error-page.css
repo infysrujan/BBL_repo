@@ -46,6 +46,11 @@
 
 .error-page .default-content-wrapper {
     text-align: center;
+    padding-top:6.25rem;
+}
+.error-page .default-content-wrapper:has(.button-container){
+    padding-top: 0;
+    padding-bottom: 6.25rem;
 }
 
 .error-page .default-content-wrapper > .button-container {
