@@ -319,6 +319,15 @@
         color: var(--bbl-color-black);
         padding: var(--bbl-space-200);
     }
+
+    .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-img) .hero-banner-content.content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        color: var(--bbl-color-white);
+        padding: var(--bbl-space-200) var(--bbl-space-200) var(--bbl-space-300);
+    }
 }
 
 @media (width > 47.5rem) {
