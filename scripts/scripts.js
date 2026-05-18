@@ -139,9 +139,7 @@ function decorateOgImage() {
   const ogImagePath = getMetadata('ogImage') || getMetadata('ogimage');
   if (!ogImagePath) return;
 
-  const smartCrop = getMetadata('ogImageSmartCrop') || getMetadata('ogimagesmrtcrop');
-  let url = ogImagePath.startsWith('http') ? ogImagePath : `${window.location.origin}${ogImagePath}`;
-  if (smartCrop) url += `?smartcrop=${smartCrop}`;
+  const url = ogImagePath.startsWith('http') ? ogImagePath : `${window.location.origin}${ogImagePath}`;
 
   let meta = document.head.querySelector('meta[property="og:image"]');
   if (!meta) {
