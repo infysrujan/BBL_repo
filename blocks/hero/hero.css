@@ -347,6 +347,12 @@
   padding: var(--bbl-space-200) var(--bbl-space-200) var(--bbl-space-300);
 }
 
+ :is(.hero-banner-private-wealth-banking, .hero-banner-simple)
+.hero-banner-content-group .button-container .button-m {
+    min-width: 8.4375rem;
+    width: 48%;
+}
+
 @media (width > 47.5rem) {
   .hero-banner::after {
     width: calc(100% - 6rem);
@@ -421,9 +427,10 @@
     margin-bottom: 0;
   }
 
-  .hero-banner-content-group .hero-banner-private-wealth-banking .button-container .button-m {
-    max-width: 11.25rem;
-  }
+  :is(.hero-banner-private-wealth-banking, .hero-banner-simple)
+.hero-banner-content-group .button-container .button-m {
+    min-width: 11.25rem;
+}
 }
 
 @media (width > 64rem) {
