@@ -19,16 +19,13 @@
   letter-spacing: -0.0125rem;
 }
 
-:lang(th) {
-  .menu-card-actions-container .default-content-wrapper :is(h1) {
-    line-height: 2.4375rem;
-  }
-
-  .menu-card-actions-container .default-content-wrapper :is(h2) {
-    line-height: 2.0625rem;
-  }
+.menu-card-actions-container .default-content-wrapper :is(h1):lang(th) {
+  line-height: 2.4375rem;
 }
 
+.menu-card-actions-container .default-content-wrapper :is(h2):lang(th) {
+  line-height: 2.0625rem;
+}
 
 .menu-card-actions-container .default-content-wrapper .default-content-wrapper-text {
   font-weight: var(--bbl-font-family-regular);
