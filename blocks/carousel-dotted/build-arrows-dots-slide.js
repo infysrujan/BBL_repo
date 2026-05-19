@@ -5,13 +5,14 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * Cell layout (carousel-dotted-slide-arrows):
  *  cells[0] = variant (hidden), cells[1] = slideType (select)
  * slideType values:
- *   withDefaultImage: 0:variant, 1:slideType, 2:defaultImage, 3:titleDefaultImage,
- *                     4:descriptionDefaultImage,
- *                     5:ctaLink (merged — aem-content+text+text+select → 1 cell)
+ *   withDefaultImage: 0:variant, 1:slideType, 2:defaultImage, 3:titleDefaultImage (RTE),
+ *                     4:stepText1, 5:description1, 6:stepText2, 7:description2,
+ *                     8:ctaLink (merged — aem-content+text+text+select → 1 cell)
  *   withCircularImage: 0:variant, 1:slideType,
- *                      2-5: withDefaultImage fields (reserved, empty),
- *                      6:circularImage, 7:titleCircularImage, 8:descriptionCircularImage,
- *                      9:link (merged — AEM UE merges link+linkText+linkTitle+linkType into 1 cell)
+ *                      2-8: withDefaultImage fields (reserved, empty),
+ *                      9:circularImage, 10:titleCircularImage, 11:descriptionCircularImage,
+ *                      12:link (merged — AEM UE merges link+linkText+linkTitle+linkType into 1
+ *                              cell)
  */
 export default function buildSlideArrowsandDots(row, index) {
   const cells = [...row.children];
@@ -26,8 +27,8 @@ export default function buildSlideArrowsandDots(row, index) {
   if (slideType === 'simpleCarousel' || slideType === 'onlyImage') {
     slide.className = 'carousel-dotted-item simple-carousel item';
 
-    // onlyImage (cell 10), onlyImageAlt (cell 11)
-    const onlyImageCell = cells[10];
+    // onlyImage (cell 13), onlyImageAlt (cell 14)
+    const onlyImageCell = cells[13];
 
     const picture = onlyImageCell?.querySelector('picture');
     if (picture) {
@@ -40,11 +41,11 @@ export default function buildSlideArrowsandDots(row, index) {
   if (slideType === 'withCircularImage') {
     slide.className = 'carousel-dotted-item with-circular-image item';
 
-    // circularImage (cell 6), title (cell 7), description (cell 8), link (cell 9)
-    const circularImageCell = cells[6];
-    const titleCell = cells[7];
-    const descriptionCell = cells[8];
-    const linkCell = cells[9];
+    // circularImage (cell 9), title (cell 10), description (cell 11), link (cell 12)
+    const circularImageCell = cells[9];
+    const titleCell = cells[10];
+    const descriptionCell = cells[11];
+    const linkCell = cells[12];
 
     // image
     const imageContainer = document.createElement('div');
@@ -91,11 +92,15 @@ export default function buildSlideArrowsandDots(row, index) {
   if (slideType === 'withDefaultImage') {
     slide.className = 'carousel-dotted-item with-default-image item has-caption bgd-white';
 
-    // defaultImage (cell 2), title (cell 3), description (cell 4), ctaLink (cell 5)
+    // defaultImage (cell 2), title RTE (cell 3), stepText1 (cell 4), description1 (cell 5),
+    // stepText2 (cell 6), description2 (cell 7), ctaLink (cell 8)
     const defaultImageCell = cells[2];
     const titleCell = cells[3];
-    const descriptionCell = cells[4];
-    const ctaLinkCell = cells[5];
+    const stepText1Cell = cells[4];
+    const description1Cell = cells[5];
+    const stepText2Cell = cells[6];
+    const description2Cell = cells[7];
+    const ctaLinkCell = cells[8];
 
     // image
     const imageContainer = document.createElement('div');
@@ -115,71 +120,54 @@ export default function buildSlideArrowsandDots(row, index) {
       content.append(title);
     }
 
-    // A step-number paragraph has text content of just a number+period e.g. "1."
-    const isStepNum = (p) => /^\d+\.\s*$/.test(p.textContent.trim());
-
-    // Build step wrappers from a source HTML string into content element
-    const buildStepContent = (html) => {
-      const temp = document.createElement('div');
-      temp.innerHTML = html;
-      const allParas = [...temp.querySelectorAll('p')];
-      let wrap = null;
-      allParas.forEach((p) => {
-        if (isStepNum(p)) {
-          wrap = document.createElement('div');
-          wrap.className = 'text-default editor pad-bot';
-          p.innerHTML = p.textContent; // strip any <strong> from number
-          p.className = 'text-large text-light';
-          wrap.append(p);
-          content.append(wrap);
-        } else {
-          if (!wrap) {
-            wrap = document.createElement('div');
-            wrap.className = 'text-default editor pad-bot';
-            content.append(wrap);
-          }
-          wrap.append(p);
-        }
-      });
-    };
-
-    const hasDesc = descriptionCell && descriptionCell.textContent.trim();
-    if (hasDesc) {
-      const temp = document.createElement('div');
-      temp.innerHTML = descriptionCell.innerHTML;
-      const allParas = [...temp.querySelectorAll('p')];
-      if (allParas.some(isStepNum)) {
-        buildStepContent(descriptionCell.innerHTML);
-      } else {
-        const textWrap = document.createElement('div');
-        textWrap.className = 'text-default editor pad-bot';
-        textWrap.innerHTML = temp.innerHTML;
-        content.append(textWrap);
+    // Step 1 + Description 1
+    const hasStep1 = stepText1Cell && stepText1Cell.textContent.trim();
+    const hasDesc1 = description1Cell && description1Cell.textContent.trim();
+    if (hasStep1 || hasDesc1) {
+      const wrap = document.createElement('div');
+      wrap.className = 'text-default editor pad-bot';
+      if (hasStep1) {
+        const stepP = document.createElement('p');
+        stepP.className = 'text-large text-light';
+        stepP.textContent = stepText1Cell.textContent.trim();
+        wrap.append(stepP);
       }
+      if (hasDesc1) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = description1Cell.innerHTML;
+        while (tempDiv.firstChild) wrap.append(tempDiv.firstChild);
+      }
+      content.append(wrap);
+    }
+
+    // Step 2 + Description 2
+    const hasStep2 = stepText2Cell && stepText2Cell.textContent.trim();
+    const hasDesc2 = description2Cell && description2Cell.textContent.trim();
+    if (hasStep2 || hasDesc2) {
+      const wrap = document.createElement('div');
+      wrap.className = 'text-default editor pad-bot';
+      if (hasStep2) {
+        const stepP = document.createElement('p');
+        stepP.className = 'text-large text-light';
+        stepP.textContent = stepText2Cell.textContent.trim();
+        wrap.append(stepP);
+      }
+      if (hasDesc2) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = description2Cell.innerHTML;
+        while (tempDiv.firstChild) wrap.append(tempDiv.firstChild);
+      }
+      content.append(wrap);
     }
 
     if (ctaLinkCell && ctaLinkCell.textContent.trim()) {
       const a = ctaLinkCell.querySelector('a');
       if (a) {
-        // It's a real CTA button
         const linkWrap = document.createElement('div');
         linkWrap.className = 'button-container';
         a.className = 'sub-title-medium button primary';
         linkWrap.append(a);
         content.append(linkWrap);
-      } else {
-        // No link — check if it contains step content (authored in wrong cell)
-        const ctaTemp = document.createElement('div');
-        ctaTemp.innerHTML = ctaLinkCell.innerHTML;
-        const ctaParas = [...ctaTemp.querySelectorAll('p')];
-        if (ctaParas.some(isStepNum)) {
-          buildStepContent(ctaLinkCell.innerHTML);
-        } else if (ctaLinkCell.textContent.trim()) {
-          const linkWrap = document.createElement('div');
-          linkWrap.className = 'button-container';
-          linkWrap.innerHTML = ctaTemp.innerHTML;
-          content.append(linkWrap);
-        }
       }
     }
 

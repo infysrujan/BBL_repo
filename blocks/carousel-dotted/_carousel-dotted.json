@@ -985,7 +985,7 @@
           }
         },
         {
-          "component": "text",
+          "component": "richtext",
           "name": "titleDefaultImage",
           "label": "Title Text",
           "valueType": "string",
@@ -999,8 +999,50 @@
           }
         },
         {
+          "component": "text",
+          "name": "stepText1",
+          "label": "Step Text 1",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
           "component": "richtext",
-          "name": "descriptionDefaultImage",
+          "name": "description1",
+          "label": "Description",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "stepText2",
+          "label": "Step Text 2",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "description2",
           "label": "Description",
           "valueType": "string",
           "condition": {
