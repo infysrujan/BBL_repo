@@ -121,6 +121,7 @@ function renderControlsRow(
   nextLabel,
   openCalendarLabel,
   selectTimeLabel,
+  trailingHtml = '',
 ) {
   const selectedUpdateObj = state.updates.find(
     (item) => trimValue(item.Update) === state.selectedUpdate,
@@ -166,6 +167,7 @@ function renderControlsRow(
       </div>
     </div>
     <button type="button" class="fpsme-go-btn fpsme-go-btn-${sid}"${goDisabled}>${escapeHtml(goCtaLabel)}</button>
+    ${trailingHtml}
   </div>`;
 }
 
@@ -279,11 +281,11 @@ function renderBlock(
     <div class="fpsme-section1-bar">
       <div class="fpsme-section fpsme-section-currency">
         ${s1Controls}
-        <button type="button" class="fpsme-print-btn">
-          ${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i>
-        </button>
         ${renderCurrencyTable(fxRates, authoring)}
       </div>
+      <button type="button" class="fpsme-print-btn">
+        ${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i>
+      </button>
     </div>
 
     <div class="fpsme-section fpsme-section-fwd">

@@ -447,7 +447,8 @@
   height: 2.75rem;
   white-space: nowrap;
   flex-shrink: 0;
-  align-self: flex-end;
+  margin-left: auto;
+  align-self: flex-start;
   text-decoration: none;
 }
 
