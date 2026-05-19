@@ -172,7 +172,10 @@
       "text-input",
       "tnc",
       "wizard",
-      "range"
+      "range",
+      "radio-tabbed",
+      "menu-card-actions",
+      "button"
     ]
   },
   {
