@@ -1,3 +1,4 @@
+import { decorateBlock, loadBlock } from '../../scripts/aem.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import {
@@ -622,6 +623,43 @@ function setupSection(
   }
 }
 
+// ─── UE authoring guard ────────────────────────────────────────────────────────
+
+function setupUEBlockRefresh(blockEl) {
+  const ueEvents = ['aue:content-patch', 'aue:content-update', 'aue:content-add'];
+
+  const handler = async (event) => {
+    const resource = event.detail?.request?.target?.resource
+      || event.detail?.request?.target?.container?.resource;
+    if (!resource) return;
+
+    const blockResource = blockEl.getAttribute('data-aue-resource');
+    const sectionResource = blockEl.closest('[data-aue-resource]')?.getAttribute('data-aue-resource');
+    if (resource !== blockResource && resource !== sectionResource) return;
+
+    ueEvents.forEach((e) => document.removeEventListener(e, handler, { capture: true }));
+    event.stopImmediatePropagation();
+
+    try {
+      const res = await fetch(window.location.href);
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const newBlock = doc.querySelector('.forward-points-sme');
+      if (newBlock) {
+        blockEl.replaceWith(newBlock);
+        decorateBlock(newBlock);
+        await loadBlock(newBlock);
+        return;
+      }
+    } catch {
+      // fall through to reload on fetch failure
+    }
+    window.location.reload();
+  };
+
+  ueEvents.forEach((e) => document.addEventListener(e, handler, { capture: true }));
+}
+
 // ─── Main decorate ─────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
@@ -658,7 +696,9 @@ export default async function decorate(block) {
 
   // Inject brand logo into the print-logo slot right before the browser
   // renders the print layout — guaranteed to run after full page decoration.
-  window.addEventListener('beforeprint', () => {
+  // Store handler on block so it can be removed if block is ever re-decorated.
+  if (block.beforePrintHandler) window.removeEventListener('beforeprint', block.beforePrintHandler);
+  block.beforePrintHandler = () => {
     const printLogoDiv = block.querySelector('.fpsme-print-logo');
     if (!printLogoDiv) return;
     printLogoDiv.innerHTML = '';
@@ -668,7 +708,8 @@ export default async function decorate(block) {
     const cloned = logoEl.cloneNode(true);
     cloned.querySelectorAll('img').forEach((i) => { i.loading = 'eager'; });
     printLogoDiv.appendChild(cloned);
-  });
+  };
+  window.addEventListener('beforeprint', block.beforePrintHandler);
 
   const render = () => {
     renderBlock(
@@ -814,4 +855,8 @@ export default async function decorate(block) {
 
   await Promise.all([initSection1(), initSection2()]);
   render();
+
+  // Intercept UE edit events in authoring (page loaded inside UE iframe)
+  // to prevent editor-support.js from creating a duplicate block.
+  if (window.self !== window.top) setupUEBlockRefresh(block);
 }
