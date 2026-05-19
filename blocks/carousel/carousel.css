@@ -18,6 +18,12 @@
     color: var(--bbl-color-black);
 }
 
+:lang(th) {
+    .carousel-header h2 {
+            line-height: 2.0625rem;
+    }
+}
+
 .carousel-header a {
     display: flex;
     min-width: 100px;
@@ -274,6 +280,12 @@
     .carousel-header h2 {
         font-size: 48px;
         line-height: 46px;
+    }
+
+    :lang(th) {
+        .carousel-header h2 {
+                line-height:4.875rem;;
+        }
     }
 
     .carousel-header a {
