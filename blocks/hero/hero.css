@@ -75,10 +75,6 @@
     aspect-ratio: 5/4;
 }
 
-.hero-banner-simple .hero-banner-img,
-.hero-banner-simple-logo-banner .hero-banner-img {
-    aspect-ratio: 16 / 9;
-}
 
 .section.full-bleed-bg .hero-banner-content.content {
   position: absolute;
@@ -141,6 +137,8 @@
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner .button-container {
   margin: 1.875rem 0 0;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 .hero-banner-thumbnail-outer {
@@ -379,11 +377,6 @@
     height: auto;
   }
 
-  .hero-banner-simple .hero-banner-img,
-  .hero-banner-simple-logo-banner .hero-banner-img {
-    aspect-ratio: 20 / 7;
-  }
-
   /* Simple variant override */
   .hero-banner-simple .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
     color: var(--bbl-color-white);
@@ -577,11 +570,6 @@
         height: 53.125rem;
     }
 
-    .hero-banner-simple .hero-banner-img,
-    .hero-banner-simple-logo-banner .hero-banner-img {
-        aspect-ratio: 256 / 53;
-        height: 33.125rem;
-    }
 
   .hero-banner-simple .hero-banner-content-inner-text {
     color: var(--bbl-color-white);
