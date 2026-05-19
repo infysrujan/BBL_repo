@@ -57,16 +57,18 @@ export default function decorate(block) {
 
   block.appendChild(logoContainer);
 
-  // Render print logo in a hidden container (visible only during print)
-  if (printLogoPicture) {
+  // Render print logo in <main> so it isn't hidden by print styles on the header.
+  // Guard against duplicate insertion when the header rebuilds on viewport change.
+  if (printLogoPicture && !document.querySelector('main > .brand-logo-print-logo')) {
     const printContainer = document.createElement('div');
     printContainer.className = 'brand-logo-print-logo';
     const clonedLogo = printLogoPicture.cloneNode(true);
-    if (printLogoAltText) {
-      const clonedImg = clonedLogo.tagName === 'IMG' ? clonedLogo : clonedLogo.querySelector('img');
-      if (clonedImg) clonedImg.alt = printLogoAltText;
+    const clonedImg = clonedLogo.tagName === 'IMG' ? clonedLogo : clonedLogo.querySelector('img');
+    if (clonedImg) {
+      clonedImg.loading = 'eager';
+      if (printLogoAltText) clonedImg.alt = printLogoAltText;
     }
     printContainer.appendChild(clonedLogo);
-    block.appendChild(printContainer);
+    document.querySelector('main')?.prepend(printContainer);
   }
 }

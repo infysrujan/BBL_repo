@@ -16,38 +16,35 @@ export default function parseAuthoring(block) {
   const s1HeadingsSrc = rows[2];
   const s1HeadingsList = s1HeadingsSrc?.querySelector('ul');
   const section1Columns = parseListItems(s1HeadingsList);
-  // Row 3: Section 1 - unit label
-  const section1UnitLabel = rows[3]?.textContent?.trim() || '';
-  // Row 4: Section 2 - "Update as of" label
-  const section2CalendarLabel = rows[4]?.textContent?.trim() || '';
-  // Row 5: Section 2 - Go CTA label
-  const section2GoCtaLabel = rows[5]?.textContent?.trim() || '';
-  // Row 6: Print CTA label
-  const printCtaLabel = rows[6]?.textContent?.trim() || '';
-  // Row 7: Section 2 - forward points table title (richtext — preserve line breaks)
-  const section2TableTitle = rows[7]?.firstElementChild?.innerHTML || rows[7]?.textContent?.trim() || '';
-  // Row 8: Section 2 - table sub-title 1 (low revenue)
-  const section2SubTitle1 = rows[8]?.textContent?.trim() || '';
-  // Row 9: Section 2 - table sub-title 2 (mid revenue)
-  const section2SubTitle2 = rows[9]?.textContent?.trim() || '';
-  // Row 10: Section 2 - table column headings (richtext list)
-  const s2ColsSrc = rows[10];
+  // Row 3: Section 2 - "Update as of" label
+  const section2CalendarLabel = rows[3]?.textContent?.trim() || '';
+  // Row 4: Section 2 - Go CTA label
+  const section2GoCtaLabel = rows[4]?.textContent?.trim() || '';
+  // Row 5: Print CTA label
+  const printCtaLabel = rows[5]?.textContent?.trim() || '';
+  // Row 6: Section 2 - forward points table title (richtext — preserve line breaks)
+  const section2TableTitle = rows[6]?.firstElementChild?.innerHTML || rows[6]?.textContent?.trim() || '';
+  // Row 7: Section 2 - table sub-title 1 (low revenue)
+  const section2SubTitle1 = rows[7]?.textContent?.trim() || '';
+  // Row 8: Section 2 - table sub-title 2 (mid revenue)
+  const section2SubTitle2 = rows[8]?.textContent?.trim() || '';
+  // Row 9: Section 2 - table column headings (richtext list)
+  const s2ColsSrc = rows[9];
   const s2ColsList = s2ColsSrc?.querySelector('ul');
   const section2Columns = parseListItems(s2ColsList);
-  // Row 11: Section 2 - table row headings (richtext list)
-  const s2RowsSrc = rows[11];
+  // Row 10: Section 2 - table row headings (richtext list)
+  const s2RowsSrc = rows[10];
   const s2RowsList = s2RowsSrc?.querySelector('ul');
   const section2Rows = parseListItems(s2RowsList);
-  // Row 12: Section 2 - unit label
-  const section2UnitLabel = rows[12]?.textContent?.trim() || '';
-  // Row 13: Remark / disclaimer text (richtext)
-  const remarkHtml = rows[13]?.firstElementChild?.innerHTML || '';
+  // Row 11: Section 2 - unit label
+  const section2UnitLabel = rows[11]?.textContent?.trim() || '';
+  // Row 12: Remark / disclaimer text (richtext)
+  const remarkHtml = rows[12]?.firstElementChild?.innerHTML || '';
 
   return {
     section1CalendarLabel,
     section1GoCtaLabel,
     section1Columns,
-    section1UnitLabel,
     section2CalendarLabel,
     section2GoCtaLabel,
     printCtaLabel,

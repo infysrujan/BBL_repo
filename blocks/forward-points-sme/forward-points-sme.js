@@ -182,10 +182,6 @@ function renderCurrencyTable(fxRates, authoring) {
     <td class="fpsme-td-right">${escapeHtml(rate.ttSelling)}</td>
   </tr>`).join('');
 
-  const unitRow = authoring.section1UnitLabel
-    ? `<div class="fpsme-unit fpsme-unit-right">${escapeHtml(authoring.section1UnitLabel)}</div>`
-    : '';
-
   return `<div class="fpsme-table-wrap">
     <table class="fpsme-table fpsme-table-currency">
       <thead>
@@ -198,7 +194,7 @@ function renderCurrencyTable(fxRates, authoring) {
       </thead>
       <tbody>${rows}</tbody>
     </table>
-  </div>${unitRow}`;
+  </div>`;
 }
 
 function renderFwdTable(fwdRates, authoring, tableIndex) {

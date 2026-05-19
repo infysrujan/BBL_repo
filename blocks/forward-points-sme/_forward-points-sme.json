@@ -46,14 +46,6 @@
 				},
 				{
 					"component": "text",
-					"name": "section1UnitLabel",
-					"label": "Section 1 - Unit Label",
-					"valueType": "string",
-					"required": true,
-					"value": "Unit: Satang"
-				},
-				{
-					"component": "text",
 					"name": "section2UpdateDateLabel",
 					"label": "Section 2 - Update Date Label",
 					"valueType": "string",
