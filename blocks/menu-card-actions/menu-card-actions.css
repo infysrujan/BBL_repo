@@ -82,7 +82,10 @@
 }
 
 .menu-card-action-title :is(h1, h2, h3, h4, h5, h6) {
-  font: 400 1.14rem/1.25rem var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
+  font-size: 1.14rem;
+  line-height: 1.25rem;
+  font-family: var(--bbl-font-family-medium);
   margin-block: var(--bbl-space-250) 0.9375rem;
   padding-bottom: 0.9375rem;
   box-sizing: border-box;
@@ -231,7 +234,10 @@
   }
 
   .menu-card-action-title :is(h1, h2, h3, h4, h5, h6) {
-    font: var(--bbl-font-weight-regular) 1.3125rem/1.4219rem var(--bbl-font-family-medium);
+    font-weight: var(--bbl-font-weight-regular);
+    font-size: 1.3125rem;
+    line-height: 1.4219rem;
+    font-family: var(--bbl-font-family-medium);
   }
 
   :lang(th) {
