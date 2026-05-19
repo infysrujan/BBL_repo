@@ -1,4 +1,3 @@
-import { decorateBlock, loadBlock } from '../../scripts/aem.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import {
@@ -624,36 +623,32 @@ function setupSection(
 }
 
 // ─── UE authoring guard ────────────────────────────────────────────────────────
+// UE can fire multiple events (patch + add + move) for a single save action.
+// editor-support.js handles each independently, inserting a new block per event
+// but only removing the original once — leaving duplicates. We intercept all
+// matching events first (capture phase) and reload instead.
 
 function setupUEBlockRefresh(blockEl) {
-  const ueEvents = ['aue:content-patch', 'aue:content-update', 'aue:content-add'];
+  const ueEvents = [
+    'aue:content-patch',
+    'aue:content-update',
+    'aue:content-add',
+    'aue:content-move',
+  ];
 
-  const handler = async (event) => {
+  const handler = (event) => {
     const resource = event.detail?.request?.target?.resource
-      || event.detail?.request?.target?.container?.resource;
+      || event.detail?.request?.target?.container?.resource
+      || event.detail?.request?.to?.container?.resource;
     if (!resource) return;
 
     const blockResource = blockEl.getAttribute('data-aue-resource');
-    const sectionResource = blockEl.closest('[data-aue-resource]')?.getAttribute('data-aue-resource');
+    const sectionEl = blockEl.closest('[data-aue-resource]:not(.block)');
+    const sectionResource = sectionEl?.getAttribute('data-aue-resource');
     if (resource !== blockResource && resource !== sectionResource) return;
 
     ueEvents.forEach((e) => document.removeEventListener(e, handler, { capture: true }));
     event.stopImmediatePropagation();
-
-    try {
-      const res = await fetch(window.location.href);
-      const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      const newBlock = doc.querySelector('.forward-points-sme');
-      if (newBlock) {
-        blockEl.replaceWith(newBlock);
-        decorateBlock(newBlock);
-        await loadBlock(newBlock);
-        return;
-      }
-    } catch {
-      // fall through to reload on fetch failure
-    }
     window.location.reload();
   };
 
@@ -856,7 +851,5 @@ export default async function decorate(block) {
   await Promise.all([initSection1(), initSection2()]);
   render();
 
-  // Intercept UE edit events in authoring (page loaded inside UE iframe)
-  // to prevent editor-support.js from creating a duplicate block.
   if (window.self !== window.top) setupUEBlockRefresh(block);
 }
