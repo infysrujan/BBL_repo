@@ -176,6 +176,12 @@
   white-space: nowrap;
 }
 
+.hero-banner-content-group .hero-banner-private-wealth-banking .button-container .button-m {
+  max-width: 135px;
+  width: 48%;
+}
+ 
+
 .hero-banner-thumbnail-list {
   margin: 0;
   position: relative;
@@ -328,26 +334,33 @@
   -webkit-text-fill-color: transparent;
 }
 
-@media (width <= 47.5rem) {
-    .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
-        position: static;
-        color: var(--bbl-color-black);
-        padding: var(--bbl-space-200);
-    }
+.section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
+  position: static;
+  color: var(--bbl-color-black);
+  padding: var(--bbl-space-200);
+}
 
-    .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-img) .hero-banner-content.content {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        color: var(--bbl-color-white);
-        padding: var(--bbl-space-200) var(--bbl-space-200) var(--bbl-space-300);
-    }
+.section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-img) .hero-banner-content.content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: var(--bbl-color-white);
+  padding: var(--bbl-space-200) var(--bbl-space-200) var(--bbl-space-300);
 }
 
 @media (width > 47.5rem) {
   .hero-banner::after {
     width: calc(100% - 6rem);
+  }
+
+  .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: var(--bbl-color-white);
+    padding: var(--bbl-space-200) var(--bbl-space-200) var(--bbl-space-300);
   }
 
   .hero-banner-thumbnail-outer {
@@ -413,6 +426,10 @@
   .hero-banner-simple,
   .hero-banner-simple-logo-banner {
     margin-bottom: 0;
+  }
+
+  .hero-banner-content-group .hero-banner-private-wealth-banking .button-container .button-m {
+    max-width: 11.25rem;
   }
 }
 
