@@ -9980,6 +9980,10 @@
                 "value": "merge-tables"
               },
               {
+                "name": "Nested Table",
+                "value": "nested-table"
+              },
+              {
                 "name": "Scroll",
                 "value": "scroll"
               }
@@ -9987,169 +9991,20 @@
           }
         ]
       },
-      {
-        "component": "richtext",
-        "name": "tableContent",
-        "label": "Table Content",
-        "valueType": "string",
-        "value": "",
-        "rte": {
-          "toolbar": {
-            "format": [
-              "bold",
-              "italic",
-              "underline"
-            ],
-            "list": [
-              "bullet_list",
-              "ordered_list"
-            ],
-            "insert": [
-              "link",
-              "unlink",
-              "table"
-            ],
-            "editor": [
-              "removeformat"
-            ],
-            "sections": [
-              "format",
-              "list",
-              "insert",
-              "editor"
-            ]
-          },
-          "actions": {
-            "table": {
-              "label": "Insert Table",
-              "shortcut": "Mod-Alt-T",
-              "wrapInParagraphs": true
-            },
-            "link": {
-              "hideTarget": false
-            }
-          }
-        }
-      }
-    ]
-  },
-  {
-    "id": "nested-table",
-    "fields": [
       {
         "component": "text",
-        "name": "id",
-        "label": "Id",
-        "valueType": "string",
-        "value": "",
-        "required": true
-      },
-      {
-        "component": "multiselect",
-        "name": "style",
-        "label": "Variation",
+        "name": "nestedTableId",
+        "label": "Nested Table ID",
         "valueType": "string",
         "required": false,
-        "options": [
-          {
-            "name": "Border Type",
-            "children": [
-              {
-                "name": "No Border",
-                "value": "no-border"
-              },
-              {
-                "name": "Outline Border",
-                "value": "outline-border"
-              },
-              {
-                "name": "Border Bottom",
-                "value": "border-bottom"
-              }
-            ]
-          },
-          {
-            "name": "Border Color",
-            "children": [
-              {
-                "name": "Border Black",
-                "value": "border-black"
-              },
-              {
-                "name": "Border Light Gray",
-                "value": "border-light-gray"
-              },
-              {
-                "name": "Border Gray",
-                "value": "border-gray"
-              }
-            ]
-          },
-          {
-            "name": "Header",
-            "children": [
-              {
-                "name": "Center Aligned",
-                "value": "header-center-aligned"
-              },
-              {
-                "name": "Header Blue",
-                "value": "header-blue"
-              },
-              {
-                "name": "Header Light Blue",
-                "value": "header-light-blue"
-              },
-              {
-                "name": "Header Mixed Blue",
-                "value": "header-mixed-blue"
-              }
-            ]
-          },
-          {
-            "name": "Cells",
-            "children": [
-              {
-                "name": "Cells Center Aligned",
-                "value": "cells-center-aligned"
-              },
-              {
-                "name": "Cells Center Aligned Except First",
-                "value": "cells-center-aligned-except-first"
-              },
-              {
-                "name": "Dash Cell Highlight",
-                "value": "dash-cell-highlight"
-              }
-            ]
-          },
-          {
-            "name": "Padding",
-            "children": [
-              {
-                "name": "Compact Padding",
-                "value": "compact-padding"
-              },
-              {
-                "name": "Border Bottom Tight Columns",
-                "value": "border-bottom-tight-cols"
-              }
-            ]
-          },
-          {
-            "name": "Functional",
-            "children": [
-              {
-                "name": "Merge Tables",
-                "value": "merge-tables"
-              },
-              {
-                "name": "Scroll",
-                "value": "scroll"
-              }
-            ]
-          }
-        ]
+        "condition": {
+          "in": [
+            "nested-table",
+            {
+              "var": "style"
+            }
+          ]
+        }
       },
       {
         "component": "richtext",
@@ -10379,6 +10234,10 @@
                 "value": "bg-truthful-blue"
               },
               {
+                "name": "Truthful Dark Blue",
+                "value": "bg-truthful-dark-blue"
+              },
+              {
                 "name": "Ice Blue",
                 "value": "bg-ice-blue"
               },
@@ -10393,6 +10252,66 @@
               {
                 "name": "Grey 100",
                 "value": "bg-grey-100"
+              }
+            ]
+          },
+          {
+            "name": "Padding",
+            "children": [
+              {
+                "name": "Padding Top",
+                "value": "pad-top-30"
+              },
+              {
+                "name": "Padding Bottom",
+                "value": "pad-bot-30"
+              }
+            ]
+          },
+          {
+            "name": "Layout",
+            "children": [
+              {
+                "name": "Columns 3",
+                "value": "columns-3"
+              },
+              {
+                "name": "Columns 2(75-25)",
+                "value": "columns-2-75"
+              },
+              {
+                "name": "Columns 2(50-50)",
+                "value": "columns-2-50"
+              }
+            ]
+          },
+          {
+            "name": "Style",
+            "children": [
+              {
+                "name": "Underline Title",
+                "value": "underline-title"
+              },
+              {
+                "name": "Center Title",
+                "value": "center-title"
+              },
+              {
+                "name": "Center Content",
+                "value": "center-content"
+              }
+            ]
+          },
+          {
+            "name": "Theme",
+            "children": [
+              {
+                "name": "Background Wealth",
+                "value": "background-wealth"
+              },
+              {
+                "name": "Background Private Banking",
+                "value": "background-privatebanking"
               }
             ]
           }
