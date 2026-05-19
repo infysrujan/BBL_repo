@@ -655,6 +655,8 @@
   line-height: 1.428rem;
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
+  padding-top: 1.875rem;
+  padding-bottom: 1.875rem;
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 p {
@@ -674,6 +676,13 @@ p.text-large.text-light {
   font-size: 1.6rem;
   line-height: 1.571rem;
   margin: 0;
+}
+
+/* Description padding — only when no step text is present in the wrapper */
+.carousel-dotted .carousel-dotted-item.with-default-image
+.caption.editor .text-default.pad-bot:not(:has(p.text-large)) p {
+  padding-top: 1.875rem;
+  padding-bottom: 1.875rem;
 }
 
 /* Bold inline text: use Muli-Bold to match live site */
@@ -853,7 +862,7 @@ p.text-large.text-light {
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 {
     font-size: 1.5rem;
     line-height: 1.625rem;
-    font-family: var(--bbl-font-family-primary);
+    font-family: BangkokBank-Medium, sans-serif;
     font-weight: var(--bbl-font-weight-regular);
   }
 
