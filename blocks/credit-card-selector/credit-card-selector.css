@@ -36,9 +36,9 @@
 .credit-card-selector .card-selector-title {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-h3-mobile);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-font-weight-medium);
   line-height: 2rem;
-  color: #1e1e21;
+  color: var(--bbl-color-grey-110);
   margin: 0;
 }
 
@@ -329,9 +329,9 @@
 }
 
 .credit-card-selector .selector-button-primary:disabled {
-  background-color: #D6D6D6;
+  background-color: var(--bbl-color-gray-300);
   color: var(--bbl-color-grey-60);
-  border: 0.0625rem solid #D6D6D6;
+  border: 0.0625rem solid var(--bbl-color-gray-300);
   cursor: not-allowed;
 }
 
@@ -717,9 +717,9 @@
   margin-top: var(--bbl-space-300);
   padding-top: var(--bbl-space-300);
   border-top: 0.0625rem solid var(--bbl-color-grey-30);
-  text-align: left;
+  text-align: center;
   font-size: var(--bbl-font-size-b1);
-  color: #4E4E4E;
+  color: var(--bbl-color-grey-85);
   line-height: 1.6;
 }
 

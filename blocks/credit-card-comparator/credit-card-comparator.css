@@ -91,7 +91,7 @@
   margin: 0;
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
-  color: #4E4E4E;
+  color: var(--bbl-color-grey-85);
 }
 
 /* ── Thumb ───────────────────────────────────────────────────────────────── */
