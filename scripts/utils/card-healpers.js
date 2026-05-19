@@ -1,11 +1,16 @@
 export function buildCardHtml(card, tag, placeholders = {}, options = {}) {
   const { dateLine = '', logoHtml = '', footerExtra = '' } = options;
   const target = card.targetLink === 'true' ? '_blank' : '_self';
+
+  const cleanAltText = card.title
+    ? card.title.replace(/<[^>]*>/g, '').trim()
+    : '';
+
   return `<div class="listing-card-container">
   <div class="listing-card">
     <div class="listing-card-img-wrap">
       <span class="listing-card-tag">${tag}</span>
-      <img src="${card.cardImageUrl}" alt="${card.title || ''}"
+      <img src="${card.cardImageUrl}" alt="${cleanAltText}"
         class="listing-card-img" loading="lazy">
     </div>
     <div class="listing-card-body">

@@ -2,7 +2,7 @@ import { loadCSS } from '../../scripts/aem.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { buildCardHtml } from '../../scripts/utils/cards-healpers.js';
+import { buildCardHtml } from '../../scripts/utils/card-healpers.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
 
