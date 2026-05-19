@@ -807,11 +807,6 @@
     font-size: 0.625rem;
   }
 
-  /* Remove bold from forward points heading */
-  .forward-points-sme .fpsme-fwd-title {
-    font-weight: normal;
-  }
-
   /* Time trigger: render as plain text, no border */
   .forward-points-sme .fpsme-time-trigger {
     border: none;
@@ -841,17 +836,6 @@
 
   .forward-points-sme .fpsme-table {
     border: 0.0625rem solid var(--bbl-color-grey-20);
-  }
-
-  /* Print logo */
-  .forward-points-sme .fpsme-print-logo {
-    display: block;
-    margin-bottom: 0.75rem;
-  }
-
-  .forward-points-sme .fpsme-print-logo img {
-    height: 2rem;
-    width: auto;
   }
 
   /* Compact table cells — remove bold from headers and period column */
