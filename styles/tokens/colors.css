@@ -194,6 +194,7 @@
   --bbl-color-black-alpha-40: rgba(0, 0, 0, 0.40);
   --bbl-color-black-alpha-60: rgba(0, 0, 0, 0.60);
   --bbl-color-black-alpha-17: rgba(0, 100, 255, 0.17);
+  --bbl-color-blue-105-alpha-17: rgb(0 51 153 / 17%);
 
   /* White Transparencies */
   --bbl-color-white-alpha-5: rgba(255, 255, 255, 0.05);
