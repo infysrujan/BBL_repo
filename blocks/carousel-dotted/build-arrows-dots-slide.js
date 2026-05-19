@@ -114,10 +114,16 @@ export default function buildSlideArrowsandDots(row, index) {
     content.className = 'caption editor';
 
     if (titleCell && titleCell.textContent.trim()) {
-      const title = document.createElement('h3');
-      title.className = 'title-3';
-      title.innerHTML = titleCell.innerHTML;
-      content.append(title);
+      const heading = titleCell.querySelector('h1, h2, h3, h4, h5, h6');
+      if (heading) {
+        heading.className = 'title-3';
+        content.append(heading);
+      } else {
+        const title = document.createElement('h3');
+        title.className = 'title-3';
+        title.innerHTML = titleCell.innerHTML;
+        content.append(title);
+      }
     }
 
     // Step 1 + Description 1
