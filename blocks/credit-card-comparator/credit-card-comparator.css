@@ -38,11 +38,16 @@
 /* ── Limit warning ───────────────────────────────────────────────────────── */
 
 .credit-card-comparator .compare-error {
+  display: none;
   width: 100%;
   color: var(--bbl-color-system-red);
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1rem;
   font-weight: var(--bbl-font-weight-regular);
   padding-bottom: var(--bbl-space-100);
+}
+
+.credit-card-comparator .compare-error.is-visible {
+  display: block;
 }
 
 /* ── Card group — scrollable row ─────────────────────────────────────────── */

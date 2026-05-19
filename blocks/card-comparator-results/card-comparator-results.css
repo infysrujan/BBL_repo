@@ -1,20 +1,3 @@
-/* ── Back link ────────────────────────────────────────────────────────────── */
-
-.card-comparator-results .ccr-back-link {
-  display: block;
-  margin-bottom: var(--bbl-space-300);
-  color: var(--bbl-color-grey-70);
-  font-size: var(--bbl-font-size-b2);
-  font-family: var(--bbl-font-family-medium);
-  text-decoration: none;
-  letter-spacing: 0.05em;
-}
-
-.card-comparator-results .ccr-back-link:hover {
-  color: var(--bbl-color-active-blue);
-  text-decoration: underline;
-}
-
 .card-comparator-results .ccr-description {
   text-align: center;
   padding-bottom: 1.875rem;
@@ -49,8 +32,8 @@
   display: flex;
   flex-direction: column;
   background: var(--bbl-color-white);
-  border: none;
-  border-radius: 0;
+  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
+  border-radius: var(--bbl-radius-md);
   overflow: hidden;
   flex: 0 0 16.875rem;
   scroll-snap-align: start;

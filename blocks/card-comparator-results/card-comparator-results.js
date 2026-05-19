@@ -437,15 +437,7 @@ export default async function decorate(block) {
     noResults: ph.cardNoResultsFound || 'No results found',
   };
 
-  // Back link — matches live site "← BACK" navigation
-  const backLink = doc.createElement('a');
-  backLink.className = 'ccr-back-link';
-  backLink.href = '#';
-  backLink.textContent = '← BACK';
-  backLink.addEventListener('click', (e) => { e.preventDefault(); window.history.back(); });
-  block.insertBefore(backLink, block.firstChild);
-
-  const descriptionRow = block.children[1];
+  const descriptionRow = block.children[0];
   if (descriptionRow) {
     descriptionRow.classList.add('ccr-description');
   }
