@@ -116,11 +116,13 @@ export default function attachCalendarPicker({
     if (activePrevHandler) prevBtn.removeEventListener('click', activePrevHandler);
     if (activeNextHandler) nextBtn.removeEventListener('click', activeNextHandler);
 
-    activePrevHandler = () => {
+    activePrevHandler = (e) => {
+      e.stopPropagation();
       current = new Date(current.getFullYear(), current.getMonth() - 1, 1);
       loadGrid(current.getFullYear(), current.getMonth());
     };
-    activeNextHandler = () => {
+    activeNextHandler = (e) => {
+      e.stopPropagation();
       current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
       loadGrid(current.getFullYear(), current.getMonth());
     };

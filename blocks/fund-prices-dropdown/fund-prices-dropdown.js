@@ -1,7 +1,7 @@
 import attachCalendarPicker from '../../scripts/utils/calendar-picker.js';
 import { parseLocalDateFromYmd } from '../fund-prices-table/fund-prices-table.js';
 
-const BBL_API_BASE = 'https://www.bangkokbank.com/api/fundpriceservice';
+const BBL_API_BASE = 'https://publish-p185039-e1937892.adobeaemcloud.com/api/FundPriceService';
 const FUND_DETAIL_HISTORY_BASE = `${BBL_API_BASE}/FundPrice`;
 const FUND_DETAIL_STATS_BASE = `${BBL_API_BASE}/FundMinMax`;
 
@@ -102,7 +102,7 @@ function renderChart(svgEl, history) {
     return;
   }
 
-  const W = 940; const H = 300; const padL = 58; const padR = 20; const padT = 20; const padB = 44;
+  const W = 940; const H = 300; const padL = 58; const padR = 20; const padT = 20; const padB = 64;
   const innerW = W - padL - padR;
   const innerH = H - padT - padB;
 
@@ -138,32 +138,53 @@ function renderChart(svgEl, history) {
     }, svgEl).textContent = v.toFixed(1);
   }
 
+  const maxXLabels = history.length <= 10 ? history.length : 20;
+  const xLabelStep = Math.max(1, Math.round(history.length / maxXLabels));
   history.forEach((d, i) => {
     const x = xPos(i);
-    el('line', {
-      x1: x,
-      y1: padT,
-      x2: x,
-      y2: H - padB,
-      stroke: '#E8E8E8',
-      'stroke-width': 1,
-    }, svgEl);
-    el('text', {
-      x,
-      y: H - padB + 16,
-      'text-anchor': 'middle',
-      'font-size': 11,
-      fill: '#78787D',
-      'font-family': 'BangkokBank-Regular,Arial,sans-serif',
-    }, svgEl).textContent = fmtHistDate(d.mfr_dDataDate);
+    const isLabelPoint = i % xLabelStep === 0 || i === history.length - 1;
+    if (isLabelPoint) {
+      el('line', {
+        x1: x,
+        y1: padT,
+        x2: x,
+        y2: H - padB,
+        stroke: '#E8E8E8',
+        'stroke-width': 1,
+      }, svgEl);
+      const txt = el('text', {
+        x,
+        y: H - padB + 16,
+        'text-anchor': 'end',
+        'font-size': 11,
+        fill: '#78787D',
+        'font-family': 'BangkokBank-Regular,Arial,sans-serif',
+        transform: `rotate(-45, ${x}, ${H - padB + 16})`,
+      }, svgEl);
+      txt.textContent = fmtHistDate(d.mfr_dDataDate);
+    }
   });
 
   const pts = history.map((d, i) => `${xPos(i)},${yPos(d.mfr_fNav)}`).join(' ');
+
+  history.forEach((d, i) => {
+    const cx = xPos(i);
+    const cy = yPos(d.mfr_fNav);
+    el('circle', {
+      cx,
+      cy,
+      r: 1.8,
+      fill: '#002850',
+      stroke: '#002850',
+      'stroke-width': 1,
+    }, svgEl);
+  });
+
   el('polyline', {
     points: pts,
     fill: 'none',
     stroke: '#002850',
-    'stroke-width': 2.5,
+    'stroke-width': 2,
     'stroke-linejoin': 'round',
     'stroke-linecap': 'round',
   }, svgEl);
@@ -193,14 +214,6 @@ function renderChart(svgEl, history) {
   history.forEach((d, i) => {
     const cx = xPos(i);
     const cy = yPos(d.mfr_fNav);
-    el('circle', {
-      cx,
-      cy,
-      r: 4,
-      fill: '#002850',
-      stroke: '#fff',
-      'stroke-width': 2,
-    }, svgEl);
     const hit = el('circle', {
       cx,
       cy,

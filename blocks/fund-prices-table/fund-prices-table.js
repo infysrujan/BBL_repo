@@ -1,8 +1,8 @@
-const BBL_API_BASE = 'https://www.bangkokbank.com/api/fundpriceservice';
+const BBL_API_BASE = 'https://publish-p185039-e1937892.adobeaemcloud.com/api/FundPriceService';
 export const ALL_FUND_NAMES_URL = `${BBL_API_BASE}/AllFundsName`;
 export const LATEST_DATE_URL = `${BBL_API_BASE}/LatestDate`;
 export const GET_UPDATE_IN_MONTH_BASE = `${BBL_API_BASE}/GetUpdateInMonth`;
-const ALL_FUND_PRICES_URL = `${BBL_API_BASE}/`;
+const ALL_FUND_PRICES_URL = `${BBL_API_BASE}/AllFundPrices`;
 
 const MONTHS_SHORT = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -21,8 +21,13 @@ export function parseLocalDateFromYmd(ymd) {
   return valid ? d : null;
 }
 
+function pad2(n) { return String(n).padStart(2, '0'); }
+
 async function fetchAllFundPrices(date) {
-  const res = await fetch(`${ALL_FUND_PRICES_URL}${date.getFullYear()}`);
+  const dd = pad2(date.getDate());
+  const mm = pad2(date.getMonth() + 1);
+  const yyyy = date.getFullYear();
+  const res = await fetch(`${ALL_FUND_PRICES_URL}/${dd}/${mm}/${yyyy}`);
   if (!res.ok) throw new Error(`AllFundPrices ${res.status}`);
   const data = await res.json();
   return Array.isArray(data) ? data : [];
@@ -49,7 +54,7 @@ const localizedHeaderMap = {
   nav: 'mfr_fNav',
   sellingprice: 'mfr_fBuy',
   redemptionprice: 'mfr_fSel',
-  totalnetassets: 'mf_sAUM',
+  totalnetassets: 'mfr_sAUM',
 };
 
 function normalizeHeaderKey(header) {

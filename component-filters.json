@@ -42,6 +42,9 @@
       "table",
       "locate-us",
       "rate-card",
+      "fund-prices",
+      "fund-prices-table",
+      "fund-prices-dropdown",
       "accordion-block",
       "social-icons",
       "card-list",
@@ -173,9 +176,7 @@
       "text-input",
       "tnc",
       "wizard",
-      "range",
-      "menu-card-actions",
-      "button"
+      "range"
     ]
   },
   {
