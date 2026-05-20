@@ -503,6 +503,11 @@
   transition: all 0.6s 0.4s;
 }
 
+.bangkok-bankm-card .carousel-dotted:is(.all-hero-banner-image-carousel)
+.carousel-title :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--bbl-color-white);
+}
+
 :lang(th) {
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
     line-height: 2.4375rem;
@@ -525,12 +530,17 @@
   -webkit-box-orient: vertical;
 }
 
+.bangkok-bankm-card .carousel-dotted:is(.all-hero-banner-image-carousel)
+.carousel-subtitle p{
+   color: var(--bbl-color-white);
+}
+
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .button-container {
   margin-block: var(--bbl-space-300) var(--bbl-space-200);
 }
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-content.content .button-m.animated-text {
+.carousel-content.content .carousel-link-wrap.animated-text {
   transform: translateY(18.75rem);
   opacity: 0;
   transition: all 0.6s 0.6s;
@@ -539,7 +549,7 @@
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-item.is-active .carousel-title.animated-text :is(h1, h2, h3, h4, h5, h6),
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
-.carousel-item.is-active .button-m.animated-text {
+.carousel-item.is-active .carousel-link-wrap.animated-text {
   transform: translateY(0);
   opacity: 1;
 }
