@@ -1169,6 +1169,21 @@
           }
         },
         {
+          "title": "Latest News",
+          "id": "latest-news",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Latest News",
+                  "model": "latest-news"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Locate Us",
           "id": "locate-us",
           "plugins": {
@@ -1446,6 +1461,36 @@
           }
         },
         {
+          "title": "News Media Details",
+          "id": "news-media-details",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "News Media Details",
+                  "model": "news-media-details"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "News Media",
+          "id": "news-media",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "News Media",
+                  "model": "news-media"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Popup Modal Card Offer",
           "id": "popup-modal-card-offer",
           "plugins": {
@@ -1611,6 +1656,21 @@
           }
         },
         {
+          "title": "Stock Ticker",
+          "id": "stock-ticker",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Stock Ticker",
+                  "model": "stock-ticker"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Story Card",
           "id": "story-card",
           "plugins": {
@@ -1652,21 +1712,6 @@
                   "name": "Table",
                   "model": "table",
                   "filter": "table"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Nested Table",
-          "id": "nested-table",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Nested Table",
-                  "model": "nested-table"
                 }
               }
             }

@@ -216,8 +216,12 @@
         "promo-card-listing",
         "top-promotional-cards",
         "multi-column-tiles",
+        "stock-ticker",
         "cookie-alert",
-        "cookie-modal"
+        "cookie-modal",
+        "news-media-details",
+        "news-media",
+        "latest-news"
       ]
     }
   ]
