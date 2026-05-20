@@ -218,7 +218,7 @@ function handleGlobalLinkClicks() {
 }
 
 const WELCOME_BANNER_COOKIE = 'bbl-welcome-banner';
-const TWENTY_MIN_MS = 30 * 1000;
+const TWENTY_MIN_MS = 20 * 60 * 1000;
 
 function isHomepage() {
   const p = window.location.pathname.replace(/\/$/, '') || '/';
