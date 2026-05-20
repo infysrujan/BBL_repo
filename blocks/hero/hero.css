@@ -113,6 +113,7 @@
 .hero-banner-content-inner {
   float: left;
   width: 100%;
+  line-height: 1rem;
 }
 
 .hero-banner-content-inner-text {
@@ -335,16 +336,15 @@
 .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
   position: static;
   color: var(--bbl-color-black);
-  padding: var(--bbl-space-200);
+  
 }
 
 .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-img) .hero-banner-content.content {
   position: absolute;
-  bottom: 0;
   left: 0;
   right: 0;
   color: var(--bbl-color-white);
-  padding: var(--bbl-space-200) var(--bbl-space-200) var(--bbl-space-300);
+  
 }
 
  :is(.hero-banner-private-wealth-banking, .hero-banner-simple)
@@ -360,11 +360,10 @@
 
   .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
     position: absolute;
-    bottom: 0;
     left: 0;
     right: 0;
     color: var(--bbl-color-white);
-    padding: var(--bbl-space-200) var(--bbl-space-200) var(--bbl-space-300);
+    
   }
 
   .hero-banner-thumbnail-outer {
@@ -445,6 +444,9 @@
   .section.full-bleed-bg .hero-banner-content.content {
     text-align: left;
     bottom: 4.6875rem;
+    padding-left: 5.25rem;
+    padding-right: 5.25rem;
+    margin-bottom: 1.5625rem;
   }
 
   .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
@@ -456,6 +458,10 @@
     -webkit-box-orient: vertical;
     overflow-y: clip;
     margin-inline: 0;
+  }
+
+  .hero-banner-content h1 {
+    font-size: 5.6rem;
   }
 
   .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
@@ -514,6 +520,10 @@
   }
 
   .hero-banner-content-inner {
+    width: 66.6667%;
+  }
+
+  .hero-banner-content-group {
     width: 66.6667%;
   }
 
