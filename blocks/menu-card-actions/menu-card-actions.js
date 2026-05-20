@@ -1,10 +1,24 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
+import { getLang } from '../../scripts/bbl-decorators.js';
 import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 function getTextValue(value) {
   return value?.toString().trim() || '';
+}
+
+function formatMenuCardDate(dateStr) {
+  if (!dateStr) return '';
+  const lang = getLang();
+  const date = new Date(dateStr);
+  if (lang === 'th') {
+    const buddhistYear = date.getFullYear() + 543;
+    const month = date.toLocaleString('th-TH', { month: 'long' });
+    const day = date.getDate();
+    return `${day} ${month} ${buddhistYear}`;
+  }
+  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
 function parseBooleanFlag(value, defaultValue = false) {
@@ -158,7 +172,17 @@ function createMenuCardItem(cardElement, doc) {
   const overlayHref = isBooleanLikeValue(enableOverlayModalDiv?.textContent)
     ? getOverlayHref(overlayHrefDiv)
     : getOverlayHref(enableOverlayModalDiv);
-  const dateText = cells.at(-1)?.innerHTML?.trim() || '';
+  const dateTextRaw = cells.at(-1)?.textContent?.trim() || '';
+
+  let dateText = '';
+  if (dateTextRaw) {
+    const parsedDate = new Date(dateTextRaw);
+    if (!Number.isNaN(parsedDate.getTime())) {
+      dateText = formatMenuCardDate(dateTextRaw);
+    } else {
+      dateText = dateTextRaw;
+    }
+  }
 
   const card = createElementFromHTML(
     '<div class="menu-card-action-item"></div>',
@@ -238,7 +262,7 @@ function createMenuCardItem(cardElement, doc) {
   if (dateText) {
     const dateTextWrapper = doc.createElement('div');
     dateTextWrapper.className = 'menu-card-action-date pad-top-30';
-    dateTextWrapper.innerHTML = dateText;
+    dateTextWrapper.textContent = dateText;
     inner.appendChild(dateTextWrapper);
   }
 

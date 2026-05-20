@@ -398,11 +398,9 @@
           }
         },
         {
-          "component": "richtext",
-          "name": "dateText",
-          "value": "",
-          "label": "Date Text",
-          "description": "Optional date text displayed at the bottom of the card",
+          "component": "date-time",
+          "name": "financialDate",
+          "label": "Financial Date",
           "valueType": "string"
         }
       ]
