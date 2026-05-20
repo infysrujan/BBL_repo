@@ -9475,15 +9475,15 @@
         "value": "N",
         "options": [
           {
-            "name": "No = No Registration",
+            "name": "No Registration",
             "value": "N"
           },
           {
-            "name": "Yes = Register",
+            "name": "Register",
             "value": "Y"
           },
           {
-            "name": "D = Register with Data",
+            "name": "Register with Data",
             "value": "D"
           }
         ],
