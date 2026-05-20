@@ -1,8 +1,30 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { readBlockConfig } from '../../scripts/aem.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
+const BBM_FALLBACK_URL = '/blocks/dummy/bbm-promotions.json';
+
+function getPromoBlockConfig(block) {
+  const firstRow = block.querySelector(':scope > div');
+  const isKeyValueRows = firstRow && firstRow.children.length >= 2;
+
+  if (isKeyValueRows) {
+    const config = readBlockConfig(block);
+    const promotionType = (config['promotion-type'] || config.promotiontype || '').trim();
+    const promoId = (config['promo-id'] || config.promoid || '').trim();
+    return { promotionType, promoId };
+  }
+
+  const rows = [...block.querySelectorAll(':scope > div')];
+  const promotionType = rows[0]?.textContent?.trim() || '';
+  const maybeIsRegister = rows[1]?.textContent?.trim().toLowerCase() || '';
+  const isRegisterLike = ['no', 'yes', 'd'].includes(maybeIsRegister);
+  const promoRow = isRegisterLike ? rows[2] : rows[1];
+  const promoId = promoRow?.textContent?.trim() || '';
+  return { promotionType, promoId };
+}
 
 function formatDate(dateStr, locale = 'en-GB') {
   if (!dateStr) return '';
@@ -38,11 +60,13 @@ async function fetchPromoData(url, promoId) {
 }
 
 export default async function decorate(block) {
-  const promoId = block.children[0]?.textContent?.trim() || '';
+  const { promotionType, promoId } = getPromoBlockConfig(block);
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-GB';
   const configs = await fetchConfigs();
-  const baseUrl = configs?.promotionalCardSelector || '';
+  const baseUrl = promotionType === 'bangkok-bank-m'
+    ? (configs?.promotionalCardSelectorBbm || BBM_FALLBACK_URL)
+    : (configs?.promotionalCardSelector || '');
   const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 
   const [placeholders, card] = await Promise.all([

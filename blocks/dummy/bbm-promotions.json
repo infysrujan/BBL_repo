@@ -1,0 +1,15 @@
+{
+  "cards": [
+    {
+      "id": "bbm-demo-001",
+      "ctaLink": "/content/bangkokbank/en/promotionsmb",
+      "title": "Bangkok Bank M Demo Promotion",
+      "detailImageUrl": "",
+      "detailDescription": "Demo description for Bangkok Bank M promotion details.",
+      "promotionStartDate": "2026-01-01",
+      "promotionEndDate": "2026-12-31",
+      "responsibleLendingDisclaimerEnabled": false,
+      "responsibleLendingDisclaimerText": ""
+    }
+  ]
+}

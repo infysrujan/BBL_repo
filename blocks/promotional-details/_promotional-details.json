@@ -38,35 +38,6 @@
           ]
         },
         {
-          "component": "radio-group",
-          "name": "isRegister",
-          "label": "Is Register",
-          "valueType": "string",
-          "value": "no",
-          "options": [
-            {
-              "name": "No",
-              "value": "no"
-            },
-            {
-              "name": "Yes",
-              "value": "yes"
-            },
-            {
-              "name": "D",
-              "value": "d"
-            }
-          ],
-          "condition": {
-            "===": [
-              {
-                "var": "promotionType"
-              },
-              "bangkok-bank-m"
-            ]
-          }
-        },
-        {
           "component": "text",
           "name": "promoId",
           "label": "Promo ID",
@@ -83,35 +54,11 @@
                 ]
               },
               {
-                "and": [
+                "===": [
                   {
-                    "===": [
-                      {
-                        "var": "promotionType"
-                      },
-                      "bangkok-bank-m"
-                    ]
+                    "var": "promotionType"
                   },
-                  {
-                    "or": [
-                      {
-                        "===": [
-                          {
-                            "var": "isRegister"
-                          },
-                          "yes"
-                        ]
-                      },
-                      {
-                        "===": [
-                          {
-                            "var": "isRegister"
-                          },
-                          "d"
-                        ]
-                      }
-                    ]
-                  }
+                  "bangkok-bank-m"
                 ]
               }
             ]
@@ -132,35 +79,11 @@
                 ]
               },
               {
-                "and": [
+                "===": [
                   {
-                    "===": [
-                      {
-                        "var": "promotionType"
-                      },
-                      "bangkok-bank-m"
-                    ]
+                    "var": "promotionType"
                   },
-                  {
-                    "or": [
-                      {
-                        "===": [
-                          {
-                            "var": "isRegister"
-                          },
-                          "yes"
-                        ]
-                      },
-                      {
-                        "===": [
-                          {
-                            "var": "isRegister"
-                          },
-                          "d"
-                        ]
-                      }
-                    ]
-                  }
+                  "bangkok-bank-m"
                 ]
               }
             ]
@@ -269,35 +192,11 @@
                 ]
               },
               {
-                "and": [
+                "===": [
                   {
-                    "===": [
-                      {
-                        "var": "promotionType"
-                      },
-                      "bangkok-bank-m"
-                    ]
+                    "var": "promotionType"
                   },
-                  {
-                    "or": [
-                      {
-                        "===": [
-                          {
-                            "var": "isRegister"
-                          },
-                          "yes"
-                        ]
-                      },
-                      {
-                        "===": [
-                          {
-                            "var": "isRegister"
-                          },
-                          "d"
-                        ]
-                      }
-                    ]
-                  }
+                  "bangkok-bank-m"
                 ]
               }
             ]
@@ -319,35 +218,11 @@
                 ]
               },
               {
-                "and": [
+                "===": [
                   {
-                    "===": [
-                      {
-                        "var": "promotionType"
-                      },
-                      "bangkok-bank-m"
-                    ]
+                    "var": "promotionType"
                   },
-                  {
-                    "or": [
-                      {
-                        "===": [
-                          {
-                            "var": "isRegister"
-                          },
-                          "yes"
-                        ]
-                      },
-                      {
-                        "===": [
-                          {
-                            "var": "isRegister"
-                          },
-                          "d"
-                        ]
-                      }
-                    ]
-                  }
+                  "bangkok-bank-m"
                 ]
               }
             ]
@@ -405,35 +280,11 @@
                 ]
               },
               {
-                "and": [
+                "===": [
                   {
-                    "===": [
-                      {
-                        "var": "promotionType"
-                      },
-                      "bangkok-bank-m"
-                    ]
+                    "var": "promotionType"
                   },
-                  {
-                    "or": [
-                      {
-                        "===": [
-                          {
-                            "var": "isRegister"
-                          },
-                          "yes"
-                        ]
-                      },
-                      {
-                        "===": [
-                          {
-                            "var": "isRegister"
-                          },
-                          "d"
-                        ]
-                      }
-                    ]
-                  }
+                  "bangkok-bank-m"
                 ]
               }
             ]
@@ -452,6 +303,35 @@
           "label": "Disclaimer Text (appears on the promotional page)",
           "valueType": "string",
           "condition": { "!!": [{ "var": "responsibleLendingDisclaimerEnabled" }] }
+        },
+        {
+          "component": "select",
+          "name": "isRegister",
+          "label": "Is Register",
+          "valueType": "string",
+          "value": "N",
+          "options": [
+            {
+              "name": "No = No Registration",
+              "value": "N"
+            },
+            {
+              "name": "Yes = Register",
+              "value": "Y"
+            },
+            {
+              "name": "D = Register with Data",
+              "value": "D"
+            }
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "promotionType"
+              },
+              "bangkok-bank-m"
+            ]
+          }
         }
       ]
     }
