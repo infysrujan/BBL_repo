@@ -1,7 +1,7 @@
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { buildCardHtml, buildPaginationHtml, bindPaginationClick } from '../../scripts/utils/card-healpers.js';
+import { buildCardHtml, buildPaginationHtml, bindPaginationClick } from '../../scripts/utils/card-helpers.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
 
