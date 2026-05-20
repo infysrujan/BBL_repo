@@ -1,4 +1,4 @@
-import { getLang } from '../../scripts/scripts.js';
+import { getLang } from '../../scripts/bbl-decorators.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
