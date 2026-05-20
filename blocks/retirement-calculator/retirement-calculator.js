@@ -1,5 +1,6 @@
 import fetchBlockConfig from '../../scripts/block-config.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
 // ─── Utilities ──────────────────────────────────────────────────────────────────
 
@@ -24,13 +25,22 @@ function getString(labels, key, fallback = '') {
 // ─── Data ────────────────────────────────────────────────────────────────────────
 
 async function loadData() {
-  const [siteConfig, labels] = await Promise.all([
+  const [siteConfig, labels, placeholders] = await Promise.all([
     fetchConfigs(),
     fetchBlockConfig('/retirement-config.json'),
+    fetchPlaceholders(),
   ]);
   return {
     labels,
     apiUrl: siteConfig.retireCalculator,
+    inflationRate: String(siteConfig['inflation-rate'] ?? '1.5'),
+    afterRetirementRate: String(siteConfig['after-retirement-rate'] ?? '3'),
+    altCompensationRate: parseFloat(siteConfig['alt-compensation-rate']) || 0.05,
+    defaultMonthlyIncome: parseFloat(placeholders['default-monthly-income']) || 20000,
+    defaultCurrentAge: parseInt(placeholders['default-current-age'], 10) || 30,
+    defaultRetirementAge: parseInt(placeholders['default-retirement-age'], 10) || 60,
+    defaultLifeExpectancy: parseInt(placeholders['default-life-expectancy'], 10) || 80,
+    defaultSavingsReturnRate: parseFloat(placeholders['default-savings-return-rate']) || 3,
   };
 }
 
@@ -74,7 +84,7 @@ function buildIncomeCard(labels, savedValue) {
       <div class="rc-income-title">${getString(labels, 'stepsStep1MonthlyIncomeTitle', 'Monthly amount you want after retirement')}</div>
       <div class="rc-income-input-wrap">
         <input type="text" id="rc-monthlyIncome" class="rc-income-input"
-          placeholder="1-999,999,999" maxlength="${formatNumber(999999999).length}" value="${formatNumber(savedValue ?? 20000)}">
+          placeholder="1-999,999,999" maxlength="${formatNumber(999999999).length}" value="${formatNumber(savedValue ?? 0)}">
         <span class="rc-income-unit">${getString(labels, 'commonUnit', 'baht')}</span>
       </div>
       <hr class="rc-income-divider">
@@ -334,12 +344,13 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   container.appendChild(buildStepper(labels, 1));
 
   const content = parseHTML('<div class="rc-content"></div>');
-  content.appendChild(buildIncomeCard(labels, savedValues.monthlyIncome));
+  const incomeCardValue = savedValues.monthlyIncome ?? data.defaultMonthlyIncome;
+  content.appendChild(buildIncomeCard(labels, incomeCardValue));
 
   const fieldsWrap = parseHTML('<div class="rc-fields"></div>');
-  const currentAgeField = buildAgeField('currentAge', getString(labels, 'stepsStep1CurrentAge', 'How old are you?'), savedValues.currentAge ?? 30, labels);
-  const retirementAgeField = buildAgeField('retirementAge', getString(labels, 'stepsStep1RetirementAge', 'What age do you plan to retire?'), savedValues.retirementAge ?? 60, labels);
-  const lifeExpectancyField = buildAgeField('lifeExpectancy', getString(labels, 'stepsStep1LifeExpectancy', 'Until what age do you expect to live?'), savedValues.lifeExpectancy ?? 80, labels);
+  const currentAgeField = buildAgeField('currentAge', getString(labels, 'stepsStep1CurrentAge', 'How old are you?'), savedValues.currentAge ?? data.defaultCurrentAge, labels);
+  const retirementAgeField = buildAgeField('retirementAge', getString(labels, 'stepsStep1RetirementAge', 'What age do you plan to retire?'), savedValues.retirementAge ?? data.defaultRetirementAge, labels);
+  const lifeExpectancyField = buildAgeField('lifeExpectancy', getString(labels, 'stepsStep1LifeExpectancy', 'Until what age do you expect to live?'), savedValues.lifeExpectancy ?? data.defaultLifeExpectancy, labels);
   fieldsWrap.appendChild(currentAgeField);
   fieldsWrap.appendChild(retirementAgeField);
   fieldsWrap.appendChild(lifeExpectancyField);
@@ -420,8 +431,8 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
         SumYearRetire: 0,
         YearCompensationRateRetire: 0,
         OneTimeMoneyRetire: 0,
-        inflationrate: '1.5',
-        afterretirerate: '3',
+        inflationrate: data.inflationRate,
+        afterretirerate: data.afterRetirementRate,
       };
       const resp = await fetch(apiUrl, {
         method: 'POST',
@@ -491,7 +502,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   const savingsWrap = parseHTML('<div class="rc-section"></div>');
   savingsWrap.appendChild(buildSectionHeader(getString(labels, 'stepsStep2SavingsSection', 'Savings')));
   const currentSavingsField = buildMoneyField('currentSavings', getString(labels, 'stepsStep2CurrentSavingsLabel', 'Current savings balance'), savedValues.SavingBeginAmount, labels);
-  const savingsReturnRateField = buildPercentField('savingsReturnRate', getString(labels, 'stepsStep2SavingsExpectedReturnRateLabel', 'Expected annual return (%)'), savedValues.CompensationRatePct ?? 3, labels);
+  const savingsReturnRateField = buildPercentField('savingsReturnRate', getString(labels, 'stepsStep2SavingsExpectedReturnRateLabel', 'Expected annual return (%)'), savedValues.CompensationRatePct ?? data.defaultSavingsReturnRate, labels);
   const savingsIncreaseRateField = buildPercentField('savingsIncreaseRate', getString(labels, 'stepsStep2AnnualSavingsIncreaseRateLabel', 'Expected annual savings increase (%)'), savedValues.SavingIncRatePct ?? 0, labels);
   savingsWrap.appendChild(currentSavingsField);
   savingsWrap.appendChild(savingsReturnRateField);
@@ -612,10 +623,10 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
         SumYearRetire: journey2Values.SumYearRetire,
         YearCompensationRateRetire: journey2Values.YearCompensationRateRetirePct / 100,
         OneTimeMoneyRetire: journey2Values.OneTimeMoneyRetire,
-        inflationrate: '1.5',
-        afterretirerate: '3',
+        inflationrate: data.inflationRate,
+        afterretirerate: data.afterRetirementRate,
       };
-      const payload5 = { ...payload, CompensationRate: 0.05 };
+      const payload5 = { ...payload, CompensationRate: data.altCompensationRate };
       const [resp1, resp2] = await Promise.all([
         fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
         fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload5) }),
