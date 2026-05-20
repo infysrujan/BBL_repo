@@ -21,6 +21,52 @@
       "id": "promotional-details",
       "fields": [
         {
+          "component": "select",
+          "name": "promotionType",
+          "label": "Promotion Type",
+          "valueType": "string",
+          "value": "credit-card",
+          "options": [
+            {
+              "name": "Credit Card",
+              "value": "credit-card"
+            },
+            {
+              "name": "Bangkok Bank M",
+              "value": "bangkok-bank-m"
+            }
+          ]
+        },
+        {
+          "component": "radio-group",
+          "name": "bangkokBankMOption",
+          "label": "Bangkok Bank M Option",
+          "valueType": "string",
+          "value": "no",
+          "options": [
+            {
+              "name": "No",
+              "value": "no"
+            },
+            {
+              "name": "Yes",
+              "value": "yes"
+            },
+            {
+              "name": "D",
+              "value": "d"
+            }
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "promotionType"
+              },
+              "bangkok-bank-m"
+            ]
+          }
+        },
+        {
           "component": "text",
           "name": "promoId",
           "label": "Promo ID",
