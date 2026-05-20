@@ -67,6 +67,13 @@
         "value": true,
         "label": "Breadcrumb",
         "valueType": "boolean"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "ogImage",
+        "label": "OG Image",
+        "description": "Select the image asset to use for the Open Graph og:image meta tag."
       }
     ]
   },
@@ -3443,33 +3450,6 @@
       },
       {
         "component": "tab",
-        "label": "Style",
-        "name": "style"
-      },
-      {
-        "component": "select",
-        "name": "linkType",
-        "label": "Button Style",
-        "description": "Visual style variant for the button, extending the Sites button model properties",
-        "valueType": "string",
-        "value": "primary",
-        "options": [
-          {
-            "name": "Primary",
-            "value": "primary"
-          },
-          {
-            "name": "Secondary",
-            "value": "secondary"
-          },
-          {
-            "name": "Tertiary",
-            "value": "tertiary"
-          }
-        ]
-      },
-      {
-        "component": "tab",
         "label": "Help Content",
         "name": "help"
       },
@@ -6044,48 +6024,6 @@
           }
         ],
         "value": "default"
-      },
-      {
-        "component": "multiselect",
-        "name": "style",
-        "label": "Style Variant",
-        "description": "Select additional CSS style classes for the radio group. Leave empty (no selection) to use the default radio button appearance.",
-        "valueType": "string",
-        "required": false,
-        "options": [
-          {
-            "name": "— Default (standard radio buttons) —",
-            "value": ""
-          },
-          {
-            "name": "Pill",
-            "value": "pill"
-          },
-          {
-            "name": "Segment",
-            "value": "segment"
-          },
-          {
-            "name": "Outlined",
-            "value": "outlined"
-          },
-          {
-            "name": "Filled",
-            "value": "filled"
-          },
-          {
-            "name": "Vertical",
-            "value": "vertical"
-          },
-          {
-            "name": "Icon",
-            "value": "icon"
-          },
-          {
-            "name": "Button",
-            "value": "button"
-          }
-        ]
       },
       {
         "component": "select",
