@@ -88,7 +88,7 @@
   top: 0.625rem;
   left: 0.625rem;
   z-index: 1;
-  background-color: var(--bbl-color-active-blue);
+  background-color: var(--bbl-color-blue-140);
   color: var(--bbl-color-white);
   padding: 0.4375rem var(--bbl-space-200) 0.3125rem;
   border-radius: 1.25rem;
@@ -300,6 +300,12 @@
   padding-bottom: 0.9375rem;
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-medium);
+}
+
+.intro-info .button-container{
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .content-insert-card .text-default {
