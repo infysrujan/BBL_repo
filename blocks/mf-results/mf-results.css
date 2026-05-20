@@ -18,6 +18,38 @@
   }
 }
 
+/* ── Fund card fields ─────────────────────────────────────────────────────── */
+
+.mfr-card-field {
+  padding: var(--bbl-space-150, 0.75rem) 0;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-20, #e0e0e0);
+}
+
+.mfr-card-field:last-child {
+  border-bottom: none;
+}
+
+.mfr-card-field strong {
+  display: block;
+  font-family: var(--bbl-font-family-medium);
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-85);
+  margin-bottom: 0.25rem;
+}
+
+.mfr-card-field p,
+.mfr-card-field ul {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--bbl-color-grey-70);
+  line-height: 1.5;
+}
+
+.mfr-card-field ul {
+  list-style: none;
+  padding: 0;
+}
+
 /* ── Card list container ──────────────────────────────────────────────────── */
 
 .mfr-card-list-container {

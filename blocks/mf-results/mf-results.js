@@ -74,7 +74,8 @@ async function loadMatrix() {
   try {
     const configs = await fetchConfigs();
     const url = configs.mfSuggestorData;
-    console.warn(url);
+    // eslint-disable-next-line no-console
+    console.log('[mf-results] loadMatrix url:', url);
     if (!url) return [];
     const resp = await fetch(url);
     if (!resp.ok) return [];
@@ -93,7 +94,8 @@ async function loadMatrix() {
 async function loadFundsData() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfFundsDataUrl;
+    // TODO: remove dummy override before go-live
+    const url = '/blocks/mf-results/dummy.json' || configs.mfFundsDataUrl;
     if (!url) return [];
     // eslint-disable-next-line no-console
     console.log('[mf-results] loadFundsData url:', url);
@@ -254,24 +256,36 @@ function buildCardBlock(funds, doc, labels) {
   block.appendChild(createBlockRow(doc, 'center')); // alignment
   block.appendChild(createBlockRow(doc, 'cards-3')); // cards per row
 
+  // Extract _publishUrl from image objects returned by GraphQL
+  // eslint-disable-next-line no-underscore-dangle
+  const getImgUrl = (val) => val?._publishUrl || (typeof val === 'string' ? val : '');
+
+  // Convert taxonomy tag path to readable label e.g.
+  // "bangkokbank:assets/mutual-funds/fund-types/sector-fund" → "Sector Fund"
+  const tagToLabel = (tag) => {
+    const slug = tag.split('/').pop() || tag.split(':').pop() || tag;
+    return slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  };
+
   funds.forEach((fund) => {
     const name = fund.FundName || '';
-    const description = fund.FundDescription || '';
-    const logoSrc = fund.LogoImage || fund.ManagementCompanyLogo || '';
-    const fundImageSrc = fund.FundImage || '';
     // eslint-disable-next-line no-underscore-dangle
     const readMoreUrl = fund._path || '';
     const productId = fund.ProductID || name;
     const compareEnabled = fund.CompareButton === 'true';
 
-    // Cell 0 — image (fund logo, falls back to management company logo)
+    // Resolve image URLs (GraphQL returns objects with _publishUrl)
+    const fundImageSrc = getImgUrl(fund.FundImage);
+    const logoSrc = getImgUrl(fund.LogoImage) || getImgUrl(fund.ManagementCompanyLogo);
+
+    // Cell 0 — fund image (falls back to logo)
     const imgCell = doc.createElement('div');
-    if (logoSrc) {
+    const imgSrc = fundImageSrc || logoSrc;
+    if (imgSrc) {
       const img = doc.createElement('img');
-      img.src = logoSrc;
-      img.alt = fund.ManagementCompany || '';
+      img.src = imgSrc;
+      img.alt = name;
       img.loading = 'lazy';
-      if (fundImageSrc) img.dataset.fundImage = fundImageSrc;
       imgCell.appendChild(img);
     }
 
@@ -283,13 +297,52 @@ function buildCardBlock(funds, doc, labels) {
     h3.dataset.compareEnabled = compareEnabled ? 'true' : 'false';
     titleCell.appendChild(h3);
 
-    // Cell 3 — description
+    // Cell 3 — structured description matching live site layout
     const descCell = doc.createElement('div');
-    if (description) {
-      const p = doc.createElement('p');
-      p.textContent = description;
-      descCell.appendChild(p);
+
+    const addField = (label, value) => {
+      if (!value) return;
+      const row = doc.createElement('div');
+      row.className = 'mfr-card-field';
+      const lbl = doc.createElement('strong');
+      lbl.textContent = label;
+      const val = doc.createElement('p');
+      val.textContent = value;
+      row.appendChild(lbl);
+      row.appendChild(val);
+      descCell.appendChild(row);
+    };
+
+    // Risk Level: "level-4" → "Level 4"
+    const riskLabel = fund.RiskLevel
+      ? fund.RiskLevel.replace(/^level-/i, 'Level ')
+      : '';
+    addField('Risk Level', riskLabel);
+
+    // Fund Type: array of taxonomy tags → readable labels
+    if (Array.isArray(fund.FundType) && fund.FundType.length) {
+      const lbl = doc.createElement('strong');
+      lbl.textContent = 'Fund Type';
+      const ul = doc.createElement('ul');
+      fund.FundType.forEach((tag) => {
+        const li = doc.createElement('li');
+        li.textContent = tagToLabel(tag);
+        ul.appendChild(li);
+      });
+      const row = doc.createElement('div');
+      row.className = 'mfr-card-field';
+      row.appendChild(lbl);
+      row.appendChild(ul);
+      descCell.appendChild(row);
     }
+
+    addField('Investment Policy', fund.InvestmentPolicy || '');
+    addField('Master Fund', fund.MasterFund || 'N/A');
+    addField('Dividend Payment Policy', fund.DividendPaymentPolicy || '');
+    addField('Management Company', fund.ManagementCompany || '');
+
+    // eslint-disable-next-line no-console
+    console.log('[mf-results] descCell children:', descCell.children.length, descCell.innerHTML);
 
     // Cell 5 — button ("Read more" link)
     const btnCell = doc.createElement('div');
@@ -305,8 +358,8 @@ function buildCardBlock(funds, doc, labels) {
       titleCell, // 2 title
       descCell, // 3 description
       null, // 4 remark
-      btnCell, // 5 button (Learn more)
-      'x-small', // 6 image layout
+      btnCell, // 5 button (Read more)
+      'default', // 6 image layout
       'true', // 7 enable title underline
       'false', // 8 is card clickable
       null, // 9 card link
