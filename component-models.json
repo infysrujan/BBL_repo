@@ -9196,8 +9196,8 @@
       },
       {
         "component": "radio-group",
-        "name": "bangkokBankMOption",
-        "label": "Bangkok Bank M Option",
+        "name": "isRegister",
+        "label": "Is Register",
         "valueType": "string",
         "value": "no",
         "options": [
@@ -9220,6 +9220,196 @@
               "var": "promotionType"
             },
             "bangkok-bank-m"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "registrationPromotionId",
+        "label": "PromotionId",
+        "valueType": "string",
+        "condition": {
+          "and": [
+            {
+              "===": [
+                {
+                  "var": "promotionType"
+                },
+                "bangkok-bank-m"
+              ]
+            },
+            {
+              "or": [
+                {
+                  "===": [
+                    {
+                      "var": "isRegister"
+                    },
+                    "yes"
+                  ]
+                },
+                {
+                  "===": [
+                    {
+                      "var": "isRegister"
+                    },
+                    "d"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "registrationPromotionDetailsTitle",
+        "label": "PromotionDetailsTitle",
+        "valueType": "string",
+        "condition": {
+          "and": [
+            {
+              "===": [
+                {
+                  "var": "promotionType"
+                },
+                "bangkok-bank-m"
+              ]
+            },
+            {
+              "or": [
+                {
+                  "===": [
+                    {
+                      "var": "isRegister"
+                    },
+                    "yes"
+                  ]
+                },
+                {
+                  "===": [
+                    {
+                      "var": "isRegister"
+                    },
+                    "d"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "date-time",
+        "name": "registrationPromotionStartDate",
+        "label": "PromotionStartDate",
+        "valueType": "string",
+        "condition": {
+          "and": [
+            {
+              "===": [
+                {
+                  "var": "promotionType"
+                },
+                "bangkok-bank-m"
+              ]
+            },
+            {
+              "or": [
+                {
+                  "===": [
+                    {
+                      "var": "isRegister"
+                    },
+                    "yes"
+                  ]
+                },
+                {
+                  "===": [
+                    {
+                      "var": "isRegister"
+                    },
+                    "d"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "date-time",
+        "name": "registrationPromotionExpiryDate",
+        "label": "PromotionExpiryDate",
+        "valueType": "string",
+        "condition": {
+          "and": [
+            {
+              "===": [
+                {
+                  "var": "promotionType"
+                },
+                "bangkok-bank-m"
+              ]
+            },
+            {
+              "or": [
+                {
+                  "===": [
+                    {
+                      "var": "isRegister"
+                    },
+                    "yes"
+                  ]
+                },
+                {
+                  "===": [
+                    {
+                      "var": "isRegister"
+                    },
+                    "d"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "registrationPromotionFlag",
+        "label": "Promotion_Flag",
+        "valueType": "string",
+        "condition": {
+          "and": [
+            {
+              "===": [
+                {
+                  "var": "promotionType"
+                },
+                "bangkok-bank-m"
+              ]
+            },
+            {
+              "or": [
+                {
+                  "===": [
+                    {
+                      "var": "isRegister"
+                    },
+                    "yes"
+                  ]
+                },
+                {
+                  "===": [
+                    {
+                      "var": "isRegister"
+                    },
+                    "d"
+                  ]
+                }
+              ]
+            }
           ]
         }
       },
