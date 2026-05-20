@@ -74,6 +74,7 @@ async function loadMatrix() {
   try {
     const configs = await fetchConfigs();
     const url = configs.mfSuggestorData;
+    console.warn(url);
     if (!url) return [];
     const resp = await fetch(url);
     if (!resp.ok) return [];
@@ -92,11 +93,17 @@ async function loadMatrix() {
 async function loadFundsData() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfFundsDataUrl || 'https://publish-p185039-e1938068.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-mutual-funds-by-language;language=en';
+    const url = configs.mfFundsDataUrl;
+    if (!url) return [];
+    // eslint-disable-next-line no-console
+    console.log('[mf-results] loadFundsData url:', url);
     const resp = await fetch(url);
     if (!resp.ok) return [];
     const json = await resp.json();
-    return json.data?.mutualFundsList?.items || [];
+    const items = json.data?.mutualFundsList?.items || [];
+    // eslint-disable-next-line no-console
+    console.log('[mf-results] loadFundsData items:', items.length, JSON.stringify(items));
+    return items;
   } catch {
     return [];
   }
@@ -197,20 +204,6 @@ function filterFundsByMatrix(funds, matchedNames) {
   return funds.filter((fund) => {
     const name = norm(fund.FundName || '');
     return matchedNames.some((n) => name === n || name.includes(n) || n.includes(name));
-  });
-}
-
-/**
- * Fallback filter: when matrix name-join produces no results, filter GraphQL
- * funds directly using their own RiskLevel field (e.g. "level-6").
- */
-function filterFundsByRiskLevel(funds, riskLevel) {
-  const allowedLevels = RISK_NUMERIC_RANGES[norm(riskLevel)] || [];
-  if (!allowedLevels.length) return funds;
-  return funds.filter((fund) => {
-    const raw = norm(fund.RiskLevel || ''); // e.g. "level-2"
-    const num = parseInt(raw.replace('level-', ''), 10);
-    return allowedLevels.includes(num);
   });
 }
 
@@ -531,17 +524,16 @@ export default async function decorate(block) {
   // ── Apply filter and render ────────────────────────────────────────────────
   // eslint-disable-next-line no-console
   console.log('[mf-results] answers:', answers, '| matrix rows:', matrix.length, '| funds:', allFunds.length);
+  // eslint-disable-next-line no-console
+  if (matrix.length) console.log('[mf-results] matrix sample row:', matrix[0]);
   const hasAnswers = answers.riskLevel || answers.fxRisk || answers.taxBenefit;
   if (!hasAnswers) {
     renderCards([]);
   } else {
     const matchedNames = getMatchedFundNames(matrix, answers);
-    let filteredFunds = filterFundsByMatrix(allFunds, matchedNames);
-
-    if (!filteredFunds.length && answers.riskLevel) {
-      filteredFunds = filterFundsByRiskLevel(allFunds, answers.riskLevel);
-    }
-
+    const filteredFunds = filterFundsByMatrix(allFunds, matchedNames);
+    // eslint-disable-next-line no-console
+    console.log('[mf-results] matchedNames:', matchedNames.length, matchedNames, '| filteredFunds:', filteredFunds.length, '| fund names:', filteredFunds.map((f) => f.FundName));
     renderCards(filteredFunds);
   }
 

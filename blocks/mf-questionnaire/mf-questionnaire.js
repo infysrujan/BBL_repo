@@ -185,7 +185,7 @@ export default async function decorate(block) {
   }
 
   // ── Build inline risk option cards from authored list items ─────────────
-  function buildInlineRiskCards() {
+  function buildInlineRiskCards(disclaimer) {
     const wrap = document.createElement('div');
     wrap.className = 'mfq-screen mfq-risk-options';
 
@@ -198,7 +198,7 @@ export default async function decorate(block) {
     const cardList = buildThumbSquareList(listItems, document);
     wrap.appendChild(cardList);
 
-    // Descriptions as bullet list below the cards
+    // Descriptions as bullet list below the cards, with disclaimer nested inside
     if (cfg.screen1RiskDescriptions.length) {
       const descEl = document.createElement('div');
       descEl.className = 'mfq-description';
@@ -209,6 +209,12 @@ export default async function decorate(block) {
         ul.appendChild(li);
       });
       descEl.appendChild(ul);
+      if (disclaimer) {
+        const disc = document.createElement('div');
+        disc.className = 'mfq-disclaimer';
+        disc.innerHTML = disclaimer;
+        descEl.appendChild(disc);
+      }
       wrap.appendChild(descEl);
     }
 
@@ -225,7 +231,7 @@ export default async function decorate(block) {
       const modal = createModal(document);
       const modalBody = modal.querySelector('.modal-body');
       if (!modalBody) return;
-      modalBody.replaceChildren(buildInlineRiskCards());
+      modalBody.replaceChildren(buildInlineRiskCards(cfg.disclaimer));
       modal.classList.add('active');
       modal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('modal-open');
@@ -246,20 +252,26 @@ export default async function decorate(block) {
     modalBody.prepend(divider);
     modalBody.prepend(titleEl);
 
-    // Append description (only for fragment path variant)
-    if (cfg.screen1FragmentPath && cfg.screen1Description) {
-      const desc = document.createElement('div');
-      desc.className = 'mfq-description';
-      desc.innerHTML = cfg.screen1Description;
-      modalBody.appendChild(desc);
-    }
-
-    // Append disclaimer
-    if (cfg.disclaimer) {
-      const disc = document.createElement('div');
-      disc.className = 'mfq-disclaimer';
-      disc.innerHTML = cfg.disclaimer;
-      modalBody.appendChild(disc);
+    // Append description + disclaimer (fragment path variant only)
+    // For inline variant, both are already nested inside buildInlineRiskCards()
+    if (cfg.screen1FragmentPath) {
+      if (cfg.screen1Description) {
+        const desc = document.createElement('div');
+        desc.className = 'mfq-description';
+        desc.innerHTML = cfg.screen1Description;
+        if (cfg.disclaimer) {
+          const disc = document.createElement('div');
+          disc.className = 'mfq-disclaimer';
+          disc.innerHTML = cfg.disclaimer;
+          desc.appendChild(disc);
+        }
+        modalBody.appendChild(desc);
+      } else if (cfg.disclaimer) {
+        const disc = document.createElement('div');
+        disc.className = 'mfq-disclaimer';
+        disc.innerHTML = cfg.disclaimer;
+        modalBody.appendChild(disc);
+      }
     }
 
     // Wire up risk option card clicks — works for both inline cards and fragment cards
