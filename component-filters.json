@@ -351,9 +351,7 @@
         ]
       }
     },
-    "components": [
-      "nested-table"
-    ]
+    "components": []
   },
   {
     "id": "tab-section",

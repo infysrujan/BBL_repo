@@ -115,6 +115,7 @@
 @media (width > 47.5rem) {
   .story-card .thumb-full {
     flex-direction: row;
+    justify-content: space-between;
   }
 
   .story-card.image-right .thumb-full {
