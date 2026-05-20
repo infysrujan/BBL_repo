@@ -5,7 +5,8 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * Cell layout (carousel-dotted-slide-arrows):
  *  cells[0] = variant (hidden), cells[1] = slideType (select)
  * slideType values:
- *   withDefaultImage: 0:variant, 1:slideType, 2:defaultImage, 3:titleDefaultImage (RTE),
+ *   withDefaultImage: 0:variant, 1:slideType, 2:defaultImage, 3:titleDefaultImage (RTE — heading
+ *                     becomes title, any remaining paragraphs become inline description),
  *                     4:stepText1, 5:description1, 6:stepText2, 7:description2,
  *                     8:ctaLink (merged — aem-content+text+text+select → 1 cell)
  *   withCircularImage: 0:variant, 1:slideType,
@@ -92,8 +93,8 @@ export default function buildSlideArrowsandDots(row, index) {
   if (slideType === 'withDefaultImage') {
     slide.className = 'carousel-dotted-item with-default-image item has-caption bgd-white';
 
-    // defaultImage (cell 2), title RTE (cell 3), stepText1 (cell 4), description1 (cell 5),
-    // stepText2 (cell 6), description2 (cell 7), ctaLink (cell 8)
+    // defaultImage (cell 2), title+description RTE (cell 3), stepText1 (cell 4),
+    // description1 (cell 5), stepText2 (cell 6), description2 (cell 7), ctaLink (cell 8)
     const defaultImageCell = cells[2];
     const titleCell = cells[3];
     const stepText1Cell = cells[4];
@@ -113,20 +114,37 @@ export default function buildSlideArrowsandDots(row, index) {
     const content = document.createElement('div');
     content.className = 'caption editor';
 
+    // Title field: first heading becomes the title (h3.title-3);
+    // any remaining content in the same field is rendered as description below the title.
     if (titleCell && titleCell.textContent.trim()) {
-      const heading = titleCell.querySelector('h1, h2, h3, h4, h5, h6');
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = titleCell.innerHTML;
+
+      const heading = tempDiv.querySelector('h1, h2, h3, h4, h5, h6');
       if (heading) {
-        heading.className = 'title-3';
-        content.append(heading);
+        const titleEl = document.createElement('h3');
+        titleEl.className = 'title-3';
+        titleEl.innerHTML = heading.innerHTML;
+        content.append(titleEl);
+        heading.remove();
       } else {
-        const title = document.createElement('h3');
-        title.className = 'title-3';
-        title.innerHTML = titleCell.innerHTML;
-        content.append(title);
+        const titleEl = document.createElement('h3');
+        titleEl.className = 'title-3';
+        titleEl.innerHTML = tempDiv.innerHTML;
+        content.append(titleEl);
+        tempDiv.innerHTML = '';
+      }
+
+      // Render any non-heading content from the title field as inline description
+      if (tempDiv.textContent.trim()) {
+        const descWrap = document.createElement('div');
+        descWrap.className = 'text-default editor pad-bot';
+        while (tempDiv.firstChild) descWrap.append(tempDiv.firstChild);
+        content.append(descWrap);
       }
     }
 
-    // Step 1 + Description 1
+    // Step 1 + Description 1 (separate fields — rendered independently)
     const hasStep1 = stepText1Cell && stepText1Cell.textContent.trim();
     const hasDesc1 = description1Cell && description1Cell.textContent.trim();
     if (hasStep1 || hasDesc1) {
