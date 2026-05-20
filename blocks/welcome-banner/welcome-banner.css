@@ -32,6 +32,20 @@
   position: relative;
 }
 
+.welcome-banner-close {
+  position: absolute;
+  top: -2.5rem;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: var(--bbl-color-white, #fff);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  z-index: 1;
+}
+
 .welcome-banner-media {
   width: 100%;
   line-height: 0;
