@@ -206,6 +206,8 @@
 
 .cards-list-image.cards-list-image-card {
   max-height: 10.3125rem;
+  border-top-left-radius: 0.4375rem;
+  border-top-right-radius: 0.4375rem;
 }
 
 .cards-list-image.cards-list-image-full {
