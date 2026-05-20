@@ -48,12 +48,12 @@ function isDateOlderThanFundHistoryLimit(date) {
 
 /* ── DOM builders ────────────────────────────────────────────── */
 
-function buildFundSelectorBar(doc, funds) {
+function buildFundSelectorBar(doc, funds, searchLabel, allFundsLabel, goLabel) {
   const bar = doc.createElement('div');
   bar.className = 'fund-prices-search-bar';
 
   const lbl = doc.createElement('label');
-  lbl.textContent = 'Search Fund';
+  lbl.textContent = searchLabel;
   lbl.htmlFor = 'fund-select-btn';
 
   const wrapper = doc.createElement('div');
@@ -64,14 +64,14 @@ function buildFundSelectorBar(doc, funds) {
   btn.id = 'fund-select-btn';
   btn.setAttribute('aria-haspopup', 'listbox');
   btn.setAttribute('aria-expanded', 'false');
-  btn.innerHTML = 'ALL FUNDS <span class="icon-dropdown"></span>';
+  btn.innerHTML = `<span class="fund-select-text">${allFundsLabel}</span><span class="icon-dropdown"></span>`;
 
   const list = doc.createElement('ul');
   list.className = 'fund-dropdown';
   list.setAttribute('role', 'listbox');
 
   const allOption = doc.createElement('li');
-  allOption.textContent = 'ALL FUNDS';
+  allOption.textContent = allFundsLabel;
   allOption.setAttribute('role', 'option');
   allOption.classList.add('active');
   list.appendChild(allOption);
@@ -93,7 +93,7 @@ function buildFundSelectorBar(doc, funds) {
 
   const goBtn = doc.createElement('button');
   goBtn.className = 'fund-search-go-btn';
-  goBtn.textContent = 'GO';
+  goBtn.textContent = goLabel;
 
   bar.appendChild(lbl);
   bar.appendChild(wrapper);
@@ -104,11 +104,12 @@ function buildFundSelectorBar(doc, funds) {
   function selectItem(li) {
     list.querySelectorAll('li').forEach((l) => l.classList.remove('active'));
     li.classList.add('active');
+    const textSpan = btn.querySelector('.fund-select-text');
     if (li === allOption) {
-      btn.childNodes[0].textContent = 'ALL FUNDS ';
+      if (textSpan) textSpan.textContent = allFundsLabel;
       selectedFund = null;
     } else {
-      btn.childNodes[0].textContent = `${li.dataset.fundName} `;
+      if (textSpan) textSpan.textContent = li.dataset.fundName;
       selectedFund = { id: li.dataset.fundId, name: li.dataset.fundName };
     }
     list.classList.remove('open');
@@ -149,6 +150,9 @@ export default async function decorate(block) {
   const printLabelHtml = richTextFromRow(rows[1]);
   const errorMessageHtml = richTextFromRow(rows[2]);
   const disclaimerHtml = richTextFromRow(rows[3]);
+  const searchLabel = rows[4]?.querySelector('p')?.textContent?.trim() || 'Search Fund';
+  const goLabel = rows[5]?.querySelector('p')?.textContent?.trim() || 'GO';
+  const allFundsLabel = rows[6]?.querySelector('p')?.textContent?.trim() || 'ALL FUNDS';
 
   block.innerHTML = '';
 
@@ -211,7 +215,7 @@ export default async function decorate(block) {
   root.className = 'fund-prices-root';
 
   /* ── Fund selector bar ── */
-  const fundSelector = buildFundSelectorBar(doc, funds);
+  const fundSelector = buildFundSelectorBar(doc, funds, searchLabel, allFundsLabel, goLabel);
   root.appendChild(fundSelector.el);
 
   /* ── Main view ── */

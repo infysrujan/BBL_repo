@@ -7,16 +7,6 @@ const FUND_DETAIL_STATS_BASE = `${BBL_API_BASE}/FundMinMax`;
 
 export const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 
-const PERIOD_OPTIONS = [
-  { code: '1W', label: '1 Week' },
-  { code: '1M', label: '1 Month' },
-  { code: '3M', label: '3 Months' },
-  { code: '6M', label: '6 Months' },
-  { code: '1Y', label: '1 Year' },
-  { code: '3Y', label: '3 Years' },
-  { code: 'DR', label: 'Date Range' },
-];
-
 function pad2(n) {
   return String(n).padStart(2, '0');
 }
@@ -61,11 +51,11 @@ function fmtHistDate(ymd) {
   return `${m[3]}/${m[2]}/${m[1]}`;
 }
 
-function renderStatTables(stats, highTbody, lowTbody) {
+function renderStatTables(stats, highTbody, lowTbody, rowLabels) {
   const rows = [
-    { label: 'In the selected period', hi: stats.MaxSelected_mfr_fNav, lo: stats.MinSelected_mfr_fNav },
-    { label: 'During the last 12 months', hi: stats.MaxYear_mfr_fNav, lo: stats.MinYear_mfr_fNav },
-    { label: 'Since Inception', hi: stats.MaxSince_mfr_fNav, lo: stats.MinSince_mfr_fNav },
+    { label: rowLabels[0], hi: stats.MaxSelected_mfr_fNav, lo: stats.MinSelected_mfr_fNav },
+    { label: rowLabels[1], hi: stats.MaxYear_mfr_fNav, lo: stats.MinYear_mfr_fNav },
+    { label: rowLabels[2], hi: stats.MaxSince_mfr_fNav, lo: stats.MinSince_mfr_fNav },
   ];
 
   [highTbody, lowTbody].forEach((tbody) => { tbody.innerHTML = ''; });
@@ -248,13 +238,55 @@ function renderHistTable(tbody, history) {
 }
 
 export default async function decorate(block) {
+  const authoredRows = [...block.children];
+  function txt(i, fallback) {
+    return authoredRows[i]?.querySelector('p')?.textContent?.trim() || fallback;
+  }
+  const labels = {
+    title: txt(0, 'Fund Price Details'),
+    printLabel: txt(1, 'Print'),
+    backLabel: txt(2, 'Fund Prices'),
+    statHighHeader: txt(3, 'Highest Fund Price'),
+    statLowHeader: txt(4, 'Lowest Fund Price'),
+    navColHeader: txt(5, 'NAV'),
+    graphTab: txt(6, 'GRAPH'),
+    tableTab: txt(7, 'VIEW TABLE DATA'),
+    beginNavLabel: txt(8, 'Beginning NAV'),
+    endNavLabel: txt(9, 'Ending NAV'),
+    histDateHeader: txt(10, 'Date'),
+    histSellHeader: txt(11, 'Selling Price'),
+    histRedeemHeader: txt(12, 'Redemption Price'),
+    statRowSelected: txt(13, 'In the selected period'),
+    statRowYear: txt(14, 'During the last 12 months'),
+    statRowInception: txt(15, 'Since Inception'),
+    fromLabel: txt(16, 'FROM'),
+    toLabel: txt(17, 'TO'),
+    rangeError: txt(18, 'Date range should be between 3 years'),
+    period1w: txt(19, '1 Week'),
+    period1m: txt(20, '1 Month'),
+    period3m: txt(21, '3 Months'),
+    period6m: txt(22, '6 Months'),
+    period1y: txt(23, '1 Year'),
+    period3y: txt(24, '3 Years'),
+    periodDr: txt(25, 'Date Range'),
+  };
+  const PERIOD_OPTIONS = [
+    { code: '1W', label: labels.period1w },
+    { code: '1M', label: labels.period1m },
+    { code: '3M', label: labels.period3m },
+    { code: '6M', label: labels.period6m },
+    { code: '1Y', label: labels.period1y },
+    { code: '3Y', label: labels.period3y },
+    { code: 'DR', label: labels.periodDr },
+  ];
+
   block.innerHTML = `
     <div class="fdd-header">
       <div class="fdd-header-top">
-        <button class="fdd-back-btn" aria-label="Back to Fund Prices">&#8249; Fund Prices</button>
-        <div class="fund-prices-print-label icon-print"><p>Print</p></div>
+        <button class="fdd-back-btn" aria-label="Back to ${labels.backLabel}">&#8249; ${labels.backLabel}</button>
+        <div class="fund-prices-print-label icon-print"><p>${labels.printLabel}</p></div>
       </div>
-      <div class="fdd-title">Fund Price Details</div>
+      <div class="fdd-title">${labels.title}</div>
       <hr class="fdd-title-rule" />
       <div class="fdd-fund-label"></div>
     </div>
@@ -262,7 +294,7 @@ export default async function decorate(block) {
     <div class="fdd-period-bar">
       <div class="period-select-wrapper">
         <button class="period-select-btn">
-          <span class="period-select-label">1 Week</span>
+          <span class="period-select-label">${labels.period1w}</span>
           <span class="icon-dropdown"></span>
         </button>
         <ul class="period-dropdown-list">
@@ -270,9 +302,9 @@ export default async function decorate(block) {
         </ul>
       </div>
       <div class="period-date-range hidden">
-        <label>FROM</label>
+        <label>${labels.fromLabel}</label>
         <div class="calendar-input icon-calendar"><input type="text" id="fdd-dr-from" /></div>
-        <label>TO</label>
+        <label>${labels.toLabel}</label>
         <div class="calendar-input icon-calendar"><input type="text" id="fdd-dr-to" /></div>
       </div>
       <div class="fdd-range-error hidden" role="alert"></div>
@@ -281,21 +313,21 @@ export default async function decorate(block) {
     <div class="stat-tables-row">
       <div class="stat-table-card">
         <table class="stat-table" id="fdd-stat-high">
-          <thead><tr><th>Highest Fund Price</th><th class="stat-th-nav">NAV</th></tr></thead>
+          <thead><tr><th>${labels.statHighHeader}</th><th class="stat-th-nav">${labels.navColHeader}</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
       <div class="stat-table-card">
         <table class="stat-table" id="fdd-stat-low">
-          <thead><tr><th>Lowest Fund Price</th><th class="stat-th-nav">NAV</th></tr></thead>
+          <thead><tr><th>${labels.statLowHeader}</th><th class="stat-th-nav">${labels.navColHeader}</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
 
     <div class="tab-switcher">
-      <button class="tab-btn active" data-tab="graph">GRAPH</button>
-      <button class="tab-btn" data-tab="table">VIEW TABLE DATA</button>
+      <button class="tab-btn active" data-tab="graph">${labels.graphTab}</button>
+      <button class="tab-btn" data-tab="table">${labels.tableTab}</button>
     </div>
 
     <div class="fdd-chart-panel">
@@ -303,8 +335,8 @@ export default async function decorate(block) {
         <div class="chart-header">
           <span class="chart-subtitle"></span>
           <div class="chart-nav-labels">
-            <span class="chart-nav-item">Beginning NAV <span class="chart-begin-nav"></span></span>
-            <span class="chart-nav-item">Ending NAV <span class="chart-end-nav"></span></span>
+            <span class="chart-nav-item">${labels.beginNavLabel} <span class="chart-begin-nav"></span></span>
+            <span class="chart-nav-item">${labels.endNavLabel} <span class="chart-end-nav"></span></span>
           </div>
         </div>
         <svg class="detail-chart-svg" viewBox="0 0 940 300" preserveAspectRatio="xMidYMid meet"></svg>
@@ -315,10 +347,10 @@ export default async function decorate(block) {
       <table class="detail-hist-table">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>NAV</th>
-            <th>Selling Price</th>
-            <th>Redemption Price</th>
+            <th>${labels.histDateHeader}</th>
+            <th>${labels.navColHeader}</th>
+            <th>${labels.histSellHeader}</th>
+            <th>${labels.histRedeemHeader}</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -386,14 +418,16 @@ export default async function decorate(block) {
         fetchFundDetailHistory(currentFund.id, fromDate, toDate),
       ]);
       const sorted = [...history].sort((a, b) => a.mfr_dDataDate.localeCompare(b.mfr_dDataDate));
-      renderStatTables(stats, highTbody, lowTbody);
+      const statLabels = [labels.statRowSelected, labels.statRowYear, labels.statRowInception];
+      renderStatTables(stats, highTbody, lowTbody, statLabels);
       chartSubtitle.textContent = subtitle;
       chartBeginNav.textContent = fmtNav(stats.Begin_mfr_fNav);
       chartEndNav.textContent = fmtNav(stats.End_mfr_fNav);
       renderChart(chartSvg, sorted);
       renderHistTable(histTbody, [...sorted].reverse());
     } catch {
-      renderStatTables({}, highTbody, lowTbody);
+      const statLabels = [labels.statRowSelected, labels.statRowYear, labels.statRowInception];
+      renderStatTables({}, highTbody, lowTbody, statLabels);
       renderChart(chartSvg, []);
       renderHistTable(histTbody, []);
     }
@@ -402,7 +436,7 @@ export default async function decorate(block) {
   function validateAndRenderDetail() {
     if (currentPeriod === 'DR') {
       if (drFrom && drTo && isRangeExceedsLimit(drFrom, drTo)) {
-        rangeError.textContent = 'Date range should be between 3 years';
+        rangeError.textContent = labels.rangeError;
         rangeError.classList.remove('hidden');
         return;
       }
@@ -491,7 +525,7 @@ export default async function decorate(block) {
     currentFund = fund;
     latestMdate = mdate;
     currentPeriod = '1W';
-    periodSelectLabel.textContent = '1 Week';
+    periodSelectLabel.textContent = labels.period1w;
     periodDropList.querySelectorAll('li')
       .forEach((l) => l.classList.toggle('active', l.dataset.period === '1W'));
     periodDateRangeEl.classList.add('hidden');

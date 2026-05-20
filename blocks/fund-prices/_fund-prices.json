@@ -47,6 +47,27 @@
           "value": "",
           "label": "Disclaimer Text",
           "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "search-label",
+          "value": "",
+          "label": "Search Fund Label",
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "go-label",
+          "value": "",
+          "label": "GO Button Text",
+          "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "all-funds-label",
+          "value": "",
+          "label": "All Funds Label",
+          "valueType": "string"
         }
       ]
     }
