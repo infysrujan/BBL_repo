@@ -153,7 +153,7 @@ export default async function decorate(block) {
   [...block.children].forEach((row) => row.classList.add('mfc-source-row'));
 
   const ph = await fetchPlaceholders();
-  const warningText = ph.mfCompareLimitWarning || ph.compareLimitWarning || 'Maximum 3 funds selected';
+  const warningText = ph.mfCompareLimitWarning;
 
   const {
     errorDiv, compareGroup, ctaBtn,

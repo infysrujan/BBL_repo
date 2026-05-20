@@ -16,9 +16,7 @@
 /* ── Title ────────────────────────────────────────────────────────────────── */
 .mfq-title {
   font-size: var(--heading-font-size-m, 1.5rem);
-  font-weight: 700;
-  margin: 0;
-  max-width: 800px;
+  font-weight: 400;
 }
 
 /* ── Divider ──────────────────────────────────────────────────────────────── */
@@ -33,10 +31,11 @@
 /* ── Description (bullet list below risk cards) ───────────────────────────── */
 .mfq-description {
   text-align: left;
-  max-width: 600px;
+  max-width: 46.875rem;
   width: 100%;
-  font-size: var(--body-font-size-s, 0.875rem);
+  font-size: 16px;
   line-height: 1.6;
+  font-family: BangkokBank-Regular, 'BBL Sans', Tahoma, Helvetica, Arial, sans-serif;
 }
 
 .mfq-description ul {
@@ -45,7 +44,7 @@
 }
 
 .mfq-description li {
-  margin-bottom: 8px;
+  margin-bottom: 1.25rem;
 }
 
 /* ── Yes / No actions ─────────────────────────────────────────────────────── */
@@ -80,13 +79,131 @@
 
 /* ── Disclaimer ───────────────────────────────────────────────────────────── */
 .mfq-disclaimer {
-  font-size: var(--body-font-size-xs, 0.75rem);
-  color: var(--color-brand-primary, #003087);
-  max-width: 600px;
+  font-size: 0.875rem;
+  color: #333;
+  max-width: 46.875rem;
   text-align: left;
-  line-height: 1.5;
+  line-height: 1.6;
+  font-family: BangkokBank-Regular, 'BBL Sans', Tahoma, Helvetica, Arial, sans-serif;
 }
 
 .mfq-disclaimer p {
   margin: 0;
+}
+
+/* ── Risk option cards (reuses list-thumb-square / thumb-square) ──────────── */
+.mfq-risk-options {
+  gap: 0;
+  width: 100%;
+  align-items: center;
+}
+
+.mfq-risk-options .list-thumb-square {
+  list-style: none;
+  margin: 0 0 32px;
+  padding: 0;
+  display: flex;
+  flex-flow: row wrap;
+  gap: var(--bbl-space-025);
+  justify-content: center;
+}
+
+.mfq-risk-options .list-thumb-square li {
+  width: 9.375rem;
+  height: 9.375rem;
+}
+
+/* Button fills the entire li cell — matches live site 150×150 card */
+.mfq-risk-options .thumb-square {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0.75rem 0.5rem 0.625rem;
+  box-sizing: border-box;
+  background: var(--bbl-color-white);
+  border: 1px solid rgb(0 0 0 / 10%);
+  border-radius: 0.625rem;
+  text-decoration: none;
+  color: #000;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.mfq-risk-options .thumb-square:hover,
+.mfq-risk-options .thumb-square:focus-visible {
+  border-color: var(--bbl-color-active-blue, #039);
+  box-shadow: 0.3125rem 0.3125rem 0 rgb(0 51 153 / 17%);
+  outline: none;
+}
+
+.mfq-risk-options .thumb-square.selected {
+  border-color: var(--bbl-color-active-blue, #039);
+  border-width: 2px;
+}
+
+/* Icon container — fixed height, margin matches live site */
+.mfq-risk-options .visual-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: 3rem;
+  margin: 0 auto 0.625rem;
+  transition: all 0.3s;
+}
+
+.mfq-risk-options .thumb-square:hover .visual-img {
+  transform: translateY(-0.3125rem);
+}
+
+/* Override EDS icon span 16×16 constraint */
+.mfq-risk-options .visual-img .icon {
+  display: inline-flex;
+  width: auto;
+  height: 100%;
+  align-items: center;
+}
+
+.mfq-risk-options .visual-img img {
+  width: auto;
+  height: 100%;
+  max-height: 3rem;
+  object-fit: contain;
+}
+
+.mfq-risk-options .visual-img .icon img {
+  width: auto;
+  height: 100%;
+  max-height: 3rem;
+  object-fit: contain;
+}
+
+.mfq-risk-options .sub-title-small {
+  font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  display: block;
+  color: #000;
+  text-align: center;
+  overflow-wrap: break-word;
+}
+
+/* ── Modal full-screen layout for questionnaire ───────────────────────────── */
+.modal-body .mfq-title {
+  font-size: 3rem;
+  text-align: center;
+}
+
+.modal-body .mfq-divider {
+  margin: 24px auto;
+}
+
+.modal-body .mfq-disclaimer {
+  padding: 0 32px 48px;
+  max-width: 900px;
+  margin: 0 auto;
 }

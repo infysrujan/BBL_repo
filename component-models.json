@@ -8903,9 +8903,9 @@
     "fields": [
       {
         "component": "richtext",
-        "name": "description",
-        "label": "Description",
-        "description": "Introductory text displayed above the MF comparison grid",
+        "name": "notes",
+        "label": "Notes",
+        "description": "Notes text displayed below the MF comparison grid",
         "valueType": "string"
       }
     ]
@@ -9057,22 +9057,6 @@
   {
     "id": "mf-results",
     "fields": [
-      {
-        "component": "text",
-        "name": "title",
-        "label": "Title",
-        "description": "Page heading shown above the results grid",
-        "required": true,
-        "value": "Funds Suggestion"
-      },
-      {
-        "component": "richtext",
-        "name": "description",
-        "label": "Description",
-        "description": "Introductory text shown below the title",
-        "valueType": "string",
-        "value": "Here are mutual funds suited to your investment goals and the level of risk you are prepared to accept."
-      },
       {
         "component": "text",
         "name": "viewAllLabel",

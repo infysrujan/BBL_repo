@@ -1,20 +1,29 @@
+import decorateCardList from '../card-list/card-list.js';
+import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { getLang, moveInstrumentation } from '../../scripts/scripts.js';
+import { getLang } from '../../scripts/scripts.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
-/** sessionStorage keys written by mf-questionnaire block */
-const SESSION = {
-  riskLevel: 'mfRiskLevel',
-  fxRisk: 'mfFxRisk',
-  taxBenefit: 'mfTaxBenefit',
-};
+/** Cookie name shared with mf-questionnaire block */
+const COOKIE_NAME = 'mfSurveyAnswers';
+
+function getSurveyAnswers() {
+  try {
+    const match = document.cookie.split('; ').find((row) => row.startsWith(`${COOKIE_NAME}=`));
+    return match ? JSON.parse(decodeURIComponent(match.split('=')[1])) : {};
+  } catch { return {}; }
+}
+
+function clearSurveyAnswers() {
+  document.cookie = `${COOKIE_NAME}=;path=/;max-age=0;SameSite=Lax`;
+}
 
 const MAX_COMPARE = 3;
-
-const TABLET_MIN = getComputedStyle(document.documentElement)
-  .getPropertyValue('--bbl-breakpoint-tablet-min').trim();
+const INITIAL_VISIBLE = 6;
+const TABLET_MIN = '47.5rem';
+const DESKTOP_BREAKPOINT = `(width > ${TABLET_MIN})`;
 
 // ── Utilities ──────────────────────────────────────────────────────────────────
 
@@ -58,12 +67,13 @@ function readUrl(row) {
 
 /**
  * Fetch the MF filtering matrix sheet.
- * Expected columns: Fund Type | Fund Name | Risk Level | FX Risk | RMF/SSF/Thai ESG/Thai ESGX
+ * Config key: mf-suggestor-data (→ mfSuggestorData after toCamelCase)
+ * Expected columns: Fund Name | Fund Risk Level | Fund Has Exchange Rate Risk
  */
 async function loadMatrix() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfFilteringMatrixUrl;
+    const url = configs.mfSuggestorData;
     if (!url) return [];
     const resp = await fetch(url);
     if (!resp.ok) return [];
@@ -75,23 +85,18 @@ async function loadMatrix() {
 }
 
 /**
- * Fetch the MF card catalog.
- * Expected item fields: name/fundName/title, description, imageUrl/image,
- * fundLogoImage/fundCompanyLogo, readMoreUrl/cardPageUrl, id/cardId.
+ * Fetch the MF fund card data from the GraphQL persisted query.
+ * Config key (config.json): mf-funds-data-url  →  mfFundsDataUrl
+ * Response shape: { data: { mutualFundsList: { items: [...] } } }
  */
-async function loadCardData() {
+async function loadFundsData() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfSuggesterData;
-    if (!url) return [];
+    const url = configs.mfFundsDataUrl || 'https://publish-p185039-e1938068.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-mutual-funds-by-language;language=en';
     const resp = await fetch(url);
     if (!resp.ok) return [];
     const json = await resp.json();
-    return json.data?.mutualFundsList?.items
-      || json.data?.fundsList?.items
-      || json.data
-      || json.items
-      || [];
+    return json.data?.mutualFundsList?.items || [];
   } catch {
     return [];
   }
@@ -100,218 +105,255 @@ async function loadCardData() {
 // ── Matrix filtering ───────────────────────────────────────────────────────────
 
 /**
- * Match a matrix row against the three session answers.
- * All present answers must match (AND logic).
- * Empty answer values = "no filter applied" for that dimension.
+ * Maps session risk value → numeric risk level range used in the matrix.
+ *
+ * Session values (from mf-questionnaire screen 1):
+ *   "low" | "medium-to-low" | "medium-to-high" | "high" | "very-high"
+ *
+ * Matrix column "Fund Risk Level" values: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 8+
+ *   Low           = Level 1
+ *   Medium to Low = Level 2–4
+ *   Medium to High= Level 5
+ *   High          = Level 6–7
+ *   Very High     = Level 8 and 8+
+ */
+const RISK_NUMERIC_RANGES = {
+  low: [1],
+  'medium-to-low': [2, 3, 4],
+  'medium-to-high': [5],
+  high: [6, 7],
+  'very-high': [8],
+};
+
+/**
+ * Screen 1 — Risk Level filter.
+ * Matrix column "Fund Risk Level" holds a numeric value (1–8 or "8+").
+ */
+function matchesRiskLevel(row, riskLevel) {
+  if (!riskLevel) return true;
+  const allowedLevels = RISK_NUMERIC_RANGES[norm(riskLevel)];
+  if (!allowedLevels) return true;
+  const rawRisk = norm(row['Fund Risk Level'] || '');
+  if (!rawRisk) return true;
+  // "8+" counts as Very High (8)
+  const numericValue = rawRisk === '8+' ? 8 : parseInt(rawRisk, 10);
+  return allowedLevels.includes(numericValue);
+}
+
+/**
+ * Screen 2 — FX Risk filter.
+ * Column: "Fund Has Exchange Rate Risk" — values: "Y" or "N"
+ * Session: "yes" or "no"
+ */
+function matchesFxRisk(row, fxRisk) {
+  if (!fxRisk) return true;
+  const rowFx = norm(row['Fund Has Exchange Rate Risk'] || '');
+  if (!rowFx) return true; // blank cell = no filter
+  const rowHasFx = rowFx === 'y' || rowFx === 'yes';
+  const userWantsFx = norm(fxRisk) === 'yes';
+  return rowHasFx === userWantsFx;
+}
+
+/**
+ * Screen 3 — Tax Benefit filter (RMF/SSF/Thai ESG/Thai ESGX).
+ * Column: "Is an RMF/SSF/Thai ESG/Thai ESGX Fund" — values: "Y" or "N"
+ * Session: "yes" or "no"
+ */
+function matchesTaxBenefit(row, taxBenefit) {
+  if (!taxBenefit) return true;
+  const rawTax = row['Is an RMF/SSF/Thai ESG/Thai ESGX Fund'] || '';
+  const rowTax = norm(rawTax);
+  if (!rowTax) return true; // blank cell = no filter
+  const rowHasTax = rowTax === 'y' || rowTax === 'yes';
+  const userWantsTax = norm(taxBenefit) === 'yes';
+  return rowHasTax === userWantsTax;
+}
+
+/**
+ * AND-logic: matrix row must pass all three filters.
  */
 function matchesRow(row, { riskLevel, fxRisk, taxBenefit }) {
-  // Risk Level: stored as e.g. "8" or "8,8+" (comma-separated multi-match)
-  if (riskLevel) {
-    const rowRisk = norm(row['Risk Level'] || '');
-    const userRisks = riskLevel.split(',').map(norm).filter(Boolean);
-    if (userRisks.length && !userRisks.some((r) => rowRisk === r)) return false;
-  }
-
-  // FX Risk: session stores 'yes' or 'no'; matrix stores 'Yes'/'No' or 'Y'/'N'
-  if (fxRisk) {
-    const rowFx = norm(row['FX Risk'] || row['Foreign Exchange Risk'] || '');
-    const userFx = norm(fxRisk);
-    const rowBool = rowFx === 'yes' || rowFx === 'y';
-    const userBool = userFx === 'yes';
-    if (rowFx && rowBool !== userBool) return false;
-  }
-
-  // Tax benefit: RMF/SSF/Thai ESG column
-  if (taxBenefit) {
-    const rawTax = row['RMF/SSF/Thai ESG/Thai ESGX']
-      || row['RMF/SSF/Thai ESG']
-      || row['Is RMF/SSF/Thai ESG/Thai ESGX Fu']
-      || '';
-    const rowTax = norm(rawTax);
-    const rowBool = rowTax === 'yes' || rowTax === 'y';
-    const userBool = norm(taxBenefit) === 'yes';
-    if (rowTax && rowBool !== userBool) return false;
-  }
-
-  return true;
+  return matchesRiskLevel(row, riskLevel)
+    && matchesFxRisk(row, fxRisk)
+    && matchesTaxBenefit(row, taxBenefit);
 }
 
-// ── URL resolvers ──────────────────────────────────────────────────────────────
-
-function resolveImageUrl(card) {
-  const raw = card.imageUrl || card.image || card.fundImage || '';
-  if (!raw) return '';
-  if (typeof raw === 'string') return raw;
-  // eslint-disable-next-line no-underscore-dangle
-  return raw._publishUrl || raw._authorUrl || '';
+/**
+ * Extract the fund names from matrix rows matched by the filters.
+ */
+function getMatchedFundNames(matrix, answers) {
+  return matrix
+    .filter((row) => matchesRow(row, answers))
+    .map((row) => norm(row['Fund Name'] || ''))
+    .filter(Boolean);
 }
 
-function resolveFundLogoUrl(card) {
-  const raw = card.fundLogoImage || card.fundCompanyLogo || card.companyLogoUrl || card.logoImage || '';
-  if (!raw) return '';
-  if (typeof raw === 'string') return raw;
-  // eslint-disable-next-line no-underscore-dangle
-  return raw._publishUrl || raw._authorUrl || '';
+/**
+ * Filter the GraphQL fund items to only those whose FundName appears in the
+ * matched matrix names.
+ */
+function filterFundsByMatrix(funds, matchedNames) {
+  if (!matchedNames.length) return [];
+  return funds.filter((fund) => {
+    const name = norm(fund.FundName || '');
+    return matchedNames.some((n) => name === n || name.includes(n) || n.includes(name));
+  });
 }
 
-function resolveReadMoreUrl(card) {
-  const raw = card.readMoreUrl || card.cardPageUrl || card.detailUrl || card.pageUrl || '';
-  if (!raw) return '';
-  if (typeof raw === 'string') return raw;
-  // eslint-disable-next-line no-underscore-dangle
-  return raw._publishUrl || raw._authorUrl || raw._path || '';
+/**
+ * Fallback filter: when matrix name-join produces no results, filter GraphQL
+ * funds directly using their own RiskLevel field (e.g. "level-6").
+ */
+function filterFundsByRiskLevel(funds, riskLevel) {
+  const allowedLevels = RISK_NUMERIC_RANGES[norm(riskLevel)] || [];
+  if (!allowedLevels.length) return funds;
+  return funds.filter((fund) => {
+    const raw = norm(fund.RiskLevel || ''); // e.g. "level-2"
+    const num = parseInt(raw.replace('level-', ''), 10);
+    return allowedLevels.includes(num);
+  });
 }
 
-// ── Card DOM builder ───────────────────────────────────────────────────────────
+// ── Peek helpers ───────────────────────────────────────────────────────────────
 
-function buildMfCard(card, doc, labels) {
-  const name = card.name || card.title || card.fundName || '';
-  const description = card.description || card.cardDescription || card.fundDescription || '';
-  const imgSrc = resolveImageUrl(card);
-  const logoSrc = resolveFundLogoUrl(card);
-  const readMoreUrl = resolveReadMoreUrl(card);
-  const cardId = card.id || card.cardId || card.fundId || name;
+function setPeek(container) {
+  if (!window.matchMedia(DESKTOP_BREAKPOINT).matches) return;
+  const items = [...container.querySelectorAll('.cards-list-item:not(.mfr-hidden)')];
+  if (items.length < 4) return;
+  const containerTop = container.getBoundingClientRect().top;
+  const anchorEl = items[3].querySelector('.cards-list-button')
+    || items[3].querySelector('.cards-list-description')
+    || items[3];
+  const peekHeight = Math.round(anchorEl.getBoundingClientRect().top - containerTop);
+  container.style.maxHeight = `${peekHeight}px`;
+  container.classList.add('mfr-peek');
+}
 
-  const cardEl = doc.createElement('div');
-  cardEl.className = 'mfr-card';
+function removePeek(container) {
+  container.style.maxHeight = '';
+  container.classList.remove('mfr-peek');
+}
 
-  // Fund image
-  const imgWrap = doc.createElement('div');
-  imgWrap.className = 'mfr-card-image';
-  if (imgSrc) {
-    const img = doc.createElement('img');
-    img.src = imgSrc;
-    img.alt = name;
-    img.loading = 'lazy';
-    imgWrap.appendChild(img);
-  }
-  cardEl.appendChild(imgWrap);
+// ── card-list block DOM builder ────────────────────────────────────────────────
 
-  // Content area
-  const content = doc.createElement('div');
-  content.className = 'mfr-card-content';
+function createBlockRow(doc, ...cells) {
+  const row = doc.createElement('div');
+  cells.forEach((content) => {
+    const cell = doc.createElement('div');
+    if (content instanceof Node) cell.appendChild(content);
+    else if (content !== null && content !== undefined) cell.textContent = String(content);
+    row.appendChild(cell);
+  });
+  return row;
+}
 
-  // Title + divider
-  if (name) {
+/**
+ * Build a card-list block element from the fund items.
+ * Uses the same 12-cell row structure expected by card-list.js decorate().
+ */
+function buildCardBlock(funds, doc, labels) {
+  const block = doc.createElement('div');
+  block.className = 'card-list mf-results block';
+  block.dataset.blockName = 'card-list';
+
+  // Layout rows (read by card-list.js decorate as first 3 children)
+  block.appendChild(createBlockRow(doc, 'scrollable')); // layout
+  block.appendChild(createBlockRow(doc, 'center')); // alignment
+  block.appendChild(createBlockRow(doc, 'cards-3')); // cards per row
+
+  funds.forEach((fund) => {
+    const name = fund.FundName || '';
+    const description = fund.FundDescription || '';
+    const logoSrc = fund.LogoImage || fund.ManagementCompanyLogo || '';
+    const fundImageSrc = fund.FundImage || '';
+    // eslint-disable-next-line no-underscore-dangle
+    const readMoreUrl = fund._path || '';
+    const productId = fund.ProductID || name;
+    const compareEnabled = fund.CompareButton === 'true';
+
+    // Cell 0 — image (fund logo, falls back to management company logo)
+    const imgCell = doc.createElement('div');
+    if (logoSrc) {
+      const img = doc.createElement('img');
+      img.src = logoSrc;
+      img.alt = fund.ManagementCompany || '';
+      img.loading = 'lazy';
+      if (fundImageSrc) img.dataset.fundImage = fundImageSrc;
+      imgCell.appendChild(img);
+    }
+
+    // Cell 2 — title (fund name)
+    const titleCell = doc.createElement('div');
     const h3 = doc.createElement('h3');
-    h3.className = 'mfr-card-title';
     h3.textContent = name;
-    content.appendChild(h3);
+    h3.dataset.cardId = productId;
+    h3.dataset.compareEnabled = compareEnabled ? 'true' : 'false';
+    titleCell.appendChild(h3);
 
-    const divider = doc.createElement('span');
-    divider.className = 'mfr-card-divider';
-    divider.setAttribute('aria-hidden', 'true');
-    content.appendChild(divider);
-  }
+    // Cell 3 — description
+    const descCell = doc.createElement('div');
+    if (description) {
+      const p = doc.createElement('p');
+      p.textContent = description;
+      descCell.appendChild(p);
+    }
 
-  // Description
-  if (description) {
-    const descEl = doc.createElement('p');
-    descEl.className = 'mfr-card-desc';
-    const descText = typeof description === 'string'
-      ? description
-      : (description.plaintext || description.html || '');
-    descEl.textContent = descText;
-    content.appendChild(descEl);
-  }
+    // Cell 5 — button ("Read more" link)
+    const btnCell = doc.createElement('div');
+    const link = doc.createElement('a');
+    link.href = readMoreUrl || '#';
+    link.textContent = labels.readMore;
+    btnCell.appendChild(link);
 
-  // Fund management company logo
-  if (logoSrc) {
-    const logoWrap = doc.createElement('div');
-    logoWrap.className = 'mfr-card-logo';
-    const logoImg = doc.createElement('img');
-    logoImg.src = logoSrc;
-    logoImg.alt = 'Fund management company';
-    logoImg.loading = 'lazy';
-    logoWrap.appendChild(logoImg);
-    content.appendChild(logoWrap);
-  }
+    block.appendChild(createBlockRow(
+      doc,
+      imgCell, // 0 image
+      null, // 1 promo tag
+      titleCell, // 2 title
+      descCell, // 3 description
+      null, // 4 remark
+      btnCell, // 5 button (Learn more)
+      'x-small', // 6 image layout
+      'true', // 7 enable title underline
+      'false', // 8 is card clickable
+      null, // 9 card link
+      null, // 10 overlay link
+      'false', // 11 enable overlay modal
+    ));
+  });
 
-  // Action buttons
-  const actions = doc.createElement('div');
-  actions.className = 'mfr-card-actions';
-
-  const readMoreBtn = doc.createElement('a');
-  readMoreBtn.href = readMoreUrl || '#';
-  readMoreBtn.className = 'mfr-btn mfr-btn-primary';
-  readMoreBtn.textContent = labels.readMore;
-  actions.appendChild(readMoreBtn);
-
-  const compareBtn = doc.createElement('button');
-  compareBtn.type = 'button';
-  compareBtn.className = 'mfr-btn mfr-btn-secondary mfr-compare-btn';
-  compareBtn.textContent = labels.compare;
-  compareBtn.dataset.cardName = name;
-  compareBtn.dataset.cardId = cardId;
-  compareBtn.dataset.cardImage = imgSrc;
-  actions.appendChild(compareBtn);
-
-  content.appendChild(actions);
-  cardEl.appendChild(content);
-
-  return cardEl;
+  return block;
 }
 
-// ── Scroll dots — mobile carousel for card grid ────────────────────────────────
-
-function initScrollDots(grid, doc) {
-  const dotsEl = doc.createElement('div');
-  dotsEl.className = 'mfr-scroll-dots';
-  grid.parentElement?.appendChild(dotsEl);
-
-  const getCards = () => [...grid.querySelectorAll('.mfr-card')];
-
-  const scrollToCard = (card) => {
-    const offset = card.getBoundingClientRect().left
-      - grid.getBoundingClientRect().left
-      + grid.scrollLeft;
-    grid.scrollTo({ left: offset, behavior: 'smooth' });
-  };
-
-  const buildDots = () => {
-    dotsEl.innerHTML = '';
-    const cards = getCards();
-    if (cards.length <= 1) return;
-    cards.forEach((card, i) => {
-      const dot = doc.createElement('button');
-      dot.type = 'button';
-      dot.className = `mfr-scroll-dot${i === 0 ? ' is-active' : ''}`;
-      dot.setAttribute('aria-label', `Card ${i + 1}`);
-      dot.addEventListener('click', () => scrollToCard(card));
-      dotsEl.appendChild(dot);
-    });
-  };
-
-  buildDots();
-
-  grid.addEventListener('scroll', () => {
-    const dots = [...dotsEl.querySelectorAll('.mfr-scroll-dot')];
-    const cards = getCards();
-    if (!cards.length || !dots.length) return;
-    const containerLeft = grid.getBoundingClientRect().left;
-    let activeIdx = 0;
-    let minDist = Infinity;
-    cards.forEach((card, i) => {
-      const dist = Math.abs(card.getBoundingClientRect().left - containerLeft);
-      if (dist < minDist) { minDist = dist; activeIdx = i; }
-    });
-    dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIdx));
-  }, { passive: true });
-
-  return buildDots;
+/**
+ * Inject a Compare button into each card's button wrapper,
+ * matching the credit-card-results pattern.
+ */
+function addCompareButtons(blockEl, doc, labels) {
+  blockEl.querySelectorAll('.cards-list-button').forEach((wrapper) => {
+    const item = wrapper.closest('.cards-list-item');
+    const h3 = item?.querySelector('h3');
+    if (h3?.dataset?.compareEnabled === 'false') return;
+    const btn = doc.createElement('button');
+    btn.type = 'button';
+    btn.className = 'mfr-compare-btn';
+    btn.textContent = labels.compare;
+    btn.dataset.cardName = h3?.textContent?.trim() ?? '';
+    btn.dataset.cardId = h3?.dataset?.cardId ?? '';
+    btn.dataset.cardImage = item?.querySelector('img')?.src ?? '';
+    wrapper.appendChild(btn);
+  });
 }
 
 // ── Main export ────────────────────────────────────────────────────────────────
 
 /**
  * Block row mapping (matches _mf-results.json model):
- *   Row 0  title           – "Funds Suggestion"
- *   Row 1  description     – Richtext intro text
- *   Row 2  viewAllLabel    – "View All Categories"
- *   Row 3  viewAllUrl      – aem-content: link to MF listing page
- *   Row 4  startOverLabel  – "Start Over"
- *   Row 5  startOverUrl    – aem-content: MF listing page (fallback redirect target)
- *   Row 6  disclaimer      – Richtext: disclaimer text shown at bottom
+ *   Row 0  viewAllLabel    – "View All Categories"
+ *   Row 1  viewAllUrl      – aem-content: link to MF listing page
+ *   Row 2  startOverLabel  – "Start Over"
+ *   Row 3  startOverUrl    – aem-content: MF listing page (fallback redirect target)
+ *   Row 4  disclaimer      – Richtext: disclaimer text shown at bottom
  */
 export default async function decorate(block) {
   const doc = block.ownerDocument;
@@ -321,59 +363,47 @@ export default async function decorate(block) {
 
   // Read config
   const cfg = {
-    title: readText(rows[0]),
-    description: readHtml(rows[1]),
-    viewAllLabel: readText(rows[2]),
-    viewAllUrl: readUrl(rows[3]),
-    startOverLabel: readText(rows[4]),
-    startOverUrl: readUrl(rows[5]),
-    disclaimer: readHtml(rows[6]),
+    viewAllLabel: readText(rows[0]),
+    viewAllUrl: readUrl(rows[1]),
+    startOverLabel: readText(rows[2]),
+    startOverUrl: readUrl(rows[3]),
+    disclaimer: readHtml(rows[4]),
   };
 
-  // Move UE instrumentation attrs from source rows to block element
-  rows.forEach((row) => moveInstrumentation(row, block));
+  // Hide source rows visually; they stay in the DOM so UE can find
+  // the field instrumentation (data-aue-prop) nested under the block resource.
   rows.forEach((row) => row.classList.add('mfr-source-row'));
+
+  // Load card-list styles so cards render identically to credit card results
+  await loadCSS(`${window.hlx.codeBasePath}/blocks/card-list/card-list.css`);
 
   const ph = await fetchPlaceholders();
   const labels = {
-    readMore: ph.mfReadMore || (isTH ? 'อ่านเพิ่มเติม' : 'Read more'),
-    compare: ph.mfCompare || (isTH ? 'เปรียบเทียบ' : 'Compare'),
-    noResults: ph.mfNoResults || (isTH ? 'ไม่พบผลลัพธ์' : 'No Results Found'),
+    readMore: ph.mfReadMoreText || (isTH ? 'อ่านเพิ่มเติม' : 'Read more'),
+    compare: ph.mfCompareText || (isTH ? 'เปรียบเทียบ' : 'Compare'),
+    noResults: ph.mfNoResultsText || (isTH ? 'ไม่พบผลลัพธ์' : 'No results found'),
+    seeLess: ph.mfSeeLessText || (isTH ? 'ดูน้อยลง' : 'See less'),
+    seeMore: ph.mfSeeMoreText || (isTH ? 'ดูเพิ่มเติม' : 'See more'),
   };
 
   // ── Build page structure ───────────────────────────────────────────────────
   const wrapper = doc.createElement('div');
   wrapper.className = 'mfr-wrapper';
 
-  // Header: title + divider + description
-  const header = doc.createElement('div');
-  header.className = 'mfr-header';
+  // Card list container (filled asynchronously after data loads)
+  const cardListContainer = doc.createElement('div');
+  cardListContainer.className = 'mfr-card-list-container';
+  wrapper.appendChild(cardListContainer);
 
-  if (cfg.title) {
-    const titleEl = doc.createElement('h1');
-    titleEl.className = 'mfr-title';
-    titleEl.textContent = cfg.title;
-    header.appendChild(titleEl);
-
-    const divider = doc.createElement('span');
-    divider.className = 'mfr-title-divider';
-    divider.setAttribute('aria-hidden', 'true');
-    header.appendChild(divider);
-  }
-
-  if (cfg.description) {
-    const descEl = doc.createElement('div');
-    descEl.className = 'mfr-description';
-    descEl.innerHTML = cfg.description;
-    header.appendChild(descEl);
-  }
-
-  wrapper.appendChild(header);
-
-  // Card grid container (filled asynchronously after data loads)
-  const gridContainer = doc.createElement('div');
-  gridContainer.className = 'mfr-grid-container';
-  wrapper.appendChild(gridContainer);
+  // See more / See less toggle
+  const toggleWrap = doc.createElement('div');
+  toggleWrap.className = 'mfr-results-toggle';
+  toggleWrap.style.display = 'none';
+  const toggleBtn = doc.createElement('button');
+  toggleBtn.type = 'button';
+  toggleBtn.className = 'mfr-results-toggle-btn';
+  toggleWrap.appendChild(toggleBtn);
+  wrapper.appendChild(toggleWrap);
 
   // Footer CTAs: View All Categories + Start Over
   const footer = doc.createElement('div');
@@ -394,11 +424,8 @@ export default async function decorate(block) {
     startOverBtn.textContent = cfg.startOverLabel;
 
     startOverBtn.addEventListener('click', () => {
-      // Clear all questionnaire session data
-      try {
-        Object.values(SESSION).forEach((key) => sessionStorage.removeItem(key));
-        sessionStorage.removeItem('mfs-compare-cards');
-      } catch { /* ignore */ }
+      // Clear questionnaire answers cookie
+      clearSurveyAnswers();
       window.mfsSelectedCards = [];
 
       // If questionnaire block is already on this page, show it directly
@@ -433,79 +460,112 @@ export default async function decorate(block) {
 
   block.appendChild(wrapper);
 
-  // ── Read questionnaire answers from session ────────────────────────────────
-  const answers = { riskLevel: '', fxRisk: '', taxBenefit: '' };
-  try {
-    answers.riskLevel = sessionStorage.getItem(SESSION.riskLevel) || '';
-    answers.fxRisk = sessionStorage.getItem(SESSION.fxRisk) || '';
-    answers.taxBenefit = sessionStorage.getItem(SESSION.taxBenefit) || '';
-  } catch { /* ignore */ }
+  // ── Read questionnaire answers from cookie ────────────────────────────────
+  const stored = getSurveyAnswers();
+  const answers = {
+    riskLevel: stored.riskLevel || '',
+    fxRisk: stored.fxRisk || '',
+    taxBenefit: stored.taxBenefit || '',
+  };
 
-  // ── Fetch data in parallel ─────────────────────────────────────────────────
-  const [matrix, allCards] = await Promise.all([loadMatrix(), loadCardData()]);
+  // ── Fetch matrix + fund data in parallel ──────────────────────────────────
+  const [matrix, allFunds] = await Promise.all([loadMatrix(), loadFundsData()]);
+
+  // ── State ──────────────────────────────────────────────────────────────────
+  let isExpanded = false;
+  let lastRenderedTotal = 0;
 
   // ── Compare state helpers ──────────────────────────────────────────────────
   function restoreCompareState() {
     const selected = window.mfsSelectedCards || [];
-    gridContainer.querySelectorAll('.mfr-compare-btn').forEach((btn) => {
+    cardListContainer.querySelectorAll('.mfr-compare-btn').forEach((btn) => {
       btn.classList.toggle('is-comparing', selected.some((c) => c.name === btn.dataset.cardName));
     });
   }
 
-  // ── Render cards ───────────────────────────────────────────────────────────
-  function renderCards(cards) {
-    gridContainer.innerHTML = '';
+  // ── Toggle label refresh ───────────────────────────────────────────────────
+  function refreshToggle(total) {
+    const canToggle = total > INITIAL_VISIBLE;
+    toggleWrap.style.display = canToggle ? 'flex' : 'none';
+    toggleBtn.innerHTML = '';
+    const labelEl = doc.createElement('span');
+    labelEl.textContent = isExpanded ? labels.seeLess : labels.seeMore;
+    const iconEl = doc.createElement('span');
+    iconEl.className = 'icon-dropdown';
+    iconEl.setAttribute('aria-hidden', 'true');
+    toggleBtn.appendChild(labelEl);
+    toggleBtn.appendChild(iconEl);
+    toggleBtn.setAttribute('aria-expanded', String(isExpanded));
+  }
 
-    if (!cards || cards.length === 0) {
+  // ── Render cards using card-list block pattern ─────────────────────────────
+  function renderCards(funds) {
+    cardListContainer.innerHTML = '';
+    lastRenderedTotal = funds ? funds.length : 0;
+
+    if (!funds || funds.length === 0) {
       const msg = doc.createElement('p');
       msg.className = 'mfr-no-results';
       msg.textContent = labels.noResults;
-      gridContainer.appendChild(msg);
+      cardListContainer.appendChild(msg);
+      refreshToggle(0);
       return;
     }
 
-    const grid = doc.createElement('div');
-    grid.className = 'mfr-grid';
-    cards.forEach((card) => grid.appendChild(buildMfCard(card, doc, labels)));
-    gridContainer.appendChild(grid);
-
+    const blockEl = buildCardBlock(funds, doc, labels);
+    cardListContainer.appendChild(blockEl);
+    decorateCardList(blockEl);
+    addCompareButtons(blockEl, doc, labels);
     restoreCompareState();
 
-    // Mobile scroll dots (only on mobile)
-    if (!window.matchMedia(`(width > ${TABLET_MIN})`).matches) {
-      initScrollDots(grid, doc);
+    if (!isExpanded && funds.length > INITIAL_VISIBLE) {
+      [...blockEl.querySelectorAll('.cards-list-item')].forEach((item, i) => {
+        if (i >= INITIAL_VISIBLE) item.classList.add('mfr-hidden');
+      });
+      requestAnimationFrame(() => setPeek(cardListContainer));
     }
+
+    refreshToggle(funds.length);
   }
 
-  // ── Apply filter ───────────────────────────────────────────────────────────
-  const matchedRows = matrix.filter((row) => matchesRow(row, answers));
-  const matchedNames = matchedRows.map(
-    (row) => norm(row['Fund Name'] || row['Product Name (EN)'] || row['Fund Name (EN)'] || ''),
-  ).filter(Boolean);
-
-  let filteredCards;
-  if (matchedNames.length > 0) {
-    filteredCards = allCards.filter((card) => {
-      const cardName = norm(card.name || card.title || card.fundName || '');
-      return matchedNames.some((n) => cardName.includes(n) || n.includes(cardName));
-    });
-  } else if (!answers.riskLevel && !answers.fxRisk && !answers.taxBenefit) {
-    // No session data — no questionnaire answered, show nothing
-    filteredCards = [];
+  // ── Apply filter and render ────────────────────────────────────────────────
+  // eslint-disable-next-line no-console
+  console.log('[mf-results] answers:', answers, '| matrix rows:', matrix.length, '| funds:', allFunds.length);
+  const hasAnswers = answers.riskLevel || answers.fxRisk || answers.taxBenefit;
+  if (!hasAnswers) {
+    renderCards([]);
   } else {
-    // Questionnaire answered but nothing matched
-    filteredCards = [];
+    const matchedNames = getMatchedFundNames(matrix, answers);
+    let filteredFunds = filterFundsByMatrix(allFunds, matchedNames);
+
+    if (!filteredFunds.length && answers.riskLevel) {
+      filteredFunds = filterFundsByRiskLevel(allFunds, answers.riskLevel);
+    }
+
+    renderCards(filteredFunds);
   }
 
-  renderCards(filteredCards);
+  // ── See more / See less ────────────────────────────────────────────────────
+  toggleBtn.addEventListener('click', () => {
+    isExpanded = !isExpanded;
+    [...cardListContainer.querySelectorAll('.cards-list-item')].forEach((item, i) => {
+      if (i >= INITIAL_VISIBLE) item.classList.toggle('mfr-hidden', !isExpanded);
+    });
+    if (isExpanded) {
+      removePeek(cardListContainer);
+    } else {
+      requestAnimationFrame(() => setPeek(cardListContainer));
+    }
+    refreshToggle(lastRenderedTotal);
+  });
 
   // ── Compare button click handling ──────────────────────────────────────────
-  gridContainer.addEventListener('click', (e) => {
+  cardListContainer.addEventListener('click', (e) => {
     const btn = e.target.closest('.mfr-compare-btn');
     if (!btn) return;
 
     window.mfsSelectedCards = window.mfsSelectedCards || [];
-    const { cardName, cardImage, cardId } = btn.dataset;
+    const { cardName, cardId, cardImage } = btn.dataset;
 
     if (btn.classList.contains('is-comparing')) return;
 
