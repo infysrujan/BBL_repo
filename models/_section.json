@@ -211,6 +211,7 @@
         "video",
         "carousel-video",
         "forex-rates",
+        "tax-calculator",
         "special-fx-rates",
         "promotional-details",
         "promo-card-listing",
@@ -219,7 +220,10 @@
         "stock-ticker",
         "cookie-alert",
         "cookie-modal",
-        "welcome-banner"
+        "welcome-banner",
+        "news-media-details",
+        "news-media",
+        "latest-news"
       ]
     }
   ]

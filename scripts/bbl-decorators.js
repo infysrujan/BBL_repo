@@ -605,4 +605,5 @@ export {
   loadBreadcrumb,
   loadWelcomeBanner,
   buildCookieAlert,
+  getLang,
 };
