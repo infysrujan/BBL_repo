@@ -98,12 +98,25 @@ async function loadFundsData() {
     // eslint-disable-next-line no-console
     console.log('[mf-results] loadFundsData url:', url);
     const resp = await fetch(url);
+    if (resp.ok) {
+      const json = await resp.json();
+      const items = json.data?.mutualFundsList?.items || [];
+      // eslint-disable-next-line no-console
+      console.log('[mf-results] loadFundsData items:', items.length);
+      if (items.length) return items;
+    }
+  } catch {
+    // fall through to dummy
+  }
+
+  // Fallback to local dummy data when GraphQL endpoint is unavailable
+  try {
+    // eslint-disable-next-line no-console
+    console.warn('[mf-results] GraphQL unavailable — falling back to dummy.json');
+    const resp = await fetch(`${window.hlx.codeBasePath}/blocks/mf-results/dummy.json`);
     if (!resp.ok) return [];
     const json = await resp.json();
-    const items = json.data?.mutualFundsList?.items || [];
-    // eslint-disable-next-line no-console
-    console.log('[mf-results] loadFundsData items:', items.length, JSON.stringify(items));
-    return items;
+    return json.data?.mutualFundsList?.items || [];
   } catch {
     return [];
   }
