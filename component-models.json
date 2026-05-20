@@ -9202,15 +9202,15 @@
         "value": "no",
         "options": [
           {
-            "name": "No - no registration",
+            "name": "No",
             "value": "no"
           },
           {
-            "name": "Yes - yes register",
+            "name": "Yes",
             "value": "yes"
           },
           {
-            "name": "D - register with data",
+            "name": "D",
             "value": "d"
           }
         ],
