@@ -4,8 +4,10 @@ import {
   getMetadata,
   buildBlock,
   decorateBlock,
+  decorateBlocks,
+  decorateSections,
   loadBlock,
-  loadCSS,
+  loadSections,
 } from './aem.js';
 /**
  * Helper function to parse comma-separated URL strings from config
@@ -217,104 +219,9 @@ function handleGlobalLinkClicks() {
   }, true); // Use capture phase
 }
 
-const WELCOME_BANNER_COOKIE = 'bbl-welcome-banner';
-const TWENTY_MIN_MS = 20 * 60 * 1000;
-
 function isHomepage() {
   const p = window.location.pathname.replace(/\/$/, '') || '/';
   return ['/', '/en', '/th-TH', '/th-th'].includes(p);
-}
-
-function setBannerDismissed() {
-  const expires = new Date(Date.now() + TWENTY_MIN_MS).toUTCString();
-  const ts = String(Date.now());
-  document.cookie = `${encodeURIComponent(WELCOME_BANNER_COOKIE)}=${ts}; expires=${expires}; path=/; SameSite=Lax`;
-}
-
-function getRemainingMs() {
-  const encoded = encodeURIComponent(WELCOME_BANNER_COOKIE);
-  const match = document.cookie.split('; ').find((r) => r.startsWith(`${encoded}=`));
-  if (!match) return 0;
-  const ts = Number(match.split('=')[1]);
-  if (!ts) return 0;
-  const remaining = TWENTY_MIN_MS - (Date.now() - ts);
-  return remaining > 0 ? remaining : 0;
-}
-
-function isDateTimeActive(startStr, endStr) {
-  const now = new Date();
-  if (startStr) {
-    const start = new Date(startStr);
-    if (!Number.isNaN(start.getTime()) && now < start) return false;
-  }
-  if (endStr) {
-    const end = new Date(endStr);
-    if (!Number.isNaN(end.getTime()) && now > end) return false;
-  }
-  return true;
-}
-
-function dismissBannerOverlay(overlay) {
-  setBannerDismissed();
-  overlay.classList.remove('welcome-banner-overlay-visible');
-  overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
-}
-
-function buildWelcomeBannerOverlay(desktopPic, mobilePic, ctaLinks) {
-  const overlay = document.createElement('div');
-  overlay.className = 'welcome-banner-overlay';
-  overlay.setAttribute('role', 'dialog');
-  overlay.setAttribute('aria-modal', 'true');
-  overlay.setAttribute('aria-label', 'Welcome banner');
-
-  const dialog = document.createElement('div');
-  dialog.className = 'welcome-banner-dialog';
-
-  const closeBtn = document.createElement('button');
-  closeBtn.className = 'welcome-banner-close';
-  closeBtn.setAttribute('aria-label', 'Close welcome banner');
-  closeBtn.innerHTML = '&times;';
-  closeBtn.addEventListener('click', () => dismissBannerOverlay(overlay));
-
-  const media = document.createElement('div');
-  media.className = 'welcome-banner-media';
-
-  if (desktopPic) {
-    desktopPic.classList.add('welcome-banner-desktop-img');
-    media.appendChild(desktopPic);
-  }
-  if (mobilePic) {
-    mobilePic.classList.add('welcome-banner-mobile-img');
-    media.appendChild(mobilePic);
-  }
-
-  const ctas = document.createElement('div');
-  ctas.className = 'welcome-banner-ctas';
-
-  ctaLinks.forEach((ctaData) => {
-    const a = document.createElement('a');
-    a.className = 'welcome-banner-cta';
-    a.href = ctaData.href;
-    a.textContent = ctaData.label;
-    if (ctaData.target) a.setAttribute('target', ctaData.target);
-    a.addEventListener('click', (e) => {
-      e.preventDefault();
-      setBannerDismissed();
-      if (ctaData.href && ctaData.href !== '#') {
-        window.location.href = ctaData.href;
-      } else {
-        dismissBannerOverlay(overlay);
-      }
-    });
-    ctas.appendChild(a);
-  });
-
-  dialog.appendChild(closeBtn);
-  dialog.appendChild(media);
-  dialog.appendChild(ctas);
-  overlay.appendChild(dialog);
-
-  return overlay;
 }
 
 async function loadWelcomeBanner(doc) {
@@ -327,87 +234,29 @@ async function loadWelcomeBanner(doc) {
   if (!isHomepage()) return;
 
   const lang = doc.documentElement.lang || 'en';
-  const fragmentPath = `/${lang}/fragments/welcome-banner/welcome-banner`;
+  const path = `/${lang}/fragments/welcome-banner/welcome-banner`;
 
-  let html;
+  let resp;
   try {
-    const resp = await fetch(`${fragmentPath}.plain.html`);
-    if (!resp.ok) return;
-    html = await resp.text();
-  } catch (e) {
+    resp = await fetch(`${path}.plain.html`);
+  } catch {
     return;
   }
+  if (!resp.ok) return;
 
-  const fragDoc = new DOMParser().parseFromString(html, 'text/html');
-  const block = fragDoc.querySelector('.welcome-banner');
-  if (!block) return;
+  const main = document.createElement('main');
+  main.innerHTML = await resp.text();
 
-  const rows = [...block.children];
-  const [
-    desktopImgRow, mobileImgRow, isActiveRow, publishDateRow, unpublishDateRow, ...buttonRows
-  ] = rows;
-
-  if (isActiveRow?.textContent?.trim().toLowerCase() === 'false') return;
-
-  const publishDate = publishDateRow?.textContent?.trim() || '';
-  const unpublishDate = unpublishDateRow?.textContent?.trim() || '';
-  if (!isDateTimeActive(publishDate, unpublishDate)) return;
-
-  const desktopPic = desktopImgRow?.querySelector('picture')?.cloneNode(true) ?? null;
-  const mobilePic = mobileImgRow?.querySelector('picture')?.cloneNode(true) ?? null;
-
-  const ctaLinks = buttonRows.map((row) => {
-    const a = row?.querySelector('a');
-    if (!a) return null;
-    return {
-      href: a.getAttribute('href') || '#',
-      label: a.textContent.trim(),
-      target: a.getAttribute('target') || '',
-    };
-  }).filter(Boolean);
-
-  if (ctaLinks.length === 0) {
-    const parentEl = block.parentElement;
-    if (parentEl) {
-      parentEl.querySelectorAll(':scope > p a').forEach((a) => {
-        ctaLinks.push({
-          href: a.getAttribute('href') || '#',
-          label: a.textContent.trim(),
-          target: a.getAttribute('target') || '',
-        });
-      });
-    }
-  }
-
-  if (ctaLinks.length === 0) return;
-
-  const fragmentBase = `${window.location.origin}/${lang}/fragments/welcome-banner/`;
-  [desktopPic, mobilePic].forEach((pic) => {
-    if (!pic) return;
-    pic.querySelectorAll('source[srcset], img[src]').forEach((el) => {
-      if (el.hasAttribute('srcset')) {
-        el.setAttribute('srcset', el.getAttribute('srcset').replace(/\.\/media_/g, `${fragmentBase}media_`));
-      }
-      if (el.hasAttribute('src')) {
-        el.setAttribute('src', el.getAttribute('src').replace(/\.\/media_/g, `${fragmentBase}media_`));
-      }
-    });
+  main.querySelectorAll('img[src^="./media_"]').forEach((el) => {
+    el.src = new URL(el.getAttribute('src'), new URL(path, window.location)).href;
+  });
+  main.querySelectorAll('source[srcset^="./media_"]').forEach((el) => {
+    el.srcset = new URL(el.getAttribute('srcset'), new URL(path, window.location)).href;
   });
 
-  loadCSS(`${window.hlx.codeBasePath}/blocks/welcome-banner/welcome-banner.css`);
-  const overlay = buildWelcomeBannerOverlay(desktopPic, mobilePic, ctaLinks);
-
-  const showOverlay = () => {
-    doc.body.appendChild(overlay);
-    requestAnimationFrame(() => overlay.classList.add('welcome-banner-overlay-visible'));
-  };
-
-  const remainingMs = getRemainingMs();
-  if (remainingMs > 0) {
-    setTimeout(showOverlay, remainingMs);
-  } else {
-    showOverlay();
-  }
+  decorateSections(main);
+  decorateBlocks(main);
+  await loadSections(main);
 }
 
 async function loadBreadcrumb(doc) {

@@ -1,6 +1,7 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { createModalShell } from '../../scripts/utils/modal.js';
 
 function decorateModalContent(modalBody) {
   let hasTitle = false;
@@ -58,26 +59,29 @@ function decorateModalContent(modalBody) {
 function createModal(doc) {
   if (doc.querySelector('.custom-modal')) return doc.querySelector('.custom-modal');
 
-  const modal = createElementFromHTML(`
-    <div class="custom-modal" aria-hidden="true">
-      <div class="modal-overlay"></div>
-      <div class="modal-content" role="dialog" aria-modal="true">
-        <button class="modal-close" type="button" aria-label="Close modal">&times;</button>
-        <div class="modal-body card-list-modal-body"></div>
-      </div>
-    </div>`, doc);
+  const wrapper = createElementFromHTML('<div class="custom-modal" aria-hidden="true"></div>', doc);
+  const backdrop = createElementFromHTML('<div class="modal-overlay"></div>', doc);
+
+  const { overlay: content, dialog: body, closeBtn } = createModalShell({
+    overlayClass: 'modal-content',
+    dialogClass: 'modal-body card-list-modal-body',
+    closeBtnClass: 'modal-close',
+    closeBtnAriaLabel: 'Close modal',
+  });
+  content.insertBefore(closeBtn, body);
 
   const closeModal = () => {
-    modal.classList.remove('active');
-    modal.setAttribute('aria-hidden', 'true');
+    wrapper.classList.remove('active');
+    wrapper.setAttribute('aria-hidden', 'true');
     doc.body.classList.remove('modal-open');
   };
 
-  modal.querySelector('.modal-close')?.addEventListener('click', closeModal);
-  modal.querySelector('.modal-overlay')?.addEventListener('click', closeModal);
-  doc.addEventListener('keydown', (e) => e.key === 'Escape' && modal.classList.contains('active') && closeModal());
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+  doc.addEventListener('keydown', (e) => e.key === 'Escape' && wrapper.classList.contains('active') && closeModal());
 
-  return doc.body.appendChild(modal);
+  wrapper.append(backdrop, content);
+  return doc.body.appendChild(wrapper);
 }
 
 async function openModal(doc, fragmentPath) {

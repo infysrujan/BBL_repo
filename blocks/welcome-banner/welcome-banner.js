@@ -1,6 +1,25 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
 
-function isBannerActive(startStr, endStr) {
+const BANNER_COOKIE = 'bbl-welcome-banner';
+const COOKIE_DURATION_MS = 20 * 1000;
+
+function setBannerDismissed() {
+  const expires = new Date(Date.now() + COOKIE_DURATION_MS).toUTCString();
+  document.cookie = `${encodeURIComponent(BANNER_COOKIE)}=${Date.now()}; expires=${expires}; path=/; SameSite=Lax`;
+}
+
+function getRemainingMs() {
+  const encoded = encodeURIComponent(BANNER_COOKIE);
+  const match = document.cookie.split('; ').find((r) => r.startsWith(`${encoded}=`));
+  if (!match) return 0;
+  const ts = Number(match.split('=')[1]);
+  if (!ts) return 0;
+  const remaining = COOKIE_DURATION_MS - (Date.now() - ts);
+  return remaining > 0 ? remaining : 0;
+}
+
+function isDateActive(startStr, endStr) {
   const now = new Date();
   if (startStr) {
     const start = new Date(startStr);
@@ -20,18 +39,17 @@ export default function decorate(block) {
   ] = rows;
 
   const doc = block.ownerDocument;
-
   const placeholder = doc.createElement('div');
   placeholder.className = 'welcome-banner-placeholder';
   moveInstrumentation(block, placeholder);
   block.replaceWith(placeholder);
 
-  const isActive = isActiveRow?.textContent?.trim().toLowerCase() === 'true';
-  if (!isActive) return;
+  const isActiveVal = isActiveRow?.textContent?.trim().toLowerCase();
+  if (isActiveVal === 'false') return;
 
-  const publishDate = publishDateRow?.textContent?.trim() || '';
-  const unpublishDate = unpublishDateRow?.textContent?.trim() || '';
-  if (!isBannerActive(publishDate, unpublishDate)) return;
+  const publishDate = publishDateRow?.textContent?.trim();
+  const unpublishDate = unpublishDateRow?.textContent?.trim();
+  if (!isDateActive(publishDate, unpublishDate)) return;
 
   const desktopPic = desktopImgRow?.querySelector('picture')?.cloneNode(true) ?? null;
   const mobilePic = mobileImgRow?.querySelector('picture')?.cloneNode(true) ?? null;
@@ -45,28 +63,33 @@ export default function decorate(block) {
       target: a.getAttribute('target') || '',
     };
   }).filter(Boolean);
+  if (ctaLinks.length === 0) {
+    placeholder.closest('.section')?.querySelectorAll('.default-content-wrapper a').forEach((a) => {
+      ctaLinks.push({
+        href: a.getAttribute('href') || '#',
+        label: a.textContent.trim(),
+        target: a.getAttribute('target') || '',
+      });
+    });
+  }
 
-  const overlay = doc.createElement('div');
-  overlay.className = 'welcome-banner-overlay';
-  overlay.setAttribute('role', 'dialog');
-  overlay.setAttribute('aria-modal', 'true');
-  overlay.setAttribute('aria-label', 'Welcome banner');
-
-  const dialog = doc.createElement('div');
-  dialog.className = 'welcome-banner-dialog';
-
-  const closeBtn = doc.createElement('button');
-  closeBtn.className = 'welcome-banner-close';
-  closeBtn.setAttribute('aria-label', 'Close welcome banner');
-  closeBtn.innerHTML = '&times;';
-  closeBtn.addEventListener('click', () => {
-    overlay.classList.remove('welcome-banner-overlay-visible');
-    overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
+  const { overlay, dialog, closeBtn } = createModalShell({
+    overlayClass: 'welcome-banner-overlay',
+    dialogClass: 'welcome-banner-dialog',
+    closeBtnClass: 'welcome-banner-close',
+    ariaLabel: 'Welcome banner',
+    closeBtnAriaLabel: 'Close welcome banner',
   });
+
+  const dismiss = () => {
+    setBannerDismissed();
+    hideModal(overlay, 'welcome-banner-overlay-visible');
+  };
+
+  closeBtn.addEventListener('click', dismiss);
 
   const media = doc.createElement('div');
   media.className = 'welcome-banner-media';
-
   if (desktopPic) {
     desktopPic.classList.add('welcome-banner-desktop-img');
     media.appendChild(desktopPic);
@@ -78,21 +101,33 @@ export default function decorate(block) {
 
   const ctas = doc.createElement('div');
   ctas.className = 'welcome-banner-ctas';
-
   ctaLinks.forEach((ctaData) => {
     const a = doc.createElement('a');
     a.className = 'welcome-banner-cta';
     a.href = ctaData.href;
     a.textContent = ctaData.label;
     if (ctaData.target) a.setAttribute('target', ctaData.target);
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      setBannerDismissed();
+      if (ctaData.href && ctaData.href !== '#') {
+        window.location.href = ctaData.href;
+      } else {
+        dismiss();
+      }
+    });
     ctas.appendChild(a);
   });
 
   dialog.appendChild(closeBtn);
   dialog.appendChild(media);
   dialog.appendChild(ctas);
-  overlay.appendChild(dialog);
 
-  doc.body.appendChild(overlay);
-  requestAnimationFrame(() => overlay.classList.add('welcome-banner-overlay-visible'));
+  const show = () => showModal(overlay, 'welcome-banner-overlay-visible');
+  const remainingMs = getRemainingMs();
+  if (remainingMs > 0) {
+    setTimeout(show, remainingMs);
+  } else {
+    show();
+  }
 }
