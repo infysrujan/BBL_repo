@@ -2,7 +2,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
 
 const BANNER_COOKIE = 'bbl-welcome-banner';
-const COOKIE_DURATION_MS = 20 * 1000;
+const COOKIE_DURATION_MS = 20 * 60 * 1000;
 
 function setBannerDismissed() {
   const expires = new Date(Date.now() + COOKIE_DURATION_MS).toUTCString();
