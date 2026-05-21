@@ -1,10 +1,9 @@
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
+import { fetchConfigs } from '../../scripts/config.js';
 
-const ALL_FUND_NAMES_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/AllFundNames';
-const LATEST_DATE_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/LatestDate';
-const GET_UPDATE_IN_MONTH_BASE = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/GetUpdateInMonth';
-const ALL_FUND_PRICES_URL = 'https://publish-p185039-e1938068.adobeaemcloud.com/api/nav/AllFundPrices/';
+let getUpdateInMonthBase = '';
+let allFundPricesUrl = '';
 
 /** NAV history is limited;
  * calendar selections older than this (local calendar) skip the prices API. */
@@ -39,7 +38,7 @@ function formatDateForFundPricesPath(date) {
 /** @param {Date} date */
 async function fetchAllFundPrices(date) {
   const path = formatDateForFundPricesPath(date);
-  const url = `${ALL_FUND_PRICES_URL}${path}`;
+  const url = `${allFundPricesUrl}${path}`;
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`AllFundPrices API returned ${response.status}`);
@@ -51,7 +50,7 @@ async function fetchAllFundPrices(date) {
 /** @param {{ year: number, month: number }} ctx - month is 0-based (JS Date) */
 async function fetchNavEnabledDaysForMonth({ year, month }) {
   const apiMonth = month + 1;
-  const url = `${GET_UPDATE_IN_MONTH_BASE}/${year}/${apiMonth}/0`;
+  const url = `${getUpdateInMonthBase}/${year}/${apiMonth}/0`;
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`GetUpdateInMonth returned ${response.status}`);
@@ -77,9 +76,14 @@ function parseLocalDateFromYmd(ymd) {
 
 // Helper to normalize header text as keys
 function normalizeHeaderKey(header) {
+  // Check for a #suffix and return only the part after #
+  const hashIndex = header.lastIndexOf('#');
+  if (hashIndex !== -1 && hashIndex < header.length - 1) {
+    return header.slice(hashIndex + 1).toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
   return header
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, ''); // removes all non-alphanumeric chars
+    .replace(/[^a-z0-9]/g, '');
 }
 
 // Helper to get current language - default to en (English) if unknown
@@ -171,6 +175,14 @@ function appendRowFromData(tableElement, dataArray) {
   if (!headerRow) {
     const firstRow = tbody.querySelector('tr');
     if (firstRow) {
+      // Check and clean up #words from td values
+      const tds = firstRow.querySelectorAll('td');
+      tds.forEach((td) => {
+        if (typeof td.textContent === 'string') {
+          // Remove any occurrence of '#' followed by a word (e.g., "#fundtype")
+          td.textContent = td.textContent.replace(/\s*#\w+\b/g, '');
+        }
+      });
       headerRow = firstRow;
       headerRow.classList.add('header-row');
     }
@@ -243,26 +255,38 @@ function richTextFromRow(row) {
   return source.innerHTML.trim();
 }
 
-/**
- * Opens the print dialog for the block’s main content only (inside `.bcap-container`).
- * Uses `html.bcap-print-isolate` + print CSS so the rest of the page is hidden.
- * @param {HTMLElement} block
- */
-function printBcapContent() {
-  const printSection = document.querySelector('.bcap-container');
-  if (!printSection) return;
+/** Move `.header-row` from tbody into thead so headers repeat on each printed page. */
+function moveHeaderRowsToThead(container) {
+  container.querySelectorAll('table').forEach((table) => {
+    const tbody = table.querySelector('tbody');
+    if (!tbody) return;
 
-  // Clone to avoid changing DOM
-  const cloned = printSection.cloneNode(true);
+    const headerRows = [...tbody.querySelectorAll('tr.header-row')];
+    if (!headerRows.length) return;
+
+    let thead = table.querySelector('thead');
+    if (!thead) {
+      thead = document.createElement('thead');
+      table.insertBefore(thead, tbody);
+    }
+    headerRows.forEach((row) => thead.appendChild(row));
+  });
+}
+
+function printElement() {
+  // Clone the container to avoid changing the DOM
+  const originalContent = document.querySelector('.bcap-container');
+  const content = originalContent ? originalContent.cloneNode(true) : null;
+  if (!content) return;
 
   // 1. Remove all print label(s)
-  cloned.querySelectorAll('.bcap-print-label').forEach((el) => el.remove());
+  content.querySelectorAll('.bcap-print-label').forEach((el) => el.remove());
 
   // 2. Remove all error messages
-  cloned.querySelectorAll('.bcap-error-message').forEach((el) => el.remove());
+  content.querySelectorAll('.bcap-error-message').forEach((el) => el.remove());
 
   // 3. Replace calendar input with its value as plain text
-  const input = cloned.querySelector('.calendar-wrapper .icon-calendar input');
+  const input = content.querySelector('.calendar-wrapper .icon-calendar input');
   if (input) {
     const inputValue = input.value;
     // Create a text node with the value and replace the input
@@ -275,18 +299,146 @@ function printBcapContent() {
     }
   }
 
-  // Print only the modified clone, restoring DOM after print, without reload
-  const originalContent = document.body.innerHTML;
-  document.body.innerHTML = cloned.outerHTML;
-  window.print();
-  document.body.innerHTML = originalContent;
-  window.location.reload();
+  moveHeaderRowsToThead(content);
+
+  const brandLogo = document.querySelector('.brand-logo-container').innerHTML;
+
+  // const fullContent = brandLogo + content.innerHTML.trim();
+
+  const printWindow = window.open('', '', 'height=500,width=800');
+
+  const printCss = `
+    @page {
+      size: A4 portrait;
+      margin: 20mm; /* Standard margins for printers */
+    }
+
+    h2 {
+      font-size: 32px;
+    }
+
+    .calendar-input::before {
+      right: -27px;
+      top: 14%;
+    }
+    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
+      width: 36px;
+      height: 2px;
+      background-color: black;
+    }
+    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+      margin: 0;
+      padding: 0;
+    }
+    .calendar-wrapper p {
+      margin: 0;
+    }
+
+    .table table.outline-border {
+        border: 0;
+    }
+
+    tr.header-row {
+        border: 2px solid black;
+        border-inline: 0;
+    }
+
+    .table table tr.header-row td {
+        padding: 0;
+        height: auto;
+    }
+    .table table.header-light-gray tr.header-row td {
+        background-color: transparent;
+    }
+    .table table tr:not(.header-row) td {
+      padding-block: 3px;
+      vertical-align: middle;
+      font-size: 10px;
+    }
+    .bcap-table.table table tr.header-row td {
+      font-size: 12px;
+      height: auto;
+      padding: 3px 0px;
+    }
+    .bcap-disclaimer-text {
+      font-size: 8px;
+    }
+
+    @media print {
+      .bcap-container table thead {
+        display: table-header-group;
+      }
+
+      .bcap-container table tbody {
+        display: table-row-group;
+      }
+
+      .bcap-container .table table {
+        break-inside: auto;
+      }
+
+      .bcap-container .table table tbody tr {
+        break-inside: avoid;
+      }
+    }
+  `;
+
+  const printHtml = `
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <title>Print</title>
+      <link rel="stylesheet" href="/styles/styles.css">
+      <link rel="stylesheet" href="/styles/fonts.css">
+      <link rel="stylesheet" href="/blocks/header/header.css">
+      <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
+      <link rel="stylesheet" href="/blocks/bcap/bcap.css">
+      <link rel="stylesheet" href="/blocks/table/table.css">
+      <style>${printCss}</style>
+    </head>
+    <body class="appear">
+      <header class="header-wrapper is-not-overlapped">
+        <div class="header block">
+          <div class="header-content">
+            <div class="main-nav-desktop">
+              <div class="brand-logo block">
+                <div class="brand-logo-container">
+                  ${brandLogo}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main>
+        <div class="section underline-title bcap-container table-container">
+          ${content.innerHTML.trim()}
+        </div>
+      </main>
+    </body>
+  </html>
+  `;
+  const runPrint = () => {
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+    }, 100);
+  };
+  if (printWindow.document.readyState === 'complete') {
+    requestAnimationFrame(runPrint);
+  } else {
+    printWindow.addEventListener('load', runPrint);
+  }
+
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
 }
 
 function attachBcapPrintHandler(printLabel) {
   printLabel.addEventListener('click', (e) => {
     e.preventDefault();
-    printBcapContent();
+    printElement();
   });
 }
 
@@ -339,9 +491,14 @@ export default async function decorate(block) {
   disclaimer.innerHTML = disclaimerHtml;
 
   try {
+    const configs = await fetchConfigs();
+    const allFundNamesUrl = configs?.bcapAllFundNamesUrl || '';
+    const latestDateUrl = configs?.bcapLatestDateUrl || '';
+    getUpdateInMonthBase = configs?.bcapGetUpdateInMonthBase || '';
+    allFundPricesUrl = configs?.bcapAllFundPricesUrl || '';
     const [namesResponse, latestResponse] = await Promise.all([
-      fetch(ALL_FUND_NAMES_URL),
-      fetch(LATEST_DATE_URL),
+      fetch(allFundNamesUrl),
+      fetch(latestDateUrl),
     ]);
 
     if (latestResponse.ok) {
