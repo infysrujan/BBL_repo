@@ -223,6 +223,7 @@
   letter-spacing: 0.0313rem;
   text-transform: uppercase;
   height: max-content;
+
 }
 
 .forex-graph .forex-graph-print-btn::before {
@@ -623,11 +624,7 @@
   .forex-graph .forex-graph-date-group {
     width: 10rem;
   }
-
-  .forex-graph .forex-graph-actions {
-    flex-direction: column-reverse;
-  }
-
+  
   .forex-graph .forex-graph-date-input {
     font-size: 1rem;
     max-width: fit-content;
