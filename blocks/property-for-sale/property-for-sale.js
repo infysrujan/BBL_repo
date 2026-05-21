@@ -56,11 +56,10 @@ function closeFiltersOnOutsideClick(container) {
   });
 }
 
-function getImageMimeType(base64) {
-  if (base64.startsWith('R0lGOD')) return 'image/gif';
-  if (base64.startsWith('/9j/')) return 'image/jpeg';
-  if (base64.startsWith('iVBORw0K')) return 'image/png';
-  return 'image/jpeg';
+function resolvePhotoSrc(photo) {
+  if (!photo) return '';
+  if (photo.startsWith('data:')) return photo;
+  return `data:image/jpeg;base64,${photo}`;
 }
 
 function formatPrice(price) {
@@ -149,7 +148,7 @@ function buildPropCardHtml(item, detailPath, p, category, pfsData) {
     : '';
 
   const card = {
-    cardImageUrl: photo ? `data:${getImageMimeType(photo)};base64,${photo}` : '',
+    cardImageUrl: resolvePhotoSrc(photo),
     title: item.MAIN_ASSET || '',
     cardShortDescription: descParts,
     ctaLink: `${detailPath}?FILE_ID=${encodeURIComponent(item.FILE_ID || '')}`,

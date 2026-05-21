@@ -5,11 +5,10 @@ function getFileId() {
   return new URLSearchParams(window.location.search).get('FILE_ID') || '';
 }
 
-function getImageMimeType(base64) {
-  if (base64.startsWith('R0lGOD')) return 'image/gif';
-  if (base64.startsWith('/9j/')) return 'image/jpeg';
-  if (base64.startsWith('iVBORw0K')) return 'image/png';
-  return 'image/jpeg';
+function resolvePhotoSrc(photo) {
+  if (!photo) return '';
+  if (photo.startsWith('data:')) return photo;
+  return `data:image/jpeg;base64,${photo}`;
 }
 
 function getPhotos(data) {
@@ -22,24 +21,52 @@ function getPhotos(data) {
   return photos;
 }
 
-function buildCarousel(photos) {
-  if (!photos.length) return '';
-  const slides = photos.map((photo, i) => {
-    const mime = getImageMimeType(photo);
-    return `<div class="prop-for-sale-slide${i === 0 ? ' is-active' : ''}">
-      <img src="data:${mime};base64,${photo}" alt="" class="prop-for-sale-slide-img" loading="lazy">
-    </div>`;
-  }).join('');
+function buildCarousel(photos, data, p) {
+  const videoId = (data?.WEBSITE_REMARK || '').trim();
+  const hasVideo = !!videoId;
 
-  const dots = photos.length > 1
-    ? photos.map((_, i) => `<li class="prop-for-sale-dot${i === 0 ? ' is-active' : ''}"><button data-index="${i}" aria-label="Slide ${i + 1}"></button></li>`).join('')
+  if (!photos.length && !hasVideo) return '';
+
+  const slideItems = [];
+
+  if (hasVideo) {
+    slideItems.push({
+      type: 'video',
+      html: `<div class="prop-for-sale-slide prop-for-sale-slide-video is-active">
+        <iframe
+         src="${p.propertyForSaleYoutubeBaseUrl || 'https://www.youtube.com/embed'}/${encodeURIComponent(videoId)}?autoplay=1&mute=1&rel=0&modestbranding=1"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy"
+          title="Property Video"
+        ></iframe>
+      </div>`,
+    });
+  }
+
+  photos.forEach((photo, i) => {
+    const isActive = !hasVideo && i === 0;
+    slideItems.push({
+      type: 'photo',
+      html: `<div class="prop-for-sale-slide${isActive ? ' is-active' : ''}">
+        <img src="${resolvePhotoSrc(photo)}" alt="" class="prop-for-sale-slide-img" loading="lazy">
+      </div>`,
+    });
+  });
+
+  const slides = slideItems.map((s) => s.html).join('');
+  const totalSlides = slideItems.length;
+
+  const dots = totalSlides > 1
+    ? slideItems.map((_, i) => `<li class="prop-for-sale-dot${i === 0 ? ' is-active' : ''}"><button data-index="${i}" aria-label="Slide ${i + 1}"></button></li>`).join('')
     : '';
 
-  const nav = photos.length > 1 ? `
+  const nav = totalSlides > 1 ? `
     <button class="prop-for-sale-nav prop-for-sale-nav-prev" aria-label="Previous"><i class="icon-arrow-left" aria-hidden="true"></i></button>
     <button class="prop-for-sale-nav prop-for-sale-nav-next" aria-label="Next"><i class="icon-arrow-left" aria-hidden="true"></i></button>` : '';
 
-  return `<div class="prop-for-sale-carousel">
+  return `<div class="prop-for-sale-carousel" ${hasVideo ? 'data-has-video="true"' : ''}>
     <div class="prop-for-sale-slides">${slides}</div>
     ${nav}
     ${dots ? `<ul class="prop-for-sale-dots">${dots}</ul>` : ''}
@@ -137,6 +164,7 @@ function initCarousel(block, interval) {
   const slides = [...block.querySelectorAll('.prop-for-sale-slide')];
   const dots = [...block.querySelectorAll('.prop-for-sale-dot')];
   if (slides.length <= 1) return;
+  const hasVideo = !!block.querySelector('.prop-for-sale-carousel[data-has-video]');
 
   let current = 0;
   let autoTimer;
@@ -151,6 +179,7 @@ function initCarousel(block, interval) {
   }
 
   function startAuto() {
+    if (hasVideo) return;
     clearInterval(autoTimer);
     autoTimer = setInterval(() => goTo(current + 1, 1), interval);
   }
@@ -221,7 +250,7 @@ export default async function decorate(block) {
   const photos = getPhotos(data);
 
   block.innerHTML = `
-    ${buildCarousel(photos)}
+    ${buildCarousel(photos, data, placeholders)}
     <div class="prop-for-sale-detail">${buildDetailHtml(data, placeholders, detailRows, mapBaseUrl)}</div>`;
 
   initCarousel(block, carouselInterval);
