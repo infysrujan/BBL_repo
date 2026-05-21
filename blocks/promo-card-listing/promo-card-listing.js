@@ -29,6 +29,16 @@ function getPromoListingConfig(block) {
   return { promotionType };
 }
 
+function resolvePromotionType(block) {
+  const { promotionType } = getPromoListingConfig(block);
+  if (promotionType) return promotionType;
+  const datasetType = block.dataset.promotionType?.trim();
+  if (datasetType) return datasetType;
+  const path = window.location.pathname.toLowerCase();
+  if (path.includes('/promotionsmb')) return 'bangkok-bank-m';
+  return '';
+}
+
 function filterByPromotionType(cards, promotionType) {
   if (!promotionType || promotionType === 'credit-card') return cards;
   const normalized = promotionType.toLowerCase();
@@ -397,7 +407,7 @@ function setupPanel(
 }
 
 export default async function decorate(block) {
-  const { promotionType } = getPromoListingConfig(block);
+  const promotionType = resolvePromotionType(block);
   const lang = getLang();
   const configs = await fetchConfigs();
   const baseUrl = promotionType === 'bangkok-bank-m'
