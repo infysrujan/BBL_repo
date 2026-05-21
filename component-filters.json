@@ -179,7 +179,8 @@
       "text-input",
       "tnc",
       "wizard",
-      "range"
+      "range",
+      "menu-card-actions"
     ]
   },
   {
