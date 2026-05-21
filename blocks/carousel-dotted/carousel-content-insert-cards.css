@@ -126,7 +126,6 @@
   background-color: var(--bbl-color-white);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   min-height: unset;
 }
 
