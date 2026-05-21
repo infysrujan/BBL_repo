@@ -304,8 +304,8 @@
 
 .intro-info .button-container{
   position: absolute;
-  left: 20px;
-  bottom: 20px;
+  left: 1.25rem;
+  bottom: 1.25rem;
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .content-insert-card .text-default {
