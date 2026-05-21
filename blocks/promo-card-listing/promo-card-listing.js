@@ -1,6 +1,8 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { readBlockConfig } from '../../scripts/aem.js';
+import { activateTab } from '../tabs/helpers/tabs-utils.js';
 
 const fetchCache = {};
 
@@ -12,6 +14,83 @@ const LOGO_ICONS = {
   amex: '/icons/amex-new.svg',
   unionpay: '/icons/upi-new.svg',
 };
+
+function getPromoListingConfig(block) {
+  const firstRow = block.querySelector(':scope > div');
+  const isKeyValueRows = firstRow && firstRow.children.length >= 2;
+
+  if (isKeyValueRows) {
+    const config = readBlockConfig(block);
+    const promotionType = (config['promotion-type'] || config.promotiontype || '').trim();
+    return { promotionType };
+  }
+
+  const promotionType = block.children[0]?.textContent?.trim() || '';
+  return { promotionType };
+}
+
+function filterByPromotionType(cards, promotionType) {
+  if (!promotionType || promotionType === 'credit-card') return cards;
+  const normalized = promotionType.toLowerCase();
+  const filtered = cards.filter((card) => {
+    const rawType = card.promotionType || card.promotiontype || '';
+    return String(rawType).toLowerCase() === normalized;
+  });
+  return filtered.length ? filtered : cards;
+}
+
+function getTabsContainer(block) {
+  const section = block.closest('.section');
+  return section?.querySelector('.tabs') || block.closest('.tabs') || null;
+}
+
+function applyCategoryTabs(tabsContainer, categories) {
+  if (!tabsContainer || !categories?.length) return;
+  const categorySet = new Set(
+    categories.map((c) => (c.label || '').trim().toLowerCase()).filter(Boolean),
+  );
+  if (!categorySet.size) return;
+
+  const tabButtons = [...tabsContainer.querySelectorAll('.tabs-nav button')];
+  const dropdown = tabsContainer.querySelector('.tabs-dropdown select');
+  let matchCount = 0;
+
+  tabButtons.forEach((btn, index) => {
+    const label = btn.textContent.trim().toLowerCase();
+    const isMatch = categorySet.has(label);
+    const panelId = btn.getAttribute('aria-controls');
+    const panel = panelId ? tabsContainer.querySelector(`#${panelId}`) : null;
+    if (isMatch) matchCount += 1;
+    btn.hidden = !isMatch;
+    btn.setAttribute('aria-hidden', isMatch ? 'false' : 'true');
+    if (panel) panel.hidden = !isMatch;
+    if (dropdown) {
+      const option = dropdown.querySelector(`option[value="${index}"]`);
+      if (option) option.hidden = !isMatch;
+    }
+  });
+
+  if (!matchCount) {
+    tabButtons.forEach((btn, index) => {
+      const panelId = btn.getAttribute('aria-controls');
+      const panel = panelId ? tabsContainer.querySelector(`#${panelId}`) : null;
+      btn.hidden = false;
+      btn.setAttribute('aria-hidden', 'false');
+      if (panel) panel.hidden = false;
+      if (dropdown) {
+        const option = dropdown.querySelector(`option[value="${index}"]`);
+        if (option) option.hidden = false;
+      }
+    });
+    return;
+  }
+
+  const activeIndex = tabButtons.findIndex((btn) => btn.classList.contains('active'));
+  if (activeIndex === -1 || tabButtons[activeIndex].hidden) {
+    const firstVisibleIndex = tabButtons.findIndex((btn) => !btn.hidden);
+    if (firstVisibleIndex >= 0) activateTab(tabsContainer, firstVisibleIndex);
+  }
+}
 
 export async function fetchJson(url) {
   if (!fetchCache[url]) {
@@ -106,14 +185,22 @@ export function sortCards(cards) {
   });
 }
 
-function filterCards(allCards, filters, page, pageSize) {
+function isTruthyFlag(value) {
+  if (value === true) return true;
+  if (value === false || value == null) return false;
+  const normalized = String(value).trim().toLowerCase();
+  return normalized === 'true' || normalized === 'yes' || normalized === '1';
+}
+
+function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
   const {
     category, subcategory, cardType, area,
   } = filters;
   const today = new Date();
 
   const matched = allCards.filter((card) => {
-    if (category && card.category?.toLowerCase() !== category.toLowerCase()) return false;
+    if (!topPromotionOnly && category && card.category?.toLowerCase() !== category.toLowerCase()) return false;
+    if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
     if (subcategory && card.subcategory !== subcategory) return false;
     const cardTypesLower = (card.cardTypes || []).map((t) => t.toLowerCase());
@@ -195,12 +282,13 @@ function setupPanel(
   };
 
   function render() {
+    const isHighlightTab = /promotion\s*highlight/i.test(category);
     const { cards, total } = filterCards(allCards, {
       category,
       subcategory: state.subcategory,
       cardType: state.cardType,
       area: state.area,
-    }, state.page, pageSize);
+    }, state.page, pageSize, isHighlightTab);
 
     gridEl.innerHTML = cards.length
       ? cards.map((c) => buildCardHtml(c, category, placeholders)).join('')
@@ -305,9 +393,12 @@ function setupPanel(
 }
 
 export default async function decorate(block) {
+  const { promotionType } = getPromoListingConfig(block);
   const lang = getLang();
   const configs = await fetchConfigs();
-  const baseUrl = configs?.promotionalCardSelector || '';
+  const baseUrl = promotionType === 'bangkok-bank-m'
+    ? (configs?.promotionalCardSelectorBbm || '')
+    : (configs?.promotionalCardSelector || '');
   const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
   const pageSize = parseInt(configs?.promotionalItemsPerPage, 10) || '';
 
@@ -316,7 +407,7 @@ export default async function decorate(block) {
     fetchJson(promotionsUrl),
     fetchPlaceholders(),
   ]);
-  const allCards = tagsData?.cards || [];
+  const allCards = filterByPromotionType(tagsData?.cards || [], promotionType);
   const categories = tagsData?.categories || [];
   const cardTypes = tagsData?.cardTypes || [
     { label: 'Visa' },
@@ -326,12 +417,20 @@ export default async function decorate(block) {
   ];
   const areas = tagsData?.areas || [];
 
+  const tabsContainer = getTabsContainer(block);
+  applyCategoryTabs(tabsContainer, categories);
+
   // Find tab panels created by tabs.js from the empty tab sections
-  const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
+  const tabPanels = tabsContainer
+    ? [...tabsContainer.querySelectorAll('.tabs-content .tab-panel')]
+    : [...document.querySelectorAll('[role="tabpanel"]')];
 
   tabPanels.forEach((panel) => {
     const tabBtnId = panel.getAttribute('aria-labelledby');
-    const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
+    if (panel.hidden) return;
+    const tabBtn = tabBtnId
+      ? (tabsContainer?.querySelector(`#${tabBtnId}`) || document.getElementById(tabBtnId))
+      : null;
     const tabText = tabBtn?.textContent?.trim() || '';
 
     const catMeta = categories.find((c) => c.label.toLowerCase() === tabText.toLowerCase()) || {};
