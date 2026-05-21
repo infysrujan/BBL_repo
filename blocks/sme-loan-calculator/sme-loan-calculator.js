@@ -157,7 +157,7 @@ export default async function decorate(block) {
     inp.inputMode = f.valueType === 'decimal' ? 'decimal' : 'numeric';
     inp.value = f.valueType === 'decimal' ? '0.00' : '0';
     if (f.valueType === 'decimal') inp.placeholder = '0.00';
-inpCol.appendChild(inp);
+    inpCol.appendChild(inp);
     box.appendChild(lblCol);
     box.appendChild(inpCol);
     card.appendChild(box);
