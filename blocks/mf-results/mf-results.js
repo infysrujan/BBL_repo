@@ -273,13 +273,6 @@ function buildCardBlock(funds, doc, labels) {
   // eslint-disable-next-line no-underscore-dangle
   const getImgUrl = (val) => val?._publishUrl || (typeof val === 'string' ? val : '');
 
-  // Convert taxonomy tag path to readable label e.g.
-  // "bangkokbank:assets/mutual-funds/fund-types/sector-fund" → "Sector Fund"
-  const tagToLabel = (tag) => {
-    const slug = tag.split('/').pop() || tag.split(':').pop() || tag;
-    return slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-  };
-
   funds.forEach((fund) => {
     const name = fund.FundName || '';
     // eslint-disable-next-line no-underscore-dangle
@@ -310,52 +303,24 @@ function buildCardBlock(funds, doc, labels) {
     h3.dataset.compareEnabled = compareEnabled ? 'true' : 'false';
     titleCell.appendChild(h3);
 
-    // Cell 3 — structured description matching live site layout
+    // Cell 3 — description
     const descCell = doc.createElement('div');
-
-    const addField = (label, value) => {
-      if (!value) return;
-      const row = doc.createElement('div');
-      row.className = 'mfr-card-field';
-      const lbl = doc.createElement('strong');
-      lbl.textContent = label;
-      const val = doc.createElement('p');
-      val.textContent = value;
-      row.appendChild(lbl);
-      row.appendChild(val);
-      descCell.appendChild(row);
-    };
-
-    // Risk Level: "level-4" → "Level 4"
-    const riskLabel = fund.RiskLevel
-      ? fund.RiskLevel.replace(/^level-/i, 'Level ')
-      : '';
-    addField('Risk Level', riskLabel);
-
-    // Fund Type: array of taxonomy tags → readable labels
-    if (Array.isArray(fund.FundType) && fund.FundType.length) {
-      const lbl = doc.createElement('strong');
-      lbl.textContent = 'Fund Type';
-      const ul = doc.createElement('ul');
-      fund.FundType.forEach((tag) => {
-        const li = doc.createElement('li');
-        li.textContent = tagToLabel(tag);
-        ul.appendChild(li);
-      });
-      const row = doc.createElement('div');
-      row.className = 'mfr-card-field';
-      row.appendChild(lbl);
-      row.appendChild(ul);
-      descCell.appendChild(row);
+    if (fund.FundDescription) {
+      const p = doc.createElement('p');
+      p.textContent = fund.FundDescription;
+      descCell.appendChild(p);
     }
 
-    addField('Investment Policy', fund.InvestmentPolicy || '');
-    addField('Master Fund', fund.MasterFund || 'N/A');
-    addField('Dividend Payment Policy', fund.DividendPaymentPolicy || '');
-    addField('Management Company', fund.ManagementCompany || '');
-
-    // eslint-disable-next-line no-console
-    console.log('[mf-results] descCell children:', descCell.children.length, descCell.innerHTML);
+    // Cell 4 — logo
+    const remarkCell = doc.createElement('div');
+    if (logoSrc) {
+      const logoImg = doc.createElement('img');
+      logoImg.src = logoSrc;
+      logoImg.alt = name;
+      logoImg.loading = 'lazy';
+      logoImg.className = 'mfr-logo';
+      remarkCell.appendChild(logoImg);
+    }
 
     // Cell 5 — button ("Read more" link)
     const btnCell = doc.createElement('div');
@@ -370,7 +335,7 @@ function buildCardBlock(funds, doc, labels) {
       null, // 1 promo tag
       titleCell, // 2 title
       descCell, // 3 description
-      null, // 4 remark
+      remarkCell, // 4 remark (logo)
       btnCell, // 5 button (Read more)
       'default', // 6 image layout
       'true', // 7 enable title underline
@@ -585,6 +550,49 @@ export default async function decorate(block) {
     }
 
     refreshToggle(funds.length);
+
+    // ── Mobile scroll dots ─────────────────────────────────────────────────
+    const cardsList = blockEl.querySelector('.cards-list');
+    if (cardsList) {
+      const dotsEl = doc.createElement('div');
+      dotsEl.className = 'mfr-scroll-dots';
+      cardListContainer.appendChild(dotsEl);
+
+      const buildDots = () => {
+        dotsEl.innerHTML = '';
+        const items = [...blockEl.querySelectorAll('.cards-list-item:not(.mfr-hidden)')];
+        if (items.length <= 1) return;
+        items.forEach((item, i) => {
+          const dot = doc.createElement('button');
+          dot.type = 'button';
+          dot.className = `mfr-scroll-dot${i === 0 ? ' is-active' : ''}`;
+          dot.setAttribute('aria-label', `Go to card ${i + 1}`);
+          dot.addEventListener('click', () => {
+            const offset = item.getBoundingClientRect().left
+              - cardsList.getBoundingClientRect().left
+              + cardsList.scrollLeft;
+            cardsList.scrollTo({ left: offset, behavior: 'smooth' });
+          });
+          dotsEl.appendChild(dot);
+        });
+      };
+
+      buildDots();
+
+      cardsList.addEventListener('scroll', () => {
+        const dots = [...dotsEl.querySelectorAll('.mfr-scroll-dot')];
+        const items = [...blockEl.querySelectorAll('.cards-list-item:not(.mfr-hidden)')];
+        if (!items.length || !dots.length) return;
+        const containerLeft = cardsList.getBoundingClientRect().left;
+        let activeIndex = 0;
+        let minDist = Infinity;
+        items.forEach((item, i) => {
+          const dist = Math.abs(item.getBoundingClientRect().left - containerLeft);
+          if (dist < minDist) { minDist = dist; activeIndex = i; }
+        });
+        dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+      }, { passive: true });
+    }
   }
 
   // ── Apply filter and render ────────────────────────────────────────────────

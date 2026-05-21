@@ -23,7 +23,7 @@ function plaintext(field) {
 }
 
 function resolveImageUrl(card) {
-  const raw = card.imageUrl || card.image || card.fundImage || '';
+  const raw = card.FundImage || card.imageUrl || card.image || card.fundImage || '';
   if (!raw) return '';
   if (typeof raw === 'string') return raw;
   // eslint-disable-next-line no-underscore-dangle
@@ -31,7 +31,7 @@ function resolveImageUrl(card) {
 }
 
 function resolveFundLogoUrl(card) {
-  const raw = card.fundLogoImage || card.fundCompanyLogo || card.companyLogoUrl || card.logoImage || '';
+  const raw = card.LogoImage || card.ManagementCompanyLogo || card.fundLogoImage || card.fundCompanyLogo || card.companyLogoUrl || card.logoImage || '';
   if (!raw) return '';
   if (typeof raw === 'string') return raw;
   // eslint-disable-next-line no-underscore-dangle
@@ -39,7 +39,8 @@ function resolveFundLogoUrl(card) {
 }
 
 function resolveCardPageUrl(card) {
-  const raw = card.readMoreUrl || card.cardPageUrl || card.detailUrl || card.pageUrl || '';
+  // eslint-disable-next-line no-underscore-dangle
+  const raw = card._path || card.readMoreUrl || card.cardPageUrl || card.detailUrl || card.pageUrl || '';
   if (!raw) return '';
   if (typeof raw === 'string') return raw;
   // eslint-disable-next-line no-underscore-dangle
@@ -51,16 +52,28 @@ function resolveCardPageUrl(card) {
 async function loadAllCards() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfSuggesterData;
-    if (!url) return [];
+    // TODO: remove dummy override before go-live
+    const url = '/blocks/mf-results/dummy.json' || configs.mfSuggesterData || configs.mfFundsDataUrl;
+    if (!url) throw new Error('no url');
     const resp = await fetch(url);
-    if (!resp.ok) return [];
+    if (!resp.ok) throw new Error('bad response');
     const json = await resp.json();
-    return json.data?.mutualFundsList?.items
+    const items = json.data?.mutualFundsList?.items
       || json.data?.fundsList?.items
       || json.data
       || json.items
       || [];
+    if (items.length) return items;
+    throw new Error('empty');
+  } catch {
+    // fall through to dummy
+  }
+
+  try {
+    const resp = await fetch(`${window.hlx.codeBasePath}/blocks/mf-results/dummy.json`);
+    if (!resp.ok) return [];
+    const json = await resp.json();
+    return json.data?.mutualFundsList?.items || [];
   } catch {
     return [];
   }
@@ -98,26 +111,30 @@ async function loadSourcingOrder() {
   }
 }
 
+function getCardName(card) {
+  return card.name || card.title || card.FundName || card.fundName || '';
+}
+
 function filterAndSortCards(allCards, selectedNames, sourcingMap) {
   const normalizedNames = selectedNames.map(norm);
 
   const matched = allCards.filter((card) => {
-    const cardName = norm(card.name || card.title || card.fundName || '');
+    const cardName = norm(getCardName(card));
     return normalizedNames.some((n) => cardName.includes(n) || n.includes(cardName));
   });
 
   if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
     return normalizedNames
       .map((n) => matched.find((c) => {
-        const cardName = norm(c.name || c.title || c.fundName || '');
+        const cardName = norm(getCardName(c));
         return cardName.includes(n) || n.includes(cardName);
       }))
       .filter(Boolean);
   }
 
   return matched.sort((a, b) => {
-    const sA = sourcingMap[norm(a.name || a.title || a.fundName || '')] ?? 9999;
-    const sB = sourcingMap[norm(b.name || b.title || b.fundName || '')] ?? 9999;
+    const sA = sourcingMap[norm(getCardName(a))] ?? 9999;
+    const sB = sourcingMap[norm(getCardName(b))] ?? 9999;
     return sA - sB;
   });
 }
@@ -131,12 +148,39 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
  *                        > a.mfcr-read-more
  */
 function buildCompareCard(card, doc, labels) {
-  const name = card.name || card.title || card.fundName || '';
+  const name = card.name || card.title || card.FundName || card.fundName || '';
   const imgSrc = resolveImageUrl(card);
   const logoSrc = resolveFundLogoUrl(card);
   const readMoreHref = resolveCardPageUrl(card);
-  const description = plaintext(card.description || card.cardDescription || card.fundDescription || '');
-  const fundType = card.fundType || card.type || '';
+
+  const getField = (...keys) => {
+    for (let i = 0; i < keys.length; i += 1) {
+      const val = card[keys[i]];
+      if (val !== undefined && val !== null && val !== '') return val;
+    }
+    return '';
+  };
+
+  const tagToLabel = (tag) => {
+    const slug = tag.split('/').pop() || tag.split(':').pop() || tag;
+    return slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  };
+
+  const riskRaw = getField('RiskLevel', 'riskLevel');
+  const riskLabel = riskRaw ? riskRaw.replace(/^level-/i, 'Level ') : '';
+
+  const fundTypeRaw = getField('FundType', 'fundType', 'type');
+  let fundTypeLabel = '';
+  if (Array.isArray(fundTypeRaw) && fundTypeRaw.length) {
+    fundTypeLabel = fundTypeRaw.map(tagToLabel).join(', ');
+  } else if (typeof fundTypeRaw === 'string') {
+    fundTypeLabel = fundTypeRaw;
+  }
+
+  const investmentPolicy = plaintext(getField('InvestmentPolicy', 'investmentPolicy'));
+  const masterFund = getField('MasterFund', 'masterFund');
+  const dividendPolicy = getField('DividendPaymentPolicy', 'dividendPaymentPolicy');
+  const managementCompany = getField('ManagementCompany', 'managementCompany');
 
   const col = doc.createElement('div');
   col.className = 'mfcr-card';
@@ -172,8 +216,12 @@ function buildCompareCard(card, doc, labels) {
   compareInfo.className = 'compare-info';
 
   const fields = [
-    { key: 'description', label: labels.description, value: description },
-    { key: 'fundType', label: labels.fundType, value: fundType },
+    { key: 'riskLevel', label: labels.riskLevel, value: riskLabel },
+    { key: 'fundType', label: labels.fundType, value: fundTypeLabel },
+    { key: 'investmentPolicy', label: labels.investmentPolicy, value: investmentPolicy },
+    { key: 'masterFund', label: labels.masterFund, value: masterFund },
+    { key: 'dividendPolicy', label: labels.dividendPolicy, value: dividendPolicy },
+    { key: 'managementCompany', label: labels.managementCompany, value: managementCompany },
   ];
 
   fields.forEach(({ key, label, value }) => {
@@ -192,18 +240,6 @@ function buildCompareCard(card, doc, labels) {
   });
 
   caption.appendChild(compareInfo);
-
-  // Fund company logo
-  if (logoSrc) {
-    const logoWrap = doc.createElement('div');
-    logoWrap.className = 'mfcr-logo';
-    const logoImg = doc.createElement('img');
-    logoImg.src = logoSrc;
-    logoImg.alt = 'Fund management company';
-    logoImg.loading = 'lazy';
-    logoWrap.appendChild(logoImg);
-    caption.appendChild(logoWrap);
-  }
 
   col.appendChild(caption);
 
@@ -289,7 +325,7 @@ function equalizeRowHeights(grid) {
   nameEls.forEach((el) => { el.style.height = `${maxNameH}px`; }); // eslint-disable-line no-param-reassign
 
   // Equalize dl rows by field key
-  ['description', 'fundType'].forEach((key) => {
+  ['riskLevel', 'fundType', 'investmentPolicy', 'masterFund', 'dividendPolicy', 'managementCompany'].forEach((key) => {
     const dls = cards.map((c) => c.querySelector(`dl[data-field="${key}"]`)).filter(Boolean);
     if (dls.length < 2) return;
     const maxH = Math.max(...dls.map((dl) => dl.offsetHeight));
@@ -360,11 +396,16 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
 export default async function decorate(block) {
   const doc = block.ownerDocument;
   const ph = await fetchPlaceholders();
+  const isTH = getLang() === 'th';
   const labels = {
-    readMore: ph.mfReadMoreText,
-    description: ph.mfCompareDescription,
-    fundType: ph.mfCompareFundType,
-    noResults: ph.mfNoResultsText,
+    readMore: ph.mfReadMoreText || (isTH ? 'อ่านเพิ่มเติม' : 'Read More'),
+    riskLevel: ph.mfCompareRiskLevel || (isTH ? 'ระดับความเสี่ยง' : 'Risk Level'),
+    fundType: ph.mfCompareFundType || (isTH ? 'ประเภทกองทุน' : 'Fund Type'),
+    investmentPolicy: ph.mfCompareInvestmentPolicy || (isTH ? 'นโยบายการลงทุน' : 'Investment Policy'),
+    masterFund: ph.mfCompareMasterFund || (isTH ? 'กองทุนหลัก' : 'Master Fund'),
+    dividendPolicy: ph.mfCompareDividendPolicy || (isTH ? 'นโยบายการจ่ายเงินปันผล' : 'Dividend Payment Policy'),
+    managementCompany: ph.mfCompareManagementCompany || (isTH ? 'บริษัทจัดการ' : 'Management Company'),
+    noResults: ph.mfNoResultsText || (isTH ? 'ไม่พบผลลัพธ์' : 'No results found'),
   };
 
   const notesRow = block.children[0];
