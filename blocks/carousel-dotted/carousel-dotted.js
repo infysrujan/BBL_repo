@@ -14,6 +14,7 @@ import buildTextSlide from './build-text-slide.js';
 import buildHeroSlide from './build-hero-slide.js';
 import buildArrowsDotsSlide from './build-arrows-dots-slide.js';
 import buildMfCardListCarouselSlide from './build-mf-card-list-carousel-slide.js';
+import buildMfFundCardsSlide from './build-mf-fund-cards-slide.js';
 
 /**
  * Build a slide - determines which variation to use and delegates.
@@ -296,8 +297,7 @@ export default async function decorate(block) {
     }
 
     if (slideType === 'mfCardListCarousel') {
-      // eslint-disable-next-line no-console
-      console.log('[mfCardListCarousel] page path:', window.location.pathname);
+      return buildMfFundCardsSlide(row, index);
     }
 
     if (showArrows) {

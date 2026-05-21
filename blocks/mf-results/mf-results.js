@@ -303,7 +303,7 @@ function buildCardBlock(funds, doc, labels) {
     h3.dataset.compareEnabled = compareEnabled ? 'true' : 'false';
     titleCell.appendChild(h3);
 
-    // Cell 3 — description
+    // Cell 4 — description
     const descCell = doc.createElement('div');
     if (fund.FundDescription) {
       const p = doc.createElement('p');
@@ -311,7 +311,7 @@ function buildCardBlock(funds, doc, labels) {
       descCell.appendChild(p);
     }
 
-    // Cell 4 — logo
+    // Cell 5 — logo (remark)
     const remarkCell = doc.createElement('div');
     if (logoSrc) {
       const logoImg = doc.createElement('img');
@@ -322,27 +322,38 @@ function buildCardBlock(funds, doc, labels) {
       remarkCell.appendChild(logoImg);
     }
 
-    // Cell 5 — button ("Read more" link)
+    // Cell 7 — button ("Read more" link)
     const btnCell = doc.createElement('div');
     const link = doc.createElement('a');
     link.href = readMoreUrl || '#';
     link.textContent = labels.readMore;
     btnCell.appendChild(link);
 
+    // Cell layout matches current card-list.js decorate() expectations:
+    //  0  image          6  actionTypeText ('default')
+    //  1  promoTag       7  defaultButton  ← Read more link
+    //  2  title          8  multipleDownloadLinks (null)
+    //  3  subtitle       9  imageLayout    (base)
+    //  4  description   10  enableTitleUnderline
+    //  5  remark (logo) 11  isCardClickable
+    //                   12  cardLink
+    //                   13  enableOverlayModal
     block.appendChild(createBlockRow(
       doc,
-      imgCell, // 0 image
-      null, // 1 promo tag
-      titleCell, // 2 title
-      descCell, // 3 description
-      remarkCell, // 4 remark (logo)
-      btnCell, // 5 button (Read more)
-      'default', // 6 image layout
-      'true', // 7 enable title underline
-      'false', // 8 is card clickable
-      null, // 9 card link
-      null, // 10 overlay link
-      'false', // 11 enable overlay modal
+      imgCell,    // 0  image
+      null,       // 1  promoTag
+      titleCell,  // 2  title
+      null,       // 3  subtitle
+      descCell,   // 4  description
+      remarkCell, // 5  remark (logo)
+      'default',  // 6  actionTypeText
+      btnCell,    // 7  defaultButton  ← Read more link
+      null,       // 8  multipleDownloadLinks
+      'default',  // 9  imageLayout    (base)
+      'true',     // 10 enableTitleUnderline
+      'false',    // 11 isCardClickable
+      null,       // 12 cardLink
+      'false',    // 13 enableOverlayModal
     ));
   });
 
