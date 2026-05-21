@@ -967,6 +967,10 @@
             {
               "name": "Card List Carousel",
               "value": "cardListCarousel"
+            },
+            {
+              "name": "MF Card list Carousel",
+              "value": "mfCardListCarousel"
             }
           ]
         },
