@@ -199,7 +199,11 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
   const today = new Date();
 
   const matched = allCards.filter((card) => {
-    if (!topPromotionOnly && category && card.category?.toLowerCase() !== category.toLowerCase()) return false;
+    if (
+      !topPromotionOnly
+      && category
+      && card.category?.toLowerCase() !== category.toLowerCase()
+    ) return false;
     if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
     if (subcategory && card.subcategory !== subcategory) return false;
