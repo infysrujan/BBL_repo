@@ -30,11 +30,12 @@ function buildCarousel(photos, data, p) {
   const slideItems = [];
 
   if (hasVideo) {
+    const youtubeBase = (p.propertyForSaleYoutubeBaseUrl || 'https://www.youtube.com/embed').trim();
     slideItems.push({
       type: 'video',
       html: `<div class="prop-for-sale-slide prop-for-sale-slide-video is-active">
         <iframe
-         src="${p.propertyForSaleYoutubeBaseUrl || 'https://www.youtube.com/embed'}/${encodeURIComponent(videoId)}?autoplay=1&mute=1&rel=0&modestbranding=1"
+          src="${youtubeBase}/${encodeURIComponent(videoId)}?autoplay=1&mute=1&rel=0&modestbranding=1"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen
