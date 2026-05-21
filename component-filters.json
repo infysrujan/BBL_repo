@@ -54,6 +54,9 @@
       "video",
       "carousel-video",
       "forex-rates",
+      "multi-column-tiles",
+      "retirement-calculator",
+      "tax-calculator",
       "special-fx-rates",
       "promotional-details",
       "promo-card-listing",
@@ -63,7 +66,10 @@
       "property-for-sale",
       "stock-ticker",
       "cookie-alert",
-      "cookie-modal"
+      "cookie-modal",
+      "news-media-details",
+      "news-media",
+      "latest-news"
     ]
   },
   {
@@ -331,9 +337,7 @@
         ]
       }
     },
-    "components": [
-      "nested-table"
-    ]
+    "components": []
   },
   {
     "id": "tab-section",
