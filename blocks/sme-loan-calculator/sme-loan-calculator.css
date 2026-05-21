@@ -33,14 +33,6 @@
 }
 
 /* ── Title section ────────────────────────────────────────── */
-h2#sme-loan-calculator {
-  color: var(--bbl-color-white);
-  font-size: 2.2rem;
-  font-weight: 400;
-  text-align: center;
-  padding: 1.5rem 0 1rem;
-  margin: 0;
-}
 
 main {
   background: var(--bbl-color-white);
@@ -60,10 +52,11 @@ main {
   display: none;
 }
 
-/* ── Tab navigation (simple-tab variant wrapping SME Calculator) ── */
+/* ── Tab navigation ───────────────────────────────────────── */
 .section.tabs-container .tabs.simple-tab .tabs-nav-wrapper {
   background-color: var(--bbl-color-truthful-dark-blue);
-  padding: 0 3rem;
+  padding: 0;
+  overflow: hidden;
   border-bottom: none;
   max-width: 79.5rem;
   margin: 0 auto;
@@ -71,7 +64,9 @@ main {
 
 .section.tabs-container .tabs.simple-tab .tabs-nav {
   display: flex;
+  flex-wrap: nowrap;
   justify-content: space-around;
+  overflow: hidden;
   border: none;
   padding: 0;
   margin-top: 0;
@@ -84,12 +79,16 @@ main {
   border: none;
   box-shadow: none;
   color: var(--bbl-color-sme-tab-inactive);
-  font-size: 1rem;
+  font-size: 0.6875rem;
+  line-height: 1.3;
   font-weight: 400;
-  padding: 1.25rem 1rem;
+  padding: 0.625rem 0.25rem;
   cursor: pointer;
   text-align: center;
   flex: 1;
+  max-width: unset;
+  box-sizing: border-box;
+  white-space: normal;
   transition: color 0.2s;
   letter-spacing: 0.02em;
   outline: none;
@@ -154,8 +153,11 @@ main {
 /* ── Dark card (inputs + calculate button) ───────────────── */
 .sme-calc-dark-section {
   background-color: var(--bbl-color-truthful-dark-blue);
-  border-radius: 0.75rem 0.75rem 0 0;
-  padding: 2.5rem 3rem 3rem;
+  border-radius: 0.5rem 0.5rem 0 0;
+  padding: 1.5rem 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   color: var(--bbl-color-white);
   max-width: 79.5rem;
   margin: 0 auto;
@@ -173,15 +175,17 @@ main {
 
 /* ── Fields row ──────────────────────────────────────────── */
 .row.paddingmain {
-  gap: 0 1rem;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
   margin-bottom: 2rem;
-  align-items: flex-start;
 }
 
 .col-md-4.paddingcal {
-  flex: 0 0 calc((100% - 2rem) / 3);
-  max-width: calc((100% - 2rem) / 3);
-  min-width: 12.5rem;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  flex: none;
   display: flex;
   flex-direction: column;
 }
@@ -231,10 +235,10 @@ main {
   background: transparent;
   border: none;
   color: var(--bbl-color-white);
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
   text-align: right;
-  width: 6.25rem;
+  width: 5rem;
   outline: none;
   padding: 0;
   caret-color: var(--bbl-color-sme-caret);
@@ -260,13 +264,14 @@ main {
 
 /* ── Calculate button ────────────────────────────────────── */
 .sme-calc-btn {
-  background-color: #f9f9f9;
+  background-color: var(--bbl-color-grey-05);
   color: var(--bbl-color-grey-85);
   border: none;
   border-radius: 0.4375rem;
   min-width: 11.125rem;
+  width: 100%;
   height: 2.75rem;
-  padding: 0.0625rem 0.375rem;
+  padding: 0.0625rem 0;
   font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -282,14 +287,14 @@ main {
 /* ── Result section (below dark card) ────────────────────── */
 .sme-calc-result-section {
   background-color: var(--bbl-color-sme-section-bg);
-  border-radius: 0;
-  padding: 1.875rem 0.625rem;
+  border-radius: 0 0 0.5rem 0.5rem;
+  padding: 1.75rem 1rem;
   text-align: center;
 }
 
 .sme-calc-result-label {
   display: block;
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   font-weight: 400;
   color: var(--bbl-color-white);
   letter-spacing: 0.01em;
@@ -324,8 +329,9 @@ main {
   border: none;
   border-radius: 0.5rem;
   min-width: 11.125rem;
+  width: 100%;
   height: 3.125rem;
-  padding: 0 1.5rem;
+  padding: 0;
   font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -363,7 +369,7 @@ main {
   margin: 1rem auto 0;
 }
 
-#resulttbl {
+.resulttbl {
   width: 100%;
   overflow-x: auto;
 }
@@ -412,75 +418,66 @@ main {
   background-color: var(--bbl-color-gray-144);
 }
 
-/* ── Mobile ──────────────────────────────────────────────── */
-@media (width <= 40rem) {
+/* ── Tablet and above ─────────────────────────────────────── */
+@media (width > 47.5rem) {
+  .section.tabs-container .tabs.simple-tab .tabs-nav-wrapper {
+    padding: 0 3rem;
+    overflow: visible;
+  }
+
+  .section.tabs-container .tabs.simple-tab .tabs-nav {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  .section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
+    font-size: 1rem;
+    line-height: normal;
+    padding: 1.25rem 1rem;
+    white-space: nowrap;
+    max-width: none;
+  }
+
   .sme-calc-dark-section {
-    padding: 1.5rem 1rem 2rem;
-    border-radius: 0.5rem 0.5rem 0 0;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    border-radius: 0.75rem 0.75rem 0 0;
+    padding: 2.5rem 3rem 3rem;
+    display: block;
   }
 
   .sme-calc-result-section {
-    padding: 1.75rem 1rem;
-    border-radius: 0 0 0.5rem 0.5rem;
+    padding: 1.875rem 0.625rem;
+    border-radius: 0;
   }
 
   .row.paddingmain {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0 1rem;
   }
 
   .col-md-4.paddingcal {
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-    flex: none;
+    flex: 0 0 calc((100% - 2rem) / 3);
+    max-width: calc((100% - 2rem) / 3);
+    min-width: 12.5rem;
+    width: auto;
   }
 
   .textbox-cal {
-    width: 5rem;
-    font-size: 1.125rem;
+    width: 6.25rem;
+    font-size: 1.25rem;
   }
 
   .sme-calc-result-label {
-    font-size: 1.125rem;
+    font-size: 1.5rem;
   }
 
-  .sme-calc-btn,
+  .sme-calc-btn {
+    width: auto;
+    padding: 0.0625rem 0.375rem;
+  }
+
   .sme-calc-add-table-btn {
-    width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .section.tabs-container .tabs.simple-tab .tabs-nav-wrapper {
-    padding: 0;
-    overflow: hidden;
-  }
-
-  /* Kill the 4rem padding-bottom + 1.875rem margin-top from tabs.css */
-  .section.tabs-container .tabs.simple-tab .tabs-nav {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-around;
-    overflow: hidden;
-    padding: 0;
-    margin-top: 0;
-    gap: 0;
-  }
-
-  /* All 4 tabs on one line — equal width, compact, text wraps within each button */
-  .section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
-    flex: 1;
-    max-width: unset;
-    box-sizing: border-box;
-    white-space: normal;
-    font-size: 0.6875rem;
-    line-height: 1.3;
-    padding: 0.625rem 0.25rem;
-    text-align: center;
+    width: auto;
+    padding: 0 1.5rem;
   }
 }

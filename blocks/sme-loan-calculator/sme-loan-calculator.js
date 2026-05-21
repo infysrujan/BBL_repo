@@ -1,4 +1,8 @@
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
+
 export default async function decorate(block) {
+  const placeholders = await fetchPlaceholders();
+
   // ── Helpers (defined first to satisfy no-use-before-define) ──
   function el(tag, cls) {
     const e = document.createElement(tag);
@@ -153,8 +157,7 @@ export default async function decorate(block) {
     inp.inputMode = f.valueType === 'decimal' ? 'decimal' : 'numeric';
     inp.value = f.valueType === 'decimal' ? '0.00' : '0';
     if (f.valueType === 'decimal') inp.placeholder = '0.00';
-    if (f.maxLength) inp.maxLength = f.maxLength;
-    inpCol.appendChild(inp);
+inpCol.appendChild(inp);
     box.appendChild(lblCol);
     box.appendChild(inpCol);
     card.appendChild(box);
@@ -180,10 +183,9 @@ export default async function decorate(block) {
   const fields = rows.slice(hasResultText ? 6 : 5).map((r) => ({
     id: cellText(r, 0),
     label: cellText(r, 1),
-    maxLength: parseInt(cellText(r, 2), 10) || null,
-    topText: cellText(r, 3),
-    bottomText: cellText(r, 4),
-    valueType: cellText(r, 5) || 'integer',
+    topText: cellText(r, 2),
+    bottomText: cellText(r, 3),
+    valueType: cellText(r, 4) || 'integer',
   }));
 
   const ids = fields.map((f) => f.id);
@@ -258,7 +260,7 @@ export default async function decorate(block) {
   const btnRow = el('div', 'row paddingmain alignc');
   const calcBtn = el('button', 'sme-calc-btn');
   calcBtn.type = 'button';
-  calcBtn.textContent = buttonName || 'CALCULATE';
+  calcBtn.textContent = buttonName || placeholders.smeCalcButton || 'CALCULATE';
   btnRow.appendChild(calcBtn);
   dark.appendChild(btnRow);
   block.appendChild(dark);
@@ -285,7 +287,7 @@ export default async function decorate(block) {
 
   const addBtn = el('button', 'sme-calc-add-table-btn');
   addBtn.type = 'button';
-  addBtn.textContent = addToTableButtonName || 'ADD TO TABLE';
+  addBtn.textContent = addToTableButtonName || placeholders.smeAddTableButton || 'ADD TO TABLE';
   resultSection.appendChild(addBtn);
   block.appendChild(resultSection);
 
@@ -294,18 +296,17 @@ export default async function decorate(block) {
   tableSection.hidden = true;
 
   const tableHeading = el('h2', 'sme-calc-table-heading');
-  tableHeading.textContent = 'Compare your Result';
+  tableHeading.textContent = placeholders.smeCompareHeading || 'Compare your Result';
   tableSection.appendChild(tableHeading);
 
   const resultColHeader = {
-    monthly: 'Loan Payment',
-    loanbalance: 'Loan Balance',
-    term: 'Term',
-    wc: 'Working Capital',
+    monthly: placeholders.smeResultColMonthly || 'Loan Payment',
+    loanbalance: placeholders.smeResultColLoanbalance || 'Loan Balance',
+    term: placeholders.smeResultColTerm || 'Term',
+    wc: placeholders.smeResultColWc || 'Working Capital',
   };
 
-  const resulttbl = el('div', '');
-  resulttbl.id = 'resulttbl';
+  const resulttbl = el('div', 'resulttbl');
   const table = el('table', 'tablelong fontcomparetable');
   const thead = document.createElement('thead');
 
