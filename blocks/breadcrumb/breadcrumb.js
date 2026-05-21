@@ -179,7 +179,7 @@ export default async function decorate(block) {
   // Load social-icons block through fragments
   try {
     const { loadFragment } = await import('../fragment/fragment.js');
-    const fragment = await loadFragment(`/${lang}/fragments/social-icons`);
+    const fragment = await loadFragment(`/${getLang()}/fragments/social-icons`);
     if (fragment) {
       // Pick the social-icons block with the most child rows (handles orphaned items
       // that AEM may group into a second block at section level)
