@@ -41,8 +41,8 @@ function isDateRangeOver3Years(fromIso, toIso) {
 function buildGraphTitle(template, currName, currFamily, fromIso, toIso) {
   const fromParsed = parseIsoDate(fromIso);
   const toParsed = parseIsoDate(toIso);
-  const startDate = fromParsed ? `${fromParsed.month}/${fromParsed.day}/${fromParsed.year}` : '';
-  const endDate = toParsed ? `${toParsed.month}/${toParsed.day}/${toParsed.year}` : '';
+  const startDate = fromParsed ? `${fromParsed.month}/${fromParsed.day}/${fromParsed.year}` : `${undefined}//${undefined}`;
+  const endDate = toParsed ? `${toParsed.month}/${toParsed.day}/${toParsed.year}` : `${undefined}//${undefined}`;
 
   // Normalise template: ensure spaces around family code, colon and dash
   const base = template
@@ -173,8 +173,8 @@ function renderBlock(
     placeholders.forexGraphTitle,
     currName,
     state.selectedFamily,
-    state.from.selectedDate,
-    state.to.selectedDate,
+    state.lastSubmittedFrom,
+    state.lastSubmittedTo,
   );
 
   const errorStyle = state.error ? '' : ' style="display:none"';
@@ -197,7 +197,7 @@ function renderBlock(
             <label class="forex-graph-date-label">${escapeHtml(placeholders.fromLabel || 'From')}</label>
             <div class="forex-graph-date-group forex-graph-from-group">
               <span class="forex-graph-date-display">${escapeHtml(fromDisplayDate)}</span>
-              <input type="text" class="forex-graph-date-input forex-graph-from-input" inputmode="text" placeholder="DD MMM YYYY" value="${escapeHtml(state.from.typedDate)}" aria-label="From date" data-pick="from">
+              <input type="text" class="forex-graph-date-input forex-graph-from-input" inputmode="text" value="${escapeHtml(state.from.typedDate)}" aria-label="From date" data-pick="from">
               <button type="button" class="forex-graph-date-trigger icon-calendar" aria-label="Open from calendar" data-pick="from"></button>
               ${renderDatepicker('from', state.from, monthLabels, dayLabels, buddhistYearOffset)}
             </div>
@@ -206,7 +206,7 @@ function renderBlock(
             <label class="forex-graph-date-label">${escapeHtml(placeholders.toLabel || 'To')}</label>
             <div class="forex-graph-date-group forex-graph-to-group">
               <span class="forex-graph-date-display">${escapeHtml(toDisplayDate)}</span>
-              <input type="text" class="forex-graph-date-input forex-graph-to-input" inputmode="text" placeholder="DD MMM YYYY" value="${escapeHtml(state.to.typedDate)}" aria-label="To date" data-pick="to">
+              <input type="text" class="forex-graph-date-input forex-graph-to-input" inputmode="text" value="${escapeHtml(state.to.typedDate)}" aria-label="To date" data-pick="to">
               <button type="button" class="forex-graph-date-trigger icon-calendar" aria-label="Open to calendar" data-pick="to"></button>
               ${renderDatepicker('to', state.to, monthLabels, dayLabels, buddhistYearOffset)}
             </div>
@@ -263,6 +263,8 @@ export default async function decorate(block) {
     dropdownOpen: false,
     from: createPickerState(),
     to: createPickerState(),
+    lastSubmittedFrom: null,
+    lastSubmittedTo: null,
     chartData: [],
     loading: false,
     error: '',
@@ -518,6 +520,9 @@ export default async function decorate(block) {
 
       input.addEventListener('input', (e) => {
         state[pick].typedDate = e.target.value;
+        if (e.target.value.trim() === '') {
+          state[pick].selectedDate = '';
+        }
       });
 
       input.addEventListener('blur', () => {
@@ -530,11 +535,16 @@ export default async function decorate(block) {
           if (state[pick].calendarOpen) return;
           const parsed = parseTypedDate(state[pick].typedDate, buddhistYearOffset);
           if (!parsed) {
-            state[pick].typedDate = formatDateInputValue(
-              state[pick].selectedDate,
-              monthLabels,
-              buddhistYearOffset,
-            );
+            if (state[pick].typedDate.trim() === '') {
+              state[pick].selectedDate = '';
+              state[pick].typedDate = '';
+            } else {
+              state[pick].typedDate = formatDateInputValue(
+                state[pick].selectedDate,
+                monthLabels,
+                buddhistYearOffset,
+              );
+            }
             render();
             return;
           }
@@ -659,6 +669,8 @@ export default async function decorate(block) {
     if (goButton) {
       goButton.addEventListener('click', async () => {
         if (state.loading) return;
+        state.lastSubmittedFrom = state.from.selectedDate;
+        state.lastSubmittedTo = state.to.selectedDate;
         await fetchAndRenderChart();
         render();
       });
@@ -798,6 +810,9 @@ export default async function decorate(block) {
       state.from.viewMonth = month;
       state.to.viewYear = year;
       state.to.viewMonth = month;
+
+      state.lastSubmittedFrom = state.from.selectedDate;
+      state.lastSubmittedTo = state.to.selectedDate;
     } finally {
       state.loading = false;
       render();
