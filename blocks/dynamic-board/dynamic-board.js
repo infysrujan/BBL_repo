@@ -7,7 +7,7 @@ import {
 import createApiService from './helpers/api-helpers.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 
 const MAX_SELECTED = 5;
 
@@ -544,18 +544,18 @@ export default async function decorate(block) {
   const authoring = parseAuthoring(block);
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
   const state = createState();
-  const language = document.documentElement.lang?.split('-')[0] || 'en';
-  state.monthLabels = parseCsvConfigList(configs?.monthLabels, buildIntlMonthLabels(language));
-  state.dayLabels = parseCsvConfigList(configs?.dayLabels, buildIntlDayLabels(language));
-  state.buddhistYearOffset = Number(configs?.buddhistYearOffset) || 0;
+  const language = getLang();
+  state.monthLabels = parseCsvConfigList(placeholders?.monthLabels, buildIntlMonthLabels(language));
+  state.dayLabels = parseCsvConfigList(placeholders?.dayLabels, buildIntlDayLabels(language));
+  state.buddhistYearOffset = language === 'th' ? Number(configs?.sharedBuddhistYearOffset) || 0 : 0;
   const isGov = authoring.boardType.toLowerCase().includes('government');
   state.api = createApiService(configs, authoring.boardType);
   state.placeholders = placeholders;
   state.downloadUrl = isGov
-    ? configs?.corpBondDownloadUrl || '-/media/Files/Personal/Save and Invest/Investment/CorporateBonds/Fact-Sheet/{{SYMBOL}}_Factsheet.pdf'
-    : configs?.bondRatesDownloadUrl || '-/media/Files/Personal/Save and Invest/Investment/Bonds and Debentures/Fact-Sheet/{{SYMBOL}}_Factsheet.pdf';
+    ? configs?.dynamicBoardCorpBondDownloadUrl || '-/media/Files/Personal/Save and Invest/Investment/CorporateBonds/Fact-Sheet/{{SYMBOL}}_Factsheet.pdf'
+    : configs?.dynamicBoardBondRatesDownloadUrl || '-/media/Files/Personal/Save and Invest/Investment/Bonds and Debentures/Fact-Sheet/{{SYMBOL}}_Factsheet.pdf';
   state.isGov = isGov;
-  state.isThai = document.documentElement.lang.toLowerCase().startsWith('th');
+  state.isThai = language === 'th';
   state.columns = parseTableHeading(authoring.tableHeadingEl, isGov);
   state.maturityTypes = parseMaturityTypes(authoring.maturityTypesEl);
 

@@ -17,29 +17,29 @@ function replaceTemplateTokens(url, values) {
 function resolveUrls(configs, isGov) {
   if (isGov) {
     return {
-      lastUpdate: configs?.corpBondGetLastUpdate || '',
-      latestRates: configs?.corpBondGetLatestRates || '',
-      dayInMonth: configs?.corpBondGetDayInMonth || '',
-      updateInDay: configs?.corpBondGetUpdateInDay || '',
-      ratesByDate: configs?.corpBondGetRatesByDate || '',
-      filterLess1: configs?.corpBondGetRatesFilterLess1 || '',
-      filter1to5: configs?.['corpBondGetRatesFilter-1to5'] || '',
-      filter6to10: configs?.['corpBondGetRatesFilter-6to10'] || '',
-      filterMore10: configs?.corpBondGetRatesFilterMore10 || '',
-      filterRange: configs?.corpBondGetRatesDateRange || '',
+      lastUpdate: configs?.dynamicBoardCorpBondGetLastUpdate || '',
+      latestRates: configs?.dynamicBoardCorpBondGetLatestRates || '',
+      dayInMonth: configs?.dynamicBoardCorpBondGetDayInMonth || '',
+      updateInDay: configs?.dynamicBoardCorpBondGetUpdateInDay || '',
+      ratesByDate: configs?.dynamicBoardCorpBondGetRatesByDate || '',
+      filterLess1: configs?.dynamicBoardCorpBondGetRatesFilterLess1 || '',
+      filter1to5: configs?.dynamicBoardCorpBondGetRatesFilterOneToFive || '',
+      filter6to10: configs?.dynamicBoardCorpBondGetRatesFilterSixToTen || '',
+      filterMore10: configs?.dynamicBoardCorpBondGetRatesFilterMore10 || '',
+      filterRange: configs?.dynamicBoardCorpBondGetRatesDateRange || '',
     };
   }
   return {
-    lastUpdate: configs?.bondRatesServiceGetBondDateTimeLastUpdate || '',
-    latestRates: configs?.bondRatesServiceGetLatestBondRates || '',
-    dayInMonth: configs?.bondRatesServiceGetDayInMonth || '',
-    updateInDay: configs?.bondRatesServiceGetUpdateInDay || '',
-    ratesByDate: configs?.bondRatesServiceGetBondRatesByDate || '',
-    filterLess1: configs?.bondRatesServiceGetBondRatesByDateWithFilterLess1 || '',
-    filter1to5: configs?.['bondRatesServiceGetBondRatesByDateWithFilter-1to5'] || '',
-    filter6to10: configs?.['bondRatesServiceGetBondRatesByDateWithFilter-6to10'] || '',
-    filterMore10: configs?.bondRatesServiceGetBondRatesByDateWithFilterMore10 || '',
-    filterRange: configs?.bondRatesServiceGetBondRatesByDateRange || '',
+    lastUpdate: configs?.dynamicBoardBondRatesGetLastUpdate || '',
+    latestRates: configs?.dynamicBoardBondRatesGetLatestRates || '',
+    dayInMonth: configs?.dynamicBoardBondRatesGetDayInMonth || '',
+    updateInDay: configs?.dynamicBoardBondRatesGetUpdateInDay || '',
+    ratesByDate: configs?.dynamicBoardBondRatesGetRatesByDate || '',
+    filterLess1: configs?.dynamicBoardBondRatesGetFilterLess1 || '',
+    filter1to5: configs?.dynamicBoardBondRatesGetFilterOneToFive || '',
+    filter6to10: configs?.dynamicBoardBondRatesGetFilterSixToTen || '',
+    filterMore10: configs?.dynamicBoardBondRatesGetFilterMore10 || '',
+    filterRange: configs?.dynamicBoardBondRatesGetDateRange || '',
   };
 }
 
