@@ -10306,7 +10306,7 @@
       {
         "component": "text",
         "name": "buttonName",
-        "label": "CTA Label 1st",
+        "label": "1st Button Name",
         "valueType": "string"
       },
       {
@@ -10325,7 +10325,7 @@
       {
         "component": "text",
         "name": "addToTableButtonName",
-        "label": "CTA Label 2nd",
+        "label": "2nd Button Name",
         "valueType": "string"
       },
       {
