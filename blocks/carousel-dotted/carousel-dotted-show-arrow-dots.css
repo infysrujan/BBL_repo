@@ -71,6 +71,14 @@
   background-color: var(--bbl-color-grey-10);
 }
 
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next:hover {
+  margin-left: 5px;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev:hover {
+  margin-left: -5px;
+}
+
 .carousel-dotted.show-arrows-dots .carousel-arrow::before {
   content: '';
   display: block;
