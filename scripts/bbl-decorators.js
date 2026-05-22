@@ -182,9 +182,9 @@ function handleGlobalLinkClicks() {
       const configData = await fetchConfigs();
 
       // Parse config arrays
-      const hostnameUrlArray = parseUrlString(configData.hostnameurl || '');
-      const excludedUrlArray = parseUrlString(configData.excludedurl || '');
-      const fullUrlArray = parseUrlString(configData.fullurl || '');
+      const hostnameUrlArray = parseUrlString(configData.bblDecoratorsHostnameUrl || '');
+      const excludedUrlArray = parseUrlString(configData.bblDecoratorsExcludedUrl || '');
+      const fullUrlArray = parseUrlString(configData.bblDecoratorsFullUrl || '');
 
       // Case 1: Check if URL is in hostnameurl or fullurl
       const matchesHostnameList = matchesHostname(href, hostnameUrlArray);
