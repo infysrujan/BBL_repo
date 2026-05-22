@@ -59,8 +59,13 @@ export default function decorate(block) {
     moveInstrumentation(row, li);
     const a = document.createElement('a');
 
-    a.href = '#';
-    if (url) a.dataset.shareHref = url;
+    if (url) {
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    } else {
+      a.href = '#';
+    }
     a.className = `platform-${platform}`;
     a.setAttribute('aria-label', `Share on ${platform}`);
 
@@ -142,16 +147,7 @@ export default function decorate(block) {
       e.preventDefault();
       e.stopPropagation();
 
-      const pageUrl = encodeURIComponent(window.location.href);
-      let shareUrl = a.dataset.shareHref || '';
-      if (a.classList.contains('platform-facebook')) {
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
-      } else if (a.classList.contains('platform-x')) {
-        shareUrl = `https://x.com/intent/tweet?url=${pageUrl}`;
-      } else if (a.classList.contains('platform-line')) {
-        shareUrl = `https://lineit.line.me/share/ui?url=${pageUrl}`;
-      }
-      window.open(shareUrl, 'share', 'width=600,height=400');
+      window.open(a.href, 'share', 'width=600,height=400');
     });
   });
 

@@ -182,7 +182,6 @@
 .menu-card-action-description {
   flex-grow: 1;
   display: flex;
-  overflow-wrap: break-word;
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
