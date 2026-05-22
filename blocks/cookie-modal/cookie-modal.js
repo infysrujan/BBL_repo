@@ -1,11 +1,8 @@
-
 /**
  * Cookie Modal Block
  *
  * Loaded as a fragment from /en/fragments/cookie-modal (or the TH equivalent).
  * Builds an accessible modal dialog with per-cookie-type toggles.
- *
- * Exclusion logic: If the current page URL matches any in the exclusion list (from JSON), the modal will not show.
  */
 
 const COOKIE_DURATION_DAYS = 30;
@@ -245,32 +242,6 @@ function setupUEBlockRefresh(blockEl) {
 }
 
 export default function decorate(block) {
-  // --- Exclusion List Logic ---
-  // Try to find the exclusion list in the block's dataset or script tag (if available)
-  let exclusionUrls = [];
-  // Try to find a script[type="application/json"] child with exclusionUrls
-  const jsonScript = block.querySelector('script[type="application/json"]');
-  if (jsonScript) {
-    try {
-      const json = JSON.parse(jsonScript.textContent);
-      if (Array.isArray(json.exclusionUrls)) {
-        exclusionUrls = json.exclusionUrls;
-      }
-    } catch (e) {}
-  }
-
-  // Fallback: try window.cookieModalExclusionUrls if set globally
-  if (!exclusionUrls.length && Array.isArray(window.cookieModalExclusionUrls)) {
-    exclusionUrls = window.cookieModalExclusionUrls;
-  }
-
-  // If current URL matches any exclusion, do not show or initialize the modal
-  const currentUrl = window.location.href;
-  if (exclusionUrls.some((url) => currentUrl === url)) {
-    block.innerHTML = '';
-    block.classList.add('cookie-modal-excluded');
-    return;
-  }
   // Detect authoring mode - check the block wrapper itself for data-aue-resource
   // (block.querySelectorAll only checks descendants, missing the wrapper itself)
   const rows = [...block.children];
