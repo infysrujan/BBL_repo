@@ -1,10 +1,47 @@
-/* Low-specificity td rule first to satisfy no-descending-specificity */
+/* Low-specificity rules first to satisfy no-descending-specificity */
 td.merged-fund-type {
   vertical-align: top;
+  color: var(--bbl-color-grey-55, #999) !important;
 }
 
+/* ── Column widths ───────────────────────────────────────────────────────────── */
+
+.fund-prices-table table td.merged-fund-type    { width: 14%; }
+.fund-prices-table table td.col-openendfund     { width: 38%; }
+.fund-prices-table table td.col-nav             { width: 9%;  }
+.fund-prices-table table td.col-sellingprice    { width: 11%; }
+.fund-prices-table table td.col-redemptionprice { width: 13%; }
+.fund-prices-table table td.col-totalnetassets  { width: 15%; }
+
+/* ── Table layout ────────────────────────────────────────────────────────────── */
+
 .fund-prices-table {
-  margin: 1.25rem 0 2.5rem;
+  margin: 2.875rem 0 0;
+}
+
+.fund-prices-table table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 0.0625rem solid var(--bbl-color-grey-18);
+  background: var(--bbl-color-grey-10);
+}
+
+@media (width <= 64rem) {
+  .fund-prices-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .fund-prices-table table {
+    min-width: 62.5rem;
+  }
+}
+
+.fund-prices-table table td {
+  border-left: none;
+  border-right: none;
+  border-bottom: 0.0625rem solid var(--bbl-color-grey-18);
 }
 
 .fund-prices-table table.outline-border,
@@ -12,17 +49,17 @@ td.merged-fund-type {
   border-color: var(--bbl-color-grey-18);
 }
 
-.fund-prices-table table tr.header-row td {
-  font: 1rem Muli-Bold, Arial, sans-serif;
-  color: var(--bbl-color-black);
-  height: 2.875rem;
-  vertical-align: middle;
-}
+/* ── Data rows ───────────────────────────────────────────────────────────────── */
 
 .fund-prices-table table tr:not(.header-row) td {
   color: var(--bbl-color-grey-70);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  font-weight: 400;
+  font-family: var(--bbl-font-family-primary);
+  font-size: 0.9375rem;
+  font-weight: var(--bbl-font-weight-regular);
+  background: var(--bbl-color-white);
+  padding: var(--bbl-space-300) 1.125rem;
+  text-align: right;
+  vertical-align: middle;
 }
 
 .fund-prices-table table tr:not(.header-row) td span {
@@ -32,3 +69,45 @@ td.merged-fund-type {
   letter-spacing: -0.0063rem;
   padding-left: 0.3125rem;
 }
+
+.fund-prices-table table tr:not(.header-row) td.merged-fund-type,
+.fund-prices-table table tr:not(.header-row) td.col-openendfund {
+  text-align: left;
+}
+
+.fund-prices-table table tr:not(.header-row) td.col-nav,
+.fund-prices-table table tr:not(.header-row) td.col-sellingprice,
+.fund-prices-table table tr:not(.header-row) td.col-redemptionprice,
+.fund-prices-table table tr:not(.header-row) td.col-totalnetassets {
+  text-align: right;
+}
+
+/* ── Header row ──────────────────────────────────────────────────────────────── */
+
+.fund-prices-table table tr.header-row td {
+  font: 0.9375rem/1.35 BangkokBank-Bold, Arial, sans-serif;
+  color: var(--bbl-color-black);
+  background: var(--bbl-color-grey-10);
+  height: 4.375rem;
+  padding: 0 1.125rem;
+  vertical-align: middle;
+  border-color: var(--bbl-color-grey-18);
+  text-align: right;
+}
+
+.fund-prices-table table tr.header-row td:first-child,
+.fund-prices-table table tr.header-row td:nth-child(2) {
+  text-align: left;
+}
+
+.fund-prices-table table tr.header-row td:nth-child(n+3) {
+  padding: 0 1.125rem;
+  white-space: nowrap;
+}
+
+.fund-prices-table table tr.header-row td:nth-child(1) { width: 14%; }
+.fund-prices-table table tr.header-row td:nth-child(2) { width: 38%; }
+.fund-prices-table table tr.header-row td:nth-child(3) { width: 9%;  }
+.fund-prices-table table tr.header-row td:nth-child(4) { width: 11%; }
+.fund-prices-table table tr.header-row td:nth-child(5) { width: 13%; }
+.fund-prices-table table tr.header-row td:nth-child(6) { width: 15%; }

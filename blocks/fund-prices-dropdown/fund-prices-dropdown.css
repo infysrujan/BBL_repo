@@ -1,180 +1,122 @@
-/* ── Detail view header ──────────────────────────────────────── */
-.fdd-header {
-  margin-bottom: 1.5rem;
-  padding-top: 1.5rem;
+/* ── Detail view header ──────────────────────────────────────────────────────── */
+
+.fund-prices-dropdown {
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
-.fdd-header-top {
+.fund-prices-dropdown .fdd-header {
+  margin-bottom: var(--bbl-space-300);
+  padding-top: var(--bbl-space-300);
+}
+
+.fund-prices-dropdown .fdd-header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--bbl-space-100);
 }
 
-.fdd-back-btn {
+.fund-prices-dropdown .fdd-back-btn {
+  display: none;
   background: none;
   border: none;
   cursor: pointer;
-  font-family: BangkokBank-Medium, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-size: 0.9375rem;
   color: var(--bbl-color-active-blue);
   padding: 0;
 }
 
-.fdd-title {
+.fund-prices-dropdown .fdd-title {
   font-family: BangkokBank-Bold, Arial, sans-serif;
   font-size: 2.5rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--bbl-space-100);
 }
 
-.fdd-title-rule {
+.fund-prices-dropdown .fdd-title-rule {
   border: none;
   border-top: 2px solid var(--bbl-color-grey-30);
-  margin: 0.75rem 0;
-  width: 3rem;
+  margin: var(--bbl-space-150) 0;
+  width: var(--bbl-space-600);
 }
 
-.fdd-fund-label {
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-  font-size: 0.875rem;
-  color: var(--bbl-color-grey-70);
+.fund-prices-dropdown .fdd-fund-label {
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b2);
+  color: var(--bbl-color-black);
 }
 
-/* ── Calendar input ──────────────────────────────────────────── */
-.calendar-input {
+/* ── Calendar input ──────────────────────────────────────────────────────────── */
+
+.fund-prices-dropdown .calendar-input {
   position: relative;
 }
 
-.calendar-input input {
-  padding-inline: 1.25rem 2.5rem;
+.fund-prices-dropdown .calendar-input input {
+  padding-inline: var(--bbl-space-250) var(--bbl-space-500);
   height: 2.5rem;
   border: 0.0625rem solid var(--bbl-color-grey-150, #9e9e9e);
   border-radius: 0.4375rem;
   width: 10rem;
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-  font-size: 0.875rem;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b2);
   cursor: pointer;
   color: var(--bbl-color-grey-100);
 }
 
-.calendar-input.icon-calendar::before {
+.fund-prices-dropdown .calendar-input.icon-calendar::before {
   position: absolute;
   right: 11%;
   top: 27%;
-  font-size: 1rem;
+  font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-85);
   pointer-events: none;
 }
 
-/* ── Calendar popup ──────────────────────────────────────────── */
-.bbl-cal-popup {
-  position: absolute;
-  background: var(--bbl-color-white, #fff);
-  border: 1px solid var(--bbl-color-grey-125, #ccc);
-  border-radius: 0.4375rem;
-  padding: 0.75rem;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
-  z-index: 2000;
-  display: none;
-  width: 17rem;
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-}
+/* ── Period selector ─────────────────────────────────────────────────────────── */
 
-.bbl-cal-popup.open {
-  display: block;
-}
-
-.bbl-cal-popup header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.bbl-cal-popup header button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.1rem;
-  padding: 0 0.3rem;
-  color: var(--bbl-color-grey-85);
-}
-
-.bbl-cal-popup .cal-label {
-  font-family: BangkokBank-Medium, Arial, sans-serif;
-  font-size: 0.9rem;
-  color: var(--bbl-color-grey-100);
-}
-
-.bbl-cal-popup .cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-}
-
-.bbl-cal-popup .cal-grid span {
-  text-align: center;
-  padding: 0.3rem 0;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  cursor: default;
-}
-
-.bbl-cal-popup .cal-day-name {
-  font-family: BangkokBank-Medium, Arial, sans-serif;
-  color: var(--bbl-color-grey-85);
-}
-
-.bbl-cal-popup .cal-enabled {
-  cursor: pointer;
-}
-
-.bbl-cal-popup .cal-enabled:hover {
-  background: var(--bbl-color-blue-steel-light, #e6eef4);
-}
-
-.bbl-cal-popup .cal-selected {
-  background: var(--bbl-color-active-blue, #0064ff);
-  color: var(--bbl-color-white, #fff);
-}
-
-.bbl-cal-popup .cal-disabled {
-  color: var(--bbl-color-grey-40, #c8c8cc);
-}
-
-/* ── Period selector ─────────────────────────────────────────── */
-.fdd-period-bar {
+.fund-prices-dropdown .fdd-period-bar {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--bbl-space-200);
   flex-wrap: wrap;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--bbl-space-300);
 }
 
-.period-select-wrapper {
+.fund-prices-dropdown .period-select-wrapper {
   position: relative;
   display: inline-block;
 }
 
-.period-select-btn {
+.fund-prices-dropdown .period-select-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 1rem;
+  gap: var(--bbl-space-100);
+  padding: 0.45rem var(--bbl-space-200);
   border: 1px solid var(--bbl-color-grey-30);
   border-radius: 6px;
   background: var(--bbl-color-white);
   color: var(--bbl-color-grey-85);
-  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-size: 0.9375rem;
   cursor: pointer;
   min-width: 8rem;
   justify-content: space-between;
 }
 
-.period-dropdown-list {
+.fund-prices-dropdown .period-select-btn .icon-dropdown::before {
+  font-size: 0.6rem;
+}
+
+.fund-prices-dropdown .period-select-btn.active {
+  border-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-active-blue);
+}
+
+.fund-prices-dropdown .period-dropdown-list {
   position: absolute;
   top: calc(100% + 2px);
   left: 0;
@@ -186,79 +128,96 @@
   z-index: 500;
   list-style: none;
   display: none;
+  max-height: 12rem;
+  overflow-y: auto;
 }
 
-.period-dropdown-list.open {
+.fund-prices-dropdown .period-dropdown-list.open {
   display: block;
 }
 
 /* period-dropdown-list li must come before hover/active (ascending specificity) */
-.period-dropdown-list li {
-  padding: 0.6rem 1rem;
+.fund-prices-dropdown .period-dropdown-list li {
+  padding: 0.6rem var(--bbl-space-200);
   font-size: 0.9375rem;
   cursor: pointer;
   color: var(--bbl-color-grey-85);
 }
 
-.period-dropdown-list li:hover,
-.period-dropdown-list li.active {
+.fund-prices-dropdown .period-dropdown-list li:hover,
+.fund-prices-dropdown .period-dropdown-list li.active {
   color: var(--bbl-color-active-blue);
 }
 
-.period-date-range {
+.fund-prices-dropdown .period-date-range {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--bbl-space-150);
   flex-wrap: wrap;
 }
 
-.period-date-range label {
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-  font-size: 0.875rem;
-  color: var(--bbl-color-grey-85);
+.fund-prices-dropdown .period-date-range label {
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b2);
+  color: var(--bbl-color-grey-70);
 }
 
-.fdd-range-error {
+.fund-prices-dropdown .period-date-range .calendar-input input {
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b2);
+  color: var(--bbl-color-grey-100);
+  background: var(--bbl-color-white);
+}
+
+.fund-prices-dropdown .fdd-range-error {
   color: var(--bbl-color-red-130);
-  font-size: 0.875rem;
-  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-size: var(--bbl-font-size-b2);
+  font-family: var(--bbl-font-family-primary);
 }
 
-/* ── Stat tables ─────────────────────────────────────────────── */
-.stat-tables-row {
+/* ── Stat tables ─────────────────────────────────────────────────────────────── */
+
+.fund-prices-dropdown .stat-tables-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  gap: var(--bbl-space-300);
+  margin-bottom: var(--bbl-space-300);
 }
 
 @media (width <= 700px) {
-  .stat-tables-row {
+  .fund-prices-dropdown .stat-tables-row {
     grid-template-columns: 1fr;
   }
 }
 
-.stat-table-card {
+.fund-prices-dropdown .stat-tables-print-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--bbl-space-100);
+}
+
+.fund-prices-dropdown .stat-table-card {
   overflow: hidden;
 }
 
-.stat-table {
+.fund-prices-dropdown .stat-table {
   width: 100%;
   border-collapse: collapse;
   border: none;
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  font-size: 1rem;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1);
 }
 
-.stat-table th {
+.fund-prices-dropdown .stat-table th {
   background: var(--bbl-color-grey-10);
   color: var(--bbl-color-black);
-  font: 1rem Muli-Bold, Arial, sans-serif;
-  font-weight: 400;
+  font: var(--bbl-font-size-b1) Muli-Bold, Arial, sans-serif;
+  font-weight: var(--bbl-font-weight-regular);
   text-align: left;
   height: 2.875rem;
   vertical-align: middle;
-  padding: 0 1rem;
+  padding: 0 var(--bbl-space-200);
   border-top: none;
   border-right: none;
   border-left: none;
@@ -266,130 +225,289 @@
 }
 
 /* ascending specificity: td (0,1,1) → td:first-child (0,1,2) */
-.stat-table td {
+.fund-prices-dropdown .stat-table td {
   border-top: none;
   border-right: none;
   border-left: none;
   border-bottom: 1px solid var(--bbl-color-grey-18);
-  padding: 0.75rem 1rem;
+  padding: var(--bbl-space-150) var(--bbl-space-200);
   color: var(--bbl-color-grey-70);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  font-weight: 400;
+  font-family: var(--bbl-font-family-primary);
+  font-weight: var(--bbl-font-weight-regular);
+  height: 4rem;
+  vertical-align: middle;
 }
 
-.stat-th-nav {
+.fund-prices-dropdown .stat-th-nav {
   text-align: right;
 }
 
-.stat-nav-val {
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-  color: var(--bbl-color-grey-70);
-  text-align: right;
-}
+/* ── History table ───────────────────────────────────────────────────────────── */
 
-/* ── Tabs ────────────────────────────────────────────────────── */
-.tab-switcher {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
-}
-
-.tab-btn {
-  padding: 0.5rem 1.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: BangkokBank-Medium, Arial, sans-serif;
-  font-size: 0.9375rem;
-  color: var(--bbl-color-grey-70);
-  border-bottom: 2px solid transparent;
-}
-
-.tab-btn.active {
-  color: var(--bbl-color-active-blue);
-  border-bottom-color: var(--bbl-color-active-blue);
-}
-
-/* ── Chart ───────────────────────────────────────────────────── */
-.chart-wrap {
-  width: 100%;
+.fund-prices-dropdown .fdd-table-panel {
   overflow-x: auto;
-  background: var(--bbl-color-white);
-  border: 1px solid var(--bbl-color-grey-18);
-  border-radius: 4px;
-  padding: 1.25rem 1.25rem 0.75rem;
-  margin-bottom: 1.5rem;
+  -webkit-overflow-scrolling: touch;
 }
 
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.chart-subtitle {
-  font-family: BangkokBank-Regular, Arial, sans-serif;
-  font-size: 0.875rem;
-  color: var(--bbl-color-grey-85);
-}
-
-.chart-nav-labels {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.chart-nav-item {
-  font-family: BangkokBank-Medium, Arial, sans-serif;
-  font-size: 0.9375rem;
-  color: #f60;
-}
-
-.detail-chart-svg {
-  display: block;
+.fund-prices-dropdown .detail-hist-table {
   width: 100%;
-  min-width: 520px;
-}
-
-/* ── History table ───────────────────────────────────────────── */
-.detail-hist-table {
-  width: 100%;
+  min-width: 48rem;
   border-collapse: collapse;
-  font-family: BangkokBank-Regular, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-size: 0.9375rem;
+  table-layout: fixed;
 }
 
-.detail-hist-table th {
+/* ascending specificity: th/td → th/td:first-child → th/td:not(:first-child) */
+.fund-prices-dropdown .detail-hist-table th {
   background: var(--bbl-color-grey-10);
   font-family: Muli-Bold, Arial, sans-serif;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
+  white-space: nowrap;
   color: var(--bbl-color-black);
-  padding: 1.1rem 1.25rem;
+  padding: 1.1rem var(--bbl-space-250);
   border-top: 1px solid var(--bbl-color-grey-30);
   border-bottom: 1px solid var(--bbl-color-grey-30);
   text-align: left;
 }
 
-.detail-hist-table th:not(:first-child) {
-  text-align: right;
-}
-
-/* ascending specificity: td (0,1,1) → td:first-child (0,1,2) → tr:hover td (0,2,1) */
-.detail-hist-table td {
-  padding: 1.1rem 1.25rem;
+.fund-prices-dropdown .detail-hist-table td {
+  padding: 1.1rem var(--bbl-space-250);
   border-bottom: 1px solid var(--bbl-color-grey-18);
   color: var(--bbl-color-grey-70);
   text-align: right;
 }
 
-.detail-hist-table td:first-child {
+.fund-prices-dropdown .detail-hist-table th:first-child,
+.fund-prices-dropdown .detail-hist-table td:first-child {
+  width: 8rem;
+}
+
+.fund-prices-dropdown .detail-hist-table td:first-child {
   text-align: left;
   color: var(--bbl-color-grey-85);
 }
 
-.detail-hist-table tr:hover td {
+.fund-prices-dropdown .detail-hist-table th:not(:first-child),
+.fund-prices-dropdown .detail-hist-table td:not(:first-child) {
+  width: 15%;
+  white-space: nowrap;
+}
+
+.fund-prices-dropdown .detail-hist-table th:not(:first-child) {
+  text-align: right;
+}
+
+.fund-prices-dropdown .detail-hist-table tr:hover td {
   background: var(--bbl-color-grey-10);
+}
+
+#fdd-stat-low th {
+  background: var(--bbl-color-blue-steel-light, #e6eef4);
+}
+
+.fund-prices-dropdown .stat-nav-val {
+  font-family: var(--bbl-font-family-primary);
+  color: var(--bbl-color-grey-70);
+  text-align: right;
+}
+
+/* ── Tabs ────────────────────────────────────────────────────────────────────── */
+
+.fund-prices-dropdown .tab-switcher {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--bbl-space-200);
+  gap: var(--bbl-space-400);
+}
+
+.fund-prices-dropdown .tab-btn {
+  padding: var(--bbl-space-100) 0;
+  padding-bottom: 0.625rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--bbl-font-family-medium);
+  font-size: 0.9375rem;
+  color: var(--bbl-color-grey-70);
+  position: relative;
+}
+
+.fund-prices-dropdown .tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+  border-radius: 1px;
+}
+
+.fund-prices-dropdown .tab-btn.active {
+  color: var(--bbl-color-active-blue);
+}
+
+.fund-prices-dropdown .tab-btn.active::after {
+  background: var(--bbl-color-active-blue);
+}
+
+/* ── Tabs — mobile dropdown ──────────────────────────────────────────────────── */
+
+@media (width < 48rem) {
+  .fund-prices-dropdown .tab-switcher {
+    position: relative;
+    display: block;
+    margin-bottom: var(--bbl-space-300);
+  }
+
+  .fund-prices-dropdown .tab-switcher .tab-btn {
+    display: none;
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem var(--bbl-space-500) 0.75rem var(--bbl-space-200);
+    border: 1px solid var(--bbl-color-grey-150, #ddd);
+    border-radius: 0.5rem;
+    background: var(--bbl-color-white);
+    font-size: var(--bbl-font-size-b1);
+    color: var(--bbl-color-black);
+  }
+
+  .fund-prices-dropdown .tab-switcher .tab-btn::after {
+    display: none;
+  }
+
+  .fund-prices-dropdown .tab-switcher .tab-btn.active {
+    display: block;
+    color: var(--bbl-color-black);
+  }
+
+  .fund-prices-dropdown .tab-switcher .tab-btn.active::before {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    right: var(--bbl-space-200);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid var(--bbl-color-active-blue);
+    border-bottom: 2px solid var(--bbl-color-active-blue);
+    rotate: 45deg;
+    margin-top: -2px;
+  }
+
+  .fund-prices-dropdown .tab-switcher.open .tab-btn {
+    display: block;
+    border-radius: 0;
+    border-bottom: none;
+  }
+
+  .fund-prices-dropdown .tab-switcher.open .tab-btn:first-child {
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+
+  .fund-prices-dropdown .tab-switcher.open .tab-btn:last-child {
+    border-bottom: 1px solid var(--bbl-color-grey-150, #ddd);
+    border-radius: 0 0 0.5rem 0.5rem;
+  }
+
+  .fund-prices-dropdown .tab-switcher.open .tab-btn.active::before {
+    rotate: 225deg;
+    margin-top: 2px;
+  }
+}
+
+/* ── Chart ───────────────────────────────────────────────────────────────────── */
+
+.fund-prices-dropdown .chart-wrap {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: var(--bbl-color-white);
+  border: 1px solid var(--bbl-color-grey-18);
+  border-radius: 4px;
+  padding: var(--bbl-space-250) var(--bbl-space-250) var(--bbl-space-150);
+  margin-bottom: var(--bbl-space-300);
+}
+
+.fund-prices-dropdown .chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--bbl-space-100);
+  margin-bottom: var(--bbl-space-150);
+}
+
+.fund-prices-dropdown .chart-subtitle {
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b2);
+  color: var(--bbl-color-grey-85);
+}
+
+.fund-prices-dropdown .chart-nav-labels {
+  display: flex;
+  gap: var(--bbl-space-300);
+  flex-wrap: wrap;
+}
+
+.fund-prices-dropdown .chart-nav-item {
+  font-family: var(--bbl-font-family-medium);
+  font-size: 0.9375rem;
+  color: #f60;
+}
+
+@media (width < 48rem) {
+  .fund-prices-dropdown .chart-header {
+    flex-direction: column;
+    gap: var(--bbl-space-100);
+  }
+
+  .fund-prices-dropdown .chart-nav-labels {
+    flex-direction: column;
+    gap: var(--bbl-space-50, 0.25rem);
+  }
+}
+
+@media (width < 48rem) {
+  .fund-prices-dropdown .period-select-wrapper {
+    display: block;
+    width: 100%;
+  }
+
+  .fund-prices-dropdown .period-select-btn {
+    width: 100%;
+  }
+
+  .fund-prices-dropdown .period-dropdown-list {
+    width: 100%;
+  }
+
+  .fund-prices-dropdown .stat-tables-print-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--bbl-space-100);
+  }
+
+  .fund-prices-dropdown .fdd-fund-label {
+    font-size: var(--bbl-font-size-b3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+}
+
+@media (width < 48rem) {
+  .fund-prices-dropdown .fdd-title,
+  .fund-prices-dropdown .fdd-title-rule {
+    display: none;
+  }
+}
+
+.fund-prices-dropdown .detail-chart-svg {
+  display: block;
+  width: 100%;
 }

@@ -9,11 +9,40 @@ import {
 } from '../fund-prices-table/fund-prices-table.js';
 import { MAX_FUND_PRICE_HISTORY_YEARS } from '../fund-prices-dropdown/fund-prices-dropdown.js';
 
+function moveSearchBarToHeader(el, doc) {
+  const check = () => {
+    const headerNav = doc.querySelector('.header-nav');
+    if (!headerNav) return false;
+    const headerBlock = headerNav.closest('.header') || headerNav.parentElement;
+    if (!headerBlock) return false;
+    el.classList.add('is-in-header');
+    doc.body.classList.add('fund-prices-search-in-header');
+    headerBlock.appendChild(el);
+    const h1 = doc.querySelector('h1');
+    if (h1) {
+      h1.style.setProperty('font-size', '2.25rem', 'important');
+      h1.style.setProperty('line-height', '1.2', 'important');
+      h1.style.marginBottom = '0.75rem';
+      h1.style.paddingBottom = '0.75rem';
+      h1.style.position = 'relative';
+      const underline = doc.createElement('span');
+      underline.style.cssText = 'display:block;position:absolute;bottom:0;left:0;width:3rem;height:2px;background:var(--bbl-color-grey-30,#ccc)';
+      h1.appendChild(underline);
+    }
+    return true;
+  };
+  if (check()) return;
+  const observer = new MutationObserver(() => {
+    if (check()) observer.disconnect();
+  });
+  observer.observe(doc.documentElement, { childList: true, subtree: true });
+  setTimeout(() => observer.disconnect(), 8000);
+}
+
 function getLang() {
-  const lang = typeof document !== 'undefined'
-    ? document.documentElement.getAttribute('lang')
-    : null;
-  return lang && lang.toLowerCase().startsWith('th') ? 'th' : 'en';
+  const path = typeof window !== 'undefined' ? window.location.pathname : '';
+  if (path.startsWith('/th') || path.startsWith('/BangkokBankThai')) return 'th';
+  return 'en';
 }
 
 function richTextFromRow(row) {
@@ -46,7 +75,22 @@ function isDateOlderThanFundHistoryLimit(date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate()) < cutoff;
 }
 
-/* ── DOM builders ────────────────────────────────────────────── */
+// ─── Parse EDS block data ─────────────────────────────────────────────────────
+
+function parseBlockData(block) {
+  const rows = Array.from(block.children);
+  return {
+    dateLabelHtml: richTextFromRow(rows[0]),
+    printLabelHtml: richTextFromRow(rows[1]),
+    errorMessageHtml: richTextFromRow(rows[2]),
+    disclaimerHtml: richTextFromRow(rows[3]),
+    searchLabel: rows[4]?.querySelector('p')?.textContent?.trim() || 'Search Fund',
+    goLabel: rows[5]?.querySelector('p')?.textContent?.trim() || 'GO',
+    allFundsLabel: rows[6]?.querySelector('p')?.textContent?.trim() || 'ALL FUNDS',
+  };
+}
+
+// ─── DOM builders ─────────────────────────────────────────────────────────────
 
 function buildFundSelectorBar(doc, funds, searchLabel, allFundsLabel, goLabel) {
   const bar = doc.createElement('div');
@@ -139,22 +183,26 @@ function buildFundSelectorBar(doc, funds, searchLabel, allFundsLabel, goLabel) {
   };
 }
 
-/* ── Main export ─────────────────────────────────────────────── */
+// ─── Main export ──────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
   const doc = block.ownerDocument;
-  const rows = [...block.children];
   const section = block.closest('.section');
-
-  const dateLabelHtml = richTextFromRow(rows[0]);
-  const printLabelHtml = richTextFromRow(rows[1]);
-  const errorMessageHtml = richTextFromRow(rows[2]);
-  const disclaimerHtml = richTextFromRow(rows[3]);
-  const searchLabel = rows[4]?.querySelector('p')?.textContent?.trim() || 'Search Fund';
-  const goLabel = rows[5]?.querySelector('p')?.textContent?.trim() || 'GO';
-  const allFundsLabel = rows[6]?.querySelector('p')?.textContent?.trim() || 'ALL FUNDS';
+  const {
+    dateLabelHtml, printLabelHtml, errorMessageHtml, disclaimerHtml,
+    searchLabel, goLabel, allFundsLabel,
+  } = parseBlockData(block);
 
   block.innerHTML = '';
+
+  const pageHeading = section?.querySelector('.default-content-wrapper h1, .default-content-wrapper h2, .default-content-wrapper h3');
+  if (pageHeading && pageHeading.tagName !== 'H2') {
+    const h2 = doc.createElement('h2');
+    h2.id = pageHeading.id;
+    h2.className = pageHeading.className;
+    h2.innerHTML = pageHeading.innerHTML;
+    pageHeading.replaceWith(h2);
+  }
 
   if (isAuthoringInstance(block)) {
     const authorRoot = doc.createElement('div');
@@ -208,8 +256,6 @@ export default async function decorate(block) {
     }));
   }
 
-  dispatchTableRefresh(calendarDate);
-
   /* ── Root ── */
   const root = doc.createElement('div');
   root.className = 'fund-prices-root';
@@ -217,6 +263,7 @@ export default async function decorate(block) {
   /* ── Fund selector bar ── */
   const fundSelector = buildFundSelectorBar(doc, funds, searchLabel, allFundsLabel, goLabel);
   root.appendChild(fundSelector.el);
+  moveSearchBarToHeader(fundSelector.el, doc);
 
   /* ── Main view ── */
   const mainView = doc.createElement('div');
@@ -276,10 +323,18 @@ export default async function decorate(block) {
   toolbar.appendChild(calendarWrapper);
   toolbar.appendChild(printLabel);
 
-  mainView.append(toolbar, errorMessage, disclaimer);
+  mainView.append(toolbar, errorMessage);
   root.appendChild(mainView);
 
   block.appendChild(root);
+
+  dispatchTableRefresh(calendarDate);
+
+  if (ftBlock) {
+    ftBlock.after(disclaimer);
+  } else {
+    mainView.appendChild(disclaimer);
+  }
 
   /* ── Print handler ── */
   printLabel.addEventListener('click', (e) => {
@@ -299,12 +354,16 @@ export default async function decorate(block) {
   function showMainView() {
     mainView.classList.remove('hidden');
     if (ftBlock) ftBlock.classList.remove('hidden');
+    fundSelector.el.classList.remove('hidden');
+    doc.body.classList.remove('fund-prices-detail-active');
     fddBlock?.dispatchEvent(new CustomEvent('fund-prices-dropdown:hide'));
   }
 
   function showDetailView(fund) {
     mainView.classList.add('hidden');
     if (ftBlock) ftBlock.classList.add('hidden');
+    fundSelector.el.classList.remove('hidden');
+    doc.body.classList.add('fund-prices-detail-active');
     fddBlock?.dispatchEvent(new CustomEvent('fund-prices-dropdown:show', {
       detail: { fund, mdate: latestMdate },
     }));

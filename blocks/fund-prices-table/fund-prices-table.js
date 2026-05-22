@@ -1,9 +1,13 @@
-const BBL_API_BASE = 'https://publish-p185039-e1937892.adobeaemcloud.com/api/FundPriceService';
-export const ALL_FUND_NAMES_URL = `${BBL_API_BASE}/AllFundsName`;
+const IS_LOCAL = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+const BBL_API_BASE = IS_LOCAL
+  ? 'https://publish-p185039-e1937892.adobeaemcloud.com/api/FundPriceService'
+  : '/api/fundpriceservice';
+const BBL_API_NAMES_BASE = IS_LOCAL
+  ? 'https://publish-p185039-e1938068.adobeaemcloud.com/api/FundPriceService'
+  : '/api/fundpriceservice';
+export const ALL_FUND_NAMES_URL = `${BBL_API_NAMES_BASE}/AllFundsName`;
 export const LATEST_DATE_URL = `${BBL_API_BASE}/LatestDate`;
 export const GET_UPDATE_IN_MONTH_BASE = `${BBL_API_BASE}/GetUpdateInMonth`;
-const ALL_FUND_PRICES_URL = `${BBL_API_BASE}/AllFundPrices`;
-
 const MONTHS_SHORT = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
@@ -27,7 +31,7 @@ async function fetchAllFundPrices(date) {
   const dd = pad2(date.getDate());
   const mm = pad2(date.getMonth() + 1);
   const yyyy = date.getFullYear();
-  const res = await fetch(`${ALL_FUND_PRICES_URL}/${dd}/${mm}/${yyyy}`);
+  const res = await fetch(`${BBL_API_BASE}/AllFundPrices/${dd}/${mm}/${yyyy}`);
   if (!res.ok) throw new Error(`AllFundPrices ${res.status}`);
   const data = await res.json();
   return Array.isArray(data) ? data : [];
@@ -42,10 +46,9 @@ export async function fetchNavEnabledDaysForMonth({ year, month }) {
 }
 
 function getLang() {
-  const lang = typeof document !== 'undefined'
-    ? document.documentElement.getAttribute('lang')
-    : null;
-  return lang && lang.toLowerCase().startsWith('th') ? 'th' : 'en';
+  const path = typeof window !== 'undefined' ? window.location.pathname : '';
+  if (path.startsWith('/th') || path.startsWith('/BangkokBankThai')) return 'th';
+  return 'en';
 }
 
 const localizedHeaderMap = {
@@ -158,6 +161,7 @@ export function appendRowFromData(tableEl, dataArray) {
           return;
         }
         const td = tableEl.ownerDocument.createElement('td');
+        td.classList.add(`col-${nk}`);
         td.innerHTML = formatBodyCellText(nk, row, ck);
         tr.appendChild(td);
       });
@@ -191,11 +195,37 @@ function markHeaderRows(tableEl) {
   }
 }
 
-export default async function decorate(block) {
-  const tableEl = block.querySelector('table');
-  if (!tableEl) return;
+const DEFAULT_HEADERS_EN = [
+  'Fund Type', 'Open-End Fund', 'NAV', 'Selling Price', 'Redemption Price', 'Total Net Assests',
+];
+const DEFAULT_HEADERS_TH = [
+  'ประเภทกองทุน', 'กองทุนเปิด', 'NAV', 'ราคาขาย', 'ราคารับซื้อคืน', 'มูลค่าทรัพย์สินสุทธิรวม',
+];
 
-  markHeaderRows(tableEl);
+function buildDefaultTable(doc) {
+  const table = doc.createElement('table');
+  const tbody = doc.createElement('tbody');
+  const headerRow = doc.createElement('tr');
+  headerRow.classList.add('header-row');
+  const headers = getLang() === 'th' ? DEFAULT_HEADERS_TH : DEFAULT_HEADERS_EN;
+  headers.forEach((text) => {
+    const td = doc.createElement('td');
+    td.textContent = text;
+    headerRow.appendChild(td);
+  });
+  tbody.appendChild(headerRow);
+  table.appendChild(tbody);
+  return table;
+}
+
+export default async function decorate(block) {
+  let tableEl = block.querySelector('table');
+  if (!tableEl) {
+    tableEl = buildDefaultTable(block.ownerDocument);
+  } else {
+    markHeaderRows(tableEl);
+  }
+
   block.textContent = '';
   block.appendChild(tableEl);
 

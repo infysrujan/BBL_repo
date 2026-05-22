@@ -1,14 +1,22 @@
 import attachCalendarPicker from '../../scripts/utils/calendar-picker.js';
 import { parseLocalDateFromYmd } from '../fund-prices-table/fund-prices-table.js';
 
-const BBL_API_BASE = 'https://publish-p185039-e1937892.adobeaemcloud.com/api/FundPriceService';
+const IS_LOCAL = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+const BBL_API_BASE = IS_LOCAL
+  ? 'https://publish-p185039-e1937892.adobeaemcloud.com/api/FundPriceService'
+  : '/api/fundpriceservice';
 const FUND_DETAIL_HISTORY_BASE = `${BBL_API_BASE}/FundPrice`;
-const FUND_DETAIL_STATS_BASE = `${BBL_API_BASE}/FundMinMax`;
+const FUND_DETAIL_STATS_BASE = `${BBL_API_BASE}/Fund_Nav`;
 
 export const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 
 function pad2(n) {
   return String(n).padStart(2, '0');
+}
+
+const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function fmtDisplay(d) {
+  return `${pad2(d.getDate())} ${MONTH_SHORT[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 function formatDMY(date) {
@@ -31,7 +39,8 @@ function isRangeExceedsLimit(fromDate, toDate) {
 async function fetchFundDetailStats(fundId, fromDate, toDate) {
   const res = await fetch(`${FUND_DETAIL_STATS_BASE}/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
   if (!res.ok) throw new Error(`FundDetailStats ${res.status}`);
-  return res.json();
+  const data = await res.json();
+  return Array.isArray(data) ? data[0] : data;
 }
 
 async function fetchFundDetailHistory(fundId, fromDate, toDate) {
@@ -53,23 +62,47 @@ function fmtHistDate(ymd) {
 
 function renderStatTables(stats, highTbody, lowTbody, rowLabels) {
   const rows = [
-    { label: rowLabels[0], hi: stats.MaxSelected_mfr_fNav, lo: stats.MinSelected_mfr_fNav },
-    { label: rowLabels[1], hi: stats.MaxYear_mfr_fNav, lo: stats.MinYear_mfr_fNav },
-    { label: rowLabels[2], hi: stats.MaxSince_mfr_fNav, lo: stats.MinSince_mfr_fNav },
+    {
+      label: rowLabels[0],
+      hi: stats.MaxSelected_mfr_fNav,
+      hiDate: stats.MaxSelected_mfr_dDataDate,
+      lo: stats.MinSelected_mfr_fNav,
+      loDate: stats.MinSelected_mfr_dDataDate,
+    },
+    {
+      label: rowLabels[1],
+      hi: stats.MaxYear_mfr_fNav,
+      hiDate: stats.MaxYear_mfr_dDataDate,
+      lo: stats.MinYear_mfr_fNav,
+      loDate: stats.MinYear_mfr_dDataDate,
+    },
+    {
+      label: rowLabels[2],
+      hi: stats.MaxSince_mfr_fNav,
+      hiDate: stats.MaxSince_mfr_dDataDate,
+      lo: stats.MinSince_mfr_fNav,
+      loDate: stats.MinSince_mfr_dDataDate,
+    },
   ];
 
-  [highTbody, lowTbody].forEach((tbody) => { tbody.innerHTML = ''; });
+  [highTbody, lowTbody].forEach((tbody) => {
+    // eslint-disable-next-line no-param-reassign
+    tbody.innerHTML = '';
+  });
 
-  rows.forEach(({ label, hi, lo }) => {
-    [[highTbody, hi], [lowTbody, lo]].forEach(([tbody, val]) => {
+  rows.forEach(({
+    label, hi, hiDate, lo, loDate,
+  }) => {
+    [[highTbody, hi, hiDate], [lowTbody, lo, loDate]].forEach(([tbody, val, date]) => {
       const tr = tbody.ownerDocument.createElement('tr');
-      tr.innerHTML = `<td>${label}</td><td class="stat-nav-val">${fmtNav(val)}</td>`;
+      const dateStr = date ? ` "${fmtHistDate(date)}"` : '';
+      tr.innerHTML = `<td>${label}${dateStr}</td><td class="stat-nav-val">${fmtNav(val)}</td>`;
       tbody.appendChild(tr);
     });
   });
 }
 
-function renderChart(svgEl, history) {
+function renderChart(svgEl, history, period) {
   svgEl.innerHTML = '';
   const doc = svgEl.ownerDocument;
   const ns = 'http://www.w3.org/2000/svg';
@@ -92,7 +125,21 @@ function renderChart(svgEl, history) {
     return;
   }
 
-  const W = 940; const H = 300; const padL = 58; const padR = 20; const padT = 20; const padB = 64;
+  const isMobileView = typeof window !== 'undefined' && window.innerWidth < 768;
+  const useRotation = period !== '1W';
+  const padB = useRotation ? 70 : 40;
+  const H = useRotation ? 360 : 300;
+  const padL = 58;
+  const padR = useRotation ? 20 : 8;
+  const padT = 20;
+  const chartWrap = svgEl.parentElement;
+  const wrapStyle = chartWrap ? getComputedStyle(chartWrap) : null;
+  const wrapPadH = wrapStyle
+    ? parseFloat(wrapStyle.paddingLeft) + parseFloat(wrapStyle.paddingRight)
+    : 0;
+  const W = isMobileView ? Math.max((chartWrap?.clientWidth || 400) - wrapPadH, 280) : 940;
+  svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svgEl.style.minWidth = '';
   const innerW = W - padL - padR;
   const innerH = H - padT - padB;
 
@@ -100,15 +147,15 @@ function renderChart(svgEl, history) {
   const rawMin = Math.min(...navs);
   const rawMax = Math.max(...navs);
   const tickStep = 0.5;
-  const yMin = Math.floor(rawMin / tickStep) * tickStep - tickStep * 0.5;
-  const yMax = Math.ceil(rawMax / tickStep) * tickStep + tickStep * 0.5;
+  const yMax = Math.ceil(rawMax);
+  const yMin = Math.floor(rawMin / tickStep) * tickStep - tickStep;
 
   const xPos = (i) => padL + (i / (history.length - 1)) * innerW;
   const yPos = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * innerH;
 
-  const numYTicks = Math.round((yMax - yMin) / tickStep);
-  for (let i = 0; i <= numYTicks; i += 1) {
-    const v = yMin + i * tickStep;
+  const ticks = [];
+  for (let v = yMin; v <= yMax + 0.0001; v = Math.round((v + tickStep) * 10) / 10) ticks.push(v);
+  ticks.forEach((v) => {
     const y = yPos(v);
     el('line', {
       x1: padL,
@@ -126,13 +173,31 @@ function renderChart(svgEl, history) {
       fill: '#78787D',
       'font-family': 'BangkokBank-Regular,Arial,sans-serif',
     }, svgEl).textContent = v.toFixed(1);
+  });
+
+  const lastIdx = history.length - 1;
+  let labelSet;
+  if (!useRotation) {
+    // 1W: always show first, middle, last
+    const midIdx = Math.round(lastIdx / 2);
+    labelSet = new Set([0, midIdx, lastIdx]);
+  } else {
+    const labelSpacing = isMobileView ? 38 : 50;
+    const maxXLabels = Math.min(history.length, Math.floor(innerW / labelSpacing));
+    const xLabelStep = Math.max(1, Math.ceil(history.length / maxXLabels));
+    const prevRegularIdx = Math.floor(lastIdx / xLabelStep) * xLabelStep;
+    const pixelGap = lastIdx > 0 ? (xPos(lastIdx) - xPos(prevRegularIdx)) : Infinity;
+    const tooClose = prevRegularIdx !== lastIdx && pixelGap < labelSpacing;
+    labelSet = new Set();
+    for (let i = 0; i <= lastIdx; i += xLabelStep) {
+      if (!tooClose || i !== prevRegularIdx) labelSet.add(i);
+    }
+    labelSet.add(lastIdx);
   }
 
-  const maxXLabels = history.length <= 10 ? history.length : 20;
-  const xLabelStep = Math.max(1, Math.round(history.length / maxXLabels));
   history.forEach((d, i) => {
     const x = xPos(i);
-    const isLabelPoint = i % xLabelStep === 0 || i === history.length - 1;
+    const isLabelPoint = labelSet.has(i);
     if (isLabelPoint) {
       el('line', {
         x1: x,
@@ -142,15 +207,20 @@ function renderChart(svgEl, history) {
         stroke: '#E8E8E8',
         'stroke-width': 1,
       }, svgEl);
-      const txt = el('text', {
-        x,
-        y: H - padB + 16,
-        'text-anchor': 'end',
+      // eslint-disable-next-line no-nested-ternary
+      const anchor = useRotation ? 'end' : (i === lastIdx ? 'end' : (i === 0 ? 'start' : 'middle'));
+      const clampedX = (!useRotation && i === lastIdx) ? Math.min(x, W - 4) : x;
+      const txtAttrs = {
+        x: clampedX,
+        y: H - padB + (useRotation ? 14 : 20),
+        'text-anchor': anchor,
         'font-size': 11,
-        fill: '#78787D',
-        'font-family': 'BangkokBank-Regular,Arial,sans-serif',
-        transform: `rotate(-45, ${x}, ${H - padB + 16})`,
-      }, svgEl);
+        fill: '#002850',
+        'font-weight': 'bold',
+        'font-family': 'BangkokBank-Bold,Arial,sans-serif',
+      };
+      if (useRotation) txtAttrs.transform = `rotate(-45, ${clampedX}, ${H - padB + 14})`;
+      const txt = el('text', txtAttrs, svgEl);
       txt.textContent = fmtHistDate(d.mfr_dDataDate);
     }
   });
@@ -259,8 +329,8 @@ export default async function decorate(block) {
     statRowSelected: txt(13, 'In the selected period'),
     statRowYear: txt(14, 'During the last 12 months'),
     statRowInception: txt(15, 'Since Inception'),
-    fromLabel: txt(16, 'FROM'),
-    toLabel: txt(17, 'TO'),
+    fromLabel: txt(16, 'From'),
+    toLabel: txt(17, 'To'),
     rangeError: txt(18, 'Date range should be between 3 years'),
     period1w: txt(19, '1 Week'),
     period1m: txt(20, '1 Month'),
@@ -284,11 +354,9 @@ export default async function decorate(block) {
     <div class="fdd-header">
       <div class="fdd-header-top">
         <button class="fdd-back-btn" aria-label="Back to ${labels.backLabel}">&#8249; ${labels.backLabel}</button>
-        <div class="fund-prices-print-label icon-print"><p>${labels.printLabel}</p></div>
       </div>
       <div class="fdd-title">${labels.title}</div>
       <hr class="fdd-title-rule" />
-      <div class="fdd-fund-label"></div>
     </div>
 
     <div class="fdd-period-bar">
@@ -310,6 +378,10 @@ export default async function decorate(block) {
       <div class="fdd-range-error hidden" role="alert"></div>
     </div>
 
+    <div class="stat-tables-print-row">
+      <div class="fdd-fund-label"></div>
+      <div class="fund-prices-print-label icon-print"><p>${labels.printLabel}</p></div>
+    </div>
     <div class="stat-tables-row">
       <div class="stat-table-card">
         <table class="stat-table" id="fdd-stat-high">
@@ -412,24 +484,28 @@ export default async function decorate(block) {
     const subtitle = buildSubtitle(fromDate, toDate);
     fundLabel.textContent = subtitle;
 
-    try {
-      const [stats, history] = await Promise.all([
-        fetchFundDetailStats(currentFund.id, fromDate, toDate),
-        fetchFundDetailHistory(currentFund.id, fromDate, toDate),
-      ]);
-      const sorted = [...history].sort((a, b) => a.mfr_dDataDate.localeCompare(b.mfr_dDataDate));
-      const statLabels = [labels.statRowSelected, labels.statRowYear, labels.statRowInception];
-      renderStatTables(stats, highTbody, lowTbody, statLabels);
-      chartSubtitle.textContent = subtitle;
-      chartBeginNav.textContent = fmtNav(stats.Begin_mfr_fNav);
-      chartEndNav.textContent = fmtNav(stats.End_mfr_fNav);
-      renderChart(chartSvg, sorted);
-      renderHistTable(histTbody, [...sorted].reverse());
-    } catch {
-      const statLabels = [labels.statRowSelected, labels.statRowYear, labels.statRowInception];
-      renderStatTables({}, highTbody, lowTbody, statLabels);
-      renderChart(chartSvg, []);
-      renderHistTable(histTbody, []);
+    const [statsResult, historyResult] = await Promise.allSettled([
+      fetchFundDetailStats(currentFund.id, fromDate, toDate),
+      fetchFundDetailHistory(currentFund.id, fromDate, toDate),
+    ]);
+
+    const stats = statsResult.status === 'fulfilled' ? statsResult.value : {};
+    const history = historyResult.status === 'fulfilled' ? historyResult.value : [];
+    const sorted = [...history].sort((a, b) => a.mfr_dDataDate.localeCompare(b.mfr_dDataDate));
+    const statLabels = [labels.statRowSelected, labels.statRowYear, labels.statRowInception];
+    renderStatTables(stats, highTbody, lowTbody, statLabels);
+    chartSubtitle.textContent = subtitle;
+    chartBeginNav.textContent = fmtNav(stats.Begin_mfr_fNav);
+    chartEndNav.textContent = fmtNav(stats.End_mfr_fNav);
+    renderChart(chartSvg, sorted, currentPeriod);
+    renderHistTable(histTbody, [...sorted].reverse());
+
+    if (chartSvg.chartResizeObserver) chartSvg.chartResizeObserver.disconnect();
+    if (window.innerWidth < 768) {
+      chartSvg.chartResizeObserver = new ResizeObserver(() => {
+        if (sorted?.length) renderChart(chartSvg, sorted, currentPeriod);
+      });
+      chartSvg.chartResizeObserver.observe(chartSvg.parentElement);
     }
   }
 
@@ -479,7 +555,14 @@ export default async function decorate(block) {
     periodSelectLabel.textContent = opt?.label ?? period;
     periodDropList.classList.remove('open');
     currentPeriod = period;
+    periodSelectBtn.classList.toggle('active', period === 'DR');
     if (period === 'DR') {
+      const end = latestMdate ? (parseLocalDateFromYmd(latestMdate) ?? new Date()) : new Date();
+      const start = new Date(end.getFullYear(), end.getMonth() - 1, end.getDate());
+      drFrom = start;
+      drTo = end;
+      drFromInput.value = fmtDisplay(start);
+      drToInput.value = fmtDisplay(end);
       periodDateRangeEl.classList.remove('hidden');
     } else {
       periodDateRangeEl.classList.add('hidden');
@@ -488,8 +571,15 @@ export default async function decorate(block) {
   });
 
   /* Tab switcher */
+  const tabSwitcher = block.querySelector('.tab-switcher');
   block.querySelectorAll('.tab-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
+      const isMobile = window.innerWidth < 768;
+      if (isMobile && !tabSwitcher.classList.contains('open')) {
+        tabSwitcher.classList.add('open');
+        return;
+      }
+      tabSwitcher.classList.remove('open');
       block.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
       if (btn.dataset.tab === 'graph') {
@@ -500,6 +590,10 @@ export default async function decorate(block) {
         chartPanel.classList.add('hidden');
       }
     });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!tabSwitcher.contains(e.target)) tabSwitcher.classList.remove('open');
   });
 
   /* Print */
@@ -526,6 +620,7 @@ export default async function decorate(block) {
     latestMdate = mdate;
     currentPeriod = '1W';
     periodSelectLabel.textContent = labels.period1w;
+    periodSelectBtn.classList.remove('active');
     periodDropList.querySelectorAll('li')
       .forEach((l) => l.classList.toggle('active', l.dataset.period === '1W'));
     periodDateRangeEl.classList.add('hidden');
