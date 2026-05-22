@@ -2907,6 +2907,19 @@
             "description": "Accessibility title attribute for the CTA button",
             "valueType": "string",
             "value": "Save cookie preferences and close modal"
+          },
+          {
+            "component": "list",
+            "name": "exclusionUrls",
+            "label": "Exclusion URLs",
+            "description": "List of page URLs where the cookie modal should NOT appear.",
+            "valueType": "array",
+            "itemType": "string",
+            "value": [
+              "https://www.bangkokbank.com/Personal/Cards/BangkokbankM/PromotionsMB?sc_lang=th-th&card_ref=473014",
+              "https://www.bangkokbank.com/Personal/Cards/BangkokbankM/PromotionsMB?sc_lang=th-th&card_ref=454628",
+              "https://www.bangkokbank.com/Personal/Cards/BangkokbankM/PromotionsMB?sc_lang=th-th&card_ref=450535"
+            ]
           }
         ]
       }

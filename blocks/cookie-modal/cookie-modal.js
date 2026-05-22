@@ -52,6 +52,30 @@ function sanitizeId(value) {
   return value.toLowerCase().replace(/[^0-9a-z]+/g, '-').replace(/^-|-$/g, '') || 'cookie';
 }
 
+function parseExclusionUrls(block) {
+  const urls = [];
+  block.querySelectorAll('ul li').forEach((li) => {
+    const text = li.textContent.trim();
+    if (text.startsWith('http') || text.startsWith('/')) {
+      urls.push(text);
+    }
+  });
+  return urls;
+}
+
+function isCurrentUrlExcluded(exclusionUrls) {
+  const { href, pathname, search } = window.location;
+  return exclusionUrls.some((url) => {
+    if (url === href) return true;
+    try {
+      const parsed = new URL(url);
+      return pathname === parsed.pathname && search === parsed.search;
+    } catch {
+      return pathname + search === url;
+    }
+  });
+}
+
 function getFocusableElements(element) {
   return [...element.querySelectorAll(FOCUSABLE_SELECTOR)].filter((node) => {
     if (node.closest('[hidden], [aria-hidden="true"]')) return false;
@@ -254,6 +278,13 @@ export default function decorate(block) {
   // full page reload or the insert-then-remove duplicate in editor-support.js.
   if (isAuthoringMode) {
     setupUEBlockRefresh(block);
+    return;
+  }
+
+  const exclusionUrls = parseExclusionUrls(block);
+  if (exclusionUrls.length && isCurrentUrlExcluded(exclusionUrls)) {
+    window.cookieConsentExcluded = true;
+    document.dispatchEvent(new CustomEvent('cookie:excluded'));
     return;
   }
 

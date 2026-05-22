@@ -86,6 +86,15 @@ export default async function decorate(block) {
     return;
   }
 
+  if (window.cookieConsentExcluded) {
+    block.closest('.section')?.remove();
+    return;
+  }
+
+  document.addEventListener('cookie:excluded', () => {
+    block.closest('.section')?.remove();
+  }, { once: true });
+
   const configs = await fetchConfigs();
 
   if (document.querySelector('.popup-modal-card-offer')) {
