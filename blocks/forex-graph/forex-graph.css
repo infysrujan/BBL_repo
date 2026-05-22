@@ -236,16 +236,6 @@
   color: var(--bbl-color-grey-70);
 }
 
-/* .forex-graph .forex-graph-print-btn:hover,
-.forex-graph .forex-graph-download-btn:hover {
-  color: var(--bbl-color-gray-121);
-} */
-
-/* .forex-graph .forex-graph-print-btn:hover::before,
-.forex-graph .forex-graph-download-btn:hover::before {
-  color: var(--bbl-color-gray-121);
-} */
-
 /* ── Error message ─────────────────────────────────────────── */
 
 .forex-graph .forex-graph-error {

@@ -41,8 +41,8 @@ function isDateRangeOver3Years(fromIso, toIso) {
 function buildGraphTitle(template, currName, currFamily, fromIso, toIso) {
   const fromParsed = parseIsoDate(fromIso);
   const toParsed = parseIsoDate(toIso);
-  const startDate = fromParsed ? `${fromParsed.month}/${fromParsed.day}/${fromParsed.year}` : `${undefined}//${undefined}`;
-  const endDate = toParsed ? `${toParsed.month}/${toParsed.day}/${toParsed.year}` : `${undefined}//${undefined}`;
+  const startDate = fromParsed ? `${fromParsed.month}/${fromParsed.day}/${fromParsed.year}` : '';
+  const endDate = toParsed ? `${toParsed.month}/${toParsed.day}/${toParsed.year}` : '';
 
   // Normalise template: ensure spaces around family code, colon and dash
   const base = template
@@ -173,8 +173,8 @@ function renderBlock(
     placeholders.forexGraphTitle,
     currName,
     state.selectedFamily,
-    state.lastSubmittedFrom,
-    state.lastSubmittedTo,
+    state.from.selectedDate,
+    state.to.selectedDate,
   );
 
   const errorStyle = state.error ? '' : ' style="display:none"';
@@ -212,7 +212,7 @@ function renderBlock(
             </div>
           </div>
         </div>
-        <button type="button" class="forex-graph-go-btn"${state.loading ? ' disabled' : ''}>${escapeHtml(authoring.goLabel)}</button>
+        <button type="button" class="forex-graph-go-btn"${(state.loading || !state.from.selectedDate || !state.to.selectedDate) ? ' disabled' : ''}>${escapeHtml(authoring.goLabel)}</button>
         <div class="forex-graph-actions">
           <button type="button" class="forex-graph-print-btn icon-print">${escapeHtml(authoring.printLabel)}</button>
           <button type="button" class="forex-graph-download-btn icon-download">${escapeHtml(authoring.downloadLabel)}</button>
@@ -263,8 +263,6 @@ export default async function decorate(block) {
     dropdownOpen: false,
     from: createPickerState(),
     to: createPickerState(),
-    lastSubmittedFrom: null,
-    lastSubmittedTo: null,
     chartData: [],
     loading: false,
     error: '',
@@ -520,9 +518,6 @@ export default async function decorate(block) {
 
       input.addEventListener('input', (e) => {
         state[pick].typedDate = e.target.value;
-        if (e.target.value.trim() === '') {
-          state[pick].selectedDate = '';
-        }
       });
 
       input.addEventListener('blur', () => {
@@ -535,9 +530,8 @@ export default async function decorate(block) {
           if (state[pick].calendarOpen) return;
           const parsed = parseTypedDate(state[pick].typedDate, buddhistYearOffset);
           if (!parsed) {
-            if (state[pick].typedDate.trim() === '') {
+            if (!state[pick].typedDate.trim()) {
               state[pick].selectedDate = '';
-              state[pick].typedDate = '';
             } else {
               state[pick].typedDate = formatDateInputValue(
                 state[pick].selectedDate,
@@ -669,8 +663,6 @@ export default async function decorate(block) {
     if (goButton) {
       goButton.addEventListener('click', async () => {
         if (state.loading) return;
-        state.lastSubmittedFrom = state.from.selectedDate;
-        state.lastSubmittedTo = state.to.selectedDate;
         await fetchAndRenderChart();
         render();
       });
@@ -810,9 +802,6 @@ export default async function decorate(block) {
       state.from.viewMonth = month;
       state.to.viewYear = year;
       state.to.viewMonth = month;
-
-      state.lastSubmittedFrom = state.from.selectedDate;
-      state.lastSubmittedTo = state.to.selectedDate;
     } finally {
       state.loading = false;
       render();
