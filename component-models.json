@@ -42,6 +42,10 @@
           {
             "name": "Bangkok Bankm Card",
             "value": "bangkok-bankm-card"
+          },
+          {
+            "name": "Error Page",
+            "value": "error-page"
           }
         ]
       },
@@ -63,6 +67,13 @@
         "value": true,
         "label": "Breadcrumb",
         "valueType": "boolean"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "ogImage",
+        "label": "OG Image",
+        "description": "Select the image asset to use for the Open Graph og:image meta tag."
       }
     ]
   },
@@ -308,6 +319,14 @@
                 "value": "center-title"
               },
               {
+                "name": "Center Image",
+                "value": "center-image"
+              },
+              {
+                "name": "Underline Image",
+                "value": "underline-image"
+              },
+              {
                 "name": "Center Content",
                 "value": "center-content"
               }
@@ -362,6 +381,39 @@
     ]
   },
   {
+    "id": "bcap",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "date-label",
+        "value": "",
+        "label": "Calander Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "print-label",
+        "value": "",
+        "label": "Print Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "error-message",
+        "value": "",
+        "label": "Error Message Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimer-text",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "brand-logo",
     "fields": [
       {
@@ -385,6 +437,14 @@
         "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
         "valueType": "string",
         "required": true
+      },
+      {
+        "component": "reference",
+        "name": "printLogo",
+        "label": "Print Logo",
+        "multi": false,
+        "required": false,
+        "description": "Logo image shown at the top of the print preview (hidden in normal view)"
       }
     ]
   },
@@ -646,6 +706,13 @@
         ]
       },
       {
+        "component": "text",
+        "name": "subtitle",
+        "value": "",
+        "label": "Subtitle",
+        "valueType": "string"
+      },
+      {
         "component": "richtext",
         "name": "description",
         "value": "",
@@ -660,23 +727,65 @@
         "valueType": "string"
       },
       {
+        "component": "select",
+        "valueType": "string",
+        "description": "Select type of button action",
+        "name": "buttonActionType",
+        "value": "default",
+        "label": "Button ActionType",
+        "options": [
+          {
+            "name": "Default Button",
+            "value": "default-button"
+          },
+          {
+            "name": "Multiple Download",
+            "value": "multiple-download"
+          }
+        ]
+      },
+      {
         "component": "aem-content",
         "name": "link",
         "label": "Link",
-        "description": "Destination URL for the button"
+        "description": "Destination URL for the button",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default-button"
+          ]
+        }
       },
       {
         "component": "text",
         "name": "linkText",
         "label": "Text",
         "description": "Button label text",
-        "required": true
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default-button"
+          ]
+        }
       },
       {
         "component": "text",
         "name": "linkTitle",
         "label": "Title",
-        "description": "Accessibility title attribute (optional)"
+        "description": "Accessibility title attribute (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default-button"
+          ]
+        }
       },
       {
         "component": "select",
@@ -698,22 +807,46 @@
             "name": "Tertiary",
             "value": "tertiary"
           }
-        ]
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default-button"
+          ]
+        }
       },
       {
-        "component": "container",
-        "name": "targetSettings",
-        "label": "Target settings",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "targetLink",
-            "label": "Open link in new tab",
-            "description": "Enable to open the button link in a new browser tab",
-            "valueType": "boolean",
-            "value": false
-          }
-        ]
+        "component": "boolean",
+        "name": "targetLink",
+        "label": "Open link in new tab",
+        "description": "Enable to open the button link in a new browser tab",
+        "valueType": "boolean",
+        "value": false,
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default-button"
+          ]
+        }
+      },
+      {
+        "component": "richtext",
+        "name": "multipleDownloadLinks",
+        "value": "",
+        "label": "Multiple Download Links",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "multiple-download"
+          ]
+        }
       },
       {
         "component": "select",
@@ -1890,7 +2023,7 @@
         }
       },
       {
-        "component": "text",
+        "component": "richtext",
         "name": "titleDefaultImage",
         "label": "Title Text",
         "valueType": "string",
@@ -1905,8 +2038,8 @@
       },
       {
         "component": "text",
-        "name": "step",
-        "label": "Step Text",
+        "name": "stepText1",
+        "label": "Step Text 1",
         "valueType": "string",
         "condition": {
           "===": [
@@ -1919,9 +2052,110 @@
       },
       {
         "component": "richtext",
-        "name": "descriptionDefaultImage",
+        "name": "description1",
         "label": "Description",
         "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "stepText2",
+        "label": "Step Text 2",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "richtext",
+        "name": "description2",
+        "label": "Description",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "ctaLink",
+        "label": "Link",
+        "description": "Destination URL for the button",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "ctaLinkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "ctaLinkTitle",
+        "label": "Title",
+        "description": "Accessibility title attribute (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "ctaLinkType",
+        "label": "Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ],
         "condition": {
           "===": [
             {
@@ -3539,6 +3773,28 @@
         ]
       },
       {
+        "component": "select",
+        "name": "properties.linkType",
+        "label": "Button Style",
+        "valueType": "string",
+        "value": "primary",
+        "description": "Visual style variant for the button",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
         "component": "tab",
         "label": "Help Content",
         "name": "help"
@@ -4212,10 +4468,15 @@
         "label": "Display Format",
         "name": "displayFormat",
         "valueType": "string",
+        "value": "dd/MM/yyyy",
         "options": [
           {
             "name": "No Pattern",
             "value": ""
+          },
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
           },
           {
             "name": "01 April, 2007",
@@ -4234,7 +4495,33 @@
             "value": "EEEE, MMMM d, y"
           },
           {
-            "name": "1/4/2007",
+            "name": "D/M/YYYY (1/4/2007)",
+            "value": "d/M/y"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "label": "Submit Value Format",
+        "name": "valueFormat",
+        "valueType": "string",
+        "value": "dd/MM/yyyy",
+        "description": "Format of the date value sent on form submission",
+        "options": [
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
+          },
+          {
+            "name": "YYYY-MM-DD (2007-04-01) — ISO 8601",
+            "value": "yyyy-MM-dd"
+          },
+          {
+            "name": "MM/DD/YYYY (04/01/2007)",
+            "value": "MM/dd/yyyy"
+          },
+          {
+            "name": "D/M/YYYY (1/4/2007)",
             "value": "d/M/y"
           }
         ]
@@ -5203,6 +5490,307 @@
             "value": "12"
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "menu-card-actions",
+    "fields": [
+      {
+        "component": "select",
+        "name": "mobileExperience",
+        "value": "default",
+        "label": "Mobile Experience",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Scrollable",
+            "value": "scrollable"
+          },
+          {
+            "name": "Stacked",
+            "value": "stacked"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "menu-card-item",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "menuCardImage",
+        "label": "Menu Card Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "menuCardImageAlt",
+        "label": "Alt",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "select",
+        "name": "titleType",
+        "label": "Title Type",
+        "options": [
+          {
+            "name": "h1",
+            "value": "h1"
+          },
+          {
+            "name": "h2",
+            "value": "h2"
+          },
+          {
+            "name": "h3",
+            "value": "h3"
+          },
+          {
+            "name": "h4",
+            "value": "h4"
+          },
+          {
+            "name": "h5",
+            "value": "h5"
+          },
+          {
+            "name": "h6",
+            "value": "h6"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "value": "",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "description": "Select type of button action",
+        "name": "buttonActionType",
+        "value": "default",
+        "label": "Button ActionType",
+        "options": [
+          {
+            "name": "Default",
+            "value": "default"
+          },
+          {
+            "name": "Download",
+            "value": "download"
+          },
+          {
+            "name": "Select Dropdown",
+            "value": "select-dropdown"
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Link",
+        "description": "Destination URL for the button",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "linkTitle",
+        "label": "Title",
+        "description": "Accessibility title attribute (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default"
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default"
+          ]
+        }
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false,
+            "condition": {
+              "===": [
+                {
+                  "var": "buttonActionType"
+                },
+                "default"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "name": "downloadLink",
+        "label": "Download Link",
+        "description": "Download Link for the button",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "download"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "downloadLinkText",
+        "label": "Download Text",
+        "description": "Download Button label text",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "download"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "downloadLinkTitle",
+        "label": "Download Title",
+        "description": "Accessibility title attribute (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "download"
+          ]
+        }
+      },
+      {
+        "component": "container",
+        "name": "downloadTargetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false,
+            "condition": {
+              "===": [
+                {
+                  "var": "buttonActionType"
+                },
+                "download"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "dropdownLable",
+        "label": "Dropdown Label",
+        "description": "Dropdown label text for dropdown links",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "select-dropdown"
+          ]
+        }
+      },
+      {
+        "component": "richtext",
+        "name": "drop-links",
+        "value": "",
+        "label": "Dropdown Links",
+        "valueType": "string",
+        "condition": {
+          "and": [
+            {
+              "===": [
+                {
+                  "var": "buttonActionType"
+                },
+                "select-dropdown"
+              ]
+            }
+          ]
+        }
       }
     ]
   },
@@ -8124,6 +8712,115 @@
     ]
   },
   {
+    "id": "forward-points-sme",
+    "fields": [
+      {
+        "component": "text",
+        "name": "section1CalendarLabel",
+        "label": "Section 1 - Update Date Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Update as of"
+      },
+      {
+        "component": "text",
+        "name": "section1GoCtaLabel",
+        "label": "Section 1 - GO CTA Label",
+        "valueType": "string",
+        "required": true,
+        "value": "GO"
+      },
+      {
+        "component": "richtext",
+        "name": "section1TableColumnHeadings",
+        "label": "Section 1 - Table Column Headings",
+        "valueType": "string",
+        "required": true,
+        "description": "List items: Currency | Sight Bill Buying Rates | TT Buying Rates | TT Selling Rates"
+      },
+      {
+        "component": "text",
+        "name": "section2UpdateDateLabel",
+        "label": "Section 2 - Update Date Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Update as of"
+      },
+      {
+        "component": "text",
+        "name": "section2GoCtaLabel",
+        "label": "Section 2 - GO CTA Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Go"
+      },
+      {
+        "component": "text",
+        "name": "printCtaLabel",
+        "label": "Print CTA Label",
+        "valueType": "string",
+        "required": true,
+        "value": "PRINT"
+      },
+      {
+        "component": "text",
+        "name": "section2ForwardPointsTableTitle",
+        "label": "Section 2 - Table Title",
+        "valueType": "string",
+        "required": true,
+        "value": "Indicative Forward Points (for Outright FX Forward Contract) for USD/THB"
+      },
+      {
+        "component": "text",
+        "name": "section2SmeLowRevenueSubTitle",
+        "label": "Section 2 - Table Sub-Title 1",
+        "valueType": "string",
+        "required": true,
+        "value": "(SMEs Company revenues THB 50 - 200 Million per year)"
+      },
+      {
+        "component": "text",
+        "name": "section2SmeMidRevenueSubTitle",
+        "label": "Section 2 - Table Sub-Title 2",
+        "valueType": "string",
+        "required": true,
+        "value": "(SMEs Company revenues THB 200 - 500 Million per year)"
+      },
+      {
+        "component": "richtext",
+        "name": "section2TableColumnHeadings",
+        "label": "Section 2 - Table Column Headings",
+        "valueType": "string",
+        "required": true,
+        "description": "List items: Period | Export (Buying) | Import (Selling)"
+      },
+      {
+        "component": "richtext",
+        "name": "section2TableRowHeadings",
+        "label": "Section 2 - Table Row Headings",
+        "valueType": "string",
+        "required": true,
+        "description": "List items: 1 Month | 3 Months | 6 Months"
+      },
+      {
+        "component": "text",
+        "name": "section2UnitLabel",
+        "label": "Section 2 - Unit Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Unit: Satang"
+      },
+      {
+        "component": "richtext",
+        "name": "remarkDisclaimerText",
+        "label": "Remark Text",
+        "valueType": "string",
+        "required": true,
+        "description": "Bullet list of remark/disclaimer items shown below the tables"
+      }
+    ]
+  },
+  {
     "id": "fragment",
     "fields": [
       {
@@ -8178,17 +8875,58 @@
     "id": "hero-item",
     "fields": [
       {
+        "component": "select",
+        "name": "mediaType",
+        "label": "Background Media",
+        "valueType": "string",
+        "value": "images",
+        "options": [
+          {
+            "name": "Images",
+            "value": "images"
+          },
+          {
+            "name": "BG Video",
+            "value": "bg-video"
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "name": "isDefault",
+        "label": "Set as Default",
+        "description": "Enable to display this item as the active item on page load.",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
         "component": "custom-asset-namespace:custom-asset",
         "name": "imagePickerDesktop",
         "label": "Image (Desktop)",
         "description": "Select an image shown at desktop breakpoints",
         "configUrl": "/content/dam/image.config.json",
-        "valueType": "string"
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "images"
+          ]
+        }
       },
       {
         "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "imagePickerDesktopMimeType"
+        "name": "imagePickerDesktopMimeType",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "images"
+          ]
+        }
       },
       {
         "component": "custom-asset-namespace:custom-asset",
@@ -8196,19 +8934,74 @@
         "label": "Image (Mobile)",
         "description": "Select an image shown at mobile breakpoints",
         "configUrl": "/content/dam/image.config.json",
-        "valueType": "string"
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "images"
+          ]
+        }
       },
       {
         "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "imagePickerMobileMimeType"
+        "name": "imagePickerMobileMimeType",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "images"
+          ]
+        }
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "imagePickerAlt",
         "label": "Alternative text for accessibility",
-        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "images"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "youtubeUrl",
+        "label": "YouTube URL",
+        "description": "Enter the YouTube video URL (e.g. https://www.youtube.com/watch?v=...)",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "bg-video"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "damVideoAsset",
+        "label": "DAM Video Asset",
+        "description": "Upload and select a DAM video asset (MP4)",
+        "valueType": "string",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "bg-video"
+          ]
+        }
       },
       {
         "component": "reference",
@@ -8240,6 +9033,13 @@
         "label": "Thumbnail Alt",
         "value": "",
         "description": "Only used for 'Hero With Thumbnail Images' variant"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "preTitle",
+        "label": "Pre Title",
+        "value": ""
       },
       {
         "component": "richtext",
@@ -8311,6 +9111,73 @@
             "value": false
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "latest-news",
+    "fields": []
+  },
+  {
+    "id": "locate-us",
+    "fields": [
+      {
+        "component": "select",
+        "name": "locationType",
+        "label": "Location Type",
+        "valueType": "string",
+        "value": "thailand",
+        "options": [
+          {
+            "name": "Thailand",
+            "value": "thailand"
+          },
+          {
+            "name": "Overseas",
+            "value": "overseas"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "services",
+        "label": "Services",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "serviceName",
+        "label": "Service Name",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "serviceFragment",
+        "label": "Service Fragment",
+        "condition": {
+          "===": [
+            {
+              "var": "locationType"
+            },
+            "thailand"
+          ]
+        }
       }
     ]
   },
@@ -8687,6 +9554,10 @@
             "value": "download"
           },
           {
+            "name": "Multiple Download",
+            "value": "multiple-download"
+          },
+          {
             "name": "Select Dropdown",
             "value": "select-dropdown"
           }
@@ -8886,6 +9757,85 @@
             }
           ]
         }
+      },
+      {
+        "component": "richtext",
+        "name": "multipleDownloadLinks",
+        "value": "",
+        "label": "Multiple Download Links",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "multiple-download"
+          ]
+        }
+      },
+      {
+        "component": "boolean",
+        "name": "isCardClickable",
+        "label": "Is Card Clickable",
+        "description": "Enable to make the entire card a clickable link",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "aem-content",
+        "name": "cardLink",
+        "label": "Card Link",
+        "description": "Destination URL when the card is clicked",
+        "condition": {
+          "===": [
+            {
+              "var": "isCardClickable"
+            },
+            true
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "cardLinkTitle",
+        "label": "Card Link Title",
+        "description": "Accessibility title attribute for the clickable card (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "isCardClickable"
+            },
+            true
+          ]
+        }
+      },
+      {
+        "component": "boolean",
+        "name": "enableOverlayModal",
+        "label": "Enable Overlay Modal",
+        "description": "Open card link in a modal overlay instead of navigating",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "aem-content",
+        "name": "overlayHref",
+        "label": "Overlay Fragment Path",
+        "description": "Path to the fragment shown in the modal overlay",
+        "condition": {
+          "===": [
+            {
+              "var": "enableOverlayModal"
+            },
+            true
+          ]
+        }
+      },
+      {
+        "component": "date-time",
+        "name": "financialDate",
+        "label": "Financial Date",
+        "valueType": "string"
       }
     ]
   },
@@ -8970,6 +9920,94 @@
         "description": "Tile title displayed below the image with a separator"
       }
     ]
+  },
+  {
+    "id": "news-media-details",
+    "fields": [
+      {
+        "component": "text",
+        "name": "aboutUsId",
+        "label": "About Us Id",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "title",
+        "label": "Title (appears on the about us detail page)",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "cardImageUrl",
+        "label": "Card Image Url",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "name": "detailImageUrl",
+        "label": "Detail Image (appears on the about us detail page)",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "cardShortDescription",
+        "label": "Card Short Description",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "detailDescription",
+        "label": "Detail Description (appears on the about us detail page)",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-tag",
+        "name": "category",
+        "label": "Category",
+        "valueType": "string"
+      },
+      {
+        "component": "date-time",
+        "name": "publishDate",
+        "label": "publish Date (appears on the about us detail page)",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "ctaLink",
+        "label": "Cta Link",
+        "description": "Destination URL for the button"
+      },
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "Cta Label",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "news-media",
+    "fields": []
   },
   {
     "id": "popup-modal-card-offer",
@@ -9380,6 +10418,14 @@
     ]
   },
   {
+    "id": "property-for-sale-details",
+    "fields": []
+  },
+  {
+    "id": "property-for-sale",
+    "fields": []
+  },
+  {
     "id": "rate-card-item",
     "fields": [
       {
@@ -9582,6 +10628,10 @@
     ]
   },
   {
+    "id": "retirement-calculator",
+    "fields": []
+  },
+  {
     "id": "search-page",
     "fields": [
       {
@@ -9708,6 +10758,19 @@
         "label": "Disclaimer Text",
         "valueType": "string",
         "required": true
+      }
+    ]
+  },
+  {
+    "id": "stock-ticker",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "embedHtml",
+        "label": "Stock Ticker HTML",
+        "description": "Author iframe HTML, links, and supporting notes.",
+        "valueType": "string",
+        "value": ""
       }
     ]
   },
@@ -9884,6 +10947,10 @@
               {
                 "name": "Header Mixed Blue",
                 "value": "header-mixed-blue"
+              },
+              {
+                "name": "Header Light Gray",
+                "value": "header-light-gray"
               }
             ]
           },
@@ -9925,6 +10992,10 @@
                 "value": "merge-tables"
               },
               {
+                "name": "Nested Table",
+                "value": "nested-table"
+              },
+              {
                 "name": "Scroll",
                 "value": "scroll"
               }
@@ -9932,169 +11003,20 @@
           }
         ]
       },
-      {
-        "component": "richtext",
-        "name": "tableContent",
-        "label": "Table Content",
-        "valueType": "string",
-        "value": "",
-        "rte": {
-          "toolbar": {
-            "format": [
-              "bold",
-              "italic",
-              "underline"
-            ],
-            "list": [
-              "bullet_list",
-              "ordered_list"
-            ],
-            "insert": [
-              "link",
-              "unlink",
-              "table"
-            ],
-            "editor": [
-              "removeformat"
-            ],
-            "sections": [
-              "format",
-              "list",
-              "insert",
-              "editor"
-            ]
-          },
-          "actions": {
-            "table": {
-              "label": "Insert Table",
-              "shortcut": "Mod-Alt-T",
-              "wrapInParagraphs": true
-            },
-            "link": {
-              "hideTarget": false
-            }
-          }
-        }
-      }
-    ]
-  },
-  {
-    "id": "nested-table",
-    "fields": [
       {
         "component": "text",
-        "name": "id",
-        "label": "Id",
-        "valueType": "string",
-        "value": "",
-        "required": true
-      },
-      {
-        "component": "multiselect",
-        "name": "style",
-        "label": "Variation",
+        "name": "nestedTableId",
+        "label": "Nested Table ID",
         "valueType": "string",
         "required": false,
-        "options": [
-          {
-            "name": "Border Type",
-            "children": [
-              {
-                "name": "No Border",
-                "value": "no-border"
-              },
-              {
-                "name": "Outline Border",
-                "value": "outline-border"
-              },
-              {
-                "name": "Border Bottom",
-                "value": "border-bottom"
-              }
-            ]
-          },
-          {
-            "name": "Border Color",
-            "children": [
-              {
-                "name": "Border Black",
-                "value": "border-black"
-              },
-              {
-                "name": "Border Light Gray",
-                "value": "border-light-gray"
-              },
-              {
-                "name": "Border Gray",
-                "value": "border-gray"
-              }
-            ]
-          },
-          {
-            "name": "Header",
-            "children": [
-              {
-                "name": "Center Aligned",
-                "value": "header-center-aligned"
-              },
-              {
-                "name": "Header Blue",
-                "value": "header-blue"
-              },
-              {
-                "name": "Header Light Blue",
-                "value": "header-light-blue"
-              },
-              {
-                "name": "Header Mixed Blue",
-                "value": "header-mixed-blue"
-              }
-            ]
-          },
-          {
-            "name": "Cells",
-            "children": [
-              {
-                "name": "Cells Center Aligned",
-                "value": "cells-center-aligned"
-              },
-              {
-                "name": "Cells Center Aligned Except First",
-                "value": "cells-center-aligned-except-first"
-              },
-              {
-                "name": "Dash Cell Highlight",
-                "value": "dash-cell-highlight"
-              }
-            ]
-          },
-          {
-            "name": "Padding",
-            "children": [
-              {
-                "name": "Compact Padding",
-                "value": "compact-padding"
-              },
-              {
-                "name": "Border Bottom Tight Columns",
-                "value": "border-bottom-tight-cols"
-              }
-            ]
-          },
-          {
-            "name": "Functional",
-            "children": [
-              {
-                "name": "Merge Tables",
-                "value": "merge-tables"
-              },
-              {
-                "name": "Scroll",
-                "value": "scroll"
-              }
-            ]
-          }
-        ]
+        "condition": {
+          "in": [
+            "nested-table",
+            {
+              "var": "style"
+            }
+          ]
+        }
       },
       {
         "component": "richtext",
@@ -10324,6 +11246,10 @@
                 "value": "bg-truthful-blue"
               },
               {
+                "name": "Truthful Dark Blue",
+                "value": "bg-truthful-dark-blue"
+              },
+              {
                 "name": "Ice Blue",
                 "value": "bg-ice-blue"
               },
@@ -10338,6 +11264,66 @@
               {
                 "name": "Grey 100",
                 "value": "bg-grey-100"
+              }
+            ]
+          },
+          {
+            "name": "Padding",
+            "children": [
+              {
+                "name": "Padding Top",
+                "value": "pad-top-30"
+              },
+              {
+                "name": "Padding Bottom",
+                "value": "pad-bot-30"
+              }
+            ]
+          },
+          {
+            "name": "Layout",
+            "children": [
+              {
+                "name": "Columns 3",
+                "value": "columns-3"
+              },
+              {
+                "name": "Columns 2(75-25)",
+                "value": "columns-2-75"
+              },
+              {
+                "name": "Columns 2(50-50)",
+                "value": "columns-2-50"
+              }
+            ]
+          },
+          {
+            "name": "Style",
+            "children": [
+              {
+                "name": "Underline Title",
+                "value": "underline-title"
+              },
+              {
+                "name": "Center Title",
+                "value": "center-title"
+              },
+              {
+                "name": "Center Content",
+                "value": "center-content"
+              }
+            ]
+          },
+          {
+            "name": "Theme",
+            "children": [
+              {
+                "name": "Background Wealth",
+                "value": "background-wealth"
+              },
+              {
+                "name": "Background Private Banking",
+                "value": "background-privatebanking"
               }
             ]
           }

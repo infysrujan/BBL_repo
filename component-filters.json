@@ -55,13 +55,24 @@
       "carousel-video",
       "forex-rates",
       "dynamic-board",
+      "bcap",
+      "multi-column-tiles",
+      "retirement-calculator",
+      "tax-calculator",
       "special-fx-rates",
       "promotional-details",
       "promo-card-listing",
       "top-promotional-cards",
       "multi-column-tiles",
+      "property-for-sale-details",
+      "property-for-sale",
+      "stock-ticker",
       "cookie-alert",
-      "cookie-modal"
+      "cookie-modal",
+      "news-media-details",
+      "news-media",
+      "latest-news",
+      "forward-points-sme"
     ]
   },
   {
@@ -172,7 +183,8 @@
       "text-input",
       "tnc",
       "wizard",
-      "range"
+      "range",
+      "menu-card-actions"
     ]
   },
   {
@@ -329,9 +341,7 @@
         ]
       }
     },
-    "components": [
-      "nested-table"
-    ]
+    "components": []
   },
   {
     "id": "tab-section",

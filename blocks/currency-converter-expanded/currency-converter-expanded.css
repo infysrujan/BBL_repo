@@ -319,7 +319,6 @@
   font-weight: 500;
   cursor: pointer;
   transition: opacity 0.3s ease;
-  position: relative;
   text-align: center;
   display: inline-flex;
   align-items: center;
