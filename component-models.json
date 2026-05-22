@@ -312,6 +312,14 @@
                 "value": "center-title"
               },
               {
+                "name": "Center Image",
+                "value": "center-image"
+              },
+              {
+                "name": "Underline Image",
+                "value": "underline-image"
+              },
+              {
                 "name": "Center Content",
                 "value": "center-content"
               }
@@ -10307,6 +10315,14 @@
         }
       }
     ]
+  },
+  {
+    "id": "property-for-sale-details",
+    "fields": []
+  },
+  {
+    "id": "property-for-sale",
+    "fields": []
   },
   {
     "id": "rate-card-item",
