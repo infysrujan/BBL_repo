@@ -2,6 +2,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { readBlockConfig } from '../../scripts/aem.js';
+import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 const BBM_FALLBACK_URL = '/blocks/dummy/bbm-promotions.json';
@@ -24,6 +25,24 @@ function getPromoBlockConfig(block) {
   const promoRow = isRegisterLike ? rows[2] : rows[1];
   const promoId = promoRow?.textContent?.trim() || '';
   return { promotionType, promoId };
+}
+
+function getAuthoringPreviewData(block) {
+  const firstRow = block.querySelector(':scope > div');
+  const isKeyValueRows = firstRow && firstRow.children.length >= 2;
+  if (!isKeyValueRows) return {};
+  const config = readBlockConfig(block);
+  return {
+    title: config.title || '',
+    detailImageUrl: config['detail-image-url'] || config.detailimageurl || '',
+    detailDescription: config['detail-description'] || config.detaildescription || '',
+    promotionStartDate: config['promotion-start-date'] || config.promotionstartdate || '',
+    promotionEndDate: config['promotion-end-date'] || config.promotionenddate || '',
+    responsibleLendingDisclaimerEnabled: config['responsible-lending-disclaimer-enabled']
+      || config.responsiblelendingdisclaimerenabled,
+    responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text']
+      || config.responsiblelendingdisclaimertext || '',
+  };
 }
 
 function formatDate(dateStr, locale = 'en-GB') {
@@ -80,20 +99,25 @@ export default async function decorate(block) {
     fetchPromoData(promotionsUrl, promoId),
   ]);
 
+  const previewData = isAuthoringInstance(block) && !card
+    ? getAuthoringPreviewData(block)
+    : null;
+  const data = card || previewData || {};
+
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
 
-  const title = card?.title
-    ? `<h2 class="promo-detail-title">${card.title}</h2>`
+  const title = data?.title
+    ? `<h2 class="promo-detail-title">${data.title}</h2>`
     : '';
-  const imageUrl = card?.detailImageUrl || '';
+  const imageUrl = data?.detailImageUrl || '';
   const imageHtml = imageUrl
-    ? `<img src="${imageUrl}" alt="${card?.title || ''}" loading="lazy">`
+    ? `<img src="${imageUrl}" alt="${data?.title || ''}" loading="lazy">`
     : '';
-  const description = card?.detailDescription || '';
-  const startDate = card?.promotionStartDate || '';
-  const endDate = card?.promotionEndDate || '';
-  const disclaimerEnabled = card?.responsibleLendingDisclaimerEnabled;
-  const disclaimerText = card?.responsibleLendingDisclaimerText || '';
+  const description = data?.detailDescription || '';
+  const startDate = data?.promotionStartDate || '';
+  const endDate = data?.promotionEndDate || '';
+  const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
+  const disclaimerText = data?.responsibleLendingDisclaimerText || '';
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const clickToViewFull = placeholders.promoClickToViewFull || '';

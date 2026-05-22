@@ -2,6 +2,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { readBlockConfig } from '../../scripts/aem.js';
+import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { activateTab } from '../tabs/helpers/tabs-utils.js';
 import {
   buildCardHtml, buildPaginationHtml, sortCards, bindPaginationClick,
@@ -457,6 +458,32 @@ export default async function decorate(block) {
   const forcedCardType = resolveCardTypeFromRef(cardRefConfig, cardRef);
   const disableFilters = Boolean(forcedCardType);
   const activeCategories = activeData?.categories || [];
+
+  if (isAuthoringInstance(block)) {
+    block.hidden = false;
+    const previewPanel = document.createElement('div');
+    previewPanel.className = 'promo-card-listing-preview';
+    block.innerHTML = '';
+    block.appendChild(previewPanel);
+    const firstCategory = activeCategories[0]?.label || '';
+    const firstSubcategories = activeCategories[0]?.subcategories || [];
+    setupPanel(
+      previewPanel,
+      activeCards,
+      firstCategory,
+      firstSubcategories,
+      activeCardTypes,
+      activeAreas,
+      pageSize,
+      placeholders,
+      {
+        disableFilters: disableFilters && isBbm,
+        forcedCardType: isBbm ? forcedCardType : '',
+        hidePagination: disableFilters && isBbm,
+      },
+    );
+    return;
+  }
 
   const tabsContainer = getTabsContainer(block);
   applyCategoryTabs(tabsContainer, activeCategories);
