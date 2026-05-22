@@ -239,7 +239,27 @@
           "name": "ctaLabel",
           "label": "Cta Label",
           "description": "Button label text",
-          "required": true
+          "required": true,
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "isRegister"
+                  },
+                  "Y"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "isRegister"
+                  },
+                  "D"
+                ]
+              }
+            ]
+          }
         },
         {
           "component": "container",

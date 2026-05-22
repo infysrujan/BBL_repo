@@ -76,6 +76,10 @@
     color: var(--bbl-color-grey-85);
 }
 
+.promotional-details .promo-detail-cta {
+    margin-top: var(--bbl-space-200);
+}
+
 .promotional-details .promo-detail-disclaimer p {
     margin: 0;
     color: var(--bbl-color-grey-85);

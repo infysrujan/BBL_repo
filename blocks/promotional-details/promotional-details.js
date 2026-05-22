@@ -42,6 +42,8 @@ function getAuthoringPreviewData(block) {
       || config.responsiblelendingdisclaimerenabled,
     responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text']
       || config.responsiblelendingdisclaimertext || '',
+    isRegister: config['is-register'] || config.isregister || '',
+    ctaLabel: config['cta-label'] || config.ctalabel || '',
   };
 }
 
@@ -62,7 +64,16 @@ function buildDisclaimerHtml(enabled, text) {
   return `<div class="promo-detail-disclaimer pad-top-30">${text}</div>`;
 }
 
-function renderDetails(container, data, periodLabel, locale, clickToViewFull) {
+function buildRegisterCtaHtml(isRegister, label, url) {
+  if (!['Y', 'D'].includes(isRegister)) return '';
+  if (!label || !url) return '';
+  return `
+    <div class="promo-detail-cta button-container">
+      <a class="button primary" href="${url}">${label}</a>
+    </div>`;
+}
+
+function renderDetails(container, data, periodLabel, locale, clickToViewFull, registerCtaUrl) {
   const title = data?.title
     ? `<h2 class="promo-detail-title">${data.title}</h2>`
     : '';
@@ -75,6 +86,8 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull) {
   const endDate = data?.promotionEndDate || '';
   const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
+  const ctaLabel = data?.ctaLabel || '';
+  const isRegister = data?.isRegister || '';
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
@@ -95,6 +108,7 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull) {
           <div class="promo-detail-content">
             <div class="promo-detail-description">${description}</div>
             ${buildDateHtml(startDate, endDate, periodLabel, locale)}
+            ${buildRegisterCtaHtml(isRegister, ctaLabel, registerCtaUrl)}
             ${buildDisclaimerHtml(disclaimerEnabled, disclaimerText)}
           </div>
         </div>
@@ -141,6 +155,7 @@ export default async function decorate(block) {
 
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
   const clickToViewFull = placeholders.promoClickToViewFull || '';
+  const registerCtaUrl = configs?.bbmIsRegister || '';
   const previewData = isAuthoringInstance(block) && !card
     ? getAuthoringPreviewData(block)
     : null;
@@ -154,9 +169,9 @@ export default async function decorate(block) {
       previewContainer.dataset.previewFor = 'promotional-details';
       block.insertAdjacentElement('afterend', previewContainer);
     }
-    renderDetails(previewContainer, data, periodLabel, locale, clickToViewFull);
+    renderDetails(previewContainer, data, periodLabel, locale, clickToViewFull, registerCtaUrl);
     return;
   }
 
-  renderDetails(block, data, periodLabel, locale, clickToViewFull);
+  renderDetails(block, data, periodLabel, locale, clickToViewFull, registerCtaUrl);
 }
