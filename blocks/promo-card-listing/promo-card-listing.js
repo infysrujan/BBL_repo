@@ -155,6 +155,18 @@ function buildDateLine(card, locale) {
   return '';
 }
 
+function toStringValue(item) {
+  if (typeof item === 'string') return item;
+  if (item && typeof item === 'object') return item.value || item.label || item.name || '';
+  return '';
+}
+
+function normalizeList(value) {
+  if (Array.isArray(value)) return value.map(toStringValue).filter(Boolean);
+  if (value == null) return [];
+  return [toStringValue(value)].filter(Boolean);
+}
+
 function buildLogosHtml(logos) {
   if (!logos?.length) return '';
   const imgs = logos
@@ -169,7 +181,9 @@ function buildLogosHtml(logos) {
 export function buildCardHtml(card, tag, placeholders = {}) {
   const locale = LOCALE_MAP[getLang()] || 'en-GB';
   const dateLine = buildDateLine(card, locale);
-  const logoHtml = buildLogosHtml((card.cardTypes || []).map((t) => t.toLowerCase()));
+  const logoHtml = buildLogosHtml(
+    normalizeList(card.cardTypes).map((t) => t.toLowerCase()),
+  );
   const target = card.targetLink === 'true' ? '_blank' : '_self';
   return `<div class="promo-selector-card-container">
   <div class="promo-selector-card">
@@ -204,10 +218,16 @@ function buildPaginationHtml(current, total) {
     <button class="promo-selector-arrow promo-selector-arrow-next" data-dir="next"${nextAttr} aria-label="Next"><i class="icon-arrow-left" aria-hidden="true"></i></button>`;
 }
 
-function buildSubOptions(items) {
-  return items
-    .map((s) => `<li class="promo-selector-option" data-value="${s.label}" role="option">${s.label}</li>`)
-    .join('');
+function buildSubOptions(items, defaultLabel) {
+  const defaultOption = defaultLabel
+    ? `<li class="promo-selector-option" data-value="" role="option">${defaultLabel}</li>`
+    : '';
+  return defaultOption.concat(items
+    .map((s) => {
+      const value = toStringValue(s);
+      return `<li class="promo-selector-option" data-value="${value}" role="option">${value}</li>`;
+    })
+    .join(''));
 }
 
 export function sortCards(cards) {
@@ -245,14 +265,14 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
     ) return false;
     if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
-    if (!topPromotionOnly) {
-      if (subcategory && card.subcategory !== subcategory) return false;
-      const cardTypesLower = (card.cardTypes || []).map((t) => t.toLowerCase());
-      if (cardType && !cardTypesLower.includes(cardType.toLowerCase())) return false;
-      if (area) {
-        const cardAreas = Array.isArray(card.area) ? card.area : [card.area];
-        if (!cardAreas.includes('All') && !cardAreas.includes(area)) return false;
-      }
+    if (subcategory && card.subcategory !== subcategory) return false;
+    const cardTypesLower = normalizeList(card.cardTypes).map((t) => t.toLowerCase());
+    if (cardType && !cardTypesLower.includes(cardType.toLowerCase())) return false;
+    if (area) {
+      const cardAreas = normalizeList(card.area);
+      const areaMatch = cardAreas.some((a) => a.toLowerCase() === area.toLowerCase());
+      const allMatch = cardAreas.some((a) => a.toLowerCase() === 'all');
+      if (!allMatch && !areaMatch) return false;
     }
     return true;
   });
@@ -301,7 +321,7 @@ function setupPanel(
             <span class="icon-dropdown promo-selector-filter-arrow"></span>
           </button>
           <ul class="promo-selector-dropdown" role="listbox">
-            ${buildSubOptions(subcategories)}
+            ${buildSubOptions(subcategories, labelCategory)}
           </ul>
         </div>
         <div class="promo-selector-filter" data-filter="cardType">
@@ -310,7 +330,7 @@ function setupPanel(
             <span class="icon-dropdown promo-selector-filter-arrow"></span>
           </button>
           <ul class="promo-selector-dropdown" role="listbox">
-            ${buildSubOptions(cardTypes)}
+            ${buildSubOptions(cardTypes, labelCardType)}
           </ul>
         </div>
         <div class="promo-selector-filter" data-filter="area">
@@ -319,7 +339,7 @@ function setupPanel(
             <span class="icon-dropdown promo-selector-filter-arrow"></span>
           </button>
           <ul class="promo-selector-dropdown" role="listbox">
-            ${buildSubOptions(areas)}
+            ${buildSubOptions(areas, labelArea)}
           </ul>
         </div>
         <div class="promo-selector-filter-actions">
