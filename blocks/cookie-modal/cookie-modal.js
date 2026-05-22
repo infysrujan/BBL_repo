@@ -52,30 +52,6 @@ function sanitizeId(value) {
   return value.toLowerCase().replace(/[^0-9a-z]+/g, '-').replace(/^-|-$/g, '') || 'cookie';
 }
 
-function parseExclusionUrls(block) {
-  const urls = [];
-  block.querySelectorAll('ul li, p').forEach((node) => {
-    const text = node.textContent.trim();
-    if (text.startsWith('http') || text.startsWith('/')) {
-      urls.push(text);
-    }
-  });
-  return urls;
-}
-
-function isCurrentUrlExcluded(exclusionUrls) {
-  const { href, pathname, search } = window.location;
-  return exclusionUrls.some((url) => {
-    if (url === href) return true;
-    try {
-      const parsed = new URL(url);
-      return pathname === parsed.pathname && search === parsed.search;
-    } catch {
-      return pathname + search === url;
-    }
-  });
-}
-
 function getFocusableElements(element) {
   return [...element.querySelectorAll(FOCUSABLE_SELECTOR)].filter((node) => {
     if (node.closest('[hidden], [aria-hidden="true"]')) return false;
@@ -281,18 +257,10 @@ export default function decorate(block) {
     return;
   }
 
-  const exclusionUrls = parseExclusionUrls(block);
-  if (exclusionUrls.length && isCurrentUrlExcluded(exclusionUrls)) {
-    window.cookieConsentExcluded = true;
-    document.dispatchEvent(new CustomEvent('cookie:excluded'));
-    return;
-  }
-
   const titleSource = rows[0]?.firstElementChild || rows[0];
   const descSource = rows[1]?.firstElementChild || rows[1];
   const saveRow = rows.find((row, index) => index > 1
-    && row.children.length === 1 && row.textContent.trim()
-    && !row.querySelector('ul'));
+    && row.children.length === 1 && row.textContent.trim());
   const titleText = titleSource?.textContent?.trim() || 'Cookie Setting';
   const descHTML = descSource?.innerHTML?.trim() || '';
   const saveLabel = saveRow?.textContent?.trim() || 'Save and Close';
