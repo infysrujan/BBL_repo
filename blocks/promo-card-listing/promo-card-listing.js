@@ -461,12 +461,16 @@ export default async function decorate(block) {
 
   if (isAuthoringInstance(block)) {
     block.hidden = false;
-    const previewPanel = document.createElement('div');
-    previewPanel.className = 'promo-card-listing-preview';
-    block.innerHTML = '';
-    block.appendChild(previewPanel);
+    let previewPanel = block.parentElement?.querySelector('[data-preview-for="promo-card-listing"]');
+    if (!previewPanel) {
+      previewPanel = document.createElement('div');
+      previewPanel.className = 'promo-card-listing-preview';
+      previewPanel.dataset.previewFor = 'promo-card-listing';
+      block.insertAdjacentElement('afterend', previewPanel);
+    }
     const firstCategory = activeCategories[0]?.label || '';
     const firstSubcategories = activeCategories[0]?.subcategories || [];
+    previewPanel.innerHTML = '';
     setupPanel(
       previewPanel,
       activeCards,
@@ -537,5 +541,5 @@ export default async function decorate(block) {
   });
 
   // Block is just a data-source config — hide it from view
-  block.hidden = true;
+  block.hidden = false;
 }

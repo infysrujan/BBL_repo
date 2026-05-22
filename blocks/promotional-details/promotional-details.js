@@ -62,6 +62,46 @@ function buildDisclaimerHtml(enabled, text) {
   return `<div class="promo-detail-disclaimer pad-top-30">${text}</div>`;
 }
 
+function renderDetails(container, data, periodLabel, locale, clickToViewFull) {
+  const title = data?.title
+    ? `<h2 class="promo-detail-title">${data.title}</h2>`
+    : '';
+  const imageUrl = data?.detailImageUrl || '';
+  const imageHtml = imageUrl
+    ? `<img src="${imageUrl}" alt="${data?.title || ''}" loading="lazy">`
+    : '';
+  const description = data?.detailDescription || '';
+  const startDate = data?.promotionStartDate || '';
+  const endDate = data?.promotionEndDate || '';
+  const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
+  const disclaimerText = data?.responsibleLendingDisclaimerText || '';
+
+  const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
+  const imageColHtml = imageHtml ? `
+          <div class="promo-detail-image">
+            <a href="${imageUrl}" title="${clickToViewFull}">
+              ${imageHtml}
+            </a>
+          </div>` : '';
+
+  container.innerHTML = `
+    <div class="promo-detail-inner">
+      <div class="promo-detail-center">
+        <div class="promo-detail-title-wrap">
+          ${title}
+        </div>
+        <div class="${rowClass}">
+          ${imageColHtml}
+          <div class="promo-detail-content">
+            <div class="promo-detail-description">${description}</div>
+            ${buildDateHtml(startDate, endDate, periodLabel, locale)}
+            ${buildDisclaimerHtml(disclaimerEnabled, disclaimerText)}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
 async function fetchPromoData(url, promoId) {
   try {
     const resp = await fetch(url);
@@ -99,49 +139,24 @@ export default async function decorate(block) {
     fetchPromoData(promotionsUrl, promoId),
   ]);
 
+  const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
+  const clickToViewFull = placeholders.promoClickToViewFull || '';
   const previewData = isAuthoringInstance(block) && !card
     ? getAuthoringPreviewData(block)
     : null;
   const data = card || previewData || {};
 
-  const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
+  if (isAuthoringInstance(block)) {
+    let previewContainer = block.parentElement?.querySelector('[data-preview-for="promotional-details"]');
+    if (!previewContainer) {
+      previewContainer = document.createElement('div');
+      previewContainer.className = 'promo-detail-preview';
+      previewContainer.dataset.previewFor = 'promotional-details';
+      block.insertAdjacentElement('afterend', previewContainer);
+    }
+    renderDetails(previewContainer, data, periodLabel, locale, clickToViewFull);
+    return;
+  }
 
-  const title = data?.title
-    ? `<h2 class="promo-detail-title">${data.title}</h2>`
-    : '';
-  const imageUrl = data?.detailImageUrl || '';
-  const imageHtml = imageUrl
-    ? `<img src="${imageUrl}" alt="${data?.title || ''}" loading="lazy">`
-    : '';
-  const description = data?.detailDescription || '';
-  const startDate = data?.promotionStartDate || '';
-  const endDate = data?.promotionEndDate || '';
-  const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
-  const disclaimerText = data?.responsibleLendingDisclaimerText || '';
-
-  const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
-  const clickToViewFull = placeholders.promoClickToViewFull || '';
-  const imageColHtml = imageHtml ? `
-          <div class="promo-detail-image">
-            <a href="${imageUrl}" title="${clickToViewFull}">
-              ${imageHtml}
-            </a>
-          </div>` : '';
-
-  block.innerHTML = `
-    <div class="promo-detail-inner">
-      <div class="promo-detail-center">
-        <div class="promo-detail-title-wrap">
-          ${title}
-        </div>
-        <div class="${rowClass}">
-          ${imageColHtml}
-          <div class="promo-detail-content">
-            <div class="promo-detail-description">${description}</div>
-            ${buildDateHtml(startDate, endDate, periodLabel, locale)}
-            ${buildDisclaimerHtml(disclaimerEnabled, disclaimerText)}
-          </div>
-        </div>
-      </div>
-    </div>`;
+  renderDetails(block, data, periodLabel, locale, clickToViewFull);
 }
