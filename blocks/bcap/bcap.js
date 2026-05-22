@@ -301,29 +301,40 @@ function printElement() {
 
   moveHeaderRowsToThead(content);
 
-  const brandLogo = document.querySelector('.brand-logo-container').innerHTML;
-
-  // const fullContent = brandLogo + content.innerHTML.trim();
+  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  if (!logoEl) return;
+  const brandLogo = logoEl.cloneNode(true).outerHTML;
 
   const printWindow = window.open('', '', 'height=500,width=800');
 
   const printCss = `
     @page {
       size: A4 portrait;
-      margin: 20mm; /* Standard margins for printers */
+      margin: 10mm; /* Standard margins for printers */
+    }
+
+    .header {
+      position: unset;
+    }
+    
+    .brand-logo-container {
+      width: 12.5rem;
+      height: 3.125rem;
+      margin-block: 4rem;
     }
 
     h2 {
-      font-size: 32px;
+      font-size: 2rem;
     }
 
     .calendar-input::before {
-      right: -27px;
+      right: -1.6875rem;
       top: 14%;
     }
     .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
-      width: 36px;
-      height: 2px;
+      width: 2.25rem;
+      height: 0.125rem;
       background-color: black;
     }
     .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
@@ -334,12 +345,16 @@ function printElement() {
       margin: 0;
     }
 
+    .bcap-wrapper {
+      margin-top: 2rem;
+    }
+
     .table table.outline-border {
         border: 0;
     }
 
     tr.header-row {
-        border: 2px solid black;
+        border: 0.125rem solid black; /* 2px */
         border-inline: 0;
     }
 
@@ -351,17 +366,17 @@ function printElement() {
         background-color: transparent;
     }
     .table table tr:not(.header-row) td {
-      padding-block: 3px;
+      padding-block: 0.1875rem;
       vertical-align: middle;
-      font-size: 10px;
+      font-size: 0.625rem;
     }
     .bcap-table.table table tr.header-row td {
-      font-size: 12px;
+      font-size: 0.75rem;
       height: auto;
-      padding: 3px 0px;
+      padding: 0.1875rem 0rem;
     }
     .bcap-disclaimer-text {
-      font-size: 8px;
+      font-size: 0.5rem;
     }
 
     @media print {
@@ -398,8 +413,8 @@ function printElement() {
       <style>${printCss}</style>
     </head>
     <body class="appear">
-      <header class="header-wrapper is-not-overlapped">
-        <div class="header block">
+      <header class="header-wrapper">
+        <div class="header block" data-block-status="loaded">
           <div class="header-content">
             <div class="main-nav-desktop">
               <div class="brand-logo block">

@@ -78,7 +78,7 @@
 
 /* Border Light Gray — lightgray */
 .table table.border-light-gray td {
-  border-color: var(--bbl-color-grey-24);
+  border-color: var(--bbl-color-grey-27);
 }
 
 /* Border Gray — #cacaca */
@@ -140,7 +140,7 @@
 
 /* Dash Cell Highlight — #d9d9d9 background for cells containing only "-" */
 .table table.dash-cell-highlight td.cell-dash {
-  background: var(--bbl-color-grey-23);
+  background: var(--bbl-color-grey-26);
 }
 
 /* --------------------------------------------------------------------------
