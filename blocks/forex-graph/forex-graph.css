@@ -195,6 +195,7 @@
 .forex-graph .forex-graph-go-btn:disabled {
   opacity: 0.5;
   cursor: default;
+  pointer-events: none;
 }
 
 /* ── Actions (Print + Download) ───────────────────────────── */
