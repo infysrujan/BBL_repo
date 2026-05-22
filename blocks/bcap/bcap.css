@@ -90,34 +90,3 @@
   letter-spacing: -0.0063rem;
   padding-left: 0.3125rem;
 }
-
-/* Scoped print: only `.bcap-container` stays visible (see bcap.js printBcapContent). */
-@media print {
-  html.bcap-print-isolate body * {
-    visibility: hidden;
-  }
-
-  html.bcap-print-isolate body .bcap-container,
-  html.bcap-print-isolate body .bcap-container * {
-    visibility: visible;
-  }
-
-  html.bcap-print-isolate body .bcap-container {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
-
-  html.bcap-print-isolate .bcap-container .table {
-    overflow: visible;
-  }
-
-  html.bcap-print-isolate .bcap-container table {
-    break-inside: avoid;
-  }
-
-  html.bcap-print-isolate .bcap-container .bcap-print-label {
-    display: none !important;
-  }
-}
