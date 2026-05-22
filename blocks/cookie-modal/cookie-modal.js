@@ -291,7 +291,8 @@ export default function decorate(block) {
   const titleSource = rows[0]?.firstElementChild || rows[0];
   const descSource = rows[1]?.firstElementChild || rows[1];
   const saveRow = rows.find((row, index) => index > 1
-    && row.children.length === 1 && row.textContent.trim());
+    && row.children.length === 1 && row.textContent.trim()
+    && !row.querySelector('ul'));
   const titleText = titleSource?.textContent?.trim() || 'Cookie Setting';
   const descHTML = descSource?.innerHTML?.trim() || '';
   const saveLabel = saveRow?.textContent?.trim() || 'Save and Close';
