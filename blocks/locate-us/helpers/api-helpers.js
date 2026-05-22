@@ -6,10 +6,12 @@ function buildEmbedUrl(lat, lng, configs, zoom = 15) {
   const template = configs?.locateUsGoogleMapsEmbedUrl;
   if (!template) {
     // eslint-disable-next-line no-console
-    console.error('[locate-us] Missing config key: google-maps-embed-url');
+    console.error('[locate-us] Missing config key: locate-us-google-maps-embed-url');
     return '';
   }
-  return buildUrl(template, { LAT: lat, LNG: lng, ZOOM: zoom });
+  const apiKey = configs?.locateUsGoogleMapsApiKey || '';
+  const url = buildUrl(template, { LAT: lat, LNG: lng, ZOOM: zoom });
+  return apiKey ? `${url}&key=${apiKey}` : url;
 }
 
 export function updateMapIframe(iframe, loc, configs) {
