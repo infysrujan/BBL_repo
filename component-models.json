@@ -10374,49 +10374,6 @@
         "description": "Destination URL for the button"
       },
       {
-        "component": "text",
-        "name": "ctaLabel",
-        "label": "Cta Label",
-        "description": "Button label text",
-        "required": true,
-        "condition": {
-          "or": [
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "Y"
-              ]
-            },
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "D"
-              ]
-            },
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "Register"
-              ]
-            },
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "Register with Data"
-              ]
-            }
-          ]
-        }
-      },
-      {
         "component": "container",
         "name": "targetSettings",
         "label": "Target settings",
@@ -10511,6 +10468,49 @@
               "var": "promotionType"
             },
             "bangkok-bank-m"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "Cta Label",
+        "description": "Button label text",
+        "required": true,
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "Y"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "D"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "Register"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "Register with Data"
+              ]
+            }
           ]
         }
       }
