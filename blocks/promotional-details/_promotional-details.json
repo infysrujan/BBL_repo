@@ -257,6 +257,22 @@
                   },
                   "D"
                 ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "isRegister"
+                  },
+                  "Register"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "isRegister"
+                  },
+                  "Register with Data"
+                ]
               }
             ]
           }
