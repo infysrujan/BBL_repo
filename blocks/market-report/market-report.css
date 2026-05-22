@@ -176,7 +176,7 @@ p.text-small {
   .market-report-print-body .market-report-date {
     font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
     font-size: 0.9375rem;
-    color: var(--bbl-color-grey-23);
+    color: var(--bbl-color-grey-28);
   }
 
   .market-report-print-body table {
