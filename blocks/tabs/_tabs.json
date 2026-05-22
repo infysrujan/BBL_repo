@@ -313,7 +313,9 @@
         "login",
         "main-nav-item",
         "forex-rates",
-        "forex-graph"
+        "forex-graph",
+        "sme-loan-calculator",
+        "table"
       ]
     }
   ]
