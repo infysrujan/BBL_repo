@@ -332,6 +332,15 @@ function decorateSvgWithAltText(element) {
   });
 }
 
+function isAuthoringInstance(block) {
+  const section = block.closest('.section');
+  const hasAueAttrs = [block, section]
+    .filter(Boolean)
+    .some((el) => [...el.attributes].some(({ name }) => name.startsWith('data-aue-')));
+
+  return hasAueAttrs && window.self !== window.top;
+}
+
 if (Window.LAZY_PHASE) {
   handleGlobalLinkClicks();
 } else {
@@ -409,5 +418,7 @@ export {
   decorateButtonsV1,
   decorateSvgWithAltText,
   loadBreadcrumb,
+  isAuthoringInstance,
   buildCookieAlert,
+  getLang,
 };
