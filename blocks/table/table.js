@@ -287,18 +287,26 @@ export default async function decorate(block) {
   const rows = [...block.children];
   if (rows.length < 2) return;
 
-  const tableId = rows[0]?.textContent.trim().toLowerCase();
-
-  const parentStyles = parseVariationClasses(rows[1].children[0]);
-  if (parentStyles.includes('scroll')) {
-    block.classList.add('scroll');
-  }
+  const firstRowText = rows[0]?.textContent.trim().toLowerCase();
   const tableRowIndex = rows.findIndex((row, i) => i > 0 && row.querySelector('table'));
   if (tableRowIndex === -1) return;
   const parentTable = rows[tableRowIndex].querySelector('table');
-  const nestedTableId = tableRowIndex > 1 ? rows[1]?.children[0]?.textContent.trim() : null;
 
-  applyVariationClasses(parentTable, parentStyles, tableId);
+  // Row 0 always holds variation classes (and doubles as the id)
+  const row0Styles = firstRowText
+    .split(',').map((item) => toClassName(item.trim())).filter(Boolean);
+  // When the table is not immediately at index 1, row 1 is a dedicated styles row
+  const row1Styles = tableRowIndex > 1 ? parseVariationClasses(rows[1].children[0]) : [];
+  const parentStyles = [...new Set([...row0Styles, ...row1Styles])];
+
+  if (parentStyles.includes('scroll')) {
+    block.classList.add('scroll');
+  }
+
+  const nestedRow = tableRowIndex > 2 ? rows[tableRowIndex - 1] : null;
+  const nestedTableId = nestedRow?.children[0]?.textContent.trim() || null;
+
+  applyVariationClasses(parentTable, parentStyles, firstRowText);
   if (nestedTableId) parentTable.dataset.nestedId = nestedTableId;
 
   // Non-hierarchical nested table: render normally and schedule section-level resolution
