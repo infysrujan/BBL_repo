@@ -330,7 +330,6 @@
           "component": "text",
           "name": "ctaLabel",
           "label": "Cta Label",
-          "description": "Button label text",
           "required": true,
           "condition": {
             "or": [
