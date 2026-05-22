@@ -5,7 +5,7 @@
   z-index: 10050;
   min-width: 280px;
   padding: 16px;
-  background: var(--bbl-color-white, #fff);
+  background: var(--bbl-color-white);
   border-radius: 12px;
   box-shadow: 0 8px 24px rgb(0 0 0 / 12%), 0 2px 8px rgb(0 0 0 / 6%);
   font-family: inherit;
@@ -30,10 +30,10 @@
   flex: 0 0 auto;
   width: 36px;
   height: 36px;
-  border: 1px solid var(--bbl-color-grey-30, #dbdbdb);
+  border: 1px solid var(--bbl-color-grey-30);
   border-radius: 50%;
-  background: var(--bbl-color-white, #fff);
-  color: var(--bbl-color-grey-100, #323238);
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-grey-100);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -43,11 +43,11 @@
 }
 
 .bbl-calendar-picker-nav:hover {
-  border-color: var(--bbl-color-grey-50, #a9a9aa);
+  border-color: var(--bbl-color-grey-50);
 }
 
 .bbl-calendar-picker-nav:focus-visible {
-  outline: 2px solid var(--bbl-color-active-blue, #0064ff);
+  outline: 2px solid var(--bbl-color-active-blue);
   outline-offset: 2px;
 }
 
@@ -57,7 +57,7 @@
   text-align: center;
   font-size: 1rem;
   font-weight: 700;
-  color: var(--bbl-color-blue-105, #039);
+  color: var(--bbl-color-blue-105);
 }
 
 .bbl-calendar-picker-weekdays {
@@ -71,7 +71,7 @@
   text-align: center;
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--bbl-color-black, #000);
+  color: var(--bbl-color-black);
 }
 
 .bbl-calendar-picker-grid {
@@ -90,7 +90,7 @@
   border-radius: 50%;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--bbl-color-grey-100, #323238);
+  color: var(--bbl-color-grey-100);
   cursor: pointer;
   padding: 0;
   margin: 0;
@@ -102,19 +102,19 @@
 }
 
 .bbl-calendar-picker-day:disabled {
-  color: var(--bbl-color-grey-45, #bbb);
+  color: var(--bbl-color-grey-45);
   cursor: not-allowed;
 }
 
 .bbl-calendar-picker-day:not(:disabled):hover {
-  background: var(--bbl-color-grey-10, #f5f5f5);
+  background: var(--bbl-color-grey-10);
 }
 
 .bbl-calendar-picker-day-selected {
-  background: var(--bbl-color-active-blue, #0064ff) !important;
-  color: var(--bbl-color-white, #fff) !important;
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
 }
 
 .bbl-calendar-picker-day-selected:hover {
-  background: var(--bbl-color-blue-70, #357ef8) !important;
+  background: var(--bbl-color-blue-70);
 }
