@@ -67,6 +67,13 @@
         "value": true,
         "label": "Breadcrumb",
         "valueType": "boolean"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "ogImage",
+        "label": "OG Image",
+        "description": "Select the image asset to use for the Open Graph og:image meta tag."
       }
     ]
   },
@@ -312,6 +319,14 @@
                 "value": "center-title"
               },
               {
+                "name": "Center Image",
+                "value": "center-image"
+              },
+              {
+                "name": "Underline Image",
+                "value": "underline-image"
+              },
+              {
                 "name": "Center Content",
                 "value": "center-content"
               }
@@ -362,6 +377,39 @@
           "rootPath": "/en/fragments/accordions",
           "allowFolders": false
         }
+      }
+    ]
+  },
+  {
+    "id": "bcap",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "date-label",
+        "value": "",
+        "label": "Calander Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "print-label",
+        "value": "",
+        "label": "Print Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "error-message",
+        "value": "",
+        "label": "Error Message Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimer-text",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
       }
     ]
   },
@@ -3631,6 +3679,28 @@
         ]
       },
       {
+        "component": "select",
+        "name": "properties.linkType",
+        "label": "Button Style",
+        "valueType": "string",
+        "value": "primary",
+        "description": "Visual style variant for the button",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
         "component": "tab",
         "label": "Help Content",
         "name": "help"
@@ -4304,10 +4374,15 @@
         "label": "Display Format",
         "name": "displayFormat",
         "valueType": "string",
+        "value": "dd/MM/yyyy",
         "options": [
           {
             "name": "No Pattern",
             "value": ""
+          },
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
           },
           {
             "name": "01 April, 2007",
@@ -4326,12 +4401,34 @@
             "value": "EEEE, MMMM d, y"
           },
           {
-            "name": "1/4/2007",
+            "name": "D/M/YYYY (1/4/2007)",
             "value": "d/M/y"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "label": "Submit Value Format",
+        "name": "valueFormat",
+        "valueType": "string",
+        "value": "dd/MM/yyyy",
+        "description": "Format of the date value sent on form submission",
+        "options": [
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
           },
           {
-            "name": "1/4/2007",
-            "value": "dd/MM/yyyy"
+            "name": "YYYY-MM-DD (2007-04-01) — ISO 8601",
+            "value": "yyyy-MM-dd"
+          },
+          {
+            "name": "MM/DD/YYYY (04/01/2007)",
+            "value": "MM/dd/yyyy"
+          },
+          {
+            "name": "D/M/YYYY (1/4/2007)",
+            "value": "d/M/y"
           }
         ]
       },
@@ -9926,6 +10023,14 @@
     ]
   },
   {
+    "id": "property-for-sale-details",
+    "fields": []
+  },
+  {
+    "id": "property-for-sale",
+    "fields": []
+  },
+  {
     "id": "rate-card-item",
     "fields": [
       {
@@ -10447,6 +10552,10 @@
               {
                 "name": "Header Mixed Blue",
                 "value": "header-mixed-blue"
+              },
+              {
+                "name": "Header Light Gray",
+                "value": "header-light-gray"
               }
             ]
           },
