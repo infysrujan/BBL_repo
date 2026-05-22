@@ -1,3 +1,4 @@
+import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
 export default async function decorate(block) {
@@ -195,24 +196,14 @@ export default async function decorate(block) {
   else if (ids.includes('P') && ids.includes('A') && !ids.includes('n')) calcType = 'term';
 
   const configKeyMap = {
-    monthly: 'sme-monthly-payment',
-    loanbalance: 'sme-loan-balance',
-    term: 'sme-term-period-monthly',
-    wc: 'sme-working-capital-needs',
+    monthly: 'smeMonthlyPayment',
+    loanbalance: 'smeLoanBalance',
+    term: 'smeTermPeriodMonthly',
+    wc: 'smeWorkingCapitalNeeds',
   };
 
-  let formulaDescription = '';
-  try {
-    const resp = await fetch('/en/config.json');
-    if (resp.ok) {
-      const json = await resp.json();
-      const key = configKeyMap[calcType];
-      const entry = (json.data || []).find((d) => (d.key || d.Key) === key);
-      formulaDescription = entry?.value || entry?.Value || '';
-    }
-  } catch {
-    // formula stays empty
-  }
+  const siteConfigs = await fetchConfigs();
+  let formulaDescription = siteConfigs[configKeyMap[calcType]] || '';
   if (!formulaDescription) formulaDescription = authoredFormula;
 
   const resultConfig = {
