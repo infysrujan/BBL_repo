@@ -519,7 +519,7 @@ function validateCreditCardNumber(inputNum) {
 function getidAndDob(id, dob) {
   console.log('id', id);
   console.log('dob', dob);
-  return `${id}+${dob.replaceAll('/', '')}`;
+  return `${id}${dob.replaceAll('/', '').replaceAll('-', '')}`;
 }
 
 // eslint-disable-next-line import/prefer-default-export
