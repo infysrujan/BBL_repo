@@ -54,6 +54,7 @@
       "video",
       "carousel-video",
       "forex-rates",
+      "sme-loan-calculator",
       "bcap",
       "multi-column-tiles",
       "retirement-calculator",
@@ -182,8 +183,7 @@
       "text-input",
       "tnc",
       "wizard",
-      "range",
-      "menu-card-actions"
+      "range"
     ]
   },
   {
@@ -259,6 +259,12 @@
     "id": "rate-card",
     "components": [
       "rate-card-item"
+    ]
+  },
+  {
+    "id": "sme-loan-calculator",
+    "components": [
+      "sme-field"
     ]
   },
   {
@@ -368,7 +374,9 @@
       "login",
       "main-nav-item",
       "forex-rates",
-      "forex-graph"
+      "forex-graph",
+      "sme-loan-calculator",
+      "table"
     ]
   },
   {
