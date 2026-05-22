@@ -447,6 +447,13 @@ export default async function decorate(block) {
       footer.style.display = 'none';
       footer.classList.add('is-hidden');
     }
+    const main = document.querySelector('main');
+    if (main) {
+      main.style.setProperty('padding-top', '0', 'important');
+      main.style.setProperty('margin-top', '0', 'important');
+    }
+    document.body.style.setProperty('padding-top', '0', 'important');
+    document.body.style.setProperty('margin-top', '0', 'important');
   }
 
   const promotionType = resolvePromotionType(block);
