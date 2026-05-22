@@ -257,16 +257,12 @@ function renderMonthPicker(container, which, state, placeholders) {
         <button type="button" class="db-mp-nav" data-which="${which}" data-action="nextYear">&#8250;</button>
       </div>
       <div class="db-mp-grid">
-        ${state.monthLabels.map((mon, i) => `<button type="button" class="db-mp-cell${cur?.month === i + 1 && cur?.year === year ? ' db-mp-active' : ''}" data-which="${which}" data-action="selectMonth" data-month="${i + 1}">${mon}</button>`).join('')}
+        ${state.monthLabels.map((mon, i) => `<button type="button" class="db-mp-cell${cur?.month === i + 1 && cur?.year === year ? ' db-mp-active' : ''}" data-which="${which}" data-action="selectMonth" data-month="${i + 1}">${mon.slice(0, 3)}</button>`).join('')}
       </div>`;
   }
 }
 
 // ─── filter panel ─────────────────────────────────────────────────────────────
-const CAL_ICON_SVG = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-  <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
-  <line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/>
-</svg>`;
 
 function renderFilterPanel(wrapper, authoring, state, placeholders) {
   const matSet = state.filterMaturity;
@@ -285,7 +281,7 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
           <input type="text" class="db-mp-input" id="db-mp-from" readonly placeholder="${placeholders?.dynamicBoardMonthYearPlaceholder || 'MM/YYYY'}"
             value="${state.filterFrom ? formatMonthYearDisplay(state.filterFrom.month, state.filterFrom.year, state.buddhistYearOffset) : ''}"
             ${matSet ? 'disabled' : ''}>
-          <button type="button" class="db-mp-cal-btn" data-which="from" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''}>${CAL_ICON_SVG}</button>
+          <button type="button" class="db-mp-cal-btn" data-which="from" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''} icon-calendar"></button>
           <div class="db-mp-popup" id="db-mp-popup-from" hidden></div>
         </div>
       </div>
@@ -295,7 +291,7 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
           <input type="text" class="db-mp-input" id="db-mp-to" readonly placeholder="${placeholders?.dynamicBoardMonthYearPlaceholder || 'MM/YYYY'}"
             value="${state.filterTo ? formatMonthYearDisplay(state.filterTo.month, state.filterTo.year, state.buddhistYearOffset) : ''}"
             ${matSet ? 'disabled' : ''}>
-          <button type="button" class="db-mp-cal-btn" data-which="to" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''}>${CAL_ICON_SVG}</button>
+          <button type="button" class="db-mp-cal-btn" data-which="to" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''} icon-calendar"></button>
           <div class="db-mp-popup" id="db-mp-popup-to" hidden></div>
         </div>
       </div>
