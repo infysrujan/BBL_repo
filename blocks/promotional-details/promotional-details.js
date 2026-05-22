@@ -64,7 +64,13 @@ export default async function decorate(block) {
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-GB';
   const configs = await fetchConfigs();
-  const baseUrl = promotionType === 'bangkok-bank-m'
+
+  const path = window.location.pathname.toLowerCase();
+  const isBbmPath = path.includes('/promotionsmb');
+  const isCreditCardPath = path.includes('/credit-card-promotions');
+  const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
+
+  const baseUrl = isBbm
     ? (configs?.promotionalCardSelectorBbm || BBM_FALLBACK_URL)
     : (configs?.promotionalCardSelector || '');
   const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
