@@ -527,8 +527,7 @@
   font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
-  margin-top: var(--bbl-space-250);
-  margin-bottom: 0.625rem;
+  margin: var(--bbl-space-250) 0 0.625rem;
   overflow-wrap: break-word;
 }
 
