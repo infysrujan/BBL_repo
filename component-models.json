@@ -73,6 +73,13 @@
         "label": "Enable Welcome Banner",
         "name": "isWelcomeBanner",
         "valueType": "boolean"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "ogImage",
+        "label": "OG Image",
+        "description": "Select the image asset to use for the Open Graph og:image meta tag."
       }
     ]
   },
@@ -318,6 +325,14 @@
                 "value": "center-title"
               },
               {
+                "name": "Center Image",
+                "value": "center-image"
+              },
+              {
+                "name": "Underline Image",
+                "value": "underline-image"
+              },
+              {
                 "name": "Center Content",
                 "value": "center-content"
               }
@@ -372,6 +387,39 @@
     ]
   },
   {
+    "id": "bcap",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "date-label",
+        "value": "",
+        "label": "Calander Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "print-label",
+        "value": "",
+        "label": "Print Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "error-message",
+        "value": "",
+        "label": "Error Message Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimer-text",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "brand-logo",
     "fields": [
       {
@@ -395,6 +443,14 @@
         "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
         "valueType": "string",
         "required": true
+      },
+      {
+        "component": "reference",
+        "name": "printLogo",
+        "label": "Print Logo",
+        "multi": false,
+        "required": false,
+        "description": "Logo image shown at the top of the print preview (hidden in normal view)"
       }
     ]
   },
@@ -1973,7 +2029,7 @@
         }
       },
       {
-        "component": "text",
+        "component": "richtext",
         "name": "titleDefaultImage",
         "label": "Title Text",
         "valueType": "string",
@@ -1988,8 +2044,8 @@
       },
       {
         "component": "text",
-        "name": "step",
-        "label": "Step Text",
+        "name": "stepText1",
+        "label": "Step Text 1",
         "valueType": "string",
         "condition": {
           "===": [
@@ -2002,9 +2058,110 @@
       },
       {
         "component": "richtext",
-        "name": "descriptionDefaultImage",
+        "name": "description1",
         "label": "Description",
         "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "stepText2",
+        "label": "Step Text 2",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "richtext",
+        "name": "description2",
+        "label": "Description",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "ctaLink",
+        "label": "Link",
+        "description": "Destination URL for the button",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "ctaLinkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "ctaLinkTitle",
+        "label": "Title",
+        "description": "Accessibility title attribute (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "ctaLinkType",
+        "label": "Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ],
         "condition": {
           "===": [
             {
@@ -3528,6 +3685,28 @@
         ]
       },
       {
+        "component": "select",
+        "name": "properties.linkType",
+        "label": "Button Style",
+        "valueType": "string",
+        "value": "primary",
+        "description": "Visual style variant for the button",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
         "component": "tab",
         "label": "Help Content",
         "name": "help"
@@ -4201,10 +4380,15 @@
         "label": "Display Format",
         "name": "displayFormat",
         "valueType": "string",
+        "value": "dd/MM/yyyy",
         "options": [
           {
             "name": "No Pattern",
             "value": ""
+          },
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
           },
           {
             "name": "01 April, 2007",
@@ -4223,12 +4407,34 @@
             "value": "EEEE, MMMM d, y"
           },
           {
-            "name": "1/4/2007",
+            "name": "D/M/YYYY (1/4/2007)",
             "value": "d/M/y"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "label": "Submit Value Format",
+        "name": "valueFormat",
+        "valueType": "string",
+        "value": "dd/MM/yyyy",
+        "description": "Format of the date value sent on form submission",
+        "options": [
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
           },
           {
-            "name": "1/4/2007",
-            "value": "dd/MM/yyyy"
+            "name": "YYYY-MM-DD (2007-04-01) — ISO 8601",
+            "value": "yyyy-MM-dd"
+          },
+          {
+            "name": "MM/DD/YYYY (04/01/2007)",
+            "value": "MM/dd/yyyy"
+          },
+          {
+            "name": "D/M/YYYY (1/4/2007)",
+            "value": "d/M/y"
           }
         ]
       },
@@ -8117,6 +8323,115 @@
     ]
   },
   {
+    "id": "forward-points-sme",
+    "fields": [
+      {
+        "component": "text",
+        "name": "section1CalendarLabel",
+        "label": "Section 1 - Update Date Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Update as of"
+      },
+      {
+        "component": "text",
+        "name": "section1GoCtaLabel",
+        "label": "Section 1 - GO CTA Label",
+        "valueType": "string",
+        "required": true,
+        "value": "GO"
+      },
+      {
+        "component": "richtext",
+        "name": "section1TableColumnHeadings",
+        "label": "Section 1 - Table Column Headings",
+        "valueType": "string",
+        "required": true,
+        "description": "List items: Currency | Sight Bill Buying Rates | TT Buying Rates | TT Selling Rates"
+      },
+      {
+        "component": "text",
+        "name": "section2UpdateDateLabel",
+        "label": "Section 2 - Update Date Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Update as of"
+      },
+      {
+        "component": "text",
+        "name": "section2GoCtaLabel",
+        "label": "Section 2 - GO CTA Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Go"
+      },
+      {
+        "component": "text",
+        "name": "printCtaLabel",
+        "label": "Print CTA Label",
+        "valueType": "string",
+        "required": true,
+        "value": "PRINT"
+      },
+      {
+        "component": "text",
+        "name": "section2ForwardPointsTableTitle",
+        "label": "Section 2 - Table Title",
+        "valueType": "string",
+        "required": true,
+        "value": "Indicative Forward Points (for Outright FX Forward Contract) for USD/THB"
+      },
+      {
+        "component": "text",
+        "name": "section2SmeLowRevenueSubTitle",
+        "label": "Section 2 - Table Sub-Title 1",
+        "valueType": "string",
+        "required": true,
+        "value": "(SMEs Company revenues THB 50 - 200 Million per year)"
+      },
+      {
+        "component": "text",
+        "name": "section2SmeMidRevenueSubTitle",
+        "label": "Section 2 - Table Sub-Title 2",
+        "valueType": "string",
+        "required": true,
+        "value": "(SMEs Company revenues THB 200 - 500 Million per year)"
+      },
+      {
+        "component": "richtext",
+        "name": "section2TableColumnHeadings",
+        "label": "Section 2 - Table Column Headings",
+        "valueType": "string",
+        "required": true,
+        "description": "List items: Period | Export (Buying) | Import (Selling)"
+      },
+      {
+        "component": "richtext",
+        "name": "section2TableRowHeadings",
+        "label": "Section 2 - Table Row Headings",
+        "valueType": "string",
+        "required": true,
+        "description": "List items: 1 Month | 3 Months | 6 Months"
+      },
+      {
+        "component": "text",
+        "name": "section2UnitLabel",
+        "label": "Section 2 - Unit Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Unit: Satang"
+      },
+      {
+        "component": "richtext",
+        "name": "remarkDisclaimerText",
+        "label": "Remark Text",
+        "valueType": "string",
+        "required": true,
+        "description": "Bullet list of remark/disclaimer items shown below the tables"
+      }
+    ]
+  },
+  {
     "id": "fragment",
     "fields": [
       {
@@ -8850,6 +9165,10 @@
             "value": "download"
           },
           {
+            "name": "Multiple Download",
+            "value": "multiple-download"
+          },
+          {
             "name": "Select Dropdown",
             "value": "select-dropdown"
           }
@@ -9049,6 +9368,85 @@
             }
           ]
         }
+      },
+      {
+        "component": "richtext",
+        "name": "multipleDownloadLinks",
+        "value": "",
+        "label": "Multiple Download Links",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "multiple-download"
+          ]
+        }
+      },
+      {
+        "component": "boolean",
+        "name": "isCardClickable",
+        "label": "Is Card Clickable",
+        "description": "Enable to make the entire card a clickable link",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "aem-content",
+        "name": "cardLink",
+        "label": "Card Link",
+        "description": "Destination URL when the card is clicked",
+        "condition": {
+          "===": [
+            {
+              "var": "isCardClickable"
+            },
+            true
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "cardLinkTitle",
+        "label": "Card Link Title",
+        "description": "Accessibility title attribute for the clickable card (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "isCardClickable"
+            },
+            true
+          ]
+        }
+      },
+      {
+        "component": "boolean",
+        "name": "enableOverlayModal",
+        "label": "Enable Overlay Modal",
+        "description": "Open card link in a modal overlay instead of navigating",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "aem-content",
+        "name": "overlayHref",
+        "label": "Overlay Fragment Path",
+        "description": "Path to the fragment shown in the modal overlay",
+        "condition": {
+          "===": [
+            {
+              "var": "enableOverlayModal"
+            },
+            true
+          ]
+        }
+      },
+      {
+        "component": "date-time",
+        "name": "financialDate",
+        "label": "Financial Date",
+        "valueType": "string"
       }
     ]
   },
@@ -9631,6 +10029,14 @@
     ]
   },
   {
+    "id": "property-for-sale-details",
+    "fields": []
+  },
+  {
+    "id": "property-for-sale",
+    "fields": []
+  },
+  {
     "id": "rate-card-item",
     "fields": [
       {
@@ -9831,6 +10237,10 @@
         }
       }
     ]
+  },
+  {
+    "id": "retirement-calculator",
+    "fields": []
   },
   {
     "id": "search-page",
@@ -10148,6 +10558,10 @@
               {
                 "name": "Header Mixed Blue",
                 "value": "header-mixed-blue"
+              },
+              {
+                "name": "Header Light Gray",
+                "value": "header-light-gray"
               }
             ]
           },

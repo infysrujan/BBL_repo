@@ -185,9 +185,9 @@ function handleGlobalLinkClicks() {
       const configData = await fetchConfigs();
 
       // Parse config arrays
-      const hostnameUrlArray = parseUrlString(configData.hostnameurl || '');
-      const excludedUrlArray = parseUrlString(configData.excludedurl || '');
-      const fullUrlArray = parseUrlString(configData.fullurl || '');
+      const hostnameUrlArray = parseUrlString(configData.bblDecoratorsHostnameUrl || '');
+      const excludedUrlArray = parseUrlString(configData.bblDecoratorsExcludedUrl || '');
+      const fullUrlArray = parseUrlString(configData.bblDecoratorsFullUrl || '');
 
       // Case 1: Check if URL is in hostnameurl or fullurl
       const matchesHostnameList = matchesHostname(href, hostnameUrlArray);
@@ -375,6 +375,15 @@ function decorateSvgWithAltText(element) {
   });
 }
 
+function isAuthoringInstance(block) {
+  const section = block.closest('.section');
+  const hasAueAttrs = [block, section]
+    .filter(Boolean)
+    .some((el) => [...el.attributes].some(({ name }) => name.startsWith('data-aue-')));
+
+  return hasAueAttrs && window.self !== window.top;
+}
+
 if (Window.LAZY_PHASE) {
   handleGlobalLinkClicks();
 } else {
@@ -453,6 +462,7 @@ export {
   decorateSvgWithAltText,
   loadBreadcrumb,
   loadWelcomeBanner,
+  isAuthoringInstance,
   buildCookieAlert,
   getLang,
 };

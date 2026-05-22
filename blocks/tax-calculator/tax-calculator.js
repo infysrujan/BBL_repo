@@ -43,14 +43,21 @@ async function loadData() {
   ]);
   return {
     labels,
-    apiCalculateTax: siteConfig.calculateTaxWithReduce,
-    apiCalculateSaving: siteConfig.calculateSavingTaxBySelf,
+    apiCalculateTax: siteConfig.taxCalculatorCalculateTaxWithReduce,
+    apiCalculateSaving: siteConfig.taxCalculatorCalculateSavingTaxBySelf,
+    combinedInsuranceMax: parseFloat(siteConfig.taxCalculatorCombinedInsuranceMax) || 100000,
+    fatherInsureMax: parseFloat(siteConfig.taxCalculatorFatherInsureMax) || 15000,
+    homeInterestMax: parseFloat(siteConfig.taxCalculatorHomeInterestMax) || 100000,
+    otherDeductionsMax: parseFloat(siteConfig.taxCalculatorOtherDeductionsMax) || 1000000,
+    donateMax: parseFloat(siteConfig.taxCalculatorDonateMax) || 999999999,
+    maxChildrenCount: parseInt(siteConfig.taxCalculatorMaxChildrenCount, 10) || 10,
+    providentFundMaxPct: parseFloat(siteConfig.taxCalculatorProvidentFundMaxPct) || 15,
   };
 }
 
 // ─── Journey 1 field definitions ───────────────────────────────────────────────
 
-function getJourney1Fields(labels) {
+function getJourney1Fields(labels, config) {
   return [
     {
       id: 'Income',
@@ -88,11 +95,11 @@ function getJourney1Fields(labels) {
     {
       id: 'ProvidentFund',
       label: getString(labels, 'stepsStep1ProvidentFundContributionRateLabel', 'Percentage of provident fund contribution (%)'),
-      placeholder: '0 - 15',
+      placeholder: `0 - ${config.providentFundMaxPct}`,
       defaultValue: parseFloat(labels.defaultsProvidentFundContributionRate) || 0,
       maxLength: null,
       min: 0,
-      max: 15,
+      max: config.providentFundMaxPct,
       factor: 0.01,
       errorMsg: getString(labels, 'configValidationMaxValueError', 'Maximum up to {max}'),
     },
@@ -102,7 +109,7 @@ function getJourney1Fields(labels) {
 // ─── Journey 2 field groups ─────────────────────────────────────────────────────
 // hint uses {max} as a placeholder — resolved dynamically by buildInputField.
 
-function getJourney2Groups(labels, apiResponse) {
+function getJourney2Groups(labels, apiResponse, config) {
   const allUsedMsg = getString(labels, 'resultsNoRemainDeduction', 'All tax deductions have been used.');
   const maxErrMsg = getString(labels, 'configValidationMaxValueError', 'Maximum up to {max}');
   const insureHint = getString(labels, 'stepsStep2LifeInsurancePremiumMax', 'Max allowance {max} baht');
@@ -121,22 +128,22 @@ function getJourney2Groups(labels, apiResponse) {
         {
           id: 'NumberOfChildeBornBefore61',
           label: getString(labels, 'stepsStep2NumberOfChildrenBefore2561Label', 'Number of children (born before 2018)'),
-          placeholder: '0 - 10',
+          placeholder: `0 - ${config.maxChildrenCount}`,
           defaultValue: 0,
-          maxLength: 2,
+          maxLength: String(config.maxChildrenCount).length,
           min: 0,
-          max: 10,
+          max: config.maxChildrenCount,
           factor: 1,
           errorMsg: maxErrMsg,
         },
         {
           id: 'NumberOfChildeBorn61OnWards',
           label: getString(labels, 'stepsStep2NumberOfChildrenAfter2561Label', 'Number of children (born in or after 2018)'),
-          placeholder: '0 - 10',
+          placeholder: `0 - ${config.maxChildrenCount}`,
           defaultValue: 0,
-          maxLength: 2,
+          maxLength: String(config.maxChildrenCount).length,
           min: 0,
-          max: 10,
+          max: config.maxChildrenCount,
           factor: 1,
           errorMsg: maxErrMsg,
         },
@@ -196,11 +203,11 @@ function getJourney2Groups(labels, apiResponse) {
         {
           id: 'FatherInsure',
           label: getString(labels, 'stepsStep2HealthParentInsurancePremiumLabel', "Parents' Health Insurance Premiums"),
-          placeholder: `0 - ${formatNumber(15000)}`,
+          placeholder: `0 - ${formatNumber(config.fatherInsureMax)}`,
           defaultValue: 0,
-          maxLength: 6,
+          maxLength: formatNumber(config.fatherInsureMax).length,
           min: 0,
-          max: 15000,
+          max: config.fatherInsureMax,
           factor: 1,
           errorMsg: maxErrMsg,
           hint: fatherInsureHint,
@@ -246,33 +253,33 @@ function getJourney2Groups(labels, apiResponse) {
         {
           id: 'HomeInterest',
           label: getString(labels, 'stepsStep2HomeLoanInterestLabel', 'Mortgage loan interest'),
-          placeholder: `0 - ${formatNumber(100000)}`,
+          placeholder: `0 - ${formatNumber(config.homeInterestMax)}`,
           defaultValue: 0,
-          maxLength: 7,
+          maxLength: formatNumber(config.homeInterestMax).length,
           min: 0,
-          max: 100000,
+          max: config.homeInterestMax,
           factor: 1,
           errorMsg: maxErrMsg,
         },
         {
           id: 'Donate',
           label: getString(labels, 'stepsStep2DonationLabel', 'Donations'),
-          placeholder: `0 - ${formatNumber(999999999)}`,
+          placeholder: `0 - ${formatNumber(config.donateMax)}`,
           defaultValue: 0,
-          maxLength: 11,
+          maxLength: formatNumber(config.donateMax).length,
           min: 0,
-          max: 999999999,
+          max: config.donateMax,
           factor: 1,
           errorMsg: maxErrMsg,
         },
         {
           id: 'Other',
           label: getString(labels, 'stepsStep2OtherDeductionsLabel', 'Other'),
-          placeholder: `0 - ${formatNumber(1000000)}`,
+          placeholder: `0 - ${formatNumber(config.otherDeductionsMax)}`,
           defaultValue: 0,
-          maxLength: 9,
+          maxLength: formatNumber(config.otherDeductionsMax).length,
           min: 0,
-          max: 1000000,
+          max: config.otherDeductionsMax,
           factor: 1,
           errorMsg: maxErrMsg,
         },
@@ -681,7 +688,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   block.innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const { labels } = data;
-  const fieldDefinitions = getJourney1Fields(labels);
+  const fieldDefinitions = getJourney1Fields(labels, data);
 
   const container = parseHTML('<div class="tax-calc tax-calc-step-1"></div>');
   container.appendChild(buildHeader(labels));
@@ -786,14 +793,12 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
 
 // ─── Journey 2: Allowance ──────────────────────────────────────────────────────
 
-const COMBINED_INSURANCE_MAX = 100000;
-
 function renderJourney2(block, data, state, onBack, onCalculate) {
   block.innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const { labels } = data;
   const { apiResponse, journey2 = {} } = state;
-  const groups = getJourney2Groups(labels, apiResponse);
+  const groups = getJourney2Groups(labels, apiResponse, data);
 
   const container = parseHTML('<div class="tax-calc tax-calc-step-2"></div>');
   container.appendChild(buildHeader(labels));
@@ -847,14 +852,14 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
   if (insureInput && healthInsureInput) {
     insureInput.addEventListener('input', () => {
       const val = parseFloat(stripCommas(insureInput.value)) || 0;
-      const newMax = Math.min(apiResponse.MaxHealthInsure, COMBINED_INSURANCE_MAX - val);
+      const newMax = Math.min(apiResponse.MaxHealthInsure, data.combinedInsuranceMax - val);
       if (healthInsureField?.updateMax) healthInsureField.updateMax(Math.max(0, newMax));
       syncStep2ButtonState();
     });
 
     healthInsureInput.addEventListener('input', () => {
       const val = parseFloat(stripCommas(healthInsureInput.value)) || 0;
-      const newMax = Math.min(apiResponse.MaxInsure, COMBINED_INSURANCE_MAX - val);
+      const newMax = Math.min(apiResponse.MaxInsure, data.combinedInsuranceMax - val);
       if (insureField?.updateMax) insureField.updateMax(Math.max(0, newMax));
       syncStep2ButtonState();
     });
@@ -1078,7 +1083,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
     [
       getString(labels, 'configNotesInvestmentCalculation', 'Calculate the maximum amount that you can invest according to the conditions of the Revenue Department.'),
       getString(labels, 'configNotesRmfAndPension', `* The combined amount of RMF and pension insurance premiums must not exceed ${formatNumber(rmfPensionMax)} baht`).replace('{combinedRMFPensionMax}', formatNumber(rmfPensionMax)),
-      getString(labels, 'configNotesLifeAndHealthInsurance', `** The combined amount of life insurance premiums and health insurance premiums must not exceed ${formatNumber(COMBINED_INSURANCE_MAX)} baht`).replace('{combinedLifeHealthMax}', formatNumber(COMBINED_INSURANCE_MAX)),
+      getString(labels, 'configNotesLifeAndHealthInsurance', `** The combined amount of life insurance premiums and health insurance premiums must not exceed ${formatNumber(data.combinedInsuranceMax)} baht`).replace('{combinedLifeHealthMax}', formatNumber(data.combinedInsuranceMax)),
       getString(labels, 'configNotesThaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${formatNumber(apiResult1.MaxESG)} baht whichever is lower`).replace('{thaiEsgMax}', formatNumber(apiResult1.MaxESG)),
     ],
   );
@@ -1165,7 +1170,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
     const journey2InsureBase = state.journey2?.Insure ?? 0;
     const journey2HealthBase = state.journey2?.HealthInsure ?? 0;
     const usedInsuranceCap = journey2InsureBase + journey2HealthBase;
-    const remainingCombined = Math.max(0, COMBINED_INSURANCE_MAX - usedInsuranceCap);
+    const remainingCombined = Math.max(0, data.combinedInsuranceMax - usedInsuranceCap);
 
     const insureField = fieldElements.InputInsure;
     const healthField = fieldElements.InputHealthInsure;
