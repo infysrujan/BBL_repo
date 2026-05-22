@@ -8,6 +8,16 @@ body.promo-details-hide-chrome footer {
     display: none;
 }
 
+body.promo-details-hide-chrome {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+body.promo-details-hide-chrome main {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
 .promotional-details .promo-detail-title-wrap {
     text-align: center;
 }

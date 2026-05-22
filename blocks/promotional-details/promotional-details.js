@@ -1,7 +1,7 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
-import { readBlockConfig } from '../../scripts/aem.js';
+import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
@@ -169,7 +169,25 @@ export default async function decorate(block) {
 
   const { promotionType, promoId } = getPromoBlockConfig(block);
   const lang = getLang();
-  const configs = await fetchConfigs();
+  let configs = await fetchConfigs();
+  if (!configs || !configs.promotionalCardSelector) {
+    try {
+      const resp = await fetch(`/${lang}/config.json`);
+      if (resp.ok) {
+        const json = await resp.json();
+        const fallbackConfigs = {};
+        json.data
+          ?.filter((config) => config.Key)
+          .forEach((config) => {
+            fallbackConfigs[toCamelCase(config.Key)] = config.Value;
+          });
+        configs = { ...configs, ...fallbackConfigs };
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn('Failed to fetch local config fallback:', e);
+    }
+  }
 
   const path = window.location.pathname.toLowerCase();
   const isBbmPath = path.includes('/promotionsmb');

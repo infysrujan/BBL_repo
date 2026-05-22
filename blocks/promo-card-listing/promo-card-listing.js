@@ -1,7 +1,7 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
-import { readBlockConfig } from '../../scripts/aem.js';
+import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { activateTab } from '../tabs/helpers/tabs-utils.js';
 import {
@@ -451,7 +451,25 @@ export default async function decorate(block) {
 
   const promotionType = resolvePromotionType(block);
   const docLang = getLang();
-  const configs = await fetchConfigs();
+  let configs = await fetchConfigs();
+  if (!configs || !configs.promotionalCardSelector) {
+    try {
+      const resp = await fetch(`/${docLang}/config.json`);
+      if (resp.ok) {
+        const json = await resp.json();
+        const fallbackConfigs = {};
+        json.data
+          ?.filter((config) => config.Key)
+          .forEach((config) => {
+            fallbackConfigs[toCamelCase(config.Key)] = config.Value;
+          });
+        configs = { ...configs, ...fallbackConfigs };
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn('Failed to fetch local config fallback:', e);
+    }
+  }
   const creditBaseUrl = configs?.promotionalCardSelector || '';
   const bbmBaseUrl = configs?.promotionalCardSelectorBbm || '';
   const pageSize = parseInt(configs?.promotionalItemsPerPage, 10) || '';
