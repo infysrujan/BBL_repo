@@ -229,6 +229,12 @@
           }
         },
         {
+          "component": "text",
+          "name": "ctaLabel",
+          "label": "Cta Label",
+          "required": true
+        },
+        {
           "component": "aem-content",
           "name": "ctaLink",
           "label": "Cta Link",
@@ -338,32 +344,6 @@
                   {
                     "var": "isRegister"
                   },
-                  "Register"
-                ]
-              },
-              {
-                "===": [
-                  {
-                    "var": "isRegister"
-                  },
-                  "Register with Data"
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "component": "text",
-          "name": "ctaLabel",
-          "label": "Cta Label",
-          "required": true,
-          "condition": {
-            "or": [
-              {
-                "===": [
-                  {
-                    "var": "isRegister"
-                  },
                   "Y"
                 ]
               },
@@ -373,22 +353,6 @@
                     "var": "isRegister"
                   },
                   "D"
-                ]
-              },
-              {
-                "===": [
-                  {
-                    "var": "isRegister"
-                  },
-                  "Register"
-                ]
-              },
-              {
-                "===": [
-                  {
-                    "var": "isRegister"
-                  },
-                  "Register with Data"
                 ]
               }
             ]

@@ -7,6 +7,25 @@ import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 const HIDE_CHROME_CLASS = 'promo-details-hide-chrome';
 
+function isRegisterEnabled(value) {
+  const normalized = String(value || '').trim().toUpperCase();
+  return normalized && normalized !== 'N';
+}
+
+function resolveCtaLabel(isRegister, data) {
+  if (isRegisterEnabled(isRegister)) {
+    return data?.isRegisterCtaLabel || '';
+  }
+  return data?.ctaLabel || '';
+}
+
+function resolveCtaUrl(isRegister, data, registerCtaUrl) {
+  if (isRegisterEnabled(isRegister)) {
+    return registerCtaUrl || '';
+  }
+  return data?.ctaLink || '';
+}
+
 function getPromoBlockConfig(block) {
   const firstRow = block.querySelector(':scope > div');
   const isKeyValueRows = firstRow && firstRow.children.length >= 2;
@@ -65,8 +84,7 @@ function buildDisclaimerHtml(enabled, text) {
   return `<div class="promo-detail-disclaimer pad-top-30">${text}</div>`;
 }
 
-function buildRegisterCtaHtml(isRegister, label, url) {
-  if (!['Y', 'D'].includes(isRegister)) return '';
+function buildRegisterCtaHtml(label, url) {
   if (!label || !url) return '';
   return `
     <div class="promo-detail-cta button-container">
@@ -87,8 +105,9 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   const endDate = data?.promotionEndDate || '';
   const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
-  const ctaLabel = data?.isRegisterCtaLabel || data?.ctaLabel || '';
   const isRegister = data?.isRegister || '';
+  const ctaLabel = resolveCtaLabel(isRegister, data);
+  const ctaUrl = resolveCtaUrl(isRegister, data, registerCtaUrl);
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
@@ -109,7 +128,7 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
           <div class="promo-detail-content">
             <div class="promo-detail-description">${description}</div>
             ${buildDateHtml(startDate, endDate, periodLabel, locale)}
-            ${buildRegisterCtaHtml(isRegister, ctaLabel, registerCtaUrl)}
+            ${buildRegisterCtaHtml(ctaLabel, ctaUrl)}
             ${buildDisclaimerHtml(disclaimerEnabled, disclaimerText)}
           </div>
         </div>
