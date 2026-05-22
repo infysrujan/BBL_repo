@@ -48,10 +48,28 @@
       "card-list-wealth",
       "privacy-modal",
       "external-redirect-popup",
+      "credit-card-selector",
+      "credit-card-comparator",
+      "card-comparator-results",
       "video",
       "carousel-video",
       "forex-rates",
-      "bcap"
+      "bcap",
+      "multi-column-tiles",
+      "retirement-calculator",
+      "tax-calculator",
+      "special-fx-rates",
+      "promotional-details",
+      "promo-card-listing",
+      "top-promotional-cards",
+      "multi-column-tiles",
+      "stock-ticker",
+      "cookie-alert",
+      "cookie-modal",
+      "news-media-details",
+      "news-media",
+      "latest-news",
+      "forward-points-sme"
     ]
   },
   {
@@ -124,6 +142,18 @@
     ]
   },
   {
+    "id": "cookie-modal",
+    "components": [
+      "cookie-modal-accordion-item"
+    ]
+  },
+  {
+    "id": "credit-card-selector",
+    "components": [
+      "credit-card-section"
+    ]
+  },
+  {
     "id": "form",
     "components": [
       "captcha",
@@ -150,7 +180,8 @@
       "text-input",
       "tnc",
       "wizard",
-      "range"
+      "range",
+      "menu-card-actions"
     ]
   },
   {
@@ -215,6 +246,12 @@
       "menu-card"
     ],
     "maxItems": 6
+  },
+  {
+    "id": "multi-column-tiles",
+    "components": [
+      "multi-column-tiles-item"
+    ]
   },
   {
     "id": "rate-card",
@@ -301,9 +338,7 @@
         ]
       }
     },
-    "components": [
-      "nested-table"
-    ]
+    "components": []
   },
   {
     "id": "tab-section",

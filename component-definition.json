@@ -128,6 +128,21 @@
           }
         },
         {
+          "title": "Card Comparator Results",
+          "id": "card-comparator-results",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Card Comparator Results",
+                  "model": "card-comparator-results"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Card List Wealth",
           "id": "card-list-wealth",
           "plugins": {
@@ -398,6 +413,98 @@
                 "template": {
                   "name": "Content Insert Card",
                   "model": "content-insert-card"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Cookie Alert",
+          "id": "cookie-alert",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Cookie Alert",
+                  "model": "cookie-alert"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Cookie Modal",
+          "id": "cookie-modal",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Cookie Modal",
+                  "model": "cookie-modal",
+                  "filter": "cookie-modal"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Cookie Modal Accordion Item",
+          "id": "cookie-modal-accordion-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Cookie Modal Accordion Item",
+                  "model": "cookie-modal-accordion-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Credit Card Comparator",
+          "id": "credit-card-comparator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Credit Card Comparator",
+                  "model": "credit-card-comparator"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Credit Card Selector",
+          "id": "credit-card-selector",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Credit Card Selector",
+                  "model": "credit-card-selector",
+                  "filter": "credit-card-selector"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Credit Card Section",
+          "id": "credit-card-section",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Credit Card Section",
+                  "model": "credit-card-section"
                 }
               }
             }
@@ -699,6 +806,37 @@
                 "template": {
                   "jcr:title": "Image",
                   "fieldType": "image"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Menu Card Actions",
+          "id": "menu-card-actions",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Menu Card Actions",
+                  "model": "menu-card-actions",
+                  "filter": "menu-card-actions"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Menu Card Item",
+          "id": "menu-card-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Menu Card Item",
+                  "model": "menu-card-item"
                 }
               }
             }
@@ -1013,6 +1151,21 @@
           }
         },
         {
+          "title": "Forward Points SME",
+          "id": "forward-points-sme",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Forward Points SME",
+                  "model": "forward-points-sme"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Fragment",
           "id": "fragment",
           "plugins": {
@@ -1071,6 +1224,21 @@
                   "name": "Hero Item",
                   "model": "hero-item",
                   "label": "Maximum 6 items allowed"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Latest News",
+          "id": "latest-news",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Latest News",
+                  "model": "latest-news"
                 }
               }
             }
@@ -1324,6 +1492,66 @@
           }
         },
         {
+          "title": "Multi Column Tiles",
+          "id": "multi-column-tiles",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Multi Column Tiles",
+                  "filter": "multi-column-tiles"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Multi Column Tiles Item",
+          "id": "multi-column-tiles-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Multi Column Tiles Item",
+                  "model": "multi-column-tiles-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "News Media Details",
+          "id": "news-media-details",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "News Media Details",
+                  "model": "news-media-details"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "News Media",
+          "id": "news-media",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "News Media",
+                  "model": "news-media"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Popup Modal Card Offer",
           "id": "popup-modal-card-offer",
           "plugins": {
@@ -1354,6 +1582,36 @@
           }
         },
         {
+          "title": "Promo Card Listing",
+          "id": "promo-card-listing",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Promo Card Listing",
+                  "model": "promo-card-listing"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Promotional Details",
+          "id": "promotional-details",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Promotional Details",
+                  "model": "promotional-details"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Rate Card",
           "id": "rate-card",
           "plugins": {
@@ -1378,6 +1636,21 @@
                 "template": {
                   "name": "Rate Card Item",
                   "model": "rate-card-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Retirement Calculator",
+          "id": "retirement-calculator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Retirement Calculator",
+                  "model": "retirement-calculator"
                 }
               }
             }
@@ -1444,6 +1717,36 @@
           }
         },
         {
+          "title": "Special FX Rates",
+          "id": "special-fx-rates",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Special FX Rates",
+                  "model": "special-fx-rates"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Stock Ticker",
+          "id": "stock-ticker",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Stock Ticker",
+                  "model": "stock-ticker"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Story Card",
           "id": "story-card",
           "plugins": {
@@ -1491,21 +1794,6 @@
           }
         },
         {
-          "title": "Nested Table",
-          "id": "nested-table",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Nested Table",
-                  "model": "nested-table"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "Tab Section",
           "id": "tab-section",
           "plugins": {
@@ -1516,6 +1804,20 @@
                   "name": "Tab Section",
                   "model": "tab-section",
                   "filter": "tab-section"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Tax Calculator",
+          "id": "tax-calculator",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Tax Calculator"
                 }
               }
             }
@@ -1579,6 +1881,21 @@
                   "model": "top-nav-link",
                   "classes": "link-only",
                   "label": "{{linkText}}"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Top Promotional Cards",
+          "id": "top-promotional-cards",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Top Promotional Cards",
+                  "model": "top-promotional-cards"
                 }
               }
             }

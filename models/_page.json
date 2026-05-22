@@ -43,6 +43,10 @@
             {
               "name": "Bangkok Bankm Card",
               "value": "bangkok-bankm-card"
+            },
+            {
+              "name": "Error Page",
+              "value": "error-page"
             }
           ]
         },
@@ -61,7 +65,7 @@
         {
           "component": "boolean",
           "name": "breadcrumb",
-          "value": "",
+          "value": true,
           "label": "Breadcrumb",
           "valueType": "boolean"
         }
