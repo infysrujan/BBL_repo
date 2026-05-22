@@ -3,6 +3,9 @@ import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { activateTab } from '../tabs/helpers/tabs-utils.js';
+import {
+  buildCardHtml, buildPaginationHtml, sortCards, bindPaginationClick,
+} from '../../scripts/utils/card-helpers.js';
 
 const fetchCache = {};
 
@@ -44,6 +47,12 @@ function buildPromotionsUrl(baseUrl, lang) {
   if (!baseUrl) return '';
   return baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 }
+const CARD_TYPE_NORMALIZE = {
+  วีซ่า: 'visa',
+  มาสเตอร์การ์ด: 'mastercard',
+  แอมเอ็กซ์: 'amex',
+  ยูเนี่ยนเพย์: 'unionpay',
+};
 
 export async function fetchJson(url) {
   if (!fetchCache[url]) {
@@ -178,44 +187,14 @@ function buildLogosHtml(logos) {
   return `<div class="promo-selector-logos">${imgs}</div>`;
 }
 
-export function buildCardHtml(card, tag, placeholders = {}) {
+export function buildCardOptions(card) {
   const locale = LOCALE_MAP[getLang()] || 'en-GB';
-  const dateLine = buildDateLine(card, locale);
-  const logoHtml = buildLogosHtml(
-    normalizeList(card.cardTypes).map((t) => t.toLowerCase()),
-  );
-  const target = card.targetLink === 'true' ? '_blank' : '_self';
-  return `<div class="promo-selector-card-container">
-  <div class="promo-selector-card">
-    <div class="promo-selector-card-img-wrap">
-      <span class="promo-selector-card-tag">${tag}</span>
-      <img src="${card.cardImageUrl}" alt="${card.title || ''}"
-        class="promo-selector-card-img" loading="lazy">
-    </div>
-    <div class="promo-selector-card-body">
-      <div class="promo-selector-card-desc">${card.cardShortDescription || ''}</div>
-      ${logoHtml}
-      ${dateLine ? `<p class="promo-selector-card-date">${dateLine}</p>` : ''}
-    </div>
-    <div class="promo-selector-card-footer">
-      <a href="${card.ctaLink || ''}" target="${target}" class="promo-selector-cta button primary">${card.ctaLabel || placeholders.promoLearnMore || 'Learn More'}</a>
-    </div>
-  </div>
-</div>`;
-}
-
-function buildPaginationHtml(current, total) {
-  if (total <= 1) return '';
-  const pageButtons = Array.from({ length: total }, (_, i) => i + 1).map((p) => {
-    const cls = p === current ? 'promo-selector-page is-active' : 'promo-selector-page';
-    return `<button class="${cls}" data-page="${p}">${p}</button>`;
-  }).join('');
-  const prevAttr = current === 1 ? ' disabled' : '';
-  const nextAttr = current === total ? ' disabled' : '';
-  return `
-    <button class="promo-selector-arrow" data-dir="prev"${prevAttr} aria-label="Previous"><i class="icon-arrow-left" aria-hidden="true"></i></button>
-    <div class="promo-selector-pages">${pageButtons}</div>
-    <button class="promo-selector-arrow promo-selector-arrow-next" data-dir="next"${nextAttr} aria-label="Next"><i class="icon-arrow-left" aria-hidden="true"></i></button>`;
+  return {
+    dateLine: buildDateLine(card, locale),
+    logoHtml: buildLogosHtml(
+      (card.cardTypes || []).map((t) => CARD_TYPE_NORMALIZE[t] || t.toLowerCase()),
+    ),
+  };
 }
 
 function buildSubOptions(items, defaultLabel) {
@@ -228,17 +207,6 @@ function buildSubOptions(items, defaultLabel) {
       return `<li class="promo-selector-option" data-value="${value}" role="option">${value}</li>`;
     })
     .join(''));
-}
-
-export function sortCards(cards) {
-  return [...cards].sort((a, b) => {
-    const aStart = a.promotionStartDate ? new Date(a.promotionStartDate).getTime() : 0;
-    const bStart = b.promotionStartDate ? new Date(b.promotionStartDate).getTime() : 0;
-    if (bStart !== aStart) return bStart - aStart;
-    const aEnd = a.promotionEndDate ? new Date(a.promotionEndDate).getTime() : Infinity;
-    const bEnd = b.promotionEndDate ? new Date(b.promotionEndDate).getTime() : Infinity;
-    return aEnd - bEnd;
-  });
 }
 
 function isTruthyFlag(value) {
@@ -371,7 +339,7 @@ function setupPanel(
     }, state.page, pageSize, isHighlightTab);
 
     gridEl.innerHTML = cards.length
-      ? cards.map((c) => buildCardHtml(c, category, placeholders)).join('')
+      ? cards.map((c) => buildCardHtml(c, category, placeholders, buildCardOptions(c))).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 
     paginationEl.innerHTML = hidePagination
@@ -455,25 +423,7 @@ function setupPanel(
     render();
   });
 
-  paginationEl.addEventListener('click', (e) => {
-    const pageBtn = e.target.closest('.promo-selector-page');
-    const arrowBtn = e.target.closest('.promo-selector-arrow');
-    let changed = false;
-    if (pageBtn) {
-      state.page = parseInt(pageBtn.dataset.page, 10);
-      changed = true;
-    } else if (arrowBtn?.dataset.dir === 'prev' && state.page > 1) {
-      state.page -= 1;
-      changed = true;
-    } else if (arrowBtn?.dataset.dir === 'next') {
-      state.page += 1;
-      changed = true;
-    }
-    if (changed) {
-      render();
-      gridEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
+  bindPaginationClick(paginationEl, state, render, gridEl);
 }
 
 export default async function decorate(block) {
