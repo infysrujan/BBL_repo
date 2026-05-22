@@ -10371,6 +10371,7 @@
         "component": "text",
         "name": "ctaLabel",
         "label": "Cta Label",
+        "value": "",
         "required": true
       },
       {
@@ -10480,7 +10481,8 @@
       {
         "component": "text",
         "name": "isRegisterCtaLabel",
-        "label": "Is Register CTA Label",
+        "label": "Register CTA Label",
+        "value": "",
         "required": true,
         "condition": {
           "or": [
