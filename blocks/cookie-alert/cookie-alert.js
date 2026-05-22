@@ -78,6 +78,9 @@ async function ensureCookieModal(fragmentPath) {
 }
 
 export default async function decorate(block) {
+  /* Skip in Universal Editor — the section must not be removed while authoring. */
+  if (window.self !== window.top) return;
+
   if (getCookie(COOKIE_CONSENT) === 'ALERT') {
     block.closest('.section')?.remove();
     return;

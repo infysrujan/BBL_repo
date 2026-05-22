@@ -312,6 +312,14 @@
                 "value": "center-title"
               },
               {
+                "name": "Center Image",
+                "value": "center-image"
+              },
+              {
+                "name": "Underline Image",
+                "value": "underline-image"
+              },
+              {
                 "name": "Center Content",
                 "value": "center-content"
               }
@@ -362,6 +370,39 @@
           "rootPath": "/en/fragments/accordions",
           "allowFolders": false
         }
+      }
+    ]
+  },
+  {
+    "id": "bcap",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "date-label",
+        "value": "",
+        "label": "Calander Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "print-label",
+        "value": "",
+        "label": "Print Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "error-message",
+        "value": "",
+        "label": "Error Message Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimer-text",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
       }
     ]
   },
@@ -3631,6 +3672,28 @@
         ]
       },
       {
+        "component": "select",
+        "name": "properties.linkType",
+        "label": "Button Style",
+        "valueType": "string",
+        "value": "primary",
+        "description": "Visual style variant for the button",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
         "component": "tab",
         "label": "Help Content",
         "name": "help"
@@ -4304,10 +4367,15 @@
         "label": "Display Format",
         "name": "displayFormat",
         "valueType": "string",
+        "value": "dd/MM/yyyy",
         "options": [
           {
             "name": "No Pattern",
             "value": ""
+          },
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
           },
           {
             "name": "01 April, 2007",
@@ -4326,12 +4394,34 @@
             "value": "EEEE, MMMM d, y"
           },
           {
-            "name": "1/4/2007",
+            "name": "D/M/YYYY (1/4/2007)",
             "value": "d/M/y"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "label": "Submit Value Format",
+        "name": "valueFormat",
+        "valueType": "string",
+        "value": "dd/MM/yyyy",
+        "description": "Format of the date value sent on form submission",
+        "options": [
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
           },
           {
-            "name": "1/4/2007",
-            "value": "dd/MM/yyyy"
+            "name": "YYYY-MM-DD (2007-04-01) — ISO 8601",
+            "value": "yyyy-MM-dd"
+          },
+          {
+            "name": "MM/DD/YYYY (04/01/2007)",
+            "value": "MM/dd/yyyy"
+          },
+          {
+            "name": "D/M/YYYY (1/4/2007)",
+            "value": "d/M/y"
           }
         ]
       },
@@ -5299,6 +5389,307 @@
             "value": "12"
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "menu-card-actions",
+    "fields": [
+      {
+        "component": "select",
+        "name": "mobileExperience",
+        "value": "default",
+        "label": "Mobile Experience",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Scrollable",
+            "value": "scrollable"
+          },
+          {
+            "name": "Stacked",
+            "value": "stacked"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "menu-card-item",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "menuCardImage",
+        "label": "Menu Card Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "menuCardImageAlt",
+        "label": "Alt",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "select",
+        "name": "titleType",
+        "label": "Title Type",
+        "options": [
+          {
+            "name": "h1",
+            "value": "h1"
+          },
+          {
+            "name": "h2",
+            "value": "h2"
+          },
+          {
+            "name": "h3",
+            "value": "h3"
+          },
+          {
+            "name": "h4",
+            "value": "h4"
+          },
+          {
+            "name": "h5",
+            "value": "h5"
+          },
+          {
+            "name": "h6",
+            "value": "h6"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "value": "",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "description": "Select type of button action",
+        "name": "buttonActionType",
+        "value": "default",
+        "label": "Button ActionType",
+        "options": [
+          {
+            "name": "Default",
+            "value": "default"
+          },
+          {
+            "name": "Download",
+            "value": "download"
+          },
+          {
+            "name": "Select Dropdown",
+            "value": "select-dropdown"
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Link",
+        "description": "Destination URL for the button",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "linkTitle",
+        "label": "Title",
+        "description": "Accessibility title attribute (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default"
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default"
+          ]
+        }
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false,
+            "condition": {
+              "===": [
+                {
+                  "var": "buttonActionType"
+                },
+                "default"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "name": "downloadLink",
+        "label": "Download Link",
+        "description": "Download Link for the button",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "download"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "downloadLinkText",
+        "label": "Download Text",
+        "description": "Download Button label text",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "download"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "downloadLinkTitle",
+        "label": "Download Title",
+        "description": "Accessibility title attribute (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "download"
+          ]
+        }
+      },
+      {
+        "component": "container",
+        "name": "downloadTargetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false,
+            "condition": {
+              "===": [
+                {
+                  "var": "buttonActionType"
+                },
+                "download"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "dropdownLable",
+        "label": "Dropdown Label",
+        "description": "Dropdown label text for dropdown links",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "select-dropdown"
+          ]
+        }
+      },
+      {
+        "component": "richtext",
+        "name": "drop-links",
+        "value": "",
+        "label": "Dropdown Links",
+        "valueType": "string",
+        "condition": {
+          "and": [
+            {
+              "===": [
+                {
+                  "var": "buttonActionType"
+                },
+                "select-dropdown"
+              ]
+            }
+          ]
+        }
       }
     ]
   },
@@ -9926,6 +10317,14 @@
     ]
   },
   {
+    "id": "property-for-sale-details",
+    "fields": []
+  },
+  {
+    "id": "property-for-sale",
+    "fields": []
+  },
+  {
     "id": "rate-card-item",
     "fields": [
       {
@@ -10447,6 +10846,10 @@
               {
                 "name": "Header Mixed Blue",
                 "value": "header-mixed-blue"
+              },
+              {
+                "name": "Header Light Gray",
+                "value": "header-light-gray"
               }
             ]
           },
