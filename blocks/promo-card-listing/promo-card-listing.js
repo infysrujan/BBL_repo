@@ -48,6 +48,13 @@ function buildPromotionsUrl(baseUrl, lang) {
   if (!baseUrl) return '';
   return baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 }
+
+function normalizeQueryLang(value) {
+  const raw = (value || '').toLowerCase();
+  if (raw.startsWith('th')) return 'th';
+  if (raw.startsWith('en')) return 'en';
+  return '';
+}
 const CARD_TYPE_NORMALIZE = {
   วีซ่า: 'visa',
   มาสเตอร์การ์ด: 'mastercard',
@@ -429,18 +436,21 @@ function setupPanel(
 
 export default async function decorate(block) {
   const promotionType = resolvePromotionType(block);
-  const lang = getLang();
+  const docLang = getLang();
   const configs = await fetchConfigs();
   const creditBaseUrl = configs?.promotionalCardSelector || '';
   const bbmBaseUrl = configs?.promotionalCardSelectorBbm || '';
-  const creditUrl = buildPromotionsUrl(creditBaseUrl, lang);
-  const bbmUrl = buildPromotionsUrl(bbmBaseUrl, lang);
   const pageSize = parseInt(configs?.promotionalItemsPerPage, 10) || '';
 
   const path = window.location.pathname.toLowerCase();
   const isBbmPath = path.includes('/promotionsmb');
   const isCreditCardPath = path.includes('/credit-card-promotions');
   const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
+  const searchParams = new URLSearchParams(window.location.search);
+  const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
+  const lang = isBbmPath && queryLang ? queryLang : docLang;
+  const creditUrl = buildPromotionsUrl(creditBaseUrl, lang);
+  const bbmUrl = buildPromotionsUrl(bbmBaseUrl, lang);
 
   // Fetch data for the active page only
   const dataUrl = isBbm ? bbmUrl : creditUrl;
@@ -453,7 +463,6 @@ export default async function decorate(block) {
   const activeCardTypes = activeData?.cardTypes || [];
   const activeAreas = activeData?.areas || [];
   const isBbmPage = isBbm;
-  const searchParams = new URLSearchParams(window.location.search);
   const cardRef = isBbmPage ? searchParams.get('card_ref') : '';
   const forcedCardType = resolveCardTypeFromRef(cardRefConfig, cardRef);
   const disableFilters = Boolean(forcedCardType);

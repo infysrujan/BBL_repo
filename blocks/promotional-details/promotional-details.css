@@ -3,6 +3,11 @@
     margin: 0 auto;
 }
 
+body.promo-details-hide-chrome header,
+body.promo-details-hide-chrome footer {
+    display: none;
+}
+
 .promotional-details .promo-detail-title-wrap {
     text-align: center;
 }

@@ -328,6 +328,32 @@
         },
         {
           "component": "text",
+          "name": "isRegisterCtaLabel",
+          "label": "Is Register CTA Label",
+          "required": true,
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "isRegister"
+                  },
+                  "Register"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "isRegister"
+                  },
+                  "Register with Data"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "component": "text",
           "name": "ctaLabel",
           "label": "Cta Label",
           "required": true,

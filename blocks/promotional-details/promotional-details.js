@@ -5,7 +5,7 @@ import { readBlockConfig } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
-const BBM_FALLBACK_URL = '/blocks/dummy/bbm-promotions.json';
+const HIDE_CHROME_CLASS = 'promo-details-hide-chrome';
 
 function getPromoBlockConfig(block) {
   const firstRow = block.querySelector(':scope > div');
@@ -43,6 +43,7 @@ function getAuthoringPreviewData(block) {
     responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text']
       || config.responsiblelendingdisclaimertext || '',
     isRegister: config['is-register'] || config.isregister || '',
+    isRegisterCtaLabel: config['is-register-cta-label'] || config.isregisterctalabel || '',
     ctaLabel: config['cta-label'] || config.ctalabel || '',
   };
 }
@@ -86,7 +87,7 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   const endDate = data?.promotionEndDate || '';
   const disclaimerEnabled = data?.responsibleLendingDisclaimerEnabled;
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
-  const ctaLabel = data?.ctaLabel || '';
+  const ctaLabel = data?.isRegisterCtaLabel || data?.ctaLabel || '';
   const isRegister = data?.isRegister || '';
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
@@ -135,16 +136,24 @@ async function fetchPromoData(url, promoId) {
 export default async function decorate(block) {
   const { promotionType, promoId } = getPromoBlockConfig(block);
   const lang = getLang();
-  const locale = LOCALE_MAP[lang] || 'en-GB';
   const configs = await fetchConfigs();
 
   const path = window.location.pathname.toLowerCase();
   const isBbmPath = path.includes('/promotionsmb');
   const isCreditCardPath = path.includes('/credit-card-promotions');
   const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
+  const searchParams = new URLSearchParams(window.location.search);
+  const locale = LOCALE_MAP[lang] || 'en-GB';
+  const hasCardRef = isBbmPath && Boolean(searchParams.get('card_ref'));
+
+  if (hasCardRef) {
+    document.body.classList.add(HIDE_CHROME_CLASS);
+  } else {
+    document.body.classList.remove(HIDE_CHROME_CLASS);
+  }
 
   const baseUrl = isBbm
-    ? (configs?.promotionalCardSelectorBbm || BBM_FALLBACK_URL)
+    ? (configs?.promotionalCardSelectorBbm || '')
     : (configs?.promotionalCardSelector || '');
   const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 
