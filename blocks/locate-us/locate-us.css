@@ -527,8 +527,8 @@
   font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: var(--bbl-space-250);
+  margin-bottom: 0.625rem;
   overflow-wrap: break-word;
 }
 
@@ -1075,7 +1075,7 @@
     background-color: var(--bbl-color-white);
     cursor: pointer;
     border: 0.0625rem solid var(--bbl-color-gray-122);
-    box-shadow: 0 0 16px 0 rgb(0 0 0 / 10%);
+    box-shadow: 0 0 var(--bbl-space-200) 0 rgb(0 0 0 / 10%);
     overflow: hidden;
     display: grid;
     grid-template-rows: subgrid;
@@ -1351,7 +1351,7 @@
     flex: 1;
     display: flex;
     margin: 0;
-    padding: 0 25px 15px 0;
+    padding: 0 1.5625rem 0.9375rem 0;
     padding-bottom: 0.9375rem;
   }
 
