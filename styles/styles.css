@@ -15,8 +15,8 @@
 @import url('./background.css');
 @import url('./icomoon.css');
 @import url('./overlay.css');
+@import url('./calendar-picker.css');
 @import url('./error-page.css');
-
 
 :root {
     /* site-level sizing */
@@ -552,4 +552,8 @@ body.bangkok-bankm-card main {
         font-weight: var(--bbl-font-weight-medium);
         line-height: 2.875rem;
     }
+}
+
+.hidden {
+    display: none;
 }
