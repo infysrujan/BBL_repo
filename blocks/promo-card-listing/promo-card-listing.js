@@ -435,6 +435,20 @@ function setupPanel(
 }
 
 export default async function decorate(block) {
+  const searchParams = new URLSearchParams(window.location.search);
+  if (searchParams.has('card_ref')) {
+    const header = document.querySelector('header');
+    if (header) {
+      header.style.display = 'none';
+      header.classList.add('is-hidden');
+    }
+    const footer = document.querySelector('footer');
+    if (footer) {
+      footer.style.display = 'none';
+      footer.classList.add('is-hidden');
+    }
+  }
+
   const promotionType = resolvePromotionType(block);
   const docLang = getLang();
   const configs = await fetchConfigs();
@@ -446,7 +460,6 @@ export default async function decorate(block) {
   const isBbmPath = path.includes('/promotionsmb');
   const isCreditCardPath = path.includes('/credit-card-promotions');
   const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
-  const searchParams = new URLSearchParams(window.location.search);
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
   const lang = isBbmPath && queryLang ? queryLang : docLang;
   const creditUrl = buildPromotionsUrl(creditBaseUrl, lang);
