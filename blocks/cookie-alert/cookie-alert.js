@@ -44,8 +44,10 @@ function dispatchConsentSaved(preferences) {
 }
 
 function parseExclusionUrls(block) {
+  const lastRow = block.lastElementChild;
+  if (!lastRow) return [];
   const urls = [];
-  block.querySelectorAll('ul li, p').forEach((node) => {
+  lastRow.querySelectorAll('ul li, p').forEach((node) => {
     const text = node.textContent.trim();
     if (text.startsWith('http') || text.startsWith('/')) {
       urls.push(text);
@@ -67,11 +69,8 @@ function isCurrentUrlExcluded(exclusionUrls) {
   });
 }
 
-function isExclusionUrlsRow(row) {
-  return [...row.querySelectorAll('ul li, p')].some((node) => {
-    const text = node.textContent.trim();
-    return text.startsWith('http') || text.startsWith('/');
-  });
+function isExclusionUrlsRow(row, block) {
+  return row === block.lastElementChild;
 }
 
 function acceptAll(section) {
@@ -151,7 +150,7 @@ export default async function decorate(block) {
 
   // Process each row in the block
   [...block.children].forEach((row) => {
-    if (isExclusionUrlsRow(row)) return;
+    if (isExclusionUrlsRow(row, block)) return;
 
     const content = row.firstElementChild || row;
 
