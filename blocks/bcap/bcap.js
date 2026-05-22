@@ -354,7 +354,7 @@ function printElement() {
     }
 
     tr.header-row {
-        border: 0.125rem solid black; /* 2px */
+        border: 0.125rem solid black;
         border-inline: 0;
     }
 
