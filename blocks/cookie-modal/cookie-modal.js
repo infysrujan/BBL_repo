@@ -54,8 +54,8 @@ function sanitizeId(value) {
 
 function parseExclusionUrls(block) {
   const urls = [];
-  block.querySelectorAll('ul li').forEach((li) => {
-    const text = li.textContent.trim();
+  block.querySelectorAll('ul li, p').forEach((node) => {
+    const text = node.textContent.trim();
     if (text.startsWith('http') || text.startsWith('/')) {
       urls.push(text);
     }
