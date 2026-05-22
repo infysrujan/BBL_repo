@@ -3,7 +3,7 @@ import { buildUrl, createEl, hasValue } from './utils.js';
 // ─── Google Maps iframe ───────────────────────────────────────────────────────
 
 function buildEmbedUrl(lat, lng, configs, zoom = 15) {
-  const template = configs?.googleMapsEmbedUrl;
+  const template = configs?.locateUsGoogleMapsEmbedUrl;
   if (!template) {
     // eslint-disable-next-line no-console
     console.error('[locate-us] Missing config key: google-maps-embed-url');
@@ -23,7 +23,7 @@ export function updateMapIframe(iframe, loc, configs) {
 export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = false) {
   const address = [loc.Address1, loc.Address2, loc.Address3, loc.Province, loc.Postcode]
     .filter((v) => hasValue(v)).join(' ');
-  const dirTemplate = configs?.googleMapsDirectionsUrl;
+  const dirTemplate = configs?.locateUsGoogleMapsDirectionsUrl;
   if (!dirTemplate) {
     // eslint-disable-next-line no-console
     console.error('[locate-us] Missing config key: google-maps-directions-url');
@@ -115,7 +115,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
 let provincesCache = null;
 
 export async function fetchNearMe(lat, lng, code, configs) {
-  const template = configs?.getNearMe;
+  const template = configs?.locateUsGetNearMe;
   if (!template) {
     // eslint-disable-next-line no-console
     console.error('[locate-us] Missing config key: get-near-me');
@@ -129,7 +129,7 @@ export async function fetchNearMe(lat, lng, code, configs) {
 
 export async function fetchProvinces(configs) {
   if (provincesCache) return provincesCache;
-  const url = configs?.getProvidence;
+  const url = configs?.locateUsGetProvince;
   if (!url) {
     // eslint-disable-next-line no-console
     console.error('[locate-us] Missing config key: get-providence');
@@ -143,7 +143,7 @@ export async function fetchProvinces(configs) {
 }
 
 export async function fetchDistricts(province, configs) {
-  const template = configs?.getDistrict;
+  const template = configs?.locateUsGetDistrict;
   if (!template) {
     // eslint-disable-next-line no-console
     console.error('[locate-us] Missing config key: get-district');
@@ -157,7 +157,7 @@ export async function fetchDistricts(province, configs) {
 }
 
 export async function fetchByProvince(province, district, lat, lng, code, configs) {
-  const template = configs?.searchThailandWithLocation;
+  const template = configs?.locateUsSearchThailandWithLocation;
   if (!template) {
     // eslint-disable-next-line no-console
     console.error('[locate-us] Missing config key: search-thailand-with-location');
@@ -177,7 +177,7 @@ export async function fetchByProvince(province, district, lat, lng, code, config
 }
 
 export async function fetchByKeyword(lat, lng, keyword, district, code, configs) {
-  const template = configs?.searchKeywordWithLocation;
+  const template = configs?.locateUsSearchKeywordWithLocation;
   if (!template) {
     // eslint-disable-next-line no-console
     console.error('[locate-us] Missing config key: search-keyword-with-location');

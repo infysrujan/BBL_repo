@@ -42,7 +42,7 @@ export default async function decorate(block) {
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-GB';
   const configs = await fetchConfigs();
-  const baseUrl = configs?.promotionalCardSelector || '';
+  const baseUrl = configs?.promoCardListingCardSelector || '';
   const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 
   const [placeholders, card] = await Promise.all([

@@ -1,5 +1,6 @@
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { getLang } from '../../scripts/scripts.js';
 import {
   buildCalendarGrid,
   buildIntlDayLabels,
@@ -239,10 +240,10 @@ function renderBlock(
 export default async function decorate(block) {
   const authoring = parseAuthoring(block);
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
-  const language = document.documentElement.lang?.split('-')[0] || 'en';
-  const monthLabels = parseCsvConfigList(configs?.monthLabels, buildIntlMonthLabels(language));
-  const dayLabels = parseCsvConfigList(configs?.dayLabels, buildIntlDayLabels(language));
-  const buddhistYearOffset = Number(configs?.buddhistYearOffset) || 0;
+  const language = getLang();
+  const monthLabels = parseCsvConfigList(placeholders?.monthLabels, buildIntlMonthLabels(language));
+  const dayLabels = parseCsvConfigList(placeholders?.dayLabels, buildIntlDayLabels(language));
+  const buddhistYearOffset = getLang() === 'th' ? Number(configs?.sharedBuddhistYearOffset) || 0 : 0;
   const endpoints = createApiEndpoints(configs);
 
   function createPickerState() {
