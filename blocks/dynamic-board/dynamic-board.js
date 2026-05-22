@@ -1,6 +1,6 @@
 import parseAuthoring, { parseTableHeading, parseMaturityTypes } from './helpers/authoring-helpers.js';
 import {
-  MONTH_SHORT, DAY_LABELS,
+  parseCsvConfigList, buildIntlMonthLabels, buildIntlDayLabels,
   formatDisplayDate, formatMaturityDate, formatRemainTerm, remainTermToMonths,
   buildCalendarGrid, formatMonthYear, formatMonthYearDisplay,
 } from './helpers/date-helpers.js';
@@ -113,11 +113,11 @@ function renderCalendar(calEl, state, placeholders) {
   calEl.innerHTML = `
     <div class="db-cal-header">
       <button type="button" class="db-cal-nav db-cal-prev" aria-label="${placeholders?.dynamicBoardPrevMonthAria || 'Previous month'}"><i class="icon-arrow-left" aria-hidden="true"></i></button>
-      <span class="db-cal-title">${MONTH_SHORT[m]} ${y}</span>
+      <span class="db-cal-title">${state.monthLabels[m]} ${y + state.buddhistYearOffset}</span>
       <button type="button" class="db-cal-nav db-cal-next" aria-label="${placeholders?.dynamicBoardNextMonthAria || 'Next month'}"><i class="icon-arrow-left" aria-hidden="true"></i></button>
     </div>
     <table class="db-cal-table">
-      <thead><tr>${DAY_LABELS.map((d) => `<th>${d}</th>`).join('')}</tr></thead>
+      <thead><tr>${state.dayLabels.map((d) => `<th>${d}</th>`).join('')}</tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
 }
@@ -194,7 +194,7 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(fmtPct(rate.OFFER_YIELD))}</td>
       <td class="db-td-num">${escapeHtml(formatRemainTerm(rate.REMAIN_TERM || '00.00.00'))}</td>
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
-      <td class="db-td-num">${escapeHtml(formatMaturityDate(rate.MATURITY_DATE))}</td>
+      <td class="db-td-num">${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}</td>
       <td class="db-td-dl">
         <a href="${state.downloadUrl.replace('{{SYMBOL}}', sym)}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
@@ -243,21 +243,21 @@ function renderMonthPicker(container, which, state, placeholders) {
     container.innerHTML = `
       <div class="db-mp-header">
         <button type="button" class="db-mp-nav" data-which="${which}" data-action="prevYears">&#8249;</button>
-        <button type="button" class="db-mp-title" data-which="${which}" data-action="backToMonth">${placeholders?.dynamicBoardBackToLabel || 'Back to'} ${year}</button>
+        <button type="button" class="db-mp-title" data-which="${which}" data-action="backToMonth">${placeholders?.dynamicBoardBackToLabel || 'Back to'} ${year + state.buddhistYearOffset}</button>
         <button type="button" class="db-mp-nav" data-which="${which}" data-action="nextYears">&#8250;</button>
       </div>
       <div class="db-mp-grid">
-        ${years.map((y) => `<button type="button" class="db-mp-cell${cur?.year === y ? ' db-mp-active' : ''}" data-which="${which}" data-action="selectYear" data-year="${y}">${y}</button>`).join('')}
+        ${years.map((y) => `<button type="button" class="db-mp-cell${cur?.year === y ? ' db-mp-active' : ''}" data-which="${which}" data-action="selectYear" data-year="${y}">${y + state.buddhistYearOffset}</button>`).join('')}
       </div>`;
   } else {
     container.innerHTML = `
       <div class="db-mp-header">
         <button type="button" class="db-mp-nav" data-which="${which}" data-action="prevYear">&#8249;</button>
-        <button type="button" class="db-mp-title" data-which="${which}" data-action="showYears">${year}</button>
+        <button type="button" class="db-mp-title" data-which="${which}" data-action="showYears">${year + state.buddhistYearOffset}</button>
         <button type="button" class="db-mp-nav" data-which="${which}" data-action="nextYear">&#8250;</button>
       </div>
       <div class="db-mp-grid">
-        ${MONTH_SHORT.map((mon, i) => `<button type="button" class="db-mp-cell${cur?.month === i + 1 && cur?.year === year ? ' db-mp-active' : ''}" data-which="${which}" data-action="selectMonth" data-month="${i + 1}">${mon}</button>`).join('')}
+        ${state.monthLabels.map((mon, i) => `<button type="button" class="db-mp-cell${cur?.month === i + 1 && cur?.year === year ? ' db-mp-active' : ''}" data-which="${which}" data-action="selectMonth" data-month="${i + 1}">${mon}</button>`).join('')}
       </div>`;
   }
 }
@@ -283,7 +283,7 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
         <span class="db-filter-lbl">${placeholders?.dynamicBoardFromLabel || 'From'}</span>
         <div class="db-filter-input-wrap">
           <input type="text" class="db-mp-input" id="db-mp-from" readonly placeholder="${placeholders?.dynamicBoardMonthYearPlaceholder || 'MM/YYYY'}"
-            value="${state.filterFrom ? formatMonthYearDisplay(state.filterFrom.month, state.filterFrom.year) : ''}"
+            value="${state.filterFrom ? formatMonthYearDisplay(state.filterFrom.month, state.filterFrom.year, state.buddhistYearOffset) : ''}"
             ${matSet ? 'disabled' : ''}>
           <button type="button" class="db-mp-cal-btn" data-which="from" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''}>${CAL_ICON_SVG}</button>
           <div class="db-mp-popup" id="db-mp-popup-from" hidden></div>
@@ -293,7 +293,7 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
         <span class="db-filter-lbl">${placeholders?.dynamicBoardToLabel || 'To'}</span>
         <div class="db-filter-input-wrap">
           <input type="text" class="db-mp-input" id="db-mp-to" readonly placeholder="${placeholders?.dynamicBoardMonthYearPlaceholder || 'MM/YYYY'}"
-            value="${state.filterTo ? formatMonthYearDisplay(state.filterTo.month, state.filterTo.year) : ''}"
+            value="${state.filterTo ? formatMonthYearDisplay(state.filterTo.month, state.filterTo.year, state.buddhistYearOffset) : ''}"
             ${matSet ? 'disabled' : ''}>
           <button type="button" class="db-mp-cal-btn" data-which="to" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''}>${CAL_ICON_SVG}</button>
           <div class="db-mp-popup" id="db-mp-popup-to" hidden></div>
@@ -500,7 +500,7 @@ function wireFilterEvents(
       else state.filterTo = { month: mo, year: y };
       state.filterDatesUserSet = true;
       const inp = wrapper.querySelector(`#db-mp-${which}`);
-      if (inp) inp.value = formatMonthYearDisplay(mo, y);
+      if (inp) inp.value = formatMonthYearDisplay(mo, y, state.buddhistYearOffset);
       if (popup) popup.hidden = true;
       wrapper.querySelectorAll('.db-radio').forEach((r) => { r.disabled = true; r.checked = false; });
       ['from', 'to'].forEach((w) => {
@@ -544,6 +544,10 @@ export default async function decorate(block) {
   const authoring = parseAuthoring(block);
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
   const state = createState();
+  const language = document.documentElement.lang?.split('-')[0] || 'en';
+  state.monthLabels = parseCsvConfigList(configs?.monthLabels, buildIntlMonthLabels(language));
+  state.dayLabels = parseCsvConfigList(configs?.dayLabels, buildIntlDayLabels(language));
+  state.buddhistYearOffset = Number(configs?.buddhistYearOffset) || 0;
   const isGov = authoring.boardType.toLowerCase().includes('government');
   state.api = createApiService(configs, authoring.boardType);
   state.placeholders = placeholders;
@@ -661,7 +665,7 @@ export default async function decorate(block) {
     state.calYear = state.date.getFullYear();
     state.calMonth = state.date.getMonth();
 
-    dateDisplay.textContent = formatDisplayDate(state.date);
+    dateDisplay.textContent = formatDisplayDate(state.date, state.monthLabels);
     renderTimeDropdown(timeListEl, timeLabelEl, state);
     renderThead(thead, state);
     renderTable(tbodySel, tbodyAll, state);
@@ -706,16 +710,16 @@ export default async function decorate(block) {
       state.calMonth -= 1;
       if (state.calMonth < 0) { state.calMonth = 11; state.calYear -= 1; }
       await loadEnabledDays(state);
-      renderCalendar(calEl, state);
+      renderCalendar(calEl, state, placeholders);
     } else if (btn.classList.contains('db-cal-next')) {
       state.calMonth += 1;
       if (state.calMonth > 11) { state.calMonth = 0; state.calYear += 1; }
       await loadEnabledDays(state);
-      renderCalendar(calEl, state);
+      renderCalendar(calEl, state, placeholders);
     } else if (btn.dataset.day) {
       const day = parseInt(btn.dataset.day, 10);
       state.date = new Date(state.calYear, state.calMonth, day);
-      dateDisplay.textContent = formatDisplayDate(state.date);
+      dateDisplay.textContent = formatDisplayDate(state.date, state.monthLabels);
       setCalOpen(false);
       await loadUpdates(state);
       renderTimeDropdown(timeListEl, timeLabelEl, state);

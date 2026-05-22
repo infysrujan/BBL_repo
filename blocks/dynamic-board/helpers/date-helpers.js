@@ -1,17 +1,29 @@
-export const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-export const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+export function parseCsvConfigList(value, fallback) {
+  if (!value || typeof value !== 'string') return fallback;
+  const list = value.split(',').map((item) => item.trim()).filter(Boolean);
+  return list.length ? list : fallback;
+}
+
+export function buildIntlMonthLabels(language) {
+  return Array.from({ length: 12 }, (_, i) => new Intl.DateTimeFormat(language, { month: 'short' }).format(new Date(2026, i, 1)));
+}
+
+export function buildIntlDayLabels(language) {
+  const baseSunday = new Date(Date.UTC(2026, 3, 5));
+  return Array.from({ length: 7 }, (_, i) => new Intl.DateTimeFormat(language, { weekday: 'short' }).format(new Date(baseSunday.getTime() + i * 864e5)));
+}
 
 export function pad2(n) {
   return String(n).padStart(2, '0');
 }
 
-export function formatDisplayDate(date) {
-  return `${pad2(date.getDate())} ${MONTH_SHORT[date.getMonth()]} ${date.getFullYear()}`;
+export function formatDisplayDate(date, monthLabels) {
+  return `${pad2(date.getDate())} ${monthLabels[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-export function formatMaturityDate(isoStr) {
+export function formatMaturityDate(isoStr, monthLabels) {
   const d = new Date(isoStr);
-  return `${pad2(d.getDate())} ${MONTH_SHORT[d.getMonth()]} ${String(d.getFullYear()).slice(-2)}`;
+  return `${pad2(d.getDate())} ${monthLabels[d.getMonth()]} ${String(d.getFullYear()).slice(-2)}`;
 }
 
 export function formatRemainTerm(remainTerm) {
@@ -32,8 +44,8 @@ export function formatMonthYear(month, year) {
   return `${month}-${year}`;
 }
 
-export function formatMonthYearDisplay(month, year) {
-  return `${pad2(month)}/${year}`;
+export function formatMonthYearDisplay(month, year, yearOffset = 0) {
+  return `${pad2(month)}/${Number(year) + yearOffset}`;
 }
 
 export function buildCalendarGrid(year, month) {
