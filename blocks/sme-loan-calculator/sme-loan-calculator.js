@@ -177,7 +177,6 @@ export default async function decorate(block) {
   const resultValue = cellText(rows[1]) || '0.00';
   const description = cellText(rows[2]);
   const addToTableButtonName = cellText(rows[3]);
-  const authoredFormula = cellText(rows[4]);
   const hasResultText = rows[5]?.children.length === 1;
   const resultText = hasResultText ? cellText(rows[5]) : '';
 
@@ -203,8 +202,7 @@ export default async function decorate(block) {
   };
 
   const siteConfigs = await fetchConfigs();
-  let formulaDescription = siteConfigs[configKeyMap[calcType]] || '';
-  if (!formulaDescription) formulaDescription = authoredFormula;
+  const formulaDescription = siteConfigs[configKeyMap[calcType]] || '';
 
   const resultConfig = {
     monthly: { prefix: resultText, suffix: ' baht.', integer: false },
