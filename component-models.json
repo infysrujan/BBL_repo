@@ -10177,6 +10177,44 @@
     ]
   },
   {
+    "id": "search-reports-results",
+    "fields": []
+  },
+  {
+    "id": "search-reports",
+    "fields": [
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "CTA Button Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "modalTitle",
+        "label": "Modal Title",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "modalDescription",
+        "label": "Modal Description",
+        "valueType": "string",
+        "required": false
+      },
+      {
+        "component": "text",
+        "name": "resultsPageUrl",
+        "label": "Results Page URL",
+        "description": "Path to the search results page (e.g. /en/investor-relations/search-results)",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "search",
     "fields": [
       {

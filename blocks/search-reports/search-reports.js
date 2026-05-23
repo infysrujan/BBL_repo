@@ -1,0 +1,258 @@
+const API_BASE = 'https://publish-p185039-e1939903.adobeaemcloud.com';
+
+const FOCUSABLE_SELECTOR = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(',');
+
+function el(tag, { className, text, attrs = {} } = {}) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+  return node;
+}
+
+function getFocusableElements(element) {
+  return [...element.querySelectorAll(FOCUSABLE_SELECTOR)].filter((n) => !n.hasAttribute('disabled'));
+}
+
+function trapFocus(event, overlay) {
+  if (event.key !== 'Tab') return;
+  const focusable = getFocusableElements(overlay);
+  if (!focusable.length) { event.preventDefault(); return; }
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault(); last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault(); first.focus();
+  }
+}
+
+const overlayTriggerMap = new WeakMap();
+
+function openModal(overlay, trigger) {
+  if (!overlay.isConnected) document.body.appendChild(overlay);
+  overlayTriggerMap.set(overlay, trigger || document.activeElement);
+  document.body.classList.add('search-reports-modal-open');
+  requestAnimationFrame(() => {
+    overlay.classList.add('search-reports-modal-visible');
+    const focusable = getFocusableElements(overlay);
+    (focusable[0] || overlay).focus();
+  });
+}
+
+function closeModal(overlay) {
+  const restoreTarget = overlayTriggerMap.get(overlay);
+  document.body.classList.remove('search-reports-modal-open');
+  overlay.classList.remove('search-reports-modal-visible');
+  const finishClose = () => {
+    overlay.remove();
+    if (restoreTarget && typeof restoreTarget.focus === 'function') restoreTarget.focus();
+  };
+  overlay.addEventListener('transitionend', finishClose, { once: true });
+  setTimeout(finishClose, 300);
+}
+
+function buildDropdown(placeholder, onChange) {
+  const wrapper = el('div', { className: 'sr-dropdown' });
+  const selected = el('div', {
+    className: 'sr-dropdown-selected',
+    attrs: {
+      tabindex: '0', role: 'combobox', 'aria-expanded': 'false', 'aria-haspopup': 'listbox',
+    },
+  });
+  const selectedText = el('span', { className: 'sr-dropdown-text', text: placeholder });
+  const chevron = el('span', { className: 'sr-dropdown-chevron', attrs: { 'aria-hidden': 'true' } });
+  selected.append(selectedText, chevron);
+
+  const list = el('ul', { className: 'sr-dropdown-list', attrs: { role: 'listbox' } });
+  wrapper.append(selected, list);
+
+  let currentValue = '';
+
+  function toggle(open) {
+    wrapper.classList.toggle('sr-dropdown-open', open);
+    selected.setAttribute('aria-expanded', String(open));
+  }
+
+  function populateOptions(options) {
+    list.innerHTML = '';
+    const placeholderItem = el('li', {
+      className: 'sr-dropdown-option sr-dropdown-placeholder',
+      text: placeholder,
+      attrs: { role: 'option', 'aria-selected': 'true', 'data-value': '' },
+    });
+    list.append(placeholderItem);
+    options.forEach(({ label, value }) => {
+      const item = el('li', {
+        className: 'sr-dropdown-option',
+        text: label,
+        attrs: { role: 'option', 'aria-selected': 'false', 'data-value': value },
+      });
+      list.append(item);
+    });
+  }
+
+  selected.addEventListener('click', () => toggle(!wrapper.classList.contains('sr-dropdown-open')));
+  selected.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(!wrapper.classList.contains('sr-dropdown-open')); }
+    if (e.key === 'Escape') toggle(false);
+  });
+
+  list.addEventListener('click', (e) => {
+    const option = e.target.closest('[data-value]');
+    if (!option || option.classList.contains('sr-dropdown-placeholder')) return;
+    currentValue = option.dataset.value;
+    selectedText.textContent = option.textContent;
+    list.querySelectorAll('[aria-selected]').forEach((o) => o.setAttribute('aria-selected', 'false'));
+    option.setAttribute('aria-selected', 'true');
+    toggle(false);
+    if (typeof onChange === 'function') onChange(currentValue);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!wrapper.contains(e.target)) toggle(false);
+  });
+
+  return { wrapper, getValue: () => currentValue, populateOptions };
+}
+
+async function fetchSearchParams(lang) {
+  const res = await fetch(`${API_BASE}/content/bangkokbank/${lang}.reports.searchparams.json?test`);
+  if (!res.ok) throw new Error(`searchparams fetch failed: ${res.status}`);
+  return res.json();
+}
+
+function parseAuthoredOptions(rows) {
+  const typeOptions = [];
+  const yearOptions = [];
+  let parsingYears = false;
+  rows.slice(4).forEach((row) => {
+    const cells = [...row.children];
+    if (cells.length === 1 && cells[0].textContent.trim().toLowerCase() === 'years') {
+      parsingYears = true;
+      return;
+    }
+    if (!parsingYears && cells.length >= 2) {
+      typeOptions.push({ label: cells[0].textContent.trim(), value: cells[1].textContent.trim() });
+    } else if (parsingYears && cells.length >= 1) {
+      const y = cells[0].textContent.trim();
+      yearOptions.push({ label: y, value: y });
+    }
+  });
+  return { typeOptions, yearOptions };
+}
+
+export default function decorate(block) {
+  const isAuthor = window.self !== window.top;
+  const rows = [...block.children];
+
+  const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || 'Search for Reports';
+  const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || 'Search Report';
+  const modalDesc = rows[2]?.firstElementChild?.innerHTML?.trim() || '';
+  const resultsUrl = rows[3]?.firstElementChild?.textContent?.trim() || '/en/investor-relations/search-results';
+  const lang = document.documentElement.lang || 'en';
+
+  const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
+
+  block.innerHTML = '';
+
+  // Build modal overlay
+  const overlay = el('div', {
+    className: 'search-reports-overlay',
+    attrs: {
+      role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'sr-modal-title', tabindex: '-1',
+    },
+  });
+  const dialog = el('div', { className: 'sr-dialog' });
+
+  // Header
+  const header = el('div', { className: 'sr-header' });
+  const logoLink = el('a', { className: 'sr-logo-link', attrs: { href: `/${lang}`, 'aria-label': 'Bangkok Bank Home' } });
+  const logoImg = el('img', {
+    attrs: {
+      src: '/icons/bbl-logo-white.svg', alt: 'Bangkok Bank', width: '120', height: '40', onerror: "this.style.display='none'",
+    },
+  });
+  logoLink.append(logoImg);
+
+  const closeBtn = el('button', { className: 'sr-close-btn', attrs: { type: 'button', 'aria-label': 'Close search modal' } });
+  closeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  header.append(logoLink, closeBtn);
+
+  // Body
+  const body = el('div', { className: 'sr-body' });
+  const titleEl = el('h2', { className: 'sr-title', text: modalTitle, attrs: { id: 'sr-modal-title' } });
+  const titleDivider = el('div', { className: 'sr-title-divider' });
+  const descEl = el('div', { className: 'sr-desc' });
+  descEl.innerHTML = modalDesc;
+
+  const searchBtn = el('button', {
+    className: 'sr-search-btn sr-search-btn-disabled',
+    text: ctaLabel === 'Search for Reports' ? 'Search' : ctaLabel,
+    attrs: { type: 'button' },
+  });
+
+  let getType;
+  let getYear;
+
+  function updateSearchBtn() {
+    if (getType() && getYear()) {
+      searchBtn.classList.remove('sr-search-btn-disabled');
+    } else {
+      searchBtn.classList.add('sr-search-btn-disabled');
+    }
+  }
+
+  const { wrapper: typeDropdown, getValue: getTypeVal, populateOptions: populateTypes } = buildDropdown('Type of report', updateSearchBtn);
+  const { wrapper: yearDropdown, getValue: getYearVal, populateOptions: populateYears } = buildDropdown('Year', updateSearchBtn);
+  getType = getTypeVal;
+  getYear = getYearVal;
+
+  // Populate dropdowns: API in publish, authored rows in author mode
+  if (isAuthor) {
+    populateTypes(typeOptions);
+    populateYears(yearOptions);
+  } else {
+    fetchSearchParams(lang).then((data) => {
+      const types = data.reportTypes?.length ? data.reportTypes : typeOptions;
+      const years = (data.years || []).map((y) => ({ label: y, value: y }));
+      populateTypes(types);
+      populateYears(years);
+    }).catch(() => {
+      populateTypes(typeOptions);
+      populateYears(yearOptions);
+    });
+  }
+
+  searchBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (searchBtn.classList.contains('sr-search-btn-disabled')) return;
+    const params = new URLSearchParams({ type: getType(), year: getYear() });
+    const target = `${resultsUrl}?${params.toString()}`;
+    if (typeof window.__previewNavigate === 'function') {
+      overlay.remove();
+      document.body.classList.remove('search-reports-modal-open');
+      window.__previewNavigate(target);
+    } else {
+      window.location.href = target;
+    }
+  });
+
+  body.append(titleEl, titleDivider, descEl, typeDropdown, yearDropdown, searchBtn);
+  dialog.append(header, body);
+  overlay.append(dialog);
+
+  closeBtn.addEventListener('click', () => closeModal(overlay));
+  overlay.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); closeModal(overlay); return; }
+    trapFocus(e, overlay);
+  });
+
+  openModal(overlay, null);
+  window.__previewReopenModal = () => openModal(overlay, null);
+}

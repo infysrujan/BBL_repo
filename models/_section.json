@@ -225,7 +225,9 @@
         "news-media-details",
         "news-media",
         "latest-news",
-        "forward-points-sme"
+        "forward-points-sme",
+        "search-reports",
+        "search-reports-results"
       ]
     }
   ]
