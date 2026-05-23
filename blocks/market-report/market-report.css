@@ -1,3 +1,20 @@
+.market-report-container [role="tabpanel"].market-report-is-loading {
+  position: relative;
+  min-height: 12rem;
+}
+
+.market-report-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: url("/icons/loading.gif") center 9.6875rem / 1.875rem no-repeat;
+  top: 25%;
+}
+
+.tabs-content.market-report-is-loading {
+  visibility: hidden;
+}
+
 .market-report-col-left :is(h1, h2, h3, h4, h5, h6),
 .market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
   font-size: 1rem;
@@ -51,7 +68,6 @@ a.print-button.icon-print::before {
 
 .market-report-page .table table tr td:first-child {
   text-align: left;
-  width: 50%;
 }
 
 .market-report-page .table table[class*="header-"] tr.header-row td {
@@ -78,7 +94,6 @@ h4#deposit-rate {
 }
 
 .market-report-page .button-container {
-  display: inline-block;
   float: right;
 }
 

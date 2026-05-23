@@ -549,6 +549,40 @@ function getFirstTabPanel() {
   return document.querySelector('[role="tabpanel"]');
 }
 
+/** @param {HTMLElement} panel */
+function getMarketReportTabsContent(panel) {
+  return panel.closest('.tabs-content');
+}
+
+/** @param {HTMLElement} panel */
+function showMarketReportLoader(panel) {
+  const tabsContent = getMarketReportTabsContent(panel);
+  if (!tabsContent) return;
+
+  tabsContent.classList.add('market-report-is-loading');
+  tabsContent.setAttribute('aria-busy', 'true');
+
+  const tabsRoot = tabsContent.parentElement;
+  if (!tabsRoot?.querySelector('.market-report-loader')) {
+    const loader = document.createElement('div');
+    loader.className = 'market-report-loader';
+    loader.setAttribute('role', 'status');
+    loader.setAttribute('aria-label', 'Loading market report');
+    tabsContent.before(loader);
+  }
+}
+
+/** @param {HTMLElement} panel */
+function hideMarketReportLoader(panel) {
+  const tabsContent = getMarketReportTabsContent(panel);
+  const tabsRoot = tabsContent?.parentElement;
+
+  tabsContent?.classList.remove('market-report-is-loading');
+  tabsContent?.classList.add('market-report-ready');
+  tabsContent?.removeAttribute('aria-busy');
+  tabsRoot?.querySelector('.market-report-loader')?.remove();
+}
+
 /* Style the headings before the button containers (Title & More) */
 /** @param {ParentNode} panel */
 function styleHeadingsBeforeButtonContainers(panel) {
@@ -764,10 +798,11 @@ function setupOthbisGthbColumns(panel) {
 }
 
 export default async function decorate() {
-  try {
-    const panel = getFirstTabPanel();
-    if (!panel) return;
+  const panel = getFirstTabPanel();
+  if (!panel) return;
 
+  showMarketReportLoader(panel);
+  try {
     const { model, loanRows, depositRows } = await fetchMarketReportData();
     const formattedDate = formatMarketReportDate(model.mktdate);
 
@@ -785,5 +820,7 @@ export default async function decorate() {
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('market-report:', err);
+  } finally {
+    hideMarketReportLoader(panel);
   }
 }
