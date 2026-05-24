@@ -57,6 +57,7 @@ function openModal(overlay, trigger) {
     overlay.classList.add('search-reports-modal-visible');
     const focusable = getFocusableElements(overlay);
     (focusable[0] || overlay).focus();
+    setTimeout(syncTop, 200);
   });
 }
 
