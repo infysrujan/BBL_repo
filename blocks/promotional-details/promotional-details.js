@@ -212,7 +212,7 @@ export default async function decorate(block) {
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
-  if (!configs || !configs.promotionalCardSelector) {
+  if (!configs || !configs.promotionalCardSelector || lang !== 'en') {
     try {
       const resp = await fetch(`/${lang}/config.json`);
       if (resp.ok) {
@@ -235,7 +235,11 @@ export default async function decorate(block) {
   const baseUrl = isBbm
     ? (effectiveConfigs.promotionalCardSelectorBbm || '')
     : (effectiveConfigs.promotionalCardSelector || '');
-  const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
+  const localizedBaseUrl = baseUrl.startsWith('/en/') && lang !== 'en'
+    ? baseUrl.replace(/^\/en\//, `/${lang}/`)
+    : baseUrl;
+  const suffix = lang !== 'en' ? `.${lang}.json` : '.json';
+  const promotionsUrl = localizedBaseUrl.replace(/\.json$/, suffix);
 
   const [placeholders, card] = await Promise.all([
     fetchPlaceholders(),

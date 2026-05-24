@@ -69,7 +69,11 @@ function resolvePromotionType(block) {
 
 function buildPromotionsUrl(baseUrl, lang) {
   if (!baseUrl) return '';
-  return baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
+  const localizedBase = baseUrl.startsWith('/en/') && lang !== 'en'
+    ? baseUrl.replace(/^\/en\//, `/${lang}/`)
+    : baseUrl;
+  const suffix = lang !== 'en' ? `.${lang}.json` : '.json';
+  return localizedBase.replace(/\.json$/, suffix);
 }
 
 function normalizeQueryLang(value) {
@@ -486,11 +490,18 @@ export default async function decorate(block) {
   const promotionType = resolvePromotionType(block);
   const docLang = getLang();
 
+  const path = window.location.pathname.toLowerCase();
+  const isBbmPath = path.includes('/promotionsmb');
+  const isCreditCardPath = path.includes('/credit-cards-promotions');
+  const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
+  const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
+  const lang = isBbmPath && queryLang ? queryLang : docLang;
+
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
-  if (!configs || !configs.promotionalCardSelector) {
+  if (!configs || !configs.promotionalCardSelector || lang !== 'en') {
     try {
-      const resp = await fetch(`/${docLang}/config.json`);
+      const resp = await fetch(`/${lang}/config.json`);
       if (resp.ok) {
         const json = await resp.json();
         const targetConfigs = effectiveConfigs;
@@ -510,12 +521,6 @@ export default async function decorate(block) {
   const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
   const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
 
-  const path = window.location.pathname.toLowerCase();
-  const isBbmPath = path.includes('/promotionsmb');
-  const isCreditCardPath = path.includes('/credit-cards-promotions');
-  const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
-  const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
-  const lang = isBbmPath && queryLang ? queryLang : docLang;
   const creditUrl = buildPromotionsUrl(creditBaseUrl, lang);
   const bbmUrl = buildPromotionsUrl(bbmBaseUrl, lang);
 
