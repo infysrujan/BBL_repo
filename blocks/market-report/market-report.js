@@ -607,7 +607,7 @@ function applyTextSmallToTableFollowParagraphs(panel) {
 }
 
 function printElement() {
-   // Clone the container to avoid changing the DOM
+  // Clone the container to avoid changing the DOM
   const originalContent = document.querySelector('main');
   const content = originalContent ? originalContent.cloneNode(true) : null;
   if (!content) return;
@@ -689,7 +689,7 @@ function printElement() {
     
   `;
 
-   const printHtml = `
+  const printHtml = `
   <!DOCTYPE html>
   <html lang="en">
     <head>
@@ -723,7 +723,7 @@ function printElement() {
   </html>
   `;
 
-const runPrint = () => {
+  const runPrint = () => {
     printWindow.focus();
     setTimeout(() => {
       printWindow.print();
@@ -738,7 +738,6 @@ const runPrint = () => {
 
   printWindow.document.write(printHtml);
   printWindow.document.close();
-
 }
 /* Create the top row of the market report */
 /**
@@ -746,7 +745,7 @@ const runPrint = () => {
  * @param {HTMLElement} tableWrapper
  * @returns {HTMLDivElement}
  */
-function createMarketReportTopRow(formattedDate, tableWrapper) {
+function createMarketReportTopRow(formattedDate) {
   const topRow = document.createElement('div');
   topRow.className = 'market-report-top-row';
 
@@ -873,7 +872,7 @@ export default async function decorate() {
     const tableWrapper = panel.querySelector('.table-wrapper');
     if (!tableWrapper) return;
 
-    const topRow = createMarketReportTopRow(formattedDate, tableWrapper);
+    const topRow = createMarketReportTopRow(formattedDate);
     decorateTableWrapper(tableWrapper, model.byMktCode, topRow);
   } catch (err) {
     // eslint-disable-next-line no-console
