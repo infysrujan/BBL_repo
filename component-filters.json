@@ -55,6 +55,7 @@
       "carousel-video",
       "forex-rates",
       "market-report",
+      "sme-loan-calculator",
       "bcap",
       "multi-column-tiles",
       "retirement-calculator",
@@ -262,6 +263,12 @@
     ]
   },
   {
+    "id": "sme-loan-calculator",
+    "components": [
+      "sme-field"
+    ]
+  },
+  {
     "id": "social-icons",
     "components": [
       "social-icon"
@@ -366,7 +373,9 @@
       "table",
       "accordion-block",
       "forex-rates",
-      "forex-graph"
+      "forex-graph",
+      "sme-loan-calculator",
+      "table"
     ]
   },
   {

@@ -311,7 +311,9 @@
         "table",
         "accordion-block",
         "forex-rates",
-        "forex-graph"
+        "forex-graph",
+        "sme-loan-calculator",
+        "table"
       ]
     }
   ]
