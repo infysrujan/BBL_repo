@@ -1,13 +1,8 @@
-/* ==========================================================================
-   search-reports block — mobile first, values in rem
-   Breakpoints: 47.5rem / tablet (760px), 64rem / desktop (1024px)
-   ========================================================================== */
-
 .search-reports-modal-open {
   overflow: hidden;
 }
 
-/* ── Overlay ───────────────────────────────────────────────── */
+/* Overlay */
 
 .search-reports-overlay {
   position: fixed;
@@ -31,7 +26,7 @@
   overflow-y: auto;
 }
 
-/* ── Header ────────────────────────────────────────────────── */
+/* Header */
 
 .search-reports-overlay .sr-header {
   background: var(--bbl-color-truthful-blue, #002850);
@@ -67,7 +62,7 @@
   border-color: var(--bbl-color-white, #fff);
 }
 
-/* ── Body ──────────────────────────────────────────────────── */
+/* Body */
 
 .search-reports-overlay .sr-body {
   flex: 1;
@@ -103,7 +98,7 @@
   line-height: 1.6;
 }
 
-/* ── Dropdowns ─────────────────────────────────────────────── */
+/* Dropdowns */
 
 .search-reports-overlay .sr-dropdown {
   position: relative;
@@ -186,7 +181,7 @@
   background: none;
 }
 
-/* ── Search button ─────────────────────────────────────────── */
+/* Search button */
 
 .search-reports-overlay .sr-search-btn {
   margin-top: 1.5rem;
@@ -207,11 +202,7 @@
   cursor: pointer;
 }
 
-/* ==========================================================================
-   TABLET (> 47.5rem)
-   ========================================================================== */
-
-@media (width > 47.5rem) {
+@media (width >= 761px) {
   .search-reports-overlay .sr-body {
     padding: 3.75rem 1.5rem 3rem;
     max-width: 42.5rem;
@@ -223,11 +214,7 @@
   }
 }
 
-/* ==========================================================================
-   DESKTOP (> 64rem)
-   ========================================================================== */
-
-@media (width > 64rem) {
+@media (width >= 1025px) {
   .search-reports-overlay .sr-header {
     padding: 1rem 2rem;
   }
