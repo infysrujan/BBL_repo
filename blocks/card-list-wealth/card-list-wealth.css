@@ -61,6 +61,7 @@
 
 .card-description {
   font-size: 0.875rem;
+  font-family: var(--bbl-font-family-looped);
   line-height: 1.25rem;
   margin: 0 0 1.25rem;
 }

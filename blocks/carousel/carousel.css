@@ -20,7 +20,7 @@
 
 :lang(th) {
     .carousel-header h2 {
-            line-height: 2.0625rem;
+            line-height: 1.5rem;
     }
 }
 
@@ -36,12 +36,12 @@
     text-decoration: none;
     position: relative;
     padding-right: 15px;
-    font-family: var(--bbl-font-family-medium);
+    font-family: var(--bbl-font-family-looped);
 }
 
 .carousel-header a::after {
     content: "\e901";
-    font-family: icomoon, sans-serif;
+    font-family: var(--bbl-font-family-looped);
     position: absolute;
     font-size: 10px;
     top: 50%;
@@ -169,7 +169,7 @@
     color: var(--bbl-color-white);
     border-radius: var(--bbl-rounded-200);
     width: fit-content;
-    font-family: var(--bbl-font-family-medium);
+    font-family: var(--bbl-font-family-looped);
     text-decoration: none;
 }
 
@@ -189,6 +189,7 @@
 
 .carousel-description {
     font-size: 14px;
+    font-family: var(--bbl-font-family-looped);
     line-height: 19.25px;
     color: var(--bbl-color-grey-70);
     margin: 0 0 var(--bbl-space-200);
@@ -247,6 +248,7 @@
     .carousel-description { 
         font-size: 12.6px;
         line-height: 19.25px;
+        font-family: var(--bbl-font-family-looped);
     }
 }
 
@@ -284,7 +286,7 @@
 
     :lang(th) {
         .carousel-header h2 {
-                line-height:4.875rem;;
+                line-height: 2.5rem;
         }
     }
 
@@ -292,6 +294,7 @@
         font-size: 12.8px;
         line-height: 17.92px;
         margin-right: 15px;
+        font-family: var(--bbl-font-family-looped);
     }
 
     /* Disable native scrolling on desktop */

@@ -95,7 +95,7 @@
   font-size: 0.7875rem;
   line-height: 1.29;
   font-weight: var(--bbl-font-weight-regular);
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
   margin: 0;
 }
 
@@ -160,7 +160,7 @@
   font-size: var(--bbl-body-b1-size);
   line-height: 1.29;
   font-weight: var(--bbl-font-weight-regular);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-looped);
   color: var(--bbl-color-grey-85);
   margin: 0;
   overflow: hidden;
@@ -179,7 +179,7 @@
   font-size: var(--bbl-body-b1-size);
   line-height: 2.75rem;
   font-weight: var(--bbl-font-weight-regular);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-looped);
   color: var(--bbl-color-white);
   background-color: var(--bbl-color-active-blue);
   border: 0.063rem solid var(--bbl-color-active-blue);
@@ -271,6 +271,7 @@
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .content-insert-card .text-default {
   font-size: var(--bbl-font-size-b2);
   line-height: 1.29;
+    font-family: var(--bbl-font-family-looped);
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .desc {
@@ -305,10 +306,12 @@
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .content-insert-card .text-default {
   font-size: var(--bbl-body-b1-size);
   line-height: 1.375;
+    font-family: var(--bbl-font-family-looped);
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .btn-primary {
   font-size: var(--bbl-body-b1-size);
+    font-family: var(--bbl-font-family-looped);
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .category {

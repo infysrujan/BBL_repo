@@ -179,6 +179,7 @@
   padding: var(--bbl-space-050) 0.4375rem;
   border-radius: var(--bbl-rounded-200);
   margin-bottom: 0.875rem;
+  font-family: var(--bbl-font-family-looped);
 }
 
 .carousel-dotted .carousel-dotted-description {
@@ -191,7 +192,7 @@
 }
 
 .carousel-dotted .carousel-dotted-header {
-  font-family: var(--bbl-font-family-primary);
+  font-family: var(--bbl-font-family-looped);
   font-weight: var(--bbl-font-weight-regular);
   font-size: 0.875rem;
   line-height: 0.875rem;
@@ -201,7 +202,7 @@
 }
 
 .carousel-dotted .carousel-default-text {
-  font-family: var(--bbl-font-family-primary);
+  font-family: var(--bbl-font-family-looped);
   font-weight: var(--bbl-font-weight-regular);
   font-size: 0.875rem;
   line-height: 0.875rem;
@@ -357,7 +358,7 @@
   font-size: 0.8rem;
   line-height: 1.12rem;
   margin-right: 0.9375rem;
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
 }
 
 /* Override button-tertiary's SVG arrow with icomoon icon font */
@@ -505,11 +506,11 @@
 
 :lang(th) {
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
-    line-height: 2.4375rem;
+    line-height: 1.875rem;
   }
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
-    line-height: 2.0625rem;
+    line-height: 1.5rem;
   }
 }
 
@@ -576,7 +577,7 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default {
-  font-family: var(--bbl-font-family-primary);
+  font-family: var(--bbl-font-family-looped);
   font-size: 0.875rem;
   line-height: 1.45;
   color: var(--bbl-color-grey-70);
@@ -594,7 +595,7 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .sub-title-medium {
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
   font-size: 0.7rem;
   line-height: 0.98rem;
   font-weight: var(--bbl-font-weight-regular);
@@ -642,6 +643,7 @@
   line-height: 1.125rem;
   color: var(--bbl-color-grey-85);
   margin: unset;
+  font-family: var(--bbl-font-family-looped);
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 {
@@ -934,19 +936,19 @@
 
   :lang(th) {
     .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
-      line-height: 5.5rem;
-    }
-
-    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
-      line-height: 4.875rem;
-    }
-
-    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h3) {
       line-height: 3.75rem;
     }
 
-    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h4) {
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h2) {
       line-height: 2.5rem;
+    }
+
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h4) {
+      line-height: 1.375rem;
     }
   }
 
@@ -970,6 +972,7 @@
   .carousel-dotted .button-tertiary.icon-arrow-left::before {
     left: 4.5rem;
     font-size: 0.625rem;
+    font-family: var(--bbl-font-family-looped);
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
@@ -988,6 +991,7 @@
     font-size: 0.8rem;
     line-height: 1.4;
     padding-right: 0.9375rem;
+    font-family: var(--bbl-font-family-looped);
   }
 }
  

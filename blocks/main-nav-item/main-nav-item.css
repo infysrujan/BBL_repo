@@ -1,6 +1,6 @@
 .main-nav-trigger-text {
   color: var(--bbl-color-grey-130);
-  font-family: BangkokBank-Medium, Helvetica, "Microsoft JhengHei", "Ã¥Â¾Â®Ã¨Â»Å¸Ã¦Â­Â£Ã¯Â¿Â½Ã©Â«â€ ", "Hiragino Sans GB", Arial, sans-serif;
+  font-family: var(--bbl-font-family-looped);
   font-size: 0.875rem;
   font-weight: 700;
   line-height: 1.2031rem;
@@ -164,7 +164,7 @@
   margin: 0;
   position: relative;
   font-size: 0.875rem;
-  font-family: BangkokBank-Medium, sans-serif;
+  font-family: var(--bbl-font-family-looped);
   font-weight: var(--bbl-font-weight-semibold, 400);
 }
 

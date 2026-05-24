@@ -55,6 +55,7 @@
   display: block;
   color: var(--bbl-color-white-alpha-50);
   font-size: 0.875rem;
+  font-family: var(--bbl-font-family-looped);
   line-height: 3.125rem;
   margin: 0;
   padding-left: 0.9375rem;
@@ -90,6 +91,7 @@
 /* Currency code text */
 .currency-converter-expanded .country-select .code {
   font-size: 0.875rem;
+  font-family: var(--bbl-font-family-looped);
   line-height: 1.2031rem;
   vertical-align: middle;
   min-width: 0;
@@ -277,6 +279,7 @@
 /* Currency name in dropdown */
 .currency-converter-expanded .currency-dropdown-list li > span {
   font-size: 0.875rem;
+  font-family: var(--bbl-font-family-looped);
   color: var(--bbl-color-black);
   line-height: 2.25rem;
 }
