@@ -186,31 +186,6 @@ function decorateOgImage() {
 }
 
 /**
- * Loads everything needed to get to LCP.
- * @param {Element} doc The container element
- */
-async function loadEager(doc) {
-  document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
-  decorateTemplateAndTheme();
-  decorateOgImage();
-  const main = doc.querySelector('main');
-  if (main) {
-    decorateMain(main);
-    document.body.classList.add('appear');
-    await loadSection(main.querySelector('.section'), waitForFirstImage);
-  }
-
-  try {
-    /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
-    if (window.innerWidth >= 1025 || sessionStorage.getItem('fonts-loaded')) {
-      loadFonts();
-    }
-  } catch (e) {
-    // do nothing
-  }
-}
-
-/**
  * Strip AEM image optimization query params from a URL.
  * @param {string|null|undefined} url
  * @returns {string|null|undefined}
@@ -239,7 +214,7 @@ function stripSrcsetOptimizationParams(srcset) {
  * Remove optimization params from all picture source/img URLs in the document.
  * @param {Document|Element} root
  */
-function removePictureOptimizationParams(root) {
+export function removePictureOptimizationParams(root) {
   root.querySelectorAll('picture').forEach((picture) => {
     picture.querySelectorAll('source[srcset]').forEach((source) => {
       source.setAttribute('srcset', stripSrcsetOptimizationParams(source.getAttribute('srcset')));
@@ -251,14 +226,38 @@ function removePictureOptimizationParams(root) {
 }
 
 /**
+ * Loads everything needed to get to LCP.
+ * @param {Element} doc The container element
+ */
+async function loadEager(doc) {
+  document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
+  removePictureOptimizationParams(doc);
+  decorateTemplateAndTheme();
+  decorateOgImage();
+  const main = doc.querySelector('main');
+  if (main) {
+    decorateMain(main);
+    document.body.classList.add('appear');
+    await loadSection(main.querySelector('.section'), waitForFirstImage);
+  }
+
+  try {
+    /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
+    if (window.innerWidth >= 1025 || sessionStorage.getItem('fonts-loaded')) {
+      loadFonts();
+    }
+  } catch (e) {
+    // do nothing
+  }
+}
+
+/**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
-
-  removePictureOptimizationParams(doc);
 
   await buildCookieAlert(main);
 
