@@ -42,27 +42,7 @@
           "name": "promoId",
           "label": "Promo ID",
           "valueType": "string",
-          "required": true,
-          "condition": {
-            "or": [
-              {
-                "===": [
-                  {
-                    "var": "promotionType"
-                  },
-                  "credit-card"
-                ]
-              },
-              {
-                "===": [
-                  {
-                    "var": "promotionType"
-                  },
-                  "bangkok-bank-m"
-                ]
-              }
-            ]
-          }
+          "required": true
         },
         {
           "component": "text",
@@ -268,27 +248,7 @@
           "name": "topPromotion",
           "label": "Top Promotion",
           "valueType": "boolean",
-          "value": false,
-          "condition": {
-            "or": [
-              {
-                "===": [
-                  {
-                    "var": "promotionType"
-                  },
-                  "credit-card"
-                ]
-              },
-              {
-                "===": [
-                  {
-                    "var": "promotionType"
-                  },
-                  "bangkok-bank-m"
-                ]
-              }
-            ]
-          }
+          "value": false
         },
         {
           "component": "boolean",

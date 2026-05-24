@@ -12,6 +12,29 @@ const fetchCache = {};
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 
+const WEBVIEW_MODE_CLASS = 'webview-mode';
+
+function handleChromeHiding(searchParams) {
+  const hasCardRef = searchParams.has('card_ref');
+  ['header', 'footer'].forEach((selector) => {
+    const el = document.querySelector(selector);
+    if (el) {
+      if (hasCardRef) {
+        el.style.display = 'none';
+        el.classList.add('is-hidden');
+      } else {
+        el.style.display = '';
+        el.classList.remove('is-hidden');
+      }
+    }
+  });
+  if (hasCardRef) {
+    document.body.classList.add(WEBVIEW_MODE_CLASS);
+  } else {
+    document.body.classList.remove(WEBVIEW_MODE_CLASS);
+  }
+}
+
 const LOGO_ICONS = {
   visa: '/icons/visa-new.svg',
   mastercard: '/icons/mastercard-new.svg',
@@ -63,6 +86,7 @@ const CARD_TYPE_NORMALIZE = {
 };
 
 export async function fetchJson(url) {
+  if (!url) return null;
   if (!fetchCache[url]) {
     fetchCache[url] = fetch(url, { headers: { Accept: 'application/json' } })
       .then((r) => (r.ok && r.status !== 204 ? r.json() : null))
@@ -436,34 +460,22 @@ function setupPanel(
 
 export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
-  if (searchParams.has('card_ref')) {
-    const header = document.querySelector('header');
-    if (header) {
-      header.style.display = 'none';
-      header.classList.add('is-hidden');
-    }
-    const footer = document.querySelector('footer');
-    if (footer) {
-      footer.style.display = 'none';
-      footer.classList.add('is-hidden');
-    }
-  }
+  handleChromeHiding(searchParams);
 
   const promotionType = resolvePromotionType(block);
   const docLang = getLang();
-  let configs = await fetchConfigs();
+  const configs = await fetchConfigs();
   if (!configs || !configs.promotionalCardSelector) {
     try {
       const resp = await fetch(`/${docLang}/config.json`);
       if (resp.ok) {
         const json = await resp.json();
-        const fallbackConfigs = {};
+        const targetConfigs = configs || {};
         json.data
           ?.filter((config) => config.Key)
           .forEach((config) => {
-            fallbackConfigs[toCamelCase(config.Key)] = config.Value;
+            targetConfigs[toCamelCase(config.Key)] = config.Value;
           });
-        configs = { ...configs, ...fallbackConfigs };
       }
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -581,5 +593,5 @@ export default async function decorate(block) {
   });
 
   // Block is just a data-source config — hide it from view
-  block.hidden = false;
+  block.hidden = true;
 }

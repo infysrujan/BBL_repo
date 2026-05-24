@@ -5,7 +5,7 @@ import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
-const HIDE_CHROME_CLASS = 'promo-details-hide-chrome';
+const WEBVIEW_MODE_CLASS = 'webview-mode';
 
 function isRegisterEnabled(value) {
   const normalized = String(value || '').trim().toUpperCase();
@@ -136,14 +136,53 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
     </div>`;
 }
 
+function normalizePath(p) {
+  if (!p) return '';
+  let pathStr = p.split('?')[0].split('#')[0].toLowerCase();
+  if (pathStr.startsWith('http://') || pathStr.startsWith('https://')) {
+    try {
+      pathStr = new URL(pathStr).pathname;
+    } catch (e) {
+      // ignore
+    }
+  }
+  return pathStr
+    .replace(/^\/content\/bangkokbank/, '')
+    .replace(/\.html$/, '')
+    .replace(/\/+$/, '')
+    || '/';
+}
+
+function handleChromeHiding(searchParams) {
+  const hasCardRef = searchParams.has('card_ref');
+  ['header', 'footer'].forEach((selector) => {
+    const el = document.querySelector(selector);
+    if (el) {
+      if (hasCardRef) {
+        el.style.display = 'none';
+        el.classList.add('is-hidden');
+      } else {
+        el.style.display = '';
+        el.classList.remove('is-hidden');
+      }
+    }
+  });
+  if (hasCardRef) {
+    document.body.classList.add(WEBVIEW_MODE_CLASS);
+  } else {
+    document.body.classList.remove(WEBVIEW_MODE_CLASS);
+  }
+}
+
 async function fetchPromoData(url, promoId) {
+  if (!url) return null;
   try {
     const resp = await fetch(url);
     if (!resp.ok) return null;
     const { cards } = await resp.json();
-    const currentPath = window.location.pathname;
+    const normalizedCurrent = normalizePath(window.location.pathname);
     return (
-      cards?.find((c) => c.ctaLink === currentPath)
+      cards?.find((c) => normalizePath(c.ctaLink) === normalizedCurrent)
       || cards?.find((c) => c.id === promoId)
       || null
     );
@@ -154,34 +193,22 @@ async function fetchPromoData(url, promoId) {
 
 export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
-  if (searchParams.has('card_ref')) {
-    const header = document.querySelector('header');
-    if (header) {
-      header.style.display = 'none';
-      header.classList.add('is-hidden');
-    }
-    const footer = document.querySelector('footer');
-    if (footer) {
-      footer.style.display = 'none';
-      footer.classList.add('is-hidden');
-    }
-  }
+  handleChromeHiding(searchParams);
 
   const { promotionType, promoId } = getPromoBlockConfig(block);
   const lang = getLang();
-  let configs = await fetchConfigs();
+  const configs = await fetchConfigs();
   if (!configs || !configs.promotionalCardSelector) {
     try {
       const resp = await fetch(`/${lang}/config.json`);
       if (resp.ok) {
         const json = await resp.json();
-        const fallbackConfigs = {};
+        const targetConfigs = configs || {};
         json.data
           ?.filter((config) => config.Key)
           .forEach((config) => {
-            fallbackConfigs[toCamelCase(config.Key)] = config.Value;
+            targetConfigs[toCamelCase(config.Key)] = config.Value;
           });
-        configs = { ...configs, ...fallbackConfigs };
       }
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -194,13 +221,6 @@ export default async function decorate(block) {
   const isCreditCardPath = path.includes('/credit-card-promotions');
   const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
   const locale = LOCALE_MAP[lang] || 'en-GB';
-  const hasCardRef = isBbmPath && Boolean(searchParams.get('card_ref'));
-
-  if (hasCardRef) {
-    document.body.classList.add(HIDE_CHROME_CLASS);
-  } else {
-    document.body.classList.remove(HIDE_CHROME_CLASS);
-  }
 
   const baseUrl = isBbm
     ? (configs?.promotionalCardSelectorBbm || '')
@@ -218,7 +238,14 @@ export default async function decorate(block) {
   const previewData = isAuthoringInstance(block) && !card
     ? getAuthoringPreviewData(block)
     : null;
-  const data = card || previewData || {};
+
+  if (!card && !previewData) {
+    const errorMsg = placeholders.promoNoResults || 'No promotion details found.';
+    block.innerHTML = `<p class="promo-detail-error">${errorMsg}</p>`;
+    return;
+  }
+
+  const data = card || previewData;
 
   if (isAuthoringInstance(block)) {
     let previewContainer = block.parentElement?.querySelector('[data-preview-for="promotional-details"]');

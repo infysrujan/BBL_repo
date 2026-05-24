@@ -250,12 +250,26 @@
     }
 }
 
-body.promo-details-hide-chrome {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
+body.webview-mode {
+    padding-top: 0;
+    margin-top: 0;
 }
 
-body.promo-details-hide-chrome main {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
+body.webview-mode main {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+body.webview-mode header.is-not-overlapped ~ main {
+    padding-top: 0;
+}
+
+body.webview-mode main > div:first-child {
+    margin-top: 0;
+}
+
+@media (width > 64rem) {
+    body.webview-mode header.is-not-overlapped ~ main {
+        padding-top: 0;
+    }
 }
