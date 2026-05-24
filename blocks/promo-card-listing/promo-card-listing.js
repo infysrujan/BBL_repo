@@ -69,9 +69,32 @@ function resolvePromotionType(block) {
 
 function buildPromotionsUrl(baseUrl, lang) {
   if (!baseUrl) return '';
-  const localizedBase = baseUrl.startsWith('/en/') && lang !== 'en'
-    ? baseUrl.replace(/^\/en\//, `/${lang}/`)
-    : baseUrl;
+  let localizedBase = baseUrl;
+  if (lang !== 'en') {
+    if (baseUrl.startsWith('/en/')) {
+      localizedBase = baseUrl.replace(/^\/en\//, `/${lang}/`);
+    } else if (baseUrl.startsWith('/content/bangkokbank/en/')) {
+      localizedBase = baseUrl.replace(
+        /^\/content\/bangkokbank\/en\//,
+        `/content/bangkokbank/${lang}/`,
+      );
+    } else if (baseUrl.startsWith('http://') || baseUrl.startsWith('https://')) {
+      try {
+        const url = new URL(baseUrl);
+        if (url.pathname.startsWith('/en/')) {
+          url.pathname = url.pathname.replace(/^\/en\//, `/${lang}/`);
+        } else if (url.pathname.startsWith('/content/bangkokbank/en/')) {
+          url.pathname = url.pathname.replace(
+            /^\/content\/bangkokbank\/en\//,
+            `/content/bangkokbank/${lang}/`,
+          );
+        }
+        localizedBase = url.toString();
+      } catch (e) {
+        // ignore
+      }
+    }
+  }
   const suffix = lang !== 'en' ? `.${lang}.json` : '.json';
   return localizedBase.replace(/\.json$/, suffix);
 }
@@ -82,6 +105,7 @@ function normalizeQueryLang(value) {
   if (raw.startsWith('en')) return 'en';
   return '';
 }
+
 const CARD_TYPE_NORMALIZE = {
   วีซ่า: 'visa',
   มาสเตอร์การ์ด: 'mastercard',

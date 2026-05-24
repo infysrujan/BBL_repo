@@ -235,9 +235,32 @@ export default async function decorate(block) {
   const baseUrl = isBbm
     ? (effectiveConfigs.promotionalCardSelectorBbm || '')
     : (effectiveConfigs.promotionalCardSelector || '');
-  const localizedBaseUrl = baseUrl.startsWith('/en/') && lang !== 'en'
-    ? baseUrl.replace(/^\/en\//, `/${lang}/`)
-    : baseUrl;
+  let localizedBaseUrl = baseUrl;
+  if (lang !== 'en') {
+    if (baseUrl.startsWith('/en/')) {
+      localizedBaseUrl = baseUrl.replace(/^\/en\//, `/${lang}/`);
+    } else if (baseUrl.startsWith('/content/bangkokbank/en/')) {
+      localizedBaseUrl = baseUrl.replace(
+        /^\/content\/bangkokbank\/en\//,
+        `/content/bangkokbank/${lang}/`,
+      );
+    } else if (baseUrl.startsWith('http://') || baseUrl.startsWith('https://')) {
+      try {
+        const url = new URL(baseUrl);
+        if (url.pathname.startsWith('/en/')) {
+          url.pathname = url.pathname.replace(/^\/en\//, `/${lang}/`);
+        } else if (url.pathname.startsWith('/content/bangkokbank/en/')) {
+          url.pathname = url.pathname.replace(
+            /^\/content\/bangkokbank\/en\//,
+            `/content/bangkokbank/${lang}/`,
+          );
+        }
+        localizedBaseUrl = url.toString();
+      } catch (e) {
+        // ignore
+      }
+    }
+  }
   const suffix = lang !== 'en' ? `.${lang}.json` : '.json';
   const promotionsUrl = localizedBaseUrl.replace(/\.json$/, suffix);
 
