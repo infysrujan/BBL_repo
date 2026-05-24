@@ -77,6 +77,12 @@
     ]
   },
   {
+    "id": "bbm-glow-card-items",
+    "components": [
+      "rte-item"
+    ]
+  },
+  {
     "id": "card-list-wealth",
     "components": [
       "card-list-wealth-item"
