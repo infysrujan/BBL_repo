@@ -150,6 +150,11 @@ function handleGlobalLinkClicks() {
 
     if (!link) return;
 
+    if (link.dataset.bypassRedirect === 'true') {
+      delete link.dataset.bypassRedirect;
+      return;
+    }
+
     const href = link.getAttribute('href');
 
     // Skip internal links, hash links, and relative paths
@@ -208,6 +213,7 @@ function handleGlobalLinkClicks() {
         link.setAttribute('target', originalTarget);
       }
       // Re-trigger the click to allow normal navigation
+      link.dataset.bypassRedirect = 'true';
       link.click();
     } catch (error) {
       // eslint-disable-next-line no-console
