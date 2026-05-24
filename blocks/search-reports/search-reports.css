@@ -11,10 +11,7 @@
 
 .search-reports-overlay {
   position: fixed;
-  top: var(--sr-overlay-top, 0px);
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: var(--sr-overlay-top, 0) 0 0;
   z-index: 9999;
   background: var(--bbl-color-white, #fff);
   opacity: 0;
