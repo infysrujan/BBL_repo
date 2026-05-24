@@ -37,11 +37,24 @@ const overlayTriggerMap = new WeakMap();
 function openModal(overlay, trigger) {
   if (!overlay.isConnected) document.body.appendChild(overlay);
   overlayTriggerMap.set(overlay, trigger || document.activeElement);
-  const pageHeader = document.querySelector('header');
-  const headerHeight = pageHeader ? pageHeader.offsetHeight : 0;
-  overlay.style.top = `${headerHeight}px`;
   document.body.classList.add('search-reports-modal-open');
+
+  function syncTop() {
+    const pageHeader = document.querySelector('header');
+    overlay.style.top = `${pageHeader ? pageHeader.offsetHeight : 0}px`;
+  }
+
+  syncTop();
+  const pageHeader = document.querySelector('header');
+  if (pageHeader) {
+    const ro = new ResizeObserver(syncTop);
+    ro.observe(pageHeader);
+    overlay.dataset.roAttached = 'true';
+    overlay.addEventListener('transitionend', () => ro.disconnect(), { once: true });
+  }
+
   requestAnimationFrame(() => {
+    syncTop();
     overlay.classList.add('search-reports-modal-visible');
     const focusable = getFocusableElements(overlay);
     (focusable[0] || overlay).focus();
