@@ -11,6 +11,14 @@
   padding-bottom: 3rem;
 }
 
+/* ── Results header band ───────────────────────────────────── */
+
+.search-reports-results .srr-header {
+  background: var(--bbl-color-truthful-blue, #002850);
+  height: 3.5rem;
+  flex-shrink: 0;
+}
+
 /* ── Back header ───────────────────────────────────────────── */
 
 .search-reports-results .srr-back-header {

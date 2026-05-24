@@ -121,10 +121,16 @@ function buildDropdown(placeholder, onChange) {
   return { wrapper, getValue: () => currentValue, populateOptions };
 }
 
-async function fetchSearchParams(lang) {
-  const res = await fetch(`${API_BASE}/content/bangkokbank/${lang}.reports.searchparams.json?test`);
+async function fetchSearchParams() {
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const url = isLocal
+    ? '/blocks/search-reports/searchparams.mock.json'
+    : `${API_BASE}/content/bangkokbank/en.reports.searchparams.json?test`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error(`searchparams fetch failed: ${res.status}`);
-  return res.json();
+  const text = await res.text();
+  if (!text) throw new Error('searchparams response empty');
+  return JSON.parse(text);
 }
 
 function parseAuthoredOptions(rows) {
@@ -171,9 +177,16 @@ export default function decorate(block) {
 
   // Header
   const header = el('div', { className: 'sr-header' });
+  const logoLink = el('a', { className: 'sr-logo-link', attrs: { href: `/${lang}`, 'aria-label': 'Bangkok Bank Home' } });
+  const logoImg = el('img', {
+    attrs: {
+      src: '/icons/logo.svg', alt: 'Bangkok Bank', width: '120', height: '40', onerror: "this.style.display='none'",
+    },
+  });
+  logoLink.append(logoImg);
   const closeBtn = el('button', { className: 'sr-close-btn', attrs: { type: 'button', 'aria-label': 'Close search modal' } });
   closeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-  header.append(closeBtn);
+  header.append(logoLink, closeBtn);
 
   // Body
   const body = el('div', { className: 'sr-body' });
@@ -209,7 +222,7 @@ export default function decorate(block) {
     populateTypes(typeOptions);
     populateYears(yearOptions);
   } else {
-    fetchSearchParams(lang).then((data) => {
+    fetchSearchParams().then((data) => {
       const types = data.reportTypes?.length ? data.reportTypes : typeOptions;
       const years = (data.years || []).map((y) => ({ label: y, value: y }));
       populateTypes(types);

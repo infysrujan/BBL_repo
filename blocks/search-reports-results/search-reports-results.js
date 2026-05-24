@@ -120,11 +120,19 @@ async function fetchAndRender(block, type, year) {
   block.innerHTML = '<div class="srr-loading">Loading...</div>';
 
   try {
-    const res = await fetch(`${API_BASE}/content/bangkokbank/${lang}.reports.${type}.${year}.json`);
+    let res = await fetch(`${API_BASE}/content/bangkokbank/${lang}.reports.${type}.${year}.json`);
+    if (res.status === 204 && lang !== 'en') {
+      res = await fetch(`${API_BASE}/content/bangkokbank/en.reports.${type}.${year}.json`);
+    }
+    if (res.status === 204) throw new Error('no content');
     const data = await res.json();
 
     block.innerHTML = '';
     const wrapper = el('div', { className: 'srr-results-wrapper' });
+
+    const resultsHeader = el('div', { className: 'srr-header' });
+    wrapper.append(resultsHeader);
+
     const pageTitle = el('h1', { className: 'srr-page-title', text: 'Search Results' });
     const titleDivider = el('div', { className: 'srr-title-divider' });
     wrapper.append(pageTitle, titleDivider);
