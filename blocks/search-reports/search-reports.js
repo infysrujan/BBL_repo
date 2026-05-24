@@ -33,6 +33,7 @@ function trapFocus(event, overlay) {
 }
 
 const overlayTriggerMap = new WeakMap();
+const overlayObserverMap = new WeakMap();
 
 function openModal(overlay, trigger) {
   if (!overlay.isConnected) document.body.appendChild(overlay);
@@ -44,13 +45,11 @@ function openModal(overlay, trigger) {
     overlay.style.top = `${pageHeader ? pageHeader.offsetHeight : 0}px`;
   }
 
-  syncTop();
   const pageHeader = document.querySelector('header');
   if (pageHeader) {
     const ro = new ResizeObserver(syncTop);
     ro.observe(pageHeader);
-    overlay.dataset.roAttached = 'true';
-    overlay.addEventListener('transitionend', () => ro.disconnect(), { once: true });
+    overlayObserverMap.set(overlay, ro);
   }
 
   requestAnimationFrame(() => {
@@ -63,6 +62,8 @@ function openModal(overlay, trigger) {
 
 function closeModal(overlay) {
   const restoreTarget = overlayTriggerMap.get(overlay);
+  const ro = overlayObserverMap.get(overlay);
+  if (ro) { ro.disconnect(); overlayObserverMap.delete(overlay); }
   document.body.classList.remove('search-reports-modal-open');
   overlay.classList.remove('search-reports-modal-visible');
   const finishClose = () => {
