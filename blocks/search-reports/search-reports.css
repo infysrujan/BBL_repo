@@ -11,7 +11,7 @@
 
 .search-reports-overlay {
   position: fixed;
-  inset: 0;
+  inset: var(--header-m-height, 5rem) 0 0;
   z-index: 9999;
   background: var(--bbl-color-white, #fff);
   opacity: 0;
@@ -37,16 +37,11 @@
   background: var(--bbl-color-truthful-blue, #002850);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 1rem 1.5rem;
   flex-shrink: 0;
 }
 
-.search-reports-overlay .sr-logo-link img {
-  display: block;
-  height: 2.5rem;
-  width: auto;
-}
 
 .search-reports-overlay .sr-close-btn {
   background: transparent;
@@ -228,6 +223,10 @@
    ========================================================================== */
 
 @media (width > 64rem) {
+  .search-reports-overlay {
+    inset: var(--header-d-height, 7.8125rem) 0 0;
+  }
+
   .search-reports-overlay .sr-header {
     padding: 1rem 2rem;
   }

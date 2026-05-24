@@ -33,38 +33,20 @@ function trapFocus(event, overlay) {
 }
 
 const overlayTriggerMap = new WeakMap();
-const overlayObserverMap = new WeakMap();
 
 function openModal(overlay, trigger) {
   if (!overlay.isConnected) document.body.appendChild(overlay);
   overlayTriggerMap.set(overlay, trigger || document.activeElement);
   document.body.classList.add('search-reports-modal-open');
-
-  function syncTop() {
-    const pageHeader = document.querySelector('header');
-    overlay.style.top = `${pageHeader ? pageHeader.offsetHeight : 0}px`;
-  }
-
-  const pageHeader = document.querySelector('header');
-  if (pageHeader) {
-    const ro = new ResizeObserver(syncTop);
-    ro.observe(pageHeader);
-    overlayObserverMap.set(overlay, ro);
-  }
-
   requestAnimationFrame(() => {
-    syncTop();
     overlay.classList.add('search-reports-modal-visible');
     const focusable = getFocusableElements(overlay);
     (focusable[0] || overlay).focus();
-    setTimeout(syncTop, 200);
   });
 }
 
 function closeModal(overlay) {
   const restoreTarget = overlayTriggerMap.get(overlay);
-  const ro = overlayObserverMap.get(overlay);
-  if (ro) { ro.disconnect(); overlayObserverMap.delete(overlay); }
   document.body.classList.remove('search-reports-modal-open');
   overlay.classList.remove('search-reports-modal-visible');
   const finishClose = () => {
@@ -189,17 +171,9 @@ export default function decorate(block) {
 
   // Header
   const header = el('div', { className: 'sr-header' });
-  const logoLink = el('a', { className: 'sr-logo-link', attrs: { href: `/${lang}`, 'aria-label': 'Bangkok Bank Home' } });
-  const logoImg = el('img', {
-    attrs: {
-      src: '/icons/bbl-logo-white.svg', alt: 'Bangkok Bank', width: '120', height: '40', onerror: "this.style.display='none'",
-    },
-  });
-  logoLink.append(logoImg);
-
   const closeBtn = el('button', { className: 'sr-close-btn', attrs: { type: 'button', 'aria-label': 'Close search modal' } });
   closeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-  header.append(logoLink, closeBtn);
+  header.append(closeBtn);
 
   // Body
   const body = el('div', { className: 'sr-body' });
