@@ -51,11 +51,18 @@
   --bbl-color-gray-600: #6a6a6a;
   --bbl-color-gray-300: #d6d6d6;
   --bbl-color-grey-22: #E5E5E7;
+  --bbl-color-grey-19: #F4F4F4;
+  --bbl-color-grey-21: #cacaca;
   --bbl-color-grey-23: #919dab;
   --bbl-color-grey-24: #e2e6e9;
   --bbl-color-grey-25: #919dab;
+  --bbl-color-grey-26: #d9d9d9;
+  --bbl-color-grey-27: #d3d3d3;
+  --bbl-color-grey-28: #333333;
   --bbl-color-grey-78: #787878;
   --bbl-color-grey-152: #dcdcdc;
+  --bbl-color-grey-153: #696969;
+  
 
   /* =========================================================================
      BLUE SCALE
@@ -81,6 +88,7 @@
   --bbl-color-blue-130: #002087;
   --bbl-color-blue-140: #4890ff;
   --bbl-color-blue-steel-light: #E6EEF4;
+  --bbl-color-blue-steel-dark: #DEEAF6;
   --bbl-color-blue-145: #E5EDF4;
   --bbl-color-blue-222: #E0E6F8;
 
@@ -100,6 +108,7 @@
   --bbl-color-red-100: #7A0334;
   --bbl-color-red-110: #440D23;
   --bbl-color-red-120: #300919;
+  --bbl-color-red-130: #FF2323;
 
   /* =========================================================================
      GREEN SCALE
@@ -256,6 +265,12 @@
   --bbl-red-overlay-strong: rgb(70.6% 2% 2% / 45%);
   --bbl-red-overlay-light: rgb(100% 0% 0% / 15%);
 
+  /* SME Loan Calculator */
+  --bbl-color-sme-section-bg: #565e69;
+  --bbl-color-sme-tab-inactive: #445974;
+  --bbl-color-sme-caret: #40a0f0;
+  --bbl-color-sme-field-border: rgb(158 158 158 / 60%);
+  
   /* =========================================================================
      COMPONENT UTILITY COLORS
      Colors used by specific components that have no match in the scale above
