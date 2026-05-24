@@ -10091,23 +10091,11 @@
         "value": "",
         "required": true,
         "condition": {
-          "or": [
+          "!==": [
             {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "Y"
-              ]
+              "var": "isRegister"
             },
-            {
-              "===": [
-                {
-                  "var": "isRegister"
-                },
-                "D"
-              ]
-            }
+            "N"
           ]
         }
       }
