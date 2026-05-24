@@ -465,12 +465,13 @@ export default async function decorate(block) {
   const promotionType = resolvePromotionType(block);
   const docLang = getLang();
   const configs = await fetchConfigs();
+  const effectiveConfigs = configs || {};
   if (!configs || !configs.promotionalCardSelector) {
     try {
       const resp = await fetch(`/${docLang}/config.json`);
       if (resp.ok) {
         const json = await resp.json();
-        const targetConfigs = configs || {};
+        const targetConfigs = effectiveConfigs;
         json.data
           ?.filter((config) => config.Key)
           .forEach((config) => {
@@ -482,9 +483,10 @@ export default async function decorate(block) {
       console.warn('Failed to fetch local config fallback:', e);
     }
   }
-  const creditBaseUrl = configs?.promotionalCardSelector || '';
-  const bbmBaseUrl = configs?.promotionalCardSelectorBbm || '';
-  const pageSize = parseInt(configs?.promotionalItemsPerPage, 10) || '';
+  const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
+  const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
+  const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
+  const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
 
   const path = window.location.pathname.toLowerCase();
   const isBbmPath = path.includes('/promotionsmb');
@@ -499,7 +501,7 @@ export default async function decorate(block) {
   const dataUrl = isBbm ? bbmUrl : creditUrl;
   const [activeData, cardRefConfig, placeholders] = await Promise.all([
     fetchPromotions(dataUrl),
-    fetchJson(configs?.bbmCardRef || ''),
+    fetchJson(effectiveConfigs.bbmCardRef || ''),
     fetchPlaceholders(),
   ]);
   const activeCards = filterByPromotionType(activeData?.cards || [], promotionType);
