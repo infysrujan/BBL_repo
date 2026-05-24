@@ -39,7 +39,7 @@ function openModal(overlay, trigger) {
   overlayTriggerMap.set(overlay, trigger || document.activeElement);
   const pageHeader = document.querySelector('header');
   const headerHeight = pageHeader ? pageHeader.offsetHeight : 0;
-  overlay.style.setProperty('--sr-overlay-top', `${headerHeight}px`);
+  overlay.style.top = `${headerHeight}px`;
   document.body.classList.add('search-reports-modal-open');
   requestAnimationFrame(() => {
     overlay.classList.add('search-reports-modal-visible');
