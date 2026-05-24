@@ -9892,27 +9892,7 @@
       {
         "component": "text",
         "name": "title",
-        "label": "Title (appears on the promotional page)",
-        "condition": {
-          "or": [
-            {
-              "===": [
-                {
-                  "var": "promotionType"
-                },
-                "credit-card"
-              ]
-            },
-            {
-              "===": [
-                {
-                  "var": "promotionType"
-                },
-                "bangkok-bank-m"
-              ]
-            }
-          ]
-        }
+        "label": "Title (appears on the promotional page)"
       },
       {
         "component": "select",
@@ -10005,53 +9985,13 @@
         "component": "date-time",
         "name": "promotionStartDate",
         "label": "Promotion Validity Start Date(appears on the promotional page)",
-        "valueType": "string",
-        "condition": {
-          "or": [
-            {
-              "===": [
-                {
-                  "var": "promotionType"
-                },
-                "credit-card"
-              ]
-            },
-            {
-              "===": [
-                {
-                  "var": "promotionType"
-                },
-                "bangkok-bank-m"
-              ]
-            }
-          ]
-        }
+        "valueType": "string"
       },
       {
         "component": "date-time",
         "name": "promotionEndDate",
         "label": "Promotion Expiry Date (appears on the promotional page)",
-        "valueType": "string",
-        "condition": {
-          "or": [
-            {
-              "===": [
-                {
-                  "var": "promotionType"
-                },
-                "credit-card"
-              ]
-            },
-            {
-              "===": [
-                {
-                  "var": "promotionType"
-                },
-                "bangkok-bank-m"
-              ]
-            }
-          ]
-        }
+        "valueType": "string"
       },
       {
         "component": "text",

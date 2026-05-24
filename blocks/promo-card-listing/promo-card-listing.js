@@ -12,7 +12,7 @@ const fetchCache = {};
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 
-const WEBVIEW_MODE_CLASS = 'webview-mode';
+const MOBILE_APP_VIEW_CLASS = 'mobile-app-view';
 
 function handleChromeHiding(searchParams) {
   const hasCardRef = searchParams.has('card_ref');
@@ -29,9 +29,9 @@ function handleChromeHiding(searchParams) {
     }
   });
   if (hasCardRef) {
-    document.body.classList.add(WEBVIEW_MODE_CLASS);
+    document.body.classList.add(MOBILE_APP_VIEW_CLASS);
   } else {
-    document.body.classList.remove(WEBVIEW_MODE_CLASS);
+    document.body.classList.remove(MOBILE_APP_VIEW_CLASS);
   }
 }
 
@@ -294,6 +294,11 @@ function setupPanel(
   placeholders,
   options = {},
 ) {
+  const path = window.location.pathname.toLowerCase();
+  const isBbmPath = path.includes('/promotionsmb');
+  const searchParams = new URLSearchParams(window.location.search);
+  const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
+
   const {
     disableFilters = false,
     forcedCardType = '',
@@ -371,7 +376,23 @@ function setupPanel(
     }, state.page, pageSize, isHighlightTab);
 
     gridEl.innerHTML = cards.length
-      ? cards.map((c) => buildCardHtml(c, category, placeholders, buildCardOptions(c))).join('')
+      ? cards.map((c) => {
+        let cardData = c;
+        if (isBbmPath && queryLang && c.ctaLink) {
+          try {
+            const isInternal = c.ctaLink.startsWith('/')
+              || c.ctaLink.startsWith(window.location.origin);
+            const url = new URL(c.ctaLink, window.location.origin);
+            url.searchParams.set('sc_lang', queryLang);
+            const ctaPath = url.pathname + url.search + url.hash;
+            cardData = { ...c, ctaLink: isInternal ? ctaPath : url.toString() };
+          } catch {
+            const separator = c.ctaLink.includes('?') ? '&' : '?';
+            cardData = { ...c, ctaLink: `${c.ctaLink}${separator}sc_lang=${queryLang}` };
+          }
+        }
+        return buildCardHtml(cardData, category, placeholders, buildCardOptions(cardData));
+      }).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 
     paginationEl.innerHTML = hidePagination

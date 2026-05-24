@@ -5,7 +5,14 @@ import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
-const WEBVIEW_MODE_CLASS = 'webview-mode';
+const MOBILE_APP_VIEW_CLASS = 'mobile-app-view';
+
+function normalizeQueryLang(value) {
+  const raw = (value || '').toLowerCase();
+  if (raw.startsWith('th')) return 'th';
+  if (raw.startsWith('en')) return 'en';
+  return '';
+}
 
 function isRegisterEnabled(value) {
   const normalized = String(value || '').trim().toUpperCase();
@@ -164,10 +171,11 @@ function handleChromeHiding(searchParams) {
       }
     }
   });
+
   if (hasCardRef) {
-    document.body.classList.add(WEBVIEW_MODE_CLASS);
+    document.body.classList.add(MOBILE_APP_VIEW_CLASS);
   } else {
-    document.body.classList.remove(WEBVIEW_MODE_CLASS);
+    document.body.classList.remove(MOBILE_APP_VIEW_CLASS);
   }
 }
 
@@ -193,14 +201,23 @@ export default async function decorate(block) {
   handleChromeHiding(searchParams);
 
   const { promotionType, promoId } = getPromoBlockConfig(block);
-  const lang = getLang();
+  const path = window.location.pathname.toLowerCase();
+  const isBbmPath = path.includes('/promotionsmb');
+  const isCreditCardPath = path.includes('/credit-cards-promotions');
+  const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
+
+  const docLang = getLang();
+  const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
+  const lang = isBbmPath && queryLang ? queryLang : docLang;
+
   const configs = await fetchConfigs();
+  const effectiveConfigs = configs || {};
   if (!configs || !configs.promotionalCardSelector) {
     try {
       const resp = await fetch(`/${lang}/config.json`);
       if (resp.ok) {
         const json = await resp.json();
-        const targetConfigs = configs || {};
+        const targetConfigs = effectiveConfigs;
         json.data
           ?.filter((config) => config.Key)
           .forEach((config) => {
@@ -213,15 +230,11 @@ export default async function decorate(block) {
     }
   }
 
-  const path = window.location.pathname.toLowerCase();
-  const isBbmPath = path.includes('/promotionsmb');
-  const isCreditCardPath = path.includes('/credit-cards-promotions');
-  const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
   const locale = LOCALE_MAP[lang] || 'en-GB';
 
   const baseUrl = isBbm
-    ? (configs?.promotionalCardSelectorBbm || '')
-    : (configs?.promotionalCardSelector || '');
+    ? (effectiveConfigs.promotionalCardSelectorBbm || '')
+    : (effectiveConfigs.promotionalCardSelector || '');
   const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 
   const [placeholders, card] = await Promise.all([
@@ -231,7 +244,7 @@ export default async function decorate(block) {
 
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
   const clickToViewFull = placeholders.promoClickToViewFull || '';
-  const registerCtaUrl = configs?.bbmIsRegister || '';
+  const registerCtaUrl = effectiveConfigs.bbmIsRegister || '';
   const previewData = isAuthoringInstance(block) && !card
     ? getAuthoringPreviewData(block)
     : null;
