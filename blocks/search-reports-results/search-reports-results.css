@@ -6,7 +6,7 @@
 /* ── Wrapper ───────────────────────────────────────────────── */
 
 .search-reports-results .srr-results-wrapper {
-  background: var(--bbl-color-grey-10, #f5f5f5);
+  background: var(--bbl-color-white, #fff);
   min-height: 100vh;
   padding-bottom: 3rem;
 }
@@ -15,36 +15,36 @@
 
 .search-reports-results .srr-header {
   background: var(--bbl-color-truthful-blue, #002850);
-  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  padding: 1rem 2rem 1rem 4rem;
   flex-shrink: 0;
-}
-
-/* ── Back header ───────────────────────────────────────────── */
-
-.search-reports-results .srr-back-header {
-  background: var(--bbl-color-truthful-blue, #002850);
-  padding: 1rem 1.5rem;
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
 
 .search-reports-results .srr-back-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 50%;
   border: 0.0938rem solid rgb(255 255 255 / 60%);
   background: transparent;
   cursor: pointer;
-  text-decoration: none;
   color: var(--bbl-color-white, #fff);
-  font-size: 1rem;
+  font-size: 1.25rem;
   line-height: 1;
+  padding: 0;
 }
 
 .search-reports-results .srr-back-btn:hover {
   border-color: var(--bbl-color-white, #fff);
 }
+
 
 /* ── Page title ────────────────────────────────────────────── */
 

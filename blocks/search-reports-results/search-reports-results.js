@@ -117,7 +117,26 @@ function buildCard(asset) {
 
 async function fetchAndRender(block, type, year) {
   const lang = document.documentElement.lang || 'en';
-  block.innerHTML = '<div class="srr-loading">Loading...</div>';
+
+  block.innerHTML = '';
+  const wrapper = el('div', { className: 'srr-results-wrapper' });
+  const resultsHeader = el('div', { className: 'srr-header' });
+  const backBtn = el('button', {
+    className: 'srr-back-btn',
+    attrs: { type: 'button', 'aria-label': 'Go back' },
+    text: '‹',
+  });
+  backBtn.addEventListener('click', () => {
+    if (typeof window.__previewGoBack === 'function') window.__previewGoBack();
+    else window.history.back();
+  });
+  resultsHeader.append(backBtn);
+  wrapper.append(resultsHeader);
+  wrapper.append(el('h1', { className: 'srr-page-title', text: 'Search Results' }));
+  wrapper.append(el('div', { className: 'srr-title-divider' }));
+  const loading = el('div', { className: 'srr-loading', text: 'Loading...' });
+  wrapper.append(loading);
+  block.append(wrapper);
 
   try {
     let res = await fetch(`${API_BASE}/content/bangkokbank/${lang}.reports.${type}.${year}.json`);
@@ -127,19 +146,10 @@ async function fetchAndRender(block, type, year) {
     if (res.status === 204) throw new Error('no content');
     const data = await res.json();
 
-    block.innerHTML = '';
-    const wrapper = el('div', { className: 'srr-results-wrapper' });
-
-    const resultsHeader = el('div', { className: 'srr-header' });
-    wrapper.append(resultsHeader);
-
-    const pageTitle = el('h1', { className: 'srr-page-title', text: 'Search Results' });
-    const titleDivider = el('div', { className: 'srr-title-divider' });
-    wrapper.append(pageTitle, titleDivider);
+    loading.remove();
 
     if (!data.totalCount || !data.assets?.length) {
       wrapper.append(el('p', { className: 'srr-empty', text: 'No reports found for the selected filters.' }));
-      block.append(wrapper);
       return;
     }
 
@@ -147,10 +157,9 @@ async function fetchAndRender(block, type, year) {
     const list = el('div', { className: 'srr-list' });
     sorted.forEach((asset) => list.append(buildCard(asset)));
     wrapper.append(list);
-    block.append(wrapper);
   } catch {
-    block.innerHTML = '';
-    block.append(el('p', { className: 'srr-error', text: 'Unable to load reports. Please try again.' }));
+    loading.remove();
+    wrapper.append(el('p', { className: 'srr-error', text: 'Unable to load reports. Please try again.' }));
   }
 }
 
