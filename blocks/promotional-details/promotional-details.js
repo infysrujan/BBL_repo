@@ -9,21 +9,18 @@ const WEBVIEW_MODE_CLASS = 'webview-mode';
 
 function isRegisterEnabled(value) {
   const normalized = String(value || '').trim().toUpperCase();
-  return normalized && normalized !== 'N';
+  // CTA is shown ONLY when the API explicitly sets isRegister to 'Y' or 'D'
+  return normalized === 'Y' || normalized === 'D';
 }
 
 function resolveCtaLabel(isRegister, data) {
-  if (isRegisterEnabled(isRegister)) {
-    return data?.isRegisterCtaLabel || '';
-  }
-  return data?.ctaLabel || '';
+  if (!isRegisterEnabled(isRegister)) return '';
+  return data?.isRegisterCtaLabel || '';
 }
 
 function resolveCtaUrl(isRegister, data, registerCtaUrl) {
-  if (isRegisterEnabled(isRegister)) {
-    return registerCtaUrl || '';
-  }
-  return data?.ctaLink || '';
+  if (!isRegisterEnabled(isRegister)) return '';
+  return registerCtaUrl || '';
 }
 
 function getPromoBlockConfig(block) {
