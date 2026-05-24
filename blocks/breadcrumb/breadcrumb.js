@@ -9,7 +9,7 @@ import { fetchConfigs } from '../../scripts/config.js';
  */
 async function fetchBreadcrumbData() {
   const configs = await fetchConfigs();
-  const AEM_BASE_URL_FOR_BREADCRUMB = configs.aemBaseUrlForBreadcrumb;
+  const AEM_BASE_URL_FOR_BREADCRUMB = configs.breadcrumbAemBaseUrl;
   if (!AEM_BASE_URL_FOR_BREADCRUMB) {
     return { titleMap: {}, currentPageData: null, homepageData: null };
   }

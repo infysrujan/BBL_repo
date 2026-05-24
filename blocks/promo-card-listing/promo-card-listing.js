@@ -260,9 +260,9 @@ function setupPanel(
 export default async function decorate(block) {
   const lang = getLang();
   const configs = await fetchConfigs();
-  const baseUrl = configs?.promotionalCardSelector || '';
+  const baseUrl = configs?.promoCardListingCardSelector || '';
   const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
-  const pageSize = parseInt(configs?.promotionalItemsPerPage, 10) || '';
+  const pageSize = parseInt(configs?.promoCardListingItemsPerPage, 10) || '';
 
   // Fetch all data once, shared across all tab panels
   const [tagsData, placeholders] = await Promise.all([
