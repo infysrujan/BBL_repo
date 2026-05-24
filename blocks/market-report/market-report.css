@@ -42,7 +42,7 @@
   margin-block: 1.875rem;
 }
 
-a.print-button.icon-print {
+.market-report-page a.print-button.icon-print {
   font: 1rem BangkokBank-Medium, sans-serif;
   color: var(--bbl-color-black);
   text-transform: uppercase;
@@ -51,7 +51,7 @@ a.print-button.icon-print {
   padding-right: 1.75rem;
 }
 
-a.print-button.icon-print::before {
+.market-report-page a.print-button.icon-print::before {
   position: absolute;
   right: 0;
   top: 0.125rem;
@@ -93,7 +93,7 @@ a.print-button.icon-print::before {
   float: right;
 }
 
-p.text-small {
+.market-report-page p.text-small {
   font-size: 0.6875rem;
   line-height: 1.63;
   letter-spacing: -0.0063rem;
