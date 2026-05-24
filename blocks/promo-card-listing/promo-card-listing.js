@@ -63,7 +63,7 @@ function resolvePromotionType(block) {
   if (datasetType) return datasetType;
   const path = window.location.pathname.toLowerCase();
   if (path.includes('/promotionsmb')) return 'bangkok-bank-m';
-  if (path.includes('/credit-card-promotions')) return 'credit-card';
+  if (path.includes('/credit-cards-promotions')) return 'credit-card';
   return '';
 }
 
@@ -464,6 +464,7 @@ export default async function decorate(block) {
 
   const promotionType = resolvePromotionType(block);
   const docLang = getLang();
+
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
   if (!configs || !configs.promotionalCardSelector) {
@@ -490,7 +491,7 @@ export default async function decorate(block) {
 
   const path = window.location.pathname.toLowerCase();
   const isBbmPath = path.includes('/promotionsmb');
-  const isCreditCardPath = path.includes('/credit-card-promotions');
+  const isCreditCardPath = path.includes('/credit-cards-promotions');
   const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
   const lang = isBbmPath && queryLang ? queryLang : docLang;
@@ -545,6 +546,26 @@ export default async function decorate(block) {
 
   const tabsContainer = getTabsContainer(block);
   applyCategoryTabs(tabsContainer, activeCategories);
+
+  // Issue 1 Fix: mark the parent section so CSS fade selectors scope correctly,
+  // then wire scroll events to toggle gradient-fade state classes on the nav wrapper.
+  const promoSection = block.closest('.section');
+  if (promoSection) promoSection.classList.add('promo-card-listing-section');
+
+  if (tabsContainer) {
+    const tabsNav = tabsContainer.querySelector('.tabs-nav');
+    const navWrapper = tabsContainer.querySelector('.tabs-nav-wrapper');
+    if (tabsNav && navWrapper) {
+      const updateScrollFade = () => {
+        const { scrollLeft, scrollWidth, clientWidth } = tabsNav;
+        navWrapper.classList.toggle('is-scroll-start', scrollLeft > 2);
+        navWrapper.classList.toggle('is-scroll-end', scrollLeft + clientWidth >= scrollWidth - 2);
+      };
+      tabsNav.addEventListener('scroll', updateScrollFade, { passive: true });
+      // Run once after first render so the initial state is set correctly
+      requestAnimationFrame(updateScrollFade);
+    }
+  }
 
   // Find tab panels created by tabs.js from the empty tab sections
   const tabPanels = tabsContainer

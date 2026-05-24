@@ -218,7 +218,7 @@ export default async function decorate(block) {
 
   const path = window.location.pathname.toLowerCase();
   const isBbmPath = path.includes('/promotionsmb');
-  const isCreditCardPath = path.includes('/credit-card-promotions');
+  const isCreditCardPath = path.includes('/credit-cards-promotions');
   const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
   const locale = LOCALE_MAP[lang] || 'en-GB';
 
