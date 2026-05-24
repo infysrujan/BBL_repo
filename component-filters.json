@@ -362,10 +362,11 @@
       "cross-banner",
       "form",
       "embed-adaptive-form",
-      "forex-rates",
-      "forex-graph",
+      "download-file",
+      "table",
       "accordion-block",
-      "table"
+      "forex-rates",
+      "forex-graph"
     ]
   },
   {
