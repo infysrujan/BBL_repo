@@ -89,10 +89,6 @@ a.print-button.icon-print::before {
   display: none;
 }
 
-h4#deposit-rate {
-  display: inline-block;
-}
-
 .market-report-page .button-container {
   float: right;
 }
@@ -113,105 +109,4 @@ p.text-small {
   height: 0.0625rem;
   overflow: hidden;
   box-sizing: border-box;
-}
-
-@media print {
-  @page {
-    margin: 12mm;
-  }
-
-  body * {
-    visibility: hidden;
-  }
-
-  .market-report-print-area,
-  .market-report-print-area * {
-    visibility: visible;
-  }
-
-  .market-report-print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: auto;
-    overflow: visible;
-    padding: 0;
-    background: var(--bbl-color-white);
-    color: var(--bbl-color-black);
-  }
-
-  .market-report-print-header {
-    margin-bottom: 1.25rem;
-    padding-bottom: 1rem;
-    border-bottom: 0.0625rem solid var(--bbl-color-grey-125);
-  }
-
-  .market-report-print-logo img {
-    max-height: 2.75rem;
-    width: auto;
-    height: auto;
-  }
-
-  .market-report-print-title {
-    font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin: 0.75rem 0 0.35rem;
-    color: var(--bbl-color-black);
-  }
-
-  .market-report-print-description {
-    font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-    font-size: 1rem;
-    line-height: 1.45;
-    margin: 0;
-    color: var(--bbl-color-grey-85);
-  }
-
-  .market-report-print-body {
-    width: 100%;
-  }
-
-  .market-report-print-body>.market-report-col-left {
-    float: none;
-    width: 100%;
-    flex: none !important;
-    display: block !important;
-  }
-
-  .market-report-print-body .market-report-top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .market-report-print-body .market-report-date {
-    font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
-    font-size: 0.9375rem;
-    color: var(--bbl-color-grey-28);
-  }
-
-  .market-report-print-body table {
-    border-collapse: collapse;
-    width: 100%;
-    font-size: 10pt;
-  }
-
-  .market-report-print-body :is(td, th) {
-    border: 0.0625rem solid var(--bbl-color-grey-45);
-    padding: 0.25rem 0.5rem;
-    vertical-align: top;
-  }
-
-  .market-report-print-body .button-container {
-    display: none !important;
-  }
-
-  .market-report-print-body .market-report-page .table.block {
-    margin: 0.75rem 0 1.25rem;
-    break-inside: avoid;
-  }
 }

@@ -606,82 +606,140 @@ function applyTextSmallToTableFollowParagraphs(panel) {
   });
 }
 
-const MARKET_REPORT_PRINT_AREA_ID = 'market-report-print-area';
+function printElement() {
+   // Clone the container to avoid changing the DOM
+  const originalContent = document.querySelector('main');
+  const content = originalContent ? originalContent.cloneNode(true) : null;
+  if (!content) return;
 
-/**
- * Snapshot logo, hero copy, and left column into a print-only root, then call print.
- * @param {HTMLElement | null | undefined} tableWrapper
- */
-function printMarketReport(tableWrapper) {
-  document.getElementById(MARKET_REPORT_PRINT_AREA_ID)?.remove();
+  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  if (!logoEl) return;
+  const brandLogo = logoEl.cloneNode(true).outerHTML;
 
-  const logoImg = document.querySelector('.brand-logo-image');
-  const titleP = document.querySelector('main > section > .default-content-wrapper p') ?? document.querySelector('main > .section > .default-content-wrapper p');
-  const descriptionP = document.querySelector('main > .section > .default-content-wrapper p:nth-of-type(2)') ?? document.querySelector('main > section > .default-content-wrapper p:nth-of-type(2)');
+  const printWindow = window.open('', '', 'height=500,width=800');
 
-  const leftCol = tableWrapper?.querySelector(
-    '.market-report-col.market-report-col-left',
-  );
+  const printCss = `
+    @page {
+      size: A4 portrait;
+      margin: 10mm; /* Standard margins for printers */
+    }
 
-  const area = document.createElement('div');
-  area.id = MARKET_REPORT_PRINT_AREA_ID;
-  area.className = 'market-report-print-area';
-  area.setAttribute('aria-hidden', 'true');
+    .header {
+      position: unset;
+    }
+    
+    .brand-logo-container {
+      width: 12.5rem;
+      height: 3.125rem;
+      margin-block: 4rem;
+    }
+    
+    .tabs-dropdown {
+      display: none;
+    }
+    
+    .tabs-nav-wrapper .tabs-nav {
+     display: block;
+    }
 
-  const header = document.createElement('div');
-  header.className = 'market-report-print-header';
+    a.print-button.icon-print {
+      display: none;
+    }
 
-  if (logoImg) {
-    const logoWrap = document.createElement('div');
-    logoWrap.className = 'market-report-print-logo';
-    const pic = logoImg.closest('picture');
-    logoWrap.appendChild((pic ?? logoImg).cloneNode(true));
-    header.appendChild(logoWrap);
-  }
+    .table table tr td {
+      padding: 5px 0.75rem;
+    }
 
-  if (titleP) {
-    const t = document.createElement('p');
-    t.className = 'market-report-print-title';
-    t.textContent = titleP.textContent;
-    header.appendChild(t);
-  }
+    .table-wrapper {
+      font-size: 12px;
+    }
 
-  if (descriptionP) {
-    const d = document.createElement('p');
-    d.className = 'market-report-print-description';
-    d.textContent = descriptionP.textContent;
-    header.appendChild(d);
-  }
+    .market-report-page .table table tr td,
+    .market-report-page .table table[class*="header-"] tr.header-row td {
+      height: 1rem;
+    }
 
-  area.appendChild(header);
+    .table table.outline-border {
+      border: none;
+    }
 
-  if (leftCol) {
-    const body = document.createElement('div');
-    body.className = 'market-report-print-body';
-    const leftClone = leftCol.cloneNode(true);
-    leftClone.querySelectorAll('.print-button').forEach((el) => el.remove());
-    body.appendChild(leftClone);
-    area.appendChild(body);
-  }
+    tr {
+      border-block: 0.0625rem solid var(--bbl-color-grey-30);
+    }
 
-  document.body.appendChild(area);
+    .market-report-page .button-container {
+      display: none;
+    }
 
-  let cleaned = false;
-  const cleanup = () => {
-    if (cleaned) return;
-    cleaned = true;
-    document.getElementById(MARKET_REPORT_PRINT_AREA_ID)?.remove();
-    window.removeEventListener('afterprint', cleanup);
+    .table table.header-blue tr.header-row {
+      border-block: 2px solid black;
+    }
+
+    .table table tr.header-row td ,
+    .table table tr:not(.header-row) td {
+      padding: 3px 0.75rem;
+      font-size: 12px;
+      
+    }
+
+    .market-report-col-left :is(h1, h2, h3, h4, h5, h6), .market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
+      font-size: 14px;
+    }
+    
+  `;
+
+   const printHtml = `
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <title>Print</title>
+      <link rel="stylesheet" href="/styles/styles.css">
+      <link rel="stylesheet" href="/styles/fonts.css">
+      <link rel="stylesheet" href="/blocks/header/header.css">
+      <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
+      <link rel="stylesheet" href="/blocks/tabs/tabs.css">
+      <link rel="stylesheet" href="/blocks/table/table.css">
+      <link rel="stylesheet" href="/blocks/market-report/market-report.css">
+      <style>${printCss}</style>
+    </head>
+    <body class="appear">
+      <header class="header-wrapper">
+        <div class="header block" data-block-status="loaded">
+          <div class="header-content">
+            <div class="main-nav-desktop">
+              <div class="brand-logo block">
+                <div class="brand-logo-container">
+                  ${brandLogo}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      ${content.innerHTML.trim()}
+    </body>
+  </html>
+  `;
+
+const runPrint = () => {
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 100);
   };
-  window.addEventListener('afterprint', cleanup);
+  if (printWindow.document.readyState === 'complete') {
+    requestAnimationFrame(runPrint);
+  } else {
+    printWindow.addEventListener('load', runPrint);
+  }
 
-  window.print();
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
 
-  window.setTimeout(() => {
-    if (!cleaned && document.getElementById(MARKET_REPORT_PRINT_AREA_ID)) cleanup();
-  }, 3000);
 }
-
 /* Create the top row of the market report */
 /**
  * @param {string} formattedDate
@@ -702,7 +760,7 @@ function createMarketReportTopRow(formattedDate, tableWrapper) {
   printButton.textContent = 'Print';
   printButton.addEventListener('click', (e) => {
     e.preventDefault();
-    printMarketReport(tableWrapper);
+    printElement();
   });
 
   topRow.append(dateDiv, printButton);
