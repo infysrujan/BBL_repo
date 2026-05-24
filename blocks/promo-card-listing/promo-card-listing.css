@@ -325,7 +325,7 @@ body.webview-mode main > div:first-child {
 
 /* Add enough right padding so the last button text clears the arrow button */
 .promo-card-listing-section .tabs-nav {
-    padding-inline-end: 3rem !important;
+    padding-inline-end: 3rem;
 }
 
 /* On desktop the full nav is visible — remove fades */
@@ -336,7 +336,7 @@ body.webview-mode main > div:first-child {
     }
 
     .promo-card-listing-section .tabs-nav {
-        padding-inline-end: 0 !important;
+        padding-inline-end: 0;
     }
 }
 
