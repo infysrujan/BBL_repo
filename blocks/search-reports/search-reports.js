@@ -154,7 +154,6 @@ export default function decorate(block) {
   const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || 'Search for Reports';
   const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || 'Search Report';
   const modalDesc = rows[2]?.firstElementChild?.innerHTML?.trim() || '';
-  const resultsUrl = rows[3]?.firstElementChild?.textContent?.trim() || '/en/investor-relations/search-results';
   const lang = document.documentElement.lang || 'en';
 
   const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
@@ -232,15 +231,12 @@ export default function decorate(block) {
   searchBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     if (searchBtn.classList.contains('sr-search-btn-disabled')) return;
-    const params = new URLSearchParams({ type: getType(), year: getYear() });
-    const target = `${resultsUrl}?${params.toString()}`;
-    if (typeof window.__previewNavigate === 'function') {
-      overlay.remove();
-      document.body.classList.remove('search-reports-modal-open');
-      window.__previewNavigate(target);
-    } else {
-      window.location.href = target;
-    }
+    const type = getType();
+    const year = getYear();
+    const params = new URLSearchParams({ type, year });
+    window.history.pushState({}, '', `?${params.toString()}`);
+    window.dispatchEvent(new CustomEvent('search-reports:submit', { detail: { type, year } }));
+    closeModal(overlay);
   });
 
   body.append(titleEl, titleDivider, descEl, typeDropdown, yearDropdown, searchBtn);

@@ -10203,14 +10203,6 @@
         "label": "Modal Description",
         "valueType": "string",
         "required": false
-      },
-      {
-        "component": "text",
-        "name": "resultsPageUrl",
-        "label": "Results Page URL",
-        "description": "Path to the search results page (e.g. /en/investor-relations/search-results)",
-        "valueType": "string",
-        "required": true
       }
     ]
   },

@@ -78,8 +78,8 @@ function openPdfPreview(path, name) {
   closeBtn.focus();
 }
 
-function buildCard(asset, isAuthor) {
-  const fullPath = isAuthor ? asset.path : `${API_BASE}${asset.path}`;
+function buildCard(asset) {
+  const fullPath = `${API_BASE}${asset.path}`;
 
   const card = el('div', { className: 'srr-card' });
   const topRow = el('div', { className: 'srr-card-top' });
@@ -115,39 +115,16 @@ function buildCard(asset, isAuthor) {
   return card;
 }
 
-export default async function decorate(block) {
-  const isAuthor = window.self !== window.top;
-  const params = new URLSearchParams(window.location.search);
-  const type = params.get('type') || '';
-  const year = params.get('year') || '';
+async function fetchAndRender(block, type, year) {
   const lang = document.documentElement.lang || 'en';
-
   block.innerHTML = '<div class="srr-loading">Loading...</div>';
 
   try {
-    if (isAuthor) {
-      block.innerHTML = '';
-      block.append(el('p', { className: 'srr-empty', text: 'Search results will appear here on the published page.' }));
-      return;
-    }
-
     const res = await fetch(`${API_BASE}/content/bangkokbank/${lang}.reports.${type}.${year}.json`);
     const data = await res.json();
 
     block.innerHTML = '';
     const wrapper = el('div', { className: 'srr-results-wrapper' });
-
-    // Back button
-    const backHeader = el('div', { className: 'srr-back-header' });
-    const backBtn = el('a', { className: 'srr-back-btn', attrs: { href: '#', 'aria-label': 'Go back' }, text: '‹' });
-    backBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (typeof window.__previewGoBack === 'function') window.__previewGoBack();
-      else window.history.back();
-    });
-    backHeader.append(backBtn);
-    wrapper.append(backHeader);
-
     const pageTitle = el('h1', { className: 'srr-page-title', text: 'Search Results' });
     const titleDivider = el('div', { className: 'srr-title-divider' });
     wrapper.append(pageTitle, titleDivider);
@@ -160,11 +137,25 @@ export default async function decorate(block) {
 
     const sorted = sortAssets(data.assets, type);
     const list = el('div', { className: 'srr-list' });
-    sorted.forEach((asset) => list.append(buildCard(asset, isAuthor)));
+    sorted.forEach((asset) => list.append(buildCard(asset)));
     wrapper.append(list);
     block.append(wrapper);
   } catch {
     block.innerHTML = '';
     block.append(el('p', { className: 'srr-error', text: 'Unable to load reports. Please try again.' }));
   }
+}
+
+export default function decorate(block) {
+  const params = new URLSearchParams(window.location.search);
+  const type = params.get('type') || '';
+  const year = params.get('year') || '';
+
+  if (type && year) {
+    fetchAndRender(block, type, year);
+  }
+
+  window.addEventListener('search-reports:submit', (e) => {
+    fetchAndRender(block, e.detail.type, e.detail.year);
+  });
 }
