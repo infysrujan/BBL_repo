@@ -254,6 +254,12 @@ export default function decorate(block) {
     trapFocus(e, overlay);
   });
 
-  openModal(overlay, null);
+  const initParams = new URLSearchParams(window.location.search);
+  if (!initParams.get('type') || !initParams.get('year')) openModal(overlay, null);
   window.__previewReopenModal = () => openModal(overlay, null);
+
+  window.addEventListener('popstate', () => {
+    const p = new URLSearchParams(window.location.search);
+    if (!p.get('type') && !p.get('year')) openModal(overlay, null);
+  });
 }

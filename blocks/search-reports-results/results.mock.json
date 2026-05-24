@@ -1,0 +1,38 @@
+{
+  "type": "summary-statement",
+  "year": "2025",
+  "searchPath": "/content/dam/feature/reports/bbl-corporate/financial-information/2025",
+  "totalCount": 3,
+  "assets": [
+    {
+      "path": "/blocks/search-reports-results/test.pdf",
+      "name": "fs1q_en2025.pdf",
+      "mimeType": "application/pdf",
+      "reportType": "summary-statement",
+      "reportTitle": "REPORT ON REVIEW OF INTERIM FINANCIAL INFORMATION",
+      "reportMonth": "11",
+      "reportQuarter": "4",
+      "year": "2025"
+    },
+    {
+      "path": "/blocks/search-reports-results/test.pdf",
+      "name": "ufr2q_en2025.pdf",
+      "mimeType": "application/pdf",
+      "reportType": "summary-statement",
+      "reportTitle": "Summary of Operating Results for the Bank and its Subsidiaries",
+      "reportMonth": "06",
+      "reportQuarter": "3",
+      "year": "2025"
+    },
+    {
+      "path": "/blocks/search-reports-results/test.pdf",
+      "name": "ufr3q_en2025.pdf",
+      "mimeType": "application/pdf",
+      "reportType": "summary-statement",
+      "reportTitle": "Summary of Operating Results for the Bank and its Subsidiaries Quarter and Nine Months Ended September 30, 2025",
+      "reportMonth": "09",
+      "reportQuarter": "3",
+      "year": "2025"
+    }
+  ]
+}

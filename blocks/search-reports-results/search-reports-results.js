@@ -35,32 +35,32 @@ function openPdfPreview(path, name) {
   const logoLink = el('a', { className: 'srr-preview-logo', attrs: { href: `/${lang}`, 'aria-label': 'Bangkok Bank Home' } });
   const logoImg = el('img', {
     attrs: {
-      src: '/icons/bbl-logo-white.svg', alt: 'Bangkok Bank', width: '120', height: '40', onerror: "this.style.display='none'",
+      src: '/icons/logo.svg', alt: 'Bangkok Bank', width: '120', height: '40', onerror: "this.style.display='none'",
     },
   });
   logoLink.append(logoImg);
-
   const closeBtn = el('button', { className: 'srr-preview-close', attrs: { type: 'button', 'aria-label': 'Close preview' } });
   closeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
   header.append(logoLink, closeBtn);
 
   const body = el('div', { className: 'srr-preview-body' });
-  const embedWrapper = el('div', { className: 'srr-preview-embed-wrapper' });
-  const embed = el('embed', {
-    attrs: {
-      src: path, type: 'application/pdf', width: '100%', height: '100%',
-    },
-  });
-  embedWrapper.append(embed);
+  const frame = el('iframe', { className: 'srr-preview-frame', attrs: { title: name || 'PDF Preview' } });
+  body.append(frame);
 
   const btnGroup = el('div', { className: 'srr-preview-btn-group' });
-  const downloadBtn = el('a', {
+  const downloadBtn = el('button', {
     className: 'srr-preview-download-btn',
     text: 'Download',
-    attrs: { href: path, download: name || '', target: '_blank' },
+    attrs: { type: 'button' },
+  });
+  downloadBtn.addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = path;
+    a.download = name || '';
+    a.click();
   });
   btnGroup.append(downloadBtn);
-  body.append(embedWrapper, btnGroup);
+  body.append(btnGroup);
   overlay.append(header, body);
   document.body.appendChild(overlay);
   document.body.classList.add('srr-preview-open');
@@ -76,10 +76,13 @@ function openPdfPreview(path, name) {
   closeBtn.addEventListener('click', close);
   overlay.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   closeBtn.focus();
+
+  frame.src = path;
 }
 
 function buildCard(asset) {
-  const fullPath = `${API_BASE}${asset.path}`;
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const fetchPath = (isLocal && asset.path.startsWith('/content/dam/')) ? `${API_BASE}${asset.path}` : asset.path;
 
   const card = el('div', { className: 'srr-card' });
   const topRow = el('div', { className: 'srr-card-top' });
@@ -98,17 +101,23 @@ function buildCard(asset) {
       className: 'srr-icon-btn srr-preview-btn',
       attrs: { type: 'button', 'aria-label': `Preview ${asset.name}` },
     });
-    previewBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>';
-    previewBtn.addEventListener('click', () => openPdfPreview(fullPath, asset.name));
+    previewBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><circle cx="10" cy="14" r="2.5"/><line x1="12" y1="16" x2="14.5" y2="18.5"/></svg>';
+    previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfPreview(fetchPath, asset.name); });
     icons.append(previewBtn);
   }
 
-  const downloadLink = el('a', {
+  const downloadBtn = el('button', {
     className: 'srr-icon-btn srr-download-btn',
-    attrs: { href: fullPath, download: asset.name, 'aria-label': `Download ${asset.name}` },
+    attrs: { type: 'button', 'aria-label': `Download ${asset.name}` },
   });
-  downloadLink.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
-  icons.append(downloadLink);
+  downloadBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 3a1 1 0 1 0-2 0v10.586l-2.293-2.293a1 1 0 0 0-1.414 1.414l4 4a1 1 0 0 0 1.414 0l4-4a1 1 0 0 0-1.414-1.414L13 13.586V3zM4 17a1 1 0 0 1 2 0v2h12v-2a1 1 0 1 1 2 0v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2z"/></svg>';
+  downloadBtn.addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = fetchPath;
+    a.download = asset.name;
+    a.click();
+  });
+  icons.append(downloadBtn);
 
   fileRow.append(fileLabel, icons);
   card.append(topRow, fileRow);
@@ -127,8 +136,12 @@ async function fetchAndRender(block, type, year) {
     text: '‹',
   });
   backBtn.addEventListener('click', () => {
-    if (typeof window.__previewGoBack === 'function') window.__previewGoBack();
-    else window.history.back();
+    if (typeof window.__previewGoBack === 'function') {
+      window.__previewGoBack();
+    } else {
+      window.history.pushState({}, '', window.location.pathname);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
   });
   resultsHeader.append(backBtn);
   wrapper.append(resultsHeader);
@@ -139,9 +152,15 @@ async function fetchAndRender(block, type, year) {
   block.append(wrapper);
 
   try {
-    let res = await fetch(`${API_BASE}/content/bangkokbank/${lang}.reports.${type}.${year}.json`);
-    if (res.status === 204 && lang !== 'en') {
-      res = await fetch(`${API_BASE}/content/bangkokbank/en.reports.${type}.${year}.json`);
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    let res;
+    if (isLocal) {
+      res = await fetch('/blocks/search-reports-results/results.mock.json');
+    } else {
+      res = await fetch(`${API_BASE}/content/bangkokbank/${lang}.reports.${type}.${year}.json`);
+      if (res.status === 204 && lang !== 'en') {
+        res = await fetch(`${API_BASE}/content/bangkokbank/en.reports.${type}.${year}.json`);
+      }
     }
     if (res.status === 204) throw new Error('no content');
     const data = await res.json();
@@ -171,6 +190,11 @@ export default function decorate(block) {
   if (type && year) {
     fetchAndRender(block, type, year);
   }
+
+  window.addEventListener('popstate', () => {
+    const p = new URLSearchParams(window.location.search);
+    if (!p.get('type') && !p.get('year')) block.innerHTML = '';
+  });
 
   window.addEventListener('search-reports:submit', (e) => {
     fetchAndRender(block, e.detail.type, e.detail.year);
