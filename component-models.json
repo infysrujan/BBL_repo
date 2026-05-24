@@ -67,6 +67,13 @@
         "value": true,
         "label": "Breadcrumb",
         "valueType": "boolean"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "ogImage",
+        "label": "OG Image",
+        "description": "Select the image asset to use for the Open Graph og:image meta tag."
       }
     ]
   },
@@ -312,6 +319,14 @@
                 "value": "center-title"
               },
               {
+                "name": "Center Image",
+                "value": "center-image"
+              },
+              {
+                "name": "Underline Image",
+                "value": "underline-image"
+              },
+              {
                 "name": "Center Content",
                 "value": "center-content"
               }
@@ -366,6 +381,39 @@
     ]
   },
   {
+    "id": "bcap",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "date-label",
+        "value": "",
+        "label": "Calander Label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "print-label",
+        "value": "",
+        "label": "Print Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "error-message",
+        "value": "",
+        "label": "Error Message Text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimer-text",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "brand-logo",
     "fields": [
       {
@@ -389,6 +437,14 @@
         "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
         "valueType": "string",
         "required": true
+      },
+      {
+        "component": "reference",
+        "name": "printLogo",
+        "label": "Print Logo",
+        "multi": false,
+        "required": false,
+        "description": "Logo image shown at the top of the print preview (hidden in normal view)"
       }
     ]
   },
@@ -650,6 +706,13 @@
         ]
       },
       {
+        "component": "text",
+        "name": "subtitle",
+        "value": "",
+        "label": "Subtitle",
+        "valueType": "string"
+      },
+      {
         "component": "richtext",
         "name": "description",
         "value": "",
@@ -664,23 +727,65 @@
         "valueType": "string"
       },
       {
+        "component": "select",
+        "valueType": "string",
+        "description": "Select type of button action",
+        "name": "buttonActionType",
+        "value": "default",
+        "label": "Button ActionType",
+        "options": [
+          {
+            "name": "Default Button",
+            "value": "default-button"
+          },
+          {
+            "name": "Multiple Download",
+            "value": "multiple-download"
+          }
+        ]
+      },
+      {
         "component": "aem-content",
         "name": "link",
         "label": "Link",
-        "description": "Destination URL for the button"
+        "description": "Destination URL for the button",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default-button"
+          ]
+        }
       },
       {
         "component": "text",
         "name": "linkText",
         "label": "Text",
         "description": "Button label text",
-        "required": true
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default-button"
+          ]
+        }
       },
       {
         "component": "text",
         "name": "linkTitle",
         "label": "Title",
-        "description": "Accessibility title attribute (optional)"
+        "description": "Accessibility title attribute (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default-button"
+          ]
+        }
       },
       {
         "component": "select",
@@ -702,7 +807,15 @@
             "name": "Tertiary",
             "value": "tertiary"
           }
-        ]
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default-button"
+          ]
+        }
       },
       {
         "component": "boolean",
@@ -710,7 +823,30 @@
         "label": "Open link in new tab",
         "description": "Enable to open the button link in a new browser tab",
         "valueType": "boolean",
-        "value": false
+        "value": false,
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default-button"
+          ]
+        }
+      },
+      {
+        "component": "richtext",
+        "name": "multipleDownloadLinks",
+        "value": "",
+        "label": "Multiple Download Links",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "multiple-download"
+          ]
+        }
       },
       {
         "component": "select",
@@ -1887,7 +2023,7 @@
         }
       },
       {
-        "component": "text",
+        "component": "richtext",
         "name": "titleDefaultImage",
         "label": "Title Text",
         "valueType": "string",
@@ -1902,8 +2038,8 @@
       },
       {
         "component": "text",
-        "name": "step",
-        "label": "Step Text",
+        "name": "stepText1",
+        "label": "Step Text 1",
         "valueType": "string",
         "condition": {
           "===": [
@@ -1916,9 +2052,110 @@
       },
       {
         "component": "richtext",
-        "name": "descriptionDefaultImage",
+        "name": "description1",
         "label": "Description",
         "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "stepText2",
+        "label": "Step Text 2",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "richtext",
+        "name": "description2",
+        "label": "Description",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "ctaLink",
+        "label": "Link",
+        "description": "Destination URL for the button",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "ctaLinkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true,
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "ctaLinkTitle",
+        "label": "Title",
+        "description": "Accessibility title attribute (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "ctaLinkType",
+        "label": "Type",
+        "description": "Button style variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ],
         "condition": {
           "===": [
             {
@@ -3442,17 +3679,12 @@
         ]
       },
       {
-        "component": "tab",
-        "label": "Style",
-        "name": "style"
-      },
-      {
         "component": "select",
-        "name": "linkType",
+        "name": "properties.linkType",
         "label": "Button Style",
-        "description": "Visual style variant for the button, extending the Sites button model properties",
         "valueType": "string",
         "value": "primary",
+        "description": "Visual style variant for the button",
         "options": [
           {
             "name": "Primary",
@@ -4142,10 +4374,15 @@
         "label": "Display Format",
         "name": "displayFormat",
         "valueType": "string",
+        "value": "dd/MM/yyyy",
         "options": [
           {
             "name": "No Pattern",
             "value": ""
+          },
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
           },
           {
             "name": "01 April, 2007",
@@ -4164,7 +4401,33 @@
             "value": "EEEE, MMMM d, y"
           },
           {
-            "name": "1/4/2007",
+            "name": "D/M/YYYY (1/4/2007)",
+            "value": "d/M/y"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "label": "Submit Value Format",
+        "name": "valueFormat",
+        "valueType": "string",
+        "value": "dd/MM/yyyy",
+        "description": "Format of the date value sent on form submission",
+        "options": [
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
+          },
+          {
+            "name": "YYYY-MM-DD (2007-04-01) — ISO 8601",
+            "value": "yyyy-MM-dd"
+          },
+          {
+            "name": "MM/DD/YYYY (04/01/2007)",
+            "value": "MM/dd/yyyy"
+          },
+          {
+            "name": "D/M/YYYY (1/4/2007)",
             "value": "d/M/y"
           }
         ]
@@ -6044,48 +6307,6 @@
           }
         ],
         "value": "default"
-      },
-      {
-        "component": "multiselect",
-        "name": "style",
-        "label": "Style Variant",
-        "description": "Select additional CSS style classes for the radio group. Leave empty (no selection) to use the default radio button appearance.",
-        "valueType": "string",
-        "required": false,
-        "options": [
-          {
-            "name": "— Default (standard radio buttons) —",
-            "value": ""
-          },
-          {
-            "name": "Pill",
-            "value": "pill"
-          },
-          {
-            "name": "Segment",
-            "value": "segment"
-          },
-          {
-            "name": "Outlined",
-            "value": "outlined"
-          },
-          {
-            "name": "Filled",
-            "value": "filled"
-          },
-          {
-            "name": "Vertical",
-            "value": "vertical"
-          },
-          {
-            "name": "Icon",
-            "value": "icon"
-          },
-          {
-            "name": "Button",
-            "value": "button"
-          }
-        ]
       },
       {
         "component": "select",
@@ -8096,6 +8317,115 @@
     ]
   },
   {
+    "id": "forward-points-sme",
+    "fields": [
+      {
+        "component": "text",
+        "name": "section1CalendarLabel",
+        "label": "Section 1 - Update Date Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Update as of"
+      },
+      {
+        "component": "text",
+        "name": "section1GoCtaLabel",
+        "label": "Section 1 - GO CTA Label",
+        "valueType": "string",
+        "required": true,
+        "value": "GO"
+      },
+      {
+        "component": "richtext",
+        "name": "section1TableColumnHeadings",
+        "label": "Section 1 - Table Column Headings",
+        "valueType": "string",
+        "required": true,
+        "description": "List items: Currency | Sight Bill Buying Rates | TT Buying Rates | TT Selling Rates"
+      },
+      {
+        "component": "text",
+        "name": "section2UpdateDateLabel",
+        "label": "Section 2 - Update Date Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Update as of"
+      },
+      {
+        "component": "text",
+        "name": "section2GoCtaLabel",
+        "label": "Section 2 - GO CTA Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Go"
+      },
+      {
+        "component": "text",
+        "name": "printCtaLabel",
+        "label": "Print CTA Label",
+        "valueType": "string",
+        "required": true,
+        "value": "PRINT"
+      },
+      {
+        "component": "text",
+        "name": "section2ForwardPointsTableTitle",
+        "label": "Section 2 - Table Title",
+        "valueType": "string",
+        "required": true,
+        "value": "Indicative Forward Points (for Outright FX Forward Contract) for USD/THB"
+      },
+      {
+        "component": "text",
+        "name": "section2SmeLowRevenueSubTitle",
+        "label": "Section 2 - Table Sub-Title 1",
+        "valueType": "string",
+        "required": true,
+        "value": "(SMEs Company revenues THB 50 - 200 Million per year)"
+      },
+      {
+        "component": "text",
+        "name": "section2SmeMidRevenueSubTitle",
+        "label": "Section 2 - Table Sub-Title 2",
+        "valueType": "string",
+        "required": true,
+        "value": "(SMEs Company revenues THB 200 - 500 Million per year)"
+      },
+      {
+        "component": "richtext",
+        "name": "section2TableColumnHeadings",
+        "label": "Section 2 - Table Column Headings",
+        "valueType": "string",
+        "required": true,
+        "description": "List items: Period | Export (Buying) | Import (Selling)"
+      },
+      {
+        "component": "richtext",
+        "name": "section2TableRowHeadings",
+        "label": "Section 2 - Table Row Headings",
+        "valueType": "string",
+        "required": true,
+        "description": "List items: 1 Month | 3 Months | 6 Months"
+      },
+      {
+        "component": "text",
+        "name": "section2UnitLabel",
+        "label": "Section 2 - Unit Label",
+        "valueType": "string",
+        "required": true,
+        "value": "Unit: Satang"
+      },
+      {
+        "component": "richtext",
+        "name": "remarkDisclaimerText",
+        "label": "Remark Text",
+        "valueType": "string",
+        "required": true,
+        "description": "Bullet list of remark/disclaimer items shown below the tables"
+      }
+    ]
+  },
+  {
     "id": "fragment",
     "fields": [
       {
@@ -8150,17 +8480,58 @@
     "id": "hero-item",
     "fields": [
       {
+        "component": "select",
+        "name": "mediaType",
+        "label": "Background Media",
+        "valueType": "string",
+        "value": "images",
+        "options": [
+          {
+            "name": "Images",
+            "value": "images"
+          },
+          {
+            "name": "BG Video",
+            "value": "bg-video"
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "name": "isDefault",
+        "label": "Set as Default",
+        "description": "Enable to display this item as the active item on page load.",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
         "component": "custom-asset-namespace:custom-asset",
         "name": "imagePickerDesktop",
         "label": "Image (Desktop)",
         "description": "Select an image shown at desktop breakpoints",
         "configUrl": "/content/dam/image.config.json",
-        "valueType": "string"
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "images"
+          ]
+        }
       },
       {
         "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "imagePickerDesktopMimeType"
+        "name": "imagePickerDesktopMimeType",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "images"
+          ]
+        }
       },
       {
         "component": "custom-asset-namespace:custom-asset",
@@ -8168,19 +8539,74 @@
         "label": "Image (Mobile)",
         "description": "Select an image shown at mobile breakpoints",
         "configUrl": "/content/dam/image.config.json",
-        "valueType": "string"
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "images"
+          ]
+        }
       },
       {
         "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "imagePickerMobileMimeType"
+        "name": "imagePickerMobileMimeType",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "images"
+          ]
+        }
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "imagePickerAlt",
         "label": "Alternative text for accessibility",
-        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "images"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "youtubeUrl",
+        "label": "YouTube URL",
+        "description": "Enter the YouTube video URL (e.g. https://www.youtube.com/watch?v=...)",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "bg-video"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "name": "damVideoAsset",
+        "label": "DAM Video Asset",
+        "description": "Upload and select a DAM video asset (MP4)",
+        "valueType": "string",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "mediaType"
+            },
+            "bg-video"
+          ]
+        }
       },
       {
         "component": "reference",
@@ -8292,6 +8718,10 @@
         ]
       }
     ]
+  },
+  {
+    "id": "latest-news",
+    "fields": []
   },
   {
     "id": "locate-us",
@@ -8729,6 +9159,10 @@
             "value": "download"
           },
           {
+            "name": "Multiple Download",
+            "value": "multiple-download"
+          },
+          {
             "name": "Select Dropdown",
             "value": "select-dropdown"
           }
@@ -8928,6 +9362,85 @@
             }
           ]
         }
+      },
+      {
+        "component": "richtext",
+        "name": "multipleDownloadLinks",
+        "value": "",
+        "label": "Multiple Download Links",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "multiple-download"
+          ]
+        }
+      },
+      {
+        "component": "boolean",
+        "name": "isCardClickable",
+        "label": "Is Card Clickable",
+        "description": "Enable to make the entire card a clickable link",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "aem-content",
+        "name": "cardLink",
+        "label": "Card Link",
+        "description": "Destination URL when the card is clicked",
+        "condition": {
+          "===": [
+            {
+              "var": "isCardClickable"
+            },
+            true
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "cardLinkTitle",
+        "label": "Card Link Title",
+        "description": "Accessibility title attribute for the clickable card (optional)",
+        "condition": {
+          "===": [
+            {
+              "var": "isCardClickable"
+            },
+            true
+          ]
+        }
+      },
+      {
+        "component": "boolean",
+        "name": "enableOverlayModal",
+        "label": "Enable Overlay Modal",
+        "description": "Open card link in a modal overlay instead of navigating",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "aem-content",
+        "name": "overlayHref",
+        "label": "Overlay Fragment Path",
+        "description": "Path to the fragment shown in the modal overlay",
+        "condition": {
+          "===": [
+            {
+              "var": "enableOverlayModal"
+            },
+            true
+          ]
+        }
+      },
+      {
+        "component": "date-time",
+        "name": "financialDate",
+        "label": "Financial Date",
+        "valueType": "string"
       }
     ]
   },
@@ -9012,6 +9525,94 @@
         "description": "Tile title displayed below the image with a separator"
       }
     ]
+  },
+  {
+    "id": "news-media-details",
+    "fields": [
+      {
+        "component": "text",
+        "name": "aboutUsId",
+        "label": "About Us Id",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "title",
+        "label": "Title (appears on the about us detail page)",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "cardImageUrl",
+        "label": "Card Image Url",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "name": "detailImageUrl",
+        "label": "Detail Image (appears on the about us detail page)",
+        "valueType": "string",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "cardShortDescription",
+        "label": "Card Short Description",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "detailDescription",
+        "label": "Detail Description (appears on the about us detail page)",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-tag",
+        "name": "category",
+        "label": "Category",
+        "valueType": "string"
+      },
+      {
+        "component": "date-time",
+        "name": "publishDate",
+        "label": "publish Date (appears on the about us detail page)",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "ctaLink",
+        "label": "Cta Link",
+        "description": "Destination URL for the button"
+      },
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "Cta Label",
+        "description": "Button label text",
+        "required": true
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "news-media",
+    "fields": []
   },
   {
     "id": "popup-modal-card-offer",
@@ -9422,6 +10023,14 @@
     ]
   },
   {
+    "id": "property-for-sale-details",
+    "fields": []
+  },
+  {
+    "id": "property-for-sale",
+    "fields": []
+  },
+  {
     "id": "rate-card-item",
     "fields": [
       {
@@ -9624,6 +10233,10 @@
     ]
   },
   {
+    "id": "retirement-calculator",
+    "fields": []
+  },
+  {
     "id": "search-page",
     "fields": [
       {
@@ -9684,6 +10297,89 @@
         "label": "Accessibility Label",
         "description": "Screen reader label (defaults to 'Search')",
         "value": "Search"
+      }
+    ]
+  },
+  {
+    "id": "sme-loan-calculator",
+    "fields": [
+      {
+        "component": "text",
+        "name": "buttonName",
+        "label": "1st Button Name",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "resultValue",
+        "label": "Default Result Value",
+        "description": "Default result text with a value (e.g., result value displayed as 0.00).",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "description",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "addToTableButtonName",
+        "label": "2nd Button Name",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "resultText",
+        "label": "Result Text",
+        "description": "can add the result text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "sme-field",
+    "fields": [
+      {
+        "component": "text",
+        "name": "id",
+        "label": "Id",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "label",
+        "label": "Label",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "topText",
+        "label": "Group Title",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "bottomText",
+        "label": "unit name",
+        "valueType": "string"
+      },
+      {
+        "component": "select",
+        "name": "valueType",
+        "label": "Value Type",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Integer",
+            "value": "integer"
+          },
+          {
+            "name": "Decimal",
+            "value": "decimal"
+          }
+        ]
       }
     ]
   },
@@ -9881,6 +10577,14 @@
     "id": "table",
     "fields": [
       {
+        "component": "text",
+        "name": "id",
+        "label": "Id",
+        "valueType": "string",
+        "value": "",
+        "description": "The id of the table"
+      },
+      {
         "component": "multiselect",
         "name": "style",
         "label": "Variation",
@@ -9939,6 +10643,19 @@
               {
                 "name": "Header Mixed Blue",
                 "value": "header-mixed-blue"
+              },
+              {
+                "name": "Header Light Gray",
+                "value": "header-light-gray"
+              }
+            ]
+          },
+          {
+            "name": "Row",
+            "children": [
+              {
+                "name": "Zebra Light Gray",
+                "value": "zebra-light-gray"
               }
             ]
           },
