@@ -1,3 +1,5 @@
+import { getLang } from '../../scripts/scripts.js';
+
 const API_BASE = 'https://publish-p185039-e1939903.adobeaemcloud.com';
 
 function el(tag, { className, text, attrs = {} } = {}) {
@@ -31,15 +33,25 @@ function openPdfPreview(path, name) {
   });
 
   const header = el('div', { className: 'srr-preview-header' });
-  const lang = document.documentElement.lang || 'en';
-  const logoLink = el('a', { className: 'srr-preview-logo', attrs: { href: `/${lang}`, 'aria-label': 'Bangkok Bank Home' } });
+  const lang = getLang();
+  const logoLink = el('a', {
+    className: 'srr-preview-logo',
+    attrs: { href: `/${lang}`, 'aria-label': 'Bangkok Bank Home' },
+  });
   const logoImg = el('img', {
     attrs: {
-      src: '/icons/logo.svg', alt: 'Bangkok Bank', width: '120', height: '40', onerror: "this.style.display='none'",
+      src: '/icons/logo.svg',
+      alt: 'Bangkok Bank',
+      width: '120',
+      height: '40',
+      onerror: "this.style.display='none'",
     },
   });
   logoLink.append(logoImg);
-  const closeBtn = el('button', { className: 'srr-preview-close', attrs: { type: 'button', 'aria-label': 'Close preview' } });
+  const closeBtn = el('button', {
+    className: 'srr-preview-close',
+    attrs: { type: 'button', 'aria-label': 'Close preview' },
+  });
   closeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
   header.append(logoLink, closeBtn);
 
@@ -77,7 +89,25 @@ function openPdfPreview(path, name) {
   overlay.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   closeBtn.focus();
 
-  frame.src = path;
+  fetch(path, { method: 'HEAD' }).then((res) => {
+    if (res.ok) {
+      frame.src = path;
+    } else {
+      frame.remove();
+      const msg = el('p', {
+        className: 'srr-preview-unavailable',
+        text: 'File not available for preview.',
+      });
+      body.insertBefore(msg, btnGroup);
+    }
+  }).catch(() => {
+    frame.remove();
+    const msg = el('p', {
+      className: 'srr-preview-unavailable',
+      text: 'File not available for preview.',
+    });
+    body.insertBefore(msg, btnGroup);
+  });
 }
 
 function buildCard(asset) {
@@ -125,7 +155,7 @@ function buildCard(asset) {
 }
 
 async function fetchAndRender(block, type, year) {
-  const lang = document.documentElement.lang || 'en';
+  const lang = getLang();
 
   block.innerHTML = '';
   const wrapper = el('div', { className: 'srr-results-wrapper' });

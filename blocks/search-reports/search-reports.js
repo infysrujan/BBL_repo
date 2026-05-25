@@ -1,3 +1,5 @@
+import { getLang } from '../../scripts/scripts.js';
+
 const API_BASE = 'https://publish-p185039-e1939903.adobeaemcloud.com';
 
 const FOCUSABLE_SELECTOR = [
@@ -130,7 +132,8 @@ async function fetchSearchParams() {
   if (!res.ok) throw new Error(`searchparams fetch failed: ${res.status}`);
   const text = await res.text();
   if (!text) throw new Error('searchparams response empty');
-  return JSON.parse(text);
+  const parsed = JSON.parse(text);
+  return Array.isArray(parsed) ? parsed[0] : parsed;
 }
 
 function parseAuthoredOptions(rows) {
@@ -160,7 +163,7 @@ export default function decorate(block) {
   const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || 'Search for Reports';
   const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || 'Search Report';
   const modalDesc = rows[2]?.firstElementChild?.innerHTML?.trim() || '';
-  const lang = document.documentElement.lang || 'en';
+  const lang = getLang();
 
   const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
 
