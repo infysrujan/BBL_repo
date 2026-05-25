@@ -10395,6 +10395,89 @@
     ]
   },
   {
+    "id": "sme-loan-calculator",
+    "fields": [
+      {
+        "component": "text",
+        "name": "buttonName",
+        "label": "1st Button Name",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "resultValue",
+        "label": "Default Result Value",
+        "description": "Default result text with a value (e.g., result value displayed as 0.00).",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "description",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "addToTableButtonName",
+        "label": "2nd Button Name",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "resultText",
+        "label": "Result Text",
+        "description": "can add the result text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "sme-field",
+    "fields": [
+      {
+        "component": "text",
+        "name": "id",
+        "label": "Id",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "label",
+        "label": "Label",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "topText",
+        "label": "Group Title",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "bottomText",
+        "label": "unit name",
+        "valueType": "string"
+      },
+      {
+        "component": "select",
+        "name": "valueType",
+        "label": "Value Type",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Integer",
+            "value": "integer"
+          },
+          {
+            "name": "Decimal",
+            "value": "decimal"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "social-icon",
     "fields": [
       {
@@ -10588,6 +10671,14 @@
     "id": "table",
     "fields": [
       {
+        "component": "text",
+        "name": "id",
+        "label": "Id",
+        "valueType": "string",
+        "value": "",
+        "description": "The id of the table"
+      },
+      {
         "component": "multiselect",
         "name": "style",
         "label": "Variation",
@@ -10650,6 +10741,15 @@
               {
                 "name": "Header Light Gray",
                 "value": "header-light-gray"
+              }
+            ]
+          },
+          {
+            "name": "Row",
+            "children": [
+              {
+                "name": "Zebra Light Gray",
+                "value": "zebra-light-gray"
               }
             ]
           },
