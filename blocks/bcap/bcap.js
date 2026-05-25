@@ -11,6 +11,10 @@ const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 
 let latestMdate = null;
 
+/** Cloned header cells (with `#key` suffixes)
+ * used for column mapping after display text is stripped. */
+const headerMappingCellsByTable = new WeakMap();
+
 /** @param {Date} selectedDate - local calendar day */
 function isDateOlderThanFundHistoryLimit(selectedDate) {
   const today = new Date();
@@ -172,11 +176,15 @@ function appendRowFromData(tableElement, dataArray) {
   }
 
   let headerRow = tbody.querySelector('.header-row');
+
   if (!headerRow) {
     const firstRow = tbody.querySelector('tr');
     if (firstRow) {
-      // Check and clean up #words from td values
       const tds = firstRow.querySelectorAll('td');
+      headerMappingCellsByTable.set(
+        tableElement,
+        Array.from(tds).map((td) => td.cloneNode(true)),
+      );
       tds.forEach((td) => {
         if (typeof td.textContent === 'string') {
           // Remove any occurrence of '#' followed by a word (e.g., "#fundtype")
@@ -195,7 +203,8 @@ function appendRowFromData(tableElement, dataArray) {
     return;
   }
 
-  const headers = Array.from(headerRow.querySelectorAll('td'));
+  const headerMappingCells = headerMappingCellsByTable.get(tableElement)
+    || Array.from(headerRow.querySelectorAll('td'));
   const categoryKey = lang === 'th' ? 'mf_cateTha' : 'mf_cateEng';
   const categoryOrder = buildCategoryOrder(dataArray, categoryKey);
   const groupedByCategory = groupRowsByCategory(dataArray, categoryKey);
@@ -206,7 +215,7 @@ function appendRowFromData(tableElement, dataArray) {
     const group = groupedByCategory[category];
     group.forEach((row, rowIndex) => {
       const tr = document.createElement('tr');
-      headers.forEach((headerCell) => {
+      headerMappingCells.forEach((headerCell) => {
         const normalizedKey = normalizeHeaderKey(headerCell.textContent.trim());
         const columnKey = resolveColumnKey(normalizedKey, lang);
 
