@@ -117,7 +117,7 @@
   text-decoration: none;
 }
 
-@media (width >= 47.5rem) {
+@media (width > 47.5rem) {
   .welcome-banner-dialog {
     max-width: 26rem;
   }
@@ -136,7 +136,7 @@
   }
 }
 
-@media (width >= 64.0625rem) {
+@media (width > 64rem) {
   .welcome-banner-overlay {
     overflow: hidden;
   }
