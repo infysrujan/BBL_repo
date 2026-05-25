@@ -3,6 +3,7 @@ import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
+import { buildPromotionsUrl } from '../../scripts/utils/card-helpers.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 const MOBILE_APP_VIEW_CLASS = 'mobile-app-view';
@@ -142,19 +143,19 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
 
 function normalizePath(p) {
   if (!p) return '';
-  let pathStr = p.split('?')[0].split('#')[0].toLowerCase();
-  if (pathStr.startsWith('http://') || pathStr.startsWith('https://')) {
-    try {
-      pathStr = new URL(pathStr).pathname;
-    } catch (e) {
-      // ignore
-    }
+  const pathStr = p.split('?')[0].split('#')[0].toLowerCase();
+  try {
+    const url = new URL(pathStr, window.location.origin);
+    return url.pathname
+      .replace(/^\/content\/[^/]+/, '')
+      .replace(/^\/(en|th)\b/, '')
+      .replace(/\.json$/, '')
+      .replace(/\.html$/, '')
+      .replace(/\/+$/, '')
+      || '/';
+  } catch (e) {
+    return '/';
   }
-  return pathStr
-    .replace(/^\/content\/bangkokbank/, '')
-    .replace(/\.html$/, '')
-    .replace(/\/+$/, '')
-    || '/';
 }
 
 export function handleMobileAppView(searchParams) {
@@ -200,23 +201,23 @@ export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
   handleMobileAppView(searchParams);
 
-  const { promotionType, promoId } = getPromoBlockConfig(block);
-  const path = window.location.pathname.toLowerCase();
-  const isBbmPath = path.includes('/promotionsmb');
-  const isCreditCardPath = path.includes('/credit-cards-promotions');
-  const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
+  const { promotionType: blockPromoType, promoId } = getPromoBlockConfig(block);
+  const { pathname } = window.location;
+  const prelimPath = pathname.toLowerCase();
+  const isBbmPathPrelim = /(promotions-?mb|mb-?promo)/i.test(prelimPath);
+  const isCreditCardPathPrelim = /(credit-cards?-promotions|creditcards?)/i.test(prelimPath);
 
   const docLang = getLang();
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
-  const lang = isBbmPath && queryLang ? queryLang : docLang;
+  const lang = isBbmPathPrelim && queryLang ? queryLang : docLang;
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
   if (!configs || !configs.promotionalCardSelector || lang !== 'en') {
     try {
-      const { pathname } = window.location;
-      const configPrefix = pathname.startsWith('/content/bangkokbank/')
-        ? '/content/bangkokbank'
+      const segments = pathname.split('/');
+      const configPrefix = pathname.startsWith('/content/') && segments[2]
+        ? `/content/${segments[2]}`
         : '';
       const resp = await fetch(`${configPrefix}/${lang}/config.json`);
       if (resp.ok) {
@@ -234,39 +235,33 @@ export default async function decorate(block) {
     }
   }
 
+  const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
+  const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
+  const bbmNormalized = bbmBaseUrl ? normalizePath(bbmBaseUrl) : '';
+  const creditNormalized = creditBaseUrl ? normalizePath(creditBaseUrl) : '';
+
+  const pageNormalized = normalizePath(pathname);
+  const isBbmPrelim = isBbmPathPrelim
+    || (!isCreditCardPathPrelim && blockPromoType === 'bangkok-bank-m');
+
+  let isBbm = isBbmPrelim;
+  if (bbmNormalized) {
+    isBbm = pageNormalized === bbmNormalized
+      || pageNormalized.startsWith(`${bbmNormalized}/`);
+  } else if (creditNormalized) {
+    isBbm = !pageNormalized.startsWith(`${creditNormalized}/`);
+  }
+
+  if (blockPromoType) {
+    isBbm = (blockPromoType === 'bangkok-bank-m');
+  }
+
   const locale = LOCALE_MAP[lang] || 'en-GB';
 
   const baseUrl = isBbm
     ? (effectiveConfigs.promotionalCardSelectorBbm || '')
     : (effectiveConfigs.promotionalCardSelector || '');
-  let localizedBaseUrl = baseUrl;
-  if (lang !== 'en') {
-    if (baseUrl.startsWith('/en/')) {
-      localizedBaseUrl = baseUrl.replace(/^\/en\//, `/${lang}/`);
-    } else if (baseUrl.startsWith('/content/bangkokbank/en/')) {
-      localizedBaseUrl = baseUrl.replace(
-        /^\/content\/bangkokbank\/en\//,
-        `/content/bangkokbank/${lang}/`,
-      );
-    } else if (baseUrl.startsWith('http://') || baseUrl.startsWith('https://')) {
-      try {
-        const url = new URL(baseUrl);
-        if (url.pathname.startsWith('/en/')) {
-          url.pathname = url.pathname.replace(/^\/en\//, `/${lang}/`);
-        } else if (url.pathname.startsWith('/content/bangkokbank/en/')) {
-          url.pathname = url.pathname.replace(
-            /^\/content\/bangkokbank\/en\//,
-            `/content/bangkokbank/${lang}/`,
-          );
-        }
-        localizedBaseUrl = url.toString();
-      } catch (e) {
-        // ignore
-      }
-    }
-  }
-  const suffix = lang !== 'en' ? `.${lang}.json` : '.json';
-  const promotionsUrl = localizedBaseUrl.replace(/\.json$/, suffix);
+  const promotionsUrl = buildPromotionsUrl(baseUrl, lang);
 
   const [placeholders, card] = await Promise.all([
     fetchPlaceholders(),
@@ -289,14 +284,21 @@ export default async function decorate(block) {
   const data = card || previewData;
 
   if (isAuthoringInstance(block)) {
-    let previewContainer = block.parentElement?.querySelector('[data-preview-for="promotional-details"]');
+    let previewContainer = block.querySelector('.promo-detail-preview');
     if (!previewContainer) {
       previewContainer = document.createElement('div');
-      previewContainer.className = `${block.className} promo-detail-preview`;
-      previewContainer.dataset.previewFor = 'promotional-details';
-      block.insertAdjacentElement('afterend', previewContainer);
+      previewContainer.className = 'promo-detail-preview';
+      block.appendChild(previewContainer);
     }
-    renderDetails(previewContainer, data, periodLabel, locale, clickToViewFull, registerCtaUrl);
+    block.classList.add('has-preview');
+    renderDetails(
+      previewContainer,
+      data,
+      periodLabel,
+      locale,
+      clickToViewFull,
+      registerCtaUrl,
+    );
     return;
   }
 

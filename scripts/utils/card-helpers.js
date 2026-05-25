@@ -84,3 +84,19 @@ export function sortCards(cards) {
     return aEnd - bEnd;
   });
 }
+
+export function buildPromotionsUrl(baseUrl, lang) {
+  if (!baseUrl) return '';
+  let localized = lang !== 'en' ? baseUrl.replace(/\/en\//, `/${lang}/`) : baseUrl;
+  if (lang !== 'en') {
+    const hasLangSuffix = new RegExp(`\\.${lang}\\.json$`, 'i').test(localized);
+    if (!hasLangSuffix) {
+      localized = /\.json$/i.test(localized)
+        ? localized.replace(/\.json$/i, `.${lang}.json`)
+        : `${localized}.${lang}.json`;
+    }
+  } else if (!/\.json$/i.test(localized)) {
+    localized = `${localized}.json`;
+  }
+  return localized;
+}

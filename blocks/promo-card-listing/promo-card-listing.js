@@ -33,47 +33,37 @@ function getPromoListingConfig(block) {
   return { promotionType };
 }
 
-function resolvePromotionType(block) {
-  const { promotionType } = getPromoListingConfig(block);
-  if (promotionType) return promotionType;
-  const datasetType = block.dataset.promotionType?.trim();
-  if (datasetType) return datasetType;
-  const path = window.location.pathname.toLowerCase();
-  if (path.includes('/promotionsmb')) return 'bangkok-bank-m';
-  if (path.includes('/credit-cards-promotions')) return 'credit-card';
-  return '';
+function normalizePath(p) {
+  if (!p) return '';
+  const pathStr = p.split('?')[0].split('#')[0].toLowerCase();
+  try {
+    const url = new URL(pathStr, window.location.origin);
+    return url.pathname
+      .replace(/^\/content\/[^/]+/, '')
+      .replace(/^\/(en|th)\b/, '')
+      .replace(/\.json$/, '')
+      .replace(/\.html$/, '')
+      .replace(/\/+$/, '')
+      || '/';
+  } catch (e) {
+    return '/';
+  }
 }
 
 function buildPromotionsUrl(baseUrl, lang) {
   if (!baseUrl) return '';
-  let localizedBase = baseUrl;
+  let localized = lang !== 'en' ? baseUrl.replace(/\/en\//, `/${lang}/`) : baseUrl;
   if (lang !== 'en') {
-    if (baseUrl.startsWith('/en/')) {
-      localizedBase = baseUrl.replace(/^\/en\//, `/${lang}/`);
-    } else if (baseUrl.startsWith('/content/bangkokbank/en/')) {
-      localizedBase = baseUrl.replace(
-        /^\/content\/bangkokbank\/en\//,
-        `/content/bangkokbank/${lang}/`,
-      );
-    } else if (baseUrl.startsWith('http://') || baseUrl.startsWith('https://')) {
-      try {
-        const url = new URL(baseUrl);
-        if (url.pathname.startsWith('/en/')) {
-          url.pathname = url.pathname.replace(/^\/en\//, `/${lang}/`);
-        } else if (url.pathname.startsWith('/content/bangkokbank/en/')) {
-          url.pathname = url.pathname.replace(
-            /^\/content\/bangkokbank\/en\//,
-            `/content/bangkokbank/${lang}/`,
-          );
-        }
-        localizedBase = url.toString();
-      } catch (e) {
-        // ignore
-      }
+    const langSuffix = `.${lang}.json`;
+    if (!localized.endsWith(langSuffix)) {
+      localized = localized.endsWith('.json')
+        ? localized.replace(/\.json$/, langSuffix)
+        : `${localized}${langSuffix}`;
     }
+  } else if (!localized.endsWith('.json')) {
+    localized = `${localized}.json`;
   }
-  const suffix = lang !== 'en' ? `.${lang}.json` : '.json';
-  return localizedBase.replace(/\.json$/, suffix);
+  return localized;
 }
 
 function normalizeQueryLang(value) {
@@ -371,7 +361,10 @@ function setupPanel(
   };
 
   function render() {
-    const isHighlightTab = /promotion\s*highlight|highlights|higlights/i.test(category);
+    const hasCategoryCards = allCards.some(
+      (c) => (c.category || '').trim().toLowerCase() === category.trim().toLowerCase(),
+    );
+    const isHighlightTab = !hasCategoryCards;
     const activeCardType = forcedCardType || state.cardType;
     const { cards, total } = filterCards(allCards, {
       category,
@@ -488,23 +481,22 @@ export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
   handleMobileAppView(searchParams);
 
-  const promotionType = resolvePromotionType(block);
-  const docLang = getLang();
+  const { pathname } = window.location;
+  const prelimPath = pathname.toLowerCase();
+  const isBbmPathPrelim = /(promotions-?mb|mb-?promo)/i.test(prelimPath);
+  const isCreditCardPathPrelim = /(credit-cards?-promotions|creditcards?)/i.test(prelimPath);
 
-  const path = window.location.pathname.toLowerCase();
-  const isBbmPath = path.includes('/promotionsmb');
-  const isCreditCardPath = path.includes('/credit-cards-promotions');
-  const isBbm = isBbmPath || (!isCreditCardPath && promotionType === 'bangkok-bank-m');
+  const docLang = getLang();
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
-  const lang = isBbmPath && queryLang ? queryLang : docLang;
+  const lang = isBbmPathPrelim && queryLang ? queryLang : docLang;
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
   if (!configs || !configs.promotionalCardSelector || lang !== 'en') {
     try {
-      const { pathname } = window.location;
-      const configPrefix = pathname.startsWith('/content/bangkokbank/')
-        ? '/content/bangkokbank'
+      const segments = pathname.split('/');
+      const configPrefix = pathname.startsWith('/content/') && segments[2]
+        ? `/content/${segments[2]}`
         : '';
       const resp = await fetch(`${configPrefix}/${lang}/config.json`);
       if (resp.ok) {
@@ -523,6 +515,31 @@ export default async function decorate(block) {
   }
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
+  const bbmNormalized = bbmBaseUrl ? normalizePath(bbmBaseUrl) : '';
+  const creditNormalized = creditBaseUrl ? normalizePath(creditBaseUrl) : '';
+
+  const { promotionType: blockPromoType } = getPromoListingConfig(block);
+  const datasetType = block.dataset.promotionType?.trim();
+  const configuredPromoType = blockPromoType || datasetType;
+
+  const pageNormalized = normalizePath(pathname);
+  const isBbmPrelim = isBbmPathPrelim
+    || (!isCreditCardPathPrelim && configuredPromoType === 'bangkok-bank-m');
+
+  let isBbm = isBbmPrelim;
+  if (bbmNormalized) {
+    isBbm = pageNormalized === bbmNormalized
+      || pageNormalized.startsWith(`${bbmNormalized}/`);
+  } else if (creditNormalized) {
+    isBbm = !pageNormalized.startsWith(`${creditNormalized}/`);
+  }
+
+  if (configuredPromoType) {
+    isBbm = (configuredPromoType === 'bangkok-bank-m');
+  }
+
+  const promotionType = configuredPromoType || (isBbm ? 'bangkok-bank-m' : 'credit-card');
+
   const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
   const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
 
@@ -546,13 +563,12 @@ export default async function decorate(block) {
   const activeCategories = activeData?.categories || [];
 
   if (isAuthoringInstance(block)) {
-    block.hidden = false;
-    let previewPanel = block.parentElement?.querySelector('[data-preview-for="promo-card-listing"]');
+    block.classList.add('has-preview');
+    let previewPanel = block.querySelector('.promo-card-listing-preview');
     if (!previewPanel) {
       previewPanel = document.createElement('div');
-      previewPanel.className = `${block.className} promo-card-listing-preview`;
-      previewPanel.dataset.previewFor = 'promo-card-listing';
-      block.insertAdjacentElement('afterend', previewPanel);
+      previewPanel.className = 'promo-card-listing-preview';
+      block.appendChild(previewPanel);
     }
     const firstCategory = activeCategories[0]?.label || '';
     const firstSubcategories = activeCategories[0]?.subcategories || [];
