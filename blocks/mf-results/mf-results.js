@@ -257,7 +257,8 @@ function createBlockRow(doc, ...cells) {
 
 /**
  * Build a card-list block element from the fund items.
- * Uses the same 12-cell row structure expected by card-list.js decorate().
+ * Uses the 15-cell row structure expected by card-list.js decorate()
+ * (cells[7] = defaultButton, cells[9] = stub for stubOffset=1, base=10).
  */
 function buildCardBlock(funds, doc, labels) {
   const block = doc.createElement('div');
@@ -311,7 +312,7 @@ function buildCardBlock(funds, doc, labels) {
       descCell.appendChild(p);
     }
 
-    // Cell 5 — logo (remark)
+    // Cell 5 — remark (logo)
     const remarkCell = doc.createElement('div');
     if (logoSrc) {
       const logoImg = doc.createElement('img');
@@ -329,15 +330,6 @@ function buildCardBlock(funds, doc, labels) {
     link.textContent = labels.readMore;
     btnCell.appendChild(link);
 
-    // Cell layout matches current card-list.js decorate() expectations:
-    //  0  image          6  actionTypeText ('default')
-    //  1  promoTag       7  defaultButton  ← Read more link
-    //  2  title          8  multipleDownloadLinks (null)
-    //  3  subtitle       9  imageLayout    (base)
-    //  4  description   10  enableTitleUnderline
-    //  5  remark (logo) 11  isCardClickable
-    //                   12  cardLink
-    //                   13  enableOverlayModal
     block.appendChild(createBlockRow(
       doc,
       imgCell,    // 0  image
@@ -347,13 +339,14 @@ function buildCardBlock(funds, doc, labels) {
       descCell,   // 4  description
       remarkCell, // 5  remark (logo)
       'default',  // 6  actionTypeText
-      btnCell,    // 7  defaultButton  ← Read more link
-      null,       // 8  multipleDownloadLinks
-      'default',  // 9  imageLayout    (base)
-      'true',     // 10 enableTitleUnderline
-      'false',    // 11 isCardClickable
-      null,       // 12 cardLink
-      'false',    // 13 enableOverlayModal
+      btnCell,    // 7  defaultButton (Read more link)
+      null,       // 8  multipleDownloadLinks (no anchor → stub at cells[9])
+      null,       // 9  stub (consumed by stubOffset=1)
+      'default',  // 10 imageLayout  (base=10)
+      'true',     // 11 enableTitleUnderline
+      'false',    // 12 isCardClickable
+      null,       // 13 cardLink
+      'false',    // 14 enableOverlayModal
     ));
   });
 

@@ -4,6 +4,10 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang, moveInstrumentation } from '../../scripts/scripts.js';
 import decorateCardList from '../card-list/card-list.js';
 
+// ── Constants ──────────────────────────────────────────────────────────────────
+
+const MAX_COMPARE = 3;
+
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 function norm(str) {
@@ -74,15 +78,16 @@ function makeRow(doc, ...contents) {
 /**
  * Build a card-list block element from fund items.
  *
- * Cell layout matches the current card-list.js decorate() expectations:
- *   0  image               6  actionTypeText ('default')
- *   1  promoTag            7  defaultButton (link <a>)
- *   2  title               8  multipleDownloadLinks (null)
- *   3  subtitle            9  imageLayout  (base)
- *   4  description        10  enableTitleUnderline
- *   5  remark (logo)      11  isCardClickable
- *                         12  cardLink
- *                         13  enableOverlayModal
+ * Cell layout for card-list.js (stubOffset=1 applies when cells[8] has no anchor,
+ * so an extra null at cells[9] serves as the consumed stub, placing base=10):
+ *   0  image               7  defaultButton (link <a>)
+ *   1  promoTag            8  multipleDownloadLinks (null)
+ *   2  title               9  stub null (consumed by stubOffset)
+ *   3  subtitle           10  imageLayout  (base=10)
+ *   4  description        11  enableTitleUnderline
+ *   5  remark (logo)      12  isCardClickable
+ *   6  actionTypeText     13  cardLink
+ *                         14  enableOverlayModal
  */
 function buildFundCardsBlock(funds, doc, readMoreLabel) {
   const block = doc.createElement('div');
@@ -152,6 +157,8 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
     link.textContent = readMoreLabel;
     btnCell.appendChild(link);
 
+    // Extra null at cells[9] is the stub consumed by card-list.js stubOffset=1
+    // so imageLayout lands at cells[10] (base=10) and all fields align correctly.
     block.appendChild(makeRow(
       doc,
       imgCell,    // 0  image
@@ -162,12 +169,13 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
       remarkCell, // 5  remark (logo)
       'default',  // 6  actionTypeText
       btnCell,    // 7  defaultButton
-      null,       // 8  multipleDownloadLinks
-      'default',  // 9  imageLayout  (base)
-      'false',    // 10 enableTitleUnderline
-      'false',    // 11 isCardClickable
-      null,       // 12 cardLink
-      'false',    // 13 enableOverlayModal
+      null,       // 8  multipleDownloadLinks (no anchor → stub at cells[9])
+      null,       // 9  stub (consumed by stubOffset=1)
+      'default',  // 10 imageLayout  (base=10)
+      'false',    // 11 enableTitleUnderline
+      'false',    // 12 isCardClickable
+      null,       // 13 cardLink
+      'false',    // 14 enableOverlayModal
     ));
   });
 
@@ -194,10 +202,10 @@ export default async function buildMfFundCardsSlide(row, index) {
   // eslint-disable-next-line no-console
   console.log('[mfCardListCarousel] page path:', window.location.pathname, '| category:', pageCategory);
 
-  // Load card-list & mf-results styles so cards render correctly
+  // Load card-list base styles + this slide's own styles
   await Promise.all([
     loadCSS(`${window.hlx.codeBasePath}/blocks/card-list/card-list.css`),
-    loadCSS(`${window.hlx.codeBasePath}/blocks/mf-results/mf-results.css`),
+    loadCSS(`${window.hlx.codeBasePath}/blocks/carousel-dotted/mf-fund-cards-slide.css`),
   ]);
 
   const lang = getLang();
@@ -241,6 +249,42 @@ export default async function buildMfFundCardsSlide(row, index) {
     btn.dataset.cardImage = item?.querySelector('img')?.src ?? '';
     wrapper.appendChild(btn);
   });
+
+  // Sync compare button visual states with window.mfsSelectedCards
+  function restoreCompareState() {
+    const selected = window.mfsSelectedCards || [];
+    blockEl.querySelectorAll('.mfr-compare-btn').forEach((btn) => {
+      btn.classList.toggle('is-comparing', selected.some((c) => c.name === btn.dataset.cardName));
+    });
+  }
+
+  // Handle compare button clicks — same contract as mf-results.js
+  blockEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('.mfr-compare-btn');
+    if (!btn) return;
+
+    window.mfsSelectedCards = window.mfsSelectedCards || [];
+    const { cardName, cardId, cardImage } = btn.dataset;
+
+    if (btn.classList.contains('is-comparing')) return;
+
+    if (window.mfsSelectedCards.length >= MAX_COMPARE) {
+      doc.dispatchEvent(new CustomEvent('mf-compare-limit-reached'));
+      return;
+    }
+
+    window.mfsSelectedCards.push({ id: cardId, name: cardName, image: cardImage });
+    restoreCompareState();
+    doc.dispatchEvent(new CustomEvent('mf-compare-updated', {
+      detail: { cards: window.mfsSelectedCards },
+    }));
+  });
+
+  // Sync visual state when mf-comparator bar removes a card
+  doc.addEventListener('mf-compare-updated', restoreCompareState);
+
+  // Restore any pre-existing selection (e.g. page reload with sessionStorage)
+  restoreCompareState();
 
   return slide;
 }
