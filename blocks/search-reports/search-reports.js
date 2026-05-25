@@ -128,7 +128,7 @@ async function fetchSearchParams() {
   const url = isLocal
     ? '/blocks/search-reports/searchparams.mock.json'
     : `${API_BASE}/content/bangkokbank/en.reports.searchparams.json?test`;
-  const res = await fetch(url);
+  const res = await fetch(url, { credentials: 'include' });
   if (!res.ok) throw new Error(`searchparams fetch failed: ${res.status}`);
   const text = await res.text();
   if (!text) throw new Error('searchparams response empty');

@@ -189,9 +189,9 @@ async function fetchAndRender(block, type, year) {
     if (isLocal) {
       res = await fetch('/blocks/search-reports-results/results.mock.json');
     } else {
-      res = await fetch(`${API_BASE}/content/bangkokbank/${lang}.reports.${type}.${year}.json?test`);
+      res = await fetch(`${API_BASE}/content/bangkokbank/${lang}.reports.${type}.${year}.json?test`, { credentials: 'include' });
       if (res.status === 204 && lang !== 'en') {
-        res = await fetch(`${API_BASE}/content/bangkokbank/en.reports.${type}.${year}.json?test`);
+        res = await fetch(`${API_BASE}/content/bangkokbank/en.reports.${type}.${year}.json?test`, { credentials: 'include' });
       }
     }
     if (res.status === 204) throw new Error('no content');
