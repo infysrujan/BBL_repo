@@ -332,7 +332,7 @@ function decorateSvgWithAltText(element) {
   });
 }
 
-if (Window.LAZY_PHASE) {
+if (window.LAZY_PHASE) {
   handleGlobalLinkClicks();
 } else {
   document.addEventListener('lazy-phase', () => {
