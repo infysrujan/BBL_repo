@@ -80,11 +80,11 @@
 }
 
 .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next:hover {
-  margin-left: 5px;
+  margin-left: 0.313rem;
 }
 
 .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev:hover {
-  margin-left: -5px;
+  margin-left: -0.313rem;
 }
 
 .carousel-dotted.show-arrows-dots .carousel-arrow::before {
