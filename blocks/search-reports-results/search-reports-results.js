@@ -5,6 +5,7 @@ import {
   hideModal,
   setupModalHandlers,
 } from '../../scripts/utils/modal.js';
+import createDownloadLink from '../../scripts/utils/download-helpers.js';
 
 const API_BASE = 'https://publish-p185039-e1939903.adobeaemcloud.com';
 
@@ -71,17 +72,17 @@ function openPdfPreview(path, name) {
   const embedEl = el('embed', { attrs: { src: path, width: '100%', height: '100%' } });
   pdfEmbed.append(embedEl);
 
-  const buttonGroup = el('div', { className: 'srr-button-group' });
-  const downloadLink = el('a', {
-    className: 'srr-btn-primary',
+  const anchor = el('a', {
     text: 'Download',
     attrs: {
       href: path, title: 'Download', target: '_blank', download: name || '',
     },
   });
-  buttonGroup.append(downloadLink);
+  const downloadSection = el('div', { className: 'download-section' });
+  const downloadWrapper = createDownloadLink(anchor);
+  if (downloadWrapper) downloadSection.append(downloadWrapper);
 
-  centerContent.append(pdfEmbed, buttonGroup);
+  centerContent.append(pdfEmbed, downloadSection);
   body.append(centerContent);
   dialog.append(header, body);
 
