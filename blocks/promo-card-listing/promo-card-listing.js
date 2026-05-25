@@ -568,19 +568,17 @@ export default async function decorate(block) {
 
   if (isAuthoringInstance(block)) {
     block.querySelectorAll(':scope > div').forEach((row) => {
-      const firstCell = row.children[0]?.textContent?.trim().toLowerCase();
-      if (firstCell === 'promotion-type' || firstCell === 'promotiontype') {
-        row.style.display = 'none';
+      const key = row.children[0]?.textContent?.trim().toLowerCase().replace(/-/g, '');
+      if (key === 'promotiontype') {
+        row.dataset.configRow = '';
       }
     });
-
-    let previewPanel = block.parentElement
-      ?.querySelector('[data-preview-for="promo-card-listing"]');
+    block.classList.add('has-preview');
+    let previewPanel = block.querySelector('.promo-card-listing-preview');
     if (!previewPanel) {
       previewPanel = document.createElement('div');
-      previewPanel.className = `${block.className} promo-card-listing-preview`;
-      previewPanel.dataset.previewFor = 'promo-card-listing';
-      block.insertAdjacentElement('afterend', previewPanel);
+      previewPanel.className = 'promo-card-listing-preview';
+      block.appendChild(previewPanel);
     }
     const firstCategory = activeCategories[0]?.label || '';
     const firstSubcategories = activeCategories[0]?.subcategories || [];

@@ -285,24 +285,17 @@ export default async function decorate(block) {
 
   if (isAuthoringInstance(block)) {
     block.querySelectorAll(':scope > div').forEach((row) => {
-      const firstCell = row.children[0]?.textContent?.trim().toLowerCase();
-      if (
-        firstCell === 'promotion-type'
-        || firstCell === 'promo-id'
-        || firstCell === 'promotiontype'
-        || firstCell === 'promoid'
-      ) {
-        row.style.display = 'none';
+      const key = row.children[0]?.textContent?.trim().toLowerCase().replace(/-/g, '');
+      if (key === 'promotiontype' || key === 'promoid') {
+        row.dataset.configRow = '';
       }
     });
-
-    let previewContainer = block.parentElement
-      ?.querySelector('[data-preview-for="promotional-details"]');
+    block.classList.add('has-preview');
+    let previewContainer = block.querySelector('.promo-detail-preview');
     if (!previewContainer) {
       previewContainer = document.createElement('div');
-      previewContainer.className = `${block.className} promo-detail-preview`;
-      previewContainer.dataset.previewFor = 'promotional-details';
-      block.insertAdjacentElement('afterend', previewContainer);
+      previewContainer.className = 'promo-detail-preview';
+      block.appendChild(previewContainer);
     }
     renderDetails(
       previewContainer,

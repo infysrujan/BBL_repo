@@ -191,3 +191,7 @@ body.mobile-app-view main > div:first-child {
     }
 }
 
+/* Authoring preview: hide only promotion-type and promo-id config rows */
+.promotional-details.has-preview > div[data-config-row] {
+    display: none;
+}

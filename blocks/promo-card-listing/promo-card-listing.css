@@ -340,4 +340,7 @@ body.mobile-app-view main > div:first-child {
     }
 }
 
-
+/* Authoring preview: hide only promotion-type config rows */
+.promo-card-listing.has-preview > div[data-config-row] {
+    display: none;
+}
