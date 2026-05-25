@@ -91,7 +91,8 @@ function openPdfPreview(path, name) {
 
   fetch(path, { method: 'HEAD' }).then((res) => {
     if (res.ok) {
-      frame.src = path;
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      frame.src = isLocal ? path : `https://docs.google.com/viewer?url=${encodeURIComponent(path)}&embedded=true`;
     } else {
       frame.remove();
       const msg = el('p', {
