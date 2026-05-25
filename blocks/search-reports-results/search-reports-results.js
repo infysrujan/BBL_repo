@@ -1,4 +1,10 @@
 import { getLang } from '../../scripts/scripts.js';
+import {
+  createModalShell,
+  showModal,
+  hideModal,
+  setupModalHandlers,
+} from '../../scripts/utils/modal.js';
 
 const API_BASE = 'https://publish-p185039-e1939903.adobeaemcloud.com';
 
@@ -27,13 +33,20 @@ function sortAssets(assets, type) {
 }
 
 function openPdfPreview(path, name) {
-  const overlay = el('div', {
-    className: 'srr-preview-overlay',
-    attrs: { role: 'dialog', 'aria-modal': 'true', 'aria-label': 'PDF Preview' },
+  const lang = getLang();
+
+  const { overlay, dialog, closeBtn } = createModalShell({
+    overlayClass: 'srr-preview-overlay',
+    dialogClass: 'srr-preview-dialog',
+    closeBtnClass: 'srr-preview-close',
+    ariaLabel: 'PDF Preview',
+    closeBtnAriaLabel: 'Close preview',
+    closeBtnHTML: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
   });
 
+  // Header: logo + close button
   const header = el('div', { className: 'srr-preview-header' });
-  const lang = getLang();
+  const innerContainer = el('div', { className: 'srr-preview-inner-container' });
   const logoLink = el('a', {
     className: 'srr-preview-logo',
     attrs: { href: `/${lang}`, 'aria-label': 'Bangkok Bank Home' },
@@ -48,96 +61,41 @@ function openPdfPreview(path, name) {
     },
   });
   logoLink.append(logoImg);
-  const closeBtn = el('button', {
-    className: 'srr-preview-close',
-    attrs: { type: 'button', 'aria-label': 'Close preview' },
-  });
-  closeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-  header.append(logoLink, closeBtn);
+  innerContainer.append(logoLink, closeBtn);
+  header.append(innerContainer);
 
+  // Body: embed + download button
   const body = el('div', { className: 'srr-preview-body' });
-  const viewer = el('div', { className: 'srr-pdf-viewer' });
-  const toolbar = el('div', { className: 'srr-pdf-toolbar' });
-  const prevBtn = el('button', { className: 'srr-pdf-nav-btn', text: '‹', attrs: { type: 'button', 'aria-label': 'Previous page' } });
-  const pageInfo = el('span', { className: 'srr-pdf-page-info', text: '1 / 1' });
-  const nextBtn = el('button', { className: 'srr-pdf-nav-btn', text: '›', attrs: { type: 'button', 'aria-label': 'Next page' } });
-  const zoomOutBtn = el('button', { className: 'srr-pdf-nav-btn', text: '−', attrs: { type: 'button', 'aria-label': 'Zoom out' } });
-  const zoomInfo = el('span', { className: 'srr-pdf-page-info', text: '100%' });
-  const zoomInBtn = el('button', { className: 'srr-pdf-nav-btn', text: '+', attrs: { type: 'button', 'aria-label': 'Zoom in' } });
-  const downloadBtn = el('button', { className: 'srr-pdf-nav-btn srr-pdf-download-btn', attrs: { type: 'button', 'aria-label': 'Download' } });
-  downloadBtn.innerHTML = '<span class="icon icon-download" aria-hidden="true"></span>';
-  toolbar.append(prevBtn, pageInfo, nextBtn, zoomOutBtn, zoomInfo, zoomInBtn, downloadBtn);
-  const canvas = el('canvas', { className: 'srr-pdf-canvas' });
-  viewer.append(toolbar, canvas);
-  body.append(viewer);
-  overlay.append(header, body);
-  document.body.appendChild(overlay);
-  document.body.classList.add('srr-preview-open');
-  requestAnimationFrame(() => overlay.classList.add('srr-preview-visible'));
+  const centerContent = el('div', { className: 'srr-preview-center-content' });
+  const pdfEmbed = el('div', { className: 'srr-custom-pdf' });
+  const embedEl = el('embed', { attrs: { src: path, width: '100%', height: '100%' } });
+  pdfEmbed.append(embedEl);
+
+  const buttonGroup = el('div', { className: 'srr-button-group' });
+  const downloadLink = el('a', {
+    className: 'srr-btn-primary',
+    text: 'Download',
+    attrs: {
+      href: path, title: 'Download', target: '_blank', download: name || '',
+    },
+  });
+  buttonGroup.append(downloadLink);
+
+  centerContent.append(pdfEmbed, buttonGroup);
+  body.append(centerContent);
+  dialog.append(header, body);
 
   function close() {
-    overlay.classList.remove('srr-preview-visible');
     document.body.classList.remove('srr-preview-open');
-    overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
-    setTimeout(() => overlay.remove(), 300);
+    hideModal(overlay, 'srr-preview-visible');
   }
 
   closeBtn.addEventListener('click', close);
-  overlay.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  setupModalHandlers(overlay, dialog, close);
+
+  document.body.classList.add('srr-preview-open');
+  showModal(overlay, 'srr-preview-visible');
   closeBtn.focus();
-
-  downloadBtn.addEventListener('click', () => {
-    const a = document.createElement('a');
-    a.href = path;
-    a.download = name || '';
-    a.click();
-  });
-
-  const PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174';
-  const absoluteUrl = path.startsWith('http') ? path : `${window.location.origin}${path}`;
-
-  function loadPdfJs(callback) {
-    if (window.pdfjsLib) { callback(); return; }
-    const script = document.createElement('script');
-    script.src = `${PDFJS_CDN}/pdf.min.js`;
-    script.onload = callback;
-    document.head.appendChild(script);
-  }
-
-  loadPdfJs(() => {
-    const { pdfjsLib } = window;
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_CDN}/pdf.worker.min.js`;
-
-    let pdfDoc = null;
-    let currentPage = 1;
-    let scale = 1.5;
-
-    function renderPage(num) {
-      pdfDoc.getPage(num).then((page) => {
-        const viewport = page.getViewport({ scale });
-        const ctx = canvas.getContext('2d');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        page.render({ canvasContext: ctx, viewport });
-        pageInfo.textContent = `${num} / ${pdfDoc.numPages}`;
-        prevBtn.disabled = num <= 1;
-        nextBtn.disabled = num >= pdfDoc.numPages;
-      });
-    }
-
-    prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage -= 1; renderPage(currentPage); } });
-    nextBtn.addEventListener('click', () => { if (currentPage < pdfDoc.numPages) { currentPage += 1; renderPage(currentPage); } });
-    zoomInBtn.addEventListener('click', () => { scale = Math.min(scale + 0.25, 3); zoomInfo.textContent = `${Math.round(scale * 100)}%`; renderPage(currentPage); });
-    zoomOutBtn.addEventListener('click', () => { scale = Math.max(scale - 0.25, 0.5); zoomInfo.textContent = `${Math.round(scale * 100)}%`; renderPage(currentPage); });
-
-    pdfjsLib.getDocument(absoluteUrl).promise.then((pdf) => {
-      pdfDoc = pdf;
-      renderPage(currentPage);
-    }).catch(() => {
-      viewer.innerHTML = '';
-      viewer.append(el('p', { className: 'srr-preview-unavailable', text: 'File not available for preview.' }));
-    });
-  });
 }
 
 function buildCard(asset) {
