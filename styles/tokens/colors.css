@@ -68,6 +68,9 @@
      BLUE SCALE
      ========================================================================= */
 
+  --bbl-color-blue-3: #f8f9fc;
+  --bbl-color-blue-6: #f1f3f9;
+  --bbl-color-blue-9: #e5e8f4;
   --bbl-color-blue-10: #E8F1FF;
   --bbl-color-blue-20: #D9E8FF;
   --bbl-color-blue-30: #C9DEFF;
@@ -87,6 +90,7 @@
   --bbl-color-blue-120: #031D37;
   --bbl-color-blue-130: #002087;
   --bbl-color-blue-140: #4890ff;
+  --bbl-color-blue-steel: #e5edf4;
   --bbl-color-blue-steel-light: #E6EEF4;
   --bbl-color-blue-steel-dark: #DEEAF6;
   --bbl-color-blue-145: #E5EDF4;
@@ -207,6 +211,7 @@
   --bbl-color-black-alpha-14: rgba(0, 0, 0, 0.14);
   --bbl-color-black-alpha-20: rgba(0, 0, 0, 0.20);
   --bbl-color-black-alpha-30: rgba(0, 0, 0, 0.30);
+  --bbl-color-black-alpha-33: rgb(0 0 0 / 33%);
   --bbl-color-black-alpha-40: rgba(0, 0, 0, 0.40);
   --bbl-color-black-alpha-60: rgba(0, 0, 0, 0.60);
   --bbl-color-black-alpha-17: rgba(0, 100, 255, 0.17);
@@ -271,6 +276,24 @@
   --bbl-color-sme-caret: #40a0f0;
   --bbl-color-sme-field-border: rgb(158 158 158 / 60%);
   
+  /* =========================================================================
+     SLATE / COOL GREY
+     ========================================================================= */
+
+  --bbl-color-slate-60: #565e6a;
+
+  /* =========================================================================
+     ADDITIONAL TRANSPARENCY / ALPHA
+     ========================================================================= */
+
+  --bbl-color-black-alpha-50: rgb(0 0 0 / 50%);
+
+  /* =========================================================================
+     BRAND EXTENDED BLUES
+     ========================================================================= */
+
+  --bbl-color-blue-indigo: #111582;
+
   /* =========================================================================
      COMPONENT UTILITY COLORS
      Colors used by specific components that have no match in the scale above
