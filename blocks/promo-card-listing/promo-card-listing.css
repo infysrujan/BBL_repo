@@ -340,7 +340,4 @@ body.mobile-app-view main > div:first-child {
     }
 }
 
-.promo-card-listing.has-preview > div:not(.promo-card-listing-preview) {
-    display: none;
-}
 

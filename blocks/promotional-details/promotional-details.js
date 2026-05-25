@@ -284,13 +284,26 @@ export default async function decorate(block) {
   const data = card || previewData;
 
   if (isAuthoringInstance(block)) {
-    let previewContainer = block.querySelector('.promo-detail-preview');
+    block.querySelectorAll(':scope > div').forEach((row) => {
+      const firstCell = row.children[0]?.textContent?.trim().toLowerCase();
+      if (
+        firstCell === 'promotion-type'
+        || firstCell === 'promo-id'
+        || firstCell === 'promotiontype'
+        || firstCell === 'promoid'
+      ) {
+        row.style.display = 'none';
+      }
+    });
+
+    let previewContainer = block.parentElement
+      ?.querySelector('[data-preview-for="promotional-details"]');
     if (!previewContainer) {
       previewContainer = document.createElement('div');
-      previewContainer.className = 'promo-detail-preview';
-      block.appendChild(previewContainer);
+      previewContainer.className = `${block.className} promo-detail-preview`;
+      previewContainer.dataset.previewFor = 'promotional-details';
+      block.insertAdjacentElement('afterend', previewContainer);
     }
-    block.classList.add('has-preview');
     renderDetails(
       previewContainer,
       data,

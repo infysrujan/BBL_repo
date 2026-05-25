@@ -191,6 +191,3 @@ body.mobile-app-view main > div:first-child {
     }
 }
 
-.promotional-details.has-preview > div:not(.promo-detail-preview) {
-    display: none;
-}
