@@ -11,9 +11,9 @@ import {
   bindPaginationClick,
   buildPromotionsUrl,
   fetchJson,
-  normalizePath,
   normalizeQueryLang,
   mergeLocalConfig,
+  resolveIsBbm,
 } from '../../scripts/utils/card-helpers.js';
 import { handleMobileAppView } from '../promotional-details/promotional-details.js';
 
@@ -454,28 +454,19 @@ export default async function decorate(block) {
   }
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
-  const bbmNormalized = bbmBaseUrl ? normalizePath(bbmBaseUrl) : '';
-  const creditNormalized = creditBaseUrl ? normalizePath(creditBaseUrl) : '';
 
   const { promotionType: blockPromoType } = getPromoListingConfig(block);
   const datasetType = block.dataset.promotionType?.trim();
   const configuredPromoType = blockPromoType || datasetType;
 
-  const pageNormalized = normalizePath(pathname);
-  const isBbmPrelim = isBbmPathPrelim
-    || (!isCreditCardPathPrelim && configuredPromoType === 'bangkok-bank-m');
-
-  let isBbm = isBbmPrelim;
-  if (bbmNormalized) {
-    isBbm = pageNormalized === bbmNormalized
-      || pageNormalized.startsWith(`${bbmNormalized}/`);
-  } else if (creditNormalized) {
-    isBbm = !pageNormalized.startsWith(`${creditNormalized}/`);
-  }
-
-  if (configuredPromoType) {
-    isBbm = (configuredPromoType === 'bangkok-bank-m');
-  }
+  const isBbm = resolveIsBbm({
+    pathname,
+    isBbmPathPrelim,
+    isCreditCardPathPrelim,
+    bbmBaseUrl,
+    creditBaseUrl,
+    configuredPromoType,
+  });
 
   const promotionType = configuredPromoType || (isBbm ? 'bangkok-bank-m' : 'credit-card');
 

@@ -97,6 +97,73 @@ export async function mergeLocalConfig(pathname, lang, targetConfigs, toCamelCas
   }
 }
 
+/**
+ * Resolve whether the current page targets the Bangkok Bank M (BBM) API or
+ * the Credit Card API.
+ *
+ * Priority (highest → lowest):
+ *  1. Explicit block-level promotionType authored by the content editor.
+ *  2. Pathname pattern match  — reliable, fast, zero config dependency.
+ *  3. Config-URL directory comparison — fallback for pages whose paths do
+ *     not contain a recognisable keyword (e.g. vanity URLs).
+ *
+ * The config-URL values (bbmBaseUrl / creditBaseUrl) point to API data files,
+ * NOT page directories. Comparing a detail-page path against a data-file URL
+ * is therefore wrong and would silently flip isBbm to false on any page whose
+ * path doesn't literally equal the data-file path. We avoid this by only
+ * using the config-URL comparison as a last resort when neither path regex
+ * matched.
+ *
+ * @param {object} opts
+ * @param {string}  opts.pathname            window.location.pathname
+ * @param {boolean} opts.isBbmPathPrelim     result of BBM path regex
+ * @param {boolean} opts.isCreditCardPathPrelim result of credit-card path regex
+ * @param {string}  opts.bbmBaseUrl          raw BBM API base URL from config
+ * @param {string}  opts.creditBaseUrl       raw credit-card API base URL from config
+ * @param {string}  [opts.configuredPromoType] block-level promotionType value
+ * @returns {boolean}
+ */
+export function resolveIsBbm({
+  pathname,
+  isBbmPathPrelim,
+  isCreditCardPathPrelim,
+  bbmBaseUrl,
+  creditBaseUrl,
+  configuredPromoType = '',
+}) {
+  // 1. Block-authored promotionType is the highest-priority signal.
+  if (configuredPromoType) {
+    return configuredPromoType === 'bangkok-bank-m';
+  }
+
+  // 2. Pathname pattern — unambiguous when the URL contains a recognisable segment.
+  if (isBbmPathPrelim) return true;
+  if (isCreditCardPathPrelim) return false;
+
+  // 3. Config-URL directory fallback — only reached when the path gives no signal.
+  //    Extract just the directory portion of the config URL so that detail pages
+  //    nested under that directory are correctly matched.
+  const pageNorm = normalizePath(pathname);
+
+  if (bbmBaseUrl) {
+    // Strip the filename (everything after the last '/') to get the directory.
+    const bbmDir = normalizePath(bbmBaseUrl).replace(/\/[^/]+$/, '');
+    if (bbmDir && (pageNorm === bbmDir || pageNorm.startsWith(`${bbmDir}/`))) {
+      return true;
+    }
+  }
+
+  if (creditBaseUrl) {
+    const creditDir = normalizePath(creditBaseUrl).replace(/\/[^/]+$/, '');
+    if (creditDir && (pageNorm === creditDir || pageNorm.startsWith(`${creditDir}/`))) {
+      return false;
+    }
+  }
+
+  // Default — treat as BBM when no signal is available.
+  return true;
+}
+
 export function buildCardHtml(card, tag, placeholders = {}, options = {}) {
   const { dateLine = '', logoHtml = '', footerExtra = '' } = options;
   const target = card.targetLink === 'true' ? '_blank' : '_self';

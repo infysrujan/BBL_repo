@@ -9,6 +9,7 @@ import {
   normalizePath,
   normalizeQueryLang,
   mergeLocalConfig,
+  resolveIsBbm,
 } from '../../scripts/utils/card-helpers.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
@@ -197,24 +198,15 @@ export default async function decorate(block) {
 
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
-  const bbmNormalized = bbmBaseUrl ? normalizePath(bbmBaseUrl) : '';
-  const creditNormalized = creditBaseUrl ? normalizePath(creditBaseUrl) : '';
 
-  const pageNormalized = normalizePath(pathname);
-  const isBbmPrelim = isBbmPathPrelim
-    || (!isCreditCardPathPrelim && blockPromoType === 'bangkok-bank-m');
-
-  let isBbm = isBbmPrelim;
-  if (bbmNormalized) {
-    isBbm = pageNormalized === bbmNormalized
-      || pageNormalized.startsWith(`${bbmNormalized}/`);
-  } else if (creditNormalized) {
-    isBbm = !pageNormalized.startsWith(`${creditNormalized}/`);
-  }
-
-  if (blockPromoType) {
-    isBbm = (blockPromoType === 'bangkok-bank-m');
-  }
+  const isBbm = resolveIsBbm({
+    pathname,
+    isBbmPathPrelim,
+    isCreditCardPathPrelim,
+    bbmBaseUrl,
+    creditBaseUrl,
+    configuredPromoType: blockPromoType,
+  });
 
   const locale = LOCALE_MAP[lang] || 'en-GB';
 
