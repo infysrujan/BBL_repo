@@ -51,7 +51,7 @@ function defaultFilterDates() {
   };
 }
 
-function createState() {
+function createState(defaultSortKey = 'REMAIN_TERM') {
   const now = new Date();
   const curMonth = now.getMonth() + 1;
   const curYear = now.getFullYear();
@@ -63,7 +63,7 @@ function createState() {
     rates: [],
     enabledDays: new Set(),
     selectedIds: [],
-    sortKey: 'REMAIN_TERM',
+    sortKey: defaultSortKey,
     sortAsc: true,
     sortUserSet: false,
     calOpen: false,
@@ -539,7 +539,7 @@ function wireFilterEvents(
 export default async function decorate(block) {
   const authoring = parseAuthoring(block);
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
-  const state = createState();
+  const state = createState(configs?.dynamicBoardDefaultSortKey);
   const language = getLang();
   state.monthLabels = parseCsvConfigList(placeholders?.monthLabels, buildIntlMonthLabels(language));
   state.dayLabels = parseCsvConfigList(placeholders?.dayLabels, buildIntlDayLabels(language));
@@ -548,8 +548,8 @@ export default async function decorate(block) {
   state.api = createApiService(configs, authoring.boardType);
   state.placeholders = placeholders;
   state.downloadUrl = isGov
-    ? configs?.dynamicBoardCorpBondDownloadUrl || '-/media/Files/Personal/Save and Invest/Investment/CorporateBonds/Fact-Sheet/{{SYMBOL}}_Factsheet.pdf'
-    : configs?.dynamicBoardBondRatesDownloadUrl || '-/media/Files/Personal/Save and Invest/Investment/Bonds and Debentures/Fact-Sheet/{{SYMBOL}}_Factsheet.pdf';
+    ? configs?.dynamicBoardCorpBondDownloadUrl
+    : configs?.dynamicBoardBondRatesDownloadUrl;
   state.isGov = isGov;
   state.isThai = language === 'th';
   state.columns = parseTableHeading(authoring.tableHeadingEl, isGov);
@@ -833,7 +833,7 @@ export default async function decorate(block) {
     state.filterMaturity = null;
     Object.assign(state, defaultFilterDates());
     state.filterDatesUserSet = false;
-    state.sortKey = 'REMAIN_TERM';
+    state.sortKey = configs?.dynamicBoardDefaultSortKey;
     state.sortAsc = true;
     state.sortUserSet = false;
     updateFilterBtn(filterBtn, state);

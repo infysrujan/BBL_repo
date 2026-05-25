@@ -210,6 +210,7 @@
   --bbl-color-black-alpha-14: rgba(0, 0, 0, 0.14);
   --bbl-color-black-alpha-20: rgba(0, 0, 0, 0.20);
   --bbl-color-black-alpha-30: rgba(0, 0, 0, 0.30);
+  --bbl-color-black-alpha-33: rgb(0 0 0 / 33%);
   --bbl-color-black-alpha-40: rgba(0, 0, 0, 0.40);
   --bbl-color-black-alpha-60: rgba(0, 0, 0, 0.60);
   --bbl-color-black-alpha-17: rgba(0, 100, 255, 0.17);

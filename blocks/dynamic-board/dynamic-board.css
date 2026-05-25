@@ -54,7 +54,7 @@
   color: var(--bbl-color-gray-121);
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-40);
-  border-radius: 0.375rem;
+  border-radius: var(--bbl-space-075);
   outline: none;
   box-sizing: border-box;
   appearance: none;
@@ -72,8 +72,8 @@
   right: 0.625rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 1.5rem;
-  height: 1.5rem;
+  width: var(--bbl-space-300);
+  height: var(--bbl-space-300);
   padding: 0;
   background: none;
   border: none;
@@ -93,13 +93,13 @@
 
 .dynamic-board .db-calendar {
   position: absolute;
-  top: calc(100% + 0.5rem);
+  top: calc(100% + var(--bbl-space-100));
   left: 0;
-  width: calc(100vw - 2rem);
+  width: calc(100vw - var(--bbl-space-400));
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-22);
   border-radius: var(--bbl-rounded-100);
-  box-shadow: 0 0.5rem 2rem var(--bbl-color-black-alpha-14);
+  box-shadow: 0 var(--bbl-space-100) var(--bbl-space-400) var(--bbl-color-black-alpha-14);
   z-index: 300;
   padding: var(--bbl-space-200);
   box-sizing: border-box;
@@ -114,8 +114,8 @@
 }
 
 .dynamic-board .db-cal-nav {
-  width: 2rem;
-  height: 2rem;
+  width: var(--bbl-space-400);
+  height: var(--bbl-space-400);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -186,8 +186,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--bbl-space-500);
+  height: var(--bbl-space-500);
   border-radius: var(--bbl-rounded-full);
   font-size: 0.8125rem;
   border: none;
@@ -242,7 +242,7 @@
   color: var(--bbl-color-grey-85);
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-40);
-  border-radius: 0.375rem;
+  border-radius: var(--bbl-space-075);
   cursor: pointer;
   box-sizing: border-box;
   text-align: left;
@@ -275,15 +275,15 @@
 .dynamic-board .db-time-list {
   display: none;
   position: absolute;
-  top: calc(100% + 0.25rem);
+  top: calc(100% + var(--bbl-space-050));
   left: 0;
   width: 100%;
   max-height: 15rem;
   overflow-y: auto;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-22);
-  border-radius: 0.375rem;
-  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 12%);
+  border-radius: var(--bbl-space-075);
+  box-shadow: 0 var(--bbl-space-100) var(--bbl-space-300) var(--bbl-color-black-alpha-12);
   z-index: 400;
   margin: 0;
   padding: var(--bbl-space-100) 0;
@@ -326,7 +326,7 @@
   color: var(--bbl-color-white);
   background: var(--bbl-color-active-blue);
   border: none;
-  border-radius: 0.375rem;
+  border-radius: var(--bbl-space-075);
   cursor: pointer;
   letter-spacing: 0.0313rem;
   box-sizing: border-box;
@@ -363,11 +363,11 @@
 .dynamic-board .db-filter-btn:hover,
 .dynamic-board .db-clear-btn:hover,
 .dynamic-board .db-print-btn:hover {
-  color: #039;
+  color: var(--bbl-color-blue-105);
 }
 
 .dynamic-board .db-filter-btn.is-active {
-  color: #039;
+  color: var(--bbl-color-blue-105);
 }
 
 .dynamic-board .db-print-btn .icon-print {
@@ -384,7 +384,7 @@
 .dynamic-board .db-filter-wrapper {
   position: fixed;
   inset: 0;
-  background: rgb(0 0 0 / 40%);
+  background: var(--bbl-color-black-alpha-40);
   z-index: 500;
   display: flex;
   align-items: center;
@@ -405,13 +405,13 @@
   max-width: 28.125rem;
   max-height: 90vh;
   background: var(--bbl-color-white);
-  border-radius: 0.25rem;
+  border-radius: var(--bbl-rounded-050);
   padding: var(--bbl-space-250);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: var(--bbl-space-150);
-  box-shadow: 0 var(--bbl-space-025) var(--bbl-space-100) rgb(0 0 0 / 33%);
+  box-shadow: 0 var(--bbl-space-025) var(--bbl-space-100) var(--bbl-color-black-alpha-33);
 }
 
 .dynamic-board .db-filter-close {
@@ -441,7 +441,7 @@
 
 .dynamic-board .db-filter-panel > .db-filter-divider:first-of-type {
   width: 2.1875rem;
-  height: 0.125rem;
+  height: var(--bbl-space-025);
   background: var(--bbl-color-grey-40);
   margin: 0;
 }
@@ -493,7 +493,7 @@
   color: var(--bbl-color-gray-121);
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-40);
-  border-radius: 0.375rem;
+  border-radius: var(--bbl-space-075);
   cursor: pointer;
   box-sizing: border-box;
 }
@@ -503,8 +503,8 @@
   right: 0.625rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 1.5rem;
-  height: 1.5rem;
+  width: var(--bbl-space-300);
+  height: var(--bbl-space-300);
   padding: 0;
   background: none;
   border: none;
@@ -541,8 +541,8 @@
   position: fixed;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-22);
-  border-radius: 0.5rem;
-  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 12%);
+  border-radius: var(--bbl-rounded-100);
+  box-shadow: 0 var(--bbl-space-100) var(--bbl-space-300) var(--bbl-color-black-alpha-12);
   z-index: 700;
   padding: var(--bbl-space-200) var(--bbl-space-150) var(--bbl-space-150);
   box-sizing: border-box;
@@ -563,8 +563,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: var(--bbl-space-350);
+  height: var(--bbl-space-350);
   padding: 0;
   background: none;
   border: 0.0625rem solid var(--bbl-color-grey-22);
@@ -603,7 +603,7 @@
   color: var(--bbl-color-grey-70);
   background: none;
   border: 0.0625rem solid transparent;
-  border-radius: 0.25rem;
+  border-radius: var(--bbl-rounded-050);
   cursor: pointer;
   text-align: center;
   transition: background 0.15s, color 0.15s;
@@ -637,8 +637,8 @@
 .dynamic-board .db-radio {
   appearance: none;
   position: relative;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
   flex-shrink: 0;
   background: var(--bbl-color-grey-40);
   border: none;
@@ -648,7 +648,7 @@
   outline: 0;
   transition: all 0.15s ease-out 0s;
   margin: 0;
-  border-radius: 0.375rem;
+  border-radius: var(--bbl-space-075);
 }
 
 .dynamic-board .db-radio:checked {
@@ -663,7 +663,7 @@
   align-items: center;
   justify-content: center;
   font-size: 0.9375rem;
-  line-height: 1.25rem;
+  line-height: var(--bbl-space-250);
   color: var(--bbl-color-white);
 }
 
@@ -693,7 +693,7 @@
   height: 2.75rem;
   font-size: var(--bbl-font-size-b2);
   font-weight: 700;
-  border-radius: 0.375rem;
+  border-radius: var(--bbl-space-075);
   cursor: pointer;
   box-sizing: border-box;
 }
@@ -729,13 +729,13 @@
 }
 
 .dynamic-board .db-table-wrap::-webkit-scrollbar {
-  width: 0.25rem;
-  height: 0.25rem;
+  width: var(--bbl-space-050);
+  height: var(--bbl-space-050);
 }
 
 .dynamic-board .db-table-wrap::-webkit-scrollbar-thumb {
   background: var(--bbl-color-grey-40);
-  border-radius: 0.25rem;
+  border-radius: var(--bbl-rounded-050);
 }
 
 .dynamic-board .db-table {
@@ -759,7 +759,7 @@
   font-weight: 700;
   color: var(--bbl-color-black);
   text-align: center;
-  border-bottom: 0.125rem solid var(--bbl-color-grey-20);
+  border-bottom: var(--bbl-space-025) solid var(--bbl-color-grey-20);
   border-right: 0.0625rem solid var(--bbl-color-grey-20);
   white-space: nowrap;
   line-height: 1.4;
@@ -809,7 +809,7 @@
 }
 
 .dynamic-board .db-th-download {
-  width: 2.5rem;
+  width: var(--bbl-space-500);
 }
 
 /* ── Table body rows ───────────────────────────────────────── */
@@ -843,7 +843,7 @@
 /* ── Cell types ────────────────────────────────────────────── */
 
 .dynamic-board .db-td-check {
-  width: 2.5rem;
+  width: var(--bbl-space-500);
   text-align: center;
 }
 
@@ -864,7 +864,7 @@
 }
 
 .dynamic-board .db-td-dl {
-  width: 2.5rem;
+  width: var(--bbl-space-500);
   text-align: center;
 }
 
@@ -935,10 +935,10 @@
 /* Shadow sits at the bottom of the 150px content area */
 .dynamic-board .db-remarks-shadow {
   position: absolute;
-  top: calc(9.375rem - 3rem);
+  top: calc(9.375rem - var(--bbl-space-600));
   left: 0;
   right: 0;
-  height: 3rem;
+  height: var(--bbl-space-600);
   background: linear-gradient(to bottom, transparent, var(--bbl-color-white));
   pointer-events: none;
 }
@@ -1006,7 +1006,7 @@
 
   .dynamic-board .db-go-btn {
     width: auto;
-    flex: 0 0 5rem;
+    flex: 0 0 var(--bbl-space-1000);
     min-width: 8.4375rem;
   }
 
@@ -1040,8 +1040,8 @@
 
   .dynamic-board .db-cal-day-btn,
   .dynamic-board .db-cal-day span {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: var(--bbl-space-500);
+    height: var(--bbl-space-500);
     font-size: var(--bbl-font-size-b2);
   }
 
@@ -1095,7 +1095,7 @@
   .dynamic-board .db-filter-panel > .db-filter-divider:first-of-type {
     display: block;
     width: 2.1875rem;
-    height: 0.125rem;
+    height: var(--bbl-space-025);
     background: var(--bbl-color-grey-40);
   }
 
