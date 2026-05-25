@@ -7,11 +7,50 @@
 
 /* ── No results message ───────────────────────────────────────────────────── */
 
+/* When no results: collapse the grid, hide arrows and dots */
+.carousel-dotted.show-arrows-dots:has(.mf-fund-cards-item.has-no-results) {
+  display: block !important;
+}
+
+.carousel-dotted.show-arrows-dots:has(.mf-fund-cards-item.has-no-results) .carousel-arrow {
+  display: none !important;
+}
+
+.carousel-dotted:has(.mf-fund-cards-item.has-no-results) .slick-dots {
+  display: none !important;
+}
+
+/* Center the no-results text */
+.carousel-dotted.show-arrows-dots .mf-fund-cards-item.has-no-results {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row !important;
+  width: 100%;
+}
+
 .mf-fund-cards-item .mfr-no-results {
   text-align: center;
   padding: var(--bbl-space-layout-xl) var(--bbl-space-container-xs);
   font-size: var(--bbl-font-size-b1, 1rem);
   color: var(--bbl-color-grey-70);
+}
+
+/* ── Description (notes/disclaimer below carousel) ───────────────────────── */
+
+.mf-fund-cards-description {
+  padding: var(--bbl-space-200) var(--bbl-space-container-xs);
+  font-size: var(--bbl-font-size-b2, 0.875rem);
+  line-height: 1.5;
+  color: var(--bbl-color-grey-70);
+}
+
+.mf-fund-cards-description p {
+  margin: 0 0 0.5em;
+}
+
+.mf-fund-cards-description p:last-child {
+  margin-bottom: 0;
 }
 
 /* ── Mobile: hide scrollbar on the cards-list ─────────────────────────────── */

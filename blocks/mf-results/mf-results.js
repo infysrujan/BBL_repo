@@ -94,34 +94,20 @@ async function loadMatrix() {
 async function loadFundsData() {
   try {
     const configs = await fetchConfigs();
-    // TODO: remove dummy override before go-live
-    const url = '/blocks/mf-results/dummy.json' || configs.mfFundsDataUrl;
-    if (!url) return [];
+    const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-mutual-funds-by-language;language=en?test123' || configs.mfFundsDataUrl;
     // eslint-disable-next-line no-console
     console.log('[mf-results] loadFundsData url:', url);
+    if (!url) return [];
     const resp = await fetch(url);
     if (resp.ok) {
       const json = await resp.json();
       const items = json.data?.mutualFundsList?.items || [];
-      // eslint-disable-next-line no-console
-      console.log('[mf-results] loadFundsData items:', items.length);
       if (items.length) return items;
     }
   } catch {
-    // fall through to dummy
-  }
-
-  // Fallback to local dummy data when GraphQL endpoint is unavailable
-  try {
-    // eslint-disable-next-line no-console
-    console.warn('[mf-results] GraphQL unavailable — falling back to dummy.json');
-    const resp = await fetch(`${window.hlx.codeBasePath}/blocks/mf-results/dummy.json`);
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    return json.data?.mutualFundsList?.items || [];
-  } catch {
     return [];
   }
+  return [];
 }
 
 // ── Matrix filtering ───────────────────────────────────────────────────────────
@@ -407,11 +393,11 @@ export default async function decorate(block) {
 
   const ph = await fetchPlaceholders();
   const labels = {
-    readMore: ph.mfReadMoreText || (isTH ? 'อ่านเพิ่มเติม' : 'Read more'),
-    compare: ph.mfCompareText || (isTH ? 'เปรียบเทียบ' : 'Compare'),
-    noResults: ph.mfNoResultsText || (isTH ? 'ไม่พบผลลัพธ์' : 'No results found'),
-    seeLess: ph.mfSeeLessText || (isTH ? 'ดูน้อยลง' : 'See less'),
-    seeMore: ph.mfSeeMoreText || (isTH ? 'ดูเพิ่มเติม' : 'See more'),
+    readMore: ph.mfReadMoreText || 'Read more',
+    compare: ph.mfCompareText || 'Compare',
+    noResults: ph.mfNoResultsText || 'No results found',
+    seeLess: ph.mfSeeLessText || 'See less',
+    seeMore: ph.mfSeeMoreText || 'See more',
   };
 
   // ── Build page structure ───────────────────────────────────────────────────

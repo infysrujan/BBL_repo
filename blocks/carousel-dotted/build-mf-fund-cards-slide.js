@@ -1,7 +1,7 @@
 import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { getLang, moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation } from '../../scripts/scripts.js';
 import decorateCardList from '../card-list/card-list.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -24,6 +24,17 @@ function extractCategoryFromPath(pathname) {
 }
 
 /**
+ * Extract the category slug from an AEM tag value.
+ * AEM tags arrive as e.g. "bangkokbank:mutual-funds/fixed-income-funds"
+ * We take the last segment after splitting on "/" or ":".
+ */
+function extractCategoryFromTag(tagValue) {
+  if (!tagValue) return '';
+  const parts = tagValue.split(/[/:]/);
+  return norm(parts[parts.length - 1] || '');
+}
+
+/**
  * Loose category match that handles plural/singular differences.
  * e.g. page slug "fixed-income-funds" matches FundCategory "fixed-income-fund"
  */
@@ -38,26 +49,35 @@ function matchesCategory(fundCategory, pageCategory) {
 async function loadFundsData() {
   try {
     const configs = await fetchConfigs();
-    // TODO: remove dummy override before go-live
-    // eslint-disable-next-line no-unused-vars
-    const url = '/blocks/mf-results/dummy.json' || configs.mfFundsDataUrl;
+    const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-mutual-funds-by-language;language=en?test123' || configs.mfFundsDataUrl;
+    // eslint-disable-next-line no-console
+    console.log('[mfCardListCarousel] loadFundsData url:', url);
+    if (!url) {
+      // eslint-disable-next-line no-console
+      console.warn('[mfCardListCarousel] mfFundsDataUrl is missing from config');
+      return [];
+    }
     const resp = await fetch(url);
     if (resp.ok) {
       const json = await resp.json();
-      return json.data?.mutualFundsList?.items || [];
+      const items = json.data?.mutualFundsList?.items || [];
+      // eslint-disable-next-line no-console
+      console.log('[mfCardListCarousel] raw fund items count:', items.length, '| sample:', items[0]);
+      return items;
     }
-  } catch {
-    // fall through to dummy fallback
-  }
-
-  try {
-    const resp = await fetch(`${window.hlx.codeBasePath}/blocks/mf-results/dummy.json`);
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    return json.data?.mutualFundsList?.items || [];
-  } catch {
+    // eslint-disable-next-line no-console
+    console.warn('[mfCardListCarousel] fetch failed, status:', resp.status);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('[mfCardListCarousel] loadFundsData error:', err);
+																						
+							
+								   
+												   
+		   
     return [];
   }
+  return [];
 }
 
 // ── Card block builder ─────────────────────────────────────────────────────────
@@ -198,9 +218,12 @@ export default async function buildMfFundCardsSlide(row, index) {
   slide.dataset.index = index;
   moveInstrumentation(row, slide);
 
-  const pageCategory = extractCategoryFromPath(window.location.pathname);
-  // eslint-disable-next-line no-console
-  console.log('[mfCardListCarousel] page path:', window.location.pathname, '| category:', pageCategory);
+  const cells = [...row.children];
+  // cells[15] = mfCardListDescription (richtext), cells[16] = cardTypes (aem-tag)
+  const descriptionHTML = cells[15]?.innerHTML?.trim() || '';
+  const cardTypesRaw = cells[16]?.textContent?.trim() || '';
+  const tagCategory = extractCategoryFromTag(cardTypesRaw);
+  const pageCategory = tagCategory || extractCategoryFromPath(window.location.pathname);
 
   // Load card-list base styles + this slide's own styles
   await Promise.all([
@@ -208,26 +231,40 @@ export default async function buildMfFundCardsSlide(row, index) {
     loadCSS(`${window.hlx.codeBasePath}/blocks/carousel-dotted/mf-fund-cards-slide.css`),
   ]);
 
-  const lang = getLang();
-  const isTH = lang === 'th';
+						 
+							 
   const [allFunds, ph] = await Promise.all([loadFundsData(), fetchPlaceholders()]);
 
-  const readMoreLabel = ph.mfReadMoreText || (isTH ? 'อ่านเพิ่มเติม' : 'Read more');
-  const compareLabel = ph.mfCompareText || (isTH ? 'เปรียบเทียบ' : 'Compare');
-  const noResultsLabel = ph.mfNoResultsText || (isTH ? 'ไม่พบผลลัพธ์' : 'No results found');
+  const readMoreLabel = ph.mfReadMoreText || 'Read more';
+  const compareLabel = ph.mfCompareText || 'Compare';
+  const noResultsLabel = ph.mfNoResultsText || 'No results found';
 
   const filteredFunds = allFunds.filter(
     (fund) => matchesCategory(fund.FundCategory || '', pageCategory),
   );
 
   // eslint-disable-next-line no-console
-  console.log('[mfCardListCarousel] category:', pageCategory, '| matched funds:', filteredFunds.length);
+  console.log('[mfCardListCarousel] pageCategory:', pageCategory, '| tagCategory:', tagCategory, '| total funds:', allFunds.length, '| matched funds:', filteredFunds.length);
+  // eslint-disable-next-line no-console
+  console.log('[mfCardListCarousel] fund categories in data:', [...new Set(allFunds.map((f) => f.FundCategory))]);
+  // eslint-disable-next-line no-console
+  if (filteredFunds.length) console.log('[mfCardListCarousel] matched fund names:', filteredFunds.map((f) => f.FundName));
 
   if (!filteredFunds.length) {
+    slide.classList.add('has-no-results');
     const msg = doc.createElement('p');
     msg.className = 'mfr-no-results';
     msg.textContent = noResultsLabel;
     slide.appendChild(msg);
+    if (descriptionHTML) {
+      const carouselBlock = row.parentElement;
+      if (carouselBlock && !carouselBlock.nextElementSibling?.classList.contains('mf-fund-cards-description')) {
+        const descEl = doc.createElement('div');
+        descEl.className = 'mf-fund-cards-description';
+        descEl.innerHTML = descriptionHTML;
+        carouselBlock.insertAdjacentElement('afterend', descEl);
+      }
+    }
     return slide;
   }
 
@@ -285,6 +322,17 @@ export default async function buildMfFundCardsSlide(row, index) {
 
   // Restore any pre-existing selection (e.g. page reload with sessionStorage)
   restoreCompareState();
+
+  // Render description below the entire carousel block (not inside the slide)
+  if (descriptionHTML) {
+    const carouselBlock = row.parentElement;
+    if (carouselBlock && !carouselBlock.nextElementSibling?.classList.contains('mf-fund-cards-description')) {
+      const descEl = doc.createElement('div');
+      descEl.className = 'mf-fund-cards-description';
+      descEl.innerHTML = descriptionHTML;
+      carouselBlock.insertAdjacentElement('afterend', descEl);
+    }
+  }
 
   return slide;
 }

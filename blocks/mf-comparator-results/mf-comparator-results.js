@@ -52,8 +52,9 @@ function resolveCardPageUrl(card) {
 async function loadAllCards() {
   try {
     const configs = await fetchConfigs();
-    // TODO: remove dummy override before go-live
-    const url = '/blocks/mf-results/dummy.json' || configs.mfSuggesterData || configs.mfFundsDataUrl;
+    const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-mutual-funds-by-language;language=en?test12' || configs.mfFundsDataUrl;
+    // eslint-disable-next-line no-console
+    console.log('[mf-comparator-results] loadAllCards url:', url);
     if (!url) throw new Error('no url');
     const resp = await fetch(url);
     if (!resp.ok) throw new Error('bad response');
@@ -65,15 +66,6 @@ async function loadAllCards() {
       || [];
     if (items.length) return items;
     throw new Error('empty');
-  } catch {
-    // fall through to dummy
-  }
-
-  try {
-    const resp = await fetch(`${window.hlx.codeBasePath}/blocks/mf-results/dummy.json`);
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    return json.data?.mutualFundsList?.items || [];
   } catch {
     return [];
   }
@@ -396,16 +388,15 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
 export default async function decorate(block) {
   const doc = block.ownerDocument;
   const ph = await fetchPlaceholders();
-  const isTH = getLang() === 'th';
   const labels = {
-    readMore: ph.mfReadMoreText || (isTH ? 'อ่านเพิ่มเติม' : 'Read More'),
-    riskLevel: ph.mfCompareRiskLevel || (isTH ? 'ระดับความเสี่ยง' : 'Risk Level'),
-    fundType: ph.mfCompareFundType || (isTH ? 'ประเภทกองทุน' : 'Fund Type'),
-    investmentPolicy: ph.mfCompareInvestmentPolicy || (isTH ? 'นโยบายการลงทุน' : 'Investment Policy'),
-    masterFund: ph.mfCompareMasterFund || (isTH ? 'กองทุนหลัก' : 'Master Fund'),
-    dividendPolicy: ph.mfCompareDividendPolicy || (isTH ? 'นโยบายการจ่ายเงินปันผล' : 'Dividend Payment Policy'),
-    managementCompany: ph.mfCompareManagementCompany || (isTH ? 'บริษัทจัดการ' : 'Management Company'),
-    noResults: ph.mfNoResultsText || (isTH ? 'ไม่พบผลลัพธ์' : 'No results found'),
+    readMore: ph.mfReadMoreText || 'Read More',
+    riskLevel: ph.mfCompareRiskLevel || 'Risk Level',
+    fundType: ph.mfCompareFundType || 'Fund Type',
+    investmentPolicy: ph.mfCompareInvestmentPolicy || 'Investment Policy',
+    masterFund: ph.mfCompareMasterFund || 'Master Fund',
+    dividendPolicy: ph.mfCompareDividendPolicy || 'Dividend Payment Policy',
+    managementCompany: ph.mfCompareManagementCompany || 'Management Company',
+    noResults: ph.mfNoResultsText || 'No results found',
   };
 
   const notesRow = block.children[0];
