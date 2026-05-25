@@ -1,3 +1,5 @@
+import { loadFragment } from '../../blocks/fragment/fragment.js';
+
 function fromHTML(markup) {
   const t = document.createElement('template');
   t.innerHTML = markup.trim();
@@ -94,4 +96,135 @@ export function hideModal(overlay, visibleClass, onClosed) {
 
   overlay.addEventListener('transitionend', finish, { once: true });
   setTimeout(finish, 300);
+}
+
+/**
+ * Attaches Escape-key and click-outside-dialog close handlers to a modal overlay.
+ *
+ * @param {HTMLElement} overlay     The outermost overlay / backdrop element
+ * @param {HTMLElement} dialog      The inner dialog element; clicks here don't close
+ * @param {Function}    closeFn     Called when user triggers a close gesture
+ * @param {object}      [opts]
+ * @param {boolean}     [opts.escapeKey=true]    Close on Escape key
+ * @param {boolean}     [opts.clickOutside=true] Close when clicking outside dialog
+ */
+export function setupModalHandlers(overlay, dialog, closeFn, {
+  escapeKey = true,
+  clickOutside = true,
+} = {}) {
+  if (clickOutside) {
+    overlay.addEventListener('click', (e) => {
+      if (overlay.isConnected && !dialog.contains(e.target)) closeFn();
+    });
+  }
+  if (escapeKey) {
+    overlay.ownerDocument.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.isConnected) closeFn();
+    });
+  }
+}
+
+function decorateModalContent(modalBody) {
+  let hasTitle = false;
+  const wrappers = [...modalBody.querySelectorAll('.default-content-wrapper')];
+  const [firstWrapper] = wrappers;
+  const headings = wrappers.flatMap((w) => [...w.querySelectorAll('h1, h2, h3, h4, h5, h6')]);
+  const lastHeading = headings.at(-1);
+
+  if (firstWrapper) firstWrapper.classList.add('card-list-modal-content');
+
+  wrappers.forEach((wrapper) => {
+    let textIndex = 0;
+    [...wrapper.children].forEach((el, index) => {
+      if (el.matches('h1, h2, h3, h4, h5, h6')) {
+        if (!hasTitle) {
+          el.classList.add('card-list-modal-title');
+          hasTitle = true;
+        } else if (el === lastHeading) {
+          el.classList.add('card-list-modal-last-title');
+        } else {
+          el.classList.add('card-list-modal-subtitle');
+        }
+        return;
+      }
+      if (!el.matches('p')) return;
+      const isMedia = !!el.querySelector('picture, img');
+      const classes = [
+        'card-list-modal-paragraph',
+        `card-list-modal-paragraph-${index + 1}`,
+        isMedia ? 'card-list-modal-media' : 'card-list-modal-text',
+      ];
+      if (!isMedia) {
+        textIndex += 1;
+        classes.push(
+          `card-list-modal-text-${textIndex}`,
+          textIndex === 1 ? 'card-list-modal-intro' : 'card-list-modal-description',
+        );
+      }
+      el.classList.add(...classes);
+    });
+  });
+
+  wrappers.slice(1).forEach((wrapper) => wrapper.replaceWith(...wrapper.childNodes));
+}
+
+function buildOverlayModal(doc, extraDialogClass = '') {
+  const wrapper = doc.createElement('div');
+  wrapper.className = 'custom-modal';
+  wrapper.setAttribute('aria-hidden', 'true');
+
+  const backdrop = doc.createElement('div');
+  backdrop.className = 'modal-overlay';
+
+  const { overlay: content, dialog: body, closeBtn } = createModalShell({
+    overlayClass: 'modal-content',
+    dialogClass: `modal-body${extraDialogClass ? ` ${extraDialogClass}` : ''}`,
+    closeBtnClass: 'modal-close',
+    closeBtnAriaLabel: 'Close modal',
+  });
+  content.insertBefore(closeBtn, body);
+
+  const closeModal = () => {
+    wrapper.setAttribute('aria-hidden', 'true');
+    hideModal(wrapper, 'active', () => doc.body.classList.remove('modal-open'));
+  };
+
+  closeBtn.addEventListener('click', closeModal);
+  setupModalHandlers(wrapper, content, closeModal);
+  wrapper.append(backdrop, content);
+  return wrapper;
+}
+
+/**
+ * Opens a standard overlay modal with one of two content strategies:
+ *
+ * @param {Document} doc
+ * @param {object}   opts
+ * @param {string}   [opts.fragmentPath] Load content from a fragment URL (async)
+ * @param {Element}  [opts.content]      Use a pre-built element as the modal body (sync)
+ */
+export async function openModal(doc, { fragmentPath, content, dialogClass } = {}) {
+  if (!fragmentPath && !content) return;
+  if (doc.querySelector('.custom-modal')) return;
+
+  const modal = buildOverlayModal(doc, dialogClass);
+  const modalBody = modal.querySelector('.modal-body');
+  if (!modalBody) return;
+
+  if (fragmentPath) {
+    try {
+      const fragment = await loadFragment(fragmentPath);
+      if (!fragment) return;
+      modalBody.replaceChildren(...fragment.children);
+      decorateModalContent(modalBody);
+    } catch {
+      return;
+    }
+  } else {
+    modalBody.replaceChildren(content);
+  }
+
+  modal.setAttribute('aria-hidden', 'false');
+  doc.body.classList.add('modal-open');
+  showModal(modal, 'active');
 }

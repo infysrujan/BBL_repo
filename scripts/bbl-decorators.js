@@ -254,9 +254,15 @@ async function loadWelcomeBanner(doc) {
     el.srcset = new URL(el.getAttribute('srcset'), new URL(path, window.location)).href;
   });
 
+  // Attach to document.body so showModal can access document.body during decorate()
+  main.style.display = 'none';
+  document.body.appendChild(main);
+
   decorateSections(main);
   decorateBlocks(main);
   await loadSections(main);
+
+  main.remove();
 }
 
 async function loadBreadcrumb(doc) {
