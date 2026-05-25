@@ -80,7 +80,6 @@
   {
     "id": "bbm-glow-card",
     "components": [
-      "bbm-glow-card-item",
       "richtext"
     ]
   },
