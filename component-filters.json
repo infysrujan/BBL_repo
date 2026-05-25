@@ -80,7 +80,7 @@
   {
     "id": "bbm-glow-card",
     "components": [
-      "text"
+      "bbm-glow-card-item"
     ]
   },
   {
