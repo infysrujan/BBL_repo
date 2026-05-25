@@ -68,26 +68,11 @@
   box-sizing: border-box;
 }
 
-/* Card */
+/* Card — outer white box reuses .download-section from download-file.css */
 
-.search-reports-results .srr-card {
-  border: none;
-  border-radius: 0.125rem;
-  overflow: hidden;
-  background: var(--bbl-color-white, #fff);
-  box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 12%);
-}
+/* Title area reuses .default-content-wrapper from accordion-block */
 
-.search-reports-results .srr-card-top {
-  padding: 1.25rem 1.5rem 1rem;
-}
-
-.search-reports-results .srr-card-title-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
+/* File row reuses .download-file-wrapper from accordion-block */
 
 .search-reports-results .srr-card-title {
   font-size: 1.125rem;
@@ -102,46 +87,58 @@
   height: 0.0625rem;
   width: 1.5rem;
   background: var(--bbl-color-grey-40, #c8c8cc);
-  margin: 0;
+  margin: 0.75rem 0 0;
 }
 
 /* File row */
-
 .search-reports-results .srr-card-file-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  flex-wrap: nowrap;
   padding: 0.35rem 0.5rem 0.35rem 1rem;
   background: #e6eef4;
-  margin: 0 1.5rem 1.25rem;
   border-radius: 0.125rem;
   box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 10%);
   border: 0.0625rem solid var(--bbl-color-white, #fff);
+  margin-top: 0.75rem;
 }
 
-.search-reports-results .srr-file-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--bbl-color-gray-121, #171717);
+.search-reports-results .srr-card-file-row .download-button-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  width: 100%;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
-.search-reports-results .srr-card-icons {
+.search-reports-results .srr-card-file-row .download-button-wrapper .download-files {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  margin-bottom: 0;
+  max-height: none;
 }
+
+
+
+
 
 .search-reports-results .srr-icon-btn {
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.25rem;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2rem;
   height: 2rem;
   flex-shrink: 0;
+  flex-grow: 0;
   color: var(--bbl-color-grey-85, #4e4e4e);
   text-decoration: none;
 }
@@ -260,15 +257,24 @@
   height: 100%;
 }
 
-/* Inner blue download row — overrides .download-section white bg from download-file.css */
-.srr-preview-overlay .download-section {
+.srr-preview-overlay .srr-button-group {
   width: 100%;
-  background: #e6eef4;
-  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 10%);
-  border: 0.0625rem solid var(--bbl-color-white, #fff);
-  border-radius: 0.125rem;
-  margin-bottom: 0;
+  padding: 1rem 1.5rem;
   text-align: center;
+}
+
+.srr-preview-overlay .srr-btn-primary {
+  display: inline-block;
+  padding: 0.625rem 2rem;
+  background: var(--bbl-color-truthful-blue, #002850);
+  color: var(--bbl-color-white, #fff);
+  border-radius: 2rem;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.srr-preview-overlay .srr-btn-primary:hover {
+  background: var(--bbl-color-blue-90, #001f3d);
 }
 
 @media (width >= 761px) {

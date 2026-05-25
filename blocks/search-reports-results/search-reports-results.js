@@ -72,17 +72,17 @@ function openPdfPreview(path, name) {
   const embedEl = el('embed', { attrs: { src: path, width: '100%', height: '100%' } });
   pdfEmbed.append(embedEl);
 
-  const anchor = el('a', {
+  const buttonGroup = el('div', { className: 'srr-button-group' });
+  const downloadLink = el('a', {
+    className: 'srr-btn-primary',
     text: 'Download',
     attrs: {
       href: path, title: 'Download', target: '_blank', download: name || '',
     },
   });
-  const downloadSection = el('div', { className: 'download-section' });
-  const downloadWrapper = createDownloadLink(anchor);
-  if (downloadWrapper) downloadSection.append(downloadWrapper);
+  buttonGroup.append(downloadLink);
 
-  centerContent.append(pdfEmbed, downloadSection);
+  centerContent.append(pdfEmbed, buttonGroup);
   body.append(centerContent);
   dialog.append(header, body);
 
@@ -103,45 +103,37 @@ function buildCard(asset) {
   const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
   const fetchPath = (isLocal && asset.path.startsWith('/content/dam/')) ? `${API_BASE}${asset.path}` : asset.path;
 
-  const card = el('div', { className: 'srr-card' });
-  const topRow = el('div', { className: 'srr-card-top' });
-  const titleRow = el('div', { className: 'srr-card-title-row' });
+  // Outer white card — reuses .download-section from download-file.css
+  const card = el('div', { className: 'download-section' });
+
+  // Title area — reuses .default-content-wrapper pattern from accordion-block
+  const titleWrapper = el('div', { className: 'default-content-wrapper' });
   const title = el('h3', { className: 'srr-card-title', text: asset.reportTitle || asset.title });
-  titleRow.append(title);
   const divider = el('div', { className: 'srr-card-divider' });
-  topRow.append(titleRow, divider);
+  titleWrapper.append(title, divider);
 
   const fileRow = el('div', { className: 'srr-card-file-row' });
-  const fileLabel = el('span', { className: 'srr-file-label', text: getDownloadLabel(asset.mimeType) });
-  const icons = el('div', { className: 'srr-card-icons' });
 
-  if (asset.mimeType === 'application/pdf') {
-    const previewBtn = el('button', {
-      className: 'srr-icon-btn srr-preview-btn',
-      attrs: { type: 'button', 'aria-label': `Preview ${asset.name}` },
-    });
-    const previewIcon = el('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } });
-    previewBtn.append(previewIcon);
-    previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfPreview(fetchPath, asset.name); });
-    icons.append(previewBtn);
+  // Download button — reuses createDownloadLink from download-helpers.js
+  const anchor = el('a', {
+    text: getDownloadLabel(asset.mimeType),
+    attrs: { href: fetchPath, download: asset.name, 'aria-label': `Download ${asset.name}` },
+  });
+  const downloadWrapper = createDownloadLink(anchor);
+
+  if (downloadWrapper) {
+    if (asset.mimeType === 'application/pdf') {
+      const previewBtn = el('button', {
+        className: 'srr-icon-btn srr-preview-btn',
+        attrs: { type: 'button', 'aria-label': `Preview ${asset.name}` },
+      });
+      previewBtn.append(el('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } }));
+      previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfPreview(fetchPath, asset.name); });
+      downloadWrapper.append(previewBtn);
+    }
+    fileRow.append(downloadWrapper);
   }
-
-  const downloadBtn = el('button', {
-    className: 'srr-icon-btn srr-download-btn',
-    attrs: { type: 'button', 'aria-label': `Download ${asset.name}` },
-  });
-  const downloadIcon = el('span', { className: 'icon icon-download', attrs: { 'aria-hidden': 'true' } });
-  downloadBtn.append(downloadIcon);
-  downloadBtn.addEventListener('click', () => {
-    const a = document.createElement('a');
-    a.href = fetchPath;
-    a.download = asset.name;
-    a.click();
-  });
-  icons.append(downloadBtn);
-
-  fileRow.append(fileLabel, icons);
-  card.append(topRow, fileRow);
+  card.append(titleWrapper, fileRow);
   return card;
 }
 
