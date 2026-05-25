@@ -91,13 +91,8 @@ function openPdfPreview(path, name) {
 
   fetch(path, { method: 'HEAD' }).then((res) => {
     if (res.ok) {
-      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      if (isLocal) {
-        frame.src = path;
-      } else {
-        const absoluteUrl = path.startsWith('http') ? path : `${window.location.origin}${path}`;
-        frame.src = `https://docs.google.com/viewer?url=${encodeURIComponent(absoluteUrl)}&embedded=true`;
-      }
+      const absoluteUrl = path.startsWith('http') ? path : `${window.location.origin}${path}`;
+      frame.src = absoluteUrl;
     } else {
       frame.remove();
       const msg = el('p', {
