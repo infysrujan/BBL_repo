@@ -120,7 +120,7 @@
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
-                  "name": "bbm-glow-card-item",
+                  "name": "Bbm Glow Card Item",
                   "model": "bbm-glow-card-item"
                 }
               }

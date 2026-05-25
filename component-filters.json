@@ -80,7 +80,8 @@
   {
     "id": "bbm-glow-card",
     "components": [
-      "bbm-glow-card-item"
+      "bbm-glow-card-item",
+      "rte"
     ]
   },
   {

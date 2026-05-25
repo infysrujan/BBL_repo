@@ -23,7 +23,7 @@
           "page": {
             "resourceType": "core/franklin/components/block/v1/block/item",
             "template": {
-              "name": "bbm-glow-card-item",
+              "name": "Bbm Glow Card Item",
               "model": "bbm-glow-card-item"
             }
           }
@@ -36,15 +36,10 @@
       "id": "bbm-glow-card-item",
       "fields": [
         {
-          "component": "text",
-          "name": "rawHtmlStyles",
-          "label": "Paste HTML or Styles",
-          "description": "Add the HTML or Styles for the glow card item in seperate item"
-        },
-        {
           "component": "richtext",
           "name": "rawContent",
-          "label": "Paste Content",
+          "label": "Html or Styles",
+          "description": "Add the HTML or Styles for the glow card item in seperate item",
           "valueType": "string"
         }
       ]
@@ -54,7 +49,8 @@
     {
       "id": "bbm-glow-card",
       "components": [
-        "bbm-glow-card-item"
+        "bbm-glow-card-item",
+        "rte"
       ]
     }
   ]
