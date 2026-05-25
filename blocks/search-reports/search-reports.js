@@ -220,19 +220,30 @@ export default function decorate(block) {
   getType = getTypeVal;
   getYear = getYearVal;
 
-  // Populate dropdowns: API in publish, authored rows in author mode
+  const defaultTypes = [
+    { label: 'Reviewed Audited Financial Results', value: 'reviewed-audited' },
+    { label: 'Unreviewed Unaudited Financial Results', value: 'unreviewed-unaudited' },
+    { label: 'Summary Statement', value: 'summary-statement' },
+  ];
+  const currentYear = new Date().getFullYear();
+  const defaultYears = Array.from({ length: 10 }, (_, i) => {
+    const y = String(currentYear - i);
+    return { label: y, value: y };
+  });
+
+  // Populate dropdowns: API in publish, fallback to authored rows or defaults in author mode
   if (isAuthor) {
-    populateTypes(typeOptions);
-    populateYears(yearOptions);
+    populateTypes(typeOptions.length ? typeOptions : defaultTypes);
+    populateYears(yearOptions.length ? yearOptions : defaultYears);
   } else {
     fetchSearchParams().then((data) => {
-      const types = data.reportTypes?.length ? data.reportTypes : typeOptions;
+      const types = data.reportTypes?.length ? data.reportTypes : defaultTypes;
       const years = (data.years || []).map((y) => ({ label: y, value: y }));
       populateTypes(types);
-      populateYears(years);
+      populateYears(years.length ? years : defaultYears);
     }).catch(() => {
-      populateTypes(typeOptions);
-      populateYears(yearOptions);
+      populateTypes(typeOptions.length ? typeOptions : defaultTypes);
+      populateYears(yearOptions.length ? yearOptions : defaultYears);
     });
   }
 
