@@ -315,9 +315,7 @@
     .menu-card-actions-container .default-content-wrapper :is(h4) {
       line-height: 1.375rem;
     }
-  }
 
-   :lang(th) {
     .menu-card-action-title :is(h1) {
       line-height: 3.75rem;
     }
