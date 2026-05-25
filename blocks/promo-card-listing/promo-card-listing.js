@@ -7,34 +7,11 @@ import { activateTab } from '../tabs/helpers/tabs-utils.js';
 import {
   buildCardHtml, buildPaginationHtml, sortCards, bindPaginationClick,
 } from '../../scripts/utils/card-helpers.js';
+import { handleMobileAppView } from '../promotional-details/promotional-details.js';
 
 const fetchCache = {};
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
-
-const MOBILE_APP_VIEW_CLASS = 'mobile-app-view';
-
-function handleChromeHiding(searchParams) {
-  const hasCardRef = searchParams.has('card_ref');
-  ['header', 'footer'].forEach((selector) => {
-    const el = document.querySelector(selector);
-    if (el) {
-      if (hasCardRef) {
-        el.style.display = 'none';
-        el.classList.add('is-hidden');
-      } else {
-        el.style.display = '';
-        el.classList.remove('is-hidden');
-      }
-    }
-  });
-  if (hasCardRef) {
-    document.body.classList.add(MOBILE_APP_VIEW_CLASS);
-  } else {
-    document.body.classList.remove(MOBILE_APP_VIEW_CLASS);
-  }
-}
-
 const LOGO_ICONS = {
   visa: '/icons/visa-new.svg',
   mastercard: '/icons/mastercard-new.svg',
@@ -509,7 +486,7 @@ function setupPanel(
 
 export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
-  handleChromeHiding(searchParams);
+  handleMobileAppView(searchParams);
 
   const promotionType = resolvePromotionType(block);
   const docLang = getLang();

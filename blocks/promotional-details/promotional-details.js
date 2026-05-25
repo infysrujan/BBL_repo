@@ -16,8 +16,8 @@ function normalizeQueryLang(value) {
 
 function isRegisterEnabled(value) {
   const normalized = String(value || '').trim().toUpperCase();
-  // CTA is shown ONLY when the API explicitly sets isRegister to 'Y' or 'D'
-  return normalized === 'Y' || normalized === 'D';
+  // CTA is shown ONLY when the API explicitly sets isRegister to 'N'
+  return normalized !== 'N';
 }
 
 function resolveCtaLabel(isRegister, data) {
@@ -25,7 +25,7 @@ function resolveCtaLabel(isRegister, data) {
   return data?.isRegisterCtaLabel || '';
 }
 
-function resolveCtaUrl(isRegister, data, registerCtaUrl) {
+function resolveCtaUrl(isRegister, registerCtaUrl) {
   if (!isRegisterEnabled(isRegister)) return '';
   return registerCtaUrl || '';
 }
@@ -111,7 +111,7 @@ function renderDetails(container, data, periodLabel, locale, clickToViewFull, re
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
   const isRegister = data?.isRegister || '';
   const ctaLabel = resolveCtaLabel(isRegister, data);
-  const ctaUrl = resolveCtaUrl(isRegister, data, registerCtaUrl);
+  const ctaUrl = resolveCtaUrl(isRegister, registerCtaUrl);
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
@@ -157,7 +157,7 @@ function normalizePath(p) {
     || '/';
 }
 
-function handleChromeHiding(searchParams) {
+export function handleMobileAppView(searchParams) {
   const hasCardRef = searchParams.has('card_ref');
   ['header', 'footer'].forEach((selector) => {
     const el = document.querySelector(selector);
@@ -198,7 +198,7 @@ async function fetchPromoData(url, promoId) {
 
 export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
-  handleChromeHiding(searchParams);
+  handleMobileAppView(searchParams);
 
   const { promotionType, promoId } = getPromoBlockConfig(block);
   const path = window.location.pathname.toLowerCase();
