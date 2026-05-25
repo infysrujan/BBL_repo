@@ -222,25 +222,71 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  background: #404040;
 }
 
-.srr-preview-overlay .srr-preview-frame {
-  width: 100%;
-  max-width: 56rem;
-  height: 140vh;
-  margin: 10rem auto 0;
-  border: none;
-  display: block;
-  flex-shrink: 0;
-}
-
-.srr-preview-overlay .srr-preview-btn-group {
-  padding: 1rem 1.5rem;
-  text-align: center;
-  background: var(--bbl-color-white, #fff);
-  flex-shrink: 0;
+.srr-preview-overlay .srr-pdf-viewer {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.srr-preview-overlay .srr-pdf-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #323639;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.srr-preview-overlay .srr-pdf-nav-btn {
+  background: none;
+  border: none;
+  color: var(--bbl-color-white, #fff);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  font-size: 1.125rem;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.srr-preview-overlay .srr-pdf-nav-btn:hover {
+  background: rgb(255 255 255 / 15%);
+}
+
+.srr-preview-overlay .srr-pdf-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.srr-preview-overlay .srr-pdf-download-btn {
+  margin-left: auto;
+}
+
+.srr-preview-overlay .srr-pdf-download-btn .icon {
+  font-size: 1.25rem;
+}
+
+.srr-preview-overlay .srr-pdf-page-info {
+  font-size: 0.875rem;
+  color: var(--bbl-color-white, #fff);
+  min-width: 4rem;
+  text-align: center;
+}
+
+.srr-preview-overlay .srr-pdf-canvas {
+  display: block;
+  margin: 1.5rem auto;
+  box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 40%);
+  max-width: 100%;
 }
 
 .srr-preview-overlay .srr-preview-unavailable {
@@ -249,22 +295,10 @@
   align-items: center;
   justify-content: center;
   font-size: 1rem;
-  color: var(--bbl-color-grey-85, #4e4e4e);
+  color: var(--bbl-color-white, #fff);
   text-align: center;
   padding: 3rem 1.5rem;
   margin: 0;
-}
-
-.srr-preview-overlay .srr-preview-download-btn {
-  padding: 0.75rem 4rem;
-  background: #0064ff;
-  color: var(--bbl-color-white, #fff);
-  border-radius: 0.5rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
 }
 
 @media (width >= 761px) {

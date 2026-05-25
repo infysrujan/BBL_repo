@@ -56,23 +56,20 @@ function openPdfPreview(path, name) {
   header.append(logoLink, closeBtn);
 
   const body = el('div', { className: 'srr-preview-body' });
-  const frame = el('iframe', { className: 'srr-preview-frame', attrs: { title: name || 'PDF Preview' } });
-  body.append(frame);
-
-  const btnGroup = el('div', { className: 'srr-preview-btn-group' });
-  const downloadBtn = el('button', {
-    className: 'srr-preview-download-btn',
-    text: 'Download',
-    attrs: { type: 'button' },
-  });
-  downloadBtn.addEventListener('click', () => {
-    const a = document.createElement('a');
-    a.href = path;
-    a.download = name || '';
-    a.click();
-  });
-  btnGroup.append(downloadBtn);
-  body.append(btnGroup);
+  const viewer = el('div', { className: 'srr-pdf-viewer' });
+  const toolbar = el('div', { className: 'srr-pdf-toolbar' });
+  const prevBtn = el('button', { className: 'srr-pdf-nav-btn', text: '‹', attrs: { type: 'button', 'aria-label': 'Previous page' } });
+  const pageInfo = el('span', { className: 'srr-pdf-page-info', text: '1 / 1' });
+  const nextBtn = el('button', { className: 'srr-pdf-nav-btn', text: '›', attrs: { type: 'button', 'aria-label': 'Next page' } });
+  const zoomOutBtn = el('button', { className: 'srr-pdf-nav-btn', text: '−', attrs: { type: 'button', 'aria-label': 'Zoom out' } });
+  const zoomInfo = el('span', { className: 'srr-pdf-page-info', text: '100%' });
+  const zoomInBtn = el('button', { className: 'srr-pdf-nav-btn', text: '+', attrs: { type: 'button', 'aria-label': 'Zoom in' } });
+  const downloadBtn = el('button', { className: 'srr-pdf-nav-btn srr-pdf-download-btn', attrs: { type: 'button', 'aria-label': 'Download' } });
+  downloadBtn.innerHTML = '<span class="icon icon-download" aria-hidden="true"></span>';
+  toolbar.append(prevBtn, pageInfo, nextBtn, zoomOutBtn, zoomInfo, zoomInBtn, downloadBtn);
+  const canvas = el('canvas', { className: 'srr-pdf-canvas' });
+  viewer.append(toolbar, canvas);
+  body.append(viewer);
   overlay.append(header, body);
   document.body.appendChild(overlay);
   document.body.classList.add('srr-preview-open');
@@ -89,25 +86,57 @@ function openPdfPreview(path, name) {
   overlay.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   closeBtn.focus();
 
-  fetch(path, { method: 'HEAD' }).then((res) => {
-    if (res.ok) {
-      const absoluteUrl = path.startsWith('http') ? path : `${window.location.origin}${path}`;
-      frame.src = absoluteUrl;
-    } else {
-      frame.remove();
-      const msg = el('p', {
-        className: 'srr-preview-unavailable',
-        text: 'File not available for preview.',
+  downloadBtn.addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = path;
+    a.download = name || '';
+    a.click();
+  });
+
+  const PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174';
+  const absoluteUrl = path.startsWith('http') ? path : `${window.location.origin}${path}`;
+
+  function loadPdfJs(callback) {
+    if (window.pdfjsLib) { callback(); return; }
+    const script = document.createElement('script');
+    script.src = `${PDFJS_CDN}/pdf.min.js`;
+    script.onload = callback;
+    document.head.appendChild(script);
+  }
+
+  loadPdfJs(() => {
+    const { pdfjsLib } = window;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_CDN}/pdf.worker.min.js`;
+
+    let pdfDoc = null;
+    let currentPage = 1;
+    let scale = 1.5;
+
+    function renderPage(num) {
+      pdfDoc.getPage(num).then((page) => {
+        const viewport = page.getViewport({ scale });
+        const ctx = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        page.render({ canvasContext: ctx, viewport });
+        pageInfo.textContent = `${num} / ${pdfDoc.numPages}`;
+        prevBtn.disabled = num <= 1;
+        nextBtn.disabled = num >= pdfDoc.numPages;
       });
-      body.insertBefore(msg, btnGroup);
     }
-  }).catch(() => {
-    frame.remove();
-    const msg = el('p', {
-      className: 'srr-preview-unavailable',
-      text: 'File not available for preview.',
+
+    prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage -= 1; renderPage(currentPage); } });
+    nextBtn.addEventListener('click', () => { if (currentPage < pdfDoc.numPages) { currentPage += 1; renderPage(currentPage); } });
+    zoomInBtn.addEventListener('click', () => { scale = Math.min(scale + 0.25, 3); zoomInfo.textContent = `${Math.round(scale * 100)}%`; renderPage(currentPage); });
+    zoomOutBtn.addEventListener('click', () => { scale = Math.max(scale - 0.25, 0.5); zoomInfo.textContent = `${Math.round(scale * 100)}%`; renderPage(currentPage); });
+
+    pdfjsLib.getDocument(absoluteUrl).promise.then((pdf) => {
+      pdfDoc = pdf;
+      renderPage(currentPage);
+    }).catch(() => {
+      viewer.innerHTML = '';
+      viewer.append(el('p', { className: 'srr-preview-unavailable', text: 'File not available for preview.' }));
     });
-    body.insertBefore(msg, btnGroup);
   });
 }
 
