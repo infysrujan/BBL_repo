@@ -375,8 +375,8 @@ export default async function decorate(block) {
       // Formula from config: n = [lnA-ln(A-Pi)]/ln(1+i)
       // A = monthly payment (field P), P = principal (field A), i = annual% / 1200
       const result = formulaCompute(formulaDescription, {
-        A: fieldValues.P,
-        P: fieldValues.A,
+        P: fieldValues.P,
+        A: fieldValues.A,
         i: fieldValues.i / 1200,
       });
       return Number.isFinite(result) ? result : 0;
