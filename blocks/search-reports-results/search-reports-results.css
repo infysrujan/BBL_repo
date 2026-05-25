@@ -88,7 +88,7 @@
 }
 
 .search-reports-results .srr-card-title {
-  font-size: 30px;
+  font-size: 1.125rem;
   font-weight: 400;
   margin: 0;
   line-height: 1.4;
@@ -145,13 +145,10 @@
 }
 
 .search-reports-results .srr-icon-btn .icon {
-  opacity: 0.6;
-  font-size: 1.375rem;
-  display: block;
-}
-
-.search-reports-results .srr-icon-btn:hover .icon {
   opacity: 1;
+  font-size: 1.75rem;
+  display: block;
+  color: var(--bbl-color-gray-121, #171717);
 }
 
 /* States */
