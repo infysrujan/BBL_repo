@@ -127,7 +127,7 @@ async function fetchSearchParams() {
   const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
   const url = isLocal
     ? '/blocks/search-reports/searchparams.mock.json'
-    : `${API_BASE}/content/bangkokbank/en.reports.searchparams.json?test`;
+    : `${API_BASE}/content/bangkokbank/en.reports.searchparams.json`;
   const res = await fetch(url, { credentials: 'include' });
   if (!res.ok) throw new Error(`searchparams fetch failed: ${res.status}`);
   const text = await res.text();
