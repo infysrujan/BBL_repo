@@ -5,17 +5,20 @@ import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { activateTab } from '../tabs/helpers/tabs-utils.js';
 import {
+  bindPaginationClick,
   buildCardHtml,
   buildPaginationHtml,
-  sortCards,
-  bindPaginationClick,
-  buildPromotionsUrl,
+  buildPromotionDataUrl,
   fetchJson,
-  normalizeQueryLang,
+  getPromotionPathFlags,
+  handleMobileAppView,
   mergeLocalConfig,
-  resolveIsBbm,
-} from '../../scripts/utils/card-helpers.js';
-import { handleMobileAppView } from '../promotional-details/promotional-details.js';
+  normalizeQueryLang,
+  normalizePromotionType,
+  resolvePromotionApi,
+  resolvePromotionLang,
+  sortCards,
+} from '../promotional-details/promotional-details.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 const LOGO_ICONS = {
@@ -439,13 +442,16 @@ export default async function decorate(block) {
   handleMobileAppView(searchParams);
 
   const { pathname } = window.location;
-  const prelimPath = pathname.toLowerCase();
-  const isBbmPathPrelim = /(promotions-?mb|mb-?promo)/i.test(prelimPath);
-  const isCreditCardPathPrelim = /(credit-cards?-promotions|creditcards?)/i.test(prelimPath);
+  const { isBbmPath, isCreditCardPath } = getPromotionPathFlags(pathname);
 
   const docLang = getLang();
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
-  const lang = isBbmPathPrelim && queryLang ? queryLang : docLang;
+  const { promotionType: blockPromoType } = getPromoListingConfig(block);
+  const datasetType = block.dataset.promotionType?.trim();
+  const configuredPromoType = blockPromoType || datasetType;
+  const isBbmPreConfig = isBbmPath
+    || (!isCreditCardPath && normalizePromotionType(configuredPromoType) === 'bangkok-bank-m');
+  const lang = resolvePromotionLang(docLang, queryLang, isBbmPreConfig);
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
@@ -455,29 +461,18 @@ export default async function decorate(block) {
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
 
-  const { promotionType: blockPromoType } = getPromoListingConfig(block);
-  const datasetType = block.dataset.promotionType?.trim();
-  const configuredPromoType = blockPromoType || datasetType;
-
-  const isBbm = resolveIsBbm({
+  const promotionApi = resolvePromotionApi({
     pathname,
-    isBbmPathPrelim,
-    isCreditCardPathPrelim,
+    configuredPromoType,
     bbmBaseUrl,
     creditBaseUrl,
-    configuredPromoType,
   });
-
-  const promotionType = configuredPromoType || (isBbm ? 'bangkok-bank-m' : 'credit-card');
+  const { isBbm, promotionType } = promotionApi;
 
   const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
   const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
 
-  const creditUrl = buildPromotionsUrl(creditBaseUrl, lang);
-  const bbmUrl = buildPromotionsUrl(bbmBaseUrl, lang);
-
-  // Fetch data for the active page only
-  const dataUrl = isBbm ? bbmUrl : creditUrl;
+  const dataUrl = buildPromotionDataUrl(promotionApi.baseUrl, lang);
   const [activeData, cardRefConfig, placeholders] = await Promise.all([
     fetchPromotions(dataUrl),
     fetchJson(effectiveConfigs.bbmCardRef || ''),
