@@ -71,6 +71,10 @@
   background-color: var(--bbl-color-grey-10);
 }
 
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:hover {
+  background-color: var(--bbl-color-white);
+}
+
 .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next:hover {
   margin-left: 5px;
 }
