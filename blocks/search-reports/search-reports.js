@@ -157,7 +157,7 @@ function parseAuthoredOptions(rows) {
 }
 
 export default function decorate(block) {
-  const isAuthor = window.self !== window.top;
+  const isAuthor = window.self !== window.top || window.location.hostname.includes('author-');
   const rows = [...block.children];
 
   const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || 'Search for Reports';
