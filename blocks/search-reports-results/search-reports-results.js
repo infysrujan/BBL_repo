@@ -131,7 +131,8 @@ function buildCard(asset) {
       className: 'srr-icon-btn srr-preview-btn',
       attrs: { type: 'button', 'aria-label': `Preview ${asset.name}` },
     });
-    previewBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><circle cx="10" cy="14" r="2.5"/><line x1="12" y1="16" x2="14.5" y2="18.5"/></svg>';
+    const previewIcon = el('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } });
+    previewBtn.append(previewIcon);
     previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfPreview(fetchPath, asset.name); });
     icons.append(previewBtn);
   }
@@ -140,7 +141,8 @@ function buildCard(asset) {
     className: 'srr-icon-btn srr-download-btn',
     attrs: { type: 'button', 'aria-label': `Download ${asset.name}` },
   });
-  downloadBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 3a1 1 0 1 0-2 0v10.586l-2.293-2.293a1 1 0 0 0-1.414 1.414l4 4a1 1 0 0 0 1.414 0l4-4a1 1 0 0 0-1.414-1.414L13 13.586V3zM4 17a1 1 0 0 1 2 0v2h12v-2a1 1 0 1 1 2 0v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2z"/></svg>';
+  const downloadIcon = el('span', { className: 'icon icon-download', attrs: { 'aria-hidden': 'true' } });
+  downloadBtn.append(downloadIcon);
   downloadBtn.addEventListener('click', () => {
     const a = document.createElement('a');
     a.href = fetchPath;

@@ -144,15 +144,13 @@
   text-decoration: none;
 }
 
-.search-reports-results .srr-icon-btn svg {
+.search-reports-results .srr-icon-btn .icon {
   opacity: 0.6;
-  width: 1.375rem;
-  height: 1.375rem;
+  font-size: 1.375rem;
   display: block;
 }
 
-
-.search-reports-results .srr-icon-btn:hover svg {
+.search-reports-results .srr-icon-btn:hover .icon {
   opacity: 1;
 }
 
