@@ -35,6 +35,13 @@ const CARD_TYPE_NORMALIZE = {
   ยูเนี่ยนเพย์: 'unionpay',
 };
 
+const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
+
+function isTopPromotionsLabel(value) {
+  const key = String(value || '').trim().toLowerCase().replace(/\s+/g, '');
+  return TOP_PROMO_KEYS.some((k) => k.toLowerCase() === key);
+}
+
 function getPromoListingConfig(block) {
   const firstRow = block.querySelector(':scope > div');
   const isKeyValueRows = firstRow && firstRow.children.length >= 2;
@@ -210,12 +217,12 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
   const today = new Date();
 
   const matched = allCards.filter((card) => {
+    if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
     if (
       !topPromotionOnly
       && category
       && card.category?.toLowerCase() !== category.toLowerCase()
     ) return false;
-    if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
     if (subcategory && card.subcategory !== subcategory) return false;
     const cardTypesLower = normalizeList(card.cardTypes).map((t) => t.toLowerCase());
@@ -254,6 +261,7 @@ function setupPanel(
     forcedCardType = '',
     hidePagination = false,
     isBbm: isBbmPanel = false,
+    isHighlightsPanel = false,
   } = options;
   const labelCategory = placeholders.promoFilterCategory || 'Category';
   const labelCardType = placeholders.promoFilterCardType || 'Card Type';
@@ -317,17 +325,13 @@ function setupPanel(
   };
 
   function render() {
-    const hasCategoryCards = allCards.some(
-      (c) => (c.category || '').trim().toLowerCase() === category.trim().toLowerCase(),
-    );
-    const isHighlightTab = !hasCategoryCards;
     const activeCardType = forcedCardType || state.cardType;
     const { cards, total } = filterCards(allCards, {
       category,
       subcategory: state.subcategory,
       cardType: activeCardType,
       area: state.area,
-    }, state.page, pageSize, isHighlightTab);
+    }, state.page, pageSize, isHighlightsPanel);
 
     gridEl.innerHTML = cards.length
       ? cards.map((c) => {
@@ -479,6 +483,7 @@ export default async function decorate(block) {
     fetchPlaceholders(),
   ]);
   const activeCards = filterByPromotionType(activeData?.cards || [], promotionType);
+  const topPromoCards = activeCards.filter((card) => isTruthyFlag(card.topPromotion));
   const activeCardTypes = activeData?.cardTypes || [];
   const activeAreas = activeData?.areas || [];
   const isBbmPage = isBbm;
@@ -503,10 +508,11 @@ export default async function decorate(block) {
     }
     const firstCategory = activeCategories[0]?.label || '';
     const firstSubcategories = activeCategories[0]?.subcategories || [];
+    const isHighlightsPanel = isTopPromotionsLabel(firstCategory);
     previewPanel.innerHTML = '';
     setupPanel(
       previewPanel,
-      activeCards,
+      isHighlightsPanel ? topPromoCards : activeCards,
       firstCategory,
       firstSubcategories,
       activeCardTypes,
@@ -518,6 +524,7 @@ export default async function decorate(block) {
         forcedCardType: isBbm ? forcedCardType : '',
         hidePagination: disableFilters && isBbm,
         isBbm,
+        isHighlightsPanel,
         immediate: true,
       },
     );
@@ -552,7 +559,7 @@ export default async function decorate(block) {
     ? [...tabsContainer.querySelectorAll('.tabs-content .tab-panel')]
     : [...document.querySelectorAll('[role="tabpanel"]')];
 
-  tabPanels.forEach((panel) => {
+  tabPanels.forEach((panel, index) => {
     const tabBtnId = panel.getAttribute('aria-labelledby');
     if (panel.hidden) return;
     const tabBtn = tabBtnId
@@ -561,7 +568,6 @@ export default async function decorate(block) {
     const tabText = tabBtn?.textContent?.trim() || '';
 
     const dataSet = activeData;
-    const dataCards = activeCards;
     const dataCategories = dataSet?.categories || [];
     const dataCardTypes = activeCardTypes;
     const dataAreas = activeAreas;
@@ -570,9 +576,11 @@ export default async function decorate(block) {
     const category = catMeta.label || tabText;
     const subcategories = catMeta.subcategories || [];
 
+    const isHighlightsPanel = index === 0 || isTopPromotionsLabel(tabText);
+
     setupPanel(
       panel,
-      dataCards,
+      isHighlightsPanel ? topPromoCards : activeCards,
       category,
       subcategories,
       dataCardTypes,
@@ -584,6 +592,7 @@ export default async function decorate(block) {
         forcedCardType: isBbm ? forcedCardType : '',
         hidePagination: disableFilters && isBbm,
         isBbm,
+        isHighlightsPanel,
       },
     );
   });
