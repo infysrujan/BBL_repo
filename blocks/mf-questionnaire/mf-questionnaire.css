@@ -220,3 +220,29 @@
 .modal-body .mfq-disclaimer {
   padding-bottom: var(--bbl-space-600);
 }
+
+/* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
+
+@media (width > 47.5rem) {
+  .mfq-actions {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .mfq-risk-options .list-thumb-square {
+    gap: var(--bbl-space-150);
+  }
+}
+
+/* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
+
+@media (width > 64rem) {
+  .mfq-risk-options .list-thumb-square {
+    gap: var(--bbl-space-200);
+  }
+
+  .mfq-risk-options .list-thumb-square li {
+    width: 10.625rem;
+    height: 10.625rem;
+  }
+}

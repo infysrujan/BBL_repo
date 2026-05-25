@@ -13,18 +13,6 @@
   box-sizing: border-box;
 }
 
-@media (width >= 760px) {
-  .mfr-wrapper {
-    padding: var(--bbl-space-600);
-  }
-}
-
-@media (width > 64rem) {
-  .mfr-wrapper {
-    padding: var(--bbl-space-600) var(--bbl-space-200);
-  }
-}
-
 /* ── Fund card fields — scoped to card-list.mf-results ───────────────────── */
 
 .card-list.mf-results .mfr-card-field {
@@ -50,7 +38,7 @@
   padding: 0;
   font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-70);
-  line-height: 1.625rem;
+  line-height: 1.625;
 }
 
 .card-list.mf-results .mfr-card-field ul {
@@ -95,7 +83,7 @@
   height: var(--bbl-space-100);
   min-width: var(--bbl-space-100);
   min-height: var(--bbl-space-100);
-  border-radius: 50%;
+  border-radius: var(--bbl-radius-full);
   border: 0.0625rem solid var(--bbl-color-grey-40);
   background: transparent;
   padding: 0;
@@ -296,40 +284,6 @@
   pointer-events: none;
 }
 
-/* ── Desktop grid: 3-column wrap (matches credit-card pattern) ──────────── */
-
-@media (width > 47.5rem) {
-  .mfr-scroll-dots {
-    display: none;
-  }
-
-  .card-list.mf-results .cards-list.scrollable.cards-3 {
-    flex-flow: row wrap;
-    overflow: visible;
-    scroll-snap-type: none;
-    gap: 0 var(--bbl-space-250);
-  }
-
-  .card-list.mf-results .cards-list.scrollable.cards-3 .cards-list-item {
-    flex: 0 0 calc((100% - 3 * var(--bbl-space-250)) / 3);
-    margin-bottom: var(--bbl-space-250);
-    scroll-snap-align: none;
-  }
-}
-
-@media (width > 64rem) {
-  .card-list.mf-results .cards-list.scrollable.cards-3 {
-    gap: 0 var(--bbl-space-500);
-    margin-right: calc(-1 * var(--bbl-space-250));
-    margin-left: calc(-1 * var(--bbl-space-250));
-  }
-
-  .card-list.mf-results .cards-list.scrollable.cards-3 .cards-list-item {
-    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 3);
-    margin-bottom: var(--bbl-space-500);
-  }
-}
-
 /* ── Footer CTAs ──────────────────────────────────────────────────────────── */
 
 .mfr-footer {
@@ -338,13 +292,6 @@
   gap: var(--bbl-space-gap-md);
   align-items: center;
   margin-bottom: var(--bbl-space-layout-md);
-}
-
-@media (width >= 760px) {
-  .mfr-footer {
-    flex-direction: row;
-    justify-content: center;
-  }
 }
 
 .mfr-cta {
@@ -389,4 +336,53 @@
 
 .mfr-disclaimer p:last-child {
   margin-bottom: 0;
+}
+
+/* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
+
+@media (width > 47.5rem) {
+  .mfr-wrapper {
+    padding: var(--bbl-space-600);
+  }
+
+  .mfr-scroll-dots {
+    display: none;
+  }
+
+  .card-list.mf-results .cards-list.scrollable.cards-3 {
+    flex-flow: row wrap;
+    overflow: visible;
+    scroll-snap-type: none;
+    gap: 0 var(--bbl-space-250);
+  }
+
+  .card-list.mf-results .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-250)) / 3);
+    margin-bottom: var(--bbl-space-250);
+    scroll-snap-align: none;
+  }
+
+  .mfr-footer {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+/* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
+
+@media (width > 64rem) {
+  .mfr-wrapper {
+    padding: var(--bbl-space-600) var(--bbl-space-200);
+  }
+
+  .card-list.mf-results .cards-list.scrollable.cards-3 {
+    gap: 0 var(--bbl-space-500);
+    margin-right: calc(-1 * var(--bbl-space-250));
+    margin-left: calc(-1 * var(--bbl-space-250));
+  }
+
+  .card-list.mf-results .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 3);
+    margin-bottom: var(--bbl-space-500);
+  }
 }

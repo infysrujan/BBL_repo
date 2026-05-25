@@ -35,19 +35,6 @@
   row-gap: 0;
 }
 
-@media (width >= 760px) {
-  .mf-comparator .inner-container {
-    padding: 0 var(--bbl-space-container-md);
-  }
-}
-
-@media (width >= 1025px) {
-  .mf-comparator .inner-container {
-    flex-direction: row;
-    gap: var(--bbl-space-250);
-  }
-}
-
 /* ── Limit warning ────────────────────────────────────────────────────────── */
 
 .mf-comparator .mfc-error {
@@ -72,15 +59,6 @@
   white-space: nowrap;
 }
 
-@media (width >= 1025px) {
-  .mf-comparator .compare-group {
-    border-bottom: none;
-    padding-bottom: 0;
-    overflow-x: visible;
-    white-space: normal;
-  }
-}
-
 /* ── Product card item ────────────────────────────────────────────────────── */
 
 .mf-comparator .product-comparing {
@@ -99,12 +77,6 @@
 
 .mf-comparator .product-comparing + .product-comparing {
   border-left: 0.0625rem solid var(--bbl-color-grey-150);
-}
-
-@media (width >= 1025px) {
-  .mf-comparator .product-comparing {
-    flex-shrink: 1;
-  }
 }
 
 /* ── Thumbnail ────────────────────────────────────────────────────────────── */
@@ -200,21 +172,6 @@
   pointer-events: none;
 }
 
-@media (width >= 760px) {
-  .mf-comparator .mfc-btn-primary {
-    width: auto;
-    margin: 0 auto;
-    display: block;
-  }
-}
-
-@media (width >= 1025px) {
-  .mf-comparator .mfc-btn-primary {
-    margin: 0;
-    display: inline-block;
-  }
-}
-
 /* ── UE authoring mode ────────────────────────────────────────────────────── */
 
 .adobe-ue-edit div[data-aue-component="mf-comparator"] {
@@ -227,4 +184,43 @@
 
 .adobe-ue-edit div[data-aue-component="mf-comparator"] .compare-group {
   display: none;
+}
+
+/* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */
+
+@media (width > 47.5rem) {
+  .mf-comparator .inner-container {
+    padding: 0 var(--bbl-space-container-md);
+  }
+
+  .mf-comparator .mfc-btn-primary {
+    width: auto;
+    margin: 0 auto;
+    display: block;
+  }
+}
+
+/* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
+
+@media (width > 64rem) {
+  .mf-comparator .inner-container {
+    flex-direction: row;
+    gap: var(--bbl-space-250);
+  }
+
+  .mf-comparator .compare-group {
+    border-bottom: none;
+    padding-bottom: 0;
+    overflow-x: visible;
+    white-space: normal;
+  }
+
+  .mf-comparator .product-comparing {
+    flex-shrink: 1;
+  }
+
+  .mf-comparator .mfc-btn-primary {
+    margin: 0;
+    display: inline-block;
+  }
 }
