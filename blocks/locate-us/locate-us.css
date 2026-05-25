@@ -1064,7 +1064,7 @@
     display: grid;
     padding: 0 var(--bbl-space-1050) 1.875rem;
     grid-template-columns: repeat(3, 1fr);
-    gap:30px 20px;
+    gap: 1.875rem var(--bbl-space-250);
     margin-top: 0;
     align-items: stretch;
   }
@@ -1244,7 +1244,7 @@
 
   .locate-us .locate-us-cards {
     grid-template-columns: repeat(4, 1fr);
-    gap:30px 40px;
+    gap: 1.875rem var(--bbl-space-500);
   }
 
   .locate-us .locate-us-map {
