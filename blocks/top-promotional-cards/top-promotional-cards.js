@@ -1,5 +1,5 @@
-import { fetchJson, buildCardOptions } from '../promo-card-listing/promo-card-listing.js';
-import { buildCardHtml, sortCards } from '../../scripts/utils/card-helpers.js';
+import { buildCardOptions } from '../promo-card-listing/promo-card-listing.js';
+import { buildCardHtml, sortCards, fetchJson } from '../../scripts/utils/card-helpers.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';

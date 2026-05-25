@@ -1,3 +1,102 @@
+/**
+ * In-memory promise cache — prevents duplicate in-flight requests for the
+ * same URL within a page session. Storing the Promise (not the resolved
+ * value) ensures concurrent callers await the same request rather than
+ * issuing parallel fetches.
+ * @type {Record<string, Promise<any>>}
+ */
+const fetchCache = {};
+
+/**
+ * Fetch JSON from a URL with in-memory deduplication.
+ * Concurrent callers for the same URL share one in-flight request.
+ * @param {string} url
+ * @returns {Promise<any|null>}
+ */
+export async function fetchJson(url) {
+  if (!url) return null;
+  if (!fetchCache[url]) {
+    fetchCache[url] = fetch(url, { headers: { Accept: 'application/json' } })
+      .then((r) => (r.ok && r.status !== 204 ? r.json() : null))
+      .catch(() => null);
+  }
+  return fetchCache[url];
+}
+
+/**
+ * Normalize any path-like string (relative, absolute, or full URL) to a
+ * canonical, locale-stripped, extension-free pathname used for comparisons.
+ * Strips /content/<site>, language prefixes, .json/.html extensions, and
+ * trailing slashes so that two representations of the same logical page
+ * always compare equal.
+ * @param {string} p
+ * @returns {string}
+ */
+export function normalizePath(p) {
+  if (!p) return '';
+  const pathStr = p.split('?')[0].split('#')[0].toLowerCase();
+  try {
+    const url = new URL(pathStr, window.location.origin);
+    return url.pathname
+      .replace(/^\/content\/[^/]+/, '')
+      .replace(/^\/(en|th)\b/, '')
+      .replace(/\.json$/, '')
+      .replace(/\.html$/, '')
+      .replace(/\/+$/, '')
+      || '/';
+  } catch {
+    return '/';
+  }
+}
+
+/**
+ * Normalize an sc_lang query-parameter value to a two-letter code.
+ * Accepts values like "th", "th-TH", "en", "en-GB".
+ * Returns '' when the value does not map to a known language.
+ * @param {string|null} value
+ * @returns {'th'|'en'|''}
+ */
+export function normalizeQueryLang(value) {
+  const raw = (value || '').toLowerCase();
+  if (raw.startsWith('th')) return 'th';
+  if (raw.startsWith('en')) return 'en';
+  return '';
+}
+
+/**
+ * Merge locale-specific config.json into an existing config object.
+ * Called as a fallback when the global /configs.json does not contain the
+ * required key (e.g., on non-English pages served from a /th/ path).
+ *
+ * No throw — failures are swallowed so the page continues to render with
+ * whatever data is available.
+ *
+ * @param {string}   pathname       Current window.location.pathname
+ * @param {string}   lang           Two-letter language code ('th'|'en')
+ * @param {object}   targetConfigs  Config object to merge values into
+ * @param {Function} toCamelCase    Key normaliser from aem.js
+ * @returns {Promise<void>}
+ */
+export async function mergeLocalConfig(pathname, lang, targetConfigs, toCamelCase) {
+  try {
+    const segments = pathname.split('/');
+    const configPrefix = pathname.startsWith('/content/') && segments[2]
+      ? `/content/${segments[2]}`
+      : '';
+    const resp = await fetch(`${configPrefix}/${lang}/config.json`);
+    if (!resp.ok) return;
+    const json = await resp.json();
+    json.data
+      ?.filter((config) => config.Key)
+      .forEach((config) => {
+        // eslint-disable-next-line no-param-reassign
+        targetConfigs[toCamelCase(config.Key)] = config.Value;
+      });
+  } catch {
+    // Non-fatal — page continues with existing config values.
+  }
+}
+
 export function buildCardHtml(card, tag, placeholders = {}, options = {}) {
   const { dateLine = '', logoHtml = '', footerExtra = '' } = options;
   const target = card.targetLink === 'true' ? '_blank' : '_self';

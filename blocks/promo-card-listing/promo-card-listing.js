@@ -5,11 +5,17 @@ import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { activateTab } from '../tabs/helpers/tabs-utils.js';
 import {
-  buildCardHtml, buildPaginationHtml, sortCards, bindPaginationClick,
+  buildCardHtml,
+  buildPaginationHtml,
+  sortCards,
+  bindPaginationClick,
+  buildPromotionsUrl,
+  fetchJson,
+  normalizePath,
+  normalizeQueryLang,
+  mergeLocalConfig,
 } from '../../scripts/utils/card-helpers.js';
 import { handleMobileAppView } from '../promotional-details/promotional-details.js';
-
-const fetchCache = {};
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 const LOGO_ICONS = {
@@ -19,60 +25,6 @@ const LOGO_ICONS = {
   unionpay: '/icons/upi-new.svg',
 };
 
-function getPromoListingConfig(block) {
-  const firstRow = block.querySelector(':scope > div');
-  const isKeyValueRows = firstRow && firstRow.children.length >= 2;
-
-  if (isKeyValueRows) {
-    const config = readBlockConfig(block);
-    const promotionType = (config['promotion-type'] || config.promotiontype || '').trim();
-    return { promotionType };
-  }
-
-  const promotionType = block.children[0]?.textContent?.trim() || '';
-  return { promotionType };
-}
-
-function normalizePath(p) {
-  if (!p) return '';
-  const pathStr = p.split('?')[0].split('#')[0].toLowerCase();
-  try {
-    const url = new URL(pathStr, window.location.origin);
-    return url.pathname
-      .replace(/^\/content\/[^/]+/, '')
-      .replace(/^\/(en|th)\b/, '')
-      .replace(/\.json$/, '')
-      .replace(/\.html$/, '')
-      .replace(/\/+$/, '')
-      || '/';
-  } catch (e) {
-    return '/';
-  }
-}
-
-function buildPromotionsUrl(baseUrl, lang) {
-  if (!baseUrl) return '';
-  let localized = lang !== 'en' ? baseUrl.replace(/\/en\//, `/${lang}/`) : baseUrl;
-  if (lang !== 'en') {
-    const langSuffix = `.${lang}.json`;
-    if (!localized.endsWith(langSuffix)) {
-      localized = localized.endsWith('.json')
-        ? localized.replace(/\.json$/, langSuffix)
-        : `${localized}${langSuffix}`;
-    }
-  } else if (!localized.endsWith('.json')) {
-    localized = `${localized}.json`;
-  }
-  return localized;
-}
-
-function normalizeQueryLang(value) {
-  const raw = (value || '').toLowerCase();
-  if (raw.startsWith('th')) return 'th';
-  if (raw.startsWith('en')) return 'en';
-  return '';
-}
-
 const CARD_TYPE_NORMALIZE = {
   วีซ่า: 'visa',
   มาสเตอร์การ์ด: 'mastercard',
@@ -80,18 +32,20 @@ const CARD_TYPE_NORMALIZE = {
   ยูเนี่ยนเพย์: 'unionpay',
 };
 
-export async function fetchJson(url) {
-  if (!url) return null;
-  if (!fetchCache[url]) {
-    fetchCache[url] = fetch(url, { headers: { Accept: 'application/json' } })
-      .then((r) => (r.ok && r.status !== 204 ? r.json() : null))
-      .catch(() => null);
+function getPromoListingConfig(block) {
+  const firstRow = block.querySelector(':scope > div');
+  const isKeyValueRows = firstRow && firstRow.children.length >= 2;
+  if (isKeyValueRows) {
+    const config = readBlockConfig(block);
+    const promotionType = (config['promotion-type'] || config.promotiontype || '').trim();
+    return { promotionType };
   }
-  return fetchCache[url];
+  const promotionType = block.children[0]?.textContent?.trim() || '';
+  return { promotionType };
 }
 
+/** Thin alias kept for call-site readability. */
 async function fetchPromotions(url) {
-  if (!url) return null;
   return fetchJson(url);
 }
 
@@ -289,8 +243,6 @@ function setupPanel(
   placeholders,
   options = {},
 ) {
-  const path = window.location.pathname.toLowerCase();
-  const isBbmPath = path.includes('/promotionsmb');
   const searchParams = new URLSearchParams(window.location.search);
   const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
 
@@ -298,6 +250,7 @@ function setupPanel(
     disableFilters = false,
     forcedCardType = '',
     hidePagination = false,
+    isBbm: isBbmPanel = false,
   } = options;
   const labelCategory = placeholders.promoFilterCategory || 'Category';
   const labelCardType = placeholders.promoFilterCardType || 'Card Type';
@@ -376,7 +329,7 @@ function setupPanel(
     gridEl.innerHTML = cards.length
       ? cards.map((c) => {
         let cardData = c;
-        if (isBbmPath && queryLang && c.ctaLink) {
+        if (isBbmPanel && queryLang && c.ctaLink) {
           try {
             const isInternal = c.ctaLink.startsWith('/')
               || c.ctaLink.startsWith(window.location.origin);
@@ -497,25 +450,7 @@ export default async function decorate(block) {
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
   if (!configs || !configs.promotionalCardSelector || lang !== 'en') {
-    try {
-      const segments = pathname.split('/');
-      const configPrefix = pathname.startsWith('/content/') && segments[2]
-        ? `/content/${segments[2]}`
-        : '';
-      const resp = await fetch(`${configPrefix}/${lang}/config.json`);
-      if (resp.ok) {
-        const json = await resp.json();
-        const targetConfigs = effectiveConfigs;
-        json.data
-          ?.filter((config) => config.Key)
-          .forEach((config) => {
-            targetConfigs[toCamelCase(config.Key)] = config.Value;
-          });
-      }
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.warn('Failed to fetch local config fallback:', e);
-    }
+    await mergeLocalConfig(pathname, lang, effectiveConfigs, toCamelCase);
   }
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
@@ -596,6 +531,7 @@ export default async function decorate(block) {
         disableFilters: disableFilters && isBbm,
         forcedCardType: isBbm ? forcedCardType : '',
         hidePagination: disableFilters && isBbm,
+        isBbm,
         immediate: true,
       },
     );
@@ -661,6 +597,7 @@ export default async function decorate(block) {
         disableFilters: disableFilters && isBbm,
         forcedCardType: isBbm ? forcedCardType : '',
         hidePagination: disableFilters && isBbm,
+        isBbm,
       },
     );
   });
