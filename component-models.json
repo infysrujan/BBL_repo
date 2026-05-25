@@ -69,6 +69,12 @@
         "valueType": "boolean"
       },
       {
+        "component": "boolean",
+        "label": "Enable Welcome Banner",
+        "name": "isWelcomeBanner",
+        "valueType": "boolean"
+      },
+      {
         "component": "reference",
         "valueType": "string",
         "name": "ogImage",
@@ -11653,6 +11659,58 @@
         "validation": {
           "customErrorMsg": "Please enter a valid end date and time for unpublishing the content"
         }
+      }
+    ]
+  },
+  {
+    "id": "welcome-banner",
+    "fields": [
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerDesktop",
+        "label": "Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerDesktopMimeType"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerMobile",
+        "label": "Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerMobileMimeType"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+      },
+      {
+        "component": "date-time",
+        "valueType": "date-time",
+        "name": "Publish-Date",
+        "label": "Publish Date",
+        "placeholder": "YYYY-MM-DD HH:mm:ss"
+      },
+      {
+        "component": "date-time",
+        "valueType": "date-time",
+        "name": "Unpublish-Date",
+        "label": "Unpublish Date",
+        "placeholder": "YYYY-MM-DD HH:mm:ss"
       }
     ]
   }

@@ -18,6 +18,7 @@ import {
   decorateTerritoryButtons,
   decorateButtonsV1,
   loadBreadcrumb,
+  loadWelcomeBanner,
   buildCookieAlert,
 } from './bbl-decorators.js';
 
@@ -257,6 +258,7 @@ async function loadEager(doc) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
+  await loadWelcomeBanner(doc);
   await loadSections(main);
 
   await buildCookieAlert(main);
