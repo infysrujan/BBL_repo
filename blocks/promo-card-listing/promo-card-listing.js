@@ -502,7 +502,11 @@ export default async function decorate(block) {
   const effectiveConfigs = configs || {};
   if (!configs || !configs.promotionalCardSelector || lang !== 'en') {
     try {
-      const resp = await fetch(`/${lang}/config.json`);
+      const { pathname } = window.location;
+      const configPrefix = pathname.startsWith('/content/bangkokbank/')
+        ? '/content/bangkokbank'
+        : '';
+      const resp = await fetch(`${configPrefix}/${lang}/config.json`);
       if (resp.ok) {
         const json = await resp.json();
         const targetConfigs = effectiveConfigs;
@@ -546,7 +550,7 @@ export default async function decorate(block) {
     let previewPanel = block.parentElement?.querySelector('[data-preview-for="promo-card-listing"]');
     if (!previewPanel) {
       previewPanel = document.createElement('div');
-      previewPanel.className = 'promo-card-listing-preview';
+      previewPanel.className = `${block.className} promo-card-listing-preview`;
       previewPanel.dataset.previewFor = 'promo-card-listing';
       block.insertAdjacentElement('afterend', previewPanel);
     }

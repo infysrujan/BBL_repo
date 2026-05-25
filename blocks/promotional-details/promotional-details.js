@@ -214,7 +214,11 @@ export default async function decorate(block) {
   const effectiveConfigs = configs || {};
   if (!configs || !configs.promotionalCardSelector || lang !== 'en') {
     try {
-      const resp = await fetch(`/${lang}/config.json`);
+      const { pathname } = window.location;
+      const configPrefix = pathname.startsWith('/content/bangkokbank/')
+        ? '/content/bangkokbank'
+        : '';
+      const resp = await fetch(`${configPrefix}/${lang}/config.json`);
       if (resp.ok) {
         const json = await resp.json();
         const targetConfigs = effectiveConfigs;
@@ -288,7 +292,7 @@ export default async function decorate(block) {
     let previewContainer = block.parentElement?.querySelector('[data-preview-for="promotional-details"]');
     if (!previewContainer) {
       previewContainer = document.createElement('div');
-      previewContainer.className = 'promo-detail-preview';
+      previewContainer.className = `${block.className} promo-detail-preview`;
       previewContainer.dataset.previewFor = 'promotional-details';
       block.insertAdjacentElement('afterend', previewContainer);
     }
