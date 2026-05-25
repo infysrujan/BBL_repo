@@ -25,8 +25,6 @@ export async function fetchConfigs() {
       const cachedConfigJSON = window.sessionStorage.getItem(configKey);
 
       if (cachedConfigJSON) {
-        // test comment to sync the config.js file
-
         try {
           const json = JSON.parse(cachedConfigJSON);
           const configs = {};
