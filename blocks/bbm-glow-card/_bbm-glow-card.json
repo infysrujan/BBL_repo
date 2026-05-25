@@ -1,29 +1,61 @@
 {
-    "definitions": [
-      {
-        "title": "Bbm Glow Card",
-        "id": "bbm-glow-card",
-        "plugins": {
-          "xwalk": {
-            "page": {
-              "resourceType": "core/franklin/components/block/v1/block",
-              "template": {
-                "name": "bbm-glow-card",
-                "filter": "bbm-glow-card-items"
-              }
+  "definitions": [
+    {
+      "title": "Bbm Glow Card",
+      "id": "bbm-glow-card",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Bbm Glow Card",
+              "filter": "bbm-glow-card"
             }
           }
         }
       }
-    ],
-    "models": [],
-    "filters": [
-      {
-        "id": "bbm-glow-card-items",
-        "components": [
-          "rte-item"
-        ]
+    },
+    {
+      "title": "Bbm Glow Card Item",
+      "id": "bbm-glow-card-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "bbm-glow-card-item",
+              "model": "bbm-glow-card-item"
+            }
+          }
+        }
       }
-    ]
-  }
-  
+    }
+  ],
+  "models": [
+    {
+      "id": "bbm-glow-card-item",
+      "fields": [
+        {
+          "component": "text",
+          "name": "rawHtmlStyles",
+          "label": "Paste HTML or Styles",
+          "description": "Add the HTML or Styles for the glow card item in seperate item"
+        },
+        {
+          "component": "richtext",
+          "name": "rawContent",
+          "label": "Paste Content",
+          "valueType": "string"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "bbm-glow-card",
+      "components": [
+        "bbm-glow-card-item"
+      ]
+    }
+  ]
+}
