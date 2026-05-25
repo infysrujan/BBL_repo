@@ -186,14 +186,9 @@ async function fetchAndRender(block, type, year) {
   try {
     const { hostname } = window.location;
     const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
-    const isAuthor = hostname.includes('author-');
     let res;
     if (isLocal) {
       res = await fetch('/blocks/search-reports-results/results.mock.json');
-    } else if (isAuthor) {
-      loading.remove();
-      wrapper.append(el('p', { className: 'srr-empty', text: 'Results preview is not available in author mode. Please check the published page.' }));
-      return;
     } else {
       res = await fetch(`${API_BASE}/content/bangkokbank/${lang}.reports.${type}.${year}.json?test`);
       if (res.status === 204 && lang !== 'en') {

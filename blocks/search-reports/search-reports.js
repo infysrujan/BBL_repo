@@ -157,7 +157,6 @@ function parseAuthoredOptions(rows) {
 }
 
 export default function decorate(block) {
-  const isAuthor = window.self !== window.top || window.location.hostname.includes('author-');
   const rows = [...block.children];
 
   const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || 'Search for Reports';
@@ -231,21 +230,16 @@ export default function decorate(block) {
     return { label: y, value: y };
   });
 
-  // Populate dropdowns: API in publish, fallback to authored rows or defaults in author mode
-  if (isAuthor) {
+  // Populate dropdowns from API, fallback to authored rows or defaults
+  fetchSearchParams().then((data) => {
+    const types = data.reportTypes?.length ? data.reportTypes : defaultTypes;
+    const years = (data.years || []).map((y) => ({ label: y, value: y }));
+    populateTypes(types);
+    populateYears(years.length ? years : defaultYears);
+  }).catch(() => {
     populateTypes(typeOptions.length ? typeOptions : defaultTypes);
     populateYears(yearOptions.length ? yearOptions : defaultYears);
-  } else {
-    fetchSearchParams().then((data) => {
-      const types = data.reportTypes?.length ? data.reportTypes : defaultTypes;
-      const years = (data.years || []).map((y) => ({ label: y, value: y }));
-      populateTypes(types);
-      populateYears(years.length ? years : defaultYears);
-    }).catch(() => {
-      populateTypes(typeOptions.length ? typeOptions : defaultTypes);
-      populateYears(yearOptions.length ? yearOptions : defaultYears);
-    });
-  }
+  });
 
   searchBtn.addEventListener('click', (e) => {
     e.stopPropagation();
