@@ -1,6 +1,60 @@
+import { loadScript } from '../../scripts/aem.js';
+
 const STYLE_TAG_REGEX = /<style[^>]*>[\s\S]*?<\/style>/gi;
 const STYLE_CONTENT_REGEX = /<style[^>]*>([\s\S]*?)<\/style>/gi;
 const STYLES_ID = 'bbm-glow-card-styles';
+const DOMPURIFY_SRC = `${window.hlx.codeBasePath}/scripts/dompurify.min.js`;
+
+/** @type {Promise<void> | null} */
+let domPurifyReady = null;
+
+const SANITIZE_HTML_CONFIG = {
+  USE_PROFILES: { html: true },
+  ADD_ATTR: ['style', 'target', 'rel'],
+  FORBID_TAGS: [
+    'script',
+    'iframe',
+    'object',
+    'embed',
+    'form',
+    'input',
+    'button',
+    'textarea',
+    'select',
+    'meta',
+    'link',
+    'base',
+    'frame',
+    'frameset',
+    'applet',
+  ],
+};
+
+const UNSAFE_CSS_PATTERNS = [
+  /@import\b[^;]*;?/gi,
+  /expression\s*\(/gi,
+  /javascript\s*:/gi,
+  /behavior\s*:/gi,
+  /-moz-binding\s*:/gi,
+  /url\s*\(\s*['"]?\s*javascript:/gi,
+  /url\s*\(\s*['"]?data:(?!image\/)/gi,
+  /<\/style/gi,
+];
+
+/**
+ * Loads DOMPurify once for this block.
+ * @returns {Promise<void>}
+ */
+async function ensureDomPurify() {
+  if (window.DOMPurify) return;
+  if (!domPurifyReady) {
+    domPurifyReady = loadScript(DOMPURIFY_SRC);
+  }
+  await domPurifyReady;
+  if (!window.DOMPurify) {
+    throw new Error('DOMPurify failed to load');
+  }
+}
 
 /**
  * Joins paragraph text from the block (encoded HTML from authoring).
@@ -40,7 +94,30 @@ function extractStyles(html) {
 }
 
 /**
- * Renders decoded markup inside the block element.
+ * Strips dangerous CSS constructs while preserving layout and glow styling.
+ * @param {string} css
+ * @returns {string}
+ */
+function sanitizeCss(css) {
+  if (!css || typeof css !== 'string') return '';
+  return UNSAFE_CSS_PATTERNS.reduce(
+    (sanitized, pattern) => sanitized.replace(pattern, ''),
+    css,
+  ).trim();
+}
+
+/**
+ * Sanitizes authored HTML before it is injected into the DOM.
+ * @param {string} html
+ * @returns {string}
+ */
+function sanitizeHtml(html) {
+  if (!html || typeof html !== 'string') return '';
+  return window.DOMPurify.sanitize(html, SANITIZE_HTML_CONFIG);
+}
+
+/**
+ * Renders sanitized markup inside the block element.
  * @param {Element} block
  * @param {string} bodyHtml
  */
@@ -76,11 +153,14 @@ function injectStylesAfterFooter(css) {
  * a document-level style tag after the footer, and renders body markup in the block.
  * @param {Element} block - The bbm-glow-card block element
  */
-export default function decorate(block) {
+export default async function decorate(block) {
   const rawContent = collectParagraphText(block);
+  block.replaceChildren();
   const decodedHtml = decodeHtmlEntities(rawContent);
   const { css, bodyHtml } = extractStyles(decodedHtml);
 
-  renderBlockContent(block, bodyHtml);
-  injectStylesAfterFooter(css);
+  await ensureDomPurify();
+
+  renderBlockContent(block, sanitizeHtml(bodyHtml));
+  injectStylesAfterFooter(sanitizeCss(css));
 }
