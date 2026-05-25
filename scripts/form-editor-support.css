@@ -71,7 +71,6 @@ main .form form.edit-mode .fragment-wrapper.edit-mode:has(> :not(legend))::befor
     transform: translateX(-50%);
     padding: 8px 16px;
     font-size: 13px;
-    font-family: var(--bbl-font-family-looped);
     color: #2680eb;
     z-index: 2;
     white-space: nowrap;

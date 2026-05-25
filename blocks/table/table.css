@@ -31,7 +31,7 @@
   border-collapse: collapse;
   border-spacing: 0;
   background: transparent;
-  font-family: var(--bbl-font-family-looped);
+  font-family: var(--bbl-font-family-primary);
   font-size: 0.875rem;
   color: var(--bbl-color-grey-85);
 }
@@ -94,7 +94,7 @@
   text-align: left;
   font-weight: 400;
   font-size: 0.875rem;
-  font-family: var(--bbl-font-family-looped);
+  font-family: var(--bbl-font-family-primary);
   color: var(--bbl-color-grey-85);
   vertical-align: top;
   background: transparent;
@@ -107,7 +107,7 @@
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
   color: var(--bbl-color-grey-85);
-  font-family: var(--bbl-font-family-looped);
+  font-family: var(--bbl-font-family-primary);
   font-weight: 400;
   vertical-align: top;
   background: transparent;

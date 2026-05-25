@@ -46,7 +46,6 @@
 .menu-banner .sub-title-medium {
   font-weight: var(--bbl-font-weight-regular);
   font-size: 0.875rem;
-  font-family: var(--bbl-font-family-looped);
   line-height: normal;
   color: var(--bbl-color-black);
   margin-top: 1.875rem;

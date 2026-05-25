@@ -57,7 +57,7 @@
   margin: 0 0 0.625rem;
   font-size: 0.875rem;
   line-height: normal;
-  font-family: var(--bbl-font-family-looped);
+  font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   font-weight: var(--bbl-font-weight-regular);
 }
@@ -89,7 +89,6 @@
 .story-card .text-default {
   margin-bottom: 1.875rem;
   font-size: 0.875rem;
-  font-family: var(--bbl-font-family-looped);
   line-height: 1.125rem;
   color: var(--bbl-color-grey-85);
   overflow: hidden;

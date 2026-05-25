@@ -259,7 +259,6 @@
   margin-bottom: 0.875rem;
   color: var(--bbl-color-white);
   border-radius: var(--bbl-rounded-200);
-  font-family: var(--bbl-font-family-looped);
 }
 
 .cards-list-inner .cards-list-button {
@@ -439,12 +438,10 @@
   .cards-list-subtitle p,
   .cards-list-description p {
     font-size: var(--bbl-font-size-b2);
-    font-family: var(--bbl-font-family-looped);
   }
 
   .card-list-container .default-content-wrapper p {
     font-size: var(--bbl-font-size-b2);
-    font-family: var(--bbl-font-family-looped);
   }
 
   .cards-list.center {
@@ -532,7 +529,6 @@
 
   .card-list-modal-title+.card-list-modal-text {
     font-size: 0.875rem;
-    font-family: var(--bbl-font-family-looped);
   }
 
   .card-list-modal-subtitle,
@@ -543,12 +539,10 @@
 
   .card-list-modal-media+.card-list-modal-text {
     font-size: var(--bbl-font-size-b2);
-    font-family: var(--bbl-font-family-looped);
   }
 
   .card-list-modal-last-title+.card-list-modal-text {
     font-size: var(--bbl-font-size-b2);
-    font-family: var(--bbl-font-family-looped);
   }
 }
 
@@ -602,7 +596,6 @@
   .card-list-container .default-content-wrapper p {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.375rem;
-    font-family: var(--bbl-font-family-looped);
   }
 
   .cards-list {

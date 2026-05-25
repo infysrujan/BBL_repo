@@ -99,7 +99,7 @@
   text-align: center;
   flex: 1;
   white-space: normal;
-  font-family: var(--bbl-font-family-looped);
+  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
   text-indent: 0;
 }
 
@@ -127,7 +127,7 @@
   line-height: 1.5;
   color: var(--bbl-text-primary);
   background-color: var(--bbl-bg-secondary);
-  font-family: var(--bbl-font-family-looped);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   box-sizing: content-box;
   scrollbar-width: auto;
   scrollbar-color: auto;
@@ -243,7 +243,7 @@
   line-height: 1.5;
   color: var(--bbl-text-primary);
   cursor: pointer;
-  font-family: var(--bbl-font-family-looped);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
 }
 
 .privacy-modal-checkbox-row input[type='checkbox']:disabled+.privacy-modal-checkbox-label {
@@ -264,7 +264,6 @@
   border-radius: 0.4375rem;
   cursor: pointer;
   transition: background-color 0.2s ease, opacity 0.2s ease;
-  font-family: var(--bbl-font-family-looped);
 }
 
 .privacy-modal-cta:disabled {

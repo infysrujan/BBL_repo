@@ -106,7 +106,7 @@
 /* Description — mobile-first: smaller base, larger on tablet+ */
 .external-redirect-popup-description p {
   margin-block: 0.625rem 0;
-  font-family: var(--bbl-font-family-looped);
+  font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-body-b1-size);
   line-height: 1.5rem;
   color: var(--bbl-color-truthful-blue);
@@ -137,7 +137,7 @@
   height: 2.75rem;
   padding: 0 var(--bbl-space-200);
   border-radius: 0.4375rem;
-  font-family: var(--bbl-font-family-looped);
+  font-family: var(--bbl-font-family-primary); 
   font-size: var(--bbl-font-size-b1);
   font-weight: var(--bbl-font-weight-regular);
   line-height: 1.375;

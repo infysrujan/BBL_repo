@@ -140,7 +140,6 @@
 
   .floating-popup-description p {
     font-size: var(--bbl-font-size-b2);
-    font-family: var(--bbl-font-family-looped);
   }
 }
 

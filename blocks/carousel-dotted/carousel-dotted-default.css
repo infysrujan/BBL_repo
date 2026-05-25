@@ -192,7 +192,7 @@
 }
 
 .carousel-dotted .carousel-dotted-header {
-  font-family: var(--bbl-font-family-looped);
+  font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
   font-size: 0.875rem;
   line-height: 0.875rem;
@@ -202,7 +202,7 @@
 }
 
 .carousel-dotted .carousel-default-text {
-  font-family: var(--bbl-font-family-looped);
+  font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
   font-size: 0.875rem;
   line-height: 0.875rem;
@@ -587,7 +587,7 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default {
-  font-family: var(--bbl-font-family-looped);
+  font-family: var(--bbl-font-family-primary);
   font-size: 0.875rem;
   line-height: 1.45;
   color: var(--bbl-color-grey-70);
@@ -1027,7 +1027,6 @@ p.text-large.text-light {
   .carousel-dotted .button-tertiary.icon-arrow-left::before {
     left: 4.5rem;
     font-size: 0.625rem;
-    font-family: var(--bbl-font-family-looped);
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
