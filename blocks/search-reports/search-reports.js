@@ -219,26 +219,13 @@ export default function decorate(block) {
   getType = getTypeVal;
   getYear = getYearVal;
 
-  const defaultTypes = [
-    { label: 'Reviewed Audited Financial Results', value: 'reviewed-audited' },
-    { label: 'Unreviewed Unaudited Financial Results', value: 'unreviewed-unaudited' },
-    { label: 'Summary Statement', value: 'summary-statement' },
-  ];
-  const currentYear = new Date().getFullYear();
-  const defaultYears = Array.from({ length: 10 }, (_, i) => {
-    const y = String(currentYear - i);
-    return { label: y, value: y };
-  });
-
-  // Populate dropdowns from API, fallback to authored rows or defaults
+  // Populate dropdowns from API, fallback to authored rows on failure
   fetchSearchParams().then((data) => {
-    const types = data.reportTypes?.length ? data.reportTypes : defaultTypes;
-    const years = (data.years || []).map((y) => ({ label: y, value: y }));
-    populateTypes(types);
-    populateYears(years.length ? years : defaultYears);
+    populateTypes(data.reportTypes?.length ? data.reportTypes : typeOptions);
+    populateYears((data.years || []).map((y) => ({ label: y, value: y })));
   }).catch(() => {
-    populateTypes(typeOptions.length ? typeOptions : defaultTypes);
-    populateYears(yearOptions.length ? yearOptions : defaultYears);
+    populateTypes(typeOptions);
+    populateYears(yearOptions);
   });
 
   searchBtn.addEventListener('click', (e) => {
