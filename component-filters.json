@@ -56,6 +56,7 @@
       "forex-rates",
       "market-report",
       "sme-loan-calculator",
+      "dynamic-board",
       "bcap",
       "multi-column-tiles",
       "retirement-calculator",
@@ -70,6 +71,7 @@
       "stock-ticker",
       "cookie-alert",
       "cookie-modal",
+      "welcome-banner",
       "news-media-details",
       "news-media",
       "latest-news",
@@ -394,6 +396,12 @@
     "id": "video",
     "components": [
       "video"
+    ]
+  },
+  {
+    "id": "welcome-banner",
+    "components": [
+      "button"
     ]
   }
 ]

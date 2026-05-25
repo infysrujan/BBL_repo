@@ -69,6 +69,12 @@
         "valueType": "boolean"
       },
       {
+        "component": "boolean",
+        "label": "Enable Welcome Banner",
+        "name": "isWelcomeBanner",
+        "valueType": "boolean"
+      },
+      {
         "component": "reference",
         "valueType": "string",
         "name": "ogImage",
@@ -2865,6 +2871,13 @@
             ]
           }
         ]
+      },
+      {
+        "component": "richtext",
+        "name": "exclusionUrls",
+        "label": "Exclusion URLs",
+        "description": "List of page URLs where the cookie alert should NOT appear. Enter each URL on a new line or as a bulleted list.",
+        "valueType": "string"
       }
     ]
   },
@@ -3320,6 +3333,100 @@
             "value": false
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "dynamic-board",
+    "fields": [
+      {
+        "component": "select",
+        "name": "boardType",
+        "label": "Board Type",
+        "valueType": "string",
+        "required": true,
+        "value": "secondary-market",
+        "options": [
+          {
+            "name": "Secondary Market",
+            "value": "secondary-market"
+          },
+          {
+            "name": "Government Saving Bonds",
+            "value": "government-saving-bonds"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "calendarLabel",
+        "label": "Calendar Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "filterLabel",
+        "label": "Filter Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "clearFilterLabel",
+        "label": "Clear Filter Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "printLabel",
+        "label": "Print Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "ctaButtonLabel",
+        "label": "CTA Button Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "tableHeading",
+        "label": "Table Heading",
+        "valueType": "string",
+        "value": "",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "remarks",
+        "label": "Remarks",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "maturityDateLabel",
+        "label": "Maturity Date Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "maturityRateLabel",
+        "label": "Maturity Rate Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "maturityTypes",
+        "label": "Maturity Types",
+        "valueType": "string",
+        "required": true
       }
     ]
   },
@@ -9842,11 +9949,46 @@
   },
   {
     "id": "promo-card-listing",
-    "fields": []
+    "fields": [
+      {
+        "component": "select",
+        "name": "promotionType",
+        "label": "Promotion Type",
+        "valueType": "string",
+        "value": "credit-card",
+        "options": [
+          {
+            "name": "Credit Card",
+            "value": "credit-card"
+          },
+          {
+            "name": "Bangkok Bank M",
+            "value": "bangkok-bank-m"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "promotional-details",
     "fields": [
+      {
+        "component": "select",
+        "name": "promotionType",
+        "label": "Promotion Type",
+        "valueType": "string",
+        "value": "credit-card",
+        "options": [
+          {
+            "name": "Credit Card",
+            "value": "credit-card"
+          },
+          {
+            "name": "Bangkok Bank M",
+            "value": "bangkok-bank-m"
+          }
+        ]
+      },
       {
         "component": "text",
         "name": "promoId",
@@ -9959,17 +10101,17 @@
         "valueType": "string"
       },
       {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "Cta Label",
+        "value": "",
+        "required": true
+      },
+      {
         "component": "aem-content",
         "name": "ctaLink",
         "label": "Cta Link",
         "description": "Destination URL for the button"
-      },
-      {
-        "component": "text",
-        "name": "ctaLabel",
-        "label": "Cta Label",
-        "description": "Button label text",
-        "required": true
       },
       {
         "component": "container",
@@ -10017,6 +10159,50 @@
             {
               "var": "responsibleLendingDisclaimerEnabled"
             }
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "isRegister",
+        "label": "Is Register",
+        "valueType": "string",
+        "value": "N",
+        "options": [
+          {
+            "name": "No Registration",
+            "value": "N"
+          },
+          {
+            "name": "Register",
+            "value": "Y"
+          },
+          {
+            "name": "Register with Data",
+            "value": "D"
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "promotionType"
+            },
+            "bangkok-bank-m"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "isRegisterCtaLabel",
+        "label": "Register CTA Label",
+        "value": "",
+        "required": true,
+        "condition": {
+          "!==": [
+            {
+              "var": "isRegister"
+            },
+            "N"
           ]
         }
       }
@@ -11480,6 +11666,58 @@
         "validation": {
           "customErrorMsg": "Please enter a valid end date and time for unpublishing the content"
         }
+      }
+    ]
+  },
+  {
+    "id": "welcome-banner",
+    "fields": [
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerDesktop",
+        "label": "Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerDesktopMimeType"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "imagePickerMobile",
+        "label": "Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string"
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imagePickerMobileMimeType"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO."
+      },
+      {
+        "component": "date-time",
+        "valueType": "date-time",
+        "name": "Publish-Date",
+        "label": "Publish Date",
+        "placeholder": "YYYY-MM-DD HH:mm:ss"
+      },
+      {
+        "component": "date-time",
+        "valueType": "date-time",
+        "name": "Unpublish-Date",
+        "label": "Unpublish Date",
+        "placeholder": "YYYY-MM-DD HH:mm:ss"
       }
     ]
   }
