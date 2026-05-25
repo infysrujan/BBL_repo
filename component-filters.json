@@ -78,9 +78,9 @@
     ]
   },
   {
-    "id": "bbm-glow-card-items",
+    "id": "bbm-glow-card",
     "components": [
-      "rte-item"
+      "text"
     ]
   },
   {
