@@ -68,13 +68,19 @@ function openPdfPreview(path, name) {
   const body = el('div', { className: 'srr-preview-body' });
   const centerContent = el('div', { className: 'srr-preview-center-content' });
   const pdfEmbed = el('div', { className: 'srr-custom-pdf' });
-  const viewerSrc = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(path)}`;
   const embedEl = el('iframe', {
-    attrs: {
-      src: viewerSrc, width: '100%', height: '100%', frameborder: '0', title: name || 'PDF Preview',
-    },
+    attrs: { width: '100%', height: '100%', frameborder: '0', title: name || 'PDF Preview' },
   });
   pdfEmbed.append(embedEl);
+
+  fetch(path)
+    .then((r) => r.blob())
+    .then((blob) => {
+      const blobUrl = URL.createObjectURL(blob);
+      embedEl.src = blobUrl;
+      embedEl.addEventListener('load', () => URL.revokeObjectURL(blobUrl), { once: true });
+    })
+    .catch(() => { embedEl.src = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(path)}`; });
 
   const buttonGroup = el('div', { className: 'srr-button-group' });
   const downloadLink = el('a', {
