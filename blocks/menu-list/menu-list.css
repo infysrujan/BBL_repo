@@ -36,7 +36,7 @@
   left: var(--bbl-space-250);
   top: 1.875rem;
   width: var(--bbl-space-500);
-  height: 1px;
+  height: 0.0625rem;
   background: var(--bbl-color-white);
 }
 
