@@ -123,7 +123,7 @@ function ensureCdpGlobal() {
   if (window.cdp) return;
   window.cdp = {
     platform: 'web',
-    environment: env(),
+    environment: env,
     data: {},
     track: {
       pageView: trackPageView,
