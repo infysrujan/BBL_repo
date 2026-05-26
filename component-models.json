@@ -9591,6 +9591,13 @@
     "id": "menu-list",
     "fields": [
       {
+        "component": "richtext",
+        "name": "title",
+        "label": "Title",
+        "description": "Enter the title for the menu list block.",
+        "valueType": "string"
+      },
+      {
         "component": "select",
         "name": "bgColor",
         "label": "Background Color",
