@@ -69,7 +69,12 @@ function openPdfPreview(path, name) {
   const body = el('div', { className: 'srr-preview-body' });
   const centerContent = el('div', { className: 'srr-preview-center-content' });
   const pdfEmbed = el('div', { className: 'srr-custom-pdf' });
-  const embedEl = el('embed', { attrs: { src: path, width: '100%', height: '100%' } });
+  const viewerSrc = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(path)}`;
+  const embedEl = el('iframe', {
+    attrs: {
+      src: viewerSrc, width: '100%', height: '100%', frameborder: '0', title: name || 'PDF Preview',
+    },
+  });
   pdfEmbed.append(embedEl);
 
   const buttonGroup = el('div', { className: 'srr-button-group' });
@@ -100,8 +105,7 @@ function openPdfPreview(path, name) {
 }
 
 function buildCard(asset) {
-  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const fetchPath = (isLocal && asset.path.startsWith('/content/dam/')) ? `${API_BASE}${asset.path}` : asset.path;
+  const fetchPath = asset.path.startsWith('http') ? asset.path : `${API_BASE}${asset.path}`;
 
   // Outer white card — reuses .download-section from download-file.css
   const card = el('div', { className: 'download-section' });
@@ -122,15 +126,25 @@ function buildCard(asset) {
   const downloadWrapper = createDownloadLink(anchor);
 
   if (downloadWrapper) {
+    const downloadAnchor = downloadWrapper.querySelector('.download-files');
+    if (downloadAnchor) downloadAnchor.classList.remove('icon-download');
+
     if (asset.mimeType === 'application/pdf') {
+      const iconGroup = el('div', { className: 'srr-icon-group' });
+
       const previewBtn = el('button', {
         className: 'srr-icon-btn srr-preview-btn',
         attrs: { type: 'button', 'aria-label': `Preview ${asset.name}` },
       });
       previewBtn.append(el('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } }));
       previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfPreview(fetchPath, asset.name); });
-      downloadWrapper.append(previewBtn);
+
+      const downloadIcon = el('span', { className: 'icon icon-download', attrs: { 'aria-hidden': 'true' } });
+
+      iconGroup.append(previewBtn, downloadIcon);
+      downloadWrapper.append(iconGroup);
     }
+
     fileRow.append(downloadWrapper);
   }
   card.append(titleWrapper, fileRow);
