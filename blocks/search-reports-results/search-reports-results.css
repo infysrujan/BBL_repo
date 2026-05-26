@@ -91,28 +91,32 @@
 }
 
 
+.search-reports-results .srr-card-file-row {
+  margin-top: 1rem;
+  overflow: hidden;
+}
+
 .search-reports-results .srr-card-file-row .download-button-wrapper {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  width: 100%;
-  background: transparent;
+  justify-content: space-between;
+  background: var(--bbl-color-ice-blue, #e6eef4);
   border: none;
   box-shadow: none;
-  padding: 0;
+  padding: 0 0.75rem 0 1rem;
+  border-radius: 0;
+  min-height: 2.75rem;
 }
 
-.search-reports-results .srr-card-file-row .download-button-wrapper .download-files {
+.search-reports-results .srr-card-file-row .srr-file-label {
   flex: 1;
   min-width: 0;
-  display: flex;
-  align-items: center;
-  margin-bottom: 0;
-  max-height: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--bbl-color-gray-121, #171717);
+  line-height: 1;
 }
-
-
-
 
 
 .search-reports-results .srr-icon-group {
@@ -120,6 +124,7 @@
   align-items: center;
   flex-shrink: 0;
   gap: 0.25rem;
+  margin-right: 0.75rem;
 }
 
 .search-reports-results .srr-icon-btn {
@@ -243,6 +248,7 @@
 .srr-preview-overlay .srr-custom-pdf {
   width: 65%;
   margin-inline: auto;
+  margin-top: 6rem;
   height: calc(100vh - 4.5rem);
 }
 

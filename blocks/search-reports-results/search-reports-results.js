@@ -5,7 +5,6 @@ import {
   hideModal,
   setupModalHandlers,
 } from '../../scripts/utils/modal.js';
-import createDownloadLink from '../../scripts/utils/download-helpers.js';
 
 const API_BASE = 'https://publish-p185039-e1939903.adobeaemcloud.com';
 
@@ -107,46 +106,41 @@ function openPdfPreview(path, name) {
 function buildCard(asset) {
   const fetchPath = asset.path.startsWith('http') ? asset.path : `${API_BASE}${asset.path}`;
 
-  // Outer white card — reuses .download-section from download-file.css
   const card = el('div', { className: 'download-section' });
 
-  // Title area — reuses .default-content-wrapper pattern from accordion-block
   const titleWrapper = el('div', { className: 'default-content-wrapper' });
   const title = el('h3', { className: 'srr-card-title', text: asset.reportTitle || asset.title });
   const divider = el('div', { className: 'srr-card-divider' });
   titleWrapper.append(title, divider);
 
   const fileRow = el('div', { className: 'srr-card-file-row' });
+  const downloadWrapper = el('div', { className: 'download-button-wrapper' });
 
-  // Download button — reuses createDownloadLink from download-helpers.js
-  const anchor = el('a', {
-    text: getDownloadLabel(asset.mimeType),
-    attrs: { href: fetchPath, download: asset.name, 'aria-label': `Download ${asset.name}` },
-  });
-  const downloadWrapper = createDownloadLink(anchor);
+  const label = el('span', { className: 'srr-file-label', text: getDownloadLabel(asset.mimeType) });
 
-  if (downloadWrapper) {
-    const downloadAnchor = downloadWrapper.querySelector('.download-files');
-    if (downloadAnchor) downloadAnchor.classList.remove('icon-download');
+  const iconGroup = el('div', { className: 'srr-icon-group' });
 
-    if (asset.mimeType === 'application/pdf') {
-      const iconGroup = el('div', { className: 'srr-icon-group' });
-
-      const previewBtn = el('button', {
-        className: 'srr-icon-btn srr-preview-btn',
-        attrs: { type: 'button', 'aria-label': `Preview ${asset.name}` },
-      });
-      previewBtn.append(el('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } }));
-      previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfPreview(fetchPath, asset.name); });
-
-      const downloadIcon = el('span', { className: 'icon icon-download', attrs: { 'aria-hidden': 'true' } });
-
-      iconGroup.append(previewBtn, downloadIcon);
-      downloadWrapper.append(iconGroup);
-    }
-
-    fileRow.append(downloadWrapper);
+  if (asset.mimeType === 'application/pdf') {
+    const previewBtn = el('button', {
+      className: 'srr-icon-btn srr-preview-btn',
+      attrs: { type: 'button', 'aria-label': `Preview ${asset.name}` },
+    });
+    previewBtn.append(el('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } }));
+    previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfPreview(fetchPath, asset.name); });
+    iconGroup.append(previewBtn);
   }
+
+  const downloadBtn = el('a', {
+    className: 'srr-icon-btn srr-download-btn',
+    attrs: {
+      href: fetchPath, download: asset.name, 'aria-label': `Download ${asset.name}`, target: '_blank',
+    },
+  });
+  downloadBtn.append(el('span', { className: 'icon icon-download', attrs: { 'aria-hidden': 'true' } }));
+  iconGroup.append(downloadBtn);
+
+  downloadWrapper.append(label, iconGroup);
+  fileRow.append(downloadWrapper);
   card.append(titleWrapper, fileRow);
   return card;
 }
