@@ -30,14 +30,6 @@ function resolveImageUrl(card) {
   return raw._publishUrl || raw._authorUrl || '';
 }
 
-function resolveFundLogoUrl(card) {
-  const raw = card.LogoImage || card.ManagementCompanyLogo || card.fundLogoImage || card.fundCompanyLogo || card.companyLogoUrl || card.logoImage || '';
-  if (!raw) return '';
-  if (typeof raw === 'string') return raw;
-  // eslint-disable-next-line no-underscore-dangle
-  return raw._publishUrl || raw._authorUrl || '';
-}
-
 function resolveCardPageUrl(card) {
   // eslint-disable-next-line no-underscore-dangle
   const raw = card._path || card.readMoreUrl || card.cardPageUrl || card.detailUrl || card.pageUrl || '';
@@ -142,7 +134,6 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
 function buildCompareCard(card, doc, labels) {
   const name = card.name || card.title || card.FundName || card.fundName || '';
   const imgSrc = resolveImageUrl(card);
-  const logoSrc = resolveFundLogoUrl(card);
   const readMoreHref = resolveCardPageUrl(card);
 
   const getField = (...keys) => {

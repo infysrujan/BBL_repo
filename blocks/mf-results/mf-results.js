@@ -2,7 +2,6 @@ import decorateCardList from '../card-list/card-list.js';
 import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { getLang } from '../../scripts/scripts.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -318,21 +317,21 @@ function buildCardBlock(funds, doc, labels) {
 
     block.appendChild(createBlockRow(
       doc,
-      imgCell,    // 0  image
-      null,       // 1  promoTag
-      titleCell,  // 2  title
-      null,       // 3  subtitle
-      descCell,   // 4  description
+      imgCell, // 0  image
+      null, // 1  promoTag
+      titleCell, // 2  title
+      null, // 3  subtitle
+      descCell, // 4  description
       remarkCell, // 5  remark (logo)
-      'default',  // 6  actionTypeText
-      btnCell,    // 7  defaultButton (Read more link)
-      null,       // 8  multipleDownloadLinks (no anchor → stub at cells[9])
-      null,       // 9  stub (consumed by stubOffset=1)
-      'default',  // 10 imageLayout  (base=10)
-      'true',     // 11 enableTitleUnderline
-      'false',    // 12 isCardClickable
-      null,       // 13 cardLink
-      'false',    // 14 enableOverlayModal
+      'default', // 6  actionTypeText
+      btnCell, // 7  defaultButton (Read more link)
+      null, // 8  multipleDownloadLinks (no anchor → stub at cells[9])
+      null, // 9  stub (consumed by stubOffset=1)
+      'default', // 10 imageLayout  (base=10)
+      'true', // 11 enableTitleUnderline
+      'false', // 12 isCardClickable
+      null, // 13 cardLink
+      'false', // 14 enableOverlayModal
     ));
   });
 
@@ -371,8 +370,6 @@ function addCompareButtons(blockEl, doc, labels) {
  */
 export default async function decorate(block) {
   const doc = block.ownerDocument;
-  const lang = getLang();
-  const isTH = lang === 'th';
   const rows = [...block.children];
 
   // Read config

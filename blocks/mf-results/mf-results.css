@@ -13,6 +13,25 @@
   box-sizing: border-box;
 }
 
+/* ── Disclaimer ───────────────────────────────────────────────────────────── */
+
+.mfr-disclaimer {
+  border-top: 0.0625rem solid var(--bbl-color-grey-30);
+  padding-top: var(--bbl-space-layout-sm);
+  font-size: var(--bbl-font-size-b3, 0.8125rem);
+  color: var(--bbl-color-grey-70);
+  line-height: var(--bbl-line-height-body, 1.6);
+  text-align: center;
+}
+
+.mfr-disclaimer p {
+  margin: 0 0 var(--bbl-space-component-sm);
+}
+
+.mfr-disclaimer p:last-child {
+  margin-bottom: 0;
+}
+
 /* ── Fund card fields — scoped to card-list.mf-results ───────────────────── */
 
 .card-list.mf-results .mfr-card-field {
@@ -317,25 +336,6 @@
 
 .mfr-cta:hover {
   background: var(--bbl-color-blue-10);
-}
-
-/* ── Disclaimer ───────────────────────────────────────────────────────────── */
-
-.mfr-disclaimer {
-  border-top: 0.0625rem solid var(--bbl-color-grey-30);
-  padding-top: var(--bbl-space-layout-sm);
-  font-size: var(--bbl-font-size-b3, 0.8125rem);
-  color: var(--bbl-color-grey-70);
-  line-height: var(--bbl-line-height-body, 1.6);
-  text-align: center;
-}
-
-.mfr-disclaimer p {
-  margin: 0 0 var(--bbl-space-component-sm);
-}
-
-.mfr-disclaimer p:last-child {
-  margin-bottom: 0;
 }
 
 /* ── Tablet (> 47.5rem) ───────────────────────────────────────────────────── */

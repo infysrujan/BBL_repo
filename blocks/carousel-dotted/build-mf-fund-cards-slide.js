@@ -70,11 +70,7 @@ async function loadFundsData() {
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('[mfCardListCarousel] loadFundsData error:', err);
-																						
-							
-								   
-												   
-		   
+
     return [];
   }
   return [];
@@ -181,21 +177,21 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
     // so imageLayout lands at cells[10] (base=10) and all fields align correctly.
     block.appendChild(makeRow(
       doc,
-      imgCell,    // 0  image
-      null,       // 1  promoTag
-      titleCell,  // 2  title
-      null,       // 3  subtitle
-      descCell,   // 4  description
+      imgCell, // 0  image
+      null, // 1  promoTag
+      titleCell, // 2  title
+      null, // 3  subtitle
+      descCell, // 4  description
       remarkCell, // 5  remark (logo)
-      'default',  // 6  actionTypeText
-      btnCell,    // 7  defaultButton
-      null,       // 8  multipleDownloadLinks (no anchor → stub at cells[9])
-      null,       // 9  stub (consumed by stubOffset=1)
-      'default',  // 10 imageLayout  (base=10)
-      'false',    // 11 enableTitleUnderline
-      'false',    // 12 isCardClickable
-      null,       // 13 cardLink
-      'false',    // 14 enableOverlayModal
+      'default', // 6  actionTypeText
+      btnCell, // 7  defaultButton
+      null, // 8  multipleDownloadLinks (no anchor → stub at cells[9])
+      null, // 9  stub (consumed by stubOffset=1)
+      'default', // 10 imageLayout  (base=10)
+      'false', // 11 enableTitleUnderline
+      'false', // 12 isCardClickable
+      null, // 13 cardLink
+      'false', // 14 enableOverlayModal
     ));
   });
 
@@ -231,8 +227,6 @@ export default async function buildMfFundCardsSlide(row, index) {
     loadCSS(`${window.hlx.codeBasePath}/blocks/carousel-dotted/mf-fund-cards-slide.css`),
   ]);
 
-						 
-							 
   const [allFunds, ph] = await Promise.all([loadFundsData(), fetchPlaceholders()]);
 
   const readMoreLabel = ph.mfReadMoreText || 'Read more';

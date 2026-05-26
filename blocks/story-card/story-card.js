@@ -1,6 +1,6 @@
 import { createPictureWithoutOptimization } from '../../scripts/bbl-decorators.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { openModal } from '../../scripts/utils/modal-helpers.js';
+import { openModal } from '../../scripts/modal.js';
 
 /**
  * Helper to get text content from a row
@@ -250,6 +250,6 @@ export default function decorate(block) {
     if (!href || !href.startsWith('/')) return;
 
     event.preventDefault();
-    openModal(doc, href);
+    openModal(doc, { fragmentPath: href });
   });
 }
