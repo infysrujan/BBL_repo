@@ -17,7 +17,7 @@ function getAssetSrc(cell) {
 
 function pauseBannerVideo(item) {
   item?.querySelector('video.hero-banner-video')?.pause();
-  const yt = item?.querySelector('iframe.hero-banner-video')?._ytPlayer;
+  const yt = item?.querySelector('iframe.hero-banner-video')?.ytPlayer;
   if (yt) try { yt.pauseVideo(); } catch (_) { /* player not ready yet */ }
 }
 
@@ -29,7 +29,7 @@ function playBannerVideo(item) {
       .then(() => { video.muted = false; video.volume = 0.5; })
       .catch(() => {});
   }
-  const yt = item?.querySelector('iframe.hero-banner-video')?._ytPlayer;
+  const yt = item?.querySelector('iframe.hero-banner-video')?.ytPlayer;
   if (yt) try { yt.playVideo(); } catch (_) { /* player not ready yet */ }
 }
 
@@ -102,7 +102,7 @@ const VI = {
 };
 
 function fmtTime(sec) {
-  if (!isFinite(sec) || sec < 0) return '0:00';
+  if (!Number.isFinite(sec) || sec < 0) return '0:00';
   const m = Math.floor(sec / 60);
   const s = Math.floor(sec % 60);
   return `${m}:${s.toString().padStart(2, '0')}`;
@@ -255,7 +255,7 @@ function wireYouTubeControls(iframe, bar, bannerItem) {
         },
       },
     });
-    iframe._ytPlayer = player; // expose for cross-slide pause coordination
+    iframe.ytPlayer = player; // expose for cross-slide pause coordination
 
     playBtn.addEventListener('click', () => {
       if (player.getPlayerState() === window.YT.PlayerState.PLAYING) player.pauseVideo();
@@ -273,8 +273,7 @@ function wireYouTubeControls(iframe, bar, bannerItem) {
     volSlider.addEventListener('input', () => {
       const v = Number(volSlider.value);
       player.setVolume(v);
-      if (v === 0) { player.mute(); muteBtn.innerHTML = VI.muted; }
-      else { player.unMute(); muteBtn.innerHTML = VI.volume; }
+      if (v === 0) { player.mute(); muteBtn.innerHTML = VI.muted; } else { player.unMute(); muteBtn.innerHTML = VI.volume; }
     });
 
     seekBar.addEventListener('input', () => {
