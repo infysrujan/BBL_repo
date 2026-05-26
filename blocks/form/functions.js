@@ -284,10 +284,10 @@ async function getProvinceData() {
 * Maps to enum.
 *
 * @name getProvinceEnum
-* @returns {Promise<string[]>}
+* @returns {string[]}
 */
-async function getProvinceEnum() {
-  const data = await getProvinceData();
+function getProvinceEnum() {
+  const data = getProvinceData();
   return data.map((item) => item.value);
 }
 
@@ -296,10 +296,10 @@ async function getProvinceEnum() {
 * Maps to enumNames.
 *
 * @name getProvinceEnumNames
-* @returns {Promise<string[]>}
+* @returns {string[]}
 */
-async function getProvinceEnumNames() {
-  const data = await getProvinceData();
+function getProvinceEnumNames() {
+  const data = getProvinceData();
   return data.map((item) => item.label);
 }
 
@@ -312,10 +312,10 @@ async function getProvinceEnumNames() {
 * ]
 *
 * @private
-* @returns {Promise<Array<{value: string, label: string}>>}
+* @returns {{value: string[], label: string[]}}
 */
-async function getProvinceDataTh() {
-  const configs = await fetchConfigs();
+function getProvinceDataTh() {
+  const configs = fetchConfigs();
   const urlPath = configs.getprovinceth || '/api/LocationSearchService/GetProvinceTh';
   const url = `${getSubmitBaseUrl()}${urlPath}`;
   const xhr = new XMLHttpRequest();
@@ -351,10 +351,10 @@ async function getProvinceDataTh() {
 * Maps to enum.
 *
 * @name getProvinceEnumTh
-* @returns {Promise<string[]>}
+* @returns {string[]}
 */
-async function getProvinceEnumTh() {
-  const data = await getProvinceDataTh();
+function getProvinceEnumTh() {
+  const data = getProvinceDataTh();
   return data.map((item) => item.value);
 }
 
@@ -363,10 +363,10 @@ async function getProvinceEnumTh() {
 * Maps to enumNames.
 *
 * @name getProvinceEnumNamesTh
-* @returns {Promise<string[]>}
+* @returns {string[]}
 */
-async function getProvinceEnumNamesTh() {
-  const data = await getProvinceDataTh();
+function getProvinceEnumNamesTh() {
+  const data = getProvinceDataTh();
   return data.map((item) => item.label);
 }
 
