@@ -363,10 +363,10 @@ async function getProvinceEnumTh() {
 * Maps to enumNames.
 *
 * @name getProvinceEnumNamesTh
-* @returns {Promise<string[]>}
+* @returns {string[]}
 */
-async function getProvinceEnumNamesTh() {
-  const data = await getProvinceDataTh();
+function getProvinceEnumNamesTh() {
+  const data = getProvinceDataTh();
   return data.map((item) => item.label);
 }
 
