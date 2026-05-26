@@ -409,10 +409,10 @@ function getProvinceEnumNamesTh() {
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
   const configs = fetchConfigs();
-  const baseUrl = configs.branchesByProvince;
+  const ProvinceBaseUrl = configs.branchesByProvince;
   const encoded = encodeURIComponent(province);
   const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
-  const url = `${baseUrl}${segment}/${encoded}/0/0/0/BRC`;
+  const url = `${ProvinceBaseUrl}${segment}/${encoded}/0/0/0/BRC`;
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', url, false);
