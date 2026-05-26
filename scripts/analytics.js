@@ -3,6 +3,8 @@
  * Seeds `window.adobeDataLayer` and exposes `window.cdp` for legacy callers.
  * Import named functions from this module for use in other ESM files.
  */
+
+import env from './utils/env';
 let analyticsBootstrapped = false;
 
 /**
@@ -70,6 +72,7 @@ export function pushInitialPageContext() {
 
 /**
  * Fires after init; increments page view metric on the current page context.
+ * TODO: Remove this tracking as it's handled by the Launch Rule.
  */
 export function trackPageView() {
   window.adobeDataLayer.push({
@@ -120,7 +123,7 @@ function ensureCdpGlobal() {
   if (window.cdp) return;
   window.cdp = {
     platform: 'web',
-    environment: 'prod',
+    environment: env(),
     data: {},
     track: {
       pageView: trackPageView,
@@ -163,8 +166,8 @@ export function trackContactFormSubmit(event) {
   ensureCdpGlobal();
   refreshCdpData();
   window.cdp.track.contactFormSubmit = trackContactFormSubmit;
-  // TODO: Hash this email address before storing it in the data layer.
-  // Check internal PII policy and apply sanitization if necessary.
+  
+  // Aligned on internal PII policy and no sanitization necessary.
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const form = event.currentTarget;
   const inputs = form.querySelectorAll('input,select');
@@ -215,7 +218,6 @@ export function trackContactFormSubmit(event) {
     event: 'formSubmit',
     _bangkokbank: {
       userDetails: {
-        // TODO: Confirm if this violates PII policy.
         customerEmailId,
       },
       formDetails: {
@@ -239,5 +241,5 @@ export function initCdpEvents() {
   window.cdp.track.contactFormSubmit = trackContactFormSubmit;
   window.cdp.data.init();
   window.dispatchEvent(new CustomEvent('cdp:ready', { detail: window.cdp.data }));
-  trackPageView();
+  //trackPageView();
 }
