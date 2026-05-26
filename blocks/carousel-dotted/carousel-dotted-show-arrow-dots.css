@@ -104,10 +104,6 @@
   margin-right: 0.25rem;
 }
 
-.carousel-dotted.show-arrows-dots .carousel-arrow:disabled {
-  cursor: not-allowed;
-}
-
 .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:hover {
   background-color: var(--bbl-color-white);
 }
