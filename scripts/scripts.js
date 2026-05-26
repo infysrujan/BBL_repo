@@ -207,6 +207,7 @@ async function loadEager(doc) {
       analytics: false,
       personalization: !!getMetadata('target') && isEnabled && isConsentGiven,
       launchUrls: launchConfig[env],
+      trackPageView: false,
     },
   );
 
