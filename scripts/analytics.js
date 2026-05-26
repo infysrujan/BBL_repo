@@ -4,7 +4,7 @@
  * Import named functions from this module for use in other ESM files.
  */
 
-import env from './utils/env';
+import env from './utils/env.js';
 let analyticsBootstrapped = false;
 
 /**
