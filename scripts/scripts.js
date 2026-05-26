@@ -204,7 +204,7 @@ async function loadEager(doc) {
     },
     // 2. Library Configuration
     {
-      analytics: isEnabled && isConsentGiven,
+      analytics: false,
       personalization: !!getMetadata('target') && isEnabled && isConsentGiven,
       launchUrls: launchConfig[env],
     },
