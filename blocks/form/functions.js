@@ -312,10 +312,10 @@ async function getProvinceEnumNames() {
 * ]
 *
 * @private
-* @returns {Promise<Array<{value: string, label: string}>>}
+* @returns {{value: string[], label: string[]}}
 */
-async function getProvinceDataTh() {
-  const configs = await fetchConfigs();
+function getProvinceDataTh() {
+  const configs = fetchConfigs();
   const urlPath = configs.getprovinceth || '/api/LocationSearchService/GetProvinceTh';
   const url = `${getSubmitBaseUrl()}${urlPath}`;
   const xhr = new XMLHttpRequest();
@@ -351,10 +351,10 @@ async function getProvinceDataTh() {
 * Maps to enum.
 *
 * @name getProvinceEnumTh
-* @returns {Promise<string[]>}
+* @returns {string[]}
 */
-async function getProvinceEnumTh() {
-  const data = await getProvinceDataTh();
+function getProvinceEnumTh() {
+  const data = getProvinceDataTh();
   return data.map((item) => item.value);
 }
 
