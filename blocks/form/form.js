@@ -575,7 +575,7 @@ function loadFormCustomStyles(formDef) {
 export default async function decorate(block) {
   // Load placeholders early for form error messages
   const placeholders = await fetchPlaceholders();
-  setFormPlaceholders(placeholders);  
+  setFormPlaceholders(placeholders);
   // Load AEM base URL from site configs (breadcrumb-aem-base-url → aemBaseUrlForBreadcrumb)
   if (!getSubmitBaseUrl()) {
     const configs = await fetchConfigs();
