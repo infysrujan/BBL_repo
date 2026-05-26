@@ -1,4 +1,4 @@
-import attachCalendarPicker from '../../scripts/utils/calendar-picker.js';
+import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 import { parseLocalDateFromYmd } from '../fund-prices-table/fund-prices-table.js';
 
 const IS_LOCAL = typeof window !== 'undefined' && window.location.hostname === 'localhost';

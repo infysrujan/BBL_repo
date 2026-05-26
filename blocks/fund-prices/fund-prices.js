@@ -1,4 +1,4 @@
-import attachCalendarPicker from '../../scripts/utils/calendar-picker.js';
+import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 import {
