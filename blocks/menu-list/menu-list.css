@@ -7,6 +7,7 @@
 
 .menu-list .menu-list-wrapper {
   padding: 1.875rem var(--bbl-space-200);
+  margin-top: var(--bbl-space-250);
 }
 
 .menu-list .menu-list-active-blue {
@@ -91,7 +92,7 @@
 
 @media (width > 47.5rem) {
   .menu-list .menu-list-wrapper {
-    padding: 1.875rem var(--bbl-space-250);
+    padding: 1.875rem var(--bbl-space-600);
   }
 
   .menu-list .menu-list-item {
@@ -101,7 +102,6 @@
 
   .menu-list .menu-list-item-content {
     flex: 0 0 83.33%;
-    max-width: 83.33%;
   }
 
   .menu-list .menu-list-item-content p {
@@ -113,6 +113,11 @@
 /* ── Desktop: 64rem+ (1024px) ──────────────────────────────── */
 
 @media (width > 64rem) {
+  .menu-list .menu-list-wrapper { 
+    padding: 1.875rem var(--bbl-space-250);
+    margin-top: 0;
+  }
+
   .menu-list .menu-list-title p {
     font-size: 1.12rem;
   }
