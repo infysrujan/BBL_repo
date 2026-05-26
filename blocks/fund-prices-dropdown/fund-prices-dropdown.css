@@ -381,18 +381,25 @@
 
 .fund-prices-dropdown .tab-switcher.open .tab-btn.active {
   border-radius: 0.5rem 0.5rem 0 0;
+  background: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border-color: var(--bbl-color-grey-150, #ddd);
+  border-bottom: none;
+}
+
+.fund-prices-dropdown .tab-switcher.open .tab-btn.active::before {
+  border-right-color: var(--bbl-color-white);
+  border-bottom-color: var(--bbl-color-white);
 }
 
 .fund-prices-dropdown .tab-switcher.open .tab-btn:not(.active) {
   display: block;
-  position: absolute;
-  top: 100%;
+  position: static;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-150, #ddd);
   border-top: none;
   border-radius: 0 0 0.5rem 0.5rem;
-  box-shadow: 0 0.25rem 0.5rem rgb(0 0 0 / 10%);
-  z-index: 200;
+  width: 14.25rem;
 }
 
 .fund-prices-dropdown .chart-wrap {
