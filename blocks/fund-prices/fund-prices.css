@@ -41,9 +41,8 @@
   display: flex;
   padding-left: 0.9375rem;
   justify-content: space-between;
-  flex-direction: column;
+  flex-flow: column wrap;
   align-items: flex-start;
-  flex-wrap: wrap;
   gap: 1.625rem;
 }
 
@@ -57,7 +56,7 @@
 .fund-prices .calendar-wrapper p {
   font-size: 0.7rem;
   line-height: 1.375;
-  font-family: BangkokBank-Medium;
+  font-family: BangkokBank-Medium, sans-serif;
   font-weight: var(--bbl-font-weight-regular);
   margin-top: 1.5625rem;
   color:#000;
@@ -101,7 +100,7 @@
 .fund-prices .fund-prices-print-label p {
   font-size: var(--bbl-font-size-b2);
   font-weight: var(--bbl-font-weight-regular);
-  font-family: BangkokBank-Medium;
+  font-family: BangkokBank-Medium, sans-serif;
   color: #000;
 }
 
@@ -137,7 +136,7 @@
 .fund-prices-search-bar .fund-select-btn {
   width: 100%;
   padding: 0.45rem var(--bbl-space-500) 0.45rem 0.85rem;
-  border: 0.09375rem solid rgb(255 255 255 / 60%);
+  border: 0.0938rem solid rgb(255 255 255 / 60%);
   border-radius: 0.25rem;
   background: rgb(255 255 255 / 8%);
   color: var(--bbl-color-white);
@@ -195,7 +194,7 @@
   padding: 0.625rem 1.875rem;
   font-size: var(--bbl-font-size-b2);
   color: #000;
-  font-family: Muli-Bold;
+  font-family: Muli-Bold, sans-serif;
   cursor: pointer;
 }
 
@@ -298,6 +297,11 @@
   color: var(--bbl-color-grey-40);
 }
 
+.default-content-wrapper h2 {
+  font-family: var(--bbl-font-family-medium);
+  color: #000;
+}
+
 body.fund-prices-search-in-header header.is-not-overlapped ~ main {
   padding-top: calc(var(--header-m-height, 5rem) + 7.5rem);
 }
@@ -313,15 +317,14 @@ body.fund-prices-search-in-header header.is-not-overlapped ~ main {
   z-index: 1;
   min-height: unset;
   padding: var(--bbl-space-150) var(--bbl-space-200);
-  column-gap: 0.9375rem;
-  row-gap: 0.9375rem;
+  gap: 0.9375rem;
   background: var(--bbl-color-truthful-blue, #002850);
 }
 
 .fund-prices-search-bar.is-in-header label {
   flex-shrink: 0;
   font-size: var(--bbl-font-size-b2);
-  Font-family: Muli-Bold;
+  font-family: Muli-Bold, sans-serif;
   margin-left: 0.625rem;
   color: var(--bbl-color-white);
   white-space: nowrap;
@@ -342,8 +345,8 @@ body.fund-prices-search-in-header header.is-not-overlapped ~ main {
   padding: 0 2.75rem 0 1.125rem;
   border-radius: var(--bbl-space-100);
   background: transparent;
-  font-size: 0.83125rem;
-  font-family: BangkokBank-Medium;
+  font-size: 0.8313rem;
+  font-family: BangkokBank-Medium, sans-serif;
   border: solid 0.0625rem var(--bbl-color-grey-25);
 }
 
@@ -389,12 +392,7 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
   left: 0;
   width: var(--bbl-space-600);
   height: 0.125rem;
-  background-color: rgb(158, 158, 158);
-}
-
-.default-content-wrapper h2 {
-  font-family: var(--bbl-font-family-medium);
-  color: #000;
+  background-color: rgb(158 158 158);
 }
 
 @media (width > 47.5rem) {
