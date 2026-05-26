@@ -1,4 +1,5 @@
 import { getSubmitBaseUrl } from './constant.js';
+import { fetchConfigs } from '../../scripts/config.js';
 
 /**
  * Get Full Name
@@ -244,10 +245,12 @@ function addCustomHeader(payload, headerName, headerValue) {
 * ]
 *
 * @private
-* @returns {Array<{value: string, label: string}>}
+* @returns {Promise<Array<{value: string, label: string}>>}
 */
-function getProvinceData() {
-  const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/LocationSearchService/GetProvinceEn';
+async function getProvinceData() {
+  const configs = await fetchConfigs();
+  const urlPath = configs.getprovinceen || '/api/LocationSearchService/GetProvinceEn';
+  const url = `${getSubmitBaseUrl()}${urlPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -281,10 +284,10 @@ function getProvinceData() {
 * Maps to enum.
 *
 * @name getProvinceEnum
-* @returns {string[]}
+* @returns {Promise<string[]>}
 */
-function getProvinceEnum() {
-  const data = getProvinceData();
+async function getProvinceEnum() {
+  const data = await getProvinceData();
   return data.map((item) => item.value);
 }
 
@@ -293,10 +296,10 @@ function getProvinceEnum() {
 * Maps to enumNames.
 *
 * @name getProvinceEnumNames
-* @returns {string[]}
+* @returns {Promise<string[]>}
 */
-function getProvinceEnumNames() {
-  const data = getProvinceData();
+async function getProvinceEnumNames() {
+  const data = await getProvinceData();
   return data.map((item) => item.label);
 }
 
@@ -309,10 +312,12 @@ function getProvinceEnumNames() {
 * ]
 *
 * @private
-* @returns {Array<{value: string, label: string}>}
+* @returns {Promise<Array<{value: string, label: string}>>}
 */
-function getProvinceDataTh() {
-  const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/LocationSearchService/GetProvinceTh';
+async function getProvinceDataTh() {
+  const configs = await fetchConfigs();
+  const urlPath = configs.getprovinceth || '/api/LocationSearchService/GetProvinceTh';
+  const url = `${getSubmitBaseUrl()}${urlPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -346,22 +351,22 @@ function getProvinceDataTh() {
 * Maps to enum.
 *
 * @name getProvinceEnumTh
-* @returns {string[]}
+* @returns {Promise<string[]>}
 */
-function getProvinceEnumTh() {
-  const data = getProvinceDataTh();
+async function getProvinceEnumTh() {
+  const data = await getProvinceDataTh();
   return data.map((item) => item.value);
 }
 
 /**
-* Returns the display labels for Province.
+* Returns the display labels for Province in Thai.
 * Maps to enumNames.
 *
 * @name getProvinceEnumNamesTh
-* @returns {string[]}
+* @returns {Promise<string[]>}
 */
-function getProvinceEnumNamesTh() {
-  const data = getProvinceDataTh();
+async function getProvinceEnumNamesTh() {
+  const data = await getProvinceDataTh();
   return data.map((item) => item.label);
 }
 
@@ -402,7 +407,7 @@ function getProvinceEnumNamesTh() {
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
 
-  const baseUrl = 'https://publish-p185039-e1939903.adobeaemcloud.com';
+  const baseUrl = getSubmitBaseUrl();
   const encoded = encodeURIComponent(province);
   const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
   const url = `${baseUrl}/api/LocationSearchService/${segment}/${encoded}/0/0/0/BRC`;
