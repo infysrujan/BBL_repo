@@ -359,14 +359,14 @@ async function getProvinceEnumTh() {
 }
 
 /**
-* Returns the display labels for Province.
+* Returns the display labels for Province in Thai.
 * Maps to enumNames.
 *
 * @name getProvinceEnumNamesTh
-* @returns {string[]}
+* @returns {Promise<string[]>}
 */
-function getProvinceEnumNamesTh() {
-  const data = getProvinceDataTh();
+async function getProvinceEnumNamesTh() {
+  const data = await getProvinceDataTh();
   return data.map((item) => item.label);
 }
 
@@ -407,7 +407,7 @@ function getProvinceEnumNamesTh() {
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
 
-  const baseUrl = 'https://publish-p185039-e1939903.adobeaemcloud.com';
+  const baseUrl = getSubmitBaseUrl();
   const encoded = encodeURIComponent(province);
   const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
   const url = `${baseUrl}/api/LocationSearchService/${segment}/${encoded}/0/0/0/BRC`;
