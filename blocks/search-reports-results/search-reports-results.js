@@ -69,7 +69,9 @@ function openPdfPreview(path, name) {
   const centerContent = el('div', { className: 'srr-preview-center-content' });
   const pdfEmbed = el('div', { className: 'srr-custom-pdf' });
   const embedEl = el('iframe', {
-    attrs: { width: '100%', height: '100%', frameborder: '0', title: name || 'PDF Preview' },
+    attrs: {
+      width: '100%', height: '100%', frameborder: '0', title: name || 'PDF Preview',
+    },
   });
   pdfEmbed.append(embedEl);
 

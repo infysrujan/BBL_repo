@@ -148,6 +148,15 @@
   font-size: 1.75rem;
   display: block;
   color: var(--bbl-color-gray-121, #171717);
+  transition: transform 0.2s ease;
+}
+
+.search-reports-results .srr-preview-btn:hover .icon {
+  transform: scale(1.2);
+}
+
+.search-reports-results .srr-download-btn:hover .icon {
+  transform: translateY(3px);
 }
 
 /* States */
