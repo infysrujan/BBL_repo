@@ -609,12 +609,15 @@ function applyLayout(header, fragmentTemplate, desktop) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  const navMeta = getMetadata('nav');
+  const isHeaderDisabled = getMetadata('isHeaderDisabled');
+  if (isHeaderDisabled) return;
+
   let navPath = '';
   if (document.querySelector('body.error-page')) {
     const lang = getLang();
     navPath = `/${lang}/nav`;
   } else {
+    const navMeta = getMetadata('nav');
     navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
   }
   const fragment = await loadFragment(navPath);
