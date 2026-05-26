@@ -241,5 +241,6 @@ export function initCdpEvents() {
   window.cdp.track.contactFormSubmit = trackContactFormSubmit;
   window.cdp.data.init();
   window.dispatchEvent(new CustomEvent('cdp:ready', { detail: window.cdp.data }));
-  //trackPageView();
+  // Custom page view tracking.
+  trackPageView();
 }
