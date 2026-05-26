@@ -253,6 +253,13 @@
     "maxItems": 6
   },
   {
+    "id": "menu-list",
+    "components": [
+      "menu-list-item"
+    ],
+    "maxItems": 5
+  },
+  {
     "id": "multi-column-tiles",
     "components": [
       "multi-column-tiles-item"

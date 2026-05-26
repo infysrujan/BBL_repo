@@ -9588,6 +9588,51 @@
     ]
   },
   {
+    "id": "menu-list",
+    "fields": [
+      {
+        "component": "select",
+        "name": "bgColor",
+        "label": "Background Color",
+        "description": "Select the background color theme for the menu list block.",
+        "valueType": "string",
+        "value": "active-blue",
+        "options": [
+          {
+            "name": "Active Blue",
+            "value": "active-blue"
+          },
+          {
+            "name": "Truthful Blue",
+            "value": "truthful-blue"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "menu-list-item",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image",
+        "description": "Select an image to display for this menu list item.",
+        "valueType": "string",
+        "multi": false,
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "content",
+        "label": "Content",
+        "description": "Enter the rich text content to display alongside the image for this menu list item.",
+        "valueType": "string",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "multi-column-tiles-item",
     "fields": [
       {
