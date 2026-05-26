@@ -245,12 +245,13 @@ function addCustomHeader(payload, headerName, headerValue) {
 * ]
 *
 * @private
-* @returns {Promise<Array<{value: string, label: string}>>}
+* @returns {Array<{value: string, label: string}>}
 */
-async function getProvinceData() {
-  const configs = await fetchConfigs();
+function getProvinceData() {
+  const configs = fetchConfigs();
+  const baseUrl = configs.aemBaseUrl || configs.breadcrumbAemBaseUrl || configs.aemBaseUrlForBreadcrumb || '';
   const urlPath = configs.getprovinceen || '/api/LocationSearchService/GetProvinceEn';
-  const url = `${getSubmitBaseUrl()}${urlPath}`;
+  const url = `${baseUrl()}${urlPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -317,7 +318,8 @@ function getProvinceEnumNames() {
 function getProvinceDataTh() {
   const configs = fetchConfigs();
   const urlPath = configs.getprovinceth || '/api/LocationSearchService/GetProvinceTh';
-  const url = `${getSubmitBaseUrl()}${urlPath}`;
+  const baseUrl = getSubmitBaseUrl();
+  const url = `${baseUrl}${urlPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -406,8 +408,8 @@ function getProvinceEnumNamesTh() {
  */
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
-
-  const baseUrl = getSubmitBaseUrl();
+  const configs = fetchConfigs();
+  const baseUrl = configs.aemBaseUrl || configs.breadcrumbAemBaseUrl || configs.aemBaseUrlForBreadcrumb || '';
   const encoded = encodeURIComponent(province);
   const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
   const url = `${baseUrl}/api/LocationSearchService/${segment}/${encoded}/0/0/0/BRC`;
