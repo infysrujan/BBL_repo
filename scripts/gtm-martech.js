@@ -33,7 +33,7 @@ const isEnabled = !window.location.search.includes('martech=off');
 // TODO: Update BBL's GA4 measurement ID and GTM Container Ids here
 const martech = new GtmMartech({
   analytics: isEnabled,
-  tags: [GA_PROPERTY_CONFIG[env]],
+  tags: [],
   containers: {
     lazy: GTM_CONTAINER_CONFIG[env].lazy,
     delayed: GTM_CONTAINER_CONFIG[env].delayed,
