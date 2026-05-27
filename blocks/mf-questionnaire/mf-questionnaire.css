@@ -1,6 +1,6 @@
 /* ── Source rows hidden ───────────────────────────────────────────────────── */
 .mf-questionnaire .mfq-source-row {
-  display: none !important;
+  display: none;
 }
 
 /* ── Shared screen layout ─────────────────────────────────────────────────── */
@@ -141,7 +141,7 @@
   padding: 0.75rem 0.5rem 0.625rem;
   box-sizing: border-box;
   background: var(--bbl-color-white);
-  border: 0.0625rem solid var(--bbl-color-black-alpha-10, rgb(0 0 0 / 10%));
+  border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-radius: 0.625rem;
   text-decoration: none;
   color: var(--bbl-color-black);
@@ -153,7 +153,7 @@
 .mfq-risk-options .thumb-square:hover,
 .mfq-risk-options .thumb-square:focus-visible {
   border-color: var(--bbl-color-active-blue);
-  box-shadow: 0.3125rem 0.3125rem 0 rgb(0 51 153 / 17%);
+  box-shadow: 0.3125rem 0.3125rem 0 var(--bbl-color-blue-105-alpha-17);
   outline: none;
 }
 

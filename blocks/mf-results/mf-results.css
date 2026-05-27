@@ -1,6 +1,6 @@
 /* Source rows hidden after decoration */
 .mf-results .mfr-source-row {
-  display: none !important;
+  display: none;
 }
 
 /* ── Page wrapper ─────────────────────────────────────────────────────────── */
@@ -73,7 +73,7 @@
 /* ── Hidden cards (beyond initial 6) ─────────────────────────────────────── */
 
 .mfr-hidden {
-  display: none !important;
+  display: none;
 }
 
 /* ── Mobile: hide scrollbar — replaced by dots (matches credit-card) ─────── */
