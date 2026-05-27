@@ -82,6 +82,8 @@ export async function applyMarketingConsentUpdates(detail = {}) {
     console.debug('Updating Adobe Alloy Consent', adobePayload);
     await updateAdobeConsent(adobePayload);
   }
+
+  window.dispatchEvent(new CustomEvent('consent-update', { detail: { gtagPayload, adobePayload } }));
 }
 
 /**

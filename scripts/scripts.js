@@ -204,7 +204,7 @@ async function loadEager(doc) {
     },
     // 2. Library Configuration
     {
-      analytics: false,
+      analytics: isEnabled && isConsentGiven,
       personalization: !!getMetadata('target') && isEnabled && isConsentGiven,
       launchUrls: launchConfig[env],
       trackPageView: false,
@@ -273,6 +273,15 @@ async function loadLazy(doc) {
   }, 150);
 }
 
+function bblMartechDelayed() {
+  // Load the martech library in the delayed phase.
+  martechDelayed();
+  // Initialize the CDP events only if consent is given and martech is enabled.
+  if (isEnabled && isConsentGiven) {
+    initCdpEvents();
+  }
+}
+
 /**
  * Loads everything that happens a lot later,
  * without impacting the user experience.
@@ -282,15 +291,14 @@ function loadDelayed() {
   window.setTimeout(() => gtmMartech.delayed(), 1000);
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => {
-    // Load the martech library in the delayed phase.
-    martechDelayed();
-    // Initialize the CDP events only if consent is given and martech is enabled.
-    if (isEnabled && isConsentGiven) {
-      initCdpEvents();
-    }
+    bblMartechDelayed();
+
     import('./delayed.js');
   }, 3000);
   // load anything that can be postponed to the latest here
+
+  // trigger the martech delayed phase when the consent is updated
+  window.addEventListener('consent-update', bblMartechDelayed);
 }
 
 async function loadPage() {
