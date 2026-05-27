@@ -154,8 +154,12 @@ function buildCompareCard(card, doc, labels) {
 
   const fundTypeRaw = getField('FundType', 'fundType', 'type');
   let fundTypeLabel = '';
+  let fundTypeIsHtml = false;
   if (Array.isArray(fundTypeRaw) && fundTypeRaw.length) {
     fundTypeLabel = fundTypeRaw.map(tagToLabel).join(', ');
+  } else if (fundTypeRaw && typeof fundTypeRaw === 'object' && fundTypeRaw.html) {
+    fundTypeLabel = fundTypeRaw.html;
+    fundTypeIsHtml = true;
   } else if (typeof fundTypeRaw === 'string') {
     fundTypeLabel = fundTypeRaw;
   }
@@ -200,14 +204,18 @@ function buildCompareCard(card, doc, labels) {
 
   const fields = [
     { key: 'riskLevel', label: labels.riskLevel, value: riskLabel },
-    { key: 'fundType', label: labels.fundType, value: fundTypeLabel },
+    {
+      key: 'fundType', label: labels.fundType, value: fundTypeLabel, isHtml: fundTypeIsHtml,
+    },
     { key: 'investmentPolicy', label: labels.investmentPolicy, value: investmentPolicy },
     { key: 'masterFund', label: labels.masterFund, value: masterFund },
     { key: 'dividendPolicy', label: labels.dividendPolicy, value: dividendPolicy },
     { key: 'managementCompany', label: labels.managementCompany, value: managementCompany },
   ];
 
-  fields.forEach(({ key, label, value }) => {
+  fields.forEach(({
+    key, label, value, isHtml,
+  }) => {
     if (!value) return;
     const dl = doc.createElement('dl');
     dl.dataset.field = key;
@@ -216,7 +224,11 @@ function buildCompareCard(card, doc, labels) {
     dt.textContent = label;
     const dd = doc.createElement('dd');
     dd.className = 'mfcr-value';
-    dd.textContent = value;
+    if (isHtml) {
+      dd.innerHTML = value;
+    } else {
+      dd.textContent = value;
+    }
     dl.appendChild(dt);
     dl.appendChild(dd);
     compareInfo.appendChild(dl);

@@ -49,7 +49,7 @@ function matchesCategory(fundCategory, pageCategory) {
 async function loadFundsData() {
   try {
     const configs = await fetchConfigs();
-    const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-mutual-funds-by-language;language=en?test123' || configs.mfFundsDataUrl;
+    const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-mutual-funds-by-language;language=en?test123456' || configs.mfFundsDataUrl;
     // eslint-disable-next-line no-console
     console.log('[mfCardListCarousel] loadFundsData url:', url);
     if (!url) {
