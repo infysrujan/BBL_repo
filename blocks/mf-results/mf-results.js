@@ -93,7 +93,7 @@ async function loadMatrix() {
 async function loadFundsData() {
   try {
     const configs = await fetchConfigs();
-    const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-mutual-funds-by-language;language=en?test123' || configs.mfFundsDataUrl;
+    const url = configs.mfFundsDataUrl;
     // eslint-disable-next-line no-console
     console.log('[mf-results] loadFundsData url:', url);
     if (!url) return [];

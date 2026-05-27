@@ -250,6 +250,6 @@ export default function decorate(block) {
     if (!href || !href.startsWith('/')) return;
 
     event.preventDefault();
-    openModal(doc, { fragmentPath: href });
+    openModal(doc, href);
   });
 }

@@ -44,7 +44,7 @@ function resolveCardPageUrl(card) {
 async function loadAllCards() {
   try {
     const configs = await fetchConfigs();
-    const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-mutual-funds-by-language;language=en?test12' || configs.mfFundsDataUrl;
+    const url = configs.mfFundsDataUrl;
     // eslint-disable-next-line no-console
     console.log('[mf-comparator-results] loadAllCards url:', url);
     if (!url) throw new Error('no url');

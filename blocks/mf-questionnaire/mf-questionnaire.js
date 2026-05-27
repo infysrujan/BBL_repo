@@ -1,5 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { openModal, closeModal } from '../../scripts/modal.js';
+import { createModal, openModal, closeModal } from '../../scripts/modal.js';
 import buildThumbSquareList from '../../scripts/utils/thumb-square-list.js';
 
 // ── Survey answers cookie ──────────────────────────────────────────────────────
@@ -225,10 +225,15 @@ export default async function decorate(block) {
   async function openScreen1() {
     if (cfg.screen1FragmentPath) {
       // Load external risk-options fragment into the modal
-      await openModal(document, { fragmentPath: cfg.screen1FragmentPath });
+      await openModal(document, cfg.screen1FragmentPath);
     } else {
-      // No external fragment — build risk option cards from inline authored data
-      await openModal(document, { content: buildInlineRiskCards(cfg.disclaimer) });
+      // No external fragment — inject inline risk cards directly into the modal
+      const modal = createModal(document);
+      const modalBody = modal.querySelector('.modal-body');
+      if (modalBody) modalBody.replaceChildren(buildInlineRiskCards(cfg.disclaimer));
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
     }
 
     const modalBody = document.querySelector('.custom-modal .modal-body');
