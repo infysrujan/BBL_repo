@@ -276,6 +276,9 @@ async function loadLazy(doc) {
 function bblMartechDelayed() {
 
   isConsentGiven = getCookie('AnalysisCookie') === 'Analysis';
+
+  // Load the gtm-martech library in the delayed phase.
+  gtmMartech.delayed();
   // Load the martech library in the delayed phase.
   martechDelayed();
   // Initialize the CDP events only if consent is given and martech is enabled.
@@ -289,10 +292,9 @@ function bblMartechDelayed() {
  * without impacting the user experience.
  */
 function loadDelayed() {
-  // Load the gtm-martech library in the delayed phase.
-  window.setTimeout(() => gtmMartech.delayed(), 1000);
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => {
+    // trigger the martech delayed phase
     bblMartechDelayed();
 
     import('./delayed.js');
