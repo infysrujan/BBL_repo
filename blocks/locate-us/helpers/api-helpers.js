@@ -49,7 +49,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
   const card = createEl(`
     <article class="locate-us-card">
       <button type="button" class="locate-us-card-header" aria-expanded="true">
-        <h3 class="locate-us-card-name"></h3>
+        <span class="locate-us-card-name"></span>
         <span class="icon-dropdown locate-us-card-chevron" aria-hidden="true"></span>
       </button>
       <div class="locate-us-card-body">

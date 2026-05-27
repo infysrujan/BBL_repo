@@ -27,7 +27,7 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
   const card = createEl(`
     <article class="locate-us-card">
       <button type="button" class="locate-us-card-header" aria-expanded="false">
-        <h3 class="locate-us-card-name"></h3>
+        <span class="locate-us-card-name"></span>
         <span class="icon-dropdown locate-us-card-chevron" aria-hidden="true"></span>
       </button>
       <div class="locate-us-card-body" hidden>
@@ -98,7 +98,7 @@ export function buildOverseasCard(loc, placeholders) {
   const card = createEl(`
     <article class="locate-us-card">
       <button type="button" class="locate-us-card-header" aria-expanded="false">
-        <h3 class="locate-us-card-name"></h3>
+        <span class="locate-us-card-name"></span>
         <span class="icon-dropdown locate-us-card-chevron" aria-hidden="true"></span>
       </button>
       <div class="locate-us-card-body" hidden>
@@ -238,7 +238,6 @@ export function renderCards(
   onSelect,
   configs,
   isAtm = false,
-  autoSelect = true,
 ) {
   cardsContainer.innerHTML = '';
   const start = (page - 1) * CARDS_PER_PAGE;
@@ -273,8 +272,6 @@ export function renderCards(
     card.addEventListener('click', (e) => {
       if (window.matchMedia('(width > 47.5rem)').matches) {
         if (e.target.closest('a')) return;
-        collapseAll();
-        header.setAttribute('aria-expanded', 'true');
         onSelect(loc);
         scrollToMap();
         return;
@@ -294,7 +291,7 @@ export function renderCards(
     if (idx === 0) {
       body.hidden = false;
       header.setAttribute('aria-expanded', 'true');
-      if (autoSelect) onSelect(loc);
+      onSelect(loc);
     }
 
     cardsContainer.appendChild(card);
@@ -302,7 +299,7 @@ export function renderCards(
 
   renderPagination(paginationEl, allResults.length, page, (newPage) => {
     // eslint-disable-next-line max-len
-    renderCards(allResults, cardsContainer, paginationEl, newPage, placeholders, onSelect, configs, isAtm, false);
+    renderCards(allResults, cardsContainer, paginationEl, newPage, placeholders, onSelect, configs, isAtm);
     scrollToMap();
   }, placeholders);
 }
