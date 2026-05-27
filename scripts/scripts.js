@@ -50,7 +50,7 @@ initMarketingConsentListener();
 
 // Consent when AnalysisCookie is 'Analysis' (cookie-modal / cookie-alert).
 // Load martech unless the URL query includes martech=off (DA preview).
-const isConsentGiven = getCookie('AnalysisCookie') === 'Analysis';
+let isConsentGiven = getCookie('AnalysisCookie') === 'Analysis';
 const isEnabled = !window.location.search.includes('martech=off');
 
 /**
@@ -204,10 +204,10 @@ async function loadEager(doc) {
     },
     // 2. Library Configuration
     {
-      analytics: isEnabled && isConsentGiven,
-      personalization: !!getMetadata('target') && isEnabled && isConsentGiven,
+      analytics: isEnabled,
+      personalization: !!getMetadata('target') && isEnabled,
       launchUrls: launchConfig[env],
-      trackPageView: false,
+      trackPageView: false, //disables the first collect call
     },
   );
 
@@ -274,6 +274,8 @@ async function loadLazy(doc) {
 }
 
 function bblMartechDelayed() {
+
+  isConsentGiven = getCookie('AnalysisCookie') === 'Analysis';
   // Load the martech library in the delayed phase.
   martechDelayed();
   // Initialize the CDP events only if consent is given and martech is enabled.
