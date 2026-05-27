@@ -6,19 +6,19 @@ import { updateUserConsent as updateAdobeConsent } from '../plugins/martech/src/
  * Google Consent Mode update when the user accepts marketing-related storage
  * (aligns with defaults set in aem-gtm-martech when `consent: true`).
  */
-const DEFAULT_GTAG_MARKETING_GRANTED = {
-  analytics_storage: 'granted',
-  ad_storage: 'granted',
-  ad_user_data: 'granted',
-  ad_personalization: 'granted',
-  personalization_storage: 'granted',
+const DEFAULT_GTAG_MARKETING = {
+  analytics_storage: 'denied',
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+  personalization_storage: 'denied',
 };
 
 /** Adobe Web SDK / Alloy consent shape for `setConsent` (see martech `updateUserConsent`). */
-const DEFAULT_ADOBE_MARKETING_GRANTED = {
-  collect: true,
-  marketing: true,
-  personalize: true,
+const DEFAULT_ADOBE_MARKETING = {
+  collect: false,
+  marketing: false,
+  personalize: false,
   share: false,
 };
 
@@ -41,10 +41,35 @@ let consentListenerAttached = false;
  * @returns {Promise<void>}
  */
 export async function applyMarketingConsentUpdates(detail = {}) {
-  const gtagPayload = detail.gtag
-    ?? (detail.marketing === true ? DEFAULT_GTAG_MARKETING_GRANTED : null);
-  const adobePayload = detail.adobe
-    ?? (detail.marketing === true ? DEFAULT_ADOBE_MARKETING_GRANTED : null);
+  var gtagPayload = DEFAULT_GTAG_MARKETING;
+  var adobePayload = DEFAULT_ADOBE_MARKETING;
+
+  if (detail.preferences) {
+    // TODO: Validate the logic for AdvertisingCookie and AnalysisCookie
+    if (detail.preferences.AdvertisingCookie === true) {
+      // set advertising payload for gtag
+      gtagPayload.ad_storage = 'granted';
+      gtagPayload.ad_user_data = 'granted';
+      gtagPayload.ad_personalization = 'granted';
+      gtagPayload.personalization_storage = 'granted';
+
+      // set the advertising payload for adobe
+      adobePayload.personalize = true;
+      adobePayload.share = true;
+      adobePayload.marketing = true;
+    }
+
+    if (detail.preferences.AnalysisCookie === true) {
+      // set the analysis payload for gtag
+      gtagPayload.analytics_storage = 'granted';
+
+      //set the analysis payload for adobe
+      adobePayload.collect = true;
+    }
+
+    console.debug('Consent update details', 'gtagPayload', gtagPayload, 'adobePayload', adobePayload);
+  }
+  
 
   if (gtagPayload && typeof window.gtag === 'function') {
     // eslint-disable-next-line no-console
