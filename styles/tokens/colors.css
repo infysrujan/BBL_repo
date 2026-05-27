@@ -62,7 +62,7 @@
   --bbl-color-grey-78: #787878;
   --bbl-color-grey-152: #dcdcdc;
   --bbl-color-grey-153: #696969;
-
+  
 
   /* =========================================================================
      BLUE SCALE
@@ -93,7 +93,8 @@
   --bbl-color-blue-steel: #e5edf4;
   --bbl-color-blue-steel-light: #E6EEF4;
   --bbl-color-blue-steel-dark: #DEEAF6;
-  --bbl-color-blue-145: #e5edf4;
+  --bbl-color-blue-145: #E5EDF4;
+  --bbl-color-blue-222: #E0E6F8;
 
   /* =========================================================================
      RED SCALE
@@ -274,7 +275,7 @@
   --bbl-color-sme-tab-inactive: #445974;
   --bbl-color-sme-caret: #40a0f0;
   --bbl-color-sme-field-border: rgb(158 158 158 / 60%);
-
+  
   /* =========================================================================
      SLATE / COOL GREY
      ========================================================================= */
