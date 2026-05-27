@@ -20,7 +20,7 @@ function pauseBannerVideo(item) {
   const iframe = item?.querySelector('iframe.hero-banner-video');
   if (iframe) {
     delete iframe.dataset.ytPendingPlay;
-    if (iframe.ytPlayer) try { iframe.ytPlayer.pauseVideo(); } catch (_) { /* player not ready yet */ }
+    if (iframe.ytPlayer) try { iframe.ytPlayer.pauseVideo(); } catch (_) { /* not ready */ }
   }
 }
 
