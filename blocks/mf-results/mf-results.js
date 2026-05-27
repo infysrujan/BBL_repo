@@ -2,6 +2,7 @@ import decorateCardList from '../card-list/card-list.js';
 import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { openModal } from '../../scripts/modal.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -445,14 +446,15 @@ export default async function decorate(block) {
         return;
       }
 
-      // Fire custom event (catches fragment-loaded questionnaire on same page)
-      doc.dispatchEvent(new CustomEvent('mf:open-questionnaire'));
-
-      // Fallback: navigate to the MF listing page with start-over flag
+      // Open the questionnaire modal fragment directly — avoids page navigation.
+      // cfg.startOverUrl is an absolute URL (anchor.href); extract pathname for loadFragment.
       if (cfg.startOverUrl) {
-        const url = new URL(cfg.startOverUrl, window.location.origin);
-        url.searchParams.set('mf-start-over', '1');
-        window.location.href = url.toString();
+        try {
+          const fragmentPath = new URL(cfg.startOverUrl).pathname;
+          openModal(doc, fragmentPath);
+        } catch {
+          openModal(doc, cfg.startOverUrl);
+        }
       }
     });
 
