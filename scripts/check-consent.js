@@ -7,18 +7,20 @@ import { getCookie } from './utils/cookies.js';
  *
  * @returns {Promise<Object>} Consent types for gtag `consent` / default update payloads.
  */
-export default async function checkConsent() {
+export default async function consentCallback() {
+  
   return new Promise((resolve) => {
-    // Perform the Consent popup check here.
-    // Not using a CMP, therefore we must resolve to the desired Consent State.
-
-    resolve({
-      ad_storage: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
-      ad_user_data: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
-      ad_personalization: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
-      analytics_storage: getCookie('AnalysisCookie') === 'Analysis' ? 'granted' : 'denied',
-      functionality_storage: getCookie('AnalysisCookie') === 'Analysis' ? 'granted' : 'denied',
-      personalization_storage: getCookie('AnalysisCookie') === 'Analysis' ? 'granted' : 'denied',
-    });
+    setTimeout(() => {
+      // eslint-disable-next-line no-console
+      console.log('Updating Consent');
+      resolve({
+        ad_storage: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
+        ad_user_data: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
+        ad_personalization: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
+        analytics_storage: getCookie('AnalysisCookie') === 'Analysis' ? 'granted' : 'denied',
+        functionality_storage: getCookie('AnalysisCookie') === 'Analysis' ? 'granted' : 'denied',
+        personalization_storage: getCookie('AnalysisCookie') === 'Analysis' ? 'granted' : 'denied',
+      });
+    }, 1500);
   });
 }

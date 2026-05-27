@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-relative-packages
 import GtmMartech from '../plugins/gtm-martech/src/index.js';
-import checkConsent from './check-consent.js';
+import consentCallback from './check-consent.js';
 import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
 
@@ -32,7 +32,7 @@ const isEnabled = !window.location.search.includes('martech=off');
 
 // TODO: Update BBL's GA4 measurement ID and GTM Container Ids here
 const martech = new GtmMartech({
-  analytics: isEnabled && isConsentGiven,
+  analytics: isEnabled,
   tags: [GA_PROPERTY_CONFIG[env]],
   containers: {
     lazy: GTM_CONTAINER_CONFIG[env].lazy,
@@ -41,7 +41,7 @@ const martech = new GtmMartech({
   // Passed to gtag('config', measurementId, …): page fields, transport_url, etc.
   gtagConfig: {},
   consent: isConsentGiven,
-  consentCallback: checkConsent,
+  consentCallback,
   decorateCallback: /* Function to call on each found or loaded Section/Block */ () => {},
 });
 

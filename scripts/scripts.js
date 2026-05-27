@@ -273,11 +273,11 @@ async function loadLazy(doc) {
   }, 150);
 }
 
-function bblMartechDelayed() {
+async function bblMartechDelayed() {
 
   isConsentGiven = getCookie('AnalysisCookie') === 'Analysis';
 
-  gtmMartech.lazy();
+  await gtmMartech.lazy();
 
   // Load the martech library in the delayed phase.
   martechDelayed();
@@ -306,7 +306,7 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 
   // trigger the martech delayed phase when the consent is updated
-  window.addEventListener('consent-update', bblMartechDelayed);
+  window.addEventListener('consent-update', async () => await bblMartechDelayed());
 }
 
 async function loadPage() {
