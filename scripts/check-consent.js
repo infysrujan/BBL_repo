@@ -12,7 +12,7 @@ export default async function consentCallback() {
   return new Promise((resolve) => {
     setTimeout(() => {
       // eslint-disable-next-line no-console
-      console.log('Updating Consent');
+      console.log('Updating Consent: Callback from gtm-martech.js');
       resolve({
         ad_storage: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
         ad_user_data: getCookie('AdvertisingCookie') === 'Advertising' ? 'granted' : 'denied',
