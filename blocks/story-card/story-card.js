@@ -1,5 +1,6 @@
 import { createPictureWithoutOptimization } from '../../scripts/bbl-decorators.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { openModal } from '../../scripts/modal.js';
 
 /**
  * Helper to get text content from a row
@@ -238,4 +239,17 @@ export default function decorate(block) {
   // Replace block content
   block.textContent = '';
   block.appendChild(wrapper);
+
+  // Delegated click handler — mirrors card-list's [data-modal] pattern.
+  // Any relative-path CTA opens as a modal (path-agnostic).
+  block.addEventListener('click', (event) => {
+    const anchor = event.target.closest('.button-container a');
+    if (!anchor || !block.contains(anchor)) return;
+
+    const href = anchor.getAttribute('href');
+    if (!href || !href.startsWith('/')) return;
+
+    event.preventDefault();
+    openModal(doc, href);
+  });
 }
