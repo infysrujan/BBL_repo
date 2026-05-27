@@ -1,4 +1,4 @@
-import gtmMartech from './gtm-martech.js';
+import gtmMartech, { firePageViewIfAnalyticsGranted } from './gtm-martech.js';
 // eslint-disable-next-line import/no-relative-packages
 import { updateUserConsent as updateAdobeConsent } from '../plugins/martech/src/index.js';
 
@@ -75,6 +75,7 @@ export async function applyMarketingConsentUpdates(detail = {}) {
     // eslint-disable-next-line no-console
     console.debug('Updating Google Consent Mode', gtagPayload);
     gtmMartech.updateUserConsent(gtagPayload);
+    firePageViewIfAnalyticsGranted(gtagPayload);
   }
 
   if (adobePayload) {
