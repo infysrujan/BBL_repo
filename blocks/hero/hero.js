@@ -17,20 +17,37 @@ function getAssetSrc(cell) {
 
 function pauseBannerVideo(item) {
   item?.querySelector('video.hero-banner-video')?.pause();
-  const yt = item?.querySelector('iframe.hero-banner-video')?.ytPlayer;
-  if (yt) try { yt.pauseVideo(); } catch (_) { /* player not ready yet */ }
+  const iframe = item?.querySelector('iframe.hero-banner-video');
+  if (iframe) {
+    delete iframe.dataset.ytPendingPlay;
+    if (iframe.ytPlayer) try { iframe.ytPlayer.pauseVideo(); } catch (_) { /* player not ready yet */ }
+  }
 }
 
 function playBannerVideo(item) {
   const video = item?.querySelector('video.hero-banner-video');
   if (video) {
-    video.muted = true;
+    video.muted = false;
+    video.removeAttribute('muted');
     video.play()
-      .then(() => { video.muted = false; video.volume = 0.5; })
-      .catch(() => {});
+      .then(() => { video.volume = 0.5; })
+      .catch(() => {
+        video.muted = true;
+        video.play().then(() => { video.volume = 0.5; }).catch(() => {});
+      });
   }
-  const yt = item?.querySelector('iframe.hero-banner-video')?.ytPlayer;
-  if (yt) try { yt.playVideo(); } catch (_) { /* player not ready yet */ }
+  const iframe = item?.querySelector('iframe.hero-banner-video');
+  if (iframe) {
+    if (iframe.ytPlayer && iframe.ytPlayerReady) {
+      try {
+        iframe.ytPlayer.unMute();
+        iframe.ytPlayer.setVolume(50);
+        iframe.ytPlayer.playVideo();
+      } catch (_) { /* player not ready yet */ }
+    } else {
+      iframe.dataset.ytPendingPlay = '1';
+    }
+  }
 }
 
 function changeBanner(block) {
@@ -51,6 +68,10 @@ function changeBanner(block) {
 
     playBannerVideo(block.querySelector('.hero-banner-item.hero-banner-item-active'));
   }, true);
+
+  block.addEventListener('mouseleave', () => {
+    pauseBannerVideo(block.querySelector('.hero-banner-item.hero-banner-item-active'));
+  });
 }
 
 function lazyLoadThumbnails(block) {
@@ -165,13 +186,19 @@ function wireDAMControls(video, bar, bannerItem) {
   video.addEventListener('play', () => { playBtn.innerHTML = VI.pause; playBtn.setAttribute('aria-label', 'Pause'); });
   video.addEventListener('pause', () => { playBtn.innerHTML = VI.play; playBtn.setAttribute('aria-label', 'Play'); });
 
-  muteBtn.addEventListener('click', () => { video.muted = !video.muted; });
-  video.addEventListener('volumechange', () => {
+  const syncMuteBtn = () => {
     const muted = video.muted || video.volume === 0;
     muteBtn.innerHTML = muted ? VI.muted : VI.volume;
     muteBtn.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
     volSlider.value = muted ? 0 : Math.round(video.volume * 100);
-  });
+  };
+
+  muteBtn.addEventListener('click', () => { video.muted = !video.muted; });
+  video.addEventListener('volumechange', syncMuteBtn);
+
+  muteBtn.innerHTML = VI.volume;
+  muteBtn.setAttribute('aria-label', 'Mute');
+  volSlider.value = Math.round(video.volume * 100);
 
   volSlider.addEventListener('input', () => {
     video.volume = volSlider.value / 100;
@@ -229,6 +256,13 @@ function wireYouTubeControls(iframe, bar, bannerItem) {
     const player = new window.YT.Player(iframe.id, {
       events: {
         onReady: ({ target }) => {
+          iframe.ytPlayerReady = true;
+          if (iframe.dataset.ytPendingPlay) {
+            delete iframe.dataset.ytPendingPlay;
+            target.unMute();
+            target.setVolume(50);
+            target.playVideo();
+          }
           target.unMute();
           target.setVolume(50);
           volSlider.value = 50;
@@ -388,9 +422,12 @@ export default function decorate(block) {
           const bar = buildControls(bannerItem);
           wireDAMControls(video, bar, bannerItem);
           if (i === defaultIndex) {
-            video.play()
-              .then(() => { video.muted = false; video.volume = 0.5; })
-              .catch(() => {});
+            video.addEventListener('play', () => {
+              video.muted = false;
+              video.removeAttribute('muted');
+              video.volume = 0.5;
+            }, { once: true });
+            video.play().catch(() => {});
           }
         }
       }
