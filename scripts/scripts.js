@@ -165,9 +165,10 @@ document.addEventListener('bbl:load-fragment', async (e) => {
  * @returns {'en'|'th'}
  */
 function getDocumentLangFromPath(pathname) {
-  const first = pathname.split('/').filter(Boolean)[0];
-  if (first === 'en') return 'en';
-  if (first === 'th') return 'th';
+  const segments = pathname.split('/').filter(Boolean);
+  if (segments[0] === 'en') return 'en';
+  if (segments[0] === 'th') return 'th';
+  if (segments[0] === 'content' && segments[1] === 'bangkokbank' && segments[2] === 'en') return 'en';
   return 'th';
 }
 
