@@ -7,33 +7,20 @@ import { activateTab } from '../tabs/helpers/tabs-utils.js';
 import {
   bindPaginationClick,
   buildCardHtml,
+  buildCardOptions,
   buildPaginationHtml,
   buildPromotionDataUrl,
   fetchJson,
   getPromotionPathFlags,
   handleMobileAppView,
   mergeLocalConfig,
-  normalizeQueryLang,
+  normalizeCardTypeValue,
   normalizePromotionType,
+  normalizeQueryLang,
   resolvePromotionApi,
   resolvePromotionLang,
   sortCards,
-} from '../promotional-details/promotional-details.js';
-
-const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
-const LOGO_ICONS = {
-  visa: '/icons/visa-new.svg',
-  mastercard: '/icons/mastercard-new.svg',
-  amex: '/icons/amex-new.svg',
-  unionpay: '/icons/upi-new.svg',
-};
-
-const CARD_TYPE_NORMALIZE = {
-  วีซ่า: 'visa',
-  มาสเตอร์การ์ด: 'mastercard',
-  แอมเอ็กซ์: 'amex',
-  ยูเนี่ยนเพย์: 'unionpay',
-};
+} from '../../scripts/utils/card-helpers.js';
 
 const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
 
@@ -54,7 +41,6 @@ function getPromoListingConfig(block) {
   return { promotionType };
 }
 
-/** Thin alias kept for call-site readability. */
 async function fetchPromotions(url) {
   return fetchJson(url);
 }
@@ -137,24 +123,6 @@ function applyCategoryTabs(tabsContainer, categories) {
   }
 }
 
-function formatDate(dateStr, locale = 'en-GB') {
-  if (!dateStr) return '';
-  return new Date(dateStr).toLocaleDateString(locale, {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
-}
-
-function buildDateLine(card, locale) {
-  const start = formatDate(card.promotionStartDate, locale);
-  const end = formatDate(card.promotionEndDate, locale);
-  const label = card.dateValidityLabel || 'until';
-  if (start && end) return `${start} ${label} ${end}`;
-  if (end) return `${label} ${end}`;
-  return '';
-}
-
 function toStringValue(item) {
   if (typeof item === 'string') return item;
   if (item && typeof item === 'object') return item.value || item.label || item.name || '';
@@ -165,27 +133,6 @@ function normalizeList(value) {
   if (Array.isArray(value)) return value.map(toStringValue).filter(Boolean);
   if (value == null) return [];
   return [toStringValue(value)].filter(Boolean);
-}
-
-function buildLogosHtml(logos) {
-  if (!logos?.length) return '';
-  const imgs = logos
-    .map((key) => {
-      const src = LOGO_ICONS[key];
-      return src ? `<img src="${src}" alt="${key}" class="promo-selector-logo" loading="lazy">` : '';
-    })
-    .join('');
-  return `<div class="promo-selector-logos">${imgs}</div>`;
-}
-
-export function buildCardOptions(card) {
-  const locale = LOCALE_MAP[getLang()] || 'en-GB';
-  return {
-    dateLine: buildDateLine(card, locale),
-    logoHtml: buildLogosHtml(
-      (card.cardTypes || []).map((t) => CARD_TYPE_NORMALIZE[t] || t.toLowerCase()),
-    ),
-  };
 }
 
 function buildSubOptions(items, defaultLabel) {
@@ -225,8 +172,10 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
     ) return false;
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
     if (subcategory && card.subcategory !== subcategory) return false;
-    const cardTypesLower = normalizeList(card.cardTypes).map((t) => t.toLowerCase());
-    if (cardType && !cardTypesLower.includes(cardType.toLowerCase())) return false;
+    if (cardType) {
+      const cardTypeNormalized = normalizeList(card.cardTypes).map(normalizeCardTypeValue);
+      if (!cardTypeNormalized.includes(normalizeCardTypeValue(cardType))) return false;
+    }
     if (area) {
       const cardAreas = normalizeList(card.area);
       const areaMatch = cardAreas.some((a) => a.toLowerCase() === area.toLowerCase());
@@ -361,7 +310,6 @@ function setupPanel(
   if (options.immediate) {
     render();
   } else {
-    // Lazy render — only when panel becomes visible (inactive tabs are hidden = not intersecting)
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
         observer.disconnect();
@@ -371,7 +319,6 @@ function setupPanel(
     observer.observe(panel);
   }
 
-  // Dropdown open/close
   if (disableFilters) return;
 
   panel.querySelectorAll('.promo-selector-filter-btn').forEach((btn) => {
@@ -534,8 +481,6 @@ export default async function decorate(block) {
   const tabsContainer = getTabsContainer(block);
   applyCategoryTabs(tabsContainer, activeCategories);
 
-  // Issue 1 Fix: mark the parent section so CSS fade selectors scope correctly,
-  // then wire scroll events to toggle gradient-fade state classes on the nav wrapper.
   const promoSection = block.closest('.section');
   if (promoSection) promoSection.classList.add('promo-card-listing-section');
 
@@ -549,12 +494,10 @@ export default async function decorate(block) {
         navWrapper.classList.toggle('is-scroll-end', scrollLeft + clientWidth >= scrollWidth - 2);
       };
       tabsNav.addEventListener('scroll', updateScrollFade, { passive: true });
-      // Run once after first render so the initial state is set correctly
       requestAnimationFrame(updateScrollFade);
     }
   }
 
-  // Find tab panels created by tabs.js from the empty tab sections
   const tabPanels = tabsContainer
     ? [...tabsContainer.querySelectorAll('.tabs-content .tab-panel')]
     : [...document.querySelectorAll('[role="tabpanel"]')];
@@ -597,7 +540,6 @@ export default async function decorate(block) {
     );
   });
 
-  // Close all dropdowns on outside click (single listener for all panels)
   document.addEventListener('click', () => {
     document.querySelectorAll('.promo-selector-filter.is-open').forEach((f) => {
       f.classList.remove('is-open');
@@ -605,6 +547,5 @@ export default async function decorate(block) {
     });
   });
 
-  // Block is just a data-source config — hide it from view
   block.hidden = true;
 }
