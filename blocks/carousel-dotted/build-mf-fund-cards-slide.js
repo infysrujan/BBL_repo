@@ -2,7 +2,6 @@ import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import decorateCardList from '../card-list/card-list.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -78,45 +77,20 @@ async function loadFundsData() {
 
 // ── Card block builder ─────────────────────────────────────────────────────────
 
-function makeCell(doc, content) {
-  const cell = doc.createElement('div');
-  if (content instanceof Node) cell.appendChild(content);
-  else if (content !== null && content !== undefined) cell.textContent = String(content);
-  return cell;
-}
-
-function makeRow(doc, ...contents) {
-  const row = doc.createElement('div');
-  contents.forEach((c) => row.appendChild(makeCell(doc, c)));
-  return row;
-}
-
 /**
- * Build a card-list block element from fund items.
- *
- * Cell layout for card-list.js (stubOffset=1 applies when cells[8] has no anchor,
- * so an extra null at cells[9] serves as the consumed stub, placing base=10):
- *   0  image               7  defaultButton (link <a>)
- *   1  promoTag            8  multipleDownloadLinks (null)
- *   2  title               9  stub null (consumed by stubOffset)
- *   3  subtitle           10  imageLayout  (base=10)
- *   4  description        11  enableTitleUnderline
- *   5  remark (logo)      12  isCardClickable
- *   6  actionTypeText     13  cardLink
- *                         14  enableOverlayModal
+ * Build the fund card list HTML directly, producing the same class structure
+ * as card-list.js so that card-list.css applies without running card-list.js.
  */
 function buildFundCardsBlock(funds, doc, readMoreLabel) {
   const block = doc.createElement('div');
   block.className = 'card-list mf-card-list block';
   block.dataset.blockName = 'card-list';
 
-  // First 3 rows are layout config consumed by card-list.js decorate()
-  block.appendChild(makeRow(doc, 'scrollable'));
-  block.appendChild(makeRow(doc, 'center'));
-  block.appendChild(makeRow(doc, 'cards-3'));
-
   // eslint-disable-next-line no-underscore-dangle
   const getImgUrl = (val) => val?._publishUrl || (typeof val === 'string' ? val : '');
+
+  const list = doc.createElement('div');
+  list.className = 'cards-list scrollable center cards-3';
 
   funds.forEach((fund) => {
     const name = fund.FundName || '';
@@ -129,72 +103,78 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
     const logoSrc = getImgUrl(fund.LogoImage) || getImgUrl(fund.ManagementCompanyLogo);
     const imgSrc = fundImgSrc || logoSrc;
 
-    // Cell 0 — fund image
-    const imgCell = doc.createElement('div');
+    const card = doc.createElement('div');
+    card.className = 'cards-list-item';
+
+    const inner = doc.createElement('div');
+    inner.className = 'cards-list-inner';
+
+    // Image
     if (imgSrc) {
+      const imageWrapper = doc.createElement('div');
+      imageWrapper.className = 'cards-list-image cards-list-image-default';
       const img = doc.createElement('img');
       img.src = imgSrc;
       img.alt = name;
       img.loading = 'lazy';
-      imgCell.appendChild(img);
+      imageWrapper.appendChild(img);
+      inner.appendChild(imageWrapper);
     }
 
-    // Cell 2 — title
-    const titleCell = doc.createElement('div');
+    // Content
+    const content = doc.createElement('div');
+    content.className = 'cards-list-content';
+
+    // Title
+    const titleEl = doc.createElement('div');
+    titleEl.className = 'cards-list-title';
     const h3 = doc.createElement('h3');
     h3.textContent = name;
     h3.dataset.cardId = productId;
     h3.dataset.compareEnabled = compareEnabled ? 'true' : 'false';
-    titleCell.appendChild(h3);
+    titleEl.appendChild(h3);
+    content.appendChild(titleEl);
 
-    // Cell 4 — description
-    const descCell = doc.createElement('div');
+    // Description
     if (fund.FundDescription) {
+      titleEl.classList.add('has-description');
+      const descEl = doc.createElement('div');
+      descEl.className = 'cards-list-description';
       const p = doc.createElement('p');
       p.textContent = fund.FundDescription;
-      descCell.appendChild(p);
+      descEl.appendChild(p);
+      content.appendChild(descEl);
     }
 
-    // Cell 5 — remark (logo)
-    const remarkCell = doc.createElement('div');
+    // Remark (logo)
     if (logoSrc) {
+      const remarkEl = doc.createElement('div');
+      remarkEl.className = 'cards-list-remark';
       const logo = doc.createElement('img');
       logo.src = logoSrc;
       logo.alt = name;
       logo.loading = 'lazy';
       logo.className = 'mfr-logo';
-      remarkCell.appendChild(logo);
+      remarkEl.appendChild(logo);
+      content.appendChild(remarkEl);
     }
 
-    // Cell 7 — button
-    const btnCell = doc.createElement('div');
+    inner.appendChild(content);
+
+    // Button
+    const buttonWrapper = doc.createElement('div');
+    buttonWrapper.className = 'cards-list-button';
     const link = doc.createElement('a');
     link.href = readMoreUrl;
     link.textContent = readMoreLabel;
-    btnCell.appendChild(link);
+    buttonWrapper.appendChild(link);
+    inner.appendChild(buttonWrapper);
 
-    // Extra null at cells[9] is the stub consumed by card-list.js stubOffset=1
-    // so imageLayout lands at cells[10] (base=10) and all fields align correctly.
-    block.appendChild(makeRow(
-      doc,
-      imgCell, // 0  image
-      null, // 1  promoTag
-      titleCell, // 2  title
-      null, // 3  subtitle
-      descCell, // 4  description
-      remarkCell, // 5  remark (logo)
-      'default', // 6  actionTypeText
-      btnCell, // 7  defaultButton
-      null, // 8  multipleDownloadLinks (no anchor → stub at cells[9])
-      null, // 9  stub (consumed by stubOffset=1)
-      'default', // 10 imageLayout  (base=10)
-      'false', // 11 enableTitleUnderline
-      'false', // 12 isCardClickable
-      null, // 13 cardLink
-      'false', // 14 enableOverlayModal
-    ));
+    card.appendChild(inner);
+    list.appendChild(card);
   });
 
+  block.appendChild(list);
   return block;
 }
 
@@ -264,7 +244,6 @@ export default async function buildMfFundCardsSlide(row, index) {
 
   const blockEl = buildFundCardsBlock(filteredFunds, doc, readMoreLabel);
   slide.appendChild(blockEl);
-  decorateCardList(blockEl);
 
   // Inject compare buttons (mirrors addCompareButtons in mf-results.js)
   blockEl.querySelectorAll('.cards-list-button').forEach((wrapper) => {

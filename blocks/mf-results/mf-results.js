@@ -1,4 +1,3 @@
-import decorateCardList from '../card-list/card-list.js';
 import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
@@ -228,37 +227,22 @@ function removePeek(container) {
   container.classList.remove('mfr-peek');
 }
 
-// ── card-list block DOM builder ────────────────────────────────────────────────
-
-function createBlockRow(doc, ...cells) {
-  const row = doc.createElement('div');
-  cells.forEach((content) => {
-    const cell = doc.createElement('div');
-    if (content instanceof Node) cell.appendChild(content);
-    else if (content !== null && content !== undefined) cell.textContent = String(content);
-    row.appendChild(cell);
-  });
-  return row;
-}
+// ── Fund card DOM builder ──────────────────────────────────────────────────────
 
 /**
- * Build a card-list block element from the fund items.
- * Uses the 15-cell row structure expected by card-list.js decorate()
- * (cells[7] = defaultButton, cells[9] = stub for stubOffset=1, base=10).
+ * Build the fund card list HTML directly, producing the same class structure
+ * as card-list.js so that card-list.css applies without running card-list.js.
  */
 function buildCardBlock(funds, doc, labels) {
   const block = doc.createElement('div');
   block.className = 'card-list mf-results block';
   block.dataset.blockName = 'card-list';
 
-  // Layout rows (read by card-list.js decorate as first 3 children)
-  block.appendChild(createBlockRow(doc, 'scrollable')); // layout
-  block.appendChild(createBlockRow(doc, 'center')); // alignment
-  block.appendChild(createBlockRow(doc, 'cards-3')); // cards per row
-
-  // Extract _publishUrl from image objects returned by GraphQL
   // eslint-disable-next-line no-underscore-dangle
   const getImgUrl = (val) => val?._publishUrl || (typeof val === 'string' ? val : '');
+
+  const list = doc.createElement('div');
+  list.className = 'cards-list scrollable center cards-3';
 
   funds.forEach((fund) => {
     const name = fund.FundName || '';
@@ -267,75 +251,82 @@ function buildCardBlock(funds, doc, labels) {
     const productId = fund.ProductID || name;
     const compareEnabled = fund.CompareButton === 'true';
 
-    // Resolve image URLs (GraphQL returns objects with _publishUrl)
     const fundImageSrc = getImgUrl(fund.FundImage);
     const logoSrc = getImgUrl(fund.LogoImage) || getImgUrl(fund.ManagementCompanyLogo);
-
-    // Cell 0 — fund image (falls back to logo)
-    const imgCell = doc.createElement('div');
     const imgSrc = fundImageSrc || logoSrc;
+
+    const card = doc.createElement('div');
+    card.className = 'cards-list-item';
+
+    const inner = doc.createElement('div');
+    inner.className = 'cards-list-inner';
+
+    // Image
     if (imgSrc) {
+      const imageWrapper = doc.createElement('div');
+      imageWrapper.className = 'cards-list-image cards-list-image-default';
       const img = doc.createElement('img');
       img.src = imgSrc;
       img.alt = name;
       img.loading = 'lazy';
-      imgCell.appendChild(img);
+      imageWrapper.appendChild(img);
+      inner.appendChild(imageWrapper);
     }
 
-    // Cell 2 — title (fund name)
-    const titleCell = doc.createElement('div');
+    // Content
+    const content = doc.createElement('div');
+    content.className = 'cards-list-content';
+
+    // Title (with underline — mirrors enableTitleUnderline: true)
+    const titleEl = doc.createElement('div');
+    titleEl.className = 'cards-list-title has-title-underline';
     const h3 = doc.createElement('h3');
     h3.textContent = name;
     h3.dataset.cardId = productId;
     h3.dataset.compareEnabled = compareEnabled ? 'true' : 'false';
-    titleCell.appendChild(h3);
+    titleEl.appendChild(h3);
+    content.appendChild(titleEl);
 
-    // Cell 4 — description
-    const descCell = doc.createElement('div');
+    // Description
     if (fund.FundDescription) {
+      titleEl.classList.add('has-description');
+      const descEl = doc.createElement('div');
+      descEl.className = 'cards-list-description';
       const p = doc.createElement('p');
       p.textContent = fund.FundDescription;
-      descCell.appendChild(p);
+      descEl.appendChild(p);
+      content.appendChild(descEl);
     }
 
-    // Cell 5 — remark (logo)
-    const remarkCell = doc.createElement('div');
+    // Remark (logo)
     if (logoSrc) {
+      const remarkEl = doc.createElement('div');
+      remarkEl.className = 'cards-list-remark';
       const logoImg = doc.createElement('img');
       logoImg.src = logoSrc;
       logoImg.alt = name;
       logoImg.loading = 'lazy';
       logoImg.className = 'mfr-logo';
-      remarkCell.appendChild(logoImg);
+      remarkEl.appendChild(logoImg);
+      content.appendChild(remarkEl);
     }
 
-    // Cell 7 — button ("Read more" link)
-    const btnCell = doc.createElement('div');
+    inner.appendChild(content);
+
+    // Button
+    const buttonWrapper = doc.createElement('div');
+    buttonWrapper.className = 'cards-list-button';
     const link = doc.createElement('a');
     link.href = readMoreUrl || '#';
     link.textContent = labels.readMore;
-    btnCell.appendChild(link);
+    buttonWrapper.appendChild(link);
+    inner.appendChild(buttonWrapper);
 
-    block.appendChild(createBlockRow(
-      doc,
-      imgCell, // 0  image
-      null, // 1  promoTag
-      titleCell, // 2  title
-      null, // 3  subtitle
-      descCell, // 4  description
-      remarkCell, // 5  remark (logo)
-      'default', // 6  actionTypeText
-      btnCell, // 7  defaultButton (Read more link)
-      null, // 8  multipleDownloadLinks (no anchor → stub at cells[9])
-      null, // 9  stub (consumed by stubOffset=1)
-      'default', // 10 imageLayout  (base=10)
-      'true', // 11 enableTitleUnderline
-      'false', // 12 isCardClickable
-      null, // 13 cardLink
-      'false', // 14 enableOverlayModal
-    ));
+    card.appendChild(inner);
+    list.appendChild(card);
   });
 
+  block.appendChild(list);
   return block;
 }
 
@@ -511,7 +502,7 @@ export default async function decorate(block) {
     toggleBtn.setAttribute('aria-expanded', String(isExpanded));
   }
 
-  // ── Render cards using card-list block pattern ─────────────────────────────
+  // ── Render fund cards ──────────────────────────────────────────────────────
   function renderCards(funds) {
     cardListContainer.innerHTML = '';
     lastRenderedTotal = funds ? funds.length : 0;
@@ -527,7 +518,6 @@ export default async function decorate(block) {
 
     const blockEl = buildCardBlock(funds, doc, labels);
     cardListContainer.appendChild(blockEl);
-    decorateCardList(blockEl);
     addCompareButtons(blockEl, doc, labels);
     restoreCompareState();
 
