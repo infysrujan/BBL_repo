@@ -36,6 +36,8 @@ function buildTile(row, doc) {
     const anchor = doc.createElement('a');
     anchor.href = linkHref;
     anchor.className = 'multi-column-tiles-link';
+    anchor.target = '_blank';
+    anchor.rel = 'noopener noreferrer';
     if (title) anchor.setAttribute('title', title);
     anchor.setAttribute('aria-label', title);
     anchor.appendChild(imageWrapper);
@@ -44,7 +46,7 @@ function buildTile(row, doc) {
     tile.appendChild(imageWrapper);
   }
 
-  const titleEl = doc.createElement('h2');
+  const titleEl = doc.createElement('h5');
   titleEl.className = 'multi-column-tiles-title';
   titleEl.textContent = title;
 

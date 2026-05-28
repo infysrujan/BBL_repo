@@ -98,10 +98,11 @@
   right: 0;
   z-index: 1;
   color: var(--bbl-color-white);
-  font-size: 1.267rem;
+  font-family: "BangkokBank-Regular", Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 1.5rem;
   line-height: 1.375;
   letter-spacing: 0.0313rem;
-  font-weight: var(--bbl-font-weight-regular,400);
+  font-weight: var(--bbl-font-weight-medium, 500);
   text-align: center;
   padding-left: 18%;
   padding-right: 18%;
