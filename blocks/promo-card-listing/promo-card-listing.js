@@ -455,7 +455,7 @@ export default async function decorate(block) {
     }
     const firstCategory = activeCategories[0]?.label || '';
     const firstSubcategories = activeCategories[0]?.subcategories || [];
-    const isHighlightsPanel = isTopPromotionsLabel(firstCategory);
+    const isHighlightsPanel = isBbm && isTopPromotionsLabel(firstCategory);
     previewPanel.innerHTML = '';
     setupPanel(
       previewPanel,
@@ -519,7 +519,7 @@ export default async function decorate(block) {
     const category = catMeta.label || tabText;
     const subcategories = catMeta.subcategories || [];
 
-    const isHighlightsPanel = index === 0 || isTopPromotionsLabel(tabText);
+    const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText));
 
     setupPanel(
       panel,
