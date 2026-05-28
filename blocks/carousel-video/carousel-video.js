@@ -166,21 +166,25 @@ export default async function decorate(block) {
   // ── State helpers ─────────────────────────────────────────────────────────
   function setActive(index) {
     activeIndex = index;
-    iframe.src = `${embedBaseUrl}${items[index].id}`;
-    thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
-    dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
+    mainPlayer.classList.remove('active');
+    setTimeout(() => {
+      iframe.src = `${embedBaseUrl}${items[index].id}`;
+      thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
+      dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
+      requestAnimationFrame(() => mainPlayer.classList.add('active'));
+    }, 0);
   }
 
   function getThumbWidth() {
     // Fall back to the CSS-declared width so the initial scroll is correct
     // even before the first browser layout pass.
-    return allThumbBtns[0]?.offsetWidth || 185;
+    return allThumbBtns[0]?.offsetWidth || 193;
   }
 
   function scrollTrack(rawNew) {
     rawScrollIndex = Math.max(0, Math.min(rawNew, 3 * n + extraCount - VISIBLE));
     const w = getThumbWidth();
-    track.style.transform = `translateX(-${rawScrollIndex * (w + THUMB_GAP)}px)`;
+    track.style.transform = `translate3d(-${rawScrollIndex * (w + THUMB_GAP)}px, 0px, 0px)`;
   }
 
   // Jump without triggering the CSS transition (used for seamless wrap resets).
@@ -188,7 +192,7 @@ export default async function decorate(block) {
     rawScrollIndex = rawNew;
     const w = getThumbWidth();
     track.style.transition = 'none';
-    track.style.transform = `translateX(-${rawScrollIndex * (w + THUMB_GAP)}px)`;
+    track.style.transform = `translate3d(-${rawScrollIndex * (w + THUMB_GAP)}px, 0px, 0px)`;
     track.getBoundingClientRect(); // force reflow so the transition suppression takes effect
     track.style.transition = '';
   }
@@ -209,8 +213,12 @@ export default async function decorate(block) {
   }
 
   // Scroll so the given index lands at the first (leftmost) visible slot.
+  // Always picks the next occurrence ahead of (>=) the current position so
+  // the track only ever moves rightward (clockwise).
   function scrollToFirst(index) {
-    const itemRaw = nearestRawForIndex(index);
+    const candidates = [index, n + index, 2 * n + index];
+    const ahead = candidates.filter((c) => c >= rawScrollIndex);
+    const itemRaw = ahead.length > 0 ? Math.min(...ahead) : 2 * n + index;
     scrollTrack(itemRaw);
   }
 
@@ -274,6 +282,7 @@ export default async function decorate(block) {
 
   // Place the track at the start of the original set without animation.
   scrollTrackSilent(n);
+  requestAnimationFrame(() => mainPlayer.classList.add('active'));
 
   // Recalculate scroll offset on resize
   let resizeTimer;
