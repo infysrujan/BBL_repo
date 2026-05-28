@@ -1,6 +1,6 @@
 td.merged-fund-type {
   vertical-align: top;
-  color: var(--bbl-color-grey-55, #999) !important;
+  color: var(--bbl-color-grey-55, #999);
 }
 
 .fund-prices-table {
