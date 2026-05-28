@@ -273,7 +273,11 @@ function wireYouTubeControls(iframe, bar, bannerItem) {
     volSlider.addEventListener('input', () => {
       const v = Number(volSlider.value);
       player.setVolume(v);
-      if (v === 0) { player.mute(); muteBtn.innerHTML = VI.muted; } else { player.unMute(); muteBtn.innerHTML = VI.volume; }
+      if (v === 0) {
+        player.mute(); muteBtn.innerHTML = VI.muted;
+      } else {
+        player.unMute(); muteBtn.innerHTML = VI.volume;
+      }
     });
 
     seekBar.addEventListener('input', () => {

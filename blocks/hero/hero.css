@@ -71,8 +71,13 @@
     aspect-ratio: 5/4;
 }
 
+.hero-banner-hero-with-thumbnail-images .hero-banner-item {
+  overflow: hidden;
+}
+
 .hero-banner-hero-with-thumbnail-images .hero-banner-video {
     aspect-ratio: 5/4;
+    height: auto;
     cursor: pointer;
 }
 
@@ -80,7 +85,7 @@
 
 .hero-banner-video-controls {
   position: absolute;
-  bottom: 0;
+  bottom: 1.5625rem;
   left: 0;
   right: 0;
   z-index: 10;
@@ -318,6 +323,7 @@
 .hero-banner-thumbnail-list {
   margin: 0;
   position: relative;
+  z-index: 11;
   display: flex;
   gap: var(--bbl-space-100);
   min-height: 3.75rem;
