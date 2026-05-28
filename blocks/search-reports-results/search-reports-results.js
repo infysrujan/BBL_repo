@@ -162,7 +162,7 @@ async function fetchAndRender(block, type, year) {
 
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
   const apiBase = configs.reportsAemBaseUrl || '';
-  const googleViewerUrl = configs.reportsGoogleViewerUrl || 'https://docs.google.com/gview';
+  const googleViewerUrl = configs.reportsGoogleViewerUrl || '';
 
   block.innerHTML = '';
   const wrapper = el('div', { className: 'srr-results-wrapper' });
@@ -195,9 +195,9 @@ async function fetchAndRender(block, type, year) {
     if (isLocal) {
       res = await fetch('/blocks/search-reports-results/results.mock.json');
     } else {
-      res = await fetch(`${apiBase}/content/bangkokbank/${lang}.reports.${type}.${year}.json`);
+      res = await fetch(`${apiBase}/${lang}.reports.${type}.${year}.json`);
       if (res.status === 204 && lang !== 'en') {
-        res = await fetch(`${apiBase}/content/bangkokbank/en.reports.${type}.${year}.json`);
+        res = await fetch(`${apiBase}/en.reports.${type}.${year}.json`);
       }
     }
     if (res.status === 204) throw new Error('no content');

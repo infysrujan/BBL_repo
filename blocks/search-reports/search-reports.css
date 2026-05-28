@@ -45,7 +45,7 @@
 
 .search-reports-overlay .sr-close-btn {
   background: transparent;
-  border: 0.0938rem solid rgb(255 255 255 / 60%);
+  border: 0.0938rem solid var(--bbl-color-white-alpha-60);
   cursor: pointer;
   width: 2.5rem;
   height: 2.5rem;
@@ -202,7 +202,7 @@
   cursor: pointer;
 }
 
-@media (width >= 761px) {
+@media (width > 47.5rem) {
   .search-reports-overlay .sr-body {
     padding: 3.75rem 1.5rem 3rem;
     max-width: 47.5rem;
@@ -214,7 +214,7 @@
   }
 }
 
-@media (width >= 64rem) {
+@media (width > 64rem) {
   .search-reports-overlay .sr-header {
     padding: 1rem 2rem;
   }

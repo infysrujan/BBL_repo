@@ -124,8 +124,8 @@ function buildDropdown(placeholder, onChange) {
   return { wrapper, getValue: () => currentValue, populateOptions };
 }
 
-async function fetchSearchParams(apiBase) {
-  const url = `${apiBase}/content/bangkokbank/en.reports.searchparams.json`;
+async function fetchSearchParams(apiBase, lang) {
+  const url = `${apiBase}/${lang}.reports.searchparams.json`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`searchparams fetch failed: ${res.status}`);
   const text = await res.text();
@@ -161,8 +161,8 @@ export default async function decorate(block) {
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
   const apiBase = configs.reportsAemBaseUrl || '';
 
-  const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel || 'Search for Reports';
-  const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || placeholders.reportsModalTitle || 'Search Report';
+  const ctaLabel = placeholders.reportsCtaLabel || 'Search for Reports';
+  const modalTitle = placeholders.reportsModalTitle || 'Search Report';
   const modalDesc = rows[2]?.firstElementChild?.innerHTML?.trim() || '';
 
   const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
@@ -222,7 +222,7 @@ export default async function decorate(block) {
   getYear = getYearVal;
 
   // Populate dropdowns from API, fallback to authored rows on failure
-  fetchSearchParams(apiBase).then((data) => {
+  fetchSearchParams(apiBase, lang).then((data) => {
     populateTypes(data.reportTypes?.length ? data.reportTypes : typeOptions);
     populateYears((data.years || []).map((y) => ({ label: y, value: y })));
   }).catch(() => {
