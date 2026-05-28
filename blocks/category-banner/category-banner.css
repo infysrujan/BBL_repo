@@ -68,7 +68,7 @@
 }
 
 
-@media (min-width: 760px) {
+@media (width > 47.5rem) {
   .category-banner-card {
     padding: 2rem 1.75rem 1.75rem;
   }
@@ -82,7 +82,7 @@
   }
 }
 
-@media (min-width: 1025px) {
+@media (width > 64rem) {
   .category-banner-card {
     padding: 2.5rem 2rem 2rem;
   }

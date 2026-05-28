@@ -1,5 +1,7 @@
 import { loadFragment } from '../fragment/fragment.js';
 
+const TABLET_MIN = '47.5rem';
+
 export default function decorate(block) {
   const rows = [...block.children];
 
@@ -20,7 +22,7 @@ export default function decorate(block) {
     const pic = document.createElement('picture');
     if (mobileImg) {
       const src = document.createElement('source');
-      src.media = '(max-width: 759px)';
+      src.media = `(width <= ${TABLET_MIN})`;
       src.srcset = mobileImg.src;
       pic.append(src);
     }

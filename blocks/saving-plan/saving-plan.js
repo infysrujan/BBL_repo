@@ -1,7 +1,7 @@
 import { loadCategoryBannerFragment } from '../category-banner/category-banner.js';
 import { getLang } from '../../scripts/bbl-decorators.js';
 
-const SAVING_TOOL_CONFIG_PATH = '/savingtool-config.json';
+const DEFAULT_SAVING_TOOL_CONFIG_PATH = '/savingtool-config.json';
 
 const INFLATION_RATE = 1.5;
 
@@ -1164,8 +1164,7 @@ async function renderCategoryBannerForGoal(state, data) {
     return;
   }
   const lang = getLang();
-  const fragmentPath = state.config.fragmentBasePath.replace(/\{lang\}/g, lang);
-  await loadCategoryBannerFragment(fragmentPath, `${fragmentId}-${lang}`, slot);
+  await loadCategoryBannerFragment(state.config.fragmentPath, `${fragmentId}-${lang}`, slot);
 }
 
 function renderProducts(state, data) {
@@ -1452,8 +1451,9 @@ function attachHandlers(state, data) {
 }
 
 export default async function decorate(block) {
+  const configPath = block.querySelector(':scope > div > div')?.textContent?.trim() || DEFAULT_SAVING_TOOL_CONFIG_PATH;
   const [json] = await Promise.all([
-    fetch(SAVING_TOOL_CONFIG_PATH).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+    fetch(configPath).then((r) => (r.ok ? r.json() : null)).catch(() => null),
     loadIcons(),
   ]);
 
@@ -1461,24 +1461,20 @@ export default async function decorate(block) {
   const CFG = {};
   configRows.forEach(({ Key, Value }) => { if (Key) CFG[Key] = Value; });
 
-  // eslint-disable-next-line max-len
-  const calcUrl = CFG['saving-plan-calculator-url'] || (typeof window !== 'undefined' && window.SAVING_PLAN_CALCULATOR_API_URL) || 'https://bbl-sea-apim-p.azure-api.net/api/FinancialCalculationAPI/DEVELOP/FinancialCalculator/v1.2/Calculator/TargetCalculator';
-  const apimKey = CFG['saving-plan-apim-key']
-    || (typeof window !== 'undefined' && window.SAVING_PLAN_APIM_KEY)
-    || '7d1b09abe2ea413cbf95b2d99782ed37';
-  const fragmentBasePath = CFG['saving-plan-fragment-path'] || '/{lang}/fragments/saving-plan-{lang}';
-
+  const calcUrl = CFG['saving-plan-calculator-url'] || '';
+  const apimKey = CFG['saving-plan-apim-key'] || '';
   if (!json) return;
 
   const lang = getLang();
   const data = buildDataFromConfig(json, lang);
+  const fragmentPath = (CFG['saving-plan-fragment-path'] || '/{lang}/fragments/saving-plan-{lang}').replace(/\{lang\}/g, lang);
 
   block.innerHTML = buildShellMarkup(data);
   block.classList.add('saving-plan-block');
 
   const state = {
     root: block,
-    config: { calcUrl, apimKey, fragmentBasePath },
+    config: { calcUrl, apimKey, fragmentPath },
     calculatedInputs: null,
     calculatedCalculation: null,
     tweakActive: false,
