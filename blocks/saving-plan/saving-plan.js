@@ -1,14 +1,8 @@
 import { loadCategoryBannerFragment } from '../category-banner/category-banner.js';
 import { getLang } from '../../scripts/bbl-decorators.js';
+import fetchBlockConfig from '../../scripts/block-config.js';
 
-async function fetchSavingToolJson() {
-  try {
-    const resp = await fetch('/savingtool-config.json');
-    return resp.ok ? resp.json() : null;
-  } catch {
-    return null;
-  }
-}
+const SAVING_TOOL_CONFIG_PATH = '/savingtool-config.json';
 
 const INFLATION_RATE = 1.5;
 
@@ -686,7 +680,7 @@ function renderResult(state, data, calculation) {
     const { footnoteIncreaseTemplate } = data.labels.newPlan;
     const increaseLabel = footnoteIncreaseTemplate
       ? fillTemplate(footnoteIncreaseTemplate, { increase: formatDecimal(annualIncrease) })
-      : `Increase savings each year by ${formatDecimal(annualIncrease)}%`;
+      : '';
     setText(root, '[data-result="footnote-increase"]', increaseLabel);
   } else {
     setText(root, '[data-result="footnote-increase"]', '');
@@ -696,7 +690,7 @@ function renderResult(state, data, calculation) {
       data.labels.result.footnoteReturnTemplate,
       { return: formatDecimal(annualReturn) },
     )
-    : `*Including inflation rate of ${INFLATION_RATE}% p.a. and expected annual return ${formatDecimal(annualReturn)}%`;
+    : '';
   setText(root, '[data-result="footnote-return"]', returnLabel);
 }
 
@@ -778,8 +772,7 @@ function renderNewPlanPlaceholder(state, data, inputs) {
       data.labels.newPlan.footnoteReturnTemplate,
       { return: formatDecimal(inputs.annualReturn) },
     )
-    : `*Including inflation rate of ${INFLATION_RATE}% p.a. `
-      + `and expected annual return ${formatDecimal(inputs.annualReturn)}%`;
+    : '';
   setText(root, '[data-newplan="footnote-increase"]', '');
   setText(root, '[data-newplan="footnote-return"]', returnLabel);
 }
@@ -810,14 +803,13 @@ async function renderNewPlan(state, data, tweakInputs) {
       data.labels.newPlan.footnoteIncreaseTemplate,
       { increase: formatDecimal(tweakInputs.annualIncrease) },
     )
-    : `Increase savings each year by ${formatDecimal(tweakInputs.annualIncrease)}%`;
+    : '';
   const returnLabel = data.labels.newPlan.footnoteReturnTemplate
     ? fillTemplate(
       data.labels.newPlan.footnoteReturnTemplate,
       { return: formatDecimal(tweakInputs.annualReturn) },
     )
-    : `*Including inflation rate of ${INFLATION_RATE}% p.a. `
-      + `and expected annual return ${formatDecimal(tweakInputs.annualReturn)}%`;
+    : '';
   setText(root, '[data-newplan="footnote-increase"]', increaseLabel);
   setText(root, '[data-newplan="footnote-return"]', returnLabel);
   state.tweakCalculation = calculation;
@@ -1173,7 +1165,8 @@ async function renderCategoryBannerForGoal(state, data) {
     return;
   }
   const lang = getLang();
-  await loadCategoryBannerFragment(`/${lang}/fragments/saving-plan-${lang}`, `${fragmentId}-${lang}`, slot);
+  const fragmentPath = state.config.fragmentBasePath.replace(/\{lang\}/g, lang);
+  await loadCategoryBannerFragment(fragmentPath, `${fragmentId}-${lang}`, slot);
 }
 
 function renderProducts(state, data) {
@@ -1460,7 +1453,10 @@ function attachHandlers(state, data) {
 }
 
 export default async function decorate(block) {
-  const [json] = await Promise.all([fetchSavingToolJson(), loadIcons()]);
+  const [json] = await Promise.all([
+    fetch(SAVING_TOOL_CONFIG_PATH).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+    loadIcons(),
+  ]);
 
   const configRows = json?.['SavingTool-config']?.data || [];
   const CFG = {};
@@ -1471,6 +1467,7 @@ export default async function decorate(block) {
   const apimKey = CFG['saving-plan-apim-key']
     || (typeof window !== 'undefined' && window.SAVING_PLAN_APIM_KEY)
     || '7d1b09abe2ea413cbf95b2d99782ed37';
+  const fragmentBasePath = CFG['saving-plan-fragment-path'] || '/{lang}/fragments/saving-plan-{lang}';
 
   if (!json) return;
 
@@ -1482,7 +1479,7 @@ export default async function decorate(block) {
 
   const state = {
     root: block,
-    config: { calcUrl, apimKey },
+    config: { calcUrl, apimKey, fragmentBasePath },
     calculatedInputs: null,
     calculatedCalculation: null,
     tweakActive: false,

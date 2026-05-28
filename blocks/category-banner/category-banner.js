@@ -20,7 +20,7 @@ export default function decorate(block) {
     const pic = document.createElement('picture');
     if (mobileImg) {
       const src = document.createElement('source');
-      src.media = '(max-width: 767px)';
+      src.media = '(max-width: 759px)';
       src.srcset = mobileImg.src;
       pic.append(src);
     }
