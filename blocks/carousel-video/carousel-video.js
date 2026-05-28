@@ -174,7 +174,7 @@ export default async function decorate(block) {
   function getThumbWidth() {
     // Fall back to the CSS-declared width so the initial scroll is correct
     // even before the first browser layout pass.
-    return allThumbBtns[0]?.offsetWidth || 185;
+    return allThumbBtns[0]?.offsetWidth || 193;
   }
 
   function scrollTrack(rawNew) {
