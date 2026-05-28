@@ -9,6 +9,7 @@ import {
   loadBlock,
   loadSections,
 } from './aem.js';
+
 /**
  * Helper function to parse comma-separated URL strings from config
  * @param {string} urlString - Comma-separated URL string
@@ -396,7 +397,7 @@ function isAuthoringInstance(block) {
   return hasAueAttrs && window.self !== window.top;
 }
 
-if (Window.LAZY_PHASE) {
+if (window.LAZY_PHASE) {
   handleGlobalLinkClicks();
 } else {
   document.addEventListener('lazy-phase', () => {
