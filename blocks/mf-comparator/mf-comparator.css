@@ -13,7 +13,7 @@
   z-index: 11;
   padding: var(--bbl-space-150) 0;
   background: var(--bbl-color-white);
-  box-shadow: 0 0 var(--bbl-space-150) var(--bbl-color-black-alpha-20, rgb(0 0 0 / 20%));
+  box-shadow: 0 0 var(--bbl-space-150) var(--bbl-color-black-alpha-20, rgba(0, 0, 0, 0.2));
   opacity: 0;
   transform: translateY(100%);
   transition: opacity 0.3s, transform 0.3s;
@@ -117,7 +117,7 @@
 }
 
 .mf-comparator .icon-close:hover {
-  box-shadow: 0.0625rem 0.0625rem var(--bbl-space-075) 0 var(--bbl-color-black-alpha-30, rgb(0 0 0 / 30%));
+  box-shadow: 0.0625rem 0.0625rem var(--bbl-space-075) 0 var(--bbl-color-black-alpha-30, rgba(0, 0, 0, 0.3));
 }
 
 /* ── Info area ────────────────────────────────────────────────────────────── */
