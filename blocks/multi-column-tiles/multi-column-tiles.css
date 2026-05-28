@@ -98,7 +98,7 @@
   right: 0;
   z-index: 1;
   color: var(--bbl-color-white);
-  font-family: "BangkokBank-Regular", Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-size: 1.5rem;
   line-height: 1.375;
   letter-spacing: 0.0313rem;
