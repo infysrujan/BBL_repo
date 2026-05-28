@@ -32,6 +32,14 @@ function buildTile(row, doc) {
   imageWrapper.className = 'multi-column-tiles-image';
   imageWrapper.innerHTML = pictureHTML;
 
+  const titleEl = doc.createElement('h5');
+  titleEl.className = 'multi-column-tiles-title';
+  titleEl.textContent = title;
+
+  const separatorEl = doc.createElement('span');
+  separatorEl.className = 'multi-column-tiles-separator';
+  titleEl.appendChild(separatorEl);
+
   if (linkHref) {
     const anchor = doc.createElement('a');
     anchor.href = linkHref;
@@ -41,20 +49,12 @@ function buildTile(row, doc) {
     if (title) anchor.setAttribute('title', title);
     anchor.setAttribute('aria-label', title);
     anchor.appendChild(imageWrapper);
+    anchor.appendChild(titleEl);
     tile.appendChild(anchor);
   } else {
     tile.appendChild(imageWrapper);
+    tile.appendChild(titleEl);
   }
-
-  const titleEl = doc.createElement('h5');
-  titleEl.className = 'multi-column-tiles-title';
-  titleEl.textContent = title;
-
-  const separatorEl = doc.createElement('span');
-  separatorEl.className = 'multi-column-tiles-separator';
-  titleEl.appendChild(separatorEl);
-
-  tile.appendChild(titleEl);
 
   return tile;
 }
