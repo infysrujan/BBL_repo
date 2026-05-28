@@ -166,9 +166,13 @@ export default async function decorate(block) {
   // ── State helpers ─────────────────────────────────────────────────────────
   function setActive(index) {
     activeIndex = index;
-    iframe.src = `${embedBaseUrl}${items[index].id}`;
-    thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
-    dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
+    mainPlayer.classList.remove('active');
+    setTimeout(() => {
+      iframe.src = `${embedBaseUrl}${items[index].id}`;
+      thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
+      dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
+      requestAnimationFrame(() => mainPlayer.classList.add('active'));
+    }, 0);
   }
 
   function getThumbWidth() {
@@ -278,6 +282,7 @@ export default async function decorate(block) {
 
   // Place the track at the start of the original set without animation.
   scrollTrackSilent(n);
+  requestAnimationFrame(() => mainPlayer.classList.add('active'));
 
   // Recalculate scroll offset on resize
   let resizeTimer;

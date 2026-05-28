@@ -16,6 +16,12 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   background: var(--bbl-color-black);
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.carousel-video .cv-main-player.active {
+  opacity: 1;
 }
 
 .carousel-video .cv-main-player iframe {
@@ -206,8 +212,8 @@
 
   .carousel-video .cv-main-player {
     width: 100%;
-    max-width: none;
-    margin: 0;
+    max-width: 34.875rem;
+    margin: 0 auto;
   }
 
   .carousel-video .cv-carousel-section {
@@ -216,17 +222,17 @@
     left: auto;
     right: auto;
     aspect-ratio: unset;
-    max-width: none;
+    max-width: 34.875rem;
     width: 100%;
-    margin: 0.625rem 0;
+    margin: 0.625rem auto;
     padding: 0;
     pointer-events: auto;
     z-index: auto;
   }
 
   .carousel-video .cv-thumb {
-    flex: 0 0 12.0625rem;
-    width: 12.0625rem;
+    flex: 0 0 8.25rem;
+    width: 8.25rem;
     height: 7.625rem;
   }
 
