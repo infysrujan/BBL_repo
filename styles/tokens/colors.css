@@ -305,5 +305,6 @@
   --bbl-color-status-closed: #e53935;      /* Locate Us — branch closed status */
   --bbl-color-toast-error: #b85c5c;        /* Locate Us — error toast background */
   --bbl-color-status-other: #bb6967;       /* Locate Us — branch status non-open */
+  --bbl-color-grey-70-alpha-62: rgb(70 70 70 / 62%);  /* Privacy Modal — close button background */
 }
 
