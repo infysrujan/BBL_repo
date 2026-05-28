@@ -1,4 +1,5 @@
 import { getSubmitBaseUrl } from './constant.js';
+import { fetchConfigs } from '../../scripts/config.js';
 
 /**
  * Get Full Name
@@ -247,7 +248,10 @@ function addCustomHeader(payload, headerName, headerValue) {
 * @returns {Array<{value: string, label: string}>}
 */
 function getProvinceData() {
-  const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/LocationSearchService/GetProvinceEn';
+  const configs = fetchConfigs();
+  const baseUrl = configs.aemBaseUrl || configs.breadcrumbAemBaseUrl || configs.aemBaseUrlForBreadcrumb || '';
+  const urlPath = configs.getprovinceen || '/api/LocationSearchService/GetProvinceEn';
+  const url = `${baseUrl()}${urlPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -309,10 +313,13 @@ function getProvinceEnumNames() {
 * ]
 *
 * @private
-* @returns {Array<{value: string, label: string}>}
+* @returns {{value: string[], label: string[]}}
 */
 function getProvinceDataTh() {
-  const url = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/LocationSearchService/GetProvinceTh';
+  const configs = fetchConfigs();
+  const urlPath = configs.getprovinceth || '/api/LocationSearchService/GetProvinceTh';
+  const baseUrl = getSubmitBaseUrl();
+  const url = `${baseUrl}${urlPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -354,7 +361,7 @@ function getProvinceEnumTh() {
 }
 
 /**
-* Returns the display labels for Province.
+* Returns the display labels for Province in Thai.
 * Maps to enumNames.
 *
 * @name getProvinceEnumNamesTh
@@ -401,8 +408,8 @@ function getProvinceEnumNamesTh() {
  */
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
-
-  const baseUrl = 'https://publish-p185039-e1939903.adobeaemcloud.com';
+  const configs = fetchConfigs();
+  const baseUrl = configs.aemBaseUrl || configs.breadcrumbAemBaseUrl || configs.aemBaseUrlForBreadcrumb || '';
   const encoded = encodeURIComponent(province);
   const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
   const url = `${baseUrl}/api/LocationSearchService/${segment}/${encoded}/0/0/0/BRC`;
@@ -516,6 +523,12 @@ function validateCreditCardNumber(inputNum) {
   return sum % 10 === 0;
 }
 
+function getidAndDob(id, dob) {
+  console.log('id', id);
+  console.log('dob', dob);
+  return `${id}${dob.replaceAll('/', '').replaceAll('-', '')}`;
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -534,4 +547,5 @@ export {
   fetchBranchesByProvince,
   getBranchEnum,
   getBranchEnumNames,
+  getidAndDob,
 };
