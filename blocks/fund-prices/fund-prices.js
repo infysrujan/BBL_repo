@@ -8,6 +8,8 @@ import {
   parseLocalDateFromYmd,
 } from '../fund-prices-table/fund-prices-table.js';
 import { MAX_FUND_PRICE_HISTORY_YEARS } from '../fund-prices-dropdown/fund-prices-dropdown.js';
+import { getLang } from '../../scripts/scripts.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
 function moveSearchBarToHeader(el, doc) {
   const check = () => {
@@ -20,14 +22,7 @@ function moveSearchBarToHeader(el, doc) {
     headerBlock.appendChild(el);
     const h1 = doc.querySelector('h1');
     if (h1) {
-      h1.style.setProperty('font-size', '2.25rem', 'important');
-      h1.style.setProperty('line-height', '1.2', 'important');
-      h1.style.marginBottom = '0.75rem';
-      h1.style.paddingBottom = '0.75rem';
-      h1.style.position = 'relative';
-      const underline = doc.createElement('span');
-      underline.style.cssText = 'display:block;position:absolute;bottom:0;left:0;width:3rem;height:2px;background:var(--bbl-color-grey-30,#ccc)';
-      h1.appendChild(underline);
+      h1.classList.add('fund-prices-page-title');
     }
     return true;
   };
@@ -37,12 +32,6 @@ function moveSearchBarToHeader(el, doc) {
   });
   observer.observe(doc.documentElement, { childList: true, subtree: true });
   setTimeout(() => observer.disconnect(), 8000);
-}
-
-function getLang() {
-  const path = typeof window !== 'undefined' ? window.location.pathname : '';
-  if (path.startsWith('/th') || path.startsWith('/BangkokBankThai')) return 'th';
-  return 'en';
 }
 
 function richTextFromRow(row) {
@@ -77,16 +66,17 @@ function isDateOlderThanFundHistoryLimit(date) {
 
 // ─── Parse EDS block data ─────────────────────────────────────────────────────
 
-function parseBlockData(block) {
+async function parseBlockData(block) {
   const rows = Array.from(block.children);
+  const ph = await fetchPlaceholders();
   return {
     dateLabelHtml: richTextFromRow(rows[0]),
     printLabelHtml: richTextFromRow(rows[1]),
     errorMessageHtml: richTextFromRow(rows[2]),
     disclaimerHtml: richTextFromRow(rows[3]),
-    searchLabel: rows[4]?.querySelector('p')?.textContent?.trim() || 'Search Fund',
-    goLabel: rows[5]?.querySelector('p')?.textContent?.trim() || 'GO',
-    allFundsLabel: rows[6]?.querySelector('p')?.textContent?.trim() || 'ALL FUNDS',
+    searchLabel: rows[4]?.querySelector('p')?.textContent?.trim() || ph.fundPricesSearchLabel || 'Search Fund',
+    goLabel: rows[5]?.querySelector('p')?.textContent?.trim() || ph.fundPricesGoLabel || 'GO',
+    allFundsLabel: rows[6]?.querySelector('p')?.textContent?.trim() || ph.fundPricesAllFundsLabel || 'ALL FUNDS',
   };
 }
 
@@ -191,7 +181,7 @@ export default async function decorate(block) {
   const {
     dateLabelHtml, printLabelHtml, errorMessageHtml, disclaimerHtml,
     searchLabel, goLabel, allFundsLabel,
-  } = parseBlockData(block);
+  } = await parseBlockData(block);
 
   block.innerHTML = '';
 
