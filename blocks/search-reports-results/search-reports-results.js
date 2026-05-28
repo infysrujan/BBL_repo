@@ -5,8 +5,9 @@ import {
   hideModal,
   setupModalHandlers,
 } from '../../scripts/utils/modal.js';
-
-const API_BASE = 'https://publish-p185039-e1939903.adobeaemcloud.com';
+import { fetchConfigs } from '../../scripts/config.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { decorateIcons } from '../../scripts/aem.js';
 
 function el(tag, { className, text, attrs = {} } = {}) {
   const node = document.createElement(tag);
@@ -16,11 +17,11 @@ function el(tag, { className, text, attrs = {} } = {}) {
   return node;
 }
 
-function getDownloadLabel(mimeType) {
-  if (mimeType === 'application/pdf') return 'Download PDF';
-  if (mimeType.includes('spreadsheetml') || mimeType.includes('excel')) return 'Download Excel';
-  if (mimeType.includes('wordprocessingml') || mimeType.includes('msword')) return 'Download Word';
-  return 'Download File';
+function getDownloadLabel(mimeType, placeholders = {}) {
+  if (mimeType === 'application/pdf') return placeholders.reportsDownloadPdf || 'Download PDF';
+  if (mimeType.includes('spreadsheetml') || mimeType.includes('excel')) return placeholders.reportsDownloadExcel || 'Download Excel';
+  if (mimeType.includes('wordprocessingml') || mimeType.includes('msword')) return placeholders.reportsDownloadWord || 'Download Word';
+  return placeholders.reportsDownloadFile || 'Download File';
 }
 
 function sortAssets(assets, type) {
@@ -32,7 +33,7 @@ function sortAssets(assets, type) {
   });
 }
 
-function openPdfPreview(path, name) {
+function openPdfPreview(path, name, googleViewerUrl) {
   const lang = getLang();
 
   const { overlay, dialog, closeBtn } = createModalShell({
@@ -41,8 +42,9 @@ function openPdfPreview(path, name) {
     closeBtnClass: 'srr-preview-close',
     ariaLabel: 'PDF Preview',
     closeBtnAriaLabel: 'Close preview',
-    closeBtnHTML: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+    closeBtnHTML: '<span class="icon icon-close"></span>',
   });
+  decorateIcons(closeBtn);
 
   // Header: logo + close button
   const header = el('div', { className: 'srr-preview-header' });
@@ -82,7 +84,9 @@ function openPdfPreview(path, name) {
       embedEl.src = blobUrl;
       embedEl.addEventListener('load', () => URL.revokeObjectURL(blobUrl), { once: true });
     })
-    .catch(() => { embedEl.src = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(path)}`; });
+    .catch(() => {
+      if (googleViewerUrl) embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
+    });
 
   const buttonGroup = el('div', { className: 'srr-button-group' });
   const downloadLink = el('a', {
@@ -111,8 +115,8 @@ function openPdfPreview(path, name) {
   closeBtn.focus();
 }
 
-function buildCard(asset) {
-  const fetchPath = asset.path.startsWith('http') ? asset.path : `${API_BASE}${asset.path}`;
+function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
+  const fetchPath = asset.path.startsWith('http') ? asset.path : `${apiBase}${asset.path}`;
 
   const card = el('div', { className: 'download-section' });
 
@@ -124,7 +128,7 @@ function buildCard(asset) {
   const fileRow = el('div', { className: 'srr-card-file-row' });
   const downloadWrapper = el('div', { className: 'download-button-wrapper' });
 
-  const label = el('span', { className: 'srr-file-label', text: getDownloadLabel(asset.mimeType) });
+  const label = el('span', { className: 'srr-file-label', text: getDownloadLabel(asset.mimeType, placeholders) });
 
   const iconGroup = el('div', { className: 'srr-icon-group' });
 
@@ -134,7 +138,7 @@ function buildCard(asset) {
       attrs: { type: 'button', 'aria-label': `Preview ${asset.name}` },
     });
     previewBtn.append(el('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } }));
-    previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfPreview(fetchPath, asset.name); });
+    previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfPreview(fetchPath, asset.name, googleViewerUrl); });
     iconGroup.append(previewBtn);
   }
 
@@ -155,6 +159,10 @@ function buildCard(asset) {
 
 async function fetchAndRender(block, type, year) {
   const lang = getLang();
+
+  const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
+  const apiBase = configs.reportsAemBaseUrl || '';
+  const googleViewerUrl = configs.reportsGoogleViewerUrl || 'https://docs.google.com/gview';
 
   block.innerHTML = '';
   const wrapper = el('div', { className: 'srr-results-wrapper' });
@@ -187,9 +195,9 @@ async function fetchAndRender(block, type, year) {
     if (isLocal) {
       res = await fetch('/blocks/search-reports-results/results.mock.json');
     } else {
-      res = await fetch(`${API_BASE}/content/bangkokbank/${lang}.reports.${type}.${year}.json`);
+      res = await fetch(`${apiBase}/content/bangkokbank/${lang}.reports.${type}.${year}.json`);
       if (res.status === 204 && lang !== 'en') {
-        res = await fetch(`${API_BASE}/content/bangkokbank/en.reports.${type}.${year}.json`);
+        res = await fetch(`${apiBase}/content/bangkokbank/en.reports.${type}.${year}.json`);
       }
     }
     if (res.status === 204) throw new Error('no content');
@@ -204,7 +212,9 @@ async function fetchAndRender(block, type, year) {
 
     const sorted = sortAssets(data.assets, type);
     const list = el('div', { className: 'srr-list' });
-    sorted.forEach((asset) => list.append(buildCard(asset)));
+    sorted.forEach((asset) => list.append(
+      buildCard(asset, apiBase, placeholders, googleViewerUrl),
+    ));
     wrapper.append(list);
   } catch {
     loading.remove();

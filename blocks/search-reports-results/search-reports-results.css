@@ -26,7 +26,7 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  border: 0.0938rem solid rgb(255 255 255 / 60%);
+  border: 0.0938rem solid var(--bbl-color-white-alpha-60);
   background: transparent;
   cursor: pointer;
   color: var(--bbl-color-white, #fff);
@@ -156,7 +156,7 @@
 }
 
 .search-reports-results .srr-download-btn:hover .icon {
-  transform: translateY(3px);
+  transform: translateY(0.1875rem);
 }
 
 /* States */
@@ -198,7 +198,7 @@
   display: flex;
   flex-direction: column;
   background: var(--bbl-color-white, #fff);
-  box-shadow: 0 0 1rem 0 rgb(0 0 0 / 10%);
+  box-shadow: 0 0 1rem 0 var(--bbl-color-black-alpha-10);
   overflow: hidden;
 }
 
@@ -223,7 +223,7 @@
 
 .srr-preview-overlay .srr-preview-close {
   background: transparent;
-  border: 0.0938rem solid rgb(255 255 255 / 60%);
+  border: 0.0938rem solid var(--bbl-color-white-alpha-60);
   cursor: pointer;
   width: 2.5rem;
   height: 2.5rem;
@@ -279,7 +279,7 @@
 .srr-preview-overlay .srr-btn-primary {
   display: inline-block;
   padding: 0.75rem 3rem;
-  background: #0064ff;
+  background: var(--bbl-color-active-blue, #0064ff);
   color: var(--bbl-color-white, #fff);
   border-radius: 0.4375rem;
   font-size: 1rem;
@@ -289,10 +289,10 @@
 }
 
 .srr-preview-overlay .srr-btn-primary:hover {
-  background: #0052d6;
+  background: var(--bbl-color-blue-90, #0052d6);
 }
 
-@media (width >= 761px) {
+@media (width >= 47.5rem) {
   .search-reports-results .srr-page-title {
     font-size: 2.5rem;
   }
@@ -303,7 +303,7 @@
   }
 }
 
-@media (width >= 1025px) {
+@media (width >= 64rem) {
   .search-reports-results .srr-list {
     margin-inline: -1.5rem;
     width: calc(100% + 3rem);

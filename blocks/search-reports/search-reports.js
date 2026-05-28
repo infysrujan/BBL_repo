@@ -1,6 +1,7 @@
 import { getLang } from '../../scripts/scripts.js';
-
-const API_BASE = 'https://publish-p185039-e1939903.adobeaemcloud.com';
+import { decorateIcons } from '../../scripts/aem.js';
+import { fetchConfigs } from '../../scripts/config.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -123,11 +124,8 @@ function buildDropdown(placeholder, onChange) {
   return { wrapper, getValue: () => currentValue, populateOptions };
 }
 
-async function fetchSearchParams() {
-  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const url = isLocal
-    ? '/blocks/search-reports/searchparams.mock.json'
-    : `${API_BASE}/content/bangkokbank/en.reports.searchparams.json`;
+async function fetchSearchParams(apiBase) {
+  const url = `${apiBase}/content/bangkokbank/en.reports.searchparams.json`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`searchparams fetch failed: ${res.status}`);
   const text = await res.text();
@@ -156,13 +154,16 @@ function parseAuthoredOptions(rows) {
   return { typeOptions, yearOptions };
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const rows = [...block.children];
-
-  const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || 'Search for Reports';
-  const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || 'Search Report';
-  const modalDesc = rows[2]?.firstElementChild?.innerHTML?.trim() || '';
   const lang = getLang();
+
+  const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
+  const apiBase = configs.reportsAemBaseUrl || '';
+
+  const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel || 'Search for Reports';
+  const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || placeholders.reportsModalTitle || 'Search Report';
+  const modalDesc = rows[2]?.firstElementChild?.innerHTML?.trim() || '';
 
   const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
 
@@ -187,7 +188,8 @@ export default function decorate(block) {
   });
   logoLink.append(logoImg);
   const closeBtn = el('button', { className: 'sr-close-btn', attrs: { type: 'button', 'aria-label': 'Close search modal' } });
-  closeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  closeBtn.innerHTML = '<span class="icon icon-close"></span>';
+  decorateIcons(closeBtn);
   header.append(logoLink, closeBtn);
 
   // Body
@@ -220,7 +222,7 @@ export default function decorate(block) {
   getYear = getYearVal;
 
   // Populate dropdowns from API, fallback to authored rows on failure
-  fetchSearchParams().then((data) => {
+  fetchSearchParams(apiBase).then((data) => {
     populateTypes(data.reportTypes?.length ? data.reportTypes : typeOptions);
     populateYears((data.years || []).map((y) => ({ label: y, value: y })));
   }).catch(() => {
