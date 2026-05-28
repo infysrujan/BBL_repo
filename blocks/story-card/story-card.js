@@ -82,6 +82,22 @@ function buildContent(
         // Only append if button has valid href and text
         if (anchor && anchor.href && anchor.textContent.trim()) {
           const clonedContainer = buttonContainer.cloneNode(true);
+
+          // Per-button modal flag: check sibling cells for "true" (the enableModal
+          // boolean field from _button.json renders as a text cell in the button row).
+          const cells = [...buttonRow.children];
+          const enableModal = cells.some((cell) => {
+            if (cell.contains(buttonContainer)) return false;
+            return cell.textContent?.trim().toLowerCase() === 'true';
+          });
+
+          if (enableModal) {
+            const clonedAnchor = clonedContainer.querySelector('a');
+            const href = clonedAnchor.getAttribute('href');
+            clonedAnchor.removeAttribute('href');
+            clonedAnchor.setAttribute('data-modal', href);
+          }
+
           moveInstrumentation(buttonRow, clonedContainer);
           content.appendChild(clonedContainer);
         }
@@ -241,15 +257,12 @@ export default function decorate(block) {
   block.appendChild(wrapper);
 
   // Delegated click handler — mirrors card-list's [data-modal] pattern.
-  // Any relative-path CTA opens as a modal (path-agnostic).
+  // Only buttons that have data-modal stamped (via enableModal in _button.json) open as a modal.
   block.addEventListener('click', (event) => {
-    const anchor = event.target.closest('.button-container a');
-    if (!anchor || !block.contains(anchor)) return;
-
-    const href = anchor.getAttribute('href');
-    if (!href || !href.startsWith('/')) return;
-
+    const trigger = event.target.closest('[data-modal]');
+    if (!trigger || !block.contains(trigger)) return;
     event.preventDefault();
-    openModal(doc, href);
+    const fragmentPath = trigger.getAttribute('data-modal');
+    if (fragmentPath) openModal(doc, fragmentPath);
   });
 }

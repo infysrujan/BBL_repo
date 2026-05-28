@@ -9,23 +9,23 @@
 
 /* When no results: collapse the grid, hide arrows and dots */
 .carousel-dotted.show-arrows-dots:has(.mf-fund-cards-item.has-no-results) {
-  display: block !important;
+  display: block;
 }
 
 .carousel-dotted.show-arrows-dots:has(.mf-fund-cards-item.has-no-results) .carousel-arrow {
-  display: none !important;
+  display: none;
 }
 
 .carousel-dotted:has(.mf-fund-cards-item.has-no-results) .slick-dots {
-  display: none !important;
+  display: none;
 }
 
 /* Center the no-results text */
 .carousel-dotted.show-arrows-dots .mf-fund-cards-item.has-no-results {
-  display: flex !important;
+  display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: row !important;
+  flex-direction: row;
   width: 100%;
 }
 
