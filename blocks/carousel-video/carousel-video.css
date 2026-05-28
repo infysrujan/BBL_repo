@@ -59,8 +59,8 @@
 
 /* ── Thumbnails ──────────────────────────────────────────────────────────── */
 .carousel-video .cv-thumb {
-  flex: 0 0 11.5625rem;
-  width: 11.5625rem;
+  flex: 0 0 12rem;
+  width: 12rem;
   height: 6.25rem;
   padding: 0;
   margin: 0 0.3125rem;
@@ -200,13 +200,14 @@
 /* ── Tablet: > 760px ─────────────────────────────────────────────────────── */
 @media (width > 47.5rem) {
   .carousel-video-wrapper {
-    padding: 0 2.75rem;
+    padding: 0 2.5rem;
+    margin: 0 -45px;
   }
 
   .carousel-video .cv-main-player {
-    max-width: 48.75rem;
     width: 100%;
-    margin: 0 auto;
+    max-width: none;
+    margin: 0;
   }
 
   .carousel-video .cv-carousel-section {
@@ -215,19 +216,18 @@
     left: auto;
     right: auto;
     aspect-ratio: unset;
-    max-width: 48.75rem;
+    max-width: none;
     width: 100%;
-    margin: 0.625rem auto;
+    margin: 0.625rem 0;
     padding: 0;
     pointer-events: auto;
     z-index: auto;
   }
 
-  /* ~3.75 thumbs visible at 768px within the padded wrapper */
   .carousel-video .cv-thumb {
-    flex: 0 0 10.75rem;
-    width: 10.75rem;
-    height: 6.0625rem;
+    flex: 0 0 136px;
+    width: 136px;
+    height: 122px;
   }
 
   .carousel-video .cv-track-wrap {
@@ -239,7 +239,7 @@
   .carousel-video .cv-dots {
     display: flex;
     position: absolute;
-    bottom: -3.125rem;
+    bottom: -30px;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -253,11 +253,11 @@
   }
 
   .carousel-video .cv-prev {
-    left: -2.75rem;
+    left: -2.5rem;
   }
 
   .carousel-video .cv-next {
-    right: -2.75rem;
+    right: -2.5rem;
   }
 }
 
@@ -265,13 +265,23 @@
 @media (width > 64rem) {
   .carousel-video-wrapper {
     padding: 0 3rem;
+    margin: auto;
   }
 
-  /* restore full thumb size on desktop */
+  .carousel-video .cv-main-player {
+    max-width: 49.875rem;
+    margin: 0 auto;
+  }
+
+  .carousel-video .cv-carousel-section {
+    max-width: 49.875rem;
+    margin: 0.625rem auto;
+  }
+
   .carousel-video .cv-thumb {
-    flex: 0 0 11.5625rem;
-    width: 11.5625rem;
-    height: 6.25rem;
+    flex: 0 0 12rem;
+    width: 12rem;
+    height: 7.625rem;
   }
 
   .carousel-video .cv-prev {
