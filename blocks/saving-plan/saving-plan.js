@@ -1,6 +1,5 @@
 import { loadCategoryBannerFragment } from '../category-banner/category-banner.js';
 import { getLang } from '../../scripts/bbl-decorators.js';
-import fetchBlockConfig from '../../scripts/block-config.js';
 
 const SAVING_TOOL_CONFIG_PATH = '/savingtool-config.json';
 
