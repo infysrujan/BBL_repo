@@ -418,22 +418,20 @@
   text-align: right;
 }
 
-/* ── Section 1 bar: currency (left col) + Print btn (far right) ─ */
+/* ── Section 1 bar ─────────────────────────────────────────── */
 
 .forward-points-sme .fpsme-section1-bar {
-  display: flex;
-  align-items: flex-start;
   width: 100%;
 }
 
-/* Currency section: full width on mobile, ~50% on desktop */
+/* Currency section: full width */
 .forward-points-sme .fpsme-section-currency {
-  flex: 1 1 auto;
   min-width: 0;
   display: flex;
   flex-direction: column;
 }
 
+/* Print button — sits inside .fpsme-controls (flex row), pushed to the right */
 .forward-points-sme .fpsme-print-btn {
   display: flex;
   align-items: center;
@@ -448,7 +446,6 @@
   white-space: nowrap;
   flex-shrink: 0;
   margin-left: auto;
-  align-self: flex-start;
   text-decoration: none;
 }
 

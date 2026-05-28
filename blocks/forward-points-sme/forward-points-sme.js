@@ -240,6 +240,7 @@ function renderBlock(
   openCalendarLabel,
   selectTimeLabel,
 ) {
+  const printBtnHtml = `<button type="button" class="fpsme-print-btn">${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i></button>`;
   const s1Controls = renderControlsRow(
     s1State,
     '1',
@@ -252,6 +253,7 @@ function renderBlock(
     nextLabel,
     openCalendarLabel,
     selectTimeLabel,
+    printBtnHtml,
   );
   const s2Controls = renderControlsRow(
     s2State,
@@ -283,9 +285,6 @@ function renderBlock(
         ${s1Controls}
         ${renderCurrencyTable(fxRates, authoring)}
       </div>
-      <button type="button" class="fpsme-print-btn">
-        ${escapeHtml(authoring.printCtaLabel)}<i class="icon-print" aria-hidden="true"></i>
-      </button>
     </div>
 
     <div class="fpsme-section fpsme-section-fwd">
