@@ -82,7 +82,7 @@
 }
 
 .privacy-modal-close:hover svg circle {
-  fill: #757575;
+  fill: var(--bbl-color-grey-150);
   opacity: 0.9;
 }
 
