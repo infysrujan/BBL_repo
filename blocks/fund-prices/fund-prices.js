@@ -2,8 +2,7 @@ import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 import {
-  ALL_FUND_NAMES_URL,
-  LATEST_DATE_URL,
+  getApiUrls,
   fetchNavEnabledDaysForMonth,
   parseLocalDateFromYmd,
 } from '../fund-prices-table/fund-prices-table.js';
@@ -220,6 +219,7 @@ export default async function decorate(block) {
   let currentDate = calendarDate;
 
   try {
+    const { ALL_FUND_NAMES_URL, LATEST_DATE_URL } = await getApiUrls();
     const [namesRes, latestRes] = await Promise.all([
       fetch(ALL_FUND_NAMES_URL),
       fetch(LATEST_DATE_URL),
@@ -318,7 +318,13 @@ export default async function decorate(block) {
 
   block.appendChild(root);
 
-  dispatchTableRefresh(calendarDate);
+  if (ftBlock) {
+    if (ftBlock.dataset.ready === 'true') {
+      dispatchTableRefresh(calendarDate);
+    } else {
+      ftBlock.addEventListener('fund-prices-table:ready', () => dispatchTableRefresh(calendarDate), { once: true });
+    }
+  }
 
   if (ftBlock) {
     ftBlock.after(disclaimer);
