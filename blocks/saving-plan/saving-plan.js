@@ -1447,26 +1447,29 @@ function attachHandlers(state, data) {
 }
 
 export default async function decorate(block) {
-  const configs = await fetchConfigs();
-  const configPath = configs.savingPlanConfigPath;
+  const siteConfig = await fetchConfigs();
+  const configPath = siteConfig.savingPlanConfigPath;
   if (!configPath) return;
+
   const [json, placeholders] = await Promise.all([
     fetchJson(configPath),
     fetchPlaceholders(),
     loadIcons(),
   ]);
 
-  const configRows = json?.['SavingTool-config']?.data || [];
-  const CFG = {};
-  configRows.forEach(({ Key, Value }) => { if (Key) CFG[Key] = Value; });
-
-  const calcUrl = CFG['saving-plan-calculator-url'] || '';
-  const apimKey = CFG['saving-plan-apim-key'] || '';
   if (!json) return;
+
+  const cfg = {};
+  (json?.saving_tool_config?.data || []).forEach(({ Key, Value }) => {
+    if (Key) cfg[Key.replace(/-([a-zA-Z0-9])/g, (_, c) => c.toUpperCase())] = Value;
+  });
+
+  const calcUrl = cfg.savingPlanCalculatorUrl || '';
+  const apimKey = cfg.savingPlanApimKey || '';
 
   const lang = getLang();
   const data = buildDataFromConfig(json, lang, placeholders);
-  const fragmentPath = (CFG['saving-plan-fragment-path'] || '/{lang}/fragments/saving-plan-{lang}').replace(/\{lang\}/g, lang);
+  const fragmentPath = cfg.savingPlanFragmentPath?.replace(/\{lang\}/g, lang) || '';
 
   block.innerHTML = buildShellMarkup(data);
   block.classList.add('saving-plan-block');
