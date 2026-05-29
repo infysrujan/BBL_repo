@@ -5,6 +5,7 @@ export async function getApiUrls() {
   const apiBase = configs.fundPricesApiUrl || '/api/fundpriceservice';
   const namesBase = configs.fundPricesNamesApiUrl || apiBase;
   return {
+    apiBase,
     ALL_FUND_NAMES_URL: `${namesBase}/AllFundsName`,
     LATEST_DATE_URL: `${apiBase}/LatestDate`,
     GET_UPDATE_IN_MONTH_BASE: `${apiBase}/GetUpdateInMonth`,
