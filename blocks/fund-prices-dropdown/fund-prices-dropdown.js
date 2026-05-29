@@ -1,12 +1,5 @@
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
-import { parseLocalDateFromYmd } from '../fund-prices-table/fund-prices-table.js';
-
-const IS_LOCAL = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-const BBL_API_BASE = IS_LOCAL
-  ? 'https://publish-p185039-e1937892.adobeaemcloud.com/api/FundPriceService'
-  : '/api/fundpriceservice';
-const FUND_DETAIL_HISTORY_BASE = `${BBL_API_BASE}/FundPrice`;
-const FUND_DETAIL_STATS_BASE = `${BBL_API_BASE}/Fund_Nav`;
+import { parseLocalDateFromYmd, getApiUrls } from '../fund-prices-table/fund-prices-table.js';
 
 export const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 
@@ -37,14 +30,16 @@ function isRangeExceedsLimit(fromDate, toDate) {
 }
 
 async function fetchFundDetailStats(fundId, fromDate, toDate) {
-  const res = await fetch(`${FUND_DETAIL_STATS_BASE}/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
+  const { apiBase } = await getApiUrls();
+  const res = await fetch(`${apiBase}/Fund_Nav/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
   if (!res.ok) throw new Error(`FundDetailStats ${res.status}`);
   const data = await res.json();
   return Array.isArray(data) ? data[0] : data;
 }
 
 async function fetchFundDetailHistory(fundId, fromDate, toDate) {
-  const res = await fetch(`${FUND_DETAIL_HISTORY_BASE}/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
+  const { apiBase } = await getApiUrls();
+  const res = await fetch(`${apiBase}/FundPrice/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
   if (!res.ok) throw new Error(`FundDetailHistory ${res.status}`);
   const data = await res.json();
   return Array.isArray(data) ? data : [];
