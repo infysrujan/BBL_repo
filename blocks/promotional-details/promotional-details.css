@@ -137,8 +137,6 @@ body.mobile-app-view main > div:first-child {
 }
 
 .custom-modal:has(.modal-body.promo-detail-image-modal) .modal-content {
-    width: min(56rem, 100%);
-    max-height: calc(100vh - var(--bbl-space-500));
     padding: var(--bbl-space-800) var(--bbl-space-250) var(--bbl-space-250);
     border-radius: 0.5rem;
     overflow: auto;
