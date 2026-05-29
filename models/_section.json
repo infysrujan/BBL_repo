@@ -125,6 +125,10 @@
                 {
                   "name":"Columns 2(50-50)",
                   "value": "columns-2-50"
+                },
+                {
+                  "name":"Columns 2(65-35)",
+                  "value": "columns-2-65"
                 }
               ]
             },
@@ -207,6 +211,9 @@
         "table",
         "locate-us",
         "rate-card",
+        "fund-prices",
+        "fund-prices-table",
+        "fund-prices-dropdown",
         "accordion-block",
         "social-icons",
         "card-list",
@@ -231,6 +238,7 @@
         "promo-card-listing",
         "top-promotional-cards",
         "multi-column-tiles",
+        "fund-prices",
         "property-for-sale-details",
         "property-for-sale",
         "stock-ticker",
@@ -240,7 +248,14 @@
         "news-media-details",
         "news-media",
         "latest-news",
-        "forward-points-sme"
+        "forward-points-sme",
+        "menu-list",
+        "search-reports",
+        "search-reports-results",
+        "mf-results",
+        "mf-comparator-results",
+        "mf-comparator",
+        "mf-questionnaire"
       ]
     }
   ]

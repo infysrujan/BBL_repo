@@ -168,6 +168,17 @@ function getDocumentLangFromPath(pathname) {
   const first = pathname.split('/').filter(Boolean)[0];
   if (first === 'en') return 'en';
   if (first === 'th') return 'th';
+
+  // Check bblcorporate#lang cookie
+  const cookie = document.cookie
+    .split(';')
+    .map((c) => c.trim())
+    .find((c) => c.startsWith('bblcorporate#lang='));
+  if (cookie) {
+    return cookie.split('=')[1];
+  }
+
+  // Fallback to 'th'
   return 'th';
 }
 
@@ -281,7 +292,7 @@ async function loadLazy(doc) {
   // Add link click handler for URL validation
   setTimeout(() => {
     document.dispatchEvent(new Event('lazy-phase'));
-    Window.LAZY_PHASE = true;
+    window.LAZY_PHASE = true;
   }, 150);
 }
 
