@@ -70,7 +70,7 @@ const launchConfig = {
     'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-f69e7329c58a-development.min.js',
   ],
   stage: [
-    'https://assets.adobedtm.com/0e4712067e10/8a225ec96e9d/launch-f3f44b9a5684-development.min.js',
+    'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-f69e7329c58a-development.min.js',
   ],
   prod: [],
 };
