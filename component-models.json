@@ -10641,6 +10641,36 @@
     ]
   },
   {
+    "id": "search-reports-results",
+    "fields": []
+  },
+  {
+    "id": "search-reports",
+    "fields": [
+      {
+        "component": "text",
+        "name": "ctaLabel",
+        "label": "CTA Button Label",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "modalTitle",
+        "label": "Modal Title",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "modalDescription",
+        "label": "Modal Description",
+        "valueType": "string",
+        "required": false
+      }
+    ]
+  },
+  {
     "id": "search",
     "fields": [
       {
