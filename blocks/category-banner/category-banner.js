@@ -22,7 +22,7 @@ export default function decorate(block) {
     const pic = document.createElement('picture');
     if (mobileImg) {
       const src = document.createElement('source');
-      src.media = `(width <= ${TABLET_MIN})`;
+      src.media = `(width < ${TABLET_MIN})`;
       src.srcset = mobileImg.src;
       pic.append(src);
     }

@@ -1,6 +1,8 @@
 import { loadCategoryBannerFragment } from '../category-banner/category-banner.js';
 import { getLang } from '../../scripts/bbl-decorators.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { fetchJson } from '../../scripts/utils/card-helpers.js';
 
 const INFLATION_RATE = 1.5;
 
@@ -87,7 +89,7 @@ function parseProducts(L) {
   }));
 }
 
-function buildDataFromConfig(json, lang) {
+function buildDataFromConfig(json, lang, placeholders) {
   const langData = json[lang]?.data || [];
   const commonData = json.common?.data || [];
 
@@ -97,13 +99,8 @@ function buildDataFromConfig(json, lang) {
   commonData.forEach(({ Key, Value }) => { if (Key) C[Key] = Value; });
 
   const unit = L['common-unit'] || '';
-  const noteText = (L['common-noteText'] || '')
-    .replace('{inflationRate}', String(INFLATION_RATE));
-  const noteReturn = (L['common-noterecommendSavingMonthly'] || '')
-    .replace('{expectedReturnRate}', '{return}');
-  const footnoteReturnTemplate = `${noteText} ${noteReturn}`.trim();
-  const footnoteIncreaseTemplate = (L['common-noteincreasedSavingMonthly'] || '')
-    .replace('{annualSavingIncreaseRate}', '{increase}%');
+  const footnoteReturnTemplate = placeholders.savingPlanFootnoteReturnTemplate || '';
+  const footnoteIncreaseTemplate = placeholders.savingPlanFootnoteIncreaseTemplate || '';
   const futureValueTemplate = (L['common-toHaveMoney'] || '')
     .replace('{money}', '{amount}').replace('{unit}', unit);
 
@@ -1453,8 +1450,9 @@ export default async function decorate(block) {
   const configs = await fetchConfigs();
   const configPath = configs.savingPlanConfigPath;
   if (!configPath) return;
-  const [json] = await Promise.all([
-    fetch(configPath).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+  const [json, placeholders] = await Promise.all([
+    fetchJson(configPath),
+    fetchPlaceholders(),
     loadIcons(),
   ]);
 
@@ -1467,7 +1465,7 @@ export default async function decorate(block) {
   if (!json) return;
 
   const lang = getLang();
-  const data = buildDataFromConfig(json, lang);
+  const data = buildDataFromConfig(json, lang, placeholders);
   const fragmentPath = (CFG['saving-plan-fragment-path'] || '/{lang}/fragments/saving-plan-{lang}').replace(/\{lang\}/g, lang);
 
   block.innerHTML = buildShellMarkup(data);
