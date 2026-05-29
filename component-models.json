@@ -196,6 +196,14 @@
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
             "value": false
+          },
+          {
+            "component": "boolean",
+            "name": "enableModal",
+            "label": "Open link in modal",
+            "description": "Enable this to open the button link in a modal overlay. Add the fragment path in the Link field above.",
+            "valueType": "boolean",
+            "value": false
           }
         ]
       }
@@ -2015,6 +2023,10 @@
           {
             "name": "Card List Carousel",
             "value": "cardListCarousel"
+          },
+          {
+            "name": "MF Card list Carousel",
+            "value": "mfCardListCarousel"
           }
         ]
       },
@@ -2331,6 +2343,34 @@
             },
             "onlyImage",
             "cardListCarousel"
+          ]
+        }
+      },
+      {
+        "component": "richtext",
+        "name": "mfCardListDescription",
+        "label": "Description",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "mfCardListCarousel"
+          ]
+        }
+      },
+      {
+        "component": "aem-tag",
+        "name": "cardTypes",
+        "label": "Card Types",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "mfCardListCarousel"
           ]
         }
       }
@@ -9907,6 +9947,202 @@
         "description": "Enter the rich text content to display alongside the image for this menu list item.",
         "valueType": "string",
         "value": ""
+      }
+    ]
+  },
+  {
+    "id": "mf-comparator-results",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "notes",
+        "label": "Notes",
+        "description": "Notes text displayed below the MF comparison grid",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "mf-comparator",
+    "fields": [
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Compare Results Page URL",
+        "description": "Destination URL for the Compare button — the MF comparator results page"
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "Compare Button Text",
+        "description": "Label text for the Compare button",
+        "required": true,
+        "value": "Compare"
+      },
+      {
+        "component": "text",
+        "name": "linkTitle",
+        "label": "Compare Button Title",
+        "description": "Accessibility title attribute for the Compare button (optional)"
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Compare Button Type",
+        "description": "Compare button style variant",
+        "valueType": "string",
+        "value": "primary",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target Settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the Compare button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mf-questionnaire",
+    "fields": [
+      {
+        "component": "text",
+        "name": "screen1Title",
+        "label": "Screen 1 – Question",
+        "required": true,
+        "value": "1. How would you rate the level of risk you are willing to accept from investing in mutual funds?"
+      },
+      {
+        "component": "richtext",
+        "name": "screen1FragmentPath",
+        "label": "Screen 1 – Risk Options",
+        "description": "Bullet points for risk option cards (Low, Medium to Low, etc.)",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "screen1Description",
+        "label": "Screen 1 – Description",
+        "description": "Bullet point descriptions shown below the risk option cards",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "screen2Title",
+        "label": "Screen 2 – Question",
+        "required": true,
+        "value": "2. Do you accept the exchange rate risk?"
+      },
+      {
+        "component": "text",
+        "name": "screen2YesLabel",
+        "label": "Screen 2 – Yes Label",
+        "required": true,
+        "value": "Yes"
+      },
+      {
+        "component": "text",
+        "name": "screen2NoLabel",
+        "label": "Screen 2 – No Label",
+        "required": true,
+        "value": "No"
+      },
+      {
+        "component": "text",
+        "name": "screen3Title",
+        "label": "Screen 3 – Question",
+        "required": true,
+        "value": "3. Do you want tax benefits from investing in mutual funds?"
+      },
+      {
+        "component": "text",
+        "name": "screen3YesLabel",
+        "label": "Screen 3 – Yes Label",
+        "required": true,
+        "value": "Yes"
+      },
+      {
+        "component": "text",
+        "name": "screen3NoLabel",
+        "label": "Screen 3 – No Label",
+        "required": true,
+        "value": "No"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "label": "Disclaimer Text",
+        "description": "Shown at the bottom of all 3 screens",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "resultsPageUrl",
+        "label": "Results Page URL",
+        "description": "User is redirected here after completing screen 3",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "mf-results",
+    "fields": [
+      {
+        "component": "text",
+        "name": "viewAllLabel",
+        "label": "View All CTA Label",
+        "description": "Label for the View All Categories button",
+        "required": true,
+        "value": "View All Categories"
+      },
+      {
+        "component": "aem-content",
+        "name": "viewAllUrl",
+        "label": "View All CTA URL",
+        "description": "Destination URL for the View All Categories button (MF listing page)"
+      },
+      {
+        "component": "text",
+        "name": "startOverLabel",
+        "label": "Start Over CTA Label",
+        "description": "Label for the Start Over button",
+        "required": true,
+        "value": "Start Over"
+      },
+      {
+        "component": "aem-content",
+        "name": "startOverUrl",
+        "label": "Start Over Fallback URL",
+        "description": "Destination URL when Start Over is clicked and the MF questionnaire is not on the same page. Should point to the MF listing page — the questionnaire will auto-open via ?mf-start-over=1"
+      },
+      {
+        "component": "richtext",
+        "name": "disclaimer",
+        "label": "Disclaimer Text",
+        "description": "Legal / disclaimer text displayed at the bottom of the results page",
+        "valueType": "string"
       }
     ]
   },
