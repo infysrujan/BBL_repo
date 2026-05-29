@@ -339,39 +339,37 @@
             ]
           }
         },
-        {
+         {
           "component": "boolean",
           "name": "isCardClickable",
-          "label": "Is Card Clickable",
-          "description": "Enable to make the entire card a clickable link",
+          "label": "Full Card Clickable",
+          "description": "If enabled, the entire card will be clickable.",
           "valueType": "boolean",
           "value": false
         },
         {
           "component": "aem-content",
           "name": "cardLink",
-          "label": "Card Link",
-          "description": "Destination URL when the card is clicked",
+          "label": "Link",
+          "description": "Destination URL for the clickable card",
           "condition": {
-            "===": [
+            "!!": [
               {
                 "var": "isCardClickable"
-              },
-              true
+              }
             ]
           }
         },
         {
           "component": "text",
           "name": "cardLinkTitle",
-          "label": "Card Link Title",
+          "label": "Link Title",
           "description": "Accessibility title attribute for the clickable card (optional)",
           "condition": {
-            "===": [
+            "!!": [
               {
                 "var": "isCardClickable"
-              },
-              true
+              }
             ]
           }
         },
@@ -379,21 +377,20 @@
           "component": "boolean",
           "name": "enableOverlayModal",
           "label": "Enable Overlay Modal",
-          "description": "Open card link in a modal overlay instead of navigating",
+          "description": "If enabled, an overlay modal will be displayed.",
           "valueType": "boolean",
           "value": false
         },
         {
           "component": "aem-content",
-          "name": "overlayHref",
-          "label": "Overlay Fragment Path",
-          "description": "Path to the fragment shown in the modal overlay",
+          "name": "fragmentPath",
+          "label": "Fragment path",
+          "valueType": "string",
           "condition": {
-            "===": [
+            "!!": [
               {
                 "var": "enableOverlayModal"
-              },
-              true
+              }
             ]
           }
         },
