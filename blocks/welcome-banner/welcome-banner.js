@@ -1,5 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
+import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
 const BANNER_COOKIE = 'bbl-welcome-banner';
 const COOKIE_DURATION_MS = 20 * 60 * 1000;
@@ -51,11 +52,12 @@ export default function decorate(block) {
   const unpublishDate = unpublishDateRow?.textContent?.trim();
   if (!isDateActive(publishDate, unpublishDate)) return;
 
-  const desktopPic = desktopImgRow?.querySelector('picture')?.cloneNode(true) ?? null;
-  if (desktopImgRow && desktopPic) moveInstrumentation(desktopImgRow, desktopPic);
+  const pictureDesktop = desktopImgRow?.querySelector('picture');
+  const pictureMobile = mobileImgRow?.querySelector('picture');
 
-  const mobilePic = mobileImgRow?.querySelector('picture')?.cloneNode(true) ?? null;
-  if (mobileImgRow && mobilePic) moveInstrumentation(mobileImgRow, mobilePic);
+  const picture = (pictureDesktop || pictureMobile)
+    ? createSmartImage(pictureDesktop, pictureMobile, null)
+    : null;
 
   const ctaLinks = buttonRows.map((row) => {
     const a = row?.querySelector('a');
@@ -95,14 +97,7 @@ export default function decorate(block) {
 
   const media = doc.createElement('div');
   media.className = 'welcome-banner-media';
-  if (desktopPic) {
-    desktopPic.classList.add('welcome-banner-desktop-img');
-    media.appendChild(desktopPic);
-  }
-  if (mobilePic) {
-    mobilePic.classList.add('welcome-banner-mobile-img');
-    media.appendChild(mobilePic);
-  }
+  if (picture) media.appendChild(picture);
 
   const ctas = doc.createElement('div');
   ctas.className = 'welcome-banner-ctas';
