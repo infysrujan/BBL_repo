@@ -1,4 +1,3 @@
-
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
@@ -197,8 +196,7 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem) {
   };
 
   const togglePlay = () => {
-    if (video.paused) { triggerFlash(VI.play, 'Play'); video.play(); }
-    else { triggerFlash(VI.pause, 'Pause'); video.pause(); }
+    if (video.paused) { triggerFlash(VI.play, 'Play'); video.play(); } else { triggerFlash(VI.pause, 'Pause'); video.pause(); }
   };
 
   video.addEventListener('click', togglePlay);
