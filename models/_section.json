@@ -251,7 +251,11 @@
         "forward-points-sme",
         "menu-list",
         "search-reports",
-        "search-reports-results"
+        "search-reports-results",
+        "mf-results",
+        "mf-comparator-results",
+        "mf-comparator",
+        "mf-questionnaire"
       ]
     }
   ]
