@@ -20,12 +20,6 @@
     {
       "id": "saving-plan",
       "fields": [
-        {
-          "component": "text",
-          "name": "configPath",
-          "label": "Config Path",
-          "description": "Path to the savingtool config JSON file (e.g. /savingtool-config.json)"
-        }
       ]
     }
   ],

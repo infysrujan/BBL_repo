@@ -1,7 +1,6 @@
 import { loadCategoryBannerFragment } from '../category-banner/category-banner.js';
 import { getLang } from '../../scripts/bbl-decorators.js';
-
-const DEFAULT_SAVING_TOOL_CONFIG_PATH = '/savingtool-config.json';
+import { fetchConfigs } from '../../scripts/config.js';
 
 const INFLATION_RATE = 1.5;
 
@@ -1451,7 +1450,9 @@ function attachHandlers(state, data) {
 }
 
 export default async function decorate(block) {
-  const configPath = block.querySelector(':scope > div > div')?.textContent?.trim() || DEFAULT_SAVING_TOOL_CONFIG_PATH;
+  const configs = await fetchConfigs();
+  const configPath = configs.savingPlanConfigPath;
+  if (!configPath) return;
   const [json] = await Promise.all([
     fetch(configPath).then((r) => (r.ok ? r.json() : null)).catch(() => null),
     loadIcons(),
