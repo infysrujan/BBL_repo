@@ -1,10 +1,8 @@
-const IS_LOCAL = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-const BBL_API_BASE = IS_LOCAL
-  ? 'https://publish-p185039-e1937892.adobeaemcloud.com/api/FundPriceService'
-  : '/api/fundpriceservice';
-const BBL_API_NAMES_BASE = IS_LOCAL
-  ? 'https://publish-p185039-e1938068.adobeaemcloud.com/api/FundPriceService'
-  : '/api/fundpriceservice';
+import { fetchConfigs } from '../../scripts/config.js';
+
+const configs = await fetchConfigs();
+const BBL_API_BASE = configs.fundPricesApiUrl || '/api/fundpriceservice';
+const BBL_API_NAMES_BASE = configs.fundPricesNamesApiUrl || BBL_API_BASE;
 export const ALL_FUND_NAMES_URL = `${BBL_API_NAMES_BASE}/AllFundsName`;
 export const LATEST_DATE_URL = `${BBL_API_BASE}/LatestDate`;
 export const GET_UPDATE_IN_MONTH_BASE = `${BBL_API_BASE}/GetUpdateInMonth`;
