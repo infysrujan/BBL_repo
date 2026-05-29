@@ -353,10 +353,11 @@
           "label": "Link",
           "description": "Destination URL for the clickable card",
           "condition": {
-            "!!": [
+            "===": [
               {
                 "var": "isCardClickable"
-              }
+              },
+              true
             ]
           }
         },
@@ -366,10 +367,11 @@
           "label": "Link Title",
           "description": "Accessibility title attribute for the clickable card (optional)",
           "condition": {
-            "!!": [
+            "===": [
               {
                 "var": "isCardClickable"
-              }
+              },
+              true
             ]
           }
         },
@@ -387,10 +389,11 @@
           "label": "Fragment path",
           "valueType": "string",
           "condition": {
-            "!!": [
+            "===": [
               {
                 "var": "enableOverlayModal"
-              }
+              },
+              true
             ]
           }
         },
