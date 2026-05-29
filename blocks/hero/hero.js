@@ -173,7 +173,7 @@ function wireFullscreen(btn, bannerItem) {
   });
 }
 
-function wireDAMControls(video, bar, bannerItem) {
+function wireDAMControls(video, bar, videoWrapper, bannerItem) {
   const playBtn = bar.querySelector('.hero-ctrl-play');
   const muteBtn = bar.querySelector('.hero-ctrl-mute');
   const volSlider = bar.querySelector('.hero-ctrl-volume');
@@ -183,12 +183,40 @@ function wireDAMControls(video, bar, bannerItem) {
   video.removeAttribute('controls');
   video.volume = 0.5;
 
-  const togglePlay = () => { if (video.paused) video.play(); else video.pause(); };
+  const centerBtn = createElement('button', 'hero-banner-center-play');
+  centerBtn.setAttribute('aria-label', 'Play');
+  centerBtn.innerHTML = VI.play;
+  videoWrapper.append(centerBtn);
+
+  const triggerFlash = (icon, label) => {
+    centerBtn.innerHTML = icon;
+    centerBtn.setAttribute('aria-label', label);
+    centerBtn.classList.remove('hero-banner-center-play--flash');
+    void centerBtn.offsetWidth; // eslint-disable-line no-void
+    centerBtn.classList.add('hero-banner-center-play--flash');
+  };
+
+  const togglePlay = () => {
+    if (video.paused) { triggerFlash(VI.play, 'Play'); video.play(); }
+    else { triggerFlash(VI.pause, 'Pause'); video.pause(); }
+  };
+
   video.addEventListener('click', togglePlay);
   playBtn.addEventListener('click', togglePlay);
+  centerBtn.addEventListener('click', (e) => { e.stopPropagation(); togglePlay(); });
 
-  video.addEventListener('play', () => { playBtn.innerHTML = VI.pause; playBtn.setAttribute('aria-label', 'Pause'); });
-  video.addEventListener('pause', () => { playBtn.innerHTML = VI.play; playBtn.setAttribute('aria-label', 'Play'); });
+  video.addEventListener('play', () => {
+    playBtn.innerHTML = VI.pause;
+    playBtn.setAttribute('aria-label', 'Pause');
+    centerBtn.classList.add('hero-banner-center-play--hidden');
+  });
+  video.addEventListener('pause', () => {
+    playBtn.innerHTML = VI.play;
+    playBtn.setAttribute('aria-label', 'Play');
+    centerBtn.innerHTML = VI.play;
+    centerBtn.setAttribute('aria-label', 'Play');
+    centerBtn.classList.remove('hero-banner-center-play--hidden', 'hero-banner-center-play--flash');
+  });
 
   const syncMuteBtn = () => {
     const muted = video.muted || video.volume === 0;
@@ -423,10 +451,12 @@ export default async function decorate(block) {
         source.src = damVideoSrc;
         source.type = 'video/mp4';
         video.append(source);
-        bannerItem.append(video);
+        const videoWrapper = createElement('div', 'hero-banner-video-wrapper');
+        videoWrapper.append(video);
+        bannerItem.append(videoWrapper);
         if (!isMobile) {
-          const bar = buildControls(bannerItem);
-          wireDAMControls(video, bar, bannerItem);
+          const bar = buildControls(videoWrapper);
+          wireDAMControls(video, bar, videoWrapper, bannerItem);
           if (i === defaultIndex) {
             video.addEventListener('play', () => {
               video.muted = false;
