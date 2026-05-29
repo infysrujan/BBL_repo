@@ -42,6 +42,9 @@
       "table",
       "locate-us",
       "rate-card",
+      "fund-prices",
+      "fund-prices-table",
+      "fund-prices-dropdown",
       "accordion-block",
       "social-icons",
       "card-list",
@@ -66,6 +69,7 @@
       "promo-card-listing",
       "top-promotional-cards",
       "multi-column-tiles",
+      "fund-prices",
       "property-for-sale-details",
       "property-for-sale",
       "stock-ticker",
@@ -191,6 +195,24 @@
       "wizard",
       "range"
     ]
+  },
+  {
+    "id": "fund-prices-table",
+    "rte": {
+      "toolbar": {
+        "insert": [
+          "table"
+        ],
+        "editor": [
+          "removeformat"
+        ],
+        "sections": [
+          "insert",
+          "editor"
+        ]
+      }
+    },
+    "components": []
   },
   {
     "id": "header-section",
