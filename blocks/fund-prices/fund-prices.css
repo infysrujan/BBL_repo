@@ -238,7 +238,7 @@
 }
 
 .fund-prices-search-bar .fund-search-go-btn:hover {
-  background: #0050cc;
+  background: var(--bbl-color-blue-90);
 }
 
 .bbl-cal-popup {
