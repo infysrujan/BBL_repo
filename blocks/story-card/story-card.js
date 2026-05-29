@@ -45,6 +45,7 @@ function buildContent(
 ) {
   const content = doc.createElement('div');
   content.className = 'story-card-content';
+  let enableModal = false;
 
   // Eyebrow
   if (eyebrowText) {
@@ -83,19 +84,15 @@ function buildContent(
         if (anchor && anchor.href && anchor.textContent.trim()) {
           const clonedContainer = buttonContainer.cloneNode(true);
 
-          // Per-button modal flag: check sibling cells for "true" (the enableModal
-          // boolean field from _button.json renders as a text cell in the button row).
-          const cells = [...buttonRow.children];
-          const enableModal = cells.some((cell) => {
-            if (cell.contains(buttonContainer)) return false;
-            return cell.textContent?.trim().toLowerCase() === 'true';
-          });
+          const isModalEnabled = [...buttonRow.children].some(
+            (cell) => !cell.contains(buttonContainer) && cell.textContent?.trim().toLowerCase() === 'true',
+          );
 
-          if (enableModal) {
+          if (isModalEnabled) {
             const clonedAnchor = clonedContainer.querySelector('a');
-            const href = clonedAnchor.getAttribute('href');
+            clonedAnchor.setAttribute('data-modal', clonedAnchor.getAttribute('href'));
             clonedAnchor.removeAttribute('href');
-            clonedAnchor.setAttribute('data-modal', href);
+            enableModal = true;
           }
 
           moveInstrumentation(buttonRow, clonedContainer);
@@ -105,7 +102,7 @@ function buildContent(
     });
   }
 
-  return content;
+  return { content, enableModal };
 }
 
 /**
@@ -223,7 +220,7 @@ export default function decorate(block) {
   const inner = doc.createElement('div');
   inner.className = 'inner';
 
-  const content = buildContent(
+  const { content, enableModal } = buildContent(
     eyebrowText,
     titleText,
     descriptionHTML,
@@ -256,13 +253,14 @@ export default function decorate(block) {
   block.textContent = '';
   block.appendChild(wrapper);
 
-  // Delegated click handler — mirrors card-list's [data-modal] pattern.
-  // Only buttons that have data-modal stamped (via enableModal in _button.json) open as a modal.
-  block.addEventListener('click', (event) => {
-    const trigger = event.target.closest('[data-modal]');
-    if (!trigger || !block.contains(trigger)) return;
-    event.preventDefault();
-    const fragmentPath = trigger.getAttribute('data-modal');
-    if (fragmentPath) openModal(doc, fragmentPath);
-  });
+  // Only attach the modal handler if at least one button has enableModal enabled.
+  if (enableModal) {
+    block.addEventListener('click', (event) => {
+      const trigger = event.target.closest('[data-modal]');
+      if (!trigger || !block.contains(trigger)) return;
+      event.preventDefault();
+      const fragmentPath = trigger.getAttribute('data-modal');
+      if (fragmentPath) openModal(doc, fragmentPath);
+    });
+  }
 }
