@@ -165,7 +165,15 @@ document.addEventListener('bbl:load-fragment', async (e) => {
  * @returns {'en'|'th'}
  */
 function getDocumentLangFromPath(pathname) {
-  const first = pathname.split('/').filter(Boolean)[0];
+  const segments = pathname.split('/').filter(Boolean);
+  const first = segments[0];
+
+  if (document.querySelector('[data-aue-resource]')) {
+    const lang = segments[3];
+    if (lang === 'en') return 'en';
+    if (lang === 'th') return 'th';
+  }
+
   if (first === 'en') return 'en';
   if (first === 'th') return 'th';
 
