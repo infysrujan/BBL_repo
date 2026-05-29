@@ -121,7 +121,7 @@
   display: inline-block;
 }
 
-.menu-card-action-inner .button.primary {
+.menu-card-action-inner .button {
     border-radius: 0.4375rem;
     box-sizing: border-box;
     width: 100%;
@@ -150,7 +150,7 @@
   font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-medium);
 }
 
-.menu-card-action-inner .menu-card-action-description ~ :is(.button.primary, .global-dropdown) {
+.menu-card-action-inner .menu-card-action-description ~ :is(.button, .global-dropdown) {
     margin-top: var(--bbl-space-250);
     min-width: 100%;
 }
