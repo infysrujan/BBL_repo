@@ -7,9 +7,9 @@ trigger:
   branches:
     include:
       - dev
-      - qa
-      - stage
       - main
+      - stage
+      - qa
       - feature/*
 
 pr:
@@ -100,7 +100,7 @@ stages:
           TEST_URL="https://stage--site-stage--bangkok-bank.aem.live/en"
 
         else
-          TEST_URL="https://${BRANCH_NAME}--site-qa--bangkok-bank.aem.page/en"
+          TEST_URL="https://${BRANCH_NAME}--site-dev--bangkok-bank.aem.page/en"
         fi
 
         echo "Using URL: $TEST_URL"
