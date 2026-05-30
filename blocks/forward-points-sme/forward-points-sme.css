@@ -36,7 +36,7 @@
 .forward-points-sme .fpsme-date-input {
   width: 100%;
   height: 2.75rem;
-  padding: 0 2.5rem 0 1.875rem;
+  padding: 0 2.5rem 0 1.25rem;
   color: var(--bbl-color-gray-121);
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-150);
@@ -447,6 +447,7 @@
   flex-shrink: 0;
   margin-left: auto;
   text-decoration: none;
+  font-weight:700;
 }
 
 .forward-points-sme .fpsme-print-btn .icon-print {
@@ -478,7 +479,7 @@
 
 .forward-points-sme .fpsme-fwd-title p {
   margin: 0;
-  font-size: 1.225rem;
+  font-size: 1.375rem;
   font-weight: inherit;
   line-height: inherit;
   text-align: center;
@@ -497,7 +498,7 @@
 }
 
 .forward-points-sme .fpsme-fwd-subtitle {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 400;
   color: var(--bbl-color-grey-70);
   text-align: center;
@@ -574,7 +575,7 @@
 
 .forward-points-sme .fpsme-remark {
   margin-top: var(--bbl-space-300);
-  font-size: 0.875rem;
+  font-size: 0.938rem;
   color: var(--bbl-color-grey-150);
   line-height: 1.6;
 }
@@ -655,6 +656,18 @@
     max-width: 50%;
   }
 
+  .forward-points-sme .fpsme-section1-bar {
+    position: relative;
+  }
+
+  .forward-points-sme .fpsme-print-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-left: 0;
+    font-size: 1rem;
+  }
+
   .forward-points-sme .fpsme-update-label {
     font-size: 1rem;
   }
@@ -668,21 +681,17 @@
   }
 
   .forward-points-sme .fpsme-date-group {
-    flex: 0 0 11.25rem;
-    width: 11.25rem;
-  }
-
-  .forward-points-sme .fpsme-time-wrap {
     flex: 0 0 10rem;
     width: 10rem;
   }
 
-  .forward-points-sme .fpsme-go-btn {
-    flex: 0 0 auto;
-    font-size: 1rem;
+  .forward-points-sme .fpsme-time-wrap {
+    flex: 0 0 8.5rem;
+    width: 8.5rem;
   }
 
-  .forward-points-sme .fpsme-print-btn {
+  .forward-points-sme .fpsme-go-btn {
+    flex: 0 0 auto;
     font-size: 1rem;
   }
 
