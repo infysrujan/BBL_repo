@@ -92,8 +92,9 @@
 .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
   font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
   margin-block: 0 1.4375rem;
-  font-weight: var(--bbl-font-weight-regular);
-  font-size: 2.887rem;
+  font-weight: var(--bbl-text-hero-title-weight);
+  font-size: var(--bbl-heading-d1-size);
+  line-height:var(--bbl-text-hero-title-line-height);
   margin-inline: auto;
 }
 
@@ -118,9 +119,9 @@
 }
 
 .hero-banner-content-inner-text {
-  font-size: 1.137rem;
-  line-height: 1.308rem;
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-text-banner-description-size);
+  line-height: var(--bbl-text-banner-description-line-height);
+  font-weight: var(--bbl-text-banner-description-weight);
   margin-block: 0;
 }
 
@@ -229,8 +230,9 @@
 
 .hero-banner-simple .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
   color: var(--bbl-color-black);
-  font-size: 1.4rem;
-  line-height: 1.3746rem;
+  font-size: var(--bbl-text-banner-title-size);
+  line-height: var(--bbl-text-banner-title-line-height);
+  font-weight: var(--bbl-text-banner-title-weight);
   letter-spacing: -0.0125rem;
 }
 
@@ -451,8 +453,6 @@
   }
 
   .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 7.5rem;
-    line-height: 8.125rem;
     overflow: visible;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -532,15 +532,10 @@
     width: 100%;
   }
 
-  .hero-banner-content-inner-text {
-    font-size: 1.5rem;
-    line-height: 1.725rem;
-  }
-
-    .hero-banner-content-inner .button-container {
-        margin: 2.25rem 0 0;
-        text-align: left;
-        justify-content: flex-start;
+  .hero-banner-content-inner .button-container {
+      margin: 2.25rem 0 0;
+      text-align: left;
+      justify-content: flex-start;
     }
 
   .hero-banner-thumbnail-outer {
@@ -610,11 +605,6 @@
 
   .section.full-bleed-bg .hero-banner-private-wealth-banking .hero-banner-content.content {
     padding: 0 var(--bbl-space-1050) 0;
-  }
-
-  .hero-banner-simple .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--bbl-font-size-h3-desktop);
-    line-height: 2.875rem;
   }
 
   /* Simple logo and title variant override */
