@@ -9774,12 +9774,12 @@
       },
       {
         "component": "container",
-        "name": "targetSettings",
+        "name": "defaultTargetLinkSettings",
         "label": "Target settings",
         "fields": [
           {
             "component": "boolean",
-            "name": "targetLink",
+            "name": "defaultTargetLink",
             "label": "Open link in new tab",
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
@@ -9840,12 +9840,12 @@
       },
       {
         "component": "container",
-        "name": "targetSettings",
+        "name": "defaultTargetLinkSettings",
         "label": "Target settings",
         "fields": [
           {
             "component": "boolean",
-            "name": "targetLink",
+            "name": "defaultTargetLink",
             "label": "Open link in new tab",
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
@@ -9923,11 +9923,10 @@
         "label": "Link",
         "description": "Destination URL for the clickable card",
         "condition": {
-          "===": [
+          "!!": [
             {
               "var": "isCardClickable"
-            },
-            true
+            }
           ]
         }
       },
@@ -9937,11 +9936,10 @@
         "label": "Link Title",
         "description": "Accessibility title attribute for the clickable card (optional)",
         "condition": {
-          "===": [
+          "!!": [
             {
               "var": "isCardClickable"
-            },
-            true
+            }
           ]
         }
       },
@@ -9959,11 +9957,10 @@
         "label": "Fragment path",
         "valueType": "string",
         "condition": {
-          "===": [
+          "!!": [
             {
               "var": "enableOverlayModal"
-            },
-            true
+            }
           ]
         }
       },
