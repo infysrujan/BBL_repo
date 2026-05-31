@@ -26,6 +26,10 @@ import parseAuthoring from './helpers/authoring-helpers.js';
 import { getLang } from '../../scripts/scripts.js';
 
 function printForwardPointsSme(block) {
+  // Guard: remove any leftover root from a previous print (e.g. afterprint didn't fire)
+  document.getElementById('fpsme-print-root')?.remove();
+  document.getElementById('fpsme-print-style')?.remove();
+
   const content = block.cloneNode(true);
 
   [
@@ -44,80 +48,40 @@ function printForwardPointsSme(block) {
     input.parentNode.replaceChild(span, input);
   });
 
-  content.querySelectorAll('img').forEach((img) => { img.loading = 'eager'; });
-
+  // Logo — clone directly from the live page (images already loaded, no fetch needed)
   const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
     || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
-  let brandLogoHtml = '';
-  if (logoEl) {
-    const logoClone = logoEl.cloneNode(true);
-    logoClone.querySelectorAll('img').forEach((img) => { img.loading = 'eager'; });
-    brandLogoHtml = logoClone.outerHTML;
-  }
+  const brandLogoHtml = logoEl ? logoEl.cloneNode(true).outerHTML : '';
 
-  const printTitle = document.querySelector('meta[property="og:title"]')?.getAttribute('content')
-    || document.title.split(/\s*[|–—]\s*/)[0].trim()
-    || document.title;
+  const printRoot = document.createElement('div');
+  printRoot.id = 'fpsme-print-root';
+  printRoot.innerHTML = `
+    <div class="brand-logo-container">${brandLogoHtml}</div>
+    <div class="section">${content.outerHTML}</div>
+  `;
 
-  const cssLinks = [
-    '/styles/styles.css',
-    '/styles/fonts.css',
-    '/blocks/header/header.css',
-    '/blocks/brand-logo/brand-logo.css',
-    '/blocks/forward-points-sme/forward-points-sme.css',
-    '/blocks/forward-points-sme/fpsme-print.css',
-  ].map((href) => `<link rel="stylesheet" href="${href}">`).join('\n      ');
+  // Inline <style> applies synchronously — no network delay unlike an external CSS file.
+  // This guarantees the page isolation rule is active before window.print() fires.
+  const printStyle = document.createElement('style');
+  printStyle.id = 'fpsme-print-style';
+  printStyle.textContent = `
+    @media print {
+      body > *:not(#fpsme-print-root) { display: none !important; }
+      #fpsme-print-root { display: block !important; }
+      #fpsme-print-root .brand-logo-container { display: block !important; }
+      #fpsme-print-root .brand-logo-container img { display: block !important; height: var(--bbl-space-400) !important; width: auto !important; max-width: none !important; }
+    }
+  `;
 
-  const printHtml = `<!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="utf-8"/>
-      <title>${printTitle}</title>
-      <base href="${window.location.origin}/">
-      ${cssLinks}
-      <style>
-        .brand-logo-container,
-        .brand-logo.block,
-        .brand-logo-container picture { display: block !important; }
-        .brand-logo-container img { display: block !important; height: 2rem !important; width: auto !important; max-width: none !important; }
-      </style>
-    </head>
-    <body class="appear">
-      <header class="header-wrapper">
-        <div class="header block" data-block-status="loaded">
-          <div class="header-content">
-            <div class="main-nav-desktop">
-              <div class="brand-logo block">
-                <div class="brand-logo-container">
-                  ${brandLogoHtml}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-      <main>
-        <div class="section">${content.outerHTML}</div>
-      </main>
-    </body>
-  </html>`;
+  document.head.appendChild(printStyle);
+  document.body.appendChild(printRoot);
 
-  const printWindow = window.open('', '', 'height=500,width=800');
-  if (!printWindow) return;
+  window.print();
 
-  const runPrint = () => {
-    printWindow.focus();
-    setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
-  };
-
-  if (printWindow.document.readyState === 'complete') {
-    requestAnimationFrame(runPrint);
-  } else {
-    printWindow.addEventListener('load', runPrint);
-  }
-
-  printWindow.document.write(printHtml);
-  printWindow.document.close();
+  window.addEventListener('afterprint', () => {
+    printRoot.remove();
+    printStyle.remove();
+  }, { once: true });
 }
 
 function escapeHtml(value) {
@@ -753,6 +717,15 @@ function setupUEBlockRefresh(blockEl) {
 // ─── Main decorate ─────────────────────────────────────────────────────────────
 
 export default async function decorate(block) {
+  // Preload print CSS so it is ready before the first print is triggered
+  const printCssHref = '/blocks/forward-points-sme/fpsme-print.css';
+  if (!document.querySelector(`link[href="${printCssHref}"]`)) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = printCssHref;
+    document.head.appendChild(link);
+  }
+
   const authoring = parseAuthoring(block);
   const [placeholders, configs] = await Promise.all([fetchPlaceholders(), fetchConfigs()]);
 

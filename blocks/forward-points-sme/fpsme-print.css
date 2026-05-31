@@ -1,48 +1,33 @@
 @page {
   size: a4 portrait;
-  margin: 0.75cm;
-}
-
-/* Remove header chrome so the logo sits flush at the top */
-.header {
-  position: unset;
-}
-
-.header-wrapper,
-.header.block,
-.header-content,
-.main-nav-desktop {
-  margin: 0;
-  padding: 0;
-}
-
-/* Strip padding/margin that styles.css adds to main and .section wrappers */
-main {
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-.section {
-  padding: 0 !important;
-  padding-block: 0 !important;
-  padding-inline: 0 !important;
-  margin: 0 !important;
-}
-
-.forward-points-sme.block {
-  padding: 0 !important;
-  margin: 0 !important;
+  margin: 1cm;
 }
 
 @media print {
+  /* Strip padding from the wrappers inside our print root */
+  #fpsme-print-root .section {
+    padding: 0 !important;
+    padding-block: 0 !important;
+    padding-inline: 0 !important;
+    margin: 0 !important;
+  }
+
+  #fpsme-print-root .forward-points-sme.block {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
   /* ── Logo ── */
-  .brand-logo-container {
+
+  /* Use #fpsme-print-root prefix to override brand-logo.css which hides .brand-logo-container in print */
+  #fpsme-print-root .brand-logo-container {
+    display: block !important;
     width: auto;
     height: auto;
     margin: 0 0 var(--bbl-space-200);
   }
 
-  .brand-logo-container img {
+  #fpsme-print-root .brand-logo-container img {
     height: var(--bbl-space-400) !important;
     width: auto !important;
     max-width: none !important;
