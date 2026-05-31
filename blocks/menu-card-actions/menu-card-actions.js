@@ -42,7 +42,6 @@ function extractToggledLink(cells, valueCellSelector) {
 
 function buildCardWrapper(
   cardLinkHref,
-  cardLinkTarget,
   cardLinkTitle,
   overlayHref,
   enableOverlayModal,
@@ -158,7 +157,6 @@ function createCardItem(cardRow, doc) {
     ? [...cardLinkCell.querySelectorAll('*')].find((el) => el instanceof HTMLAnchorElement)
     : null;
   const cardLinkHref = cardLinkAnchor?.getAttribute('href') || '';
-  const cardLinkTarget = cardLinkAnchor?.target || '';
   const cardLinkTitle = cardLinkAnchor?.title?.trim() || '';
   remaining = remaining.filter((c) => c !== cardLinkCell);
 
@@ -189,8 +187,8 @@ function createCardItem(cardRow, doc) {
 
   // Render action based on the authored action type (read dynamically — no whitelist)
   if (actionType === 'default' && actionCells.length > 0) {
-    const btn = actionCells[0].querySelector('a').cloneNode(true);
-    // Link style: read from the first non-toggle keyword cell in remaining
+    const btnAnchor = [...actionCells[0].querySelectorAll('*')].find((el) => el instanceof HTMLAnchorElement);
+    const btn = btnAnchor.cloneNode(true);
     const isLinkTypeCell = (c) => isKeywordCell(c) && !isToggleCell(c) && !actionCells.includes(c);
     const linkTypeCell = remaining.find(isLinkTypeCell);
     const linkType = linkTypeCell?.textContent.trim().toLowerCase() ?? 'tertiary';
@@ -198,8 +196,9 @@ function createCardItem(cardRow, doc) {
     btn.removeAttribute('data-modal');
     inner.appendChild(btn);
   } else if (actionType === 'download' && actionCells.length > 0) {
-    const dlAnchor = actionCells.find((c) => !c.querySelector('ul'))?.querySelector('a')
-      || actionCells[0].querySelector('a');
+    const hasUl = (c) => [...c.querySelectorAll('*')].some((el) => el instanceof HTMLUListElement);
+    const dlCell = actionCells.find((c) => !hasUl(c)) || actionCells[0];
+    const dlAnchor = [...dlCell.querySelectorAll('*')].find((el) => el instanceof HTMLAnchorElement);
     const dlLink = createDownloadLink(dlAnchor, doc);
     dlLink?.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
     inner.appendChild(dlLink);
@@ -212,19 +211,21 @@ function createCardItem(cardRow, doc) {
       inner.appendChild(dlLink);
     });
   } else if (actionType === 'select-dropdown') {
-    const dropdownCell = actionCells.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length > 1);
+    const hasUl = (c) => [...c.querySelectorAll('*')].some((el) => el instanceof HTMLUListElement);
+    const hasMultiLink = (c) => [...c.querySelectorAll('*')].filter((el) => el instanceof HTMLAnchorElement).length > 1;
+    const dropdownCell = actionCells.find((c) => hasUl(c) || hasMultiLink(c));
     if (dropdownCell) {
       const labelCellIdx = remaining.indexOf(dropdownCell) - 1;
-      const label = (labelCellIdx >= 0 && !remaining[labelCellIdx].querySelector('a'))
-        ? remaining[labelCellIdx].textContent.trim()
-        : remaining[labelCellIdx]?.textContent.trim() || 'Select';
+      const labelCell = labelCellIdx >= 0 ? remaining[labelCellIdx] : null;
+      const hasLink = labelCell && [...labelCell.querySelectorAll('*')].some((el) => el instanceof HTMLAnchorElement);
+      const label = (!hasLink && labelCell?.textContent.trim()) || 'Select';
       inner.appendChild(createGlobalDropdown(label, dropdownCell.innerHTML, doc));
     }
   }
 
   if (dateText) {
     const dateEl = doc.createElement('div');
-    dateEl.className = 'menu-card-action-date pad-top-30';
+    dateEl.className = 'menu-card-action-date';
     dateEl.textContent = dateText;
     inner.appendChild(dateEl);
   }
@@ -233,7 +234,6 @@ function createCardItem(cardRow, doc) {
   if (isCardClickable || enableOverlayModal) {
     const wrapper = buildCardWrapper(
       cardLinkHref,
-      cardLinkTarget,
       cardLinkTitle,
       overlayHref,
       enableOverlayModal,
@@ -251,14 +251,27 @@ export default function decorate(block) {
   const doc = block.ownerDocument;
   const allRows = [...block.children];
 
-  // Layout: first-row keyword if it is plain text with a single word, otherwise 'stacked'
-  const firstRowText = allRows[0]?.textContent?.trim().toLowerCase() || '';
-  const firstRowEls = allRows[0] ? [...allRows[0].querySelectorAll('*')] : [];
-  const isFirstRowLayout = /^[a-z-]+$/.test(firstRowText)
+  // 1. AEM EDS variation class via data-block-name (dynamic — no hardcoded block name)
+  // 2. First-row keyword — strict: only 1 populated cell prevents card rows being mistaken
+  // 3. Default: 'stacked'
+  const { blockName } = block.dataset;
+  const variantClass = blockName
+    ? [...block.classList].find(
+      (cls) => cls !== blockName && cls !== 'block' && /^[a-z-]+$/.test(cls),
+    )
+    : null;
+  const firstRow = allRows[0];
+  const firstRowText = firstRow?.textContent?.trim().toLowerCase() || '';
+  const firstRowCells = firstRow ? [...firstRow.children] : [];
+  const firstRowPopulated = firstRowCells.filter((c) => c.textContent.trim().length > 0);
+  const firstRowEls = firstRow ? [...firstRow.querySelectorAll('*')] : [];
+  const isFirstRowLayout = !variantClass
+    && firstRowPopulated.length === 1
+    && /^[a-z-]+$/.test(firstRowText)
     && !firstRowEls.some((el) => el instanceof HTMLAnchorElement
       || el instanceof HTMLImageElement
       || el instanceof HTMLHeadingElement);
-  const layout = isFirstRowLayout ? firstRowText : 'stacked';
+  const layout = variantClass || (isFirstRowLayout ? firstRowText : 'stacked');
   const cardRows = isFirstRowLayout ? allRows.slice(1) : allRows;
 
   // Tag section header wrappers for styling
