@@ -251,9 +251,6 @@ export default function decorate(block) {
   const doc = block.ownerDocument;
   const allRows = [...block.children];
 
-  // 1. AEM EDS variation class via data-block-name (dynamic — no hardcoded block name)
-  // 2. First-row keyword — strict: only 1 populated cell prevents card rows being mistaken
-  // 3. Default: 'stacked'
   const { blockName } = block.dataset;
   const variantClass = blockName
     ? [...block.classList].find(
@@ -285,7 +282,16 @@ export default function decorate(block) {
 
   cardRows.forEach((row) => {
     const card = createCardItem(row, doc);
-    if (!card) return;
+    if (!card) {
+      // In UE edit mode, empty/incomplete rows must still be instrumented so the
+      // author can see and interact with the item in the UE content tree overlay.
+      if (window.hlx?.aue?.status) {
+        const placeholder = createElementFromHTML('<div class="menu-card-action-item"></div>', doc);
+        moveInstrumentation(row, placeholder);
+        container.appendChild(placeholder);
+      }
+      return;
+    }
     moveInstrumentation(row, card);
     container.appendChild(card);
   });
