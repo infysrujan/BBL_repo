@@ -88,8 +88,8 @@
 }
 
 .cards-list-button .button{
-    width: 100%;
-    box-sizing: border-box;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .cards-list:is(.scrollable, .carousel) {
@@ -182,12 +182,12 @@
   margin-inline: auto;
 }
 
- .modal-body .default-content-wrapper.card-list-modal-content {
-    margin-inline: 0;
+.modal-body .default-content-wrapper.card-list-modal-content {
+  margin-inline: 0;
 }
 
 .modal-body .section.central-aligned {
-    padding-inline: 0;
+  padding-inline: 0;
 }
 
 .cards-list-image.cards-list-image-x-small img {
@@ -261,6 +261,14 @@
   border-radius: var(--bbl-rounded-200);
 }
 
+.cards-list:has(.cards-list-promo-tag) .cards-list-content:not(:has(.cards-list-promo-tag))::before {
+  content: '';
+  display: block;
+  height: 0.9844rem;
+  margin-bottom: 0.875rem;
+  padding-block: var(--bbl-space-050);
+}
+
 .cards-list-inner .cards-list-button {
   margin: auto 0 0;
   padding: 0 var(--bbl-space-250) var(--bbl-space-250);
@@ -287,27 +295,27 @@
 }
 
 .section.bg-truthful-dark-blue * .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
-    color: var(--bbl-color-black);
+  color: var(--bbl-color-black);
 }
 
 .section.bg-truthful-dark-blue * .cards-list-description p {
-    color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-70);
 }
 
 .section.bg-truthful-dark-blue * .cards-list-remark p {
-    color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-70);
 }
 
 .section.bg-truthful-blue * .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
-    color: var(--bbl-color-black);
+  color: var(--bbl-color-black);
 }
 
 .section.bg-truthful-blue * .cards-list-description p {
-    color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-70);
 }
 
 .section.bg-truthful-blue * .cards-list-remark p {
-    color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-70);
 }
 
 .cards-list-title:not(.has-title-underline) :is(h1, h2, h3, h4, h5, h6) {
@@ -696,6 +704,10 @@
     line-height: 1.125rem;
   }
 
+  .cards-list:has(.cards-list-promo-tag) .cards-list-content:not(:has(.cards-list-promo-tag))::before {
+    height: 1.125rem;
+  }
+
   .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
     font-size: var(--bbl-font-size-h5-desktop);
     line-height: 1.625rem;
@@ -711,7 +723,7 @@
     line-height: 1.375rem;
   }
 
-   .modal-body .default-content-wrapper.card-list-modal-content {
+  .modal-body .default-content-wrapper.card-list-modal-content {
     max-width: 56.25rem;
     margin: 0 auto;
   }
