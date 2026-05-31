@@ -59,6 +59,7 @@ function buildCardWrapper(
   }
 
   wrapper.addEventListener('click', (e) => {
+    if (window.hlx?.aue?.status) return; // Let UE handle clicks in edit mode
     if (e.target.closest('a') || e.target.closest('[role="link"]')) return;
     if (!enableOverlayModal) {
       e.preventDefault();
@@ -281,6 +282,7 @@ export default function decorate(block) {
 
   // Block-level modal trigger (delegated)
   block.addEventListener('click', (event) => {
+    if (window.hlx?.aue?.status) return; // Let UE handle clicks in edit mode
     const trigger = event.target.closest('[data-modal]');
     if (!trigger || !block.contains(trigger)) return;
     if (event.target.closest('a') || event.target.closest('[role="link"]')) return;
