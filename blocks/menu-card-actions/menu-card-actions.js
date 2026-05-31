@@ -4,8 +4,8 @@ import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
 
-const ACTION_TYPES = ['default', 'download', 'multiple-download', 'select-dropdown'];
-const LINK_TYPES = ['primary', 'secondary', 'tertiary'];
+// The block's own class name — used to skip it when reading AEM variation classes
+const BLOCK_CLASS = 'menu-card-actions';
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -16,19 +16,29 @@ function formatDate(dateStr) {
   return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
-/**
- * Reads a boolean toggle cell pair authored as:
- *   [checkbox cell (true/false/empty)] [value cell]
- * Returns the value cell anchor element, or null if the toggle is disabled.
- */
+function isKeywordCell(cell) {
+  if (!cell.textContent.trim()) return false;
+  return ![...cell.querySelectorAll('*')].some(
+    (el) => el instanceof HTMLAnchorElement
+      || el instanceof HTMLImageElement
+      || el instanceof HTMLPictureElement
+      || el instanceof HTMLHeadingElement,
+  );
+}
+
+// A toggle checkbox cell authored as true / false / or intentionally left empty
+function isToggleCell(cell) {
+  const text = cell.textContent.trim().toLowerCase();
+  return text === 'true' || text === 'false' || cell.innerHTML.trim() === '';
+}
+
 function extractToggledLink(cells, valueCellSelector) {
   const valueCell = cells.find(valueCellSelector);
   if (!valueCell) return { enabled: false, cell: null };
 
   const indexInAll = cells.indexOf(valueCell);
   const prevCell = cells[indexInAll - 1];
-  const prevText = prevCell?.textContent?.trim().toLowerCase() || '';
-  const isDisabled = prevText === 'false' || prevCell?.innerHTML?.trim() === '';
+  const isDisabled = isToggleCell(prevCell) && prevCell?.textContent?.trim().toLowerCase() === 'false';
 
   return { enabled: !isDisabled, cell: valueCell };
 }
@@ -72,37 +82,52 @@ function buildCardWrapper(
 function createCardItem(cardRow, doc) {
   const cells = [...cardRow.children];
 
-  // Skip empty or config-only rows (no image, heading, or meaningful text content)
-  const hasImage = !!cells.find((c) => c.querySelector('img'));
-  const hasHeading = !!cells.find((c) => c.querySelector('h1, h2, h3, h4, h5, h6'));
-  const hasText = cells.some((c) => c.textContent.trim().length > 0);
-  if (!hasImage && !hasHeading && !hasText) return null;
+  // Skip empty or config-only rows
+  if (!cells.some((c) => c.textContent.trim().length > 0)) return null;
 
   // --- Data Extraction ---
 
-  const imgEl = cells.find((c) => c.querySelector('img'))?.querySelector('img');
-  const titleCell = cells.find((c) => c.querySelector('h1, h2, h3, h4, h5, h6'));
-  const title = titleCell?.innerHTML?.trim();
+  // Finds the first element of a given DOM type across all cells, returning both cell and element
+  const findInCells = (ctor) => cells.reduce((found, cell) => {
+    if (found.el) return found;
+    const el = [...cell.querySelectorAll('*')].find((e) => e instanceof ctor);
+    return el ? { cell, el } : found;
+  }, { cell: null, el: null });
 
-  const actionTypeIdx = cells.findIndex(
-    (c) => ACTION_TYPES.includes(c.textContent.trim().toLowerCase()),
-  );
-  const actionType = actionTypeIdx !== -1
-    ? cells[actionTypeIdx].textContent.trim().toLowerCase()
-    : '';
+  const { cell: imgCell, el: imgEl } = findInCells(HTMLImageElement);
+  const { cell: titleCell, el: headingEl } = findInCells(HTMLHeadingElement);
+  // Preserve author's heading level (outerHTML); default to h3 if plain text with no heading
+  const titleText = titleCell?.textContent?.trim();
+  const title = headingEl?.outerHTML?.trim() ?? (titleText ? `<h3>${titleText}</h3>` : '');
 
-  const descCell = actionTypeIdx > 0 ? cells[actionTypeIdx - 1] : null;
-  const description = (descCell && descCell !== titleCell && descCell !== cells.find((c) => c.querySelector('img')))
+  // Action type: keyword cell immediately before the first cell with links or a list
+  const hasActionContent = (c) => [...c.querySelectorAll('*')]
+    .some((el) => el instanceof HTMLAnchorElement || el instanceof HTMLUListElement);
+  const firstActionCellIdx = cells.findIndex(hasActionContent);
+  let actionTypeIdx = -1;
+  if (firstActionCellIdx > 0) {
+    const candidate = cells[firstActionCellIdx - 1];
+    if (candidate !== imgCell && candidate !== titleCell && isKeywordCell(candidate)) {
+      actionTypeIdx = firstActionCellIdx - 1;
+    }
+  }
+  const actionType = actionTypeIdx !== -1 ? cells[actionTypeIdx].textContent.trim().toLowerCase() : '';
+
+  // Description: the cell immediately before the action type keyword cell
+  const descCell = actionTypeIdx > 1 ? cells[actionTypeIdx - 1] : null;
+  const description = (descCell && descCell !== titleCell && descCell !== imgCell)
     ? descCell.innerHTML
     : '';
 
   let remaining = actionTypeIdx !== -1 ? cells.slice(actionTypeIdx + 1) : cells.slice(3);
 
-  // Date: last remaining cell that is a valid date string without links
+  // Date: last remaining cell that parses as a valid date with no links
   let dateText = '';
   const lastCell = remaining[remaining.length - 1];
   const lastCellText = lastCell?.textContent?.trim() || '';
-  if (lastCellText.length >= 8 && !Number.isNaN(Date.parse(lastCellText)) && !lastCell.querySelector('a')) {
+  const lastCellEls = lastCell ? [...lastCell.querySelectorAll('*')] : [];
+  if (lastCellText.length >= 8 && !Number.isNaN(Date.parse(lastCellText))
+    && !lastCellEls.some((el) => el instanceof HTMLAnchorElement)) {
     dateText = formatDate(lastCellText);
     remaining = remaining.slice(0, -1);
   }
@@ -110,32 +135,42 @@ function createCardItem(cardRow, doc) {
   // Overlay modal toggle
   const { enabled: enableOverlayModal, cell: modalCell } = extractToggledLink(
     remaining,
-    (c) => c.querySelector('a')?.getAttribute('href')?.includes('/fragments/'),
+    (c) => [...c.querySelectorAll('*')]
+      .find((el) => el instanceof HTMLAnchorElement
+        && el.getAttribute('href')?.includes('/fragments/')),
   );
-  const overlayHref = enableOverlayModal ? modalCell.querySelector('a').getAttribute('href') : '';
+  const overlayHref = enableOverlayModal
+    ? [...modalCell.querySelectorAll('*')].find((el) => el instanceof HTMLAnchorElement).getAttribute('href')
+    : '';
   remaining = remaining.filter((c) => c !== modalCell);
 
-  // Card link toggle (URL-like link text or href === text)
+  // Card link toggle (URL-like: link text contains '/' or equals href)
   const { enabled: isCardClickable, cell: cardLinkCell } = extractToggledLink(
     remaining,
     (c) => {
-      const a = c.querySelector('a');
-      if (!a || c.querySelector('ul')) return false;
+      const els = [...c.querySelectorAll('*')];
+      const a = els.find((el) => el instanceof HTMLAnchorElement);
+      if (!a || els.some((el) => el instanceof HTMLUListElement)) return false;
       const text = a.textContent?.trim() || '';
       const href = a.getAttribute('href')?.trim() || '';
       return text.includes('/') || href.endsWith(text) || text === href;
     },
   );
-  const cardLinkAnchor = isCardClickable ? cardLinkCell.querySelector('a') : null;
+  const cardLinkAnchor = isCardClickable
+    ? [...cardLinkCell.querySelectorAll('*')].find((el) => el instanceof HTMLAnchorElement)
+    : null;
   const cardLinkHref = cardLinkAnchor?.getAttribute('href') || '';
   const cardLinkTarget = cardLinkAnchor?.target || '';
   const cardLinkTitle = cardLinkAnchor?.title?.trim() || '';
   remaining = remaining.filter((c) => c !== cardLinkCell);
 
-  // Action button cells (cells with links that aren't headings or images)
+  // Action button cells: have a link, but aren't image or heading containers
   const actionCells = remaining.filter((c) => {
-    const a = c.querySelector('a');
-    return a && !c.querySelector('h1, h2, h3, h4, h5, h6') && !c.querySelector('picture, img');
+    const els = [...c.querySelectorAll('*')];
+    return els.some((el) => el instanceof HTMLAnchorElement)
+      && !els.some((el) => el instanceof HTMLHeadingElement
+        || el instanceof HTMLImageElement
+        || el instanceof HTMLPictureElement);
   });
 
   // --- DOM Construction ---
@@ -154,18 +189,19 @@ function createCardItem(cardRow, doc) {
     inner.querySelector('.menu-card-action-title')?.classList.add('has-description');
   }
 
-  // Action button rendering
+  // Render action based on the authored action type (read dynamically — no whitelist)
   if (actionType === 'default' && actionCells.length > 0) {
     const btn = actionCells[0].querySelector('a').cloneNode(true);
-    const linkTypeCell = remaining.find(
-      (c) => LINK_TYPES.includes(c.textContent.trim().toLowerCase()),
-    );
-    const linkType = linkTypeCell ? linkTypeCell.textContent.trim().toLowerCase() : 'tertiary';
+    // Link style: read from the first non-toggle keyword cell in remaining
+    const isLinkTypeCell = (c) => isKeywordCell(c) && !isToggleCell(c) && !actionCells.includes(c);
+    const linkTypeCell = remaining.find(isLinkTypeCell);
+    const linkType = linkTypeCell?.textContent.trim().toLowerCase() ?? 'tertiary';
     btn.classList.add('button', `button-${linkType}`);
     btn.removeAttribute('data-modal');
     inner.appendChild(btn);
   } else if (actionType === 'download' && actionCells.length > 0) {
-    const dlAnchor = actionCells.find((c) => !c.querySelector('ul'))?.querySelector('a') || actionCells[0].querySelector('a');
+    const dlAnchor = actionCells.find((c) => !c.querySelector('ul'))?.querySelector('a')
+      || actionCells[0].querySelector('a');
     const dlLink = createDownloadLink(dlAnchor, doc);
     dlLink?.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
     inner.appendChild(dlLink);
@@ -183,7 +219,7 @@ function createCardItem(cardRow, doc) {
       const labelCellIdx = remaining.indexOf(dropdownCell) - 1;
       const label = (labelCellIdx >= 0 && !remaining[labelCellIdx].querySelector('a'))
         ? remaining[labelCellIdx].textContent.trim()
-        : 'Select';
+        : remaining[labelCellIdx]?.textContent.trim() || 'Select';
       inner.appendChild(createGlobalDropdown(label, dropdownCell.innerHTML, doc));
     }
   }
@@ -195,7 +231,7 @@ function createCardItem(cardRow, doc) {
     inner.appendChild(dateEl);
   }
 
-  // Wrap with interactive layer if card is clickable or opens a modal
+  // Wrap with interactive layer if the card is clickable or triggers a modal
   if (isCardClickable || enableOverlayModal) {
     const wrapper = buildCardWrapper(
       cardLinkHref,
@@ -213,18 +249,21 @@ function createCardItem(cardRow, doc) {
   return card;
 }
 
-const VALID_LAYOUTS = ['stacked', 'scrollable'];
-
 export default function decorate(block) {
   const doc = block.ownerDocument;
   const allRows = [...block.children];
 
-  // Consume the first row only if it is a known layout keyword; otherwise default to 'stacked'
-  const firstRowText = allRows[0]?.textContent?.trim().toLowerCase();
-  const layout = VALID_LAYOUTS.includes(firstRowText) ? firstRowText : 'stacked';
-  const cardRows = VALID_LAYOUTS.includes(firstRowText) ? allRows.slice(1) : allRows;
+  // Layout: from AEM EDS variation class, or first-row text keyword, or default 'stacked'
+  const variantClass = [...block.classList].find(
+    (cls) => cls !== BLOCK_CLASS && /^[a-z-]+$/.test(cls),
+  );
+  const firstRowText = allRows[0]?.textContent?.trim().toLowerCase() || '';
+  const isFirstRowLayout = !variantClass && /^[a-z-]+$/.test(firstRowText)
+    && !allRows[0]?.querySelector('a, img, h1, h2, h3, h4, h5, h6');
+  const layout = variantClass || (isFirstRowLayout ? firstRowText : 'stacked');
+  const cardRows = isFirstRowLayout ? allRows.slice(1) : allRows;
 
-  // Tag section header text/image wrappers for styling
+  // Tag section header wrappers for styling
   const section = block.closest('.menu-card-actions-container');
   ['text', 'image'].forEach((type, i) => {
     section?.querySelector(`.default-content-wrapper > p:nth-of-type(${i + 1})`)
@@ -235,7 +274,7 @@ export default function decorate(block) {
 
   cardRows.forEach((row) => {
     const card = createCardItem(row, doc);
-    if (!card) return; // Skip empty/config rows
+    if (!card) return;
     moveInstrumentation(row, card);
     container.appendChild(card);
   });
