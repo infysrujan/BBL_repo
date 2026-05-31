@@ -233,6 +233,11 @@ export default function decorate(block) {
   const doc = block.ownerDocument;
   const allRows = [...block.children];
 
+  // Hide original content (keep in DOM for Universal Editor)
+  allRows.forEach((child) => {
+    child.style.display = 'none';
+  });
+
   const firstRowText = allRows[0]?.textContent?.trim().toLowerCase() || '';
   const firstRowEls = allRows[0] ? [...allRows[0].querySelectorAll('*')] : [];
   const isFirstRowLayout = allRows[0]?.children.length === 1
@@ -258,18 +263,18 @@ export default function decorate(block) {
 
     moveInstrumentation(row, card.firstElementChild ?? card);
     container.appendChild(card);
-    row.setAttribute('data-source-row', 'true');
-    row.style.display = 'none';
+
+    // Strip remaining data-aue-* attributes from the hidden row's subtree
+    // so orphaned properties do not leak into the UE content tree at the block level.
+    row.querySelectorAll('*').forEach((el) => {
+      [...el.attributes]
+        .filter(({ name }) => name.startsWith('data-aue-'))
+        .forEach(({ name }) => el.removeAttribute(name));
+    });
   });
 
-  block.textContent = '';
+  // Append new elements without removing original hidden content
   block.appendChild(container);
-
-  cardRows.forEach((row) => {
-    if (row.hasAttribute('data-source-row')) {
-      block.appendChild(row);
-    }
-  });
 
   block.addEventListener('click', (event) => {
     const trigger = event.target.closest('[data-modal]');
