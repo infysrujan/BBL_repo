@@ -1,4 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 
 /**
  * Build a slide for showArrowsDots variant.
@@ -8,7 +9,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  *   withDefaultImage: 0:variant, 1:slideType, 2:defaultImage, 3:titleDefaultImage (RTE — heading
  *                     becomes title, any remaining paragraphs become inline description),
  *                     4:stepText1, 5:description1, 6:stepText2, 7:description2,
- *                     8:ctaLink (merged — aem-content+text+text+select → 1 cell)
+ *                     8:ctaLink (merged — aem-content+text+text+select → 1 cell), 9:targetLink
  *   withCircularImage: 0:variant, 1:slideType,
  *                      2-8: withDefaultImage fields (reserved, empty),
  *                      9:circularImage, 10:titleCircularImage, 11:descriptionCircularImage,
@@ -47,6 +48,7 @@ export default function buildSlideArrowsandDots(row, index) {
     const titleCell = cells[10];
     const descriptionCell = cells[11];
     const linkCell = cells[12];
+    const targetValue = cells[13]?.textContent?.trim() || '';
 
     // image
     const imageContainer = document.createElement('div');
@@ -80,6 +82,7 @@ export default function buildSlideArrowsandDots(row, index) {
       if (a) {
         a.className = 'sub-title-medium link-primary';
         linkWrap.append(a);
+        applyLinkTarget(linkWrap, 'a', targetValue);
       } else {
         while (linkCell.firstChild) linkWrap.append(linkCell.firstChild);
       }
@@ -102,6 +105,7 @@ export default function buildSlideArrowsandDots(row, index) {
     const stepText2Cell = cells[6];
     const description2Cell = cells[7];
     const ctaLinkCell = cells[8];
+    const targetValue = cells[9]?.textContent?.trim() || '';
 
     // image
     const imageContainer = document.createElement('div');
@@ -191,6 +195,7 @@ export default function buildSlideArrowsandDots(row, index) {
         linkWrap.className = 'button-container';
         a.className = 'sub-title-medium button primary';
         linkWrap.append(a);
+        applyLinkTarget(linkWrap, 'a', targetValue);
         content.append(linkWrap);
       }
     }

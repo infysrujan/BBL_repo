@@ -1364,6 +1364,40 @@
             }
           ]
         }
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ],
+        "condition": {
+          "and": [
+            {
+              "===": [
+                {
+                  "var": "filter"
+                },
+                "showDots"
+              ]
+            },
+            {
+              "!!": [
+                {
+                  "var": "showLinks"
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   },
@@ -1569,6 +1603,29 @@
           {
             "name": "Tertiary",
             "value": "tertiary"
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withImage"
+          ]
+        }
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
           }
         ],
         "condition": {
@@ -1814,6 +1871,41 @@
           {
             "name": "Tertiary",
             "value": "tertiary"
+          }
+        ],
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "heroBannerImageCarousel"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "textAnimationVariant"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
           }
         ],
         "condition": {
@@ -2188,6 +2280,29 @@
         }
       },
       {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withDefaultImage"
+          ]
+        }
+      },
+      {
         "component": "reference",
         "name": "circularImage",
         "label": "Image",
@@ -2291,6 +2406,29 @@
           {
             "name": "Tertiary",
             "value": "tertiary"
+          }
+        ],
+        "condition": {
+          "===": [
+            {
+              "var": "slideType"
+            },
+            "withCircularImage"
+          ]
+        }
+      },
+      {
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
           }
         ],
         "condition": {

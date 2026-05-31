@@ -1,4 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 
 /**
  * Build a slide HERO BANNER IMAGE CAROUSEL or TEXT ANIMATION VARIANT
@@ -9,6 +10,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  *   5: link group (merged, empty) — link+linkText+linkTitle+linkType merged into 1 cell
  *   6: headerText (empty), 7: defaultText (empty),
  *   8: heroImage, 9: imageAlt, 10: title, 11: subtitle, 12: heroLink (merged)
+ *   13: targetLink (true/false)
  */
 export default function buildSlideHeroVariant(row, index, cells, variant) {
   const slide = document.createElement('div');
@@ -21,6 +23,8 @@ export default function buildSlideHeroVariant(row, index, cells, variant) {
   const titleCell = cells[12];
   const subtitleCell = cells[13];
   const linkCell = cells[14];
+  const targetCell = cells[15];
+  const targetValue = targetCell?.textContent?.trim() || '';
 
   const picture = heroImageCell?.querySelector('picture');
   if (picture) {
@@ -52,6 +56,7 @@ export default function buildSlideHeroVariant(row, index, cells, variant) {
     const linkWrapper = document.createElement('div');
     linkWrapper.className = 'carousel-link-wrap animated-text';
     linkWrapper.innerHTML = linkCell.innerHTML;
+    applyLinkTarget(linkWrapper, 'a', targetValue);
     content.append(linkWrapper);
   }
 

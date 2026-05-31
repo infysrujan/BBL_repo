@@ -1,12 +1,13 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
+import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 
 /**
  * Build a slide WITH IMAGE variation
  * Structure: Badge Text | Image | Description | Link
  * Cell layout (carousel-dotted-slide, slideType = withImage):
  *   0: variant, 1: slideType, 2: badgeText, 3: image, 4: description,
- *   5: link, 6: linkText, 7: linkTitle, 8: linkType
+ *   5: link, 6: linkText, 7: linkTitle, 8: linkType, 9: targetLink
  */
 export default function buildSlideWithImage(row, index, cells) {
   const slide = document.createElement('div');
@@ -52,8 +53,11 @@ export default function buildSlideWithImage(row, index, cells) {
 
   // Link/Button (cell 7)
   const link = cells[7]?.querySelector('a');
+  const targetValue = cells[8]?.textContent?.trim() || '';
+
   if (link) {
     content.append(link);
+    applyLinkTarget(content, 'a', targetValue);
   }
 
   slide.append(content);
