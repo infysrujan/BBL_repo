@@ -39,22 +39,22 @@ main {
   .brand-logo-container {
     width: auto;
     height: auto;
-    margin: 0 0 1rem;
+    margin: 0 0 var(--bbl-space-200);
   }
 
   .brand-logo-container img {
-    height: 2rem !important;
+    height: var(--bbl-space-400) !important;
     width: auto !important;
     max-width: none !important;
     display: block !important;
   }
 
-  /* ── Controls — stacked vertically, compact ─────── */
+  /* ── Controls — stacked vertically, compact ── */
   .forward-points-sme .fpsme-controls {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.125rem;
-    margin-bottom: 0.5rem;
+    gap: var(--bbl-space-025);
+    margin-bottom: var(--bbl-space-100);
   }
 
   .forward-points-sme .fpsme-update-label {
@@ -62,7 +62,7 @@ main {
     margin-bottom: 0;
     width: auto;
     flex-shrink: 0;
-    color: #000;
+    color: var(--bbl-color-black);
   }
 
   .forward-points-sme .fpsme-date-group {
@@ -83,7 +83,7 @@ main {
     max-width: fit-content;
     height: auto;
     line-height: 1.4;
-    color: #000;
+    color: var(--bbl-color-black);
   }
 
   .forward-points-sme .fpsme-date-trigger {
@@ -91,14 +91,14 @@ main {
     transform: none;
     background: none;
     border: none;
-    padding: 0 0 0 0.25rem;
+    padding: 0 0 0 var(--bbl-space-050);
     pointer-events: none;
     width: auto;
     height: auto;
     display: inline-flex;
     font-size: 0.9375rem;
     line-height: 1.4;
-    color: #000;
+    color: var(--bbl-color-black);
   }
 
   .forward-points-sme .fpsme-time-wrap {
@@ -119,7 +119,7 @@ main {
 
   .forward-points-sme .fpsme-time-label {
     font-size: 0.9375rem;
-    color: #000;
+    color: var(--bbl-color-black);
   }
 
   /* ── Section layout: currency table wide enough for 2-line headers ── */
@@ -130,7 +130,7 @@ main {
   }
 
   .forward-points-sme .fpsme-section-fwd {
-    margin-top: 1rem;
+    margin-top: var(--bbl-space-200);
   }
 
   /* ── Strip all colored backgrounds ── */
@@ -144,7 +144,7 @@ main {
 
   /* ── Currency table ── */
   .forward-points-sme .fpsme-table {
-    border: 1px solid #e2e6e9 !important;
+    border: 0.0625rem solid var(--bbl-color-grey-24) !important;
     border-collapse: collapse;
     font-size: 0.9375rem;
     width: 100%;
@@ -152,23 +152,23 @@ main {
   }
 
   .forward-points-sme .fpsme-table thead th {
-    padding: 0.75rem 0.3125rem;
+    padding: var(--bbl-space-150) 0.3125rem;
     font-size: 0.9375rem;
     font-weight: bold;
-    font-family: Muli-Bold, sans-serif;
-    color: #000 !important;
+    font-family: var(--bbl-font-family-medium);
+    color: var(--bbl-color-black) !important;
     background: transparent !important;
     border: none !important;
-    border-bottom: 1px solid #e2e6e9 !important;
+    border-bottom: 0.0625rem solid var(--bbl-color-grey-24) !important;
     text-align: center;
   }
 
   .forward-points-sme .fpsme-table tbody td {
-    padding: 0.75rem 0.625rem;
+    padding: var(--bbl-space-150) 0.625rem;
     font-size: 0.9375rem;
-    color: #000 !important;
+    color: var(--bbl-color-black) !important;
     border: none !important;
-    border-bottom: 1px solid #ebebeb !important;
+    border-bottom: 0.0625rem solid var(--bbl-color-grey-18) !important;
     vertical-align: middle;
   }
 
@@ -183,7 +183,7 @@ main {
   }
 
   .forward-points-sme .fpsme-currency-cell {
-    gap: 0.25rem;
+    gap: var(--bbl-space-050);
     white-space: nowrap;
   }
 
@@ -195,21 +195,21 @@ main {
   /* ── Forward tables side by side ── */
   .forward-points-sme .fpsme-fwd-tables {
     flex-direction: row !important;
-    gap: 0.75rem;
+    gap: var(--bbl-space-150);
     align-items: flex-start;
   }
 
   /* ── Flex forward table (fpsme-rt) ── */
   .forward-points-sme .fpsme-rt {
-    border: 0.0625rem solid #e2e6e9 !important;
+    border: 0.0625rem solid var(--bbl-color-grey-24) !important;
   }
 
   .forward-points-sme .fpsme-rt-row {
-    border-bottom: 0.0625rem solid #e2e6e9;
+    border-bottom: 0.0625rem solid var(--bbl-color-grey-24);
   }
 
   .forward-points-sme .fpsme-rt-header {
-    border-bottom: 0.0625rem solid #e2e6e9 !important;
+    border-bottom: 0.0625rem solid var(--bbl-color-grey-24) !important;
   }
 
   .forward-points-sme .fpsme-rt-row:last-child {
@@ -219,11 +219,11 @@ main {
   .forward-points-sme .fpsme-rt-cell {
     padding: 0.8125rem 0.625rem;
     font-size: 0.9375rem;
-    color: #000 !important;
+    color: var(--bbl-color-black) !important;
     background: transparent !important;
     background-color: transparent !important;
     border: none !important;
-    border-right: 0.0625rem solid #e2e6e9 !important;
+    border-right: 0.0625rem solid var(--bbl-color-grey-24) !important;
     border-bottom: none !important;
   }
 
@@ -234,32 +234,32 @@ main {
   .forward-points-sme .fpsme-rt-head {
     font-size: 0.9375rem;
     font-weight: bold;
-    font-family: Muli-Bold, sans-serif;
-    color: #000 !important;
+    font-family: var(--bbl-font-family-medium);
+    color: var(--bbl-color-black) !important;
   }
 
   .forward-points-sme .fpsme-rt-period {
     font-size: 0.9375rem;
     font-weight: bold;
-    font-family: Muli-Bold, sans-serif;
-    color: #000 !important;
+    font-family: var(--bbl-font-family-medium);
+    color: var(--bbl-color-black) !important;
     justify-content: flex-start;
   }
 
   .forward-points-sme .fpsme-rt-value {
     font-size: 0.9375rem;
-    color: #000 !important;
+    color: var(--bbl-color-black) !important;
     justify-content: center;
   }
 
   /* ── Spacing ── */
   .forward-points-sme .fpsme-fwd-body {
-    margin-top: 1rem;
+    margin-top: var(--bbl-space-200);
   }
 
   .forward-points-sme .fpsme-fwd-title {
     margin-bottom: 0;
-    font-size: 1rem;
+    font-size: var(--bbl-font-size-b1);
     font-weight: bold;
     text-align: center;
     line-height: 1.3;
@@ -271,8 +271,8 @@ main {
   }
 
   .forward-points-sme .fpsme-fwd-subtitle {
-    margin-top: 0.75rem;
-    margin-bottom: 0.75rem;
+    margin-top: var(--bbl-space-150);
+    margin-bottom: var(--bbl-space-150);
     font-size: 0.9375rem;
     text-align: center;
   }
@@ -283,9 +283,9 @@ main {
   }
 
   .forward-points-sme .fpsme-unit {
-    margin-top: 0.75rem;
-    font-size: 0.8rem;
-    color: #000 !important;
+    margin-top: var(--bbl-space-150);
+    font-size: var(--bbl-font-size-b3);
+    color: var(--bbl-color-black) !important;
     text-align: right;
   }
 
@@ -293,8 +293,8 @@ main {
   .forward-points-sme .fpsme-remark {
     font-size: 0.8125rem;
     line-height: 1.5;
-    margin-top: 1rem;
-    color: #000 !important;
+    margin-top: var(--bbl-space-200);
+    color: var(--bbl-color-black) !important;
   }
 
   .forward-points-sme .fpsme-remark p {
