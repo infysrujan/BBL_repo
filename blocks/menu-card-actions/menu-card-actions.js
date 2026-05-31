@@ -4,9 +4,6 @@ import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
 
-// The block's own class name — used to skip it when reading AEM variation classes
-const BLOCK_CLASS = 'menu-card-actions';
-
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const date = new Date(dateStr);
@@ -253,14 +250,14 @@ export default function decorate(block) {
   const doc = block.ownerDocument;
   const allRows = [...block.children];
 
-  // Layout: from AEM EDS variation class, or first-row text keyword, or default 'stacked'
-  const variantClass = [...block.classList].find(
-    (cls) => cls !== BLOCK_CLASS && /^[a-z-]+$/.test(cls),
-  );
+  // Layout: first-row keyword if it is plain text with a single word, otherwise 'stacked'
   const firstRowText = allRows[0]?.textContent?.trim().toLowerCase() || '';
-  const isFirstRowLayout = !variantClass && /^[a-z-]+$/.test(firstRowText)
-    && !allRows[0]?.querySelector('a, img, h1, h2, h3, h4, h5, h6');
-  const layout = variantClass || (isFirstRowLayout ? firstRowText : 'stacked');
+  const firstRowEls = allRows[0] ? [...allRows[0].querySelectorAll('*')] : [];
+  const isFirstRowLayout = /^[a-z-]+$/.test(firstRowText)
+    && !firstRowEls.some((el) => el instanceof HTMLAnchorElement
+      || el instanceof HTMLImageElement
+      || el instanceof HTMLHeadingElement);
+  const layout = isFirstRowLayout ? firstRowText : 'stacked';
   const cardRows = isFirstRowLayout ? allRows.slice(1) : allRows;
 
   // Tag section header wrappers for styling
