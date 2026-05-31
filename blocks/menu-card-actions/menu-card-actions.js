@@ -4,155 +4,146 @@ import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
 
-function formatMenuCardDate(dateStr) {
+const ACTION_TYPES = ['default', 'download', 'multiple-download', 'select-dropdown'];
+const LINK_TYPES = ['primary', 'secondary', 'tertiary'];
+
+function formatDate(dateStr) {
   if (!dateStr) return '';
-  const lang = getLang();
   const date = new Date(dateStr);
-  if (lang === 'th') {
-    const buddhistYear = date.getFullYear() + 543;
-    const month = date.toLocaleString('th-TH', { month: 'long' });
-    const day = date.getDate();
-    return `${day} ${month} ${buddhistYear}`;
+  if (getLang() === 'th') {
+    return `${date.getDate()} ${date.toLocaleString('th-TH', { month: 'long' })} ${date.getFullYear() + 543}`;
   }
   return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
-function createMenuCardItem(cardElement, doc) {
-  const cells = [...cardElement.children];
+/**
+ * Reads a boolean toggle cell pair authored as:
+ *   [checkbox cell (true/false/empty)] [value cell]
+ * Returns the value cell anchor element, or null if the toggle is disabled.
+ */
+function extractToggledLink(cells, valueCellSelector) {
+  const valueCell = cells.find(valueCellSelector);
+  if (!valueCell) return { enabled: false, cell: null };
 
-  // 1. Semantic Extraction
-  const imgCell = cells.find((c) => c.querySelector('img'));
-  const img = imgCell?.querySelector('img');
+  const indexInAll = cells.indexOf(valueCell);
+  const prevCell = cells[indexInAll - 1];
+  const prevText = prevCell?.textContent?.trim().toLowerCase() || '';
+  const isDisabled = prevText === 'false' || prevCell?.innerHTML?.trim() === '';
 
+  return { enabled: !isDisabled, cell: valueCell };
+}
+
+function buildCardWrapper(
+  cardLinkHref,
+  cardLinkTarget,
+  cardLinkTitle,
+  overlayHref,
+  enableOverlayModal,
+) {
+  const wrapper = createElementFromHTML('<div class="menu-card-action-item-link"></div>', document);
+  wrapper.setAttribute('role', 'button');
+  wrapper.setAttribute('tabindex', '0');
+  if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle);
+
+  if (enableOverlayModal) {
+    wrapper.setAttribute('data-modal', overlayHref);
+  } else {
+    wrapper.setAttribute('data-href', cardLinkHref);
+  }
+
+  wrapper.addEventListener('click', (e) => {
+    if (e.target.closest('a') || e.target.closest('[role="link"]')) return;
+    if (!enableOverlayModal) {
+      e.preventDefault();
+      window.location.href = wrapper.getAttribute('data-href');
+    }
+  });
+
+  wrapper.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      wrapper.click();
+    }
+  });
+
+  return wrapper;
+}
+
+function createCardItem(cardRow, doc) {
+  const cells = [...cardRow.children];
+
+  // Skip empty or config-only rows (no image, heading, or meaningful text content)
+  const hasImage = !!cells.find((c) => c.querySelector('img'));
+  const hasHeading = !!cells.find((c) => c.querySelector('h1, h2, h3, h4, h5, h6'));
+  const hasText = cells.some((c) => c.textContent.trim().length > 0);
+  if (!hasImage && !hasHeading && !hasText) return null;
+
+  // --- Data Extraction ---
+
+  const imgEl = cells.find((c) => c.querySelector('img'))?.querySelector('img');
   const titleCell = cells.find((c) => c.querySelector('h1, h2, h3, h4, h5, h6'));
   const title = titleCell?.innerHTML?.trim();
 
-  // 2. Find the Action Type
-  const validActionTypes = ['default', 'download', 'multiple-download', 'select-dropdown'];
-  const actionTypeIndex = cells.findIndex((c) => {
-    const text = c.textContent.trim().toLowerCase();
-    return validActionTypes.includes(text);
-  });
-  const actionTypeText = actionTypeIndex !== -1 ? cells[actionTypeIndex].textContent.trim().toLowerCase() : '';
+  const actionTypeIdx = cells.findIndex(
+    (c) => ACTION_TYPES.includes(c.textContent.trim().toLowerCase()),
+  );
+  const actionType = actionTypeIdx !== -1
+    ? cells[actionTypeIdx].textContent.trim().toLowerCase()
+    : '';
 
-  // 3. Description (Cell before action type, if it exists)
-  const descDiv = actionTypeIndex > 0 ? cells[actionTypeIndex - 1] : null;
-  const description = (descDiv && descDiv !== titleCell && descDiv !== imgCell) ? descDiv.innerHTML : '';
+  const descCell = actionTypeIdx > 0 ? cells[actionTypeIdx - 1] : null;
+  const description = (descCell && descCell !== titleCell && descCell !== cells.find((c) => c.querySelector('img')))
+    ? descCell.innerHTML
+    : '';
 
-  // 4. Remaining Cells (Everything after the Action Type)
-  let remainingCells = actionTypeIndex !== -1 ? cells.slice(actionTypeIndex + 1) : cells.slice(3);
+  let remaining = actionTypeIdx !== -1 ? cells.slice(actionTypeIdx + 1) : cells.slice(3);
 
-  // 5. Extract Date (Last cell that parses as a valid Date)
-  let dateTextRaw = '';
-  if (remainingCells.length > 0) {
-    const lastCell = remainingCells[remainingCells.length - 1];
-    const text = lastCell.textContent?.trim() || '';
-    if (text.length >= 8 && !Number.isNaN(Date.parse(text)) && !lastCell.querySelector('a')) {
-      dateTextRaw = text;
-      remainingCells.pop(); // Remove it so it doesn't interfere
-    }
-  }
-  const dateText = dateTextRaw ? formatMenuCardDate(dateTextRaw) : '';
-
-  // 7. Extract Modal Overlay Link
-  let enableOverlayModal = false;
-  let overlayHref = '';
-
-  const modalCell = remainingCells.find((c) => {
-    const a = c.querySelector('a');
-    return a && a.getAttribute('href')?.includes('/fragments/');
-  });
-
-  if (modalCell) {
-    const indexInOriginal = cells.indexOf(modalCell);
-    const prevCell = cells[indexInOriginal - 1];
-    const prevText = prevCell?.textContent?.trim().toLowerCase() || '';
-
-    if (prevText === 'false' || prevCell?.innerHTML?.trim() === '') {
-      // The author unchecked 'enableOverlayModal' but Universal Editor left garbage data.
-      enableOverlayModal = false;
-      remainingCells = remainingCells.filter((c) => c !== modalCell && c !== prevCell);
-    } else {
-      const a = modalCell.querySelector('a');
-      overlayHref = a.getAttribute('href');
-      enableOverlayModal = true;
-      remainingCells = remainingCells.filter((c) => c !== modalCell);
-    }
+  // Date: last remaining cell that is a valid date string without links
+  let dateText = '';
+  const lastCell = remaining[remaining.length - 1];
+  const lastCellText = lastCell?.textContent?.trim() || '';
+  if (lastCellText.length >= 8 && !Number.isNaN(Date.parse(lastCellText)) && !lastCell.querySelector('a')) {
+    dateText = formatDate(lastCellText);
+    remaining = remaining.slice(0, -1);
   }
 
-  // 9. Extract Card Link
-  let isCardClickable = false;
-  let cardLinkHref = '';
-  let cardLinkTarget = '';
-  let cardLinkTitle = '';
+  // Overlay modal toggle
+  const { enabled: enableOverlayModal, cell: modalCell } = extractToggledLink(
+    remaining,
+    (c) => c.querySelector('a')?.getAttribute('href')?.includes('/fragments/'),
+  );
+  const overlayHref = enableOverlayModal ? modalCell.querySelector('a').getAttribute('href') : '';
+  remaining = remaining.filter((c) => c !== modalCell);
 
-  // Card link usually contains slashes in its text because it's a raw URL without a label
-  const cardLinkCell = remainingCells.find((c) => {
-    const a = c.querySelector('a');
-    if (!a || c.querySelector('ul')) return false;
-    const text = a.textContent?.trim() || '';
-    const href = a.getAttribute('href')?.trim() || '';
-    return text.includes('/') || href.endsWith(text) || text === href;
-  });
+  // Card link toggle (URL-like link text or href === text)
+  const { enabled: isCardClickable, cell: cardLinkCell } = extractToggledLink(
+    remaining,
+    (c) => {
+      const a = c.querySelector('a');
+      if (!a || c.querySelector('ul')) return false;
+      const text = a.textContent?.trim() || '';
+      const href = a.getAttribute('href')?.trim() || '';
+      return text.includes('/') || href.endsWith(text) || text === href;
+    },
+  );
+  const cardLinkAnchor = isCardClickable ? cardLinkCell.querySelector('a') : null;
+  const cardLinkHref = cardLinkAnchor?.getAttribute('href') || '';
+  const cardLinkTarget = cardLinkAnchor?.target || '';
+  const cardLinkTitle = cardLinkAnchor?.title?.trim() || '';
+  remaining = remaining.filter((c) => c !== cardLinkCell);
 
-  if (cardLinkCell) {
-    const indexInOriginal = cells.indexOf(cardLinkCell);
-    const prevCell = cells[indexInOriginal - 1];
-    const prevText = prevCell?.textContent?.trim().toLowerCase() || '';
-
-    if (prevText === 'false' || prevCell?.innerHTML?.trim() === '') {
-      // The author unchecked 'isCardClickable' but Universal Editor left garbage data.
-      isCardClickable = false;
-      remainingCells = remainingCells.filter((c) => c !== cardLinkCell && c !== prevCell);
-    } else {
-      const a = cardLinkCell.querySelector('a');
-      isCardClickable = true;
-      cardLinkHref = a.getAttribute('href') || '';
-      cardLinkTitle = a.title?.trim() || '';
-      cardLinkTarget = a.target || '';
-      remainingCells = remainingCells.filter((c) => c !== cardLinkCell);
-    }
-  }
-
-  // 10. Filter remaining anchor cells for Action Buttons
-  const allAnchorCells = remainingCells.filter((c) => {
+  // Action button cells (cells with links that aren't headings or images)
+  const actionCells = remaining.filter((c) => {
     const a = c.querySelector('a');
     return a && !c.querySelector('h1, h2, h3, h4, h5, h6') && !c.querySelector('picture, img');
   });
 
-  // 9. Map the Active Action Button
-  let defaultButton = null;
-  let downloadButton = null;
-  let dropdownLabel = '';
-  let dropdownLinks = '';
-  let multipleDownloadLinks = '';
+  // --- DOM Construction ---
 
-  if (actionTypeText === 'default' && allAnchorCells.length > 0) {
-    defaultButton = allAnchorCells[0].querySelector('a');
-  } else if (actionTypeText === 'download' && allAnchorCells.length > 0) {
-    downloadButton = allAnchorCells.find((c) => !c.querySelector('ul'))?.querySelector('a') || allAnchorCells[0].querySelector('a');
-  } else if (actionTypeText === 'select-dropdown') {
-    const dropdownCell = allAnchorCells.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length > 1);
-    if (dropdownCell) {
-      dropdownLinks = dropdownCell.innerHTML;
-      const labelCellIndex = remainingCells.indexOf(dropdownCell) - 1;
-      if (labelCellIndex >= 0 && !remainingCells[labelCellIndex].querySelector('a')) {
-        dropdownLabel = remainingCells[labelCellIndex].textContent.trim();
-      }
-    }
-  } else if (actionTypeText === 'multiple-download') {
-    // multiple-download is the last action button in the array
-    const multipleCell = allAnchorCells[allAnchorCells.length - 1];
-    if (multipleCell) {
-      multipleDownloadLinks = multipleCell.innerHTML;
-    }
-  }
-
-  // 10. DOM Construction
   const card = createElementFromHTML('<div class="menu-card-action-item"></div>', doc);
   const inner = createElementFromHTML('<div class="menu-card-action-inner"></div>', doc);
 
-  if (img) inner.appendChild(img.cloneNode(true));
+  if (imgEl) inner.appendChild(imgEl.cloneNode(true));
 
   if (title) {
     inner.appendChild(createElementFromHTML(`<div class="menu-card-action-title">${title}</div>`, doc));
@@ -163,89 +154,56 @@ function createMenuCardItem(cardElement, doc) {
     inner.querySelector('.menu-card-action-title')?.classList.add('has-description');
   }
 
-  if (actionTypeText === 'default' && defaultButton) {
-    const defaultButtonClone = defaultButton.cloneNode(true);
-
-    // Find linkType (primary, secondary, tertiary) in remaining cells or default to tertiary
-    const linkTypeCell = remainingCells.find((c) => {
-      const t = c.textContent.trim().toLowerCase();
-      return ['primary', 'secondary', 'tertiary'].includes(t);
-    });
+  // Action button rendering
+  if (actionType === 'default' && actionCells.length > 0) {
+    const btn = actionCells[0].querySelector('a').cloneNode(true);
+    const linkTypeCell = remaining.find(
+      (c) => LINK_TYPES.includes(c.textContent.trim().toLowerCase()),
+    );
     const linkType = linkTypeCell ? linkTypeCell.textContent.trim().toLowerCase() : 'tertiary';
-    defaultButtonClone.classList.add('button', `button-${linkType}`);
-
-    // Button always acts as an independent link irrespective of card wrapper
-    defaultButtonClone.removeAttribute('data-modal');
-
-    inner.appendChild(defaultButtonClone);
-  }
-
-  if (actionTypeText === 'download' && downloadButton) {
-    const dlLink = createDownloadLink(downloadButton, doc);
+    btn.classList.add('button', `button-${linkType}`);
+    btn.removeAttribute('data-modal');
+    inner.appendChild(btn);
+  } else if (actionType === 'download' && actionCells.length > 0) {
+    const dlAnchor = actionCells.find((c) => !c.querySelector('ul'))?.querySelector('a') || actionCells[0].querySelector('a');
+    const dlLink = createDownloadLink(dlAnchor, doc);
     dlLink?.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
     inner.appendChild(dlLink);
-  }
-
-  if (actionTypeText === 'multiple-download' && multipleDownloadLinks) {
-    const temp = createElementFromHTML(`<div>${multipleDownloadLinks}</div>`, doc);
+  } else if (actionType === 'multiple-download' && actionCells.length > 0) {
+    const multipleCell = actionCells[actionCells.length - 1];
+    const temp = createElementFromHTML(`<div>${multipleCell.innerHTML}</div>`, doc);
     temp.querySelectorAll('a').forEach((anchor) => {
       const dlLink = createDownloadLink(anchor, doc);
       dlLink?.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
       inner.appendChild(dlLink);
     });
-  }
-
-  if (actionTypeText === 'select-dropdown') {
-    const dropdown = createGlobalDropdown(dropdownLabel || 'Select', dropdownLinks, doc);
-    inner.appendChild(dropdown);
+  } else if (actionType === 'select-dropdown') {
+    const dropdownCell = actionCells.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length > 1);
+    if (dropdownCell) {
+      const labelCellIdx = remaining.indexOf(dropdownCell) - 1;
+      const label = (labelCellIdx >= 0 && !remaining[labelCellIdx].querySelector('a'))
+        ? remaining[labelCellIdx].textContent.trim()
+        : 'Select';
+      inner.appendChild(createGlobalDropdown(label, dropdownCell.innerHTML, doc));
+    }
   }
 
   if (dateText) {
-    const dateTextWrapper = doc.createElement('div');
-    dateTextWrapper.className = 'menu-card-action-date pad-top-30';
-    dateTextWrapper.textContent = dateText;
-    inner.appendChild(dateTextWrapper);
+    const dateEl = doc.createElement('div');
+    dateEl.className = 'menu-card-action-date pad-top-30';
+    dateEl.textContent = dateText;
+    inner.appendChild(dateEl);
   }
 
-  // 11. Interactive Wrappers
+  // Wrap with interactive layer if card is clickable or opens a modal
   if (isCardClickable || enableOverlayModal) {
-    const wrapper = createElementFromHTML('<div class="menu-card-action-item-link"></div>', doc);
-    wrapper.setAttribute('role', 'button');
-    wrapper.setAttribute('tabindex', '0');
-
-    if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle);
-
-    if (enableOverlayModal) {
-      wrapper.setAttribute('data-modal', overlayHref || '');
-    } else {
-      wrapper.setAttribute('data-href', cardLinkHref || '#');
-      if (cardLinkTarget) wrapper.setAttribute('data-target', cardLinkTarget);
-    }
-
-    wrapper.addEventListener('click', (e) => {
-      // If the user clicks an inner link (like a download button), do NOT trigger the card
-      if (e.target.closest('a') || e.target.closest('[role="link"]')) return;
-
-      if (!enableOverlayModal) {
-        e.preventDefault();
-        const href = wrapper.getAttribute('data-href');
-        const target = wrapper.getAttribute('data-target');
-        if (target === '_blank') {
-          window.open(href, '_blank', 'noopener,noreferrer');
-        } else {
-          window.location.href = href;
-        }
-      }
-      // If it's a modal, the block-level listener handles it based on data-modal
-    });
-
-    wrapper.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        wrapper.click();
-      }
-    });
-
+    const wrapper = buildCardWrapper(
+      cardLinkHref,
+      cardLinkTarget,
+      cardLinkTitle,
+      overlayHref,
+      enableOverlayModal,
+    );
     wrapper.appendChild(inner);
     card.appendChild(wrapper);
   } else {
@@ -255,23 +213,29 @@ function createMenuCardItem(cardElement, doc) {
   return card;
 }
 
+const VALID_LAYOUTS = ['stacked', 'scrollable'];
+
 export default function decorate(block) {
   const doc = block.ownerDocument;
-  const [mobileRow, ...cardRows] = [...block.children];
-  const mobileExperience = mobileRow?.textContent?.trim();
+  const allRows = [...block.children];
+
+  // Consume the first row only if it is a known layout keyword; otherwise default to 'stacked'
+  const firstRowText = allRows[0]?.textContent?.trim().toLowerCase();
+  const layout = VALID_LAYOUTS.includes(firstRowText) ? firstRowText : 'stacked';
+  const cardRows = VALID_LAYOUTS.includes(firstRowText) ? allRows.slice(1) : allRows;
+
+  // Tag section header text/image wrappers for styling
   const section = block.closest('.menu-card-actions-container');
   ['text', 'image'].forEach((type, i) => {
     section?.querySelector(`.default-content-wrapper > p:nth-of-type(${i + 1})`)
       ?.classList.add(`default-content-wrapper-${type}`);
   });
 
-  const container = createElementFromHTML(
-    `<div class="menu-card-action ${mobileExperience}"></div>`,
-    doc,
-  );
+  const container = createElementFromHTML(`<div class="menu-card-action ${layout}"></div>`, doc);
 
   cardRows.forEach((row) => {
-    const card = createMenuCardItem(row, doc);
+    const card = createCardItem(row, doc);
+    if (!card) return; // Skip empty/config rows
     moveInstrumentation(row, card);
     container.appendChild(card);
   });
@@ -279,13 +243,11 @@ export default function decorate(block) {
   block.textContent = '';
   block.appendChild(container);
 
+  // Block-level modal trigger (delegated)
   block.addEventListener('click', (event) => {
     const trigger = event.target.closest('[data-modal]');
     if (!trigger || !block.contains(trigger)) return;
-
-    // Do not trigger modal if clicking an inner link or converted span button
     if (event.target.closest('a') || event.target.closest('[role="link"]')) return;
-
     event.preventDefault();
     const fragmentPath = trigger.getAttribute('data-modal');
     if (fragmentPath) openModal(doc, { fragmentPath });
