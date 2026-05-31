@@ -19,16 +19,13 @@
   letter-spacing: -0.0125rem;
 }
 
-:lang(th) {
-  .menu-card-actions-container .default-content-wrapper :is(h1) {
-    line-height: 2.4375rem;
-  }
-
-  .menu-card-actions-container .default-content-wrapper :is(h2) {
-    line-height: 2.0625rem;
-  }
+.menu-card-actions-container .default-content-wrapper :is(h1):lang(th) {
+  line-height: 1.875rem;
 }
 
+.menu-card-actions-container .default-content-wrapper :is(h2):lang(th) {
+  line-height: 1.5rem;
+}
 
 .menu-card-actions-container .default-content-wrapper .default-content-wrapper-text {
   font-weight: var(--bbl-font-family-regular);
@@ -114,13 +111,26 @@
 }
 
 .menu-card-action-title :is(h1, h2, h3, h4, h5, h6) {
-  font: 400 1.14rem/1.25rem var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
+  font-size: 1.14rem;
+  line-height: 1.25rem;
+  font-family: var(--bbl-font-family-medium);
   margin-block: var(--bbl-space-250) 0.9375rem;
   padding-bottom: 0.9375rem;
   box-sizing: border-box;
   min-height: 4.4375rem;
   position: relative;
   display: inline-block;
+}
+
+:lang(th) {
+  .menu-card-action-title :is(h1) {
+    line-height: 1.875rem;
+  }
+
+  .menu-card-action-title :is(h2) {
+    line-height: 1.5rem;
+  }
 }
 
 .menu-card-action-inner .button {
@@ -201,7 +211,7 @@
 }
 
 .menu-card-action-description p {
-  font: var(--bbl-font-family-regular) var(--bbl-font-size-b2)/1.1244rem var(--bbl-font-family-regular);
+   font: var(--bbl-font-weight-regular) var(--bbl-font-size-b2)/1.1244rem var(--bbl-font-family-regular);
   flex-grow: 1;
   margin: 0;
 }
@@ -284,7 +294,10 @@
   }
 
   .menu-card-action-title :is(h1, h2, h3, h4, h5, h6) {
-    font: var(--bbl-font-weight-regular) 1.3125rem/1.4219rem var(--bbl-font-family-medium);
+    font-weight: var(--bbl-font-weight-regular);
+    font-size: 1.3125rem;
+    line-height: 1.4219rem;
+    font-family: var(--bbl-font-family-medium);
   }
 
   .menu-card-action-date p {
@@ -300,19 +313,35 @@
 
   :lang(th) {
     .menu-card-actions-container .default-content-wrapper :is(h1) {
-      line-height: 5.5rem;
-    }
-
-    .menu-card-actions-container .default-content-wrapper :is(h2) {
-      line-height: 4.875rem;
-    }
-
-    .menu-card-actions-container .default-content-wrapper :is(h3) {
       line-height: 3.75rem;
     }
 
-    .menu-card-actions-container .default-content-wrapper :is(h4) {
+    .menu-card-actions-container .default-content-wrapper :is(h2) {
       line-height: 2.5rem;
+    }
+
+    .menu-card-actions-container .default-content-wrapper :is(h3) {
+      line-height: 2rem;
+    }
+
+    .menu-card-actions-container .default-content-wrapper :is(h4) {
+      line-height: 1.375rem;
+    }
+
+    .menu-card-action-title :is(h1) {
+      line-height: 3.75rem;
+    }
+
+    .menu-card-action-title :is(h2) {
+      line-height: 2.5rem;
+    }
+
+    .menu-card-action-title :is(h3) {
+      line-height: 2rem;
+    }
+
+    .menu-card-action-title :is(h4) {
+      line-height: 1.375rem;
     }
   }
 
