@@ -25,6 +25,101 @@ import {
 import parseAuthoring from './helpers/authoring-helpers.js';
 import { getLang } from '../../scripts/scripts.js';
 
+function printForwardPointsSme(block) {
+  const content = block.cloneNode(true);
+
+  [
+    '.fpsme-print-btn',
+    '.fpsme-go-btn',
+    '.fpsme-datepicker',
+    '.fpsme-time-list',
+    '.fpsme-time-chevron',
+    '.fpsme-print-logo',
+  ].forEach((sel) => content.querySelectorAll(sel).forEach((el) => el.remove()));
+
+  content.querySelectorAll('.fpsme-date-input').forEach((input) => {
+    const span = document.createElement('span');
+    span.className = input.className;
+    span.textContent = input.value || input.placeholder;
+    input.parentNode.replaceChild(span, input);
+  });
+
+  content.querySelectorAll('img').forEach((img) => { img.loading = 'eager'; });
+
+  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  let brandLogoHtml = '';
+  if (logoEl) {
+    const logoClone = logoEl.cloneNode(true);
+    logoClone.querySelectorAll('img').forEach((img) => { img.loading = 'eager'; });
+    brandLogoHtml = logoClone.outerHTML;
+  }
+
+  const printTitle = document.querySelector('meta[property="og:title"]')?.getAttribute('content')
+    || document.title.split(/\s*[|–—]\s*/)[0].trim()
+    || document.title;
+
+  const cssLinks = [
+    '/styles/styles.css',
+    '/styles/fonts.css',
+    '/blocks/header/header.css',
+    '/blocks/brand-logo/brand-logo.css',
+    '/blocks/forward-points-sme/forward-points-sme.css',
+    '/blocks/forward-points-sme/fpsme-print.css',
+  ].map((href) => `<link rel="stylesheet" href="${href}">`).join('\n      ');
+
+  const printHtml = `<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <title>${printTitle}</title>
+      <base href="${window.location.origin}/">
+      ${cssLinks}
+      <style>
+        .brand-logo-container,
+        .brand-logo.block,
+        .brand-logo-container picture { display: block !important; }
+        .brand-logo-container img { display: block !important; height: 2rem !important; width: auto !important; max-width: none !important; }
+      </style>
+    </head>
+    <body class="appear">
+      <header class="header-wrapper">
+        <div class="header block" data-block-status="loaded">
+          <div class="header-content">
+            <div class="main-nav-desktop">
+              <div class="brand-logo block">
+                <div class="brand-logo-container">
+                  ${brandLogoHtml}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main>
+        <div class="section">${content.outerHTML}</div>
+      </main>
+    </body>
+  </html>`;
+
+  const printWindow = window.open('', '', 'height=500,width=800');
+  if (!printWindow) return;
+
+  const runPrint = () => {
+    printWindow.focus();
+    setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
+  };
+
+  if (printWindow.document.readyState === 'complete') {
+    requestAnimationFrame(runPrint);
+  } else {
+    printWindow.addEventListener('load', runPrint);
+  }
+
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
+}
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -279,7 +374,6 @@ function renderBlock(
   const fwdRates = normalizeFwdRates(s2State.rates);
 
   block.innerHTML = `<div class="fpsme-wrapper">
-    <div class="fpsme-print-logo"></div>
     <div class="fpsme-section1-bar">
       <div class="fpsme-section fpsme-section-currency">
         ${s1Controls}
@@ -690,23 +784,6 @@ export default async function decorate(block) {
   const s1State = createSectionState();
   const s2State = createSectionState();
 
-  // Inject brand logo into the print-logo slot right before the browser
-  // renders the print layout — guaranteed to run after full page decoration.
-  // Store handler on block so it can be removed if block is ever re-decorated.
-  if (block.beforePrintHandler) window.removeEventListener('beforeprint', block.beforePrintHandler);
-  block.beforePrintHandler = () => {
-    const printLogoDiv = block.querySelector('.fpsme-print-logo');
-    if (!printLogoDiv) return;
-    printLogoDiv.innerHTML = '';
-    const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
-      || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
-    if (!logoEl) return;
-    const cloned = logoEl.cloneNode(true);
-    cloned.querySelectorAll('img').forEach((i) => { i.loading = 'eager'; });
-    printLogoDiv.appendChild(cloned);
-  };
-  window.addEventListener('beforeprint', block.beforePrintHandler);
-
   const render = () => {
     renderBlock(
       block,
@@ -749,7 +826,15 @@ export default async function decorate(block) {
     );
 
     const printBtn = block.querySelector('.fpsme-print-btn');
-    if (printBtn) printBtn.addEventListener('click', () => window.print());
+    if (printBtn) printBtn.addEventListener('click', () => printForwardPointsSme(block));
+
+    // Intercept Ctrl+P / Cmd+P so keyboard print uses the formatted popup, not the raw page
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'p' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        printForwardPointsSme(block);
+      }
+    });
   };
 
   // ── Init: load latest data for both sections ────────────────────────────────
