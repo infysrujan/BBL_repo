@@ -667,11 +667,7 @@ export default async function decorate(block) {
       const normalizedUpdates = Array.isArray(updateOptions) ? updateOptions : [];
       state.updates = normalizedUpdates;
 
-      const preferredUpdate = trimValue(latest?.[0]?.Update);
-      const hasPreferred = normalizedUpdates
-        .some((item) => trimValue(item.Update) === preferredUpdate);
-      const fallback = trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
-      state.selectedUpdate = hasPreferred ? preferredUpdate : fallback;
+      state.selectedUpdate = trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
       state.typedDate = formatDateInputValue(
         state.selectedDate,
         monthLabels,
