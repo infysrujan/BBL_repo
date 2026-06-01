@@ -1004,12 +1004,12 @@
         },
         {
           "component": "container",
-          "name": "targetSettings",
+          "name": "contentInsertTargetSet",
           "label": "Target settings",
           "fields": [
             {
               "component": "boolean",
-              "name": "targetLink",
+              "name": "contentInsertTargetLink",
               "label": "Open link in new tab",
               "description": "Enable to open the button link in a new browser tab",
               "valueType": "boolean",
