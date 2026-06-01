@@ -25,6 +25,7 @@
 import { propertyChange, ExecuteRule, Initialize, RemoveItem, Change, FormLoad, FieldChanged, ValidationComplete, ScriptError, Valid, Invalid, SubmitSuccess, CustomEvent, RequestSuccess, RequestFailure, SubmitError, Submit, Save, Reset, SubmitFailure, Focus, RemoveInstance, AddInstance, AddItem, Click } from './afb-events.js';
 import Formula from '../formula/index.js';
 import { format, parseDefaultDate, datetimeToNumber, parseDateSkeleton, numberToDatetime, formatDate, parseDate } from './afb-formatters.min.js';
+import { generatePayloadHash } from '../../functions.js';
 
 function __decorate(decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3113,10 +3114,16 @@ const submit = async (context, success, error, submitAs = 'multipart/form-data',
     let submitContentType = submitAs;
     
     // Generate payload hash only for data
+    const payloadHash = await generatePayloadHash(data);
     
     // Structure: data contains payload and payload-hash
-    
-    const submitDataAndMetaData = { 'data': data, ...metadata };
+    const dataWithHash = {
+        'payload': data,
+        ...(payloadHash && { 'payload-hash': payloadHash })
+    };
+
+    // Structure: data contains payload and payload-hash    
+    const submitDataAndMetaData = { 'data': dataWithHash, ...metadata };
     let formData = submitDataAndMetaData;
     if (Object.keys(attachments).length > 0 || submitAs === 'multipart/form-data') {
         formData = multipartFormData(submitDataAndMetaData, attachments);
@@ -3124,10 +3131,12 @@ const submit = async (context, success, error, submitAs = 'multipart/form-data',
     }
     
     // Build headers; do NOT set Content-Type for FormData here
+    const headers = {
+        ...(submitContentType && submitContentType !== 'multipart/form-data' && { 'Content-Type': submitContentType })
+    };
 
-    await request(context, endpoint, 'POST', formData, success, error, {
-        'Content-Type': submitContentType
-    });
+    await request(context, endpoint, 'POST', formData, success, error, headers);
+
 };
 const multipartFormData = (data, attachments) => {
     const formData = new FormData();
