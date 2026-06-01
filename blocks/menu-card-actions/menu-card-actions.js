@@ -87,9 +87,26 @@ function createCardItem(cardRow, doc) {
   }, { cell: null, el: null });
 
   const { cell: imgCell, el: imgEl } = findInCells(HTMLImageElement);
-  const { cell: titleCell, el: headingEl } = findInCells(HTMLHeadingElement);
+  const titleTypeCell = cells.find((c) => /^(h[1-6])$/i.test(c.textContent.trim()));
+  const titleType = titleTypeCell?.textContent.trim().toLowerCase() || 'h3';
+
+  const headingData = findInCells(HTMLHeadingElement);
+  let titleCell = headingData.cell;
+  const headingEl = headingData.el;
+
+  if (!titleCell && titleTypeCell) {
+    const typeIdx = cells.indexOf(titleTypeCell);
+    if (typeIdx > 0) titleCell = cells[typeIdx - 1];
+  }
+
+  if (!titleCell) {
+    titleCell = cells.find(
+      (c) => c !== imgCell && c !== titleTypeCell && c.textContent.trim().length > 0,
+    );
+  }
+
   const titleText = titleCell?.textContent?.trim();
-  const title = headingEl?.outerHTML?.trim() ?? (titleText ? `<h3>${titleText}</h3>` : '');
+  const title = headingEl?.outerHTML?.trim() ?? (titleText ? `<${titleType}>${titleText}</${titleType}>` : '');
 
   const hasActionContent = (c) => [...c.querySelectorAll('*')]
     .some((el) => el instanceof HTMLAnchorElement || el instanceof HTMLUListElement);
@@ -97,14 +114,20 @@ function createCardItem(cardRow, doc) {
   let actionTypeIdx = -1;
   if (firstActionCellIdx > 0) {
     const candidate = cells[firstActionCellIdx - 1];
-    if (candidate !== imgCell && candidate !== titleCell && isKeywordCell(candidate)) {
+    if (candidate !== imgCell
+      && candidate !== titleCell
+      && candidate !== titleTypeCell
+      && isKeywordCell(candidate)) {
       actionTypeIdx = firstActionCellIdx - 1;
     }
   }
   const actionType = actionTypeIdx !== -1 ? cells[actionTypeIdx].textContent.trim().toLowerCase() : '';
 
   const descCell = actionTypeIdx > 1 ? cells[actionTypeIdx - 1] : null;
-  const description = (descCell && descCell !== titleCell && descCell !== imgCell)
+  const description = (descCell
+    && descCell !== titleCell
+    && descCell !== imgCell
+    && descCell !== titleTypeCell)
     ? descCell.innerHTML
     : '';
 
@@ -233,11 +256,6 @@ export default function decorate(block) {
   const doc = block.ownerDocument;
   const allRows = [...block.children];
 
-  // Hide original content (keep in DOM for Universal Editor)
-  allRows.forEach((child) => {
-    child.style.display = 'none';
-  });
-
   const firstRowText = allRows[0]?.textContent?.trim().toLowerCase() || '';
   const firstRowEls = allRows[0] ? [...allRows[0].querySelectorAll('*')] : [];
   const isFirstRowLayout = allRows[0]?.children.length === 1
@@ -245,7 +263,11 @@ export default function decorate(block) {
     && !firstRowEls.some((el) => el instanceof HTMLAnchorElement
       || el instanceof HTMLImageElement
       || el instanceof HTMLHeadingElement);
-  const layout = isFirstRowLayout ? firstRowText : 'stacked';
+
+  const layoutClass = isFirstRowLayout ? firstRowText : '';
+  const isScrollable = layoutClass === 'scrollable';
+  const customClasses = layoutClass && layoutClass !== 'stacked' ? ` ${layoutClass}` : '';
+  const layout = isScrollable ? 'scrollable' : `stacked${customClasses}`;
   const cardRows = isFirstRowLayout ? allRows.slice(1) : allRows;
 
   const section = block.closest('.menu-card-actions-container');
@@ -261,20 +283,26 @@ export default function decorate(block) {
 
     if (!card) return;
 
+    // Move instrumentation to the primary content child
     moveInstrumentation(row, card.firstElementChild ?? card);
-    container.appendChild(card);
 
-    // Strip remaining data-aue-* attributes from the hidden row's subtree
-    // so orphaned properties do not leak into the UE content tree at the block level.
-    row.querySelectorAll('*').forEach((el) => {
-      [...el.attributes]
-        .filter(({ name }) => name.startsWith('data-aue-'))
-        .forEach(({ name }) => el.removeAttribute(name));
-    });
+    container.appendChild(card);
   });
 
-  // Append new elements without removing original hidden content
+  // Keep ALL original rows in the DOM but hidden,
+  // so UE can still reference them for add/insert operations and property bindings.
+  allRows.forEach((row) => {
+    row.setAttribute('data-source-row', '');
+    row.style.display = 'none';
+  });
+
+  block.textContent = '';
   block.appendChild(container);
+
+  // Re-attach all hidden source rows so UE can find them
+  allRows.forEach((row) => {
+    block.appendChild(row);
+  });
 
   block.addEventListener('click', (event) => {
     const trigger = event.target.closest('[data-modal]');

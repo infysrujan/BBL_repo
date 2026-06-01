@@ -9639,6 +9639,7 @@
         "component": "select",
         "name": "titleType",
         "label": "Title Type",
+        "value": "h3",
         "options": [
           {
             "name": "h1",
