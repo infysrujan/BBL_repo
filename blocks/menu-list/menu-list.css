@@ -71,6 +71,7 @@
   width: var(--bbl-space-400);
   height: var(--bbl-space-400);
   display: block;
+  max-width: min-content;
 }
 
 /* ── Item content ──────────────────────────────────────────── */
