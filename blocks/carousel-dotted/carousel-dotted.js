@@ -16,6 +16,7 @@ import buildHeroSlide from './build-hero-slide.js';
 import buildArrowsDotsSlide from './build-arrows-dots-slide.js';
 import buildMfCardListCarouselSlide from './build-mf-card-list-carousel-slide.js';
 import buildMfFundCardsSlide from './build-mf-fund-cards-slide.js';
+import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 
 /**
  * Build a slide - determines which variation to use and delegates.
@@ -277,7 +278,7 @@ export default async function decorate(block) {
   const scrollTimeDelay = rows[3]?.textContent.trim() || '';
   const showLinks = readBoolean(rows[4]);
   const seeMoreLink = showLinks ? rows[5]?.querySelector('a') : null;
-
+  const seeMoreTargetValue = showLinks ? rows[6]?.textContent?.trim() || '' : '';
   // Slides start at row 6, variant is in each slide's first cell
   const nextIndex = 7;
   const firstSlide = rows[nextIndex];
@@ -672,6 +673,13 @@ export default async function decorate(block) {
     const linkWrap = document.createElement('span');
     linkWrap.append(seeMoreLink);
     moreWrap.append(linkWrap);
+    if (seeMoreTargetValue) {
+      const targetDiv = document.createElement('div');
+      targetDiv.textContent = seeMoreTargetValue;
+      moreWrap.append(targetDiv);
+    }
+
+    decorateButtonsV1(moreWrap);
     renderHost.append(moreWrap);
   }
 
