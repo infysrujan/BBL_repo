@@ -69,8 +69,7 @@
 
 .menu-list .menu-list-item-image img {
   width: var(--bbl-space-400);
-  max-width: none;
-  height: auto;
+  height: var(--bbl-space-400);
   display: block;
 }
 
