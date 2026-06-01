@@ -279,7 +279,7 @@ export default async function decorate(block) {
   const seeMoreLink = showLinks ? rows[5]?.querySelector('a') : null;
 
   // Slides start at row 6, variant is in each slide's first cell
-  const nextIndex = 6;
+  const nextIndex = 7;
   const firstSlide = rows[nextIndex];
   const variant = firstSlide?.children[0]?.textContent.trim() || '';
 

@@ -29,7 +29,7 @@ export default function buildSlideArrowsandDots(row, index) {
     slide.className = 'carousel-dotted-item simple-carousel item';
 
     // onlyImage (cell 13), onlyImageAlt (cell 14)
-    const onlyImageCell = cells[13];
+    const onlyImageCell = cells[15];
 
     const picture = onlyImageCell?.querySelector('picture');
     if (picture) {
@@ -42,11 +42,11 @@ export default function buildSlideArrowsandDots(row, index) {
   if (slideType === 'withCircularImage') {
     slide.className = 'carousel-dotted-item with-circular-image item';
 
-    // circularImage (cell 9), title (cell 10), description (cell 11), link (cell 12)
-    const circularImageCell = cells[9];
-    const titleCell = cells[10];
-    const descriptionCell = cells[11];
-    const linkCell = cells[12];
+    // circularImage (cell 10), title (cell 11), description (cell 12, link (cell 13)
+    const circularImageCell = cells[10];
+    const titleCell = cells[11];
+    const descriptionCell = cells[12];
+    const linkCell = cells[13];
 
     // image
     const imageContainer = document.createElement('div');
