@@ -1,6 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
-import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 
 /**
  * Build a slide WITH IMAGE variation
@@ -53,11 +52,9 @@ export default function buildSlideWithImage(row, index, cells) {
 
   // Link/Button (cell 7)
   const link = cells[7]?.querySelector('a');
-  const targetValue = cells[8]?.textContent?.trim() || '';
 
   if (link) {
     content.append(link);
-    applyLinkTarget(content, 'a', targetValue);
   }
 
   slide.append(content);

@@ -1367,12 +1367,12 @@
       },
       {
         "component": "container",
-        "name": "targetSettings",
+        "name": "showLinksTargetSet",
         "label": "Target settings",
         "fields": [
           {
             "component": "boolean",
-            "name": "targetLink",
+            "name": "showLinksTargetLink",
             "label": "Open link in new tab",
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
@@ -1896,12 +1896,12 @@
       },
       {
         "component": "container",
-        "name": "targetSettings",
+        "name": "heroLinkTargetSet",
         "label": "Target settings",
         "fields": [
           {
             "component": "boolean",
-            "name": "targetLink",
+            "name": "heroTargetLink",
             "label": "Open link in new tab",
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
@@ -2281,12 +2281,12 @@
       },
       {
         "component": "container",
-        "name": "targetSettings",
+        "name": "ctaLinkTargetSet",
         "label": "Target settings",
         "fields": [
           {
             "component": "boolean",
-            "name": "targetLink",
+            "name": "ctaTargetLink",
             "label": "Open link in new tab",
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
@@ -2419,12 +2419,12 @@
       },
       {
         "component": "container",
-        "name": "targetSettings",
-        "label": "Target settings",
+        "name": "linkTargetSettings",
+        "label": "Link Target settings",
         "fields": [
           {
             "component": "boolean",
-            "name": "targetLink",
+            "name": "linkTargetLink",
             "label": "Open link in new tab",
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
@@ -2479,8 +2479,7 @@
             {
               "var": "slideType"
             },
-            "onlyImage",
-            "cardListCarousel"
+            "onlyImage"
           ]
         }
       },

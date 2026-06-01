@@ -281,7 +281,7 @@ export default async function decorate(block) {
   const seeMoreTargetValue = showLinks ? rows[6]?.textContent?.trim() || '' : '';
 
   // Slides start at row 6, variant is in each slide's first cell
-  const nextIndex = 6;
+  const nextIndex = 7;
   const firstSlide = rows[nextIndex];
   const variant = firstSlide?.children[0]?.textContent.trim() || '';
 
