@@ -6,7 +6,7 @@ import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
  * Structure: Badge Text | Image | Description | Link
  * Cell layout (carousel-dotted-slide, slideType = withImage):
  *   0: variant, 1: slideType, 2: badgeText, 3: image, 4: description,
- *   5: link, 6: linkText, 7: linkTitle, 8: linkType, 9: targetLink
+ *   5: link, 6: linkText, 7: linkTitle, 8: linkType
  */
 export default function buildSlideWithImage(row, index, cells) {
   const slide = document.createElement('div');
@@ -52,7 +52,6 @@ export default function buildSlideWithImage(row, index, cells) {
 
   // Link/Button (cell 7)
   const link = cells[7]?.querySelector('a');
-
   if (link) {
     content.append(link);
   }

@@ -19,8 +19,8 @@ export default function buildSlideWithoutImage(row, index, cells) {
   const content = document.createElement('div');
   content.className = 'carousel-dotted-content';
 
-  // Header text (cell 9)
-  const headerText = cells[9]?.textContent.trim();
+  // Header text (cell 8)
+  const headerText = cells[8]?.textContent.trim();
   if (headerText) {
     const header = document.createElement('div');
     header.className = 'carousel-dotted-header';
@@ -28,11 +28,11 @@ export default function buildSlideWithoutImage(row, index, cells) {
     content.append(header);
   }
 
-  // Default text (cell 10)
-  if (cells[10]) {
+  // Default text (cell 9)
+  if (cells[9]) {
     const defaultText = document.createElement('div');
     defaultText.className = 'carousel-default-text';
-    while (cells[10].firstChild) defaultText.append(cells[10].firstChild);
+    while (cells[9].firstChild) defaultText.append(cells[9].firstChild);
     content.append(defaultText);
   }
 

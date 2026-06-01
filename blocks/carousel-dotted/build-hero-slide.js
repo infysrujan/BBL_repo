@@ -9,7 +9,6 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  *   5: link group (merged, empty) — link+linkText+linkTitle+linkType merged into 1 cell
  *   6: headerText (empty), 7: defaultText (empty),
  *   8: heroImage, 9: imageAlt, 10: title, 11: subtitle, 12: heroLink (merged)
- *   13: targetLink (true/false)
  */
 export default function buildSlideHeroVariant(row, index, cells, variant) {
   const slide = document.createElement('div');
@@ -17,11 +16,11 @@ export default function buildSlideHeroVariant(row, index, cells, variant) {
   slide.dataset.index = index;
   moveInstrumentation(row, slide);
 
-  const heroImageCell = cells[11];
-  const imageAlt = cells[12]?.textContent.trim() || '';
-  const titleCell = cells[13];
-  const subtitleCell = cells[14];
-  const linkCell = cells[15];
+  const heroImageCell = cells[10];
+  const imageAlt = cells[11]?.textContent.trim() || '';
+  const titleCell = cells[12];
+  const subtitleCell = cells[13];
+  const linkCell = cells[14];
 
   const picture = heroImageCell?.querySelector('picture');
   if (picture) {
@@ -55,6 +54,7 @@ export default function buildSlideHeroVariant(row, index, cells, variant) {
     linkWrapper.innerHTML = linkCell.innerHTML;
     content.append(linkWrapper);
   }
+
   slide.append(content);
   return slide;
 }
