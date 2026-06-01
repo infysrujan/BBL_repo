@@ -89,7 +89,7 @@ function createTableElement(columnNames, data, dataType, sourceElement) {
     const thead = `
       <thead>
         <tr>
-          ${columnNames.map((name) => `<th>${name}</th>`).join('')}
+          ${columnNames.map((name) => `<th>${name.split('#')[0].trim()}</th>`).join('')}
         </tr>
       </thead>
     `;
@@ -97,8 +97,16 @@ function createTableElement(columnNames, data, dataType, sourceElement) {
     let tbody = '<tbody>';
 
     if (dataType === 'exchange') {
+      const defaultFields = ['BuyingRates', 'SellingRates'];
+      // columnNames[0] is the currency column; rest are rate columns with optional #ApiKey hint
+      const rateColumns = columnNames.slice(1).map((name, i) => {
+        const [, hint] = name.split('#');
+        return hint ? hint.trim() : defaultFields[i];
+      });
+
       tbody += data.map((item) => {
         const familyText = (item.Family || '').replace(/\d/g, '');
+        const rateCells = rateColumns.map((field) => `<td>${item[field]?.trim() || '-'}</td>`).join('');
         return `
         <tr>
           <td>
@@ -107,8 +115,7 @@ function createTableElement(columnNames, data, dataType, sourceElement) {
               <span>${familyText}</span>
             </div>
           </td>
-          <td>${item.BuyingRates?.trim() || '-'}</td>
-          <td>${item.SellingRates?.trim() || '-'}</td>
+          ${rateCells}
         </tr>
       `;
       }).join('');
@@ -303,8 +310,8 @@ function createTabContent(tabData, apiData) {
     content.appendChild(list);
   }
 
-  // Table 2 (if tableCount is 2)
-  if (tableCount === '2' && table2Data) {
+  // Table 2 (if tableCount is 2) — hidden if API returned no data
+  if (tableCount === '2' && table2Data && apiData2.length > 0) {
     const list = document.createElement('div');
     list.className = 'currency-list full';
     const tableElement = createTableElement(
