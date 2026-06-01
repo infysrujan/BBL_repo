@@ -318,7 +318,6 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     if (!selectedServiceCode) return;
     const isHidden = provinceDropdown.hidden;
     if (isHidden) {
-      keywordInput.value = '';
       districtWrapper.hidden = true;
       districtWrapper.innerHTML = '';
       provinceDropdown.querySelectorAll('.locate-us-province-item').forEach((item) => item.classList.remove('locate-us-province-item-active'));
@@ -333,6 +332,11 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
   dropdownToggle.addEventListener('click', toggleProvinceDropdown);
   keywordInput.addEventListener('click', toggleProvinceDropdown);
+
+  keywordInput.addEventListener('input', () => {
+    provinceDropdown.hidden = true;
+    dropdownToggle.setAttribute('aria-expanded', 'false');
+  });
 
   document.addEventListener('click', (e) => {
     if (!keywordWrapper.contains(e.target)) {
@@ -606,7 +610,6 @@ export async function buildOverseasUI(container, placeholders, configs) {
   function toggleCountryDropdown() {
     const isHidden = countryDropdown.hidden;
     if (isHidden) {
-      keywordInput.value = '';
       districtWrapper.hidden = true;
       districtWrapper.innerHTML = '';
       buildCountryList(countriesCache);
@@ -620,6 +623,11 @@ export async function buildOverseasUI(container, placeholders, configs) {
 
   dropdownToggle.addEventListener('click', toggleCountryDropdown);
   keywordInput.addEventListener('click', toggleCountryDropdown);
+
+  keywordInput.addEventListener('input', () => {
+    countryDropdown.hidden = true;
+    dropdownToggle.setAttribute('aria-expanded', 'false');
+  });
 
   document.addEventListener('click', (e) => {
     if (!keywordWrapper.contains(e.target)) {
