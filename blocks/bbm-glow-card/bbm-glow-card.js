@@ -1,4 +1,5 @@
 import { loadScript } from '../../scripts/aem.js';
+import { moveInstrumentation } from '../../scripts/scripts.js';
 
 const STYLE_TAG_REGEX = /<style[^>]*>[\s\S]*?<\/style>/gi;
 const STYLE_CONTENT_REGEX = /<style[^>]*>([\s\S]*?)<\/style>/gi;
@@ -57,12 +58,12 @@ async function ensureDomPurify() {
 }
 
 /**
- * Joins paragraph text from the block (encoded HTML from authoring).
- * @param {Element} block
+ * Joins paragraph text from a block item row (encoded HTML from authoring).
+ * @param {Element} row
  * @returns {string}
  */
-function collectParagraphText(block) {
-  return [...block.querySelectorAll('p')]
+function collectParagraphText(row) {
+  return [...row.querySelectorAll('p')]
     .map((p) => p.textContent)
     .join('\n');
 }
@@ -117,15 +118,6 @@ function sanitizeHtml(html) {
 }
 
 /**
- * Renders sanitized markup inside the block element.
- * @param {Element} block
- * @param {string} bodyHtml
- */
-function renderBlockContent(block, bodyHtml) {
-  block.innerHTML = bodyHtml;
-}
-
-/**
  * Inserts or updates a single style element immediately after the page footer.
  * @param {string} css
  */
@@ -154,13 +146,27 @@ function injectStylesAfterFooter(css) {
  * @param {Element} block - The bbm-glow-card block element
  */
 export default async function decorate(block) {
-  const rawContent = collectParagraphText(block);
+  const itemRows = [...block.children];
+  const itemContent = itemRows.map((row) => ({
+    row,
+    decodedHtml: decodeHtmlEntities(collectParagraphText(row)),
+  }));
+
   block.replaceChildren();
-  const decodedHtml = decodeHtmlEntities(rawContent);
-  const { css, bodyHtml } = extractStyles(decodedHtml);
 
   await ensureDomPurify();
 
-  renderBlockContent(block, sanitizeHtml(bodyHtml));
-  injectStylesAfterFooter(sanitizeCss(css));
+  const cssParts = [];
+  itemContent.forEach(({ row, decodedHtml }) => {
+    const { css, bodyHtml } = extractStyles(decodedHtml);
+    if (css) cssParts.push(sanitizeCss(css));
+
+    const content = document.createElement('div');
+    content.className = 'bbm-glow-card-content';
+    content.innerHTML = sanitizeHtml(bodyHtml);
+    moveInstrumentation(row, content);
+    block.appendChild(content);
+  });
+
+  injectStylesAfterFooter(cssParts.join('\n'));
 }
