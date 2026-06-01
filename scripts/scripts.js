@@ -282,8 +282,19 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadHeader(doc.querySelector('header'));
-  loadFooter(doc.querySelector('footer'));
+  const disabledSections = new Set(
+    getMetadata('disable-sections', doc)
+      .split(',')
+      .map((section) => section.trim().toLowerCase())
+      .filter(Boolean),
+  );
+
+  if (!disabledSections.has('header')) {
+    loadHeader(doc.querySelector('header'));
+  }
+  if (!disabledSections.has('footer')) {
+    loadFooter(doc.querySelector('footer'));
+  }
 
   await loadBreadcrumb(doc);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
