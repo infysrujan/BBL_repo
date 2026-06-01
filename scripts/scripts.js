@@ -169,7 +169,7 @@ function getDocumentLangFromPath(pathname) {
   const first = segments[0];
 
   if (document.querySelector('[data-aue-resource]')) {
-    const lang = segments[3];
+    const lang = segments[2];
     if (lang === 'en') return 'en';
     if (lang === 'th') return 'th';
   }
