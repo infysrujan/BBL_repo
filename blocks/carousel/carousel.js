@@ -156,11 +156,27 @@ function initCarousel(track) {
       offset -= (items[i].offsetWidth + gap);
     }
 
-    track.style.transform = `translateX(${offset + 75 * (offset !== 0 ? 1 : 0)}px)`;
+    const nudge = 75;
+    track.style.transform = `translateX(${offset + nudge * (offset !== 0 ? 1 : 0)}px)`;
 
     // Update button states
     prevButton.disabled = currentIndex === 0;
     nextButton.disabled = currentIndex >= totalItems - 1;
+
+    // Pin the next button to the gap between the active card and the next card.
+    // Slide 0: active card starts at carousel padding (84px).
+    // Slide 1+: padding drops to 0 but the transform nudge shifts the card right by 75px.
+    if (window.innerWidth >= 1025 && carousel.offsetWidth > 0) {
+      const activeItem = items[currentIndex];
+      const nextItem = items[currentIndex + 1];
+      const carouselPaddingLeft = parseInt(getComputedStyle(carousel).paddingLeft, 10) || 0;
+      const activeCardLeft = currentIndex === 0 ? carouselPaddingLeft : nudge;
+      const inactiveCardWidth = nextItem ? nextItem.offsetWidth : 0;
+      const buttonLeft = activeCardLeft + activeItem.offsetWidth + gap
+        + inactiveCardWidth + gap / 2 - nextButton.offsetWidth / 2;
+      nextButton.style.left = `${buttonLeft}px`;
+      nextButton.style.right = 'auto';
+    }
   }
 
   // Check if device is mobile/tablet (disable drag on desktop)
@@ -208,9 +224,13 @@ function initCarousel(track) {
     }, 250);
   });
 
-  // Initial setup - only set transform on desktop
+  // Initial setup - defer two frames so all card widths are fully laid out
   if (!isMobileOrTablet()) {
-    updateCarousel(false);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        updateCarousel(false);
+      });
+    });
   }
 }
 
