@@ -11,6 +11,7 @@ import {
   loadSections,
   loadCSS,
   getMetadata,
+  toClassName,
 } from './aem.js';
 
 import {
@@ -105,6 +106,13 @@ function buildAutoBlocks(main) {
  * Decorates the main element.
  * @param {Element} main The main element
  */
+function decorateSectionIds(main) {
+  main.querySelectorAll('.section[data-id]').forEach((section) => {
+    section.id = toClassName(section.dataset.id);
+    delete section.dataset.id;
+  });
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
   // hopefully forward compatible button decoration
@@ -112,6 +120,7 @@ export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
+  decorateSectionIds(main);
   decorateBlocks(main);
   decorateTerritoryButtons(main);
   decorateSvgWithAltText(main);
