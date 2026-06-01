@@ -646,9 +646,6 @@ function applyLayout(header, fragmentTemplate, desktop) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  const isHeaderDisabled = getMetadata('isHeaderDisabled');
-  if (isHeaderDisabled) return;
-
   let navPath = '';
   if (document.querySelector('body.error-page')) {
     const lang = getLang();

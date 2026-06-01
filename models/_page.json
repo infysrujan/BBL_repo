@@ -81,18 +81,6 @@
           "name": "ogImage",
           "label": "OG Image",
           "description": "Select the image asset to use for the Open Graph og:image meta tag."
-        },
-        {
-          "component": "boolean",
-          "label": "Disable header",
-          "name": "isHeaderDisabled",
-          "valueType": "boolean"
-        },
-        {
-          "component": "boolean",
-          "label": "Disable Footer",
-          "name": "isFooterDisabled",
-          "valueType": "boolean"
         }
       ]
     }

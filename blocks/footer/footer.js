@@ -143,9 +143,6 @@ function setupAccordion(block) {
  * @param {Element} block The footer block element
  */
 export default async function decorate(block) {
-  const isFooterDisabled = getMetadata('isFooterDisabled');
-  if (isFooterDisabled) return;
-
   // load footer as fragment
   let footerPath = '';
   if (document.querySelector('body.error-page')) {
