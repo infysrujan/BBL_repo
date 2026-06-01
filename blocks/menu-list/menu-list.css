@@ -34,6 +34,7 @@
 .menu-list .menu-list-title p::before {
   content: '';
   position: absolute;
+  left: var(--bbl-space-250);
   top: 1.875rem;
   width: var(--bbl-space-500);
   height: 0.0625rem;
@@ -119,6 +120,10 @@
 
   .menu-list .menu-list-title p {
     font-size: 1.12rem;
+  }
+
+  .menu-list .menu-list-title p::before {
+    left: unset;
   }
 
   .menu-list .menu-list-item { 
