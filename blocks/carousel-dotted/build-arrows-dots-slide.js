@@ -1,5 +1,4 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 
 /**
  * Build a slide for showArrowsDots variant.
@@ -9,7 +8,7 @@ import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
  *   withDefaultImage: 0:variant, 1:slideType, 2:defaultImage, 3:titleDefaultImage (RTE — heading
  *                     becomes title, any remaining paragraphs become inline description),
  *                     4:stepText1, 5:description1, 6:stepText2, 7:description2,
- *                     8:ctaLink (merged — aem-content+text+text+select → 1 cell), 9:targetLink
+ *                     8:ctaLink (merged — aem-content+text+text+select → 1 cell)
  *   withCircularImage: 0:variant, 1:slideType,
  *                      2-8: withDefaultImage fields (reserved, empty),
  *                      9:circularImage, 10:titleCircularImage, 11:descriptionCircularImage,
@@ -30,7 +29,7 @@ export default function buildSlideArrowsandDots(row, index) {
     slide.className = 'carousel-dotted-item simple-carousel item';
 
     // onlyImage (cell 13), onlyImageAlt (cell 14)
-    const onlyImageCell = cells[13];
+    const onlyImageCell = cells[15];
 
     const picture = onlyImageCell?.querySelector('picture');
     if (picture) {
@@ -43,12 +42,11 @@ export default function buildSlideArrowsandDots(row, index) {
   if (slideType === 'withCircularImage') {
     slide.className = 'carousel-dotted-item with-circular-image item';
 
-    // circularImage (cell 9), title (cell 10), description (cell 11), link (cell 12)
-    const circularImageCell = cells[9];
-    const titleCell = cells[10];
-    const descriptionCell = cells[11];
-    const linkCell = cells[12];
-    const targetValue = cells[13]?.textContent?.trim() || '';
+    // circularImage (cell 10), title (cell 11), description (cell 12, link (cell 13)
+    const circularImageCell = cells[10];
+    const titleCell = cells[11];
+    const descriptionCell = cells[12];
+    const linkCell = cells[13];
 
     // image
     const imageContainer = document.createElement('div');
@@ -82,7 +80,6 @@ export default function buildSlideArrowsandDots(row, index) {
       if (a) {
         a.className = 'sub-title-medium link-primary';
         linkWrap.append(a);
-        applyLinkTarget(linkWrap, 'a', targetValue);
       } else {
         while (linkCell.firstChild) linkWrap.append(linkCell.firstChild);
       }
@@ -105,7 +102,6 @@ export default function buildSlideArrowsandDots(row, index) {
     const stepText2Cell = cells[6];
     const description2Cell = cells[7];
     const ctaLinkCell = cells[8];
-    const targetValue = cells[9]?.textContent?.trim() || '';
 
     // image
     const imageContainer = document.createElement('div');
@@ -195,7 +191,6 @@ export default function buildSlideArrowsandDots(row, index) {
         linkWrap.className = 'button-container';
         a.className = 'sub-title-medium button primary';
         linkWrap.append(a);
-        applyLinkTarget(linkWrap, 'a', targetValue);
         content.append(linkWrap);
       }
     }
