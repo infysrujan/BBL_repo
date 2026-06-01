@@ -199,8 +199,17 @@ function createCardItem(cardRow, doc) {
     const btn = actionCells[0].querySelector('a').cloneNode(true);
     const isLinkTypeCell = (c) => isKeywordCell(c) && !isToggleCell(c) && !actionCells.includes(c);
     const linkTypeCell = remaining.find(isLinkTypeCell);
-    const linkType = linkTypeCell?.textContent.trim().toLowerCase() ?? 'tertiary';
-    btn.classList.add('button', `button-${linkType}`);
+    const linkType = linkTypeCell?.textContent.trim().toLowerCase();
+
+    if (linkType) {
+      // Author explicitly provided a link type, override any AEM defaults
+      btn.classList.remove('primary', 'secondary', 'button-primary', 'button-secondary', 'button-tertiary');
+      btn.classList.add('button', `button-${linkType}`);
+    } else if (!btn.classList.contains('primary') && !btn.classList.contains('secondary')) {
+      // No explicit type, and AEM didn't make it primary/secondary. Default to tertiary.
+      btn.classList.add('button', 'button-tertiary');
+    }
+
     btn.removeAttribute('data-modal');
     inner.appendChild(btn);
   } else if (actionType === 'download' && actionCells.length > 0) {

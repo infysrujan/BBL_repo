@@ -134,72 +134,70 @@
 }
 
 .menu-card-action-inner .button {
-  border-radius: 0.4375rem;
-  box-sizing: border-box;
-  width: 100%;
-  padding: 0;
-  display: block;
-  text-align: center;
-  line-height: 2.75rem;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  margin-top: calc(var(--bbl-space-250) - 0.9375rem);
-  min-width: 100%;
+    border-radius: 0.4375rem;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0;
+    display: block;
+    text-align: center;
+    line-height: 2.75rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-top: calc(var(--bbl-space-250) - 0.9375rem);
+    min-width: 100%;
 }
 
 .menu-card-action-inner .global-dropdown {
   margin-top: calc(var(--bbl-space-250) - 0.9375rem);
 }
 
-.menu-card-action-inner .menu-card-action-description ~ :is(.button, .global-dropdown) {
-  margin-top: var(--bbl-space-250);
-  min-width: 100%;
-}
-
-.menu-card-action-inner .menu-card-action-description ~ .button-tertiary {
-  margin-top: var(--bbl-space-250);
-  min-width: 0;
+.menu-card-action .menu-card-action-inner .button-tertiary::after {
+  display: none;
 }
 
 .menu-card-action .menu-card-action-inner .button-tertiary {
+  position: relative;
   margin-top: var(--bbl-space-250);
-  width: auto;
-  min-width: 0;
+  font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-medium);
+  text-align: left;
+  background: transparent;
   display: inline-flex;
   align-items: center;
-  align-self: flex-start;
-  gap: var(--bbl-space-050);
-  text-align: left;
-  color: var(--bbl-color-active-blue);
-  overflow: visible; /* Prevents the animated chevron from getting clipped */
+  justify-content: flex-start;
+  gap: 0.3125rem;
+  width: max-content;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0;
+  overflow: visible; /* Prevent arrow clipping on hover */
 }
 
-.menu-card-action .menu-card-action-inner .button-tertiary::after {
-  content: "\e901";
-  font-family: icomoon, sans-serif;
-  font-weight: 300;
-  font-size: 0.8em;
-  mask: none;
-  background: transparent;
-  display: inline-block;
-  vertical-align: middle;
-  width: auto;
-  height: auto;
-  transition: transform 0.3s ease-in-out;
+.menu-card-action-inner .menu-card-action-description ~ :is(.button, .global-dropdown) {
+    margin-top: var(--bbl-space-250);
+    min-width: 100%;
+}
+
+.menu-card-action-inner .menu-card-action-description ~ :is(.button-tertiary) {
+    margin-top: var(--bbl-space-250);
+    min-width: auto;
 }
 
 .menu-card-action .menu-card-action-inner .button-tertiary:hover {
-  text-decoration: none;
-
-  /* Text changes to dark blue on hover */
   color: var(--bbl-color-blue-90);
-
-  /* Prevent global .button:hover from adding a blue background pill */
   background: transparent;
+  text-decoration: none;
 }
 
-.menu-card-action .menu-card-action-inner .button-tertiary:hover::after {
-  transform: translateX(4px);
+.menu-card-action .menu-card-action-inner .button-tertiary::before {
+  content: "\e901";
+  order: 2; /* Robust flexbox alignment to place ::before after the text */
+  font: 300 var(--bbl-font-size-b4) / 1 icomoon, sans-serif;
+  transition: transform 0.3s ease-in-out;
+  display: block;
+}
+
+.menu-card-action-inner .button-tertiary:hover::before {
+  transform: translateX(0.25rem);
 }
 
 .menu-card-action-description {
