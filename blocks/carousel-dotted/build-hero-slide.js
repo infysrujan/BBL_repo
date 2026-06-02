@@ -1,16 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
-/**
- * Build a slide HERO BANNER IMAGE CAROUSEL or TEXT ANIMATION VARIANT
- * Structure: Image | Image Alt | Title | Subtitle | Button
- * Cell layout (carousel-dotted-slide, slideType = heroBannerImageCarousel / textAnimationVariant):
- *   0: variant, 1: slideType,
- *   2: badgeText (empty), 3: image (empty), 4: description (empty),
- *   5: link group (merged, empty) — link+linkText+linkTitle+linkType merged into 1 cell
- *   6: headerText (empty), 7: defaultText (empty),
- *   8: heroImage, 9: imageAlt, 10: title, 11: subtitle, 12: heroLink (merged)
- *   13: targetLink (true/false)
- */
 export default function buildSlideHeroVariant(row, index, cells, variant) {
   const slide = document.createElement('div');
   slide.className = `carousel-item ${variant}`;

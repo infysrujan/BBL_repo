@@ -1,20 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
-/**
- * Build a slide for showArrowsDots variant.
- * Cell layout (carousel-dotted-slide-arrows):
- *  cells[0] = variant (hidden), cells[1] = slideType (select)
- * slideType values:
- *   withDefaultImage: 0:variant, 1:slideType, 2:defaultImage, 3:titleDefaultImage (RTE — heading
- *                     becomes title, any remaining paragraphs become inline description),
- *                     4:stepText1, 5:description1, 6:stepText2, 7:description2,
- *                     8:ctaLink (merged — aem-content+text+text+select → 1 cell)
- *   withCircularImage: 0:variant, 1:slideType,
- *                      2-8: withDefaultImage fields (reserved, empty),
- *                      9:circularImage, 10:titleCircularImage, 11:descriptionCircularImage,
- *                      12:link (merged — AEM UE merges link+linkText+linkTitle+linkType into 1
- *                              cell)
- */
 export default function buildSlideArrowsandDots(row, index) {
   const cells = [...row.children];
   const slide = document.createElement('div');
