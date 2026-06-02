@@ -195,7 +195,7 @@ export default async function buildMfFundCardsSlide(row, index) {
   moveInstrumentation(row, slide);
 
   const cells = [...row.children];
-  // cells[15] = mfCardListDescription (richtext), cells[16] = cardTypes (aem-tag)
+  // cells[17] = mfCardListDescription (richtext), cells[18] = cardTypes (aem-tag)
   const descriptionHTML = cells[17]?.innerHTML?.trim() || '';
   const cardTypesRaw = cells[18]?.textContent?.trim() || '';
   const tagCategory = extractCategoryFromTag(cardTypesRaw);

@@ -1,14 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
-/**
- * Build a slide WITHOUT IMAGE variation
- * Structure: Header Text | Default Text
- * Cell layout (carousel-dotted-slide, slideType = withoutImage):
- *   0: variant, 1: slideType,
- *   2: badgeText (empty), 3: image (empty), 4: description (empty),
- *   5: link group (merged, empty) — AEM UE merges link+linkText+linkTitle+linkType into 1 cell
- *   6: headerText, 7: defaultText
- */
 export default function buildSlideWithoutImage(row, index, cells) {
   const slide = document.createElement('div');
   slide.className = 'carousel-dotted-item without-image';
