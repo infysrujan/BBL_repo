@@ -24,8 +24,8 @@ function isKeywordCell(cell) {
 }
 
 function isToggleCell(cell) {
-  const text = cell.textContent.trim().toLowerCase();
-  return text === 'true' || text === 'false' || cell.innerHTML.trim() === '';
+  const text = cell?.textContent?.trim().toLowerCase() || '';
+  return text === 'true' || text === 'false' || cell?.innerHTML?.trim() === '';
 }
 
 function extractToggledLink(cells, valueCellSelector) {
@@ -196,21 +196,9 @@ function createCardItem(cardRow, doc) {
   }
 
   if (actionType === 'default' && actionCells.length > 0) {
-    const btn = actionCells[0].querySelector('a').cloneNode(true);
-    const isLinkTypeCell = (c) => isKeywordCell(c) && !isToggleCell(c) && !actionCells.includes(c);
-    const linkTypeCell = remaining.find(isLinkTypeCell);
-    const linkType = linkTypeCell?.textContent.trim().toLowerCase();
-
-    if (linkType) {
-      // Author explicitly provided a link type, override any AEM defaults
-      btn.classList.remove('primary', 'secondary', 'button-primary', 'button-secondary', 'button-tertiary');
-      btn.classList.add('button', `button-${linkType}`);
-    } else if (!btn.classList.contains('primary') && !btn.classList.contains('secondary')) {
-      // No explicit type, and AEM didn't make it primary/secondary. Default to tertiary.
-      btn.classList.add('button', 'button-tertiary');
-    }
-
-    btn.removeAttribute('data-modal');
+    const buttonContainer = actionCells[0].querySelector('.button-container') ?? actionCells[0];
+    const btn = buttonContainer.cloneNode(true);
+    btn.querySelector('a')?.removeAttribute('data-modal');
     inner.appendChild(btn);
   } else if (actionType === 'download' && actionCells.length > 0) {
     const dlAnchor = actionCells.find((c) => !c.querySelector('ul'))?.querySelector('a')
@@ -257,6 +245,7 @@ function createCardItem(cardRow, doc) {
   } else {
     card.appendChild(inner);
   }
+  moveInstrumentation(cardRow, card);
 
   return card;
 }
@@ -292,26 +281,11 @@ export default function decorate(block) {
 
     if (!card) return;
 
-    // Move instrumentation to the primary content child
-    moveInstrumentation(row, card.firstElementChild ?? card);
-
     container.appendChild(card);
-  });
-
-  // Keep ALL original rows in the DOM but hidden,
-  // so UE can still reference them for add/insert operations and property bindings.
-  allRows.forEach((row) => {
-    row.setAttribute('data-source-row', '');
-    row.style.display = 'none';
   });
 
   block.textContent = '';
   block.appendChild(container);
-
-  // Re-attach all hidden source rows so UE can find them
-  allRows.forEach((row) => {
-    block.appendChild(row);
-  });
 
   block.addEventListener('click', (event) => {
     const trigger = event.target.closest('[data-modal]');
