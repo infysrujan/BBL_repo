@@ -36,7 +36,6 @@
    -------------------------------------------------------------------------- */
 .field-double-key-dropdown select {
   appearance: none;
-  -webkit-appearance: none;
   width: 100%;
   padding: 0.625rem 2.5rem 0.625rem 0.75rem;
   font-size: 1rem;
@@ -54,14 +53,31 @@
   box-sizing: border-box;
 }
 
+.field-double-key-dropdown select:disabled,
+.field-double-key-dropdown.field-disabled select {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background-color: var(--color-surface-disabled, #f0f0f0);
+  border-color: var(--color-border-disabled, #ddd);
+}
+
+/* --------------------------------------------------------------------------
+   Validation – invalid state (triggered by AEM Forms rule engine)
+   -------------------------------------------------------------------------- */
+.field-double-key-dropdown select[aria-invalid="true"],
+.field-double-key-dropdown.field-invalid select {
+  border-color: var(--color-error, #d93025);
+  box-shadow: 0 0 0 3px rgb(217 48 37 / 15%);
+}
+
 .field-double-key-dropdown select:focus {
   outline: none;
-  border-color: var(--color-accent, #0066cc);
+  border-color: var(--color-accent, #06c);
   box-shadow: 0 0 0 3px rgb(0 102 204 / 20%);
 }
 
 .field-double-key-dropdown select:hover:not(:disabled) {
-  border-color: var(--color-accent, #0066cc);
+  border-color: var(--color-accent, #06c);
 }
 
 /* --------------------------------------------------------------------------
@@ -92,25 +108,6 @@
   padding: 0.25rem 0.5rem;
 }
 
-/* --------------------------------------------------------------------------
-   Disabled / read-only state
-   -------------------------------------------------------------------------- */
-.field-double-key-dropdown select:disabled,
-.field-double-key-dropdown.field-disabled select {
-  opacity: 0.55;
-  cursor: not-allowed;
-  background-color: var(--color-surface-disabled, #f0f0f0);
-  border-color: var(--color-border-disabled, #ddd);
-}
-
-/* --------------------------------------------------------------------------
-   Validation – invalid state (triggered by AEM Forms rule engine)
-   -------------------------------------------------------------------------- */
-.field-double-key-dropdown select[aria-invalid="true"],
-.field-double-key-dropdown.field-invalid select {
-  border-color: var(--color-error, #d93025);
-  box-shadow: 0 0 0 3px rgb(217 48 37 / 15%);
-}
 
 /* --------------------------------------------------------------------------
    Error / help text
