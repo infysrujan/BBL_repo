@@ -435,7 +435,7 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 
   // trigger the martech delayed phase when the consent is updated
-  // eslint-disable-next-line no-async-promise-executor
+  // eslint-disable-next-line no-return-await
   window.addEventListener('consent-update', async () => await bblMartechDelayed());
 }
 

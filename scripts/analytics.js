@@ -167,7 +167,7 @@ export function trackContactFormSubmit(event) {
   ensureCdpGlobal();
   refreshCdpData();
   window.cdp.track.contactFormSubmit = trackContactFormSubmit;
-  
+
   // Aligned on internal PII policy and no sanitization necessary.
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const form = event.currentTarget;

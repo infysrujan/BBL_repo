@@ -41,7 +41,9 @@ let consentListenerAttached = false;
  * @returns {Promise<void>}
  */
 export async function applyMarketingConsentUpdates(detail = {}) {
+  // eslint-disable-next-line prefer-const
   let gtagPayload = DEFAULT_GTAG_MARKETING;
+  // eslint-disable-next-line prefer-const
   let adobePayload = DEFAULT_ADOBE_MARKETING;
 
   if (detail.preferences) {
