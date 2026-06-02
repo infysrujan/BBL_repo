@@ -33,6 +33,25 @@ function toArray(value) {
 }
 
 /**
+ * Resolves a property value from the fd object, checking multiple storage locations:
+ * 1. fd.properties[key]          – nested (standard AEM Forms runtime)
+ * 2. fd['properties.' + key]     – flat dot-notation (some UE / JCR serializations)
+ * 3. fd[key]                     – directly on fd (doc-based / transformed payloads)
+ *
+ * @param {Object} fd
+ * @param {string} key  – the short property name (e.g. 'countryCodes')
+ * @returns {*}
+ */
+function getProp(fd, key) {
+  const nested = fd.properties?.[key];
+  if (nested !== undefined && nested !== null && nested !== '') return nested;
+  const dotKey = `properties.${key}`;
+  const flat = fd[dotKey];
+  if (flat !== undefined && flat !== null && flat !== '') return flat;
+  return fd[key];
+}
+
+/**
  * Builds an accessible grouped <select> element.
  *
  * @param {Object} fd - The field definition object from the AEM Form model
@@ -40,11 +59,9 @@ function toArray(value) {
  * @returns {HTMLSelectElement}
  */
 function buildGroupedSelect(fd, originalSelect) {
-  const props = fd.properties || {};
-
-  const countryCodes = toArray(props.countryCodes);
-  const countryNames = toArray(props.countryNames);
-  const universitiesData = toArray(props.universitiesData);
+  const countryCodes = toArray(getProp(fd, 'countryCodes'));
+  const countryNames = toArray(getProp(fd, 'countryNames'));
+  const universitiesData = toArray(getProp(fd, 'universitiesData'));
 
   // Re-use the existing <select> so form.js attributes (id, name, required, etc.) are preserved
   const select = originalSelect;
@@ -119,15 +136,11 @@ export default function decorate(fieldDiv, fd) {
   // --- Accessibility: announce current selection to screen readers ---
   select.setAttribute('aria-label', fd['jcr:title'] || fd.label?.value || 'Grouped dropdown');
 
-  // --- Change event: dispatch a standard change so AF rule engine picks up value ---
+  // --- Change event: expose split values as data attributes on the wrapper ---
   select.addEventListener('change', () => {
-    // Optionally expose separate country / university values as data attributes on the wrapper
     const [countryCode, universityName] = (select.value || '::').split('::');
     fieldDiv.dataset.selectedCountry = countryCode || '';
     fieldDiv.dataset.selectedUniversity = universityName || '';
-
-    // Bubble a native change event so AEM Forms rule engine state stays in sync
-    select.dispatchEvent(new Event('change', { bubbles: true }));
   });
 
   // Re-append help text at the bottom if it was already in the DOM
