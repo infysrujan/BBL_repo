@@ -180,7 +180,8 @@
 /* ── Image area (image layout = "default") ───────────────────────────────── */
 
 .card-list.mf-results .cards-list-image {
-  height: 11rem;
+  height: 8.4375rem !important;
+  max-height: 8.4375rem !important;
   overflow: hidden;
 }
 
@@ -195,12 +196,12 @@
 /* ── Logo in remark area ─────────────────────────────────────────────────── */
 
 .card-list.mf-results .cards-list-remark img.mfr-logo {
-  height: 2.5rem;
-  width: auto;
-  max-width: 8.875rem;
-  object-fit: contain;
-  display: block;
-  margin-bottom: 1.4375rem;
+  height: 2.5rem !important;
+  width: 8.875rem !important;
+  max-width: 8.875rem !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin-bottom: 1.4375rem !important;
 }
 
 /* ── Card content area padding (matches live .caption padding: 20px) ─────── */
@@ -401,6 +402,7 @@
     margin-bottom: var(--bbl-space-250);
     scroll-snap-align: none;
     width: auto;
+    max-width: 17.1875rem;
   }
 
   .mfr-footer {
@@ -423,6 +425,7 @@
   .card-list.mf-results .cards-list.scrollable .cards-list-item {
     flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
     margin-bottom: var(--bbl-space-500);
+    max-width: 17.1875rem;
   }
 }
 
