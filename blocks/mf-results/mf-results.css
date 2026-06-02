@@ -216,7 +216,7 @@
   font-size: 1.5rem;
   line-height: 1.625rem;
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-black, #000);
+  color: var(--bbl-color-black);
   min-height: 4.4375rem;
   overflow-wrap: anywhere;
   position: relative;
@@ -234,7 +234,7 @@
   bottom: 0;
   width: 1.3125rem;
   height: 0.0625rem;
-  background: var(--bbl-color-grey-60, #9e9e9e);
+  background: var(--bbl-color-grey-60);
 }
 
 /* ── Description (matches live .desc) ───────────────────────────────────── */
@@ -242,7 +242,7 @@
 .card-list.mf-results .cards-list-description p {
   font-size: 1rem;
   line-height: 1.375;
-  color: var(--bbl-color-grey-70, #78787d);
+  color: var(--bbl-color-grey-70);
   margin: 0 0 0.625rem;
   overflow: hidden;
   display: -webkit-box;
@@ -271,9 +271,9 @@
   padding: 0.3125rem 0;
   box-sizing: border-box;
   border-radius: 0.4375rem;
-  background-color: var(--bbl-color-active-blue, #0064ff);
-  color: var(--bbl-color-white, #fff);
-  border: 0.0625rem solid var(--bbl-color-active-blue, #0064ff);
+  background-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b1, 1rem);
   line-height: 1.375rem;
