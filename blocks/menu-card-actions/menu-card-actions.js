@@ -245,7 +245,6 @@ function createCardItem(cardRow, doc) {
   } else {
     card.appendChild(inner);
   }
-  moveInstrumentation(cardRow, card);
 
   return card;
 }
@@ -276,15 +275,18 @@ export default function decorate(block) {
 
   const container = createElementFromHTML(`<div class="menu-card-action ${layout}"></div>`, doc);
 
+  if (isFirstRowLayout) allRows[0].hidden = true;
+
   cardRows.forEach((row) => {
     const card = createCardItem(row, doc);
 
     if (!card) return;
 
+    moveInstrumentation(row, card);
     container.appendChild(card);
+    row.remove();
   });
 
-  block.textContent = '';
   block.appendChild(container);
 
   block.addEventListener('click', (event) => {
