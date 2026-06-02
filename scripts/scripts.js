@@ -190,6 +190,20 @@ function getDocumentLangFromPath(pathname) {
   return 'th';
 }
 
+function decorateOgTitle() {
+  const shortTitle = getMetadata('short-title');
+  const title = shortTitle || document.title;
+  if (!title) return;
+
+  let meta = document.head.querySelector('meta[property="og:title"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.setAttribute('property', 'og:title');
+    document.head.append(meta);
+  }
+  meta.setAttribute('content', title);
+}
+
 function decorateOgImage() {
   const ogImagePath = getMetadata('ogImage') || getMetadata('ogimage');
   if (!ogImagePath) return;
@@ -253,6 +267,7 @@ async function loadEager(doc) {
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
+  decorateOgTitle();
   decorateOgImage();
   const main = doc.querySelector('main');
   if (main) {
