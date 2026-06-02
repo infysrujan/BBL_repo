@@ -536,17 +536,16 @@ function replaceOtherAndJoin(selectedValues, otherText) {
     if (!selectedValues) {
         return "";
     } 
-    let values = Array.isArray(selectedValues)
-        ? [...selectedValues]
-        : [selectedValues]; 
-    // Remove "Other (please specify)"
-    values = values.filter(
+    if (typeof selectedValues === "string") {
+        selectedValues = JSON.parse(selectedValues);
+    } 
+    const values = selectedValues.filter(
         value => value !== "Other (please specify)"
-    ); 
-    // Add the specified text instead
+    );
     if (otherText && otherText.trim()) {
         values.push(otherText.trim());
-    } 
+    }
+ 
     return values.join(", ");
 }
 
