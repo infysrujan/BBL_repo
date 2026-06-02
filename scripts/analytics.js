@@ -5,6 +5,7 @@
  */
 
 import env from './utils/env.js';
+
 let analyticsBootstrapped = false;
 
 /**

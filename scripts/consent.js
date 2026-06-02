@@ -41,8 +41,8 @@ let consentListenerAttached = false;
  * @returns {Promise<void>}
  */
 export async function applyMarketingConsentUpdates(detail = {}) {
-  var gtagPayload = DEFAULT_GTAG_MARKETING;
-  var adobePayload = DEFAULT_ADOBE_MARKETING;
+  let gtagPayload = DEFAULT_GTAG_MARKETING;
+  let adobePayload = DEFAULT_ADOBE_MARKETING;
 
   if (detail.preferences) {
     // TODO: Validate the logic for AdvertisingCookie and AnalysisCookie
@@ -63,13 +63,13 @@ export async function applyMarketingConsentUpdates(detail = {}) {
       // set the analysis payload for gtag
       gtagPayload.analytics_storage = 'granted';
 
-      //set the analysis payload for adobe
+      // set the analysis payload for adobe
       adobePayload.collect = true;
     }
 
+    // eslint-disable-next-line no-console
     console.debug('Consent update details', 'gtagPayload', gtagPayload, 'adobePayload', adobePayload);
   }
-  
 
   if (gtagPayload && typeof window.gtag === 'function') {
     // eslint-disable-next-line no-console

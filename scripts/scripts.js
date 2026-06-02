@@ -314,9 +314,11 @@ async function loadEager(doc) {
       edgeDomain: 'edge.bangkokbank.com',
       onBeforeEventSend: (payload) => {
         if (payload.xdm.eventType === 'pageLoaded') {
+          // eslint-disable-next-line no-console
           console.debug('Prevented custom `pageLoaded` event trigger', payload);
           return false;
         }
+        return true;
       },
     },
     // 2. Library Configuration
@@ -324,7 +326,7 @@ async function loadEager(doc) {
       analytics: isEnabled,
       personalization: !!getMetadata('target') && isEnabled,
       launchUrls: launchConfig[env],
-      trackPageView: false, //disables the first collect call
+      trackPageView: false, // disables the first collect call
     },
   );
 
@@ -405,7 +407,6 @@ async function loadLazy(doc) {
 }
 
 async function bblMartechDelayed() {
-
   isConsentGiven = getCookie('AnalysisCookie') === 'Analysis';
 
   // Initialize the CDP events only if consent is given and martech is enabled.
@@ -419,7 +420,6 @@ async function bblMartechDelayed() {
  * without impacting the user experience.
  */
 function loadDelayed() {
-
   // load the gtm-martech library in the delayed phase
   window.setTimeout(() => gtmMartech.delayed(), 1000);
 
@@ -435,6 +435,7 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 
   // trigger the martech delayed phase when the consent is updated
+  // eslint-disable-next-line no-async-promise-executor
   window.addEventListener('consent-update', async () => await bblMartechDelayed());
 }
 
