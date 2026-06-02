@@ -532,6 +532,24 @@ function getidAndDob(id, dob) {
   return `${id}${ddmmyyyy}`;
 }
 
+function replaceOtherAndJoin(selectedValues, otherText) { 
+    if (!selectedValues) {
+        return "";
+    } 
+    let values = Array.isArray(selectedValues)
+        ? [...selectedValues]
+        : [selectedValues]; 
+    // Remove "Other (please specify)"
+    values = values.filter(
+        value => value !== "Other (please specify)"
+    ); 
+    // Add the specified text instead
+    if (otherText && otherText.trim()) {
+        values.push(otherText.trim());
+    } 
+    return values.join(", ");
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -551,4 +569,5 @@ export {
   getBranchEnum,
   getBranchEnumNames,
   getidAndDob,
+  replaceOtherAndJoin,
 };
