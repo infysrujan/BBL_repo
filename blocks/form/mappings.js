@@ -74,6 +74,15 @@ export default async function componentDecorator(element, fd, container, formId)
     await loadComponent(type, element, fd, container, formId);
   }
 
+  // double-key-dropdown: fd[':type'] is the full JCR resourceType path at runtime,
+  // while fd['fd:viewType'] carries the short component name. Load explicitly.
+  if (
+    fd['fd:viewType'] === 'double-key-dropdown'
+    && !getOOTBComponents().includes(type)
+  ) {
+    await loadComponent('double-key-dropdown', element, fd, container, formId);
+  }
+
   if (fieldType === 'file-input') {
     await loadComponent('file', element, fd, container, formId);
   }
