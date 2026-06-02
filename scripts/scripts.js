@@ -314,11 +314,9 @@ async function loadEager(doc) {
       edgeDomain: 'edge.bangkokbank.com',
       onBeforeEventSend: (payload) => {
         if (payload.xdm.eventType === 'pageLoaded') {
-          console.debug('Prevented custom pageLoaded event', payload);
+          console.debug('Prevented custom `pageLoaded` event trigger', payload);
           return false;
         }
-        console.log('onBeforeEventSend', payload);
-        return true;
       },
     },
     // 2. Library Configuration
