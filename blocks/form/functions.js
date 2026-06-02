@@ -536,14 +536,12 @@ function replaceOtherAndJoin(selectedValues, otherText) {
   if (!selectedValues) {
     return '';
   }
-  if (typeof selectedValues === "string") {
-    selectedValues = JSON.parse(selectedValues);
-  }
-  const values = selectedValues.filter(value => value !== "Other (please specify)");
+  const parsed = typeof selectedValues === 'string' ? JSON.parse(selectedValues) : selectedValues;
+  const values = parsed.filter((value) => value !== 'Other (please specify)');
   if (otherText && otherText.trim()) {
     values.push(otherText.trim());
   }
-  return values.join(", ");
+  return values.join(', ');
 }
 
 // eslint-disable-next-line import/prefer-default-export
