@@ -5,13 +5,15 @@
  * to render a grouped <select> where options are organised by country as <optgroup> elements.
  *
  * Authoring data (stored in fd.properties):
- *   - countryCodes      : string[]  – ISO / internal key per country   (e.g. ["TH", "SG"])
- *   - countryNames      : string[]  – Display label per country         (e.g. ["Thailand", "Singapore"])
+ *   - countryCodes      : string[]  – ISO / internal key per country (e.g. ["TH", "SG"])
+ *   - countryNames      : string[]  – Display label per country
+ *  (e.g. ["Thailand", "Singapore"])
  *   - universitiesData  : string[]  – Comma-separated universities per country row
- *                                     (e.g. ["Assumption University,Bangkok University", "NUS,NTU"])
+ *  (e.g. ["Assumption University,Bangkok University", "NUS,NTU"])
  *
- * The component replaces the plain <select> produced by form.js with a grouped one that mirrors
- * the Sitecore HTML structure:  placeholder option → <optgroup label="Country"> → <option>University
+ * The component replaces the plain <select> produced by form.js with a
+ * grouped one that mirrors the Sitecore HTML structure:
+ * placeholder option → <optgroup label="Country"> → <option>University
  */
 
 /**
