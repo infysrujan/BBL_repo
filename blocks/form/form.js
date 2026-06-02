@@ -291,6 +291,13 @@ export async function generateFormRendition(panel, container, formId, getItems =
     if (field.appliedCssClassNames) {
       element.className += ` ${field.appliedCssClassNames}`;
     }
+    // Apply customClassName authored via Universal Editor / Xwalk
+    const customClassName = field.properties?.customClassName || field.customClassName;
+    if (customClassName && typeof customClassName === 'string') {
+      customClassName.trim().split(/\s+/).filter(Boolean).forEach((cls) => {
+        element.classList.add(cls);
+      });
+    }
     colSpanDecorator(field, element);
     if (field?.fieldType === 'panel') {
       await generateFormRendition(field, element, formId, getItems);
