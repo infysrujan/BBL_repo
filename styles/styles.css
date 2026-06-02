@@ -186,6 +186,10 @@ main img {
     .section {
         padding-inline: var(--bbl-space-section-xl);
     }
+
+    .section.columns-2-65 > *:first-child {
+        flex: 0 0 68%;
+    }
 }
 
 @media (width > 87.5rem) {
