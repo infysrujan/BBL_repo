@@ -160,7 +160,7 @@
   font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-medium);
 }
 
-.menu-card-action-inner .menu-card-action-description ~ :is(.button, .button-m, .global-dropdown) {
+.menu-card-action-inner .menu-card-action-description ~ :is(.button-m, .global-dropdown) {
     margin-top: var(--bbl-space-250);
     min-width: 100%;
 }
