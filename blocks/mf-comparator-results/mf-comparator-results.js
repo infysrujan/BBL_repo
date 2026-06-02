@@ -365,6 +365,7 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
     msg.className = 'mfcr-no-results';
     msg.textContent = labels.noResults;
     container.appendChild(msg);
+    container.classList.remove('single-card', 'two-cards');
     return;
   }
 
@@ -374,6 +375,9 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
   const displayCards = sorted.length > 0
     ? sorted
     : cards.map(({ name, image }) => ({ name, image }));
+
+  container.classList.toggle('single-card', displayCards.length === 1);
+  container.classList.toggle('two-cards', displayCards.length === 2);
 
   displayCards.forEach((card) => {
     container.appendChild(buildCompareCard(card, doc, labels));
