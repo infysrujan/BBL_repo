@@ -187,48 +187,8 @@ main img {
         padding-inline: var(--bbl-space-section-xl);
     }
 
-    .section.columns-3 { 
-        flex-direction: row;
-    }
-
-    .section.columns-3  > * {
-        width: 33%;
-        flex: 1;
-    }
-
-    .section.columns-2-50 {
-        flex-direction: row;
-    }
-
-    .section.columns-2-50 > * {
-        padding-inline: var(--bbl-space-250);
-        flex: 1;
-    }
-
-    .section.columns-2-65 {
-        flex-direction: row;
-    }
-
-    .section.columns-2-75 {
-        flex-direction: row;
-    }
-
-    .section.columns-2-65 > * {
-        padding-inline: var(--bbl-space-250);
-        flex: 1;
-    }
-
-    .section.columns-2-75 > * {
-        padding-inline: var(--bbl-space-250);
-        flex: 1;
-    }
-
     .section.columns-2-65 > *:first-child {
         flex: 0 0 68%;
-    }
-
-    .section.columns-2-75 > *:first-child {
-        flex: 0 0 75%;
     }
 }
 
