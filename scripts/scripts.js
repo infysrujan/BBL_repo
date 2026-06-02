@@ -311,13 +311,7 @@ async function loadEager(doc) {
     {
       datastreamId: dataStreamConfig[env],
       orgId,
-    },
-    // 2. Library Configuration
-    {
-      analytics: isEnabled,
-      personalization: !!getMetadata('target') && isEnabled,
-      launchUrls: launchConfig[env],
-      trackPageView: false, //disables the first collect call
+      edgeDomain: 'edge.bangkokbank.com',
       onBeforeEventSend: (payload) => {
         if (payload.eventType === 'pageLoaded') {
           console.debug('Prevented custom pageLoaded event', payload);
@@ -326,6 +320,13 @@ async function loadEager(doc) {
         console.log('onBeforeEventSend', payload);
         return true;
       },
+    },
+    // 2. Library Configuration
+    {
+      analytics: isEnabled,
+      personalization: !!getMetadata('target') && isEnabled,
+      launchUrls: launchConfig[env],
+      trackPageView: false, //disables the first collect call
     },
   );
 
