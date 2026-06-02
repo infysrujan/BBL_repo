@@ -90,7 +90,7 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
   const getImgUrl = (val) => val?._publishUrl || (typeof val === 'string' ? val : '');
 
   const list = doc.createElement('div');
-  list.className = 'cards-list scrollable center cards-3';
+  list.className = `cards-list scrollable center cards-3${funds.length === 1 ? ' single-card' : ''}`;
 
   funds.forEach((fund) => {
     const name = fund.FundName || '';

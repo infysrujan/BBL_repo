@@ -425,3 +425,30 @@
     margin-bottom: var(--bbl-space-500);
   }
 }
+
+/* ── Single Card alignment overrides ─────────────────────────────────────── */
+
+.card-list.mf-results .cards-list.single-card {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.card-list.mf-results .cards-list.single-card .cards-list-item {
+  flex: 0 0 100% !important;
+  width: 100% !important;
+  max-width: 16.875rem !important;
+  margin: 0 auto var(--bbl-space-250) auto !important;
+}
+
+@media (width > 47.5rem) {
+  .card-list.mf-results .cards-list.scrollable.single-card .cards-list-item {
+    margin-bottom: var(--bbl-space-250) !important;
+  }
+}
+
+@media (width > 64rem) {
+  .card-list.mf-results .cards-list.scrollable.single-card .cards-list-item {
+    margin-bottom: var(--bbl-space-500) !important;
+  }
+}

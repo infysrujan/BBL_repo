@@ -201,3 +201,49 @@
     margin-bottom: var(--bbl-space-500);
   }
 }
+
+/* ── Single Card alignment overrides ─────────────────────────────────────── */
+
+.card-list.mf-card-list .cards-list.single-card {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.card-list.mf-card-list .cards-list.single-card .cards-list-item {
+  flex: 0 0 100% !important;
+  width: 100% !important;
+  max-width: 16.875rem !important;
+  margin: 0 auto var(--bbl-space-250) auto !important;
+}
+
+@media (width > 47.5rem) {
+  .card-list.mf-card-list .cards-list.scrollable.cards-3.single-card .cards-list-item {
+    margin-bottom: var(--bbl-space-250) !important;
+  }
+}
+
+@media (width > 64rem) {
+  .card-list.mf-card-list .cards-list.scrollable.cards-3.single-card .cards-list-item {
+    margin-bottom: var(--bbl-space-500) !important;
+  }
+}
+
+/* ── Carousel Grid and Flex positioning overrides ────────────────────────── */
+
+@media (width > 47.5rem) {
+  /* Place the slide in Column 2 of the carousel grid */
+  .carousel-dotted.show-arrows-dots .carousel-dotted-item.mf-fund-cards-item {
+    grid-column: 2;
+  }
+
+  /* If there are no navigation arrows (only one slide), let it span the full grid */
+  .carousel-dotted.show-arrows-dots:not(:has(.carousel-arrow)) .carousel-dotted-item.mf-fund-cards-item {
+    grid-column: 1 / -1;
+  }
+
+  /* Ensure the card list block inside the flex-row slide spans 100% width */
+  .carousel-dotted.show-arrows-dots .carousel-dotted-item.mf-fund-cards-item .card-list {
+    width: 100%;
+  }
+}
