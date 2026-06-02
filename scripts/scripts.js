@@ -318,6 +318,14 @@ async function loadEager(doc) {
       personalization: !!getMetadata('target') && isEnabled,
       launchUrls: launchConfig[env],
       trackPageView: false, //disables the first collect call
+      onBeforeEventSend: (payload) => {
+        if (payload.eventType === 'pageLoaded') {
+          console.debug('Prevented custom pageLoaded event', payload);
+          return false;
+        }
+        console.log('onBeforeEventSend', payload);
+        return true;
+      },
     },
   );
 
