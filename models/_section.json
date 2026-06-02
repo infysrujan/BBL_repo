@@ -95,6 +95,10 @@
                 {
                   "name": "Grey 100",
                   "value": "bg-grey-100"
+                },
+                {
+                  "name": "Blue 01",
+                  "value": "bg-blue-01"
                 }
               ]
             },
@@ -211,6 +215,9 @@
         "table",
         "locate-us",
         "rate-card",
+        "fund-prices",
+        "fund-prices-table",
+        "fund-prices-dropdown",
         "accordion-block",
         "social-icons",
         "card-list",
@@ -235,6 +242,7 @@
         "promo-card-listing",
         "top-promotional-cards",
         "multi-column-tiles",
+        "fund-prices",
         "property-for-sale-details",
         "property-for-sale",
         "stock-ticker",
@@ -247,7 +255,16 @@
         "forward-points-sme",
         "menu-list",
         "savings-calculator",
-        "category-banner"      ]
+        "category-banner",      
+        "bbm-glow-card",
+        "menu-list",
+        "search-reports",
+        "search-reports-results",
+        "mf-results",
+        "mf-comparator-results",
+        "mf-comparator",
+        "mf-questionnaire"
+      ]
     }
   ]
 }
