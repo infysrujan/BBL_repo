@@ -206,7 +206,8 @@
       "text-input",
       "tnc",
       "wizard",
-      "range"
+      "range",
+      "double-key-dropdown"
     ]
   },
   {
