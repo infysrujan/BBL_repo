@@ -313,7 +313,7 @@ async function loadEager(doc) {
       orgId,
       edgeDomain: 'edge.bangkokbank.com',
       onBeforeEventSend: (payload) => {
-        if (payload.eventType === 'pageLoaded') {
+        if (payload.xdm.eventType === 'pageLoaded') {
           console.debug('Prevented custom pageLoaded event', payload);
           return false;
         }
