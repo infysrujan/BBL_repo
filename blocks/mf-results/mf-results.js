@@ -73,7 +73,9 @@ function readUrl(row) {
 async function loadMatrix() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfSuggestorData;
+    const lang = getLang();
+    const langKey = `mfSuggestorData${lang.charAt(0).toUpperCase() + lang.slice(1)}`;
+    const url = configs[langKey] || configs.mfSuggestorDataEn;
     if (!url) return [];
     const resp = await fetch(url);
     if (!resp.ok) return [];
