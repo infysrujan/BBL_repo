@@ -12012,39 +12012,7 @@
         "component": "richtext",
         "name": "description",
         "label": "Description Text",
-        "valueType": "string",
-        "rte": {
-          "toolbar": {
-            "format": [
-              "bold",
-              "italic",
-              "underline"
-            ],
-            "list": [
-              "bullet_list",
-              "ordered_list"
-            ],
-            "insert": [
-              "link",
-              "unlink",
-              "image"
-            ],
-            "editor": [
-              "removeformat"
-            ],
-            "sections": [
-              "format",
-              "list",
-              "insert",
-              "editor"
-            ]
-          },
-          "actions": {
-            "link": {
-              "hideTarget": false
-            }
-          }
-        }
+        "valueType": "string"
       },
       {
         "component": "select",
