@@ -190,9 +190,9 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem) {
   const triggerFlash = (icon, label) => {
     centerBtn.innerHTML = icon;
     centerBtn.setAttribute('aria-label', label);
-    centerBtn.classList.remove('hero-banner-center-play--flash');
+    centerBtn.classList.remove('hero-banner-center-play-flash');
     void centerBtn.offsetWidth; // eslint-disable-line no-void
-    centerBtn.classList.add('hero-banner-center-play--flash');
+    centerBtn.classList.add('hero-banner-center-play-flash');
   };
 
   const togglePlay = () => {
@@ -206,14 +206,14 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem) {
   video.addEventListener('play', () => {
     playBtn.innerHTML = VI.pause;
     playBtn.setAttribute('aria-label', 'Pause');
-    centerBtn.classList.add('hero-banner-center-play--hidden');
+    centerBtn.classList.add('hero-banner-center-play-hidden');
   });
   video.addEventListener('pause', () => {
     playBtn.innerHTML = VI.play;
     playBtn.setAttribute('aria-label', 'Play');
     centerBtn.innerHTML = VI.play;
     centerBtn.setAttribute('aria-label', 'Play');
-    centerBtn.classList.remove('hero-banner-center-play--hidden', 'hero-banner-center-play--flash');
+    centerBtn.classList.remove('hero-banner-center-play-hidden', 'hero-banner-center-play-flash');
   });
 
   const syncMuteBtn = () => {

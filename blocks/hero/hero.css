@@ -91,7 +91,7 @@
 
 .hero-banner-video-controls {
   position: absolute;
-  bottom: 0.03125rem;
+  bottom: 0.0313rem;
   left: 0;
   right: 0;
   z-index: 10;
@@ -122,7 +122,7 @@
   padding: 0.625rem;
   border: none;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgb(0 0 0 / 50%);
   color: var(--bbl-color-white);
   display: flex;
   align-items: center;
@@ -140,7 +140,7 @@
 }
 
 .hero-banner-center-play:hover {
-  background: rgba(0, 0, 0, 0.65);
+  background: rgb(0 0 0 / 65%);
 }
 
 .hero-banner-center-play:focus-visible {
@@ -148,20 +148,31 @@
   outline-offset: 0.1875rem;
 }
 
-.hero-banner-center-play--hidden {
+.hero-banner-center-play-hidden {
   opacity: 0;
   pointer-events: none;
 }
 
-.hero-banner-center-play--flash {
+.hero-banner-center-play-flash {
   animation: hero-center-play-flash 0.5s ease forwards;
   pointer-events: none;
 }
 
 @keyframes hero-center-play-flash {
-  0%   { opacity: 1;    transform: translate(-50%, -50%) scale(1); }
-  40%  { opacity: 0.85; transform: translate(-50%, -50%) scale(1.25); }
-  100% { opacity: 0;    transform: translate(-50%, -50%) scale(1.5); }
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  40% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(1.25);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
 }
 
 /* seek bar row */
@@ -575,6 +586,9 @@
     margin-bottom: 0;
   }
 
+  :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text {
+    color: var(--bbl-color-white);
+  }
 
   .hero-banner-item:has(.hero-banner-video) .hero-banner-content :is(h1, h2, h3, h4, h5, h6),
   .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner-text {
@@ -593,6 +607,18 @@
     right: 0;
     color: var(--bbl-color-white);
 
+  }
+
+  /* Simple variant override */
+  .section.full-bleed-bg :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content.content {
+    position: absolute;
+    padding: 0 var(--bbl-space-600) 0;
+    bottom: 1.875rem;
+  }
+
+  /* simple private wealth banking variant override */
+  .section.full-bleed-bg .hero-banner-private-wealth-banking .hero-banner-content.content {
+    padding: 0 var(--bbl-space-600) 0;
   }
 
   .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
@@ -618,7 +644,6 @@
     height: auto;
   }
 
-  /* Simple variant override */
   .hero-banner-simple .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
     color: var(--bbl-color-white);
 
@@ -628,16 +653,6 @@
     }
   }
 
-  .section.full-bleed-bg :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content.content {
-    position: absolute;
-    padding: 0 var(--bbl-space-600) 0;
-    bottom: 1.875rem;
-  }
-
-  :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text {
-    color: var(--bbl-color-white);
-  }
-
   .wealth .hero-banner-simple .hero-banner-content-inner-text {
     padding-bottom: 0;
   }
@@ -645,11 +660,6 @@
   .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
     padding-bottom: 0.625rem;
     color: var(--bbl-color-white);
-  }
-
-  /* simple private wealth banking variant override */
-  .section.full-bleed-bg .hero-banner-private-wealth-banking .hero-banner-content.content {
-    padding: 0 var(--bbl-space-600) 0;
   }
 
   /* simple with logo banner variant override */
@@ -911,7 +921,7 @@
   }
 
   .hero-banner-video-controls {
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
 
   iframe.hero-banner-video {
