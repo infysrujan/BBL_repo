@@ -111,11 +111,12 @@ export default function decorate(block) {
   }
 
   if (teaserButton) {
-    teaserButton.classList.add('button-m');
     const ctaWrapper = createElementFromHTML(
-      `<div class="teaser-bg-image-cta">${teaserButton.outerHTML}</div>`,
+      '<div class="teaser-bg-image-cta"></div>',
       doc,
     );
+    const buttonCell = teaserButtonRow.firstElementChild;
+    while (buttonCell?.firstChild) ctaWrapper.appendChild(buttonCell.firstChild);
     applyLinkTarget(ctaWrapper, 'a', targetValue);
     contentContainer.appendChild(ctaWrapper);
   }
