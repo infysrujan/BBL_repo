@@ -16,7 +16,6 @@ import buildHeroSlide from './build-hero-slide.js';
 import buildArrowsDotsSlide from './build-arrows-dots-slide.js';
 import buildMfCardListCarouselSlide from './build-mf-card-list-carousel-slide.js';
 import buildMfFundCardsSlide from './build-mf-fund-cards-slide.js';
-import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 
 /**
  * Build a slide - determines which variation to use and delegates.
@@ -278,9 +277,11 @@ export default async function decorate(block) {
   const scrollTimeDelay = rows[3]?.textContent.trim() || '';
   const showLinks = readBoolean(rows[4]);
   const seeMoreLink = showLinks ? rows[5]?.querySelector('a') : null;
-  const seeMoreTargetValue = showLinks ? rows[6]?.textContent?.trim() || '' : '';
-  // Slides start at row 6, variant is in each slide's first cell
-  const nextIndex = 7;
+  const boolValues = new Set(['true', 'false']);
+  const row6Text = showLinks ? rows[6]?.textContent?.trim() || '' : '';
+  const targetRowPresent = boolValues.has(row6Text);
+  const seeMoreTargetValue = targetRowPresent ? row6Text : '';
+  const nextIndex = showLinks && !targetRowPresent ? 6 : 7;
   const firstSlide = rows[nextIndex];
   const variant = firstSlide?.children[0]?.textContent.trim() || '';
 
@@ -668,18 +669,11 @@ export default async function decorate(block) {
     const moreWrap = document.createElement('div');
     moreWrap.className = 'carousel-dotted-more';
     seeMoreLink.classList.add('button-tertiary', 'icon-arrow-left');
-    // Wrap in <span> so decorateButtonsV1 (which only matches P/DIV parents)
-    // does not replace the className and strip icon-arrow-left
+    const openInNewTab = seeMoreTargetValue === 'true' || seeMoreLink.target === '_blank';
+    if (openInNewTab) seeMoreLink.setAttribute('target', '_blank');
     const linkWrap = document.createElement('span');
     linkWrap.append(seeMoreLink);
     moreWrap.append(linkWrap);
-    if (seeMoreTargetValue) {
-      const targetDiv = document.createElement('div');
-      targetDiv.textContent = seeMoreTargetValue;
-      moreWrap.append(targetDiv);
-    }
-
-    decorateButtonsV1(moreWrap);
     renderHost.append(moreWrap);
   }
 
