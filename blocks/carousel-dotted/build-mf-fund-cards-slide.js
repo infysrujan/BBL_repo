@@ -100,8 +100,8 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
     const compareEnabled = fund.CompareButton === 'true';
 
     const fundImgSrc = getImgUrl(fund.FundImage);
-    const logoSrc = getImgUrl(fund.LogoImage) || getImgUrl(fund.ManagementCompanyLogo) || '/-/media/feature/page-content/bbl-corporate/productservice/mutual-funds/new/bblam.png';
-    const imgSrc = fundImgSrc || '/-/media/feature/page-content/bbl-corporate/productservice/mutual-funds/fixed-income-funds/b-st/b-st_teaser-726x430px.jpg';
+    const logoSrc = getImgUrl(fund.LogoImage) || getImgUrl(fund.ManagementCompanyLogo);
+    const imgSrc = fundImgSrc;
 
     // eslint-disable-next-line no-console
     console.log(`[mfFundCards] fund="${name}" | FundImage raw:`, fund.FundImage, '| LogoImage raw:', fund.LogoImage, '| ManagementCompanyLogo raw:', fund.ManagementCompanyLogo, '| resolved fundImgSrc:', fundImgSrc, '| resolved logoSrc:', logoSrc);

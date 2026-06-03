@@ -248,8 +248,8 @@ function buildCardBlock(funds, doc, labels) {
     const compareEnabled = fund.CompareButton === 'true';
 
     const fundImageSrc = getImgUrl(fund.FundImage);
-    const logoSrc = getImgUrl(fund.LogoImage) || getImgUrl(fund.ManagementCompanyLogo) || '/-/media/feature/page-content/bbl-corporate/productservice/mutual-funds/new/bblam.png';
-    const imgSrc = fundImageSrc || '/-/media/feature/page-content/bbl-corporate/productservice/mutual-funds/fixed-income-funds/b-st/b-st_teaser-726x430px.jpg';
+    const logoSrc = getImgUrl(fund.LogoImage) || getImgUrl(fund.ManagementCompanyLogo);
+    const imgSrc = fundImageSrc;
 
     const card = doc.createElement('div');
     card.className = 'cards-list-item';
