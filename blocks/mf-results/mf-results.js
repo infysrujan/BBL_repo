@@ -2,6 +2,7 @@ import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { openModal } from '../../scripts/modal.js';
+import { getLang } from '../../scripts/scripts.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -91,8 +92,9 @@ async function loadMatrix() {
 async function loadFundsData() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfFundsDataUrl;
-    if (!url) return [];
+    const baseUrl = configs.mfFundsDataUrl;
+    if (!baseUrl) return [];
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
     const resp = await fetch(url);
     if (resp.ok) {
       const json = await resp.json();

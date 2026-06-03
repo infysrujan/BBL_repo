@@ -1,7 +1,7 @@
 import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -48,14 +48,13 @@ function matchesCategory(fundCategory, pageCategory) {
 async function loadFundsData() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfFundsDataUrl;
-    // eslint-disable-next-line no-console
-    console.log('[mfCardListCarousel] loadFundsData url:', url);
-    if (!url) {
+    const baseUrl = configs.mfFundsDataUrl;
+    if (!baseUrl) {
       // eslint-disable-next-line no-console
       console.warn('[mfCardListCarousel] mfFundsDataUrl is missing from config');
       return [];
     }
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
     const resp = await fetch(url);
     if (resp.ok) {
       const json = await resp.json();

@@ -44,8 +44,9 @@ function resolveCardPageUrl(card) {
 async function loadAllCards() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.mfFundsDataUrl;
-    if (!url) throw new Error('no url');
+    const baseUrl = configs.mfFundsDataUrl;
+    if (!baseUrl) throw new Error('no url');
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
     const resp = await fetch(url);
     if (!resp.ok) throw new Error('bad response');
     const json = await resp.json();
