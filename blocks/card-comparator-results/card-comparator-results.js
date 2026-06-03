@@ -50,7 +50,8 @@ async function loadAllCards() {
     const configs = await fetchConfigs();
     const baseUrl = configs.creditCardSelectorSuggesterData;
     if (!baseUrl) return [];
-    const cardSuggesterData = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
+    const lang = getLang();
+    const cardSuggesterData = baseUrl.replace(/;language=[^;?&]*/i, `;language=${lang}`);//
     const resp = await fetch(cardSuggesterData);
     if (!resp.ok) return [];
     const json = await resp.json();
