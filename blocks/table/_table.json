@@ -92,10 +92,6 @@
                 {
                   "name": "Header Light Gray",
                   "value": "header-light-gray"
-                },
-                {
-                  "name": "Header Pastel Blue",
-                  "value": "header-pastel-blue"
                 }
               ]
             },
@@ -105,10 +101,6 @@
                 {
                   "name": "Zebra Light Gray",
                   "value": "zebra-light-gray"
-                },
-                {
-                  "name": "Solid White",
-                  "value": "solid-white"
                 }
               ]
             },
