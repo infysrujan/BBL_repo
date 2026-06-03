@@ -812,8 +812,6 @@
     .hero-banner-content-inner .button-container {
         text-align: left;
         justify-content: flex-start;
-        margin-left: 25px;
-        margin-bottom: 25px;
     }
 
   .hero-banner-thumbnail-outer {
@@ -926,5 +924,15 @@
 
   iframe.hero-banner-video {
     clip-path: inset(calc(3.5rem + 10px) 0 0 0);
+  }
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper video) .hero-banner-content-inner .button-container .button-m.primary {
+    margin-left: 2.9375rem;
+    margin-bottom: 1.5625rem;
+  }
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-content-inner .button-container .button-m.primary {
+    margin-left: 1.5625rem;
+    margin-bottom: 1.5625rem;
   }
 }
