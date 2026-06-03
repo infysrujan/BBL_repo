@@ -700,9 +700,7 @@
     margin-bottom: 6.25rem;
   }
 
-  iframe.hero-banner-video {
-    clip-path: inset(calc(3.5rem + 10px) 0 0 0);
-  }
+ 
 }
 
 @media (width > 64rem) {
@@ -922,9 +920,7 @@
     margin-bottom: 0;
   }
 
-  iframe.hero-banner-video {
-    clip-path: inset(calc(3.5rem + 10px) 0 0 0);
-  }
+  
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper video) .hero-banner-content-inner .button-container .button-m.primary {
     margin-left: 2.9375rem;
