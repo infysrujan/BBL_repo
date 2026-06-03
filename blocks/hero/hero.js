@@ -1,6 +1,7 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
+import { fetchConfigs } from '../../scripts/config.js';
 
 function getYouTubeId(url) {
   const regex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
@@ -113,14 +114,16 @@ function createThumbItem(picture, index, { strip = false, active = false } = {})
 
 // ─── Custom video controls ───────────────────────────────────────────────────
 
-const VI = {
-  play: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
-  pause: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>',
-  muted: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4 9.91 6.09 12 8.18V4z"/></svg>',
-  volume: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>',
-  fullscreen: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>',
-  share: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11A2.99 2.99 0 0 0 18 8c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>',
-};
+const VI = {};
+
+async function loadHeroIcons() {
+  const base = window.hlx?.codeBasePath ?? '';
+  const names = ['play', 'pause', 'muted', 'volume', 'fullscreen', 'share'];
+  const svgs = await Promise.all(
+    names.map((name) => fetch(`${base}/icons/hero-${name}.svg`).then((r) => (r.ok ? r.text() : '')).catch(() => '')),
+  );
+  names.forEach((name, i) => { VI[name] = svgs[i]; });
+}
 
 function fmtTime(sec) {
   if (!Number.isFinite(sec) || sec < 0) return '0:00';
@@ -169,7 +172,7 @@ function wireFullscreen(btn, bannerItem) {
   });
 }
 
-function wireDAMControls(video, bar, bannerItem) {
+function wireDAMControls(video, bar, videoWrapper, bannerItem) {
   const playBtn = bar.querySelector('.hero-ctrl-play');
   const muteBtn = bar.querySelector('.hero-ctrl-mute');
   const volSlider = bar.querySelector('.hero-ctrl-volume');
@@ -179,12 +182,39 @@ function wireDAMControls(video, bar, bannerItem) {
   video.removeAttribute('controls');
   video.volume = 0.5;
 
-  const togglePlay = () => { if (video.paused) video.play(); else video.pause(); };
+  const centerBtn = createElement('button', 'hero-banner-center-play');
+  centerBtn.setAttribute('aria-label', 'Play');
+  centerBtn.innerHTML = VI.play;
+  videoWrapper.append(centerBtn);
+
+  const triggerFlash = (icon, label) => {
+    centerBtn.innerHTML = icon;
+    centerBtn.setAttribute('aria-label', label);
+    centerBtn.classList.remove('hero-banner-center-play--flash');
+    void centerBtn.offsetWidth; // eslint-disable-line no-void
+    centerBtn.classList.add('hero-banner-center-play--flash');
+  };
+
+  const togglePlay = () => {
+    if (video.paused) { triggerFlash(VI.play, 'Play'); video.play(); } else { triggerFlash(VI.pause, 'Pause'); video.pause(); }
+  };
+
   video.addEventListener('click', togglePlay);
   playBtn.addEventListener('click', togglePlay);
+  centerBtn.addEventListener('click', (e) => { e.stopPropagation(); togglePlay(); });
 
-  video.addEventListener('play', () => { playBtn.innerHTML = VI.pause; playBtn.setAttribute('aria-label', 'Pause'); });
-  video.addEventListener('pause', () => { playBtn.innerHTML = VI.play; playBtn.setAttribute('aria-label', 'Play'); });
+  video.addEventListener('play', () => {
+    playBtn.innerHTML = VI.pause;
+    playBtn.setAttribute('aria-label', 'Pause');
+    centerBtn.classList.add('hero-banner-center-play--hidden');
+  });
+  video.addEventListener('pause', () => {
+    playBtn.innerHTML = VI.play;
+    playBtn.setAttribute('aria-label', 'Play');
+    centerBtn.innerHTML = VI.play;
+    centerBtn.setAttribute('aria-label', 'Play');
+    centerBtn.classList.remove('hero-banner-center-play--hidden', 'hero-banner-center-play--flash');
+  });
 
   const syncMuteBtn = () => {
     const muted = video.muted || video.volume === 0;
@@ -232,15 +262,15 @@ function onYTReady(cb) {
   ytQueue.push(cb);
 }
 
-function loadYTScript() {
+function loadYTScript(src) {
   if (window.YT || document.querySelector('script[src*="youtube.com/iframe_api"]')) return;
   const s = document.createElement('script');
-  s.src = 'https://www.youtube.com/iframe_api';
+  s.src = src || 'https://www.youtube.com/iframe_api';
   document.head.append(s);
 }
 
 let ytCounter = 0;
-function wireYouTubeControls(iframe, bar, bannerItem) {
+function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
   const playBtn = bar.querySelector('.hero-ctrl-play');
   const muteBtn = bar.querySelector('.hero-ctrl-mute');
   const volSlider = bar.querySelector('.hero-ctrl-volume');
@@ -249,7 +279,7 @@ function wireYouTubeControls(iframe, bar, bannerItem) {
 
   if (!iframe.id) { ytCounter += 1; iframe.id = `hero-yt-${ytCounter}`; }
 
-  loadYTScript();
+  loadYTScript(ytSrc);
   onYTReady(() => {
     let pollId = null;
 
@@ -328,7 +358,9 @@ function wireYouTubeControls(iframe, bar, bannerItem) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function decorate(block) {
+export default async function decorate(block) {
+  const [configs] = await Promise.all([fetchConfigs(), loadHeroIcons()]);
+  const ytApiSrc = configs.heroIframeApi;
   const isMobile = window.matchMedia('(width <= 47.5rem)').matches;
   const variant = block.children[0]?.textContent?.trim() || 'default';
   const bannerList = createElement('ul', 'hero-banner-list');
@@ -398,7 +430,7 @@ export default function decorate(block) {
         bannerItem.append(iframe);
         if (!isMobile) {
           const bar = buildControls(bannerItem);
-          wireYouTubeControls(iframe, bar, bannerItem);
+          wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc);
         }
       } else if (damVideoSrc) {
         const video = document.createElement('video');
@@ -417,10 +449,12 @@ export default function decorate(block) {
         source.src = damVideoSrc;
         source.type = 'video/mp4';
         video.append(source);
-        bannerItem.append(video);
+        const videoWrapper = createElement('div', 'hero-banner-video-wrapper');
+        videoWrapper.append(video);
+        bannerItem.append(videoWrapper);
         if (!isMobile) {
-          const bar = buildControls(bannerItem);
-          wireDAMControls(video, bar, bannerItem);
+          const bar = buildControls(videoWrapper);
+          wireDAMControls(video, bar, videoWrapper, bannerItem);
           if (i === defaultIndex) {
             video.addEventListener('play', () => {
               video.muted = false;
