@@ -87,8 +87,9 @@ async function loadSheetData() {
 async function loadCardData() {
   try {
     const configs = await fetchConfigs();
-    const url = configs.creditCardSelectorSuggesterData;
-    if (!url) return [];
+    const baseUrl = configs.creditCardSelectorSuggesterData;
+    if (!baseUrl) return [];
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
     const resp = await fetch(url);
     if (!resp.ok) return [];
     const json = await resp.json();
