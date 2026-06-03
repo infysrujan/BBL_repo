@@ -126,16 +126,11 @@ export default function decorate(fieldDiv, fd) {
   // Rebuild select as a grouped (optgroup) dropdown
   buildGroupedSelect(fd, select);
 
-  // Sync fd.enum with every generated option value so the AF rule engine does not
-  // reject custom "code::university" values as an enum mismatch. The rule engine
-  // initialises in a setTimeout(0) after decorate returns, so writing here is safe.
-  const generatedValues = Array.from(select.querySelectorAll('option'))
-    .map((opt) => opt.value)
-    .filter((v) => v !== '');
-  if (generatedValues.length) {
-    fd.enum = generatedValues;
-    fd.enumNames = generatedValues;
-  }
+  // Disable the AF rule engine's enum-mismatch validation for this field.
+  // The DropDown model defaults to enforceEnum:true + enum:[] which would reject
+  // every custom "code::university" value. Setting false here covers the non-worker
+  // path; _double-key-dropdown.json's template covers the worker/JCR path.
+  fd.enforceEnum = false;
 
   // Mark field wrapper so CSS can scope styles precisely
   fieldDiv.classList.add('field-double-key-dropdown');
@@ -151,11 +146,30 @@ export default function decorate(fieldDiv, fd) {
 
   // --- Change event: expose split values as data attributes on the wrapper ---
   select.addEventListener('change', () => {
-    // Clear any custom validity the rule engine may have set for a previous enum mismatch
+    // Clear any browser-level custom validity immediately
     select.setCustomValidity('');
     const [countryCode, universityName] = (select.value || '::').split('::');
     fieldDiv.dataset.selectedCountry = countryCode || '';
     fieldDiv.dataset.selectedUniversity = universityName || '';
+
+    // After all synchronous fieldChanged handlers have run, clear any validation
+    // error the rule engine may have shown for enum mismatch on a valid selection.
+    if (select.value) {
+      setTimeout(() => {
+        select.setCustomValidity('');
+        if (fieldDiv.classList.contains('field-invalid')) {
+          fieldDiv.classList.remove('field-invalid');
+          const desc = fieldDiv.querySelector('.field-description');
+          if (desc) {
+            if (fieldDiv.dataset.description) {
+              desc.innerHTML = fieldDiv.dataset.description;
+            } else {
+              desc.remove();
+            }
+          }
+        }
+      }, 0);
+    }
   });
 
   // Re-append help text at the bottom if it was already in the DOM
