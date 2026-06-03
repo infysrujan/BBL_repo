@@ -6,16 +6,40 @@ const BANNER_COOKIE = 'bbl-welcome-banner';
 const COOKIE_DURATION_MS = 20 * 60 * 1000;
 
 function setBannerDismissed() {
-  const expires = new Date(Date.now() + COOKIE_DURATION_MS).toUTCString();
-  document.cookie = `${encodeURIComponent(BANNER_COOKIE)}=${Date.now()}; expires=${expires}; path=/; SameSite=Lax`;
+  const ts = Date.now();
+  try {
+    const expires = new Date(ts + COOKIE_DURATION_MS).toUTCString();
+    document.cookie = `${encodeURIComponent(BANNER_COOKIE)}=${ts}; expires=${expires}; path=/; SameSite=Lax`;
+  } catch (e) {
+    // ignore
+  }
+  try {
+    sessionStorage.setItem(BANNER_COOKIE, ts.toString());
+  } catch (e) {
+    // ignore
+  }
 }
 
 function getRemainingMs() {
-  const encoded = encodeURIComponent(BANNER_COOKIE);
-  const match = document.cookie.split('; ').find((r) => r.startsWith(`${encoded}=`));
-  if (!match) return 0;
-  const ts = Number(match.split('=')[1]);
+  let ts = 0;
+  try {
+    const encodedName = encodeURIComponent(BANNER_COOKIE);
+    const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${encodedName}=([^;]*)`));
+    if (match) ts = Number(match[1]);
+  } catch (e) {
+    // ignore
+  }
+
+  if (!ts) {
+    try {
+      ts = Number(sessionStorage.getItem(BANNER_COOKIE));
+    } catch (e) {
+      // ignore
+    }
+  }
+
   if (!ts) return 0;
+
   const remaining = COOKIE_DURATION_MS - (Date.now() - ts);
   return remaining > 0 ? remaining : 0;
 }
@@ -90,7 +114,9 @@ export default function decorate(block) {
 
   const dismiss = () => {
     setBannerDismissed();
-    hideModal(overlay, 'welcome-banner-overlay-visible');
+    hideModal(overlay, 'welcome-banner-overlay-visible', () => {
+      doc.body.classList.remove('modal-open');
+    });
   };
 
   closeBtn.addEventListener('click', dismiss);
@@ -112,7 +138,12 @@ export default function decorate(block) {
       e.preventDefault();
       setBannerDismissed();
       if (ctaData.href && ctaData.href !== '#') {
-        window.location.href = ctaData.href;
+        if (ctaData.target === '_blank') {
+          window.open(ctaData.href, '_blank', 'noopener,noreferrer');
+          dismiss();
+        } else {
+          window.location.href = ctaData.href;
+        }
       } else {
         dismiss();
       }
@@ -124,11 +155,18 @@ export default function decorate(block) {
   dialog.appendChild(media);
   dialog.appendChild(ctas);
 
-  const show = () => showModal(overlay, 'welcome-banner-overlay-visible');
+  const show = () => {
+    doc.body.classList.add('modal-open');
+    showModal(overlay, 'welcome-banner-overlay-visible');
+    // Set the cookie as soon as the banner is shown to start the 20-minute countdown
+    setBannerDismissed();
+  };
+
   const remainingMs = getRemainingMs();
-  if (remainingMs > 0) {
-    setTimeout(show, remainingMs);
-  } else {
-    show();
-  }
+
+  // If we are within the 20-minute window (cookie exists), do not show the banner at all.
+  if (remainingMs > 0) return;
+
+  // Otherwise, show it immediately.
+  show();
 }
