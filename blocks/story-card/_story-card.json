@@ -83,7 +83,32 @@
 					"format": [
 						"bold",
 						"italic",
-						"underline"
+						"underline",
+						"strike"
+					],
+					"alignment": [
+						"left",
+						"center",
+						"right",
+						"justify"
+					],
+					"direction": [
+						"rtl",
+						"ltr"
+					],
+					"indentation": [
+						"indent",
+						"outdent"
+					],
+					"blocks": [
+						"paragraph",
+						"h1",
+						"h2",
+						"h3",
+						"h4",
+						"h5",
+						"h6",
+						"code_block"
 					],
 					"list": [
 						"bullet_list",
@@ -92,22 +117,29 @@
 					"insert": [
 						"link",
 						"unlink",
-						"image"
+						"image",
+						"table",
+						"special_characters"
+					],
+					"sr_script": [
+						"superscript",
+						"subscript"
 					],
 					"editor": [
-						"removeformat"
+						"removeformat",
+						"paste_text"
 					],
 					"sections": [
 						"format",
+						"alignment",
+						"direction",
+						"indentation",
+						"blocks",
 						"list",
 						"insert",
+						"sr_script",
 						"editor"
 					]
-				},
-				"actions": {
-					"link": {
-						"hideTarget": false
-					}
 				}
 			}
 		}
