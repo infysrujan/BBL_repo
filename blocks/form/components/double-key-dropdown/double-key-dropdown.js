@@ -127,9 +127,9 @@ export default function decorate(fieldDiv, fd) {
   buildGroupedSelect(fd, select);
 
   // Disable the AF rule engine's enum-mismatch validation for this field.
-  // The DropDown model defaults to enforceEnum:true + enum:[] which would reject
-  // every custom "code::university" value. Setting false here covers the non-worker
-  // path; _double-key-dropdown.json's template covers the worker/JCR path.
+  // The DropDown model defaults to enforceEnum:true + enum:[] which rejects every
+  // custom "code::university" value. Setting false here covers the non-worker path;
+  // _double-key-dropdown.json's template covers the worker/JCR path.
   fd.enforceEnum = false;
 
   // Mark field wrapper so CSS can scope styles precisely
@@ -144,32 +144,35 @@ export default function decorate(fieldDiv, fd) {
   // --- Accessibility: announce current selection to screen readers ---
   select.setAttribute('aria-label', fd['jcr:title'] || fd.label?.value || 'Grouped dropdown');
 
+  // Suppress the "Please select a value from the allowed options." error injected by
+  // the worker path. applyFieldChangeToFormModel calls set valid(false) which forces
+  // customConstraint:true into validity; fieldChanged then shows the enum-mismatch
+  // error via setCustomValidity + updateOrCreateInvalidMsg even after the user has
+  // already chosen a value (the worker message arrives asynchronously).
+  // A MutationObserver watching the class attribute fires whenever field-invalid is
+  // added and clears the error immediately when the select has a non-empty value.
+  const observer = new MutationObserver(() => {
+    if (select.value && fieldDiv.classList.contains('field-invalid')) {
+      select.setCustomValidity('');
+      fieldDiv.classList.remove('field-invalid');
+      const desc = fieldDiv.querySelector('.field-description');
+      if (desc) {
+        if (fieldDiv.dataset.description) {
+          desc.innerHTML = fieldDiv.dataset.description;
+        } else {
+          desc.remove();
+        }
+      }
+    }
+  });
+  observer.observe(fieldDiv, { attributes: true, attributeFilter: ['class'] });
+
   // --- Change event: expose split values as data attributes on the wrapper ---
   select.addEventListener('change', () => {
-    // Clear any browser-level custom validity immediately
     select.setCustomValidity('');
     const [countryCode, universityName] = (select.value || '::').split('::');
     fieldDiv.dataset.selectedCountry = countryCode || '';
     fieldDiv.dataset.selectedUniversity = universityName || '';
-
-    // After all synchronous fieldChanged handlers have run, clear any validation
-    // error the rule engine may have shown for enum mismatch on a valid selection.
-    if (select.value) {
-      setTimeout(() => {
-        select.setCustomValidity('');
-        if (fieldDiv.classList.contains('field-invalid')) {
-          fieldDiv.classList.remove('field-invalid');
-          const desc = fieldDiv.querySelector('.field-description');
-          if (desc) {
-            if (fieldDiv.dataset.description) {
-              desc.innerHTML = fieldDiv.dataset.description;
-            } else {
-              desc.remove();
-            }
-          }
-        }
-      }, 0);
-    }
   });
 
   // Re-append help text at the bottom if it was already in the DOM
