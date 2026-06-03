@@ -45,8 +45,10 @@ function toArray(value) {
 function getProp(fd, key) {
   const nested = fd.properties?.[key];
   if (nested !== undefined && nested !== null && nested !== '') return nested;
-  const dotKey = `properties.${key}`;
-  const flat = fd[dotKey];
+  // UE may preserve the full dot-notation name as a key inside the properties object
+  const nestedDot = fd.properties?.[`properties.${key}`];
+  if (nestedDot !== undefined && nestedDot !== null && nestedDot !== '') return nestedDot;
+  const flat = fd[`properties.${key}`];
   if (flat !== undefined && flat !== null && flat !== '') return flat;
   return fd[key];
 }
