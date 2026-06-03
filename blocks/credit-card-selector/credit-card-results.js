@@ -2,6 +2,7 @@ import { loadCSS } from '../../scripts/aem.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -73,10 +74,8 @@ async function loadSheetData() {
     const configs = await fetchConfigs();
     const url = configs.creditCardSelectorFilteringMatrixUrl;
     if (!url) return [];
-    const resp = await fetch(url);
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    const rows = (json.data || []).map(normalizeRow);
+    const json = await fetchGet(url, { throwOnError: false });
+    const rows = (json?.data || []).map(normalizeRow);
     return rows;
   } catch {
     return [];
@@ -90,10 +89,8 @@ async function loadCardData() {
     if (!baseUrl) return [];
     const lang = getLang();
     const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${lang}`);
-    const resp = await fetch(url);
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    const items = json.data?.creditCardsList?.items || json.data || json.items || [];
+    const json = await fetchGet(url, { throwOnError: false });
+    const items = json?.data?.creditCardsList?.items || json?.data || json?.items || [];
     return items;
   } catch {
     return [];
