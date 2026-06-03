@@ -32,14 +32,13 @@
   height: 2.5rem;
   border: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: 0.4375rem;
-  width: 6.125rem;
-  background-color: transparent;
+  width: 10rem;
 }
 
 .calendar-input::before {
   position: absolute;
   right: 11%;
-  top: 30%;
+  top: 27%;
 }
 
 .bcap-print-label {
@@ -66,18 +65,6 @@
   margin-bottom: 1.25rem;
 }
 
-.bcap-table .header-row td:nth-child(1) {
-  width: 30%;
-}
-
-.bcap-table .header-row td:nth-child(2) {
-  width: 70%;
-}
-
-.bcap-table .header-row td:not(:nth-child(2)) {
-  white-space: nowrap;
-}
-
 .bcap-table.table table.outline-border,
 .bcap-table.table table.border-bottom td {
   border-color: var(--bbl-color-grey-18);
@@ -102,16 +89,4 @@
   line-height: 1.63;
   letter-spacing: -0.0063rem;
   padding-left: 0.3125rem;
-}
-
-@media (width > 47.5rem) {
-  .bcap-table table {
-      overflow-x: auto;
-  }
-}
-
-@media (width > 64rem) {
-  .bcap-table table {
-        overflow-x: visible;
-    }
 }
