@@ -279,6 +279,7 @@ button.tertiary::after {
   mask: url('../icons/Arrow-right.svg') no-repeat center / 100% 100%;
   transition: transform 0.2s ease-in-out;
 }
+
 /* Hover */
 .button-tertiary:hover {
   color: var(--bbl-color-blue-70);
