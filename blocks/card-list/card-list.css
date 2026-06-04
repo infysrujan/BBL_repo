@@ -120,6 +120,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  box-sizing: border-box;
   box-shadow: 0 0 1rem 0 transparent;
   position: relative;
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
@@ -132,6 +133,10 @@
 
 .cards-list-item:has(.cards-list-item-link) {
   border: none;
+}
+
+.cards-list-item:has(.cards-list-image-logo) {
+  height: calc(100% - 0.5625rem);
 }
 
 .cards-list:is(.scrollable, .carousel) .cards-list-item {
@@ -182,10 +187,33 @@
   max-height: 100%;
 }
 
+.cards-list-image.cards-list-image-logo {
+  height: 5rem;
+  max-height: 100%;
+  margin: 0.9375rem;
+}
+
 .card-list-modal-media img {
   width: auto;
   max-width: 100%;
   margin-inline: auto;
+}
+
+.cards-list-image.cards-list-image-profile img {
+  height: 100%;
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.cards-list-image.cards-list-image-profile {
+  height: calc(100vw);
+  max-height: calc(15.625rem + 40 * ((100vw - 20rem) / 1600));
+  overflow: hidden;
+}
+
+.cards-list-image.cards-list-image-logo img {
+  height: 100%;
 }
 
 .modal-body .default-content-wrapper.card-list-modal-content {
@@ -524,6 +552,11 @@
     height: 100vw;
   }
 
+  .cards-list-image.cards-list-image-profile {
+    height: calc(100vw * .4);
+    max-height: 17.375rem;
+  }
+
   .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
     font-size: 1.3125rem;
     line-height: 1.4219rem;
@@ -710,6 +743,10 @@
 
   .cards-list-image.cards-list-image-default {
     height: calc(100vw * 0.25);
+  }
+
+  .cards-list-image.cards-list-image-profile {
+    height: calc(15.625rem + 60 * ((100vw - 20rem) / 1600));
   }
 
   .cards-list-promo-tag {
