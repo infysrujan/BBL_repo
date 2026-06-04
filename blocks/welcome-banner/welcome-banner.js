@@ -5,7 +5,7 @@ import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const BANNER_COOKIE = 'bbl-welcome-banner';
-const COOKIE_DURATION_MS = 20 * 60 * 1000; // 20 minutes
+const COOKIE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // ─── Storage helpers (cookie + sessionStorage fallback) ───────────────────────
 
