@@ -108,7 +108,6 @@ function bindImageModal(container, imageUrl, altText) {
   imageLink?.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    e.stopImmediatePropagation();
 
     const doc = container.ownerDocument;
 
@@ -172,20 +171,10 @@ function renderDetails(container, data, periodLabel, locale, viewFull, registerC
   let imageUrl = data?.detailImageUrl || '';
   if (imageUrl) {
     try {
-      let base = baseUrl;
-      if (data?.cardImageUrl) {
-        try {
-          // Validate if cardImageUrl is an absolute URL; throws if relative/invalid
-          const parsedUrl = new URL(data.cardImageUrl);
-          base = parsedUrl.href;
-        } catch (err) {
-          // Relative URL or invalid; fallback to baseUrl
-        }
-      }
-      // Native URL parser handles both relative and absolute URLs automatically
-      imageUrl = new URL(imageUrl, base).toString();
+      imageUrl = new URL(imageUrl, baseUrl).toString();
     } catch (e) {
       // Keep original URL if parsing fails
+      console.error('Failed to parse detailImageUrl:', e);
     }
   }
 

@@ -44,7 +44,7 @@ async function fetchPromotionalData(url) {
   return fetchJson(url);
 }
 
-function resolveCardTypeFromRef(mapping, cardRef) {
+function getCardTypeFromRef(mapping, cardRef) {
   if (!mapping || !cardRef) return '';
   if (typeof mapping === 'string') return '';
   if (mapping[cardRef]) return mapping[cardRef];
@@ -437,7 +437,7 @@ export default async function decorate(block) {
   const activeAreas = activeData?.areas || [];
   const isBbmPage = isBbm;
   const cardRef = isBbmPage ? searchParams.get('card_ref') : '';
-  const forcedCardType = resolveCardTypeFromRef(cardRefConfig, cardRef);
+  const forcedCardType = getCardTypeFromRef(cardRefConfig, cardRef);
   const disableFilters = Boolean(forcedCardType);
   const activeCategories = activeData?.categories || [];
 
