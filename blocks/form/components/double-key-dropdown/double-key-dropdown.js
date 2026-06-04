@@ -171,26 +171,6 @@ export default function decorate(fieldDiv, fd, _container, formId) {
   // --- Accessibility: announce current selection to screen readers ---
   select.setAttribute('aria-label', fd['jcr:title'] || fd.label?.value || 'Grouped dropdown');
 
-  // ---------------------------------------------------------------------------
-  // Suppress the enum-mismatch validation error injected by the worker path.
-  //
-  // Root cause chain:
-  //   Worker createFormInstance(enforceEnum:true, enum:[]) → value="" → enum mismatch
-  //   → fieldChanged collected → applyFieldChanges sent after HTML renders
-  //   → applyFieldChangeToFormModel → element.valid = false
-  //   → set valid(false) in afb-runtime hardcodes customConstraint:true in validity
-  //   → element.validationMessage fires fieldChanged with customConstraint:true
-  //   → fieldChanged handler condition (expressionMismatch||customConstraint) = TRUE
-  //   → setCustomValidity('Please select...') + updateOrCreateInvalidMsg → error shown
-  //
-  // Fix 1 – subscribe callback: fires synchronously AFTER handleRuleEngineEvent shows
-  //   the error; clears it before the browser paints. Also sets model._jsonModel.enforceEnum
-  //   to false on register so live-interaction enum validation is disabled too.
-  //
-  // Fix 2 – MutationObserver: safety net for any path that adds field-invalid when
-  //   a value is already selected (e.g. worker applyFieldChanges arriving after selection).
-  // ---------------------------------------------------------------------------
-
   if (formId) {
     subscribe(fieldDiv, formId, (el, model, eventType, payload) => {
       if (eventType === 'register') {
