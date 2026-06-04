@@ -11778,6 +11778,31 @@
     ]
   },
   {
+    "id": "social-icon",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "icon",
+        "label": "Social Icon",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "alt",
+        "label": "Alt Text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "url",
+        "label": "Link",
+        "valueType": "string",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "story-card",
     "fields": [
       {
