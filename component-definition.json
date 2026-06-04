@@ -1203,7 +1203,7 @@
           "plugins": {
             "xwalk": {
               "page": {
-                "resourceType": "core/fd/components/form/textinput/v1/textinput",
+                "resourceType": "core/fd/components/form/text/v1/text",
                 "template": {
                   "jcr:title": "Forms Menu Card",
                   "fieldType": "plain-text",
@@ -1219,7 +1219,7 @@
           "plugins": {
             "xwalk": {
               "page": {
-                "resourceType": "core/fd/components/form/panel/v1/panel",
+                "resourceType": "core/fd/components/form/panelcontainer/v1/panelcontainer",
                 "template": {
                   "jcr:title": "Forms Menu Card Actions",
                   "fieldType": "panel",

@@ -6,7 +6,7 @@
       "plugins": {
         "xwalk": {
           "page": {
-            "resourceType": "core/fd/components/form/textinput/v1/textinput",
+            "resourceType": "core/fd/components/form/text/v1/text",
             "template": {
               "jcr:title": "Forms Menu Card",
               "fieldType": "plain-text",
