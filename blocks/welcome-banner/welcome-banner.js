@@ -19,11 +19,15 @@ function readTimestamp() {
     const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${key}=([^;]*)`));
     const ts = match ? Number(match[1]) : 0;
     if (ts) return ts;
-  } catch { /* noop */ }
+  } catch (error) {
+    console.error(error);
+  }
 
   try {
     return Number(sessionStorage.getItem(BANNER_COOKIE)) || 0;
-  } catch { /* noop */ }
+  } catch (error) {
+    console.error(error);
+  }
 
   return 0;
 }
@@ -39,11 +43,15 @@ function writeTimestamp() {
     const expires = new Date(ts + COOKIE_DURATION_MS).toUTCString();
     const key = encodeURIComponent(BANNER_COOKIE);
     document.cookie = `${key}=${ts}; expires=${expires}; path=/; SameSite=Lax`;
-  } catch { /* noop */ }
+  } catch (error) {
+    console.error(error);
+  }
 
   try {
     sessionStorage.setItem(BANNER_COOKIE, String(ts));
-  } catch { /* noop */ }
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 /**
