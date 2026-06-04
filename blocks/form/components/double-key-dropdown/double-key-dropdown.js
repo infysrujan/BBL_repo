@@ -16,6 +16,11 @@
  * placeholder option → <optgroup label="Country"> → <option>University
  */
 
+import { subscribe } from '../../rules/index.js';
+
+// The AF runtime's default enum-mismatch message (afb-runtime.js ConstraintType.ENUM_MISMATCH)
+const ENUM_MISMATCH_MSG = 'Please select a value from the allowed options.';
+
 /**
  * Parses the authored multi-value property into a clean array.
  * Universal Editor stores multi-value fields as an array; Doc-based stores as a newline string.
@@ -34,9 +39,10 @@ function toArray(value) {
 
 /**
  * Resolves a property value from the fd object, checking multiple storage locations:
- * 1. fd.properties[key]          – nested (standard AEM Forms runtime)
- * 2. fd['properties.' + key]     – flat dot-notation (some UE / JCR serializations)
- * 3. fd[key]                     – directly on fd (doc-based / transformed payloads)
+ * 1. fd.properties[key]              – nested (standard AEM Forms runtime)
+ * 2. fd.properties['properties.key'] – dot-notation key preserved inside properties object
+ * 3. fd['properties.key']            – flat dot-notation directly on fd
+ * 4. fd[key]                         – directly on fd (doc-based / transformed payloads)
  *
  * @param {Object} fd
  * @param {string} key  – the short property name (e.g. 'countryCodes')
@@ -45,7 +51,7 @@ function toArray(value) {
 function getProp(fd, key) {
   const nested = fd.properties?.[key];
   if (nested !== undefined && nested !== null && nested !== '') return nested;
-  // UE may preserve the full dot-notation name as a key inside the properties object
+  // UE stores property names with dot-notation prefix preserved inside properties object
   const nestedDot = fd.properties?.[`properties.${key}`];
   if (nestedDot !== undefined && nestedDot !== null && nestedDot !== '') return nestedDot;
   const flat = fd[`properties.${key}`];
@@ -113,23 +119,44 @@ function buildGroupedSelect(fd, originalSelect) {
 }
 
 /**
+ * Clears the enum-mismatch validation error from the field wrapper.
+ * Called both from the subscribe callback and the MutationObserver.
+ *
+ * @param {HTMLElement} fieldDiv
+ * @param {HTMLSelectElement} selectEl
+ */
+function clearEnumError(fieldDiv, selectEl) {
+  selectEl.setCustomValidity('');
+  fieldDiv.classList.remove('field-invalid');
+  const desc = fieldDiv.querySelector('.field-description');
+  if (desc) {
+    if (fieldDiv.dataset.description) {
+      desc.innerHTML = fieldDiv.dataset.description;
+    } else {
+      desc.remove();
+    }
+  }
+}
+
+/**
  * Default export – called by mappings.js componentDecorator.
  *
  * @param {HTMLElement} fieldDiv  - The .field-wrapper element
  * @param {Object}      fd        - The field definition / JSON model
+ * @param {HTMLElement} _container - Parent container (unused)
+ * @param {string}      formId    - Form identifier for rule-engine subscriptions
  * @returns {HTMLElement}
  */
-export default function decorate(fieldDiv, fd) {
+export default function decorate(fieldDiv, fd, _container, formId) {
   const select = fieldDiv.querySelector('select');
   if (!select) return fieldDiv;
 
   // Rebuild select as a grouped (optgroup) dropdown
   buildGroupedSelect(fd, select);
 
-  // Disable the AF rule engine's enum-mismatch validation for this field.
-  // The DropDown model defaults to enforceEnum:true + enum:[] which rejects every
-  // custom "code::university" value. Setting false here covers the non-worker path;
-  // _double-key-dropdown.json's template covers the worker/JCR path.
+  // Disable the AF rule engine's enum-mismatch validation for this field (non-worker path).
+  // The DropDown model defaults to enforceEnum:true + enum:[] which rejects every custom
+  // "code::university" value. _double-key-dropdown.json template covers newly published content.
   fd.enforceEnum = false;
 
   // Mark field wrapper so CSS can scope styles precisely
@@ -144,30 +171,61 @@ export default function decorate(fieldDiv, fd) {
   // --- Accessibility: announce current selection to screen readers ---
   select.setAttribute('aria-label', fd['jcr:title'] || fd.label?.value || 'Grouped dropdown');
 
-  // Suppress the "Please select a value from the allowed options." error injected by
-  // the worker path. applyFieldChangeToFormModel calls set valid(false) which forces
-  // customConstraint:true into validity; fieldChanged then shows the enum-mismatch
-  // error via setCustomValidity + updateOrCreateInvalidMsg even after the user has
-  // already chosen a value (the worker message arrives asynchronously).
-  // A MutationObserver watching the class attribute fires whenever field-invalid is
-  // added and clears the error immediately when the select has a non-empty value.
+  // ---------------------------------------------------------------------------
+  // Suppress the enum-mismatch validation error injected by the worker path.
+  //
+  // Root cause chain:
+  //   Worker createFormInstance(enforceEnum:true, enum:[]) → value="" → enum mismatch
+  //   → fieldChanged collected → applyFieldChanges sent after HTML renders
+  //   → applyFieldChangeToFormModel → element.valid = false
+  //   → set valid(false) in afb-runtime hardcodes customConstraint:true in validity
+  //   → element.validationMessage fires fieldChanged with customConstraint:true
+  //   → fieldChanged handler condition (expressionMismatch||customConstraint) = TRUE
+  //   → setCustomValidity('Please select...') + updateOrCreateInvalidMsg → error shown
+  //
+  // Fix 1 – subscribe callback: fires synchronously AFTER handleRuleEngineEvent shows
+  //   the error; clears it before the browser paints. Also sets model._jsonModel.enforceEnum
+  //   to false on register so live-interaction enum validation is disabled too.
+  //
+  // Fix 2 – MutationObserver: safety net for any path that adds field-invalid when
+  //   a value is already selected (e.g. worker applyFieldChanges arriving after selection).
+  // ---------------------------------------------------------------------------
+
+  if (formId) {
+    subscribe(fieldDiv, formId, (el, model, eventType, payload) => {
+      if (eventType === 'register') {
+        // Disable enum enforcement on the main-thread model so evaluateConstraints()
+        // returns valid for any selected value during live interaction.
+        try {
+          // eslint-disable-next-line no-underscore-dangle
+          if (model?._jsonModel) model._jsonModel.enforceEnum = false;
+        } catch (_) { /* read-only in some runtime versions – ignore */ }
+        return;
+      }
+
+      if (eventType !== 'change') return;
+
+      // Clear the error only when it is the specific enum-mismatch message.
+      // This preserves legitimate errors (e.g. required-field validation).
+      const hasEnumError = payload?.changes?.some(
+        (c) => c.propertyName === 'validationMessage' && c.currentValue === ENUM_MISMATCH_MSG,
+      );
+      if (hasEnumError) {
+        clearEnumError(el, el.querySelector('select'));
+      }
+    }, { listenChanges: true });
+  }
+
+  // MutationObserver: catches field-invalid being added asynchronously AFTER user
+  // has already selected a value (worker applyFieldChanges timing race).
   const observer = new MutationObserver(() => {
     if (select.value && fieldDiv.classList.contains('field-invalid')) {
-      select.setCustomValidity('');
-      fieldDiv.classList.remove('field-invalid');
-      const desc = fieldDiv.querySelector('.field-description');
-      if (desc) {
-        if (fieldDiv.dataset.description) {
-          desc.innerHTML = fieldDiv.dataset.description;
-        } else {
-          desc.remove();
-        }
-      }
+      clearEnumError(fieldDiv, select);
     }
   });
   observer.observe(fieldDiv, { attributes: true, attributeFilter: ['class'] });
 
-  // --- Change event: expose split values as data attributes on the wrapper ---
+  // --- Change event: clear browser validity and expose split values ---
   select.addEventListener('change', () => {
     select.setCustomValidity('');
     const [countryCode, universityName] = (select.value || '::').split('::');
