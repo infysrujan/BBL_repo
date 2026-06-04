@@ -419,6 +419,56 @@
 }
 
 /* --------------------------------------------------------------------------
+   EQUAL-HEIGHT COLUMNS — Desktop only
+   Switch columns-3 section to CSS grid when rate-card is present.
+   Grid rows naturally make all children equal height without height:100% propagation.
+   -------------------------------------------------------------------------- */
+@media (width > 64rem) {
+  .section.columns-3:has(.rate-card) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: unset;
+  }
+
+  /* Reset flex-specific width/flex overrides from styles.css */
+  .section.columns-3:has(.rate-card) > * {
+    width: auto;
+    flex: unset;
+    min-width: 0;
+  }
+
+  /* Rate-card fills its grid cell */
+  .section.columns-3:has(.rate-card) .rate-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  .section.columns-3:has(.rate-card) .rate-card .currency-info {
+    flex: 1;
+  }
+
+  /* Carousel fills its grid cell — overflow:hidden clips internal slide content */
+  .section.columns-3:has(.rate-card) .carousel-dotted-wrapper {
+    overflow: hidden;
+  }
+
+  .section.columns-3:has(.rate-card) .carousel-dotted.all-without-image {
+    min-height: unset;
+    height: calc(100% - 2.5rem);
+    overflow: hidden;
+  }
+
+  /* Kill tab-state specific min-height overrides from carousel-dotted-default.css */
+  .section.columns-3:has(.rate-card .tab-header li:not(:first-child) .active) .carousel-dotted.all-without-image,
+  .section.columns-3:has(.rate-card .tab-header li:last-child .active) .carousel-dotted.all-without-image {
+    min-height: unset;
+    height: calc(100% - 2.5rem);
+  }
+}
+
+/* --------------------------------------------------------------------------
    PRINT STYLES
    -------------------------------------------------------------------------- */
 @media print {

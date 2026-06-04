@@ -75,11 +75,11 @@ function createTabId(cardName) {
  * @returns {Element} - Table or empty state element
  */
 function createTableElement(columnNames, data, dataType, sourceElement) {
+  if (!data || data.length === 0) return null;
+
   let element;
 
-  if (!data || data.length === 0) {
-    element = createElementFromHTML('<p class="no-data">No data available</p>', document);
-  } else {
+  {
     const thead = `
       <thead>
         <tr>
@@ -289,34 +289,38 @@ function createTabContent(tabData, apiData) {
   const content = document.createElement('div');
   content.className = 'inner';
 
-  // Table 1
+  // Table 1 — only render when API returned data
   if (table1Data) {
-    const list = document.createElement('div');
-    list.className = 'currency-list';
     const tableElement = createTableElement(
       table1Data.columnNames,
       apiData1,
       dataType1,
       table1Data.sourceElement,
     );
-    list.appendChild(tableElement);
-    appendTableMeta(list, dateString1, timeString1, table1Data.button);
-    content.appendChild(list);
+    if (tableElement) {
+      const list = document.createElement('div');
+      list.className = 'currency-list';
+      list.appendChild(tableElement);
+      appendTableMeta(list, dateString1, timeString1, table1Data.button);
+      content.appendChild(list);
+    }
   }
 
-  // Table 2 (if tableCount is 2) — hidden if API returned no data
-  if (tableCount === '2' && table2Data && apiData2.length > 0) {
-    const list = document.createElement('div');
-    list.className = 'currency-list full';
+  // Table 2 — only render when API returned data
+  if (tableCount === '2' && table2Data) {
     const tableElement = createTableElement(
       table2Data.columnNames,
       apiData2,
       dataType2,
       table2Data.sourceElement,
     );
-    list.appendChild(tableElement);
-    appendTableMeta(list, dateString2, timeString2, table2Data.button);
-    content.appendChild(list);
+    if (tableElement) {
+      const list = document.createElement('div');
+      list.className = 'currency-list full';
+      list.appendChild(tableElement);
+      appendTableMeta(list, dateString2, timeString2, table2Data.button);
+      content.appendChild(list);
+    }
   }
 
   return content;
@@ -511,11 +515,18 @@ export default async function decorate(block) {
     listItem.appendChild(link);
     tabHeader.appendChild(listItem);
 
+    const tabInner = createTabContent(tab, apiData);
+    const hasContent = tabInner.querySelector('.currency-list');
+
+    if (!hasContent) {
+      listItem.hidden = true;
+    }
+
     const panel = document.createElement('div');
     panel.id = tabId;
     panel.className = `inner${index === 0 ? ' active' : ''}`;
     moveInstrumentation(tab.sourceElement, panel);
-    panel.appendChild(createTabContent(tab, apiData));
+    panel.appendChild(tabInner);
     tabContent.appendChild(panel);
 
     return link;
