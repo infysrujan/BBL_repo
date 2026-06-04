@@ -56,9 +56,7 @@ export async function fetchPlaceholders() {
 
       if (cachedStr) {
         try {
-          const parsed = JSON.parse(cachedStr);
-          // no-lang path stores raw { data: [...] }; lang path stores merged flat object
-          const placeholders = parsed.data ? parseEntries(parsed, 'Text') : parsed;
+          const placeholders = JSON.parse(cachedStr);
           window.placeholders[cacheKey] = placeholders;
           resolve(placeholders);
           return;
@@ -92,8 +90,7 @@ export async function fetchPlaceholders() {
         console.log('[placeholders] combined (lang overrides default):', placeholders);
 
         try {
-          // no-lang: store raw json; lang: store merged flat object
-          const toStore = pageLanguage ? placeholders : defaultJson;
+          const toStore = placeholders;
           window.sessionStorage.setItem(storageKey, JSON.stringify(toStore));
         } catch (e) {
           // eslint-disable-next-line no-console
