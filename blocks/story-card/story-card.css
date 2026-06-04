@@ -162,7 +162,7 @@
 }
 
 /* Desktop */
-@media (width >= 64.0625rem) {
+@media (width > 64rem) {
   .story-card .outer {
     max-width: 100%;
   }
