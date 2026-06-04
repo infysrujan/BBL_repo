@@ -239,8 +239,7 @@ async function loadWelcomeBanner(doc) {
       path,
       callback: (fragment) => {
         if (!fragment) {
-          // eslint-disable-next-line no-console
-          console.warn('[Welcome Banner] Fragment not found at', path);
+          console.error('[Welcome Banner] Fragment not found at', path);
           return;
         }
         const main = doc.querySelector('main');
@@ -431,8 +430,7 @@ async function buildCookieAlert(main) {
         path: fragmentPath,
         callback: (fragment) => {
           if (!fragment) {
-            // eslint-disable-next-line no-console
-            console.warn('[cookie-alert] Fragment not found at', fragmentPath);
+            console.error('[cookie-alert] Fragment not found at', fragmentPath);
             return;
           }
           // Move the decorated sections directly (preserves event listeners).
