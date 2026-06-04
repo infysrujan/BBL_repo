@@ -59,11 +59,11 @@
   object-fit: contain;
 }
 
-.welcome-banner-overlay .welcome-banner-desktop-img {
+.welcome-banner-overlay .welcome-banner-media picture.welcome-banner-desktop-img {
   display: none;
 }
 
-.welcome-banner-overlay .welcome-banner-mobile-img {
+.welcome-banner-overlay .welcome-banner-media picture.welcome-banner-mobile-img {
   display: block;
 }
 
@@ -112,11 +112,11 @@
     max-width: 60rem;
   }
 
-  .welcome-banner-overlay .welcome-banner-desktop-img {
+  .welcome-banner-overlay .welcome-banner-media picture.welcome-banner-desktop-img {
     display: block;
   }
 
-  .welcome-banner-overlay .welcome-banner-mobile-img {
+  .welcome-banner-overlay .welcome-banner-media picture.welcome-banner-mobile-img {
     display: none;
   }
 
