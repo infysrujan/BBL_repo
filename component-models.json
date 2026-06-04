@@ -11288,16 +11288,21 @@
       },
       {
         "component": "text",
-        "name": "isRegisterCtaLabel",
-        "label": "Register CTA Label",
+        "name": "registerCtaLabel",
+        "label": "Register Cta Label",
+        "valueType": "string",
         "value": "",
         "required": true,
         "condition": {
-          "!==": [
+          "!": [
             {
-              "var": "isRegister"
-            },
-            "N"
+              "===": [
+                {
+                  "var": "isRegister"
+                },
+                "N"
+              ]
+            }
           ]
         }
       }
