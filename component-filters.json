@@ -207,7 +207,14 @@
       "tnc",
       "wizard",
       "range",
-      "double-key-dropdown"
+      "double-key-dropdown",
+      "forms-menu-card-actions"
+    ]
+  },
+  {
+    "id": "forms-menu-card-actions",
+    "components": [
+      "forms-menu-card"
     ]
   },
   {
