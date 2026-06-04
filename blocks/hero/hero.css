@@ -640,6 +640,11 @@
     display: block;
 }
 
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-app-cta-mobile-fallback .button-container {
+    margin: 0;
+    padding-bottom: 0.9375rem;
+}
+
 @media (width > 47.5rem) {
     .hero-banner-video-wrapper:has(iframe.hero-banner-video)
         .hero-banner-video-controls,
