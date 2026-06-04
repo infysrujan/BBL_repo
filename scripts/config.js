@@ -55,9 +55,7 @@ export async function fetchConfigs() {
 
       if (cachedStr) {
         try {
-          const parsed = JSON.parse(cachedStr);
-          // no-lang path stores raw { data: [...] }; lang path stores merged flat object
-          const configs = parsed.data ? parseConfigEntries(parsed) : parsed;
+          const configs = JSON.parse(cachedStr);
           window.configs[windowKey] = configs;
           resolve(configs);
           return;
@@ -82,8 +80,7 @@ export async function fetchConfigs() {
         };
 
         try {
-          // no-lang: store raw json; lang: store merged flat object
-          const toStore = pageLanguage ? configs : defaultJson;
+          const toStore = configs;
           window.sessionStorage.setItem(storageKey, JSON.stringify(toStore));
         } catch (e) {
           // eslint-disable-next-line no-console
