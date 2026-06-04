@@ -1,6 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
-import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -119,19 +118,6 @@ function extractCtas(buttonRows, placeholder) {
 // ─── DOM builders ─────────────────────────────────────────────────────────────
 
 /**
- * Builds the media container element.
- * @param {Document}       doc
- * @param {Element|null}   picture
- * @returns {HTMLElement}
- */
-function buildMedia(doc, picture) {
-  const el = doc.createElement('div');
-  el.className = 'welcome-banner-media';
-  if (picture) el.appendChild(picture);
-  return el;
-}
-
-/**
  * Builds a single CTA anchor with navigation and dismiss logic.
  * @param {Document} doc
  * @param {object}   ctaData
@@ -202,9 +188,21 @@ export default function decorate(block) {
   // ── Build image ────────────────────────────────────────────────────────────
   const pictureDesktop = desktopImgRow?.querySelector('picture');
   const pictureMobile = mobileImgRow?.querySelector('picture');
-  const picture = (pictureDesktop || pictureMobile)
-    ? createSmartImage(pictureDesktop, pictureMobile, null)
-    : null;
+
+  if (pictureDesktop) pictureDesktop.classList.add('welcome-banner-desktop-img');
+  if (pictureMobile) pictureMobile.classList.add('welcome-banner-mobile-img');
+
+  const media = doc.createElement('div');
+  media.className = 'welcome-banner-media';
+
+  if (pictureDesktop && pictureMobile) {
+    media.append(pictureDesktop, pictureMobile);
+  } else if (pictureDesktop || pictureMobile) {
+    media.append(pictureDesktop || pictureMobile);
+    // If only one image exists, show it on all viewports by stripping the specific classes
+    if (pictureDesktop) pictureDesktop.classList.remove('welcome-banner-desktop-img');
+    if (pictureMobile) pictureMobile.classList.remove('welcome-banner-mobile-img');
+  }
 
   // ── Build modal shell ──────────────────────────────────────────────────────
   const { overlay, dialog, closeBtn } = createModalShell({
@@ -227,7 +225,7 @@ export default function decorate(block) {
   // ── Assemble dialog ────────────────────────────────────────────────────────
   dialog.append(
     closeBtn,
-    buildMedia(doc, picture),
+    media,
     buildCtas(doc, extractCtas(buttonRows, placeholder), dismiss),
   );
 
