@@ -164,19 +164,11 @@ function bindImageModal(container, imageUrl, altText) {
   });
 }
 
-function renderDetails(container, data, periodLabel, locale, viewFull, registerCtaUrl, baseUrl) {
+function renderDetails(container, data, periodLabel, locale, viewFull, registerCtaUrl) {
   const title = data?.title
     ? `<h2 class="promo-detail-title">${data.title}</h2>`
     : '';
-  let imageUrl = data?.detailImageUrl || '';
-  if (imageUrl) {
-    try {
-      imageUrl = new URL(imageUrl, baseUrl).toString();
-    } catch (e) {
-      // Keep original URL if parsing fails
-      console.error('Failed to parse detailImageUrl:', e);
-    }
-  }
+  const imageUrl = data?.detailImageUrl || '';
 
   const cleanTitle = data?.title ? data.title.replace(/<[^>]*>/g, '').trim() : '';
   const imageHtml = imageUrl
@@ -307,7 +299,6 @@ export default async function decorate(block) {
       locale,
       clickToViewFull,
       registerCtaUrl,
-      promotionApi?.baseUrl,
     );
     return;
   }
@@ -319,6 +310,5 @@ export default async function decorate(block) {
     locale,
     clickToViewFull,
     registerCtaUrl,
-    promotionApi?.baseUrl,
   );
 }
