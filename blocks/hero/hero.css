@@ -93,7 +93,7 @@
   font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
   margin-block: 0 1.4375rem;
   font-weight: var(--bbl-text-hero-title-weight);
-  font-size: var(--bbl-heading-d1-size);
+  font-size: var(--bbl-text-hero-title-size);
   line-height:var(--bbl-text-hero-title-line-height);
   margin-inline: auto;
 }
@@ -279,13 +279,16 @@
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text {
   color: var(--bbl-color-black);
-  line-height: 1.7875rem;
   margin: 0;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   max-width: 100%;
+}
+
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner) {
+  line-height: 1.7875rem;
 }
 
 .hero-banner-private-wealth-banking .hero-banner-content-inner-text {
@@ -573,21 +576,16 @@
     height: 14.875rem;
   }
 
-    .hero-banner-hero-with-thumbnail-images .hero-banner-img {
+  .hero-banner-hero-with-thumbnail-images .hero-banner-img {
         aspect-ratio: 192 / 85;
         height: 53.125rem;
     }
 
-    .hero-banner-hero-with-thumbnail-images .hero-banner-video {
+  .hero-banner-hero-with-thumbnail-images .hero-banner-video {
         aspect-ratio: 192 / 85;
         height: 53.125rem;
     }
 
-
-  .hero-banner-simple .hero-banner-content-inner-text {
-    color: var(--bbl-color-white);
-    line-height: 1.625rem;
-  }
 
   .hero-banner-private-wealth-banking .hero-banner-content-inner-text {
     line-height: 1.625rem;
