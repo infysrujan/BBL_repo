@@ -5,23 +5,23 @@ import env from './utils/env.js';
 
 const GTM_CONTAINER_CONFIG = {
   dev: {
-    lazy: ['GTM-NQNDNXRR'],
+    lazy: ['GTM-P7JZC4DH', 'GTM-TP9844XT'],
     delayed: [],
   },
   stage: {
-    lazy: ['GTM-NQNDNXRR'],
+    lazy: ['GTM-542BD9VF'],
     delayed: [],
   },
   prod: {
-    lazy: ['GTM-NQNDNXRR'],
+    lazy: ['GTM-W72WJWDH'],
     delayed: [],
   },
 };
 
 const GA_PROPERTY_CONFIG = {
-  dev: 'G-ZG7X6JC6DG',
-  stage: 'G-ZG7X6JC6DG',
-  prod: 'G-ZG7X6JC6DG',
+  dev: 'G-S8RE3N44ZB',
+  stage: 'G-32JXKVG92S',
+  prod: 'G-7WPNJ9G6RJ',
 };
 
 // For DA Preview support. Martech is enabled if the martech=off query parameter is not present.
@@ -51,7 +51,6 @@ const consentCallback = async () => {
   return config;
 };
 
-// TODO: Update BBL's GA4 measurement ID and GTM Container Ids here
 const martech = new GtmMartech({
   analytics: isEnabled,
   tags: [GA_PROPERTY_CONFIG[env]],
