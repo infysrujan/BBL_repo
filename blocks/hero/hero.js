@@ -1,5 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
+import { decorateButtonsV1, applyLinkTarget } from '../../scripts/bbl-decorators.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
@@ -414,6 +414,8 @@ export default async function decorate(block) {
     const googlePlayImageCell = row.children[col]; col += 1;
     const googlePlayLinkCell = row.children[col]; col += 1;
     const enableAppCtaMobileCell = row.children[col]; col += 1;
+    const targetCell = row.children[col];
+    const targetValue = targetCell?.textContent?.trim() || '';
 
     if (mediaType === 'bg-video') {
       const youtubeUrl = youtubeUrlCell?.querySelector('a')?.href
@@ -538,6 +540,7 @@ export default async function decorate(block) {
         }
       }
     }
+    applyLinkTarget(contentGroup, 'a.button', targetValue);
 
     contentInner.append(contentGroup);
     const content = createElement('div', 'hero-banner-content', 'content');
