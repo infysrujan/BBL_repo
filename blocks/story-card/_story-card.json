@@ -15,9 +15,49 @@
 					}
 				}
 			}
+		},
+		{
+			"title": "Social Icon",
+			"id": "social-icon",
+			"plugins": {
+				"xwalk": {
+					"page": {
+						"resourceType": "core/franklin/components/block/v1/block/item",
+						"template": {
+							"name": "Social Icon",
+							"model": "social-icon"
+						}
+					}
+				}
+			}
 		}
 	],
 	"models": [
+		{
+			"id": "social-icon",
+			"fields": [
+				{
+					"component": "reference",
+					"name": "icon",
+					"label": "Social Icon",
+					"valueType": "string",
+					"required": true
+				},
+				{
+					"component": "text",
+					"name": "alt",
+					"label": "Alt Text",
+					"valueType": "string"
+				},
+				{
+					"component": "text",
+					"name": "url",
+					"label": "Link",
+					"valueType": "string",
+					"required": true
+				}
+			]
+		},
 		{
 			"id": "story-card",
 			"fields": [
@@ -76,72 +116,9 @@
 		{
 			"id": "story-card",
 			"components": [
-				"button"
-			],
-			"rte": {
-				"toolbar": {
-					"format": [
-						"bold",
-						"italic",
-						"underline",
-						"strike"
-					],
-					"alignment": [
-						"left",
-						"center",
-						"right",
-						"justify"
-					],
-					"direction": [
-						"rtl",
-						"ltr"
-					],
-					"indentation": [
-						"indent",
-						"outdent"
-					],
-					"blocks": [
-						"paragraph",
-						"h1",
-						"h2",
-						"h3",
-						"h4",
-						"h5",
-						"h6",
-						"code_block"
-					],
-					"list": [
-						"bullet_list",
-						"ordered_list"
-					],
-					"insert": [
-						"link",
-						"unlink",
-						"image",
-						"table",
-						"special_characters"
-					],
-					"sr_script": [
-						"superscript",
-						"subscript"
-					],
-					"editor": [
-						"removeformat",
-						"paste_text"
-					],
-					"sections": [
-						"format",
-						"alignment",
-						"direction",
-						"indentation",
-						"blocks",
-						"list",
-						"insert",
-						"sr_script",
-						"editor"
-					]
-				}
-			}
+				"button",
+				"social-icon"
+			]
 		}
 	]
 }
