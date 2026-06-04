@@ -533,10 +533,7 @@ export default async function decorate(block) {
         bannerItem.classList.add('no-mobile-app-cta');
         if (linkCell?.innerHTML?.trim()) {
           const fallback = createElement('div', 'hero-app-cta-mobile-fallback');
-          const p = document.createElement('p');
-          p.innerHTML = linkCell.innerHTML;
-          fallback.append(p);
-          decorateButtonsV1(fallback);
+          fallback.innerHTML = linkCell.innerHTML;
           contentGroup.append(fallback);
         }
       }
