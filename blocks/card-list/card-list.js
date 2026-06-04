@@ -1,9 +1,23 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
+import { getLang } from '../../scripts/bbl-decorators.js';
 
 function getTextValue(value) {
   return value?.toString().trim() || '';
+}
+
+function formatMenuCardDate(dateStr) {
+  if (!dateStr) return '';
+  const lang = getLang();
+  const date = new Date(dateStr);
+  if (lang === 'th') {
+    const buddhistYear = date.getFullYear() + 543;
+    const month = date.toLocaleString('th-TH', { month: 'long' });
+    const day = date.getDate();
+    return `${day} ${month} ${buddhistYear}`;
+  }
+  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
 function parseBooleanFlag(value, defaultValue = false) {
@@ -58,6 +72,14 @@ function createCardListItem(cardElement, doc) {
   const subtitle = subtitleDiv?.textContent?.trim() || '';
   const description = descDiv?.innerHTML;
   const remark = remarkDiv?.innerHTML;
+  const dateTextRaw = cells[cells.length - 1]?.textContent?.trim() || '';
+  let financialDate = '';
+  if (dateTextRaw) {
+    const parsedDate = new Date(dateTextRaw);
+    financialDate = !Number.isNaN(parsedDate.getTime())
+      ? formatMenuCardDate(dateTextRaw)
+      : dateTextRaw;
+  }
   const defaultButton = defaultButtonDiv?.querySelector('a');
   const imageLayout = cells[base]?.textContent?.trim() || 'default';
   const enableTitleUnderline = parseBooleanFlag(cells[base + 1]?.textContent, false);
@@ -120,6 +142,12 @@ function createCardListItem(cardElement, doc) {
   if (remark) {
     content.appendChild(
       createElementFromHTML(`<div class="cards-list-remark">${remark}</div>`, doc),
+    );
+  }
+
+  if (financialDate) {
+    content.appendChild(
+      createElementFromHTML(`<div class="cards-list-date"><p>${financialDate}</p></div>`, doc),
     );
   }
 
