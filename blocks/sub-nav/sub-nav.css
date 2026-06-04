@@ -68,6 +68,10 @@
 	text-transform: capitalize;
 }
 
+.sub-nav button.global-dropdown-trigger.icon-dropdown:hover {
+    border-color: var(--bbl-color-white);
+}
+
 .sub-nav .sub-nav-select .global-dropdown-panel {
 	margin-top: 0.25rem;
 
@@ -80,7 +84,7 @@
 }
 
 .sub-nav .sub-nav-select .global-dropdown-panel li a {
-	color: var(--bbl-color-black, #000);
+	color: var(--bbl-color-black);
 
 	/* Allow long option text to wrap instead of overflowing viewport */
 	max-width: 100%;
@@ -88,6 +92,10 @@
 	overflow: hidden;
 	white-space: nowrap;
 	text-transform: capitalize;
+}
+
+.sub-nav .sub-nav-select .global-dropdown-panel li a:hover {
+	color: var(--bbl-color-active-blue);
 }
 
 /* Sub-nav with tab: tab buttons on the right */
