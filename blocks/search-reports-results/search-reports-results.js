@@ -3,14 +3,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import openPdfViewer from '../../scripts/utils/pdf-viewer.js';
-
-function el(tag, { className, text, attrs = {} } = {}) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
-  return node;
-}
+import createTaggedElement from '../../scripts/utils/dom.js';
 
 function getDownloadLabel(mimeType, placeholders = {}) {
   if (mimeType === 'application/pdf') return placeholders.reportsDownloadPdf || 'Download PDF';
@@ -31,37 +24,37 @@ function sortAssets(assets, type) {
 function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
   const fetchPath = asset.path.startsWith('http') ? asset.path : `${apiBase}${asset.path}`;
 
-  const card = el('div', { className: 'download-section' });
+  const card = createTaggedElement('div', { className: 'download-section' });
 
-  const titleWrapper = el('div', { className: 'default-content-wrapper' });
-  const title = el('h3', { className: 'srr-card-title', text: asset.reportTitle || asset.title });
-  const divider = el('div', { className: 'srr-card-divider' });
+  const titleWrapper = createTaggedElement('div', { className: 'default-content-wrapper' });
+  const title = createTaggedElement('h3', { className: 'srr-card-title', text: asset.reportTitle || asset.title });
+  const divider = createTaggedElement('div', { className: 'srr-card-divider' });
   titleWrapper.append(title, divider);
 
-  const fileRow = el('div', { className: 'srr-card-file-row' });
-  const downloadWrapper = el('div', { className: 'download-button-wrapper' });
+  const fileRow = createTaggedElement('div', { className: 'srr-card-file-row' });
+  const downloadWrapper = createTaggedElement('div', { className: 'download-button-wrapper' });
 
-  const label = el('span', { className: 'srr-file-label', text: getDownloadLabel(asset.mimeType, placeholders) });
+  const label = createTaggedElement('span', { className: 'srr-file-label', text: getDownloadLabel(asset.mimeType, placeholders) });
 
-  const iconGroup = el('div', { className: 'srr-icon-group' });
+  const iconGroup = createTaggedElement('div', { className: 'srr-icon-group' });
 
   if (asset.mimeType === 'application/pdf') {
-    const previewBtn = el('button', {
+    const previewBtn = createTaggedElement('button', {
       className: 'srr-icon-btn srr-preview-btn',
       attrs: { type: 'button', 'aria-label': `Preview ${asset.name}` },
     });
-    previewBtn.append(el('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } }));
+    previewBtn.append(createTaggedElement('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } }));
     previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfViewer({ path: fetchPath, name: asset.name, googleViewerUrl }); });
     iconGroup.append(previewBtn);
   }
 
-  const downloadBtn = el('a', {
+  const downloadBtn = createTaggedElement('a', {
     className: 'srr-icon-btn srr-download-btn',
     attrs: {
       href: fetchPath, download: asset.name, 'aria-label': `Download ${asset.name}`, target: '_blank',
     },
   });
-  downloadBtn.append(el('span', { className: 'icon icon-download', attrs: { 'aria-hidden': 'true' } }));
+  downloadBtn.append(createTaggedElement('span', { className: 'icon icon-download', attrs: { 'aria-hidden': 'true' } }));
   iconGroup.append(downloadBtn);
 
   downloadWrapper.append(label, iconGroup);
@@ -78,9 +71,9 @@ async function fetchAndRender(block, type, year) {
   const googleViewerUrl = configs.reportsGoogleViewerUrl || '';
 
   block.innerHTML = '';
-  const wrapper = el('div', { className: 'srr-results-wrapper' });
-  const resultsHeader = el('div', { className: 'srr-header' });
-  const backBtn = el('button', {
+  const wrapper = createTaggedElement('div', { className: 'srr-results-wrapper' });
+  const resultsHeader = createTaggedElement('div', { className: 'srr-header' });
+  const backBtn = createTaggedElement('button', {
     className: 'srr-back-btn',
     attrs: { type: 'button', 'aria-label': 'Go back' },
     text: '‹',
@@ -95,9 +88,9 @@ async function fetchAndRender(block, type, year) {
   });
   resultsHeader.append(backBtn);
   wrapper.append(resultsHeader);
-  wrapper.append(el('h1', { className: 'srr-page-title', text: 'Search Results' }));
-  wrapper.append(el('div', { className: 'srr-title-divider' }));
-  const loading = el('div', { className: 'srr-loading', text: 'Loading...' });
+  wrapper.append(createTaggedElement('h1', { className: 'srr-page-title', text: 'Search Results' }));
+  wrapper.append(createTaggedElement('div', { className: 'srr-title-divider' }));
+  const loading = createTaggedElement('div', { className: 'srr-loading', text: 'Loading...' });
   wrapper.append(loading);
   block.append(wrapper);
 
@@ -118,19 +111,19 @@ async function fetchAndRender(block, type, year) {
     loading.remove();
 
     if (!data.totalCount || !data.assets?.length) {
-      wrapper.append(el('p', { className: 'srr-empty', text: 'No reports found for the selected filters.' }));
+      wrapper.append(createTaggedElement('p', { className: 'srr-empty', text: 'No reports found for the selected filters.' }));
       return;
     }
 
     const sorted = sortAssets(data.assets, type);
-    const list = el('div', { className: 'srr-list' });
+    const list = createTaggedElement('div', { className: 'srr-list' });
     sorted.forEach((asset) => list.append(
       buildCard(asset, apiBase, placeholders, googleViewerUrl),
     ));
     wrapper.append(list);
   } catch {
     loading.remove();
-    wrapper.append(el('p', { className: 'srr-error', text: 'Unable to load reports. Please try again.' }));
+    wrapper.append(createTaggedElement('p', { className: 'srr-error', text: 'Unable to load reports. Please try again.' }));
   }
 }
 
