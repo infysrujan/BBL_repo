@@ -42,17 +42,31 @@ export default function openPdfViewer({
   const pdfEmbed = document.createElement('div');
   pdfEmbed.className = `${classPrefix}-embed`;
 
+  const loading = document.createElement('div');
+  loading.className = `${classPrefix}-loading`;
+  loading.textContent = 'Loading…';
+  pdfEmbed.append(loading);
+
   const embedEl = document.createElement('iframe');
   embedEl.setAttribute('width', '100%');
   embedEl.setAttribute('height', '100%');
   embedEl.setAttribute('frameborder', '0');
   embedEl.setAttribute('title', name || 'PDF Preview');
+  embedEl.style.display = 'none';
   pdfEmbed.append(embedEl);
 
-  embedEl.src = path;
-  embedEl.addEventListener('error', () => {
-    if (googleViewerUrl) embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
+  embedEl.addEventListener('load', () => {
+    loading.remove();
+    embedEl.style.display = '';
   }, { once: true });
+  embedEl.addEventListener('error', () => {
+    if (googleViewerUrl) {
+      embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
+    } else {
+      loading.textContent = 'Failed to load PDF.';
+    }
+  }, { once: true });
+  embedEl.src = path;
 
   const buttonGroup = document.createElement('div');
   buttonGroup.className = `${classPrefix}-button-group`;

@@ -44,6 +44,7 @@ function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
       attrs: { type: 'button', 'aria-label': `Preview ${asset.name}` },
     });
     previewBtn.append(createTaggedElement('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } }));
+    previewBtn.addEventListener('mouseenter', () => { fetch(fetchPath, { priority: 'low' }).catch(() => {}); }, { once: true });
     previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfViewer({ path: fetchPath, name: asset.name, googleViewerUrl }); });
     iconGroup.append(previewBtn);
   }
