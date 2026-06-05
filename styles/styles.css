@@ -474,6 +474,30 @@ body.bangkok-bankm-card main {
     .section.columns-2-75 > *:first-child {
         flex: 0 0 75%;
     }
+
+    .section.columns-2-50 .default-content-wrapper {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .section.columns-2-50 .default-content-wrapper > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-75 .default-content-wrapper {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .section.columns-2-75 .default-content-wrapper > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
+    .section.columns-2-75 .default-content-wrapper > *:first-child {
+        flex: 0 0 75%;
+    }
 }
 
 
