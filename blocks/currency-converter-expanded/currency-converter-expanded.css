@@ -348,7 +348,7 @@
 }
 
 .currency-converter-expanded .converter-expanded-btn:hover::after {
-  transform: scaleX(1.3);
+  transform: translateY(-50%) scaleX(1.3);
 }
 
 .currency-converter-expanded .converter-expanded-btn:disabled {
