@@ -198,7 +198,14 @@ function createCardItem(cardRow, doc) {
   if (actionType === 'default' && actionCells.length > 0) {
     const buttonContainer = actionCells[0].querySelector('.button-container') ?? actionCells[0];
     const btn = buttonContainer.cloneNode(true);
-    btn.querySelector('a')?.removeAttribute('data-modal');
+    const buttonLink = btn.querySelector('a');
+    buttonLink?.removeAttribute('data-modal');
+
+    if (!isCardClickable && enableOverlayModal && overlayHref && buttonLink) {
+      buttonLink.setAttribute('href', overlayHref);
+      buttonLink.setAttribute('data-modal', overlayHref);
+    }
+
     inner.appendChild(btn);
   } else if (actionType === 'download' && actionCells.length > 0) {
     const dlAnchor = actionCells.find((c) => !c.querySelector('ul'))?.querySelector('a')
@@ -232,7 +239,7 @@ function createCardItem(cardRow, doc) {
     inner.appendChild(dateEl);
   }
 
-  if (isCardClickable || enableOverlayModal) {
+  if (isCardClickable) {
     const wrapper = buildCardWrapper(
       cardLinkHref,
       cardLinkTarget,
@@ -329,7 +336,8 @@ function renderCardActions(target, rows, block, doc) {
     block.addEventListener('click', (event) => {
       const trigger = event.target.closest('[data-modal]');
       if (!trigger || !block.contains(trigger)) return;
-      if (event.target.closest('a') || event.target.closest('[role="link"]')) return;
+      const nestedLink = event.target.closest('a, [role="link"]');
+      if (nestedLink && nestedLink !== trigger) return;
       event.preventDefault();
       const fragmentPath = trigger.getAttribute('data-modal');
       if (fragmentPath) openModal(doc, { fragmentPath });
