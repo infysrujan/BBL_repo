@@ -1,5 +1,6 @@
 import { fetchConfigs } from '../../scripts/config.js';
 import { createElementFromHTML, moveInstrumentation } from '../../scripts/scripts.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 /**
  * Format date string from API format to display format
@@ -48,14 +49,7 @@ async function fetchAPIData(url) {
       throw new Error('API URL not provided');
     }
 
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`API returned status ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
+    return fetchGet(url);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('API fetch error:', error);
@@ -81,15 +75,15 @@ function createTabId(cardName) {
  * @returns {Element} - Table or empty state element
  */
 function createTableElement(columnNames, data, dataType, sourceElement) {
+  if (!data || data.length === 0) return null;
+
   let element;
 
-  if (!data || data.length === 0) {
-    element = createElementFromHTML('<p class="no-data">No data available</p>', document);
-  } else {
+  {
     const thead = `
       <thead>
         <tr>
-          ${columnNames.map((name) => `<th>${name}</th>`).join('')}
+          ${columnNames.map((name) => `<th>${name.split('#')[0].trim()}</th>`).join('')}
         </tr>
       </thead>
     `;
@@ -97,18 +91,28 @@ function createTableElement(columnNames, data, dataType, sourceElement) {
     let tbody = '<tbody>';
 
     if (dataType === 'exchange') {
-      tbody += data.map((item) => `
+      const defaultFields = ['BuyingRates', 'SellingRates'];
+      // columnNames[0] is the currency column; rest are rate columns with optional #ApiKey hint
+      const rateColumns = columnNames.slice(1).map((name, i) => {
+        const [, hint] = name.split('#');
+        return hint ? hint.trim() : defaultFields[i];
+      });
+
+      tbody += data.map((item) => {
+        const familyText = (item.Family || '').replace(/\d/g, '');
+        const rateCells = rateColumns.map((field) => `<td>${item[field]?.trim() || '-'}</td>`).join('');
+        return `
         <tr>
           <td>
             <div class="country-select">
               <img src="/icons/${item.Family}.svg" alt="${item.Family}" loading="lazy">
-              <span>${item.Family}</span>
+              <span>${familyText}</span>
             </div>
           </td>
-          <td>${item.BuyingRates?.trim() || '-'}</td>
-          <td>${item.SellingRates?.trim() || '-'}</td>
+          ${rateCells}
         </tr>
-      `).join('');
+      `;
+      }).join('');
     } else if (dataType === 'deposit') {
       tbody += data.map((item) => `
         <tr>
@@ -285,34 +289,38 @@ function createTabContent(tabData, apiData) {
   const content = document.createElement('div');
   content.className = 'inner';
 
-  // Table 1
+  // Table 1 — only render when API returned data
   if (table1Data) {
-    const list = document.createElement('div');
-    list.className = 'currency-list';
     const tableElement = createTableElement(
       table1Data.columnNames,
       apiData1,
       dataType1,
       table1Data.sourceElement,
     );
-    list.appendChild(tableElement);
-    appendTableMeta(list, dateString1, timeString1, table1Data.button);
-    content.appendChild(list);
+    if (tableElement) {
+      const list = document.createElement('div');
+      list.className = 'currency-list';
+      list.appendChild(tableElement);
+      appendTableMeta(list, dateString1, timeString1, table1Data.button);
+      content.appendChild(list);
+    }
   }
 
-  // Table 2 (if tableCount is 2)
+  // Table 2 — only render when API returned data
   if (tableCount === '2' && table2Data) {
-    const list = document.createElement('div');
-    list.className = 'currency-list full';
     const tableElement = createTableElement(
       table2Data.columnNames,
       apiData2,
       dataType2,
       table2Data.sourceElement,
     );
-    list.appendChild(tableElement);
-    appendTableMeta(list, dateString2, timeString2, table2Data.button);
-    content.appendChild(list);
+    if (tableElement) {
+      const list = document.createElement('div');
+      list.className = 'currency-list full';
+      list.appendChild(tableElement);
+      appendTableMeta(list, dateString2, timeString2, table2Data.button);
+      content.appendChild(list);
+    }
   }
 
   return content;
@@ -353,11 +361,11 @@ export default async function decorate(block) {
   // Fetch configs for API URLs
   const configs = await fetchConfigs();
 
-  const exchangeRateAPI = configs?.getFxBanner || '';
-  const depositRateAPI = configs?.getDepositeRate || '';
-  const loanRateAPI = configs?.getLoanRate || '';
-  const bblFundAPI = configs?.getFundPriceService || '';
-  const bcapFundAPI = configs?.getFundBanner || '';
+  const exchangeRateAPI = configs?.rateCardGetFxBanner || '';
+  const depositRateAPI = configs?.rateCardGetDepositRate || '';
+  const loanRateAPI = configs?.rateCardGetLoanRate || '';
+  const bblFundAPI = configs?.rateCardGetFundPriceService || '';
+  const bcapFundAPI = configs?.rateCardGetFundBanner || '';
 
   // Parse block content
   const items = Array.from(block.children);
@@ -507,11 +515,18 @@ export default async function decorate(block) {
     listItem.appendChild(link);
     tabHeader.appendChild(listItem);
 
+    const tabInner = createTabContent(tab, apiData);
+    const hasContent = tabInner.querySelector('.currency-list');
+
+    if (!hasContent) {
+      listItem.hidden = true;
+    }
+
     const panel = document.createElement('div');
     panel.id = tabId;
     panel.className = `inner${index === 0 ? ' active' : ''}`;
     moveInstrumentation(tab.sourceElement, panel);
-    panel.appendChild(createTabContent(tab, apiData));
+    panel.appendChild(tabInner);
     tabContent.appendChild(panel);
 
     return link;

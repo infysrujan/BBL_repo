@@ -12,71 +12,85 @@
 
 import { toCamelCase } from './aem.js';
 
+function getPageLanguage() {
+  return document.querySelector('meta[name="language"]')?.content || null;
+}
+
+function parseConfigEntries(json) {
+  const configs = {};
+  json.data
+    ?.filter((config) => config.Key)
+    .forEach((config) => {
+      configs[toCamelCase(config.Key)] = config.Value;
+    });
+  return configs;
+}
+
+async function safeFetchJson(url) {
+  try {
+    const resp = await fetch(url);
+    if (resp.ok) return resp.json();
+  } catch (e) { /* ignore */ }
+  return { data: [] };
+}
+
 /**
- * Gets configs object from config.json.
+ * Gets configs object from configs.json.
+ * If the page has a <meta name="language"> tag, merges default configs with
+ * language-specific ones (/configs-{language}.json), giving precedence to the
+ * language-specific values.
  * @returns {Promise<object>} Window configs object
  */
 // eslint-disable-next-line import/prefer-default-export
 export async function fetchConfigs() {
-  const lang = document.documentElement.lang || 'en';
-  window.configs = window.configs || {};
-  if (!window.configs[lang]) {
-    window.configs[lang] = new Promise((resolve) => {
-      // Check if config JSON exists in sessionStorage
-      const configKey = `config-${lang}`;
-      const cachedConfigJSON = window.sessionStorage.getItem(configKey);
+  const pageLanguage = getPageLanguage();
+  // window.configs.data is the existing key; for lang variants use data-{language}
+  const windowKey = pageLanguage ? `data-${pageLanguage}` : 'data';
 
-      if (cachedConfigJSON) {
+  window.configs = window.configs || {};
+  if (!window.configs[windowKey]) {
+    window.configs[windowKey] = new Promise((resolve) => {
+      const storageKey = pageLanguage ? `bbl-config-${pageLanguage}` : 'bbl-config';
+      const cachedStr = window.sessionStorage.getItem(storageKey);
+
+      if (cachedStr) {
         try {
-          const json = JSON.parse(cachedConfigJSON);
-          const configs = {};
-          json.data
-            ?.filter((config) => config.Key)
-            .forEach((config) => {
-              configs[toCamelCase(config.Key)] = config.Value;
-            });
-          window.configs[lang] = configs;
+          const configs = JSON.parse(cachedStr);
+          window.configs[windowKey] = configs;
           resolve(configs);
           return;
         } catch (e) {
-          // If parsing fails, continue to fetch
           // eslint-disable-next-line no-console
           console.warn('Failed to parse cached config, fetching fresh:', e);
         }
       }
 
-      // Fetch from config.json if not in sessionStorage
-      const configPath = `/${lang}/config.json`;
-      fetch(configPath)
-        .then((resp) => {
-          if (resp.ok) {
-            return resp.json();
-          }
-          return { data: [] };
-        }).then((json) => {
-          // Store entire JSON in sessionStorage
-          try {
-            window.sessionStorage.setItem(configKey, JSON.stringify(json));
-          } catch (e) {
-            // eslint-disable-next-line no-console
-            console.warn('Failed to store config in sessionStorage:', e);
-          }
+      const fetchDefault = fetch('/configs.json')
+        .then((r) => (r.ok ? r.json() : { data: [] }))
+        .catch(() => ({ data: [] }));
 
-          const configs = {};
-          json.data
-            ?.filter((config) => config.Key)
-            .forEach((config) => {
-              configs[toCamelCase(config.Key)] = config.Value;
-            });
+      const fetchLang = pageLanguage
+        ? safeFetchJson(`/configs-${pageLanguage}.json`)
+        : Promise.resolve({ data: [] });
 
-          window.configs[lang] = configs;
-          resolve(window.configs[lang]);
-        }).catch(() => {
-          // error loading configs
-          window.configs[lang] = {};
-          resolve(window.configs[lang]);
-        });
+      Promise.all([fetchDefault, fetchLang]).then(([defaultJson, langJson]) => {
+        const configs = {
+          ...parseConfigEntries(defaultJson),
+          ...parseConfigEntries(langJson),
+        };
+
+        try {
+          const toStore = configs;
+          window.sessionStorage.setItem(storageKey, JSON.stringify(toStore));
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.warn('Failed to store config in sessionStorage:', e);
+        }
+
+        window.configs[windowKey] = configs;
+        resolve(configs);
+      });
     });
   }
-  return window.configs[lang];
+  return window.configs[windowKey];
 }

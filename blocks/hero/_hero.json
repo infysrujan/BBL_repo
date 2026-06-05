@@ -45,21 +45,25 @@
           "label": "Variant",
           "valueType": "string",
           "options": [
-            { 
-              "name": "Hero With Thumbnail Images", 
-              "value": "hero-with-thumbnail-images" 
+            {
+              "name": "Hero With Thumbnail Images",
+              "value": "hero-with-thumbnail-images"
             },
             {
-              "name": "Simple", 
-              "value": "simple" 
+              "name": "Simple",
+              "value": "simple"
             },
             {
-              "name": "Private or Wealth banking", 
-              "value": "private-wealth-banking" 
+              "name": "Private or Wealth banking",
+              "value": "private-wealth-banking"
             },
             {
-              "name": "Simple with Logo Banner", 
-              "value": "simple-logo-banner" 
+              "name": "Simple with Logo Banner",
+              "value": "simple-logo-banner"
+            },
+            {
+              "name": "Simple with App cta",
+              "value": "simple-app-cta"
             }
           ]
         }
@@ -69,18 +73,64 @@
       "id": "hero-item",
       "fields": [
         {
-          "component": "reference",
+          "component": "select",
+          "name": "mediaType",
+          "label": "Background Media",
           "valueType": "string",
-          "name": "image",
-          "label": "Image",
-          "multi": false
+          "value": "images",
+          "options": [
+            { "name": "Images", "value": "images" },
+            { "name": "BG Video", "value": "bg-video" }
+          ]
+        },
+        {
+          "component": "boolean",
+          "name": "isDefault",
+          "label": "Set as Default",
+          "description": "Enable to display this item as the active item on page load.",
+          "valueType": "boolean",
+          "value": false
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopField",
+          "condition": { "===": [{ "var": "mediaType" }, "images"] }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopMimeTypeField",
+          "condition": { "===": [{ "var": "mediaType" }, "images"] }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
+          "condition": { "===": [{ "var": "mediaType" }, "images"] }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
+          "condition": { "===": [{ "var": "mediaType" }, "images"] }
         },
         {
           "component": "text",
           "valueType": "string",
-          "name": "imageAlt",
-          "label": "Alt",
-          "value": ""
+          "name": "imagePickerAlt",
+          "label": "Alternative text for accessibility",
+          "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
+          "condition": { "===": [{ "var": "mediaType" }, "images"] }
+        },
+        {
+          "component": "text",
+          "name": "youtubeUrl",
+          "label": "YouTube URL",
+          "description": "Enter the YouTube video URL (e.g. https://www.youtube.com/watch?v=...)",
+          "valueType": "string",
+          "condition": { "===": [{ "var": "mediaType" }, "bg-video"] }
+        },
+        {
+          "component": "reference",
+          "name": "damVideoAsset",
+          "label": "DAM Video Asset",
+          "description": "Upload and select a DAM video asset (MP4)",
+          "valueType": "string",
+          "multi": false,
+          "condition": { "===": [{ "var": "mediaType" }, "bg-video"] }
         },
         {
           "component": "reference",
@@ -115,6 +165,13 @@
         },
         {
           "component": "richtext",
+          "valueType": "string",
+          "name": "preTitle",
+          "label": "Pre Title",
+          "value": ""
+        },
+        {
+          "component": "richtext",
           "name": "title",
           "value": "",
           "label": "Title",
@@ -126,10 +183,58 @@
           "name": "subtitle",
           "value": "",
           "label": "Sub Title",
-          "valueType": "string"        
+          "valueType": "string"
         },
         {
           "...": "../../models/elements/_button-fields.json"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "appStoreImage",
+          "label": "App Store Image",
+          "multi": false,
+          "description": "For 'Simple with App cta' variant - Upload and select an image for the app store badge (e.g. 'Download on the App Store' badge)"
+        },
+        {
+          "component": "aem-content",
+          "name": "appStoreLink",
+          "label": "App Store Link",
+          "description": "Destination URL for the app store button"
+        },
+        {
+          "component": "text",
+          "name": "appStoreLinkTitle",
+          "label": "App Store Link Title",
+          "description": "Accessibility title attribute (optional)"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "googlePlayImage",
+          "label": "Google Play Image",
+          "multi": false,
+          "description": "For 'Simple with App cta' variant - Upload and select an image for the Google Play badge (e.g. 'Get it on Google Play' badge)"
+        },
+        {
+          "component": "aem-content",
+          "name": "googlePlayLink",
+          "label": "Google Play Link",
+          "description": "Destination URL for the Google Play button"
+        },
+        {
+          "component": "text",
+          "name": "googlePlayLinkTitle",
+          "label": "Google Play Link Title",
+          "description": "Accessibility title attribute (optional)"
+        },
+        {
+          "component": "boolean",
+          "name": "enableAppCtaForMobile",
+          "label": "Enable App CTA for Mobile",
+          "description": "If enabled, the app call-to-action will be displayed on mobile devices.",
+          "valueType": "boolean",
+          "value": false
         }
       ]
     }
