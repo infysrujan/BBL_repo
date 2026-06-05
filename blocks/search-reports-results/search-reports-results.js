@@ -1,8 +1,14 @@
 import { getLang } from '../../scripts/scripts.js';
+import {
+  createModalShell,
+  showModal,
+  hideModal,
+  setupModalHandlers,
+} from '../../scripts/utils/modal.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { decorateIcons } from '../../scripts/aem.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
-import openPdfViewer from '../../scripts/utils/pdf-viewer.js';
 
 function el(tag, { className, text, attrs = {} } = {}) {
   const node = document.createElement(tag);
@@ -28,6 +34,96 @@ function sortAssets(assets, type) {
   });
 }
 
+function openPdfPreview(path, name, googleViewerUrl) {
+  const lang = getLang();
+
+  const { overlay, dialog, closeBtn } = createModalShell({
+    overlayClass: 'srr-preview-overlay',
+    dialogClass: 'srr-preview-dialog',
+    closeBtnClass: 'srr-preview-close',
+    ariaLabel: 'PDF Preview',
+    closeBtnAriaLabel: 'Close preview',
+    closeBtnHTML: '<span class="icon icon-close"></span>',
+  });
+  decorateIcons(closeBtn);
+
+  // Header: clone from search-reports modal header
+  const srHeader = document.querySelector('.search-reports-overlay .sr-header');
+  const header = el('div', { className: 'srr-preview-header' });
+  if (srHeader) {
+    const cloned = srHeader.cloneNode(true);
+    const clonedCloseBtn = cloned.querySelector('.sr-close-btn');
+    if (clonedCloseBtn) cloned.replaceChild(closeBtn, clonedCloseBtn);
+    header.append(cloned);
+  } else {
+    const innerContainer = el('div', { className: 'srr-preview-inner-container' });
+    const logoLink = el('a', {
+      className: 'srr-preview-logo',
+      attrs: { href: `/${lang}`, 'aria-label': 'Bangkok Bank Home' },
+    });
+    const logoImg = el('img', {
+      attrs: {
+        src: '/icons/logo.svg',
+        alt: 'Bangkok Bank',
+        width: '120',
+        height: '40',
+        onerror: "this.style.display='none'",
+      },
+    });
+    logoLink.append(logoImg);
+    innerContainer.append(logoLink, closeBtn);
+    header.append(innerContainer);
+  }
+
+  // Body: embed + download button
+  const body = el('div', { className: 'srr-preview-body' });
+  const centerContent = el('div', { className: 'srr-preview-center-content' });
+  const pdfEmbed = el('div', { className: 'srr-custom-pdf' });
+  const embedEl = el('iframe', {
+    attrs: {
+      width: '100%', height: '100%', frameborder: '0', title: name || 'PDF Preview',
+    },
+  });
+  pdfEmbed.append(embedEl);
+
+  fetch(path)
+    .then((r) => r.blob())
+    .then((blob) => {
+      const blobUrl = URL.createObjectURL(blob);
+      embedEl.src = blobUrl;
+      embedEl.addEventListener('load', () => URL.revokeObjectURL(blobUrl), { once: true });
+    })
+    .catch(() => {
+      if (googleViewerUrl) embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
+    });
+
+  const buttonGroup = el('div', { className: 'srr-button-group' });
+  const downloadLink = el('a', {
+    className: 'srr-btn-primary',
+    text: 'Download',
+    attrs: {
+      href: path, title: 'Download', target: '_blank', download: name || '',
+    },
+  });
+  buttonGroup.append(downloadLink);
+
+  centerContent.append(pdfEmbed, buttonGroup);
+  body.append(centerContent);
+  dialog.append(header, body);
+
+  function close() {
+    document.body.classList.remove('srr-preview-open');
+    hideModal(overlay, 'srr-preview-visible');
+  }
+
+  closeBtn.addEventListener('click', close);
+  setupModalHandlers(overlay, dialog, close);
+
+  document.body.classList.add('srr-preview-open');
+  showModal(overlay, 'srr-preview-visible');
+  closeBtn.focus();
+}
+
 function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
   const fetchPath = asset.path.startsWith('http') ? asset.path : `${apiBase}${asset.path}`;
 
@@ -51,15 +147,7 @@ function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
       attrs: { type: 'button', 'aria-label': `Preview ${asset.name}` },
     });
     previewBtn.append(el('span', { className: 'icon icon-preview', attrs: { 'aria-hidden': 'true' } }));
-    previewBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openPdfViewer({
-        path: fetchPath,
-        name: asset.name,
-        googleViewerUrl,
-        classPrefix: 'srr-preview',
-      });
-    });
+    previewBtn.addEventListener('click', (e) => { e.stopPropagation(); openPdfPreview(fetchPath, asset.name, googleViewerUrl); });
     iconGroup.append(previewBtn);
   }
 
