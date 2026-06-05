@@ -38,12 +38,6 @@
     },
     {
       "...": "./components/double-key-dropdown/_double-key-dropdown.json#/definitions"
-    },
-    {
-      "...": "./components/forms-menu-card/_forms-menu-card.json#/definitions"
-    },
-    {
-      "...": "./components/forms-menu-card-actions/_forms-menu-card-actions.json#/definitions"
     }
   ],
   "models": [
@@ -118,13 +112,8 @@
         "tnc",
         "wizard",
         "range",
-        "double-key-dropdown",
-        "forms-menu-card-actions"
+        "double-key-dropdown"
       ]
-    },
-    {
-      "id": "forms-menu-card-actions",
-      "components": ["forms-menu-card"]
     }
   ]
 }

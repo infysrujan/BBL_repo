@@ -1,7 +1,7 @@
 import { loadCSS } from '../../scripts/aem.js';
 
 let customComponents = ['range'];
-const OOTBComponentDecorators = ['accordion', 'double-key-dropdown', 'file', 'forms-menu-card', 'forms-menu-card-actions', 'modal', 'password', 'rating', 'repeat', 'tnc', 'toggleable-link', 'wizard'];
+const OOTBComponentDecorators = ['accordion', 'double-key-dropdown', 'file', 'modal', 'password', 'rating', 'repeat', 'tnc', 'toggleable-link', 'wizard'];
 
 export function setCustomComponents(components) {
   customComponents = components;
@@ -81,21 +81,6 @@ export default async function componentDecorator(element, fd, container, formId)
     && !getOOTBComponents().includes(type)
   ) {
     await loadComponent('double-key-dropdown', element, fd, container, formId);
-  }
-
-  // forms-menu-card and forms-menu-card-actions: same viewType fallback pattern.
-  if (
-    fd['fd:viewType'] === 'forms-menu-card'
-    && !getOOTBComponents().includes(type)
-  ) {
-    await loadComponent('forms-menu-card', element, fd, container, formId);
-  }
-
-  if (
-    fd['fd:viewType'] === 'forms-menu-card-actions'
-    && !getOOTBComponents().includes(type)
-  ) {
-    await loadComponent('forms-menu-card-actions', element, fd, container, formId);
   }
 
   if (fieldType === 'file-input') {
