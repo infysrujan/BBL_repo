@@ -13,30 +13,28 @@ function formatDate(dateStr) {
   return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
-function isKeywordCell(cell) {
-  if (!cell.textContent.trim()) return false;
-  return ![...cell.querySelectorAll('*')].some(
-    (el) => el instanceof HTMLAnchorElement
-      || el instanceof HTMLImageElement
-      || el instanceof HTMLPictureElement
-      || el instanceof HTMLHeadingElement,
-  );
-}
-
 function isToggleCell(cell) {
   const text = cell?.textContent?.trim().toLowerCase() || '';
   return text === 'true' || text === 'false' || cell?.innerHTML?.trim() === '';
 }
 
+function isKeywordCell(cell) {
+  const text = cell.textContent.trim().toLowerCase();
+  if (!text || isToggleCell(cell)) return false;
+
+  return /^[a-z-]+$/.test(text) && !cell.querySelector('a, img, picture, h1, h2, h3, h4, h5, h6');
+}
+
 function extractToggledLink(cells, valueCellSelector) {
   const valueCell = cells.find(valueCellSelector);
-  if (!valueCell) return { enabled: false, cell: null };
+  if (!valueCell) return { enabled: false, cell: null, toggleCell: null };
 
   const indexInAll = cells.indexOf(valueCell);
   const prevCell = cells[indexInAll - 1];
-  const isDisabled = isToggleCell(prevCell) && prevCell?.textContent?.trim().toLowerCase() === 'false';
+  const isToggle = isToggleCell(prevCell);
+  const isDisabled = isToggle && prevCell?.textContent?.trim().toLowerCase() === 'false';
 
-  return { enabled: !isDisabled, cell: valueCell };
+  return { enabled: !isDisabled, cell: valueCell, toggleCell: isToggle ? prevCell : null };
 }
 
 function buildCardWrapper(
@@ -80,17 +78,17 @@ function createCardItem(cardRow, doc) {
 
   if (!cells.some((c) => c.textContent.trim().length > 0)) return null;
 
-  const findInCells = (ctor) => cells.reduce((found, cell) => {
+  const findInCells = (selector) => cells.reduce((found, cell) => {
     if (found.el) return found;
-    const el = [...cell.querySelectorAll('*')].find((e) => e instanceof ctor);
+    const el = cell.querySelector(selector);
     return el ? { cell, el } : found;
   }, { cell: null, el: null });
 
-  const { cell: imgCell, el: imgEl } = findInCells(HTMLImageElement);
+  const { cell: imgCell, el: imgEl } = findInCells('img');
   const titleTypeCell = cells.find((c) => /^(h[1-6])$/i.test(c.textContent.trim()));
   const titleType = titleTypeCell?.textContent.trim().toLowerCase() || 'h3';
 
-  const headingData = findInCells(HTMLHeadingElement);
+  const headingData = findInCells('h1, h2, h3, h4, h5, h6');
   let titleCell = headingData.cell;
   const headingEl = headingData.el;
 
@@ -108,19 +106,30 @@ function createCardItem(cardRow, doc) {
   const titleText = titleCell?.textContent?.trim();
   const title = headingEl?.outerHTML?.trim() ?? (titleText ? `<${titleType}>${titleText}</${titleType}>` : '');
 
-  const hasActionContent = (c) => [...c.querySelectorAll('*')]
-    .some((el) => el instanceof HTMLAnchorElement || el instanceof HTMLUListElement);
+  const hasActionContent = (c) => c.querySelector('a, ul') !== null;
   const firstActionCellIdx = cells.findIndex(hasActionContent);
   let actionTypeIdx = -1;
+
   if (firstActionCellIdx > 0) {
-    const candidate = cells[firstActionCellIdx - 1];
-    if (candidate !== imgCell
-      && candidate !== titleCell
-      && candidate !== titleTypeCell
-      && isKeywordCell(candidate)) {
-      actionTypeIdx = firstActionCellIdx - 1;
+    for (let i = firstActionCellIdx - 1; i >= 0; i -= 1) {
+      const candidate = cells[i];
+      if (candidate !== imgCell && candidate !== titleCell && candidate !== titleTypeCell) {
+        if (isKeywordCell(candidate)) {
+          actionTypeIdx = i;
+          break;
+        }
+      }
     }
+  } else {
+    // Fallback if no action content exists but there's a keyword cell
+    actionTypeIdx = cells.findIndex((c) => (
+      c !== imgCell
+      && c !== titleCell
+      && c !== titleTypeCell
+      && isKeywordCell(c)
+    ));
   }
+
   const actionType = actionTypeIdx !== -1 ? cells[actionTypeIdx].textContent.trim().toLowerCase() : '';
 
   const descCell = actionTypeIdx > 1 ? cells[actionTypeIdx - 1] : null;
@@ -136,50 +145,39 @@ function createCardItem(cardRow, doc) {
   let dateText = '';
   const lastCell = remaining[remaining.length - 1];
   const lastCellText = lastCell?.textContent?.trim() || '';
-  const lastCellEls = lastCell ? [...lastCell.querySelectorAll('*')] : [];
   if (lastCellText.length >= 8 && !Number.isNaN(Date.parse(lastCellText))
-    && !lastCellEls.some((el) => el instanceof HTMLAnchorElement)) {
+    && !lastCell?.querySelector('a')) {
     dateText = formatDate(lastCellText);
     remaining = remaining.slice(0, -1);
   }
 
-  const { enabled: enableOverlayModal, cell: modalCell } = extractToggledLink(
-    remaining,
-    (c) => [...c.querySelectorAll('*')]
-      .find((el) => el instanceof HTMLAnchorElement
-        && el.getAttribute('href')?.includes('/fragments/')),
-  );
-  const overlayHref = enableOverlayModal
-    ? [...modalCell.querySelectorAll('*')].find((el) => el instanceof HTMLAnchorElement).getAttribute('href')
-    : '';
-  remaining = remaining.filter((c) => c !== modalCell);
+  const processLink = (selector) => {
+    const { enabled, cell, toggleCell } = extractToggledLink(remaining, selector);
+    const anchor = enabled && cell ? cell.querySelector('a') : null;
+    remaining = remaining.filter((c) => c !== cell && c !== toggleCell);
+    return { enabled, anchor };
+  };
 
-  const { enabled: isCardClickable, cell: cardLinkCell } = extractToggledLink(
-    remaining,
+  const { enabled: enableOverlayModal, anchor: modalAnchor } = processLink(
+    (c) => c.querySelector('a[href*="/fragments/"]'),
+  );
+  const overlayHref = modalAnchor?.getAttribute('href') || '';
+
+  const { enabled: isCardClickable, anchor: cardLinkAnchor } = processLink(
     (c) => {
-      const els = [...c.querySelectorAll('*')];
-      const a = els.find((el) => el instanceof HTMLAnchorElement);
-      if (!a || els.some((el) => el instanceof HTMLUListElement)) return false;
+      if (c.querySelector('ul')) return false;
+      const a = c.querySelector('a');
+      if (!a) return false;
       const text = a.textContent?.trim() || '';
       const href = a.getAttribute('href')?.trim() || '';
-      return text.includes('/') || href.endsWith(text) || text === href;
+      return text.includes('/') || (text && href.endsWith(text)) || text === href;
     },
   );
-  const cardLinkAnchor = isCardClickable
-    ? [...cardLinkCell.querySelectorAll('*')].find((el) => el instanceof HTMLAnchorElement)
-    : null;
   const cardLinkHref = cardLinkAnchor?.getAttribute('href') || '';
   const cardLinkTarget = cardLinkAnchor?.target || '';
   const cardLinkTitle = cardLinkAnchor?.title?.trim() || '';
-  remaining = remaining.filter((c) => c !== cardLinkCell);
 
-  const actionCells = remaining.filter((c) => {
-    const els = [...c.querySelectorAll('*')];
-    return els.some((el) => el instanceof HTMLAnchorElement)
-      && !els.some((el) => el instanceof HTMLHeadingElement
-        || el instanceof HTMLImageElement
-        || el instanceof HTMLPictureElement);
-  });
+  const actionCells = remaining.filter((c) => c.querySelector('a') && !c.querySelector('h1, h2, h3, h4, h5, h6, img, picture'));
 
   const card = createElementFromHTML('<div class="menu-card-action-item"></div>', doc);
   const inner = createElementFromHTML('<div class="menu-card-action-inner"></div>', doc);
@@ -195,7 +193,32 @@ function createCardItem(cardRow, doc) {
     inner.querySelector('.menu-card-action-title')?.classList.add('has-description');
   }
 
-  if (actionType === 'default' && actionCells.length > 0) {
+  const appendDownloadLink = (anchor) => {
+    const dlLink = createDownloadLink(anchor, doc);
+    if (dlLink) {
+      dlLink.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
+      inner.appendChild(dlLink);
+    }
+  };
+
+  if (actionType === 'download' && actionCells.length > 0) {
+    const dlAnchor = actionCells.find((c) => !c.querySelector('ul'))?.querySelector('a')
+      || actionCells[0].querySelector('a');
+    appendDownloadLink(dlAnchor);
+  } else if (actionType === 'multiple-download' && actionCells.length > 0) {
+    const multipleCell = actionCells[actionCells.length - 1];
+    const temp = createElementFromHTML(`<div>${multipleCell.innerHTML}</div>`, doc);
+    temp.querySelectorAll('a').forEach(appendDownloadLink);
+  } else if (actionType === 'select-dropdown') {
+    const dropdownCell = actionCells.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length > 1);
+    if (dropdownCell) {
+      const labelCellIdx = remaining.indexOf(dropdownCell) - 1;
+      const label = (labelCellIdx >= 0 && !remaining[labelCellIdx].querySelector('a'))
+        ? remaining[labelCellIdx].textContent.trim()
+        : remaining[labelCellIdx]?.textContent.trim() || 'Select';
+      inner.appendChild(createGlobalDropdown(label, dropdownCell.innerHTML, doc));
+    }
+  } else if (actionType && actionCells.length > 0) {
     const buttonContainer = actionCells[0].querySelector('.button-container') ?? actionCells[0];
     const btn = buttonContainer.cloneNode(true);
     const buttonLink = btn.querySelector('a');
@@ -206,30 +229,11 @@ function createCardItem(cardRow, doc) {
       buttonLink.setAttribute('data-modal', overlayHref);
     }
 
-    inner.appendChild(btn);
-  } else if (actionType === 'download' && actionCells.length > 0) {
-    const dlAnchor = actionCells.find((c) => !c.querySelector('ul'))?.querySelector('a')
-      || actionCells[0].querySelector('a');
-    const dlLink = createDownloadLink(dlAnchor, doc);
-    dlLink?.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
-    inner.appendChild(dlLink);
-  } else if (actionType === 'multiple-download' && actionCells.length > 0) {
-    const multipleCell = actionCells[actionCells.length - 1];
-    const temp = createElementFromHTML(`<div>${multipleCell.innerHTML}</div>`, doc);
-    temp.querySelectorAll('a').forEach((anchor) => {
-      const dlLink = createDownloadLink(anchor, doc);
-      dlLink?.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
-      inner.appendChild(dlLink);
-    });
-  } else if (actionType === 'select-dropdown') {
-    const dropdownCell = actionCells.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length > 1);
-    if (dropdownCell) {
-      const labelCellIdx = remaining.indexOf(dropdownCell) - 1;
-      const label = (labelCellIdx >= 0 && !remaining[labelCellIdx].querySelector('a'))
-        ? remaining[labelCellIdx].textContent.trim()
-        : remaining[labelCellIdx]?.textContent.trim() || 'Select';
-      inner.appendChild(createGlobalDropdown(label, dropdownCell.innerHTML, doc));
+    if (actionType !== 'default') {
+      btn.classList.add(`action-${actionType}`);
     }
+
+    inner.appendChild(btn);
   }
 
   if (dateText) {
@@ -291,12 +295,9 @@ function getPreviewContainer(block, doc) {
 
 function renderCardActions(target, rows, block, doc) {
   const firstRowText = rows[0]?.textContent?.trim().toLowerCase() || '';
-  const firstRowEls = rows[0] ? [...rows[0].querySelectorAll('*')] : [];
   const isFirstRowLayout = rows[0]?.children.length === 1
     && /^[a-z-]+$/.test(firstRowText)
-    && !firstRowEls.some((el) => el instanceof HTMLAnchorElement
-      || el instanceof HTMLImageElement
-      || el instanceof HTMLHeadingElement);
+    && !rows[0].querySelector('a, img, h1, h2, h3, h4, h5, h6');
 
   const layoutClass = isFirstRowLayout ? firstRowText : '';
   const isScrollable = layoutClass === 'scrollable';
@@ -321,12 +322,9 @@ function renderCardActions(target, rows, block, doc) {
 
     if (!isAuthoringInstance(block)) {
       moveInstrumentation(row, card);
-    }
-    container.appendChild(card);
-
-    if (!isAuthoringInstance(block)) {
       row.remove();
     }
+    container.appendChild(card);
   });
 
   target.appendChild(container);

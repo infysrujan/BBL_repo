@@ -159,12 +159,6 @@ function createCardListItem(cardElement, doc) {
     );
   }
 
-  if (financialDate) {
-    content.appendChild(
-      createElementFromHTML(`<div class="cards-list-date"><p>${financialDate}</p></div>`, doc),
-    );
-  }
-
   if (content.children.length) {
     inner.appendChild(content);
   }
@@ -205,6 +199,12 @@ function createCardListItem(cardElement, doc) {
     if (buttonWrapper.children.length) {
       inner.appendChild(buttonWrapper);
     }
+  }
+
+  if (financialDate) {
+    inner.appendChild(
+      createElementFromHTML(`<div class="cards-list-date">${financialDate}</div>`, doc),
+    );
   }
 
   if (isCardClickable && cardLinkHref) {
