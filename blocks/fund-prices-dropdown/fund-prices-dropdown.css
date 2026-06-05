@@ -309,7 +309,7 @@
 
 .fund-prices-dropdown .detail-hist-table th:first-child,
 .fund-prices-dropdown .detail-hist-table td:first-child {
-  width: 8rem;
+  width: auto;
 }
 
 .fund-prices-dropdown .detail-hist-table td:first-child {
@@ -319,7 +319,7 @@
 
 .fund-prices-dropdown .detail-hist-table th:not(:first-child),
 .fund-prices-dropdown .detail-hist-table td:not(:first-child) {
-  width: 15%;
+  width: 8rem;
   white-space: nowrap;
 }
 
