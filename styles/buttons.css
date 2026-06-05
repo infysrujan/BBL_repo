@@ -250,9 +250,9 @@ button.secondary,
    TERTIARY BUTTONS (Text/Link Style)
    Text-only buttons with optional arrow
    ========================================================================= */
-.adobe-ue-edit .button-container > a.button,
+.adobe-ue-edit .button-container > a.button,/* Authoring support: added class for better button visibility in Adobe UE */
 .button-tertiary,
-button.tertiary { /* Authoring support: added class for better button visibility in Adobe UE */
+button.tertiary { 
   background: transparent;
   color: var(--bbl-color-active-blue);
   border: none;
@@ -266,7 +266,7 @@ button.tertiary { /* Authoring support: added class for better button visibility
 }
 
 /* Arrow icon */
-.adobe-ue-edit .button-container > a.button::after,
+.adobe-ue-edit .button-container > a.button::after,/* Authoring support: added class for better button visibility in Adobe UE */
 .button-tertiary::after {
   content: '';
   display: inline-block;
