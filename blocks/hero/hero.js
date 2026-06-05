@@ -3,6 +3,10 @@ import { decorateButtonsV1, applyLinkTarget } from '../../scripts/bbl-decorators
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
+const MOBILE_MQ = `(width <= ${
+  getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-mobile-max').trim()
+})`;
+
 function getYouTubeId(url) {
   const regex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
   const match = url.match(regex);
@@ -26,7 +30,7 @@ function pauseBannerVideo(item) {
 }
 
 function playBannerVideo(item) {
-  if (window.matchMedia('(width <= 47.5rem)').matches) return;
+  if (window.matchMedia(MOBILE_MQ).matches) return;
   const video = item?.querySelector('video.hero-banner-video');
   if (video) {
     video.muted = false;
@@ -291,7 +295,7 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
       events: {
         onReady: ({ target }) => {
           iframe.ytPlayerReady = true;
-          if (iframe.dataset.ytPendingPlay && !window.matchMedia('(width <= 47.5rem)').matches) {
+          if (iframe.dataset.ytPendingPlay && !window.matchMedia(MOBILE_MQ).matches) {
             delete iframe.dataset.ytPendingPlay;
             target.unMute();
             target.setVolume(50);
