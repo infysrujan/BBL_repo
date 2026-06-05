@@ -620,11 +620,13 @@ export default async function decorate(block) {
 
     block.classList.remove('hidden');
     block.hidden = false;
+    block.ownerDocument.body.classList.add('fund-prices-detail-active');
     validateAndRenderDetail();
   });
 
   block.addEventListener('fund-prices-dropdown:hide', () => {
     block.classList.add('hidden');
     block.hidden = true;
+    block.ownerDocument.body.classList.remove('fund-prices-detail-active');
   });
 }

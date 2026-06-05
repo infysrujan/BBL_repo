@@ -389,11 +389,19 @@ body.fund-prices-search-in-header header.is-not-overlapped ~ main {
   display: none;
 }
 
-body.fund-prices-detail-active .default-content-wrapper {
+body.fund-prices-detail-active .default-content-wrapper,
+body.fund-prices-detail-active .fund-prices-page-title,
+body.fund-prices-search-in-header .default-content-wrapper {
   display: none;
 }
 
-body.fund-prices-search-in-header .default-content-wrapper {
+body.fund-prices-detail-active .fund-prices-dropdown .fdd-title,
+body.fund-prices-detail-active .fund-prices-dropdown .fdd-title-rule {
+  display: block;
+}
+
+body:has(.fund-prices-dropdown:not(.hidden)) .default-content-wrapper,
+body:has(.fund-prices-dropdown:not(.hidden)) .fund-prices-page-title {
   display: none;
 }
 
