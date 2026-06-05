@@ -11,7 +11,6 @@ import {
   loadSections,
   loadCSS,
   getMetadata,
-  toClassName,
 } from './aem.js';
 
 import {
@@ -24,60 +23,6 @@ import {
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
-
-import env from './utils/env.js';
-import { getCookie } from './utils/cookies.js';
-/**
- * Import the martech plugin.
- * See: https://github.com/adobe-rnd/aem-martech#launch-container-configuration for more information.
- */
-/* eslint-disable import/no-relative-packages -- martech lives under plugins/, not node_modules */
-import {
-  initMartech,
-  martechEager,
-  martechLazy,
-  martechDelayed,
-} from '../plugins/martech/src/index.js';
-/* eslint-enable import/no-relative-packages */
-
-/**
- * Import the gtm-martech plugin.
- * See: https://github.com/adobe-rnd/aem-gtm-martech#launch-container-configuration for more information.
- */
-import gtmMartech from './gtm-martech.js';
-import { initCdpEvents } from './analytics.js';
-import { initMarketingConsentListener } from './consent.js';
-
-initMarketingConsentListener();
-
-// Consent when AnalysisCookie is 'Analysis' (cookie-modal / cookie-alert).
-// Load martech unless the URL query includes martech=off (DA preview).
-let isConsentGiven = getCookie('AnalysisCookie') === 'Analysis';
-const isEnabled = !window.location.search.includes('martech=off');
-
-/**
- * Configuration for each environment.
- * @type {Object}
- */
-// TODO: Update BBL's Dev, Stage and Prod datastream IDs here
-const dataStreamConfig = {
-  dev: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
-  stage: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
-  prod: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
-};
-
-// TODO: Update BBL's Launch script URLs here
-const launchConfig = {
-  dev: [
-    'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-f69e7329c58a-development.min.js',
-  ],
-  stage: [
-    'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-f69e7329c58a-development.min.js',
-  ],
-  prod: [],
-};
-
-const orgId = '599F1E47665EC45B0A495E73@AdobeOrg';
 
 /**
  * Gets the language from the HTML tag.
@@ -162,13 +107,6 @@ function buildAutoBlocks(main) {
  * Decorates the main element.
  * @param {Element} main The main element
  */
-function decorateSectionIds(main) {
-  main.querySelectorAll('.section[data-id]').forEach((section) => {
-    section.id = toClassName(section.dataset.id);
-    delete section.dataset.id;
-  });
-}
-
 // eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
   // hopefully forward compatible button decoration
@@ -176,7 +114,6 @@ export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
-  decorateSectionIds(main);
   decorateBlocks(main);
   decorateTerritoryButtons(main);
   decorateSvgWithAltText(main);
@@ -313,32 +250,6 @@ export function removePictureOptimizationParams(root) {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  const martechLoadedPromise = initMartech(
-    // WebSDK Configuration
-    // TODO: Remove the below comment once the WebSDK Configuration is updated.
-    // Docs: https://experienceleague.adobe.com/en/docs/experience-platform/web-sdk/commands/configure/overview#configure-js
-    {
-      datastreamId: dataStreamConfig[env],
-      orgId,
-      edgeDomain: 'edge.bangkokbank.com',
-      onBeforeEventSend: (payload) => {
-        if (payload.xdm.eventType === 'pageLoaded') {
-          // eslint-disable-next-line no-console
-          console.debug('Prevented custom `pageLoaded` event trigger', payload);
-          return false;
-        }
-        return true;
-      },
-    },
-    // 2. Library Configuration
-    {
-      analytics: isEnabled,
-      personalization: !!getMetadata('target') && isEnabled,
-      launchUrls: launchConfig[env],
-      trackPageView: false, // disables the first collect call
-    },
-  );
-
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
@@ -347,13 +258,7 @@ async function loadEager(doc) {
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');
-    await Promise.all([
-      // Load the martech library in the eager phase.
-      martechLoadedPromise.then(martechEager),
-      // Load the gtm-martech library in the eager phase.
-      gtmMartech.eager(),
-      loadSection(main.querySelector('.section'), waitForFirstImage),
-    ]);
+    await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
 
   try {
@@ -375,8 +280,6 @@ async function loadLazy(doc) {
   await loadWelcomeBanner(doc);
   await loadSections(main);
 
-  // Load the gtm-martech library in the lazy phase.
-  await gtmMartech.lazy();
   await buildCookieAlert(main);
 
   // Decorate buttons again after all sections are loaded (for dynamically loaded content like tabs)
@@ -401,9 +304,6 @@ async function loadLazy(doc) {
     loadFooter(doc.querySelector('footer'));
   }
 
-  // Load the martech library in the lazy phase.
-  await martechLazy();
-
   await loadBreadcrumb(doc);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -415,37 +315,14 @@ async function loadLazy(doc) {
   }, 150);
 }
 
-async function bblMartechDelayed() {
-  isConsentGiven = getCookie('AnalysisCookie') === 'Analysis';
-
-  // Initialize the CDP events only if consent is given and martech is enabled.
-  if (isEnabled && isConsentGiven) {
-    initCdpEvents();
-  }
-}
-
 /**
  * Loads everything that happens a lot later,
  * without impacting the user experience.
  */
 function loadDelayed() {
-  // load the gtm-martech library in the delayed phase
-  window.setTimeout(() => gtmMartech.delayed(), 1000);
-
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => {
-    // Load the martech library in the delayed phase.
-    martechDelayed();
-    // trigger the martech delayed phase
-    bblMartechDelayed();
-
-    import('./delayed.js');
-  }, 3000);
+  window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
-
-  // trigger the martech delayed phase when the consent is updated
-  // eslint-disable-next-line no-return-await
-  window.addEventListener('consent-update', async () => await bblMartechDelayed());
 }
 
 async function loadPage() {
