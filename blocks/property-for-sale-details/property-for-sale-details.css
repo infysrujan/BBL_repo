@@ -232,7 +232,8 @@ a.prop-for-sale-map-link {
 }
 
 .prop-for-sale-map-link:hover {
-  color: var(--bbl-color-blue-140);
+  color: unset;
+  text-decoration: none;
 }
 
 .prop-for-sale-value.button-container {
