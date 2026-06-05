@@ -26,7 +26,7 @@
   margin: 0 0 var(--bbl-space-component-sm);
   font-size: 0.688rem;
   letter-spacing: -0.006rem;
-  font-family: BangkokBank-Regular,Tahoma,Helvetica,Arial,sans-serif;
+  font-family: var(--bbl-font-family-primary);
 }
 
 .mfr-disclaimer p:last-child {
@@ -223,7 +223,7 @@
   position: relative;
   padding-bottom: 0.9375rem;
   margin-bottom: 0.9375rem;
-  font-family: BangkokBank-Medium, sans-serif;
+  font-family: var(--bbl-font-family-medium);
 }
 
 /* Underline decoration (matches live .line::before) */
@@ -250,7 +250,7 @@
   -webkit-line-clamp: 10;
   line-clamp: 10;
   -webkit-box-orient: vertical;
-  font-family: BangkokBank-Regular,Tahoma,Helvetica,Arial,sans-serif;
+  font-family: var(--bbl-font-family-primary);
 }
 
 /* ── Button area — padding matches live .button-group ───────────────────── */
@@ -346,7 +346,7 @@
   min-width: 9.6875rem;
   padding: 0 1.25rem;
   border-radius: 0.4375rem;
-  font-family: BangkokBank-Regular,Tahoma,Helvetica,Arial,sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-size: 0.875rem;
   line-height: 2.75rem;
   font-weight: var(--bbl-font-weight-regular);
