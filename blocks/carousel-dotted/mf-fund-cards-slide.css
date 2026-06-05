@@ -42,7 +42,7 @@
   margin: var(--bbl-space-500) auto;
   max-width: 56.25rem; /* 900px */
   padding: 0 var(--bbl-space-300);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-size: 1rem;
   line-height: 1.375;
   color: var(--bbl-color-grey-85);
@@ -51,7 +51,7 @@
 
 .mf-fund-cards-description p {
   margin: 0 0 10px;
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-size: 1rem;
   line-height: 1.375;
   color: var(--bbl-color-grey-85);
@@ -65,7 +65,7 @@
 
 .mf-fund-cards-description li {
   margin-bottom: 10px ;
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-size: 1rem;
   line-height: 1.375;
   color: var(--bbl-color-grey-85);
@@ -116,7 +116,7 @@
   position: relative;
   padding-bottom: 0.9375rem;
   margin-bottom: 0.9375rem;
-  font-family: BangkokBank-Medium, sans-serif;
+  font-family: var(--bbl-font-family-medium);
 }
 
 /* Underline decoration (matches live .line::before) */
@@ -142,7 +142,7 @@
   -webkit-line-clamp: 10;
   line-clamp: 10;
   -webkit-box-orient: vertical;
-  font-family: BangkokBank-Regular,Tahoma,Helvetica,Arial,sans-serif;
+  font-family: var(--bbl-font-family-primary);
 }
 
 /* ── Card content area ────────────────────────────────────────────────────── */

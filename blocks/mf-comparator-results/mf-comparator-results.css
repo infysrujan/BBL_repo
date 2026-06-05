@@ -1,6 +1,6 @@
 .mf-comparator-results .mfcr-notes {
   padding: var(--bbl-space-layout-sm) var(--bbl-space-container-xs);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-size: 0.8125rem;
   color: var(--bbl-color-grey-150);
   line-height: var(--bbl-line-height-body, 1.6);
@@ -19,14 +19,14 @@
 
 .mf-comparator-results .mfcr-notes li {
   margin-bottom: 0.25rem;
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-size: 0.8125rem;
   color: var(--bbl-color-grey-150);
   line-height: 1.63;
 }
 
 .mf-comparator-results .mfcr-notes p {
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-size: 0.8125rem;
   color: var(--bbl-color-grey-150);
   font-weight: normal;
@@ -201,7 +201,7 @@
   border: 0.0625rem solid var(--bbl-color-active-blue);
   background: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-size: 1rem;
   line-height: 1.375;
   text-decoration: none;
