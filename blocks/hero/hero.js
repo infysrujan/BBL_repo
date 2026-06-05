@@ -26,6 +26,7 @@ function pauseBannerVideo(item) {
 }
 
 function playBannerVideo(item) {
+  if (window.matchMedia('(width <= 47.5rem)').matches) return;
   const video = item?.querySelector('video.hero-banner-video');
   if (video) {
     video.muted = false;
@@ -290,7 +291,7 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
       events: {
         onReady: ({ target }) => {
           iframe.ytPlayerReady = true;
-          if (iframe.dataset.ytPendingPlay) {
+          if (iframe.dataset.ytPendingPlay && !window.matchMedia('(width <= 47.5rem)').matches) {
             delete iframe.dataset.ytPendingPlay;
             target.unMute();
             target.setVolume(50);
@@ -435,7 +436,7 @@ export default async function decorate(block) {
         const ytId = getYouTubeId(youtubeUrl);
         const iframe = document.createElement('iframe');
         if (isMobile) {
-          iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?mute=1&loop=1&playlist=${ytId}` : youtubeUrl;
+          iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=0&controls=0&enablejsapi=1&playsinline=1` : youtubeUrl;
         } else {
           iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&controls=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}` : youtubeUrl;
         }
@@ -451,16 +452,15 @@ export default async function decorate(block) {
       } else if (damVideoSrc) {
         const video = document.createElement('video');
         video.className = 'hero-banner-video';
-        video.muted = true;
-        video.setAttribute('muted', '');
-        video.loop = true;
         video.playsInline = true;
         video.setAttribute('playsinline', '');
         if (!isMobile) {
+          video.muted = true;
+          video.setAttribute('muted', '');
+          video.loop = true;
           video.autoplay = true;
           video.setAttribute('autoplay', '');
         }
-        if (isMobile) video.controls = true;
         const source = document.createElement('source');
         source.src = damVideoSrc;
         source.type = 'video/mp4';
@@ -468,17 +468,35 @@ export default async function decorate(block) {
         const videoWrapper = createElement('div', 'hero-banner-video-wrapper');
         videoWrapper.append(video);
         bannerItem.append(videoWrapper);
-        if (!isMobile) {
-          const bar = buildControls(videoWrapper);
-          wireDAMControls(video, bar, videoWrapper, bannerItem);
-          if (i === defaultIndex) {
-            video.addEventListener('play', () => {
+        const bar = buildControls(videoWrapper);
+        wireDAMControls(video, bar, videoWrapper, bannerItem);
+
+        if (isMobile) {
+        // Start paused on mobile
+          video.pause();
+
+          // Ensure center play button is visible initially
+          const centerBtn = videoWrapper.querySelector(
+            '.hero-banner-center-play',
+          );
+
+          if (centerBtn) {
+            centerBtn.classList.remove(
+              'hero-banner-center-play-hidden',
+            );
+          }
+        } else if (i === defaultIndex) {
+          video.addEventListener(
+            'play',
+            () => {
               video.muted = false;
               video.removeAttribute('muted');
               video.volume = 0.5;
-            }, { once: true });
-            video.play().catch(() => {});
-          }
+            },
+            { once: true },
+          );
+
+          video.play().catch(() => {});
         }
       }
     } else {
