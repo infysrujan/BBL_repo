@@ -83,6 +83,13 @@ export default async function componentDecorator(element, fd, container, formId)
     await loadComponent('double-key-dropdown', element, fd, container, formId);
   }
 
+  // forms-menu-card: display-only card grid rendered inside an Adaptive Form.
+  // Some AEM runtime versions expose the component via fd:viewType; others set :type to
+  // the fd:viewType value directly (matching the behaviour of accordion, rating, etc.).
+  if (fd['fd:viewType'] === 'forms-menu-card' || type === 'forms-menu-card') {
+    await loadComponent('forms-menu-card', element, fd, container, formId);
+  }
+
   if (fieldType === 'file-input') {
     await loadComponent('file', element, fd, container, formId);
   }

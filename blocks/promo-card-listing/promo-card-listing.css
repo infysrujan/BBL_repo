@@ -11,6 +11,11 @@
   justify-content: center;
 }
 
+/* BBM grid: always center all rows, including partial ones. */
+.promo-selector-grid.is-bbm-grid {
+  justify-content: center;
+}
+
 .promo-selector-logos {
   display: flex;
   gap: var(--bbl-space-075);
@@ -158,6 +163,10 @@
     padding-inline: 0.625rem;
   }
 
+  .promo-selector-grid:not(.is-bbm-grid):has(> .listing-card-container:only-child) {
+    justify-content: center;
+  }
+
   .promo-selector-empty {
     font-size: var(--bbl-font-size-b2);
   }
@@ -269,6 +278,11 @@ body.mobile-app-view main > div:first-child {
   .promo-selector-grid:has(.promo-selector-empty) {
     width: unset;
     padding-inline: 0;
+  }
+
+  /* Non-BBM grid: center a single lone card on desktop. */
+  .promo-selector-grid:not(.is-bbm-grid):has(> .listing-card-container:only-child) {
+    justify-content: center;
   }
 
   .promo-selector-empty {
