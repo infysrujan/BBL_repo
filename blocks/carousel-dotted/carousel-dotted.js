@@ -276,7 +276,8 @@ export default async function decorate(block) {
   const autoScroll = readBoolean(rows[2]);
   const scrollTimeDelay = rows[3]?.textContent.trim() || '';
   const showLinks = readBoolean(rows[4]);
-  const seeMoreLink = showLinks ? rows[5]?.querySelector('a') : null;
+  const seeMoreButtonContainer = showLinks ? rows[5]?.querySelector('.button-container') : null;
+  const seeMoreLink = seeMoreButtonContainer?.querySelector('a') ?? (showLinks ? rows[5]?.querySelector('a') : null);
   const boolValues = new Set(['true', 'false']);
   const row6Text = showLinks ? rows[6]?.textContent?.trim() || '' : '';
   const targetRowPresent = boolValues.has(row6Text);
@@ -676,9 +677,13 @@ export default async function decorate(block) {
     }
     const openInNewTab = seeMoreTargetValue === 'true' || seeMoreLink.target === '_blank';
     if (openInNewTab) seeMoreLink.setAttribute('target', '_blank');
-    const linkWrap = document.createElement('span');
-    linkWrap.append(seeMoreLink);
-    moreWrap.append(linkWrap);
+    if (seeMoreButtonContainer) {
+      moreWrap.append(seeMoreButtonContainer);
+    } else {
+      const linkWrap = document.createElement('span');
+      linkWrap.append(seeMoreLink);
+      moreWrap.append(linkWrap);
+    }
     renderHost.append(moreWrap);
   }
 
