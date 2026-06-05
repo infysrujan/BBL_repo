@@ -1,5 +1,5 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
-import { getLang } from '../../scripts/bbl-decorators.js';
+import { getLang, isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
@@ -249,13 +249,43 @@ function createCardItem(cardRow, doc) {
   return card;
 }
 
-export default function decorate(block) {
-  const doc = block.ownerDocument;
-  const allRows = [...block.children];
+function stripAuthoringInstrumentation(root) {
+  if (!root) return;
+  [root, ...root.querySelectorAll('*')].forEach((el) => {
+    [...el.attributes]
+      .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
+      .forEach(({ name }) => el.removeAttribute(name));
+  });
+}
 
-  const firstRowText = allRows[0]?.textContent?.trim().toLowerCase() || '';
-  const firstRowEls = allRows[0] ? [...allRows[0].querySelectorAll('*')] : [];
-  const isFirstRowLayout = allRows[0]?.children.length === 1
+function removeDuplicateAuthoringBlocks(block) {
+  const blockResource = block.dataset.aueResource;
+  if (!blockResource) return;
+
+  block.ownerDocument.querySelectorAll('.menu-card-actions.block').forEach((other) => {
+    if (other === block) return;
+    if (other.dataset.aueResource !== blockResource) return;
+    if (!other.classList.contains('has-preview') && !other.querySelector('.menu-card-actions-preview')) return;
+    other.remove();
+  });
+}
+
+function getPreviewContainer(block, doc) {
+  const previewContainers = [...block.querySelectorAll(':scope > .menu-card-actions-preview')];
+  const previewContainer = previewContainers.shift() || doc.createElement('div');
+
+  previewContainers.forEach((container) => container.remove());
+
+  previewContainer.className = 'menu-card-actions-preview';
+  if (!previewContainer.isConnected) block.appendChild(previewContainer);
+
+  return previewContainer;
+}
+
+function renderCardActions(target, rows, block, doc) {
+  const firstRowText = rows[0]?.textContent?.trim().toLowerCase() || '';
+  const firstRowEls = rows[0] ? [...rows[0].querySelectorAll('*')] : [];
+  const isFirstRowLayout = rows[0]?.children.length === 1
     && /^[a-z-]+$/.test(firstRowText)
     && !firstRowEls.some((el) => el instanceof HTMLAnchorElement
       || el instanceof HTMLImageElement
@@ -265,7 +295,7 @@ export default function decorate(block) {
   const isScrollable = layoutClass === 'scrollable';
   const customClasses = layoutClass && layoutClass !== 'stacked' ? ` ${layoutClass}` : '';
   const layout = isScrollable ? 'scrollable' : `stacked${customClasses}`;
-  const cardRows = isFirstRowLayout ? allRows.slice(1) : allRows;
+  const cardRows = isFirstRowLayout ? rows.slice(1) : rows;
 
   const section = block.closest('.menu-card-actions-container');
   ['text', 'image'].forEach((type, i) => {
@@ -275,26 +305,61 @@ export default function decorate(block) {
 
   const container = createElementFromHTML(`<div class="menu-card-action ${layout}"></div>`, doc);
 
-  if (isFirstRowLayout) allRows[0].hidden = true;
+  if (isFirstRowLayout) rows[0].hidden = true;
 
   cardRows.forEach((row) => {
     const card = createCardItem(row, doc);
 
     if (!card) return;
 
-    moveInstrumentation(row, card);
+    if (!isAuthoringInstance(block)) {
+      moveInstrumentation(row, card);
+    }
     container.appendChild(card);
-    row.remove();
+
+    if (!isAuthoringInstance(block)) {
+      row.remove();
+    }
   });
 
-  block.appendChild(container);
+  target.appendChild(container);
 
-  block.addEventListener('click', (event) => {
-    const trigger = event.target.closest('[data-modal]');
-    if (!trigger || !block.contains(trigger)) return;
-    if (event.target.closest('a') || event.target.closest('[role="link"]')) return;
-    event.preventDefault();
-    const fragmentPath = trigger.getAttribute('data-modal');
-    if (fragmentPath) openModal(doc, { fragmentPath });
-  });
+  if (!block.dataset.menuCardActionsDecorated) {
+    block.dataset.menuCardActionsDecorated = 'true';
+    block.addEventListener('click', (event) => {
+      const trigger = event.target.closest('[data-modal]');
+      if (!trigger || !block.contains(trigger)) return;
+      if (event.target.closest('a') || event.target.closest('[role="link"]')) return;
+      event.preventDefault();
+      const fragmentPath = trigger.getAttribute('data-modal');
+      if (fragmentPath) openModal(doc, { fragmentPath });
+    });
+  }
+}
+
+export default function decorate(block) {
+  const doc = block.ownerDocument;
+
+  if (isAuthoringInstance(block)) {
+    removeDuplicateAuthoringBlocks(block);
+
+    block.querySelectorAll(':scope > div').forEach((row) => {
+      if (!row.classList.contains('menu-card-actions-preview')) {
+        row.dataset.configRow = '';
+        row.style.display = 'none';
+      }
+    });
+
+    block.classList.add('has-preview');
+    const previewContainer = getPreviewContainer(block, doc);
+
+    previewContainer.innerHTML = '';
+    const allRows = [...block.querySelectorAll(':scope > div[data-config-row]')];
+    renderCardActions(previewContainer, allRows, block, doc);
+    stripAuthoringInstrumentation(previewContainer);
+    return;
+  }
+
+  const allRows = [...block.children];
+  renderCardActions(block, allRows, block, doc);
 }
