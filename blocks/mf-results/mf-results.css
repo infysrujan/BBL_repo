@@ -180,8 +180,8 @@
 /* ── Image area (image layout = "default") ───────────────────────────────── */
 
 .card-list.mf-results .cards-list-image {
-  height: 8.4375rem !important;
-  max-height: 8.4375rem !important;
+  height: 8.4375rem;
+  max-height: 8.4375rem;
   overflow: hidden;
 }
 
@@ -196,12 +196,12 @@
 /* ── Logo in remark area ─────────────────────────────────────────────────── */
 
 .card-list.mf-results .cards-list-remark img.mfr-logo {
-  height: 2.5rem !important;
-  width: 8.875rem !important;
-  max-width: 8.875rem !important;
-  object-fit: contain !important;
-  display: block !important;
-  margin-bottom: 1.4375rem !important;
+  height: 2.5rem;
+  width: 8.875rem;
+  max-width: 8.875rem;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 1.4375rem;
 }
 
 /* ── Card content area padding (matches live .caption padding: 20px) ─────── */
@@ -438,20 +438,20 @@
 }
 
 .card-list.mf-results .cards-list.single-card .cards-list-item {
-  flex: 0 0 100% !important;
-  width: 100% !important;
-  max-width: 16.875rem !important;
-  margin: 0 auto var(--bbl-space-250) auto !important;
+  flex: 0 0 100%;
+  width: 100%;
+  max-width: 16.875rem;
+  margin: 0 auto var(--bbl-space-250) auto;
 }
 
 @media (width > 47.5rem) {
   .card-list.mf-results .cards-list.scrollable.single-card .cards-list-item {
-    margin-bottom: var(--bbl-space-250) !important;
+    margin-bottom: var(--bbl-space-250);
   }
 }
 
 @media (width > 64rem) {
   .card-list.mf-results .cards-list.scrollable.single-card .cards-list-item {
-    margin-bottom: var(--bbl-space-500) !important;
+    margin-bottom: var(--bbl-space-500);
   }
 }
