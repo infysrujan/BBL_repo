@@ -49,16 +49,10 @@ export default function openPdfViewer({
   embedEl.setAttribute('title', name || 'PDF Preview');
   pdfEmbed.append(embedEl);
 
-  fetch(path)
-    .then((r) => r.blob())
-    .then((blob) => {
-      const blobUrl = URL.createObjectURL(blob);
-      embedEl.src = blobUrl;
-      embedEl.addEventListener('load', () => URL.revokeObjectURL(blobUrl), { once: true });
-    })
-    .catch(() => {
-      if (googleViewerUrl) embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
-    });
+  embedEl.src = path;
+  embedEl.addEventListener('error', () => {
+    if (googleViewerUrl) embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
+  }, { once: true });
 
   const buttonGroup = document.createElement('div');
   buttonGroup.className = `${classPrefix}-button-group`;
@@ -67,8 +61,8 @@ export default function openPdfViewer({
   downloadLink.className = `${classPrefix}-download`;
   downloadLink.textContent = downloadLabel;
   downloadLink.href = path;
-  downloadLink.target = '_blank';
   downloadLink.download = name || '';
+  downloadLink.target = '_blank';
   buttonGroup.append(downloadLink);
 
   centerContent.append(pdfEmbed, buttonGroup);
