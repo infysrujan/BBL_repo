@@ -110,14 +110,14 @@
   display: flex;
   align-items: center;
   gap: var(--bbl-space-200);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   padding: 0 0 1.875rem;
 }
 
 .fund-prices-dropdown .period-select-wrapper {
   position: relative;
-  display: block;
-  width: 100%;
+  display: inline-block;
+  width: auto;
   box-sizing: border-box;
   padding-left: 0.625rem;
 }
@@ -190,7 +190,7 @@
   display: flex;
   align-items: center;
   gap: var(--bbl-space-150);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .fund-prices-dropdown .period-date-range.hidden {
@@ -217,6 +217,7 @@
 }
 
 .fund-prices-dropdown .stat-tables-print-row {
+  display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2.125rem;
@@ -225,6 +226,17 @@
 .fund-prices-dropdown .fund-prices-print-label {
   width: fit-content;
   padding-left: 0.625rem;
+  padding-right: 3rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.fund-prices-dropdown .fund-prices-print-label::before {
+  position: absolute;
+  right: 1.625rem;
+  top: 38%;
 }
 
 .fund-prices-dropdown .stat-table-card {
@@ -548,6 +560,12 @@
     margin-bottom: 0.625rem;
   }
 
+  .fund-prices-dropdown .fdd-period-bar .period-select-wrapper {
+    display: inline-block;
+    width: auto;
+    margin-bottom: 0;
+  }
+
   .fund-prices-dropdown .period-select-btn {
     width: 100%;
     height: 2.75rem;
@@ -566,8 +584,8 @@
   }
 
   .fund-prices-dropdown .stat-tables-print-row {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: var(--bbl-space-100);
   }
 
