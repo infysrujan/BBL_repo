@@ -343,7 +343,6 @@
 }
 
 .currency-converter-expanded .converter-expanded-btn:hover {
-  opacity: 0.9;
   background: var(--bbl-color-white);
 }
 
