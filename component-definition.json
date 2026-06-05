@@ -1198,38 +1198,6 @@
           }
         },
         {
-          "title": "Forms Menu Card",
-          "id": "forms-menu-card",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/fd/components/form/text/v1/text",
-                "template": {
-                  "jcr:title": "Forms Menu Card",
-                  "fieldType": "plain-text",
-                  "fd:viewType": "forms-menu-card"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Forms Menu Card Actions",
-          "id": "forms-menu-card-actions",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/fd/components/form/panelcontainer/v1/panelcontainer",
-                "template": {
-                  "jcr:title": "Forms Menu Card Actions",
-                  "fieldType": "panel",
-                  "fd:viewType": "forms-menu-card-actions"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "Forward Points SME",
           "id": "forward-points-sme",
           "plugins": {
