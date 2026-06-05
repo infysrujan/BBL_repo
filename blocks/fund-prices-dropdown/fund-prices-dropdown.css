@@ -496,7 +496,7 @@
     background: none;
     padding: var(--bbl-space-100) 0 0.625rem;
     font-size: 0.9375rem;
-    color: var(--bbl-color-grey-70);
+    color: var(--bbl-color-black);
   }
 
   .fund-prices-dropdown .tab-btn::after {
