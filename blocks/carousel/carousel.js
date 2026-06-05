@@ -1,5 +1,8 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
+
+const DESKTOP_BREAKPOINT = 1025;
+
 /**
  * Create the carousel header section
  * @param {string} title - The carousel title
@@ -130,11 +133,11 @@ function initCarousel(track) {
     // Calculate offset based on cumulative widths of previous cards
     // This handles variable width cards (active vs inactive)
     let offset = 0;
-    const gap = window.innerWidth >= 1025 ? 24 : 16;
+    const gap = window.innerWidth >= DESKTOP_BREAKPOINT ? 24 : 16;
 
     // First, update active states so we get correct widths
     items.forEach((item, index) => {
-      if (window.innerWidth >= 1025) {
+      if (window.innerWidth >= DESKTOP_BREAKPOINT) {
         // Desktop: Only the current slide is active
         if (index === currentIndex) {
           item.classList.add('active');
@@ -166,7 +169,7 @@ function initCarousel(track) {
     // Pin the next button to the gap between the active card and the next card.
     // Slide 0: active card starts at carousel padding (84px).
     // Slide 1+: padding drops to 0 but the transform nudge shifts the card right by 75px.
-    if (window.innerWidth >= 1025 && carousel.offsetWidth > 0) {
+    if (window.innerWidth >= DESKTOP_BREAKPOINT && carousel.offsetWidth > 0) {
       const activeItem = items[currentIndex];
       const nextItem = items[currentIndex + 1];
       const carouselPaddingLeft = parseInt(getComputedStyle(carousel).paddingLeft, 10) || 0;
@@ -181,7 +184,7 @@ function initCarousel(track) {
 
   // Check if device is mobile/tablet (disable drag on desktop)
   function isMobileOrTablet() {
-    return window.innerWidth < 1025;
+    return window.innerWidth < DESKTOP_BREAKPOINT;
   }
 
   // Prevent context menu on long press
