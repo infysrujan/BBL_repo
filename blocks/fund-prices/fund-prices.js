@@ -11,37 +11,6 @@ import { MAX_FUND_PRICE_HISTORY_YEARS } from '../fund-prices-dropdown/fund-price
 import { getLang } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
-function normalizeFundPricesTitle(doc) {
-  const h = doc.querySelector('h1, h2');
-  if (!h) return '';
-  return h.textContent.trim().replace(/-/g, '–');
-}
-
-function findPrintLogo(doc) {
-  return doc.querySelector('.brand-logo-image, .brand-logo img');
-}
-
-function syncPrintLogo(logoWrapper, doc) {
-  const img = findPrintLogo(doc);
-  if (img) {
-    logoWrapper.innerHTML = '';
-    const src = img.closest('picture') ? img.closest('picture').cloneNode(true) : img.cloneNode(true);
-    logoWrapper.appendChild(src);
-    return;
-  }
-  const obs = new MutationObserver(() => {
-    const found = findPrintLogo(doc);
-    if (found) {
-      obs.disconnect();
-      logoWrapper.innerHTML = '';
-      const src = found.closest('picture') ? found.closest('picture').cloneNode(true) : found.cloneNode(true);
-      logoWrapper.appendChild(src);
-    }
-  });
-  obs.observe(doc.body, { childList: true, subtree: true });
-  setTimeout(() => obs.disconnect(), 8000);
-}
-
 function moveSearchBarToHeader(el, doc) {
   const check = () => {
     const headerNav = doc.querySelector('.header-nav');
@@ -71,12 +40,18 @@ function richTextFromRow(row) {
   return (cell ?? row).innerHTML.trim();
 }
 
-function printContent(doc) {
-  const title = normalizeFundPricesTitle(doc);
-  const prev = doc.title;
-  if (title) doc.title = title;
+function printContent(containerEl) {
+  if (!containerEl) return;
+  const clone = containerEl.cloneNode(true);
+  const printHideSelectors = '.fund-prices-print-label, .fund-prices-error-message, .fund-prices-search-bar';
+  clone.querySelectorAll(printHideSelectors).forEach((el) => el.remove());
+  const inp = clone.querySelector('.calendar-input input');
+  if (inp) inp.parentNode?.replaceChild(document.createTextNode(inp.value), inp);
+  const orig = document.body.innerHTML;
+  document.body.innerHTML = clone.outerHTML;
   window.print();
-  doc.title = prev;
+  document.body.innerHTML = orig;
+  window.location.reload();
 }
 
 function isDateOlderThanFundHistoryLimit(date) {
@@ -315,14 +290,6 @@ export default async function decorate(block) {
   calendarInput.appendChild(dateInput);
   calendarWrapper.appendChild(calendarInput);
 
-  const printDateSpan = doc.createElement('span');
-  printDateSpan.className = 'calendar-print-date';
-  calendarInput.after(printDateSpan);
-
-  const syncPrintDate = () => { printDateSpan.textContent = dateInput.value; };
-  dateInput.addEventListener('input', syncPrintDate);
-  setTimeout(syncPrintDate, 500);
-
   attachCalendarPicker({
     input: dateInput,
     value: calendarDate,
@@ -337,7 +304,6 @@ export default async function decorate(block) {
       errorMessage.hidden = true;
       currentDate = selectedDate;
       dispatchTableRefresh(selectedDate);
-      syncPrintDate();
     },
   });
 
@@ -365,27 +331,10 @@ export default async function decorate(block) {
     mainView.appendChild(disclaimer);
   }
 
-  /* ── fp-print-header ── */
-  const fpPrintHeader = doc.createElement('div');
-  fpPrintHeader.className = 'fp-print-header';
-  const fpLogoWrapper = doc.createElement('div');
-  fpLogoWrapper.className = 'fp-print-logo-wrapper';
-  const fpSearchLabel = doc.createElement('span');
-  fpSearchLabel.textContent = searchLabel;
-  fpPrintHeader.appendChild(fpLogoWrapper);
-  fpPrintHeader.appendChild(fpSearchLabel);
-  if (section) {
-    section.insertBefore(fpPrintHeader, section.firstChild);
-  } else {
-    root.insertBefore(fpPrintHeader, root.firstChild);
-  }
-  syncPrintLogo(fpLogoWrapper, doc);
-
   /* ── Print handler ── */
   printLabel.addEventListener('click', (e) => {
     e.preventDefault();
-    syncPrintDate();
-    printContent(doc);
+    printContent(section ?? root);
   });
 
   /* ── Dynamically build and load fund-prices-dropdown block ── */

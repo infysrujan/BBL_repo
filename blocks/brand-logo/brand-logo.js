@@ -69,11 +69,6 @@ export default function decorate(block) {
       if (printLogoAltText) clonedImg.alt = printLogoAltText;
     }
     printContainer.appendChild(clonedLogo);
-    const mainEl = block.ownerDocument.querySelector('main');
-    if (mainEl && !mainEl.querySelector('.brand-logo-print-logo')) {
-      mainEl.insertBefore(printContainer, mainEl.firstChild);
-    } else if (!mainEl) {
-      block.appendChild(printContainer);
-    }
+    block.appendChild(printContainer);
   }
 }
