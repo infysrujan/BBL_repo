@@ -97,6 +97,7 @@
   height: 21.875rem;
 }
 
+/* ── YouTube iframe click-to-play overlay  ─────────────── */
 
 .hero-banner-iframe-overlay {
   position: absolute;
@@ -705,6 +706,10 @@
     max-width: calc((((100vw - 9.5rem) / 12) * 8) / 3);
     width: 100%;
     height: auto;
+  }
+
+  .hero-banner-private-wealth-banking .hero-banner-img {
+    height: 35.625rem;
   }
 
   .hero-banner-simple .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
