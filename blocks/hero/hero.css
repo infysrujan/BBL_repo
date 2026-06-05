@@ -948,6 +948,10 @@
     height: 53.125rem;
   }
 
+  .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper) {
+    height: auto;
+  }
+
   /* Restored from dev's file: desktop simple-variant item height */
   :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-item {
     max-height: 33.125rem;
