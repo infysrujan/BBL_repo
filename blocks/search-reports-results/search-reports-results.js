@@ -28,7 +28,6 @@ function sortAssets(assets, type) {
   });
 }
 
-
 function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
   const fetchPath = asset.path.startsWith('http') ? asset.path : `${apiBase}${asset.path}`;
 
