@@ -436,9 +436,7 @@
 }
 
 @media (width > 47.5rem) {
-  .cards-list-remark p,
-  .cards-list-subtitle p,
-  .cards-list-description p {
+  .cards-list-remark p{
     font-size: var(--bbl-font-size-b2);
   }
 
@@ -504,11 +502,6 @@
   .cards-list-image.cards-list-image-default {
     max-height: calc(100vw * 0.4);
     height: 100vw;
-  }
-
-  .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 1.3125rem;
-    line-height: 1.4219rem;
   }
 
   :lang(th) {

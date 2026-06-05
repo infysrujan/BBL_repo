@@ -225,11 +225,6 @@
         padding-right: 3rem;
     }
 
-    .carousel-header h2 {
-        font-size: 2.625rem;
-        line-height: 2.5156rem;
-    }
-
     .carousel-track { 
         gap: var(--bbl-space-200);
     }
@@ -240,11 +235,6 @@
 
     .carousel-item:last-child {
         margin-right: 18.75rem;
-    }
-
-    .carousel-title { 
-        font-size: 1.3125rem;
-        line-height: 1.4219rem;
     }
 
     .carousel-description { 

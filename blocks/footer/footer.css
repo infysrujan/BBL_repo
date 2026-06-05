@@ -187,10 +187,7 @@
    ========================================================================== */
 
 @media (width > 47.5rem) {
-  .footer .footer-links li {
-    font-size: 0.9375rem;
-  }
-
+  
   .footer .footer-bottom p {
     font-size: 0.8125rem;
     font-family: var(--bbl-font-family-looped);
