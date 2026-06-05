@@ -2,6 +2,7 @@ import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -55,16 +56,15 @@ async function loadFundsData() {
       return [];
     }
     const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
-    const resp = await fetch(url);
-    if (resp.ok) {
-      const json = await resp.json();
+    const json = await fetchGet(url, { throwOnError: false });
+    if (json) {
       const items = json.data?.mutualFundsList?.items || [];
       // eslint-disable-next-line no-console
       console.log('[mfCardListCarousel] raw fund items count:', items.length, '| sample:', items[0]);
       return items;
     }
     // eslint-disable-next-line no-console
-    console.warn('[mfCardListCarousel] fetch failed, status:', resp.status);
+    console.warn('[mfCardListCarousel] fetch failed');
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('[mfCardListCarousel] loadFundsData error:', err);
@@ -194,9 +194,9 @@ export default async function buildMfFundCardsSlide(row, index) {
   const doc = row.ownerDocument;
 
   const cells = [...row.children];
-  // cells[15] = mfCardListDescription (richtext), cells[16] = cardTypes (aem-tag)
-  const descriptionHTML = cells[15]?.innerHTML?.trim() || '';
-  const cardTypesRaw = cells[16]?.textContent?.trim() || '';
+  // cells[17] = mfCardListDescription (richtext), cells[18] = cardTypes (aem-tag)
+  const descriptionHTML = cells[17]?.innerHTML?.trim() || '';
+  const cardTypesRaw = cells[18]?.textContent?.trim() || '';
   const tagCategory = extractCategoryFromTag(cardTypesRaw);
   const pageCategory = tagCategory || extractCategoryFromPath(window.location.pathname);
 

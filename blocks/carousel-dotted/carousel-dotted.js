@@ -277,9 +277,11 @@ export default async function decorate(block) {
   const scrollTimeDelay = rows[3]?.textContent.trim() || '';
   const showLinks = readBoolean(rows[4]);
   const seeMoreLink = showLinks ? rows[5]?.querySelector('a') : null;
-
-  // Slides start at row 6, variant is in each slide's first cell
-  const nextIndex = 6;
+  const boolValues = new Set(['true', 'false']);
+  const row6Text = showLinks ? rows[6]?.textContent?.trim() || '' : '';
+  const targetRowPresent = boolValues.has(row6Text);
+  const seeMoreTargetValue = targetRowPresent ? row6Text : '';
+  const nextIndex = showLinks && !targetRowPresent ? 6 : 7;
   const firstSlide = rows[nextIndex];
   const variant = firstSlide?.children[0]?.textContent.trim() || '';
 
@@ -672,8 +674,8 @@ export default async function decorate(block) {
     if (seeMoreLink.classList.contains('button-tertiary')) {
       seeMoreLink.classList.add('icon-arrow-left');
     }
-    // Wrap in <span> so decorateButtonsV1 (which only matches P/DIV parents)
-    // does not replace the className and strip icon-arrow-left
+    const openInNewTab = seeMoreTargetValue === 'true' || seeMoreLink.target === '_blank';
+    if (openInNewTab) seeMoreLink.setAttribute('target', '_blank');
     const linkWrap = document.createElement('span');
     linkWrap.append(seeMoreLink);
     moreWrap.append(linkWrap);

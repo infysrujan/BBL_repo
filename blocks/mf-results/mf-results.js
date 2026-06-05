@@ -2,6 +2,7 @@ import { loadCSS } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { openModal } from '../../scripts/modal.js';
+import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { getLang } from '../../scripts/scripts.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -77,10 +78,8 @@ async function loadMatrix() {
     const langKey = `mfSuggestorData${lang.charAt(0).toUpperCase() + lang.slice(1)}`;
     const url = configs[langKey] || configs.mfSuggestorDataEn;
     if (!url) return [];
-    const resp = await fetch(url);
-    if (!resp.ok) return [];
-    const json = await resp.json();
-    return (json.data || []).map(normalizeRow);
+    const json = await fetchGet(url, { throwOnError: false });
+    return (json?.data || []).map(normalizeRow);
   } catch {
     return [];
   }
@@ -97,9 +96,8 @@ async function loadFundsData() {
     const baseUrl = configs.mfFundsDataUrl;
     if (!baseUrl) return [];
     const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
-    const resp = await fetch(url);
-    if (resp.ok) {
-      const json = await resp.json();
+    const json = await fetchGet(url, { throwOnError: false });
+    if (json) {
       const items = json.data?.mutualFundsList?.items || [];
       if (items.length) return items;
     }
