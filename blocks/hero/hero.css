@@ -49,7 +49,7 @@
   display: list-item;
 }
 
-/* Rule 2: img height should be 100% */
+
 .hero-banner-img {
   max-width: 100%;
   height: 100%;
@@ -74,7 +74,6 @@
   object-position: center;
 }
 
-/* Rule 3: keep thumbnail img aspect-ratio rule from your code */
 .hero-banner-hero-with-thumbnail-images .hero-banner-img {
   aspect-ratio: 5/4;
 }
@@ -89,7 +88,6 @@
   cursor: pointer;
 }
 
-/* ── YouTube iframe click-to-play overlay (Rule 3: keep yours) ─────────────── */
 
 .hero-banner-iframe-overlay {
   position: absolute;
@@ -325,7 +323,6 @@
   margin-inline: auto;
 }
 
-/* Rule 4: pre-title includes font-family-looped from dev */
 .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
   font-size: 0.7875rem;
   margin: var(--bbl-space-100) 0 0;
@@ -462,7 +459,6 @@
   letter-spacing: -0.0125rem;
 }
 
-/* Rule 5: Thai line-heights aligned to dev's values */
 :lang(th) {
   .hero-banner-simple .hero-banner-content :is(h1) {
     line-height: 1.875rem;
@@ -587,7 +583,7 @@
   width: 48%;
 }
 
-/* ─── Simple with App CTA variant (Rule 7: pulled from dev's file) ──────────── */
+/* ─── Simple with App CTA variant  ──────────── */
 .hero-app-ctas {
   display: flex;
   flex-wrap: wrap;
@@ -624,14 +620,12 @@
   padding-bottom: var(--bbl-space-200);
 }
 
-/* Rule 3: iframe cropping logic from your code (base/mobile) */
 .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) iframe {
   height: calc(100% + var(--bbl-space-600));
   margin-top: calc(-1.5 * var(--bbl-space-600));
   pointer-events: auto;
 }
 
-/* Rule 6: media query organization follows your code */
 @media (width > 47.5rem) {
   .hero-banner-video-wrapper:has(iframe.hero-banner-video) .hero-banner-video-controls,
   .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-video-controls {
@@ -746,7 +740,7 @@
     margin-bottom: 6.25rem;
   }
 
-  /* Rule 3: iframe cropping logic from your code */
+
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) iframe {
     height: calc(100% + var(--bbl-space-600));
     margin-top: calc(-1 * var(--bbl-space-600));
@@ -757,7 +751,6 @@
     z-index: 12;
   }
 
-  /* Rule 7: App CTA variant desktop override from dev's file */
   .hero-banner-item.no-mobile-app-cta .hero-app-ctas {
     display: flex;
   }
@@ -830,7 +823,6 @@
     height: 1.8125rem;
   }
 
-  /* Rule 5: Thai line-heights aligned to dev's values */
   :lang(th) {
     .hero-banner-content :is(h1) {
       line-height: 3.75rem;
@@ -947,7 +939,6 @@
     height: 53.125rem;
   }
 
-  /* Rule 3: iframe cropping logic from your code */
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) {
     width: 100%;
     overflow: hidden;
