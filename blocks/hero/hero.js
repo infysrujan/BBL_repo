@@ -279,6 +279,9 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
 
   if (!iframe.id) { ytCounter += 1; iframe.id = `hero-yt-${ytCounter}`; }
 
+  const overlay = createElement('div', 'hero-banner-iframe-overlay');
+  iframe.insertAdjacentElement('afterend', overlay);
+
   loadYTScript(ytSrc);
   onYTReady(() => {
     let pollId = null;
@@ -353,6 +356,11 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
 
     wireShare(bar.querySelector('.hero-ctrl-share'));
     wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
+
+    overlay.addEventListener('click', () => {
+      if (player.getPlayerState() === window.YT.PlayerState.PLAYING) player.pauseVideo();
+      else player.playVideo();
+    });
   });
 }
 
