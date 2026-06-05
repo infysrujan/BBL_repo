@@ -49,7 +49,7 @@
   display: list-item;
 }
 
-
+/* Rule 2: img height should be 100% */
 .hero-banner-img {
   max-width: 100%;
   height: 100%;
@@ -74,6 +74,7 @@
   object-position: center;
 }
 
+/* Rule 3: keep thumbnail img aspect-ratio rule from your code */
 .hero-banner-hero-with-thumbnail-images .hero-banner-img {
   aspect-ratio: 5/4;
 }
@@ -88,6 +89,17 @@
   cursor: pointer;
 }
 
+/* Restored from dev's file: simple-variant item height + private-wealth img height */
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-item {
+  max-height: 21.875rem;
+  height: calc((100vw - 2.5rem) / 1.3);
+}
+
+.hero-banner-private-wealth-banking .hero-banner-img {
+  height: 21.875rem;
+}
+
+/* ── YouTube iframe click-to-play overlay (Rule 3: keep yours) ─────────────── */
 
 .hero-banner-iframe-overlay {
   position: absolute;
@@ -128,7 +140,7 @@
   z-index: 5;
   width: var(--bbl-space-700);
   height: var(--bbl-space-700);
-  padding: var(--bbl-space-150);
+  padding: 0.625rem;
   border: none;
   border-radius: var(--bbl-radius-full);
   background: var(--bbl-color-black-alpha-50);
@@ -317,16 +329,17 @@
 
 .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
   font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
-  margin-block: 0 var(--bbl-space-300);
+  margin-block: 0 1.4375rem;
   font-weight: var(--bbl-font-weight-regular);
   font-size: 2.887rem;
   margin-inline: auto;
 }
 
+/* Rule 4: pre-title includes font-family-looped from dev */
 .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
   font-size: 0.7875rem;
-  margin: var(--bbl-space-100) 0 0;
-  padding-bottom: var(--bbl-space-050);
+  margin: 0.625rem 0 0;
+  padding-bottom: 0.3125rem;
   color: var(--bbl-color-black);
   display: block;
   font-family: var(--bbl-font-family-looped);
@@ -351,20 +364,20 @@
 }
 
 .hero-banner-content-inner .button-container {
-  margin: var(--bbl-space-400) 0 0;
+  margin: 2.0625rem 0 0;
   text-align: center;
   display: flex;
   justify-content: center;
 }
 
 .hero-banner-private-wealth-banking .button-container {
-  margin-block: var(--bbl-space-400) 0;
+  margin-block: 1.875rem 0;
   justify-content: flex-start;
   text-align: left;
 }
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner .button-container {
-  margin: var(--bbl-space-400) 0 0;
+  margin: 1.875rem 0 0;
   justify-content: flex-start;
   text-align: left;
 }
@@ -421,7 +434,7 @@
 }
 
 .section.full-bleed-bg .hero-banner-thumbnail-list.content {
-  padding: var(--bbl-space-200) 0 0;
+  padding: 0.875rem 0 0;
 }
 
 .hero-banner-thumbnail-item {
@@ -445,7 +458,7 @@
 /* Mobile simple variant override */
 .hero-banner-simple,
 .hero-banner-simple-logo-banner {
-  margin-bottom: var(--bbl-space-400);
+  margin-bottom: 1.875rem;
 }
 
 .hero-banner-simple::after {
@@ -459,6 +472,7 @@
   letter-spacing: -0.0125rem;
 }
 
+/* Rule 5: Thai line-heights aligned to dev's values */
 :lang(th) {
   .hero-banner-simple .hero-banner-content :is(h1) {
     line-height: 1.875rem;
@@ -480,8 +494,8 @@
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content :is(h1, h2, h3, h4, h5, h6), .hero-banner-logo-wrapper) {
   position: relative;
   display: inline-block;
-  padding-bottom: var(--bbl-space-200);
-  margin-bottom: var(--bbl-space-200);
+  padding-bottom: 0.9375rem;
+  margin-bottom: 0.9375rem;
 }
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content :is(h1, h2, h3, h4, h5, h6), .hero-banner-logo-wrapper)::before {
@@ -537,7 +551,7 @@
 .wealth .hero-banner-simple .hero-banner-content-inner-text {
   font-size: var(--bbl-font-size-b2);
   line-height: 1.1812;
-  padding-bottom: var(--bbl-space-200);
+  padding-bottom: 0.9375rem;
 }
 
 .hero-banner-private-wealth-banking .hero-banner-content-group {
@@ -583,12 +597,12 @@
   width: 48%;
 }
 
-/* ─── Simple with App CTA variant  ──────────── */
+/* ─── Simple with App CTA variant (Rule 7: pulled from dev's file) ──────────── */
 .hero-app-ctas {
   display: flex;
   flex-wrap: wrap;
   gap: var(--bbl-space-200);
-  margin: var(--bbl-space-400) 0 var(--bbl-space-200);
+  margin: 1.9375rem 0 var(--bbl-space-200);
 }
 
 .hero-app-cta-link {
@@ -617,15 +631,17 @@
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-app-cta-mobile-fallback .button-container {
   margin: 0;
-  padding-bottom: var(--bbl-space-200);
+  padding-bottom: 0.9375rem;
 }
 
+/* Rule 3: iframe cropping logic from your code (base/mobile) */
 .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) iframe {
   height: calc(100% + var(--bbl-space-600));
   margin-top: calc(-1.5 * var(--bbl-space-600));
   pointer-events: auto;
 }
 
+/* Rule 6: media query organization follows your code */
 @media (width > 47.5rem) {
   .hero-banner-video-wrapper:has(iframe.hero-banner-video) .hero-banner-video-controls,
   .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-video-controls {
@@ -688,7 +704,7 @@
 
   .hero-banner-thumbnail-list {
     gap: var(--bbl-space-200);
-    padding: var(--bbl-space-200) 0 0;
+    padding: 0.875rem 0 0;
   }
 
   .hero-banner-thumbnail-item {
@@ -712,7 +728,7 @@
   }
 
   .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
-    padding-bottom: var(--bbl-space-100);
+    padding-bottom: 0.625rem;
     color: var(--bbl-color-white);
   }
 
@@ -740,7 +756,7 @@
     margin-bottom: 6.25rem;
   }
 
-
+  /* Rule 3: iframe cropping logic from your code */
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) iframe {
     height: calc(100% + var(--bbl-space-600));
     margin-top: calc(-1 * var(--bbl-space-600));
@@ -751,6 +767,7 @@
     z-index: 12;
   }
 
+  /* Rule 7: App CTA variant desktop override from dev's file */
   .hero-banner-item.no-mobile-app-cta .hero-app-ctas {
     display: flex;
   }
@@ -762,7 +779,7 @@
 
 @media (width > 64rem) {
   .section.hero-container {
-    margin-top: var(--bbl-space-500);
+    margin-top: 2.5625rem;
   }
 
   .hero-banner::after {
@@ -774,7 +791,7 @@
     bottom: 4.6875rem;
     padding-left: var(--bbl-space-1050);
     padding-right: var(--bbl-space-1050);
-    margin-bottom: var(--bbl-space-300);
+    margin-bottom: 1.5625rem;
   }
 
   .section.full-bleed-bg :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content.content {
@@ -823,6 +840,7 @@
     height: 1.8125rem;
   }
 
+  /* Rule 5: Thai line-heights aligned to dev's values */
   :lang(th) {
     .hero-banner-content :is(h1) {
       line-height: 3.75rem;
@@ -939,6 +957,13 @@
     height: 53.125rem;
   }
 
+  /* Restored from dev's file: desktop simple-variant item height */
+  :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-item {
+    max-height: 33.125rem;
+    height: calc(100vw * 0.35);
+  }
+
+  /* Rule 3: iframe cropping logic from your code */
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) {
     width: 100%;
     overflow: hidden;
@@ -1012,12 +1037,12 @@
   }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper video) .hero-banner-content-inner .button-container .button-m.primary {
-    margin-left: var(--bbl-space-600);
-    margin-bottom: var(--bbl-space-300);
+    margin-left: 2.9375rem;
+    margin-bottom: 1.5625rem;
   }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-content-inner .button-container .button-m.primary {
-    margin-left: var(--bbl-space-300);
-    margin-bottom: var(--bbl-space-300);
+    margin-left: 1.5625rem;
+    margin-bottom: 1.5625rem;
   }
 }
