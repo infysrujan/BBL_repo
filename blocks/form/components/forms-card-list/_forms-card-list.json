@@ -10,7 +10,8 @@
             "template": {
               "jcr:title": "Forms Card List",
               "fieldType": "panel",
-              "fd:viewType": "forms-card-list"
+              "fd:viewType": "forms-card-list",
+              "filter": "forms-card-list"
             }
           }
         }

@@ -213,6 +213,12 @@
     ]
   },
   {
+    "id": "forms-card-list",
+    "components": [
+      "forms-card-list-item"
+    ]
+  },
+  {
     "id": "fund-prices-table",
     "rte": {
       "toolbar": {
