@@ -1,0 +1,60 @@
+/* ── Forms Menu Card ─────────────────────────────────────────────────────── */
+
+/* The field-wrapper becomes a full-height flex container so cards
+   in the same row stretch to equal height automatically. */
+.forms-menu-card-actions .field-wrapper {
+  display: flex;
+}
+
+.fmc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Icon */
+.fmc-icon {
+  display: flex;
+  align-items: flex-start;
+}
+
+.fmc-icon img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Heading */
+.fmc-heading {
+  font-size: var(--body-font-size-m, 1rem);
+  font-weight: 700;
+  color: var(--text-color, #1a1a1a);
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Short decorative rule – matches the dash shown in the design */
+.fmc-card hr {
+  border: none;
+  border-top: 2px solid var(--dark-color, #d8d8d8);
+  width: 32px;
+  margin: 0;
+}
+
+/* Description */
+.fmc-description {
+  font-size: var(--body-font-size-s, 0.875rem);
+  color: var(--text-color, #555);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.fmc-description p {
+  margin: 0;
+}
+
+.fmc-description p + p {
+  margin-top: 0.5em;
+}
