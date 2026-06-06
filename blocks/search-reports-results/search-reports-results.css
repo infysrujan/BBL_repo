@@ -74,6 +74,8 @@
   padding: 30px;
   box-shadow: rgb(0 0 0 / 10%) 0 0 16px 0;
   margin-bottom: 0;
+  max-width: 1096.67px;
+  margin-inline: auto;
 }
 
 /* Title area reuses .default-content-wrapper from accordion-block */
