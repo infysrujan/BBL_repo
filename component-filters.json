@@ -208,7 +208,14 @@
       "wizard",
       "range",
       "double-key-dropdown",
-      "forms-menu-card"
+      "forms-menu-card",
+      "forms-card-list"
+    ]
+  },
+  {
+    "id": "forms-card-list",
+    "components": [
+      "forms-card-list-item"
     ]
   },
   {
