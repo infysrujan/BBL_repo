@@ -90,6 +90,16 @@ export default async function componentDecorator(element, fd, container, formId)
     await loadComponent('forms-menu-card', element, fd, container, formId);
   }
 
+  // forms-card-list: responsive card grid container (panelcontainer base).
+  if (fd['fd:viewType'] === 'forms-card-list' || type === 'forms-card-list') {
+    await loadComponent('forms-card-list', element, fd, container, formId);
+  }
+
+  // forms-card-list-item: individual feature card (image base, display-only).
+  if (fd['fd:viewType'] === 'forms-card-list-item' || type === 'forms-card-list-item') {
+    await loadComponent('forms-card-list-item', element, fd, container, formId);
+  }
+
   if (fieldType === 'file-input') {
     await loadComponent('file', element, fd, container, formId);
   }
