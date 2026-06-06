@@ -1,7 +1,7 @@
 @import url('../download-file/download-file.css');
 
 .search-reports-results .srr-results-wrapper {
-  background: var(--bbl-color-grey-10);
+  background: var(--bbl-color-white);
   min-height: 100vh;
   padding-bottom: 3rem;
 }
