@@ -1,7 +1,7 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
-import { getLang } from '../../scripts/bbl-decorators.js';
+import { applyLinkTarget, getLang } from '../../scripts/bbl-decorators.js';
 
 function getTextValue(value) {
   return value?.toString().trim() || '';
@@ -54,17 +54,31 @@ function createCardListItem(cardElement, doc) {
     remarkDiv,
     actionTypeTextDiv,
     defaultButtonDiv,
-    multipleDownloadLinksDiv,
+    targetOrDownloadDiv,
   ] = cells;
 
   const actionTypeText = actionTypeTextDiv?.textContent?.trim().replace('-button', '') || 'default';
 
-  const downloadLinksCell = multipleDownloadLinksDiv?.querySelector('a') ? multipleDownloadLinksDiv : cells[9];
-  const multipleDownloadLinks = downloadLinksCell?.querySelector('a') ? downloadLinksCell.innerHTML : null;
-  const stubOffset = downloadLinksCell === cells[9] ? 1 : 0;
+  const cell8Text = targetOrDownloadDiv?.textContent?.trim() ?? '';
+  const hasTargetFlag = isBooleanLikeValue(cell8Text);
+  const openInNewTab = hasTargetFlag ? parseBooleanFlag(cell8Text, false) : false;
 
-  const relIdx = cells.slice(9 + stubOffset).findIndex((c) => !isBooleanLikeValue(c.textContent?.trim() ?? ''));
-  const base = relIdx === -1 ? cells.length : (9 + stubOffset) + relIdx;
+  const downloadOffset = hasTargetFlag ? 1 : 0;
+  const downloadLinksCell = cells[8 + downloadOffset]?.querySelector('a')
+    ? cells[8 + downloadOffset]
+    : null;
+  const multipleDownloadLinks = downloadLinksCell?.querySelector('a')
+    ? downloadLinksCell.innerHTML
+    : null;
+
+  const stubOffset = downloadLinksCell === cells[9 + downloadOffset] ? 1 : 0;
+
+  const relIdx = cells.slice(9 + downloadOffset + stubOffset).findIndex(
+    (c) => !isBooleanLikeValue(c.textContent?.trim() ?? ''),
+  );
+  const base = relIdx === -1
+    ? cells.length
+    : (9 + downloadOffset + stubOffset) + relIdx;
 
   const img = imageDiv?.querySelector('img');
   const promoTag = promoTagDiv?.textContent?.trim();
@@ -168,6 +182,7 @@ function createCardListItem(cardElement, doc) {
 
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
     buttonWrapper.appendChild(buttonLink);
+    applyLinkTarget(buttonWrapper, 'a', openInNewTab);
     inner.appendChild(buttonWrapper);
   }
 
@@ -198,6 +213,9 @@ function createCardListItem(cardElement, doc) {
     if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle);
     if (cardLinkTarget) wrapper.setAttribute('target', cardLinkTarget);
     if (cardLinkTarget === '_blank') wrapper.setAttribute('rel', 'noopener noreferrer');
+
+    wrapper.target = openInNewTab ? '_blank' : '_self';
+    if (openInNewTab) wrapper.setAttribute('rel', 'noopener noreferrer');
 
     if (enableOverlayModal && overlayHref) {
       wrapper.setAttribute('data-modal', overlayHref);
