@@ -7,8 +7,8 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
-function filterCards(activeCards, tabText, isFirst) {
-  if (isFirst) {
+function filterCards(activeCards, tabText, isTopPromo) {
+  if (isTopPromo) {
     return activeCards.filter((card) => card.topPromotion === true);
   }
   const topCards = activeCards.filter(
@@ -21,14 +21,17 @@ function filterCards(activeCards, tabText, isFirst) {
   );
 }
 
-function setupPanel(panel, activeCards, placeholders, isFirst) {
+function setupPanel(panel, activeCards, placeholders) {
   const noResultsText = placeholders.promoNoResults || 'No results found.';
   const btnId = panel.getAttribute('aria-labelledby');
   const btn = btnId ? document.getElementById(btnId) : null;
   const tabText = btn?.textContent?.trim() || '';
 
-  let cards = sortCards(filterCards(activeCards, tabText, isFirst));
-  if (isFirst) {
+  const topPromoTabLabel = (placeholders.topPromotionsTabLabel || 'toppromotions').toLowerCase().replace(/\s+/g, '');
+  const isTopPromo = tabText.toLowerCase().replace(/\s+/g, '') === topPromoTabLabel;
+
+  let cards = sortCards(filterCards(activeCards, tabText, isTopPromo));
+  if (isTopPromo) {
     if (!cards.length) {
       panel.hidden = true;
       if (btn) {
@@ -73,7 +76,7 @@ export default async function decorate(block) {
   );
 
   const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
-  tabPanels.forEach((panel, index) => setupPanel(panel, activeCards, placeholders, index === 0));
+  tabPanels.forEach((panel) => setupPanel(panel, activeCards, placeholders));
 
   const btnContainer = block.closest('.section')?.querySelector('.button-container');
   const tabsContent = document.querySelector('.tabs-content');
