@@ -272,6 +272,23 @@ async function loadEager(doc) {
 }
 
 /**
+ * Finds [#x.x] markers anywhere in RTE text, replaces them with an invisible
+ * anchor <span> and removes the marker from visible content.
+ * Authors write [#1.2] in the doc → generates <span id="1_2"> at that position.
+ * @param {Element} main
+ */
+function addHintPageAnchors(main) {
+  // Matches [#1.2] with optional HTML tags wrapping the content inside brackets
+  // e.g. [#1.2], [<u>#1.2</u>], [<strong>#1.2</strong>]
+  const MARKER = /\[(?:<[^>]+>)*#([\w.]+)(?:<\/[^>]+>)*\]/g;
+
+  main.querySelectorAll('td, p, h1, h2, h3, h4, h5, h6, li').forEach((el) => {
+    if (!el.innerHTML.includes('[')) return;
+    el.innerHTML = el.innerHTML.replace(MARKER, (_, id) => `<span id="${id.replace(/\./g, '_')}" class="rte-anchor" aria-hidden="true"></span>`);
+  });
+}
+
+/**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
  */
@@ -286,9 +303,20 @@ async function loadLazy(doc) {
   decorateButtonsV1(main);
   decorateSvgWithAltText(main);
 
+  addHintPageAnchors(main);
+
+  const scrollToHash = (id) => {
+    const target = id ? doc.getElementById(id) : null;
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   const { hash } = window.location;
-  const element = hash ? doc.getElementById(hash.substring(1)) : false;
-  if (hash && element) element.scrollIntoView();
+  if (hash) scrollToHash(hash.substring(1));
+
+  window.addEventListener('hashchange', () => {
+    scrollToHash(window.location.hash.substring(1));
+  });
 
   const disabledSections = new Set(
     getMetadata('disable-sections', doc)
