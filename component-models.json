@@ -1212,7 +1212,7 @@
         "name": "autoScroll",
         "label": "Auto-Scroll",
         "valueType": "boolean",
-        "value": false,
+        "value": true,
         "condition": {
           "or": [
             {
@@ -1239,6 +1239,7 @@
         "name": "scrollTimeDelay",
         "label": "Scroll Time Delay (milliseconds)",
         "valueType": "string",
+        "value": "3000",
         "options": [
           {
             "name": "3 seconds",
