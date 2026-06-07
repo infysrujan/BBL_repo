@@ -679,3 +679,10 @@ body.wealth main :is(.button-container .button, .button) {
 .hidden {
     display: none;
 }
+
+.rte-anchor {
+    display: block;
+    height: 0;
+    overflow: hidden;
+    scroll-margin-top: var(--header-scroll-offset);
+}
