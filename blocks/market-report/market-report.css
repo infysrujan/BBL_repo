@@ -21,16 +21,17 @@
   gap: 2rem;
 }
 
-.market-report-page-content > .market-report-col .market-report-col-left {
-  flex: 4 1 0;
-}
-.market-report-page-content > .market-report-col .market-report-col-right {
-  flex: 1 1 0;
-}
-
 .market-report-col-left,
 .market-report-col-right {
   flex: 2 1 0;
+}
+
+.market-report-page-content > .market-report-col .market-report-col-left {
+  flex: 4 1 0;
+}
+
+.market-report-page-content > .market-report-col .market-report-col-right {
+  flex: 1 1 0;
 }
 
 .market-report-col-left :is(h1, h2, h3, h4, h5, h6),
