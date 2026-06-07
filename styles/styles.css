@@ -302,10 +302,6 @@ main img {
     }
 }
 
-body.bangkok-bankm-card main {
-  background-color: maroon;
-}
-
 .section.bg-truthful-blue  *,
 .section.bg-truthful-dark-blue  *{
     color: var(--bbl-color-white);
@@ -553,6 +549,26 @@ body.wealth main :is(.button-container .button, .button) {
         background: var(--bbl-color-blue-90);
         border: 1px solid var(--bbl-color-blue-90);
     }
+}
+
+/* =========================================================================
+   BBM THEME BASED STYLES
+   ========================================================================= */
+
+body.bangkok-bankm-card main {
+    background-color: maroon;
+}
+
+body.bangkok-bankm-card .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--bbl-color-white);
+}
+
+body.bangkok-bankm-card .tabs-nav-wrapper .tabs-nav button {
+    color: white;
+}
+
+body.bangkok-bankm-card .content { /* In bbm-glow-card vendor css is being appiled to .content class */
+    text-align: unset;
 }
 
 /* =========================================================================
