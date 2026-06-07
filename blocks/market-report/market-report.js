@@ -630,7 +630,11 @@ function printElement() {
       height: 3.125rem;
       margin-block: 3rem 1rem;
     }
-    
+
+    .section.central-aligned .block, .section.central-aligned > .default-content-wrapper {
+      margin-inline: 0;
+    }
+
     .tabs-dropdown {
       display: none;
     }
