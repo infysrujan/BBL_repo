@@ -2,7 +2,7 @@
   text-align: left;
   padding: 0.9375rem 1.875rem 3.75rem;
   margin-bottom: 1.875rem;
-  box-shadow: 0 0 1rem 0 rgb(0 0 0 / 10%);
+  box-shadow: 0 0 1rem 0 var(--bbl-color-black-alpha-10);
 }
 
 .tab-panel .accordion-panel {
