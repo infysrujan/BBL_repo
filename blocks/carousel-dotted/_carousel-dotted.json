@@ -135,7 +135,7 @@
           "name": "autoScroll",
           "label": "Auto-Scroll",
           "valueType": "boolean",
-          "value": false,
+          "value": true,
           "condition": {
             "or": [
               {
@@ -162,6 +162,7 @@
           "name": "scrollTimeDelay",
           "label": "Scroll Time Delay (milliseconds)",
           "valueType": "string",
+          "value": "3000",
           "options": [
             {
               "name": "3 seconds",
@@ -323,7 +324,41 @@
               }
             ]
           }
+        },
+        {
+        "component": "container",
+        "name": "showLinksTargetSet",
+        "label": "Target settings",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "showLinksTargetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
+          }
+        ],
+        "condition": {
+          "and": [
+            {
+              "===": [
+                { 
+                  "var": "filter" 
+                },
+                "showDots"
+              ]
+            },
+            {
+              "!!": [
+                { 
+                  "var": "showLinks" 
+                }
+              ]
+            }
+          ]
         }
+      }
       ]
     },
     {
@@ -380,10 +415,54 @@
           }
         },
         {
-          "component": "reference",
-          "name": "image",
-          "label": "Image",
-          "valueType": "string",
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopField",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withImage"
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopMimeTypeField",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+                
+              },
+              "withImage"
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+                
+              },
+              "withImage"
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+                
+              },
+              "withImage"
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerAltField",
           "condition": {
             "===": [
               {
@@ -469,6 +548,29 @@
             {
               "name": "Tertiary",
               "value": "tertiary"
+            }
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withImage"
+            ]
+          }
+        },
+        {
+          "component": "container",
+          "name": "targetSettings",
+          "label": "Target settings",
+          "fields": [
+            {
+              "component": "boolean",
+              "name": "targetLink",
+              "label": "Open link in new tab",
+              "description": "Enable to open the button link in a new browser tab",
+              "valueType": "boolean",
+              "value": false
             }
           ],
           "condition": {
@@ -738,6 +840,41 @@
           }
         },
         {
+          "component": "container",
+          "name": "heroLinkTargetSet",
+          "label": "Target settings",
+          "fields": [
+            {
+              "component": "boolean",
+              "name": "heroTargetLink",
+              "label": "Open link in new tab",
+              "description": "Enable to open the button link in a new browser tab",
+              "valueType": "boolean",
+              "value": false
+            }
+          ],
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "heroBannerImageCarousel"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "textAnimationVariant"
+                ]
+              }
+            ]
+          }
+        },
+        {
           "component": "text",
           "name": "promoTag",
           "label": "Promo Tag",
@@ -868,12 +1005,12 @@
         },
         {
           "component": "container",
-          "name": "targetSettings",
+          "name": "contentInsertTargetSet",
           "label": "Target settings",
           "fields": [
             {
               "component": "boolean",
-              "name": "targetLink",
+              "name": "contentInsertTargetLink",
               "label": "Open link in new tab",
               "description": "Enable to open the button link in a new browser tab",
               "valueType": "boolean",
@@ -915,6 +1052,18 @@
             {
               "name": "With Circular Image",
               "value": "withCircularImage"
+            },
+             {
+              "name": "Simple Carousel",
+              "value": "onlyImage"
+            },
+            {
+              "name": "Card List Carousel",
+              "value": "cardListCarousel"
+            },
+            {
+              "name": "MF Card list Carousel",
+              "value": "mfCardListCarousel"
             }
           ]
         },
@@ -933,7 +1082,7 @@
           }
         },
         {
-          "component": "text",
+          "component": "richtext",
           "name": "titleDefaultImage",
           "label": "Title Text",
           "valueType": "string",
@@ -948,8 +1097,8 @@
         },
         {
           "component": "text",
-          "name": "step",
-          "label": "Step Text",
+          "name": "stepText1",
+          "label": "Step Text 1",
           "valueType": "string",
           "condition": {
             "===": [
@@ -962,9 +1111,133 @@
         },
         {
           "component": "richtext",
-          "name": "descriptionDefaultImage",
+          "name": "description1",
           "label": "Description",
           "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "stepText2",
+          "label": "Step Text 2",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "description2",
+          "label": "Description",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "ctaLink",
+          "label": "Link",
+          "description": "Destination URL for the button",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "ctaLinkText",
+          "label": "Text",
+          "description": "Button label text",
+          "required": true,
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "ctaLinkTitle",
+          "label": "Title",
+          "description": "Accessibility title attribute (optional)",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "select",
+          "name": "ctaLinkType",
+          "label": "Type",
+          "description": "Button style variant",
+          "valueType": "string",
+          "value": "",
+          "options": [
+            {
+              "name": "Primary",
+              "value": "primary"
+            },
+            {
+              "name": "Secondary",
+              "value": "secondary"
+            },
+            {
+              "name": "Tertiary",
+              "value": "tertiary"
+            }
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withDefaultImage"
+            ]
+          }
+        },
+        {
+          "component": "container",
+          "name": "ctaLinkTargetSet",
+          "label": "Target settings",
+          "fields": [
+            {
+              "component": "boolean",
+              "name": "ctaTargetLink",
+              "label": "Open link in new tab",
+              "description": "Enable to open the button link in a new browser tab",
+              "valueType": "boolean",
+              "value": false
+            }
+          ],
           "condition": {
             "===": [
               {
@@ -1086,6 +1359,100 @@
                 "var": "slideType"
               },
               "withCircularImage"
+            ]
+          }
+        },
+        {
+          "component": "container",
+          "name": "linkTargetSettings",
+          "label": "Link Target settings",
+          "fields": [
+            {
+              "component": "boolean",
+              "name": "linkTargetLink",
+              "label": "Open link in new tab",
+              "description": "Enable to open the button link in a new browser tab",
+              "valueType": "boolean",
+              "value": false
+            }
+          ],
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "withCircularImage"
+            ]
+          }
+        },
+        {
+          "component": "reference",
+          "name": "onlyImage",
+          "label": "Image",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "onlyImage"
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "fragmentPath",
+          "label": "Fragment Path",
+          "description": "Fragment path for the card-list carousel content",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "cardListCarousel"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "onlyImageAlt",
+          "label": "Alt",
+          "value": "",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "onlyImage"
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "mfCardListDescription",
+          "label": "Description",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "mfCardListCarousel"
+            ]
+          }
+        },
+        {
+          "component": "aem-tag",
+          "name": "cardTypes",
+          "label": "Card Types",
+          "valueType": "string",
+          "condition": {
+            "===": [
+              {
+                "var": "slideType"
+              },
+              "mfCardListCarousel"
             ]
           }
         }

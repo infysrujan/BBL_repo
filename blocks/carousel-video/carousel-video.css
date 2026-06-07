@@ -1,0 +1,296 @@
+/* ── Wrapper ─────────────────────────────────────────────────────────────── */
+.carousel-video-wrapper {
+  max-width: 56.25rem;
+  width: 100%;
+  margin: auto;
+}
+
+/* ── Block positioning context ───────────────────────────────────────────── */
+.carousel-video {
+  position: relative;
+}
+
+/* ── Main player ─────────────────────────────────────────────────────────── */
+.carousel-video .cv-main-player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--bbl-color-black);
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.carousel-video .cv-main-player.active {
+  opacity: 1;
+}
+
+.carousel-video .cv-main-player iframe {
+  transition: transform 0.7s ease, -webkit-transform 0.7s ease, opacity 0.7s ease;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* ── Thumbnail carousel — mobile: nav arrows overlay on player ───────────── */
+.carousel-video .cv-carousel-section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.carousel-video .cv-track-wrap {
+  display: none;
+  width: 100%;
+  overflow: hidden;
+  margin: 0 -0.3125rem;
+  padding: 0.625rem 0;
+}
+
+.carousel-video .cv-track {
+  display: flex;
+  transition: transform 0.35s ease;
+}
+
+/* ── Thumbnails ──────────────────────────────────────────────────────────── */
+.carousel-video .cv-thumb {
+  flex: 0 0 12.0625rem;
+  width: 12.0625rem;
+  height: 7.625rem;
+  padding: 0;
+  margin: 0 0.3125rem;
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bbl-color-black);
+  transition: outline-color 0.2s ease;
+}
+
+.carousel-video .cv-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  border-radius: 0;
+}
+
+
+.carousel-video .cv-thumb.active {
+  /* outline: 0.125rem solid var(--bbl-color-active-blue); */
+  outline-offset: -0.125rem;
+  opacity: 1;
+}
+
+/* ── Prev / Next buttons ─────────────────────────────────────────────────── */
+.carousel-video .cv-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 0.0625rem solid var(--bbl-color-grey-125);
+  background: var(--bbl-color-white-alpha-80);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 0.125rem 0.375rem var(--bbl-color-black-alpha-20);
+  transition: background 0.2s ease;
+  z-index: 1;
+  pointer-events: all;
+}
+
+.carousel-video .cv-prev {
+  left: 0.75rem;
+}
+
+.carousel-video .cv-next {
+  right: 0.75rem;
+}
+
+.carousel-video .cv-nav:hover {
+  background: var(--bbl-color-grey-10);
+}
+
+.carousel-video .cv-prev,
+.carousel-video .cv-next {
+  transition: all 0.3s ease;
+}
+
+.carousel-video .cv-prev:hover {
+  margin-left: -0.3125rem;
+}
+
+.carousel-video .cv-next:hover {
+  margin-right: -0.3125rem;
+}
+
+.carousel-video .cv-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.carousel-video .cv-nav::before {
+  content: '';
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-top: 0.125rem solid var(--bbl-color-grey-100);
+  border-right: 0.125rem solid var(--bbl-color-grey-100);
+}
+
+.carousel-video .cv-prev::before {
+  transform: rotate(-135deg);
+  margin-left: 0.1875rem;
+}
+
+.carousel-video .cv-next::before {
+  transform: rotate(45deg);
+  margin-right: 0.1875rem;
+}
+
+/* ── Dots — hidden on mobile ─────────────────────────────────────────────── */
+.carousel-video .cv-dots {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0 0.625rem;
+}
+
+.carousel-video .cv-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  min-width: 0.5rem;
+  min-height: 0.5rem;
+  border-radius: 50%;
+  border: 0.0625rem solid var(--bbl-color-grey-150);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, width 0.2s ease, height 0.2s ease;
+}
+
+.carousel-video .cv-dot:hover {
+  border-color: var(--bbl-color-gray-600);
+}
+
+.carousel-video .cv-dot.active {
+  width: 0.625rem;
+  height: 0.625rem;
+  min-width: 0.625rem;
+  min-height: 0.625rem;
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+/* ── Tablet: > 760px ─────────────────────────────────────────────────────── */
+@media (width > 47.5rem) {
+  .carousel-video-wrapper {
+    padding: 0 2.5rem;
+    margin: 0 -45px;
+  }
+
+  .carousel-video .cv-main-player {
+    width: 100%;
+    max-width: 34.875rem;
+    margin: 0 auto;
+  }
+
+  .carousel-video .cv-carousel-section {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    aspect-ratio: unset;
+    max-width: 34.875rem;
+    width: 100%;
+    margin: 0.625rem auto;
+    padding: 0;
+    pointer-events: auto;
+    z-index: auto;
+  }
+
+  .carousel-video .cv-thumb {
+    flex: 0 0 8.25rem;
+    width: 8.25rem;
+    height: 7.625rem;
+  }
+
+  .carousel-video .cv-track-wrap {
+    display: block;
+    margin: 0 -0.3125rem;
+    padding: 0.625rem 0;
+  }
+
+  .carousel-video .cv-dots {
+    display: flex;
+    position: absolute;
+    bottom: -30px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .carousel-video .cv-nav {
+    top: 40%;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--bbl-color-white);
+  }
+
+  .carousel-video .cv-prev {
+    left: -2.5rem;
+  }
+
+  .carousel-video .cv-next {
+    right: -2.5rem;
+  }
+}
+
+/* ── Desktop: > 1024px ───────────────────────────────────────────────────── */
+@media (width > 64rem) {
+  .carousel-video-wrapper {
+    padding: 0 3rem;
+    margin: auto;
+  }
+
+  .carousel-video .cv-main-player {
+    max-width: 49.875rem;
+    margin: 0 auto;
+  }
+
+  .carousel-video .cv-carousel-section {
+    max-width: 49.875rem;
+    margin: 0.625rem auto;
+  }
+
+  .carousel-video .cv-thumb {
+    flex: 0 0 12.0625rem;
+    width: 12.0625rem;
+    height: 7.625rem;
+  }
+
+  .carousel-video .cv-prev {
+    left: -3rem;
+  }
+
+  .carousel-video .cv-next {
+    right: -3rem;
+  }
+}

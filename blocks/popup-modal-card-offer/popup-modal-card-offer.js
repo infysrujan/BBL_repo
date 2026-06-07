@@ -1,4 +1,6 @@
 import { createElementFromHTML } from '../../scripts/scripts.js';
+import { showModal, hideModal } from '../../scripts/utils/modal.js';
+import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 
 const STORAGE_KEY_PREFIX = 'floatingCardPopupDismissed:';
 
@@ -49,8 +51,10 @@ function buildPopupElement(config, doc) {
   inner.appendChild(cardBody);
 
   if (config.linkElement) {
-    config.linkElement.classList.add('button-m');
-    inner.appendChild(config.linkElement);
+    const linkWrapper = createElementFromHTML('<div class="floating-popup-link"></div>', doc);
+    linkWrapper.appendChild(config.linkElement);
+    applyLinkTarget(linkWrapper, 'a', config.targetLink);
+    inner.appendChild(linkWrapper);
   }
 
   wrapper.appendChild(inner);
@@ -80,7 +84,7 @@ export default function decorate(block) {
   const reopenOnRevisitDiv = configRows[configRowsLength - 1];
   const delaySecondsDiv = configRows[configRowsLength - 2];
   const targetSettingsDiv = configRowsLength > 2 ? configRows[configRowsLength - 3] : null;
-  const linkElement = linkDiv?.querySelector('a') || null;
+  const linkElement = linkDiv?.querySelector('p') || null;
 
   const config = {
     image: imageDiv?.querySelector('img'),
@@ -102,11 +106,10 @@ export default function decorate(block) {
   const show = () => {
     if (!shouldShowPopup(storageKey, config.reopenOnRevisit)) return;
 
-    requestAnimationFrame(() => popupEl.classList.add('floating-popup-visible'));
+    showModal(popupEl, 'floating-popup-visible');
 
     const closePopup = () => {
-      popupEl.classList.remove('floating-popup-visible');
-      markDismissed(storageKey, config.reopenOnRevisit);
+      hideModal(popupEl, 'floating-popup-visible', () => markDismissed(storageKey, config.reopenOnRevisit));
     };
 
     popupEl.querySelector('.floating-popup-close')?.addEventListener('click', closePopup);

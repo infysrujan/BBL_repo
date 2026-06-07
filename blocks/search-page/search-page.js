@@ -52,11 +52,39 @@ function escapeHtml(value = '') {
   return div.innerHTML;
 }
 
+function isThaiText(term) {
+  return /[\u0E00-\u0E7F]/.test(term);
+}
+
+function getHighlightTokens(term) {
+  const normalized = term.trim().toLowerCase();
+
+  if (isThaiText(normalized)) {
+    try {
+      const segmenter = new Intl.Segmenter('th', { granularity: 'word' });
+      const segments = [...segmenter.segment(normalized)]
+        .filter((s) => s.isWordLike)
+        .map((s) => s.segment.trim())
+        .filter((s) => s.length > 0);
+      return [...new Set([...segments, normalized])];
+    } catch {
+      return [normalized];
+    }
+  }
+
+  return normalized.split(' ').filter(Boolean);
+}
+
 function highlightTerm(text = '', term = '') {
   if (!term || !text) return escapeHtml(text);
   const escaped = escapeHtml(text);
-  const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return escaped.replace(new RegExp(`(${escapedTerm})`, 'gi'), '<b>$1</b>');
+
+  const tokens = getHighlightTokens(term);
+
+  return tokens.reduce((result, token) => {
+    const escapedToken = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return result.replace(new RegExp(`(${escapedToken})`, 'gi'), '<b>$1</b>');
+  }, escaped);
 }
 
 function getBlockConfig(rows) {
@@ -175,7 +203,7 @@ export default async function decorate(block) {
         <div class="search-modal-search-input inner-content">
           <input type="text" class="search-modal-input" placeholder="${escapeHtml(config.placeholder)}" autocomplete="off" aria-label="${escapeHtml(config.ariaLabel)}">
           <div class="inner-content search-modal-search-button">
-            <button type="button" class="button primary button-m search-modal-submit-button" title="${escapeHtml(config.searchLabel)}">${escapeHtml(config.searchLabel)}</button>
+            <button type="button" class="button primary search-modal-submit-button" title="${escapeHtml(config.searchLabel)}">${escapeHtml(config.searchLabel)}</button>
           </div>
         </div>
       </div>
@@ -315,6 +343,7 @@ export default async function decorate(block) {
       searchResult.style.display = 'block';
       divLoadMore.style.display = 'none';
       showMessage(messagePlaceholders.somethingWrong);
+      // eslint-disable-next-line no-console
       console.error(error);
     } finally {
       setLoading(false);
