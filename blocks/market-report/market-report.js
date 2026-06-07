@@ -455,17 +455,17 @@ function buildTwoColumnPageLayout(leftNodes, rightNodes) {
   pageLayout.classList.add('market-report-page');
 
   const leftCol = document.createElement('div');
-  leftCol.className = 'market-report-col market-report-col-left';
+  leftCol.className = 'market-report-col-left';
   leftCol.style.flex = '4 1 0';
   leftNodes.forEach((node) => leftCol.appendChild(node));
 
   const rightCol = document.createElement('div');
-  rightCol.className = 'market-report-col market-report-col-right';
+  rightCol.className = 'market-report-col-right';
   rightCol.style.flex = '1 1 0';
   rightNodes.forEach((node) => rightCol.appendChild(node));
 
   const inner = document.createElement('div');
-  inner.className = 'market-report-page-content-inner';
+  inner.className = 'market-report-col';
   inner.style.display = 'flex';
   inner.style.gap = '2rem';
   inner.appendChild(leftCol);

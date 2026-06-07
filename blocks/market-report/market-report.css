@@ -15,6 +15,10 @@
   visibility: hidden;
 }
 
+.market-report-col {
+  flex-direction: column;
+}
+
 .market-report-col-left :is(h1, h2, h3, h4, h5, h6),
 .market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
   font-size: 1rem;
@@ -109,4 +113,10 @@
   height: 0.0625rem;
   overflow: hidden;
   box-sizing: border-box;
+}
+
+@media (width > 64rem) {
+  .market-report-col {
+    flex-direction: row;
+  }
 }
