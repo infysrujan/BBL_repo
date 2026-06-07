@@ -700,6 +700,10 @@ function printElement() {
       margin-top: 0;
     }
     
+    .market-report-col {
+      gap: 0;
+    }
+    
   `;
 
   const printHtml = `
