@@ -269,15 +269,13 @@ function buildAccordionPrintDocument(block) {
   let wrapperIsDirectChild = false;
   /** @type {string|null} */
   let prependHtml = null;
-  if (container) { 
-
+  if (container) {
     // includes title / text within the same section of the accordion block
     wrapperIsDirectChild = Boolean(
       container && [...container.children].includes(wrapper),
     );
   } else {
-    
-    // includes title / text from the previous section before the accordion block if the accordion block is within tab section
+    // includes title, text from the previous section if the accordion block is within tab section
     const section = block.closest('.section');
     if (section?.classList.contains('tabs-container')) {
       const prevSection = section.previousElementSibling;
@@ -337,7 +335,7 @@ function buildAccordionPrintDocument(block) {
     .brand-logo-container {
       width: 12.5rem;
       height: 3.125rem;
-      margin-block: 4rem;
+      margin-block: 3rem 1rem;
     }
 
     .accordion { border: 0; }

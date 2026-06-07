@@ -456,18 +456,14 @@ function buildTwoColumnPageLayout(leftNodes, rightNodes) {
 
   const leftCol = document.createElement('div');
   leftCol.className = 'market-report-col-left';
-  leftCol.style.flex = '4 1 0';
   leftNodes.forEach((node) => leftCol.appendChild(node));
 
   const rightCol = document.createElement('div');
   rightCol.className = 'market-report-col-right';
-  rightCol.style.flex = '1 1 0';
   rightNodes.forEach((node) => rightCol.appendChild(node));
 
   const inner = document.createElement('div');
   inner.className = 'market-report-col';
-  inner.style.display = 'flex';
-  inner.style.gap = '2rem';
   inner.appendChild(leftCol);
   inner.appendChild(rightCol);
 
@@ -632,7 +628,7 @@ function printElement() {
     .brand-logo-container {
       width: 12.5rem;
       height: 3.125rem;
-      margin-block: 4rem;
+      margin-block: 3rem 1rem;
     }
     
     .tabs-dropdown {
@@ -643,7 +639,7 @@ function printElement() {
      display: block;
     }
 
-    a.print-button.icon-print {
+    .market-report-page a.print-button.icon-print {
       display: none;
     }
 
@@ -685,6 +681,19 @@ function printElement() {
 
     .market-report-col-left :is(h1, h2, h3, h4, h5, h6), .market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
       font-size: 14px;
+    }
+
+    .market-report-page > p {
+     margin-top: 60px;
+    }
+
+    .market-report-page .table.block {
+      margin: 1rem 0 2rem;
+    }
+
+    .tabs.simple-tab .tabs-nav {
+      padding-bottom: 0;
+      margin-top: 0;
     }
     
   `;
@@ -808,16 +817,12 @@ function createMarketReportColumns({
 }) {
   const columnsWrapper = document.createElement('div');
   columnsWrapper.classList.add('market-report-col');
-  columnsWrapper.style.display = 'flex';
-  columnsWrapper.style.gap = '2rem';
 
   const leftCol = document.createElement('div');
   leftCol.classList.add('market-report-col-left');
-  leftCol.style.flex = '2 1 0';
 
   const rightCol = document.createElement('div');
   rightCol.classList.add('market-report-col-right');
-  rightCol.style.flex = '2 1 0';
 
   if (leftHeading) leftCol.appendChild(leftHeading);
   if (leftTable) leftCol.appendChild(leftTable);
