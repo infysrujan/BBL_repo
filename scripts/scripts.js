@@ -16,7 +16,7 @@ import {
 
 import {
   decorateSvgWithAltText,
-  decorateTerritoryButtons,
+  decorateTertiaryButtons,
   decorateButtonsV1,
   loadBreadcrumb,
   loadWelcomeBanner,
@@ -124,7 +124,7 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateSectionIds(main);
   decorateBlocks(main);
-  decorateTerritoryButtons(main);
+  decorateTertiaryButtons(main);
   decorateSvgWithAltText(main);
 
   const pageVariant = getMetadata('pagevariant');
