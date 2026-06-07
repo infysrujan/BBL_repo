@@ -630,11 +630,7 @@ function printElement() {
       height: 3.125rem;
       margin-block: 3rem 1rem;
     }
-
-    .section.central-aligned .block, .section.central-aligned > .default-content-wrapper {
-      margin-inline: 0;
-    }
-
+      
     .tabs-dropdown {
       display: none;
     }
@@ -648,11 +644,11 @@ function printElement() {
     }
 
     .table table tr td {
-      padding: 5px 0.75rem;
+      padding: 0.3125rem 0.75rem;
     }
 
     .table-wrapper {
-      font-size: 12px;
+      font-size: 0.75rem;
     }
 
     .market-report-page .table table tr td,
@@ -673,22 +669,18 @@ function printElement() {
     }
 
     .table table.header-blue tr.header-row {
-      border-block: 2px solid black;
+      border-block: 0.125rem solid black;
     }
 
     .table table tr.header-row td ,
     .table table tr:not(.header-row) td {
-      padding: 3px 0.75rem;
-      font-size: 12px;
+      padding: 0.1875rem 0.75rem;
+      font-size: 0.75rem;
       
     }
 
     .market-report-col-left :is(h1, h2, h3, h4, h5, h6), .market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
-      font-size: 14px;
-    }
-
-    .market-report-page > p {
-     margin-top: 60px;
+      font-size: 0.875rem;
     }
 
     .market-report-page .table.block {
