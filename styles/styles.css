@@ -24,6 +24,16 @@
     --bbl-layout-content-max-width-desktop: 1240px;
     --bbl-layout-content-max-width-1920: 1752px;
     --bbl-layout-central-aligned-max-width: 900px;
+    
+    /* header height used for scroll-margin-top offset (mobile-first) */
+    --header-scroll-offset: 5rem;
+}
+
+@media (width > 64rem) {
+    :root {
+        /* matches --header-d-height in header.css */
+        --header-scroll-offset: 7.8125rem;
+    }
 }
 
 body {
@@ -59,7 +69,7 @@ h6 {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
   font-family: var(--bbl-font-family-medium);
-  scroll-margin: 40px;
+  scroll-margin-top: var(--header-scroll-offset);
 }
 
 h1 {
@@ -174,6 +184,7 @@ main img {
     padding-inline: var(--bbl-space-section-xs);
     margin: 0 auto;
     box-sizing: border-box;
+    scroll-margin-top: var(--header-scroll-offset);
 }
 
 @media (width > 47.5rem) {
@@ -243,7 +254,8 @@ main img {
 .section.underline-image .default-content-wrapper > p > img {
     position: relative;
     display: inline-block;
-    padding-bottom: var(--bbl-space-250);
+    padding-bottom: 1.875rem;
+    margin-bottom: 1.875rem;
     max-width: 100%;
 }
 
@@ -287,6 +299,13 @@ main img {
 
     .section.underline-image .default-content-wrapper > p > picture,
     .section.underline-image .default-content-wrapper > p > img {
+        padding-bottom: var(--bbl-space-500);
+    }
+}
+
+@media (width > 64rem) {
+    .section.underline-image .default-content-wrapper > p > picture,
+    .section.underline-image .default-content-wrapper > p > img {
         padding-bottom: 1.875rem;
     }
 }
@@ -314,32 +333,28 @@ body.bangkok-bankm-card main {
     margin: 0 auto;
 }
 
-/* Exclude bbm-glow-card-container from the padding */
-.section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+.section.full-bleed-bg .content,
 .section.full-bleed-bg .default-content-wrapper {
     padding-inline: var(--bbl-space-section-xs);
     margin: 0 auto;
 }
 
 @media (width > 47.5rem) {
-    /* Exclude bbm-glow-card-container from the padding */
-    .section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+    .section.full-bleed-bg .content,
     .section.full-bleed-bg .default-content-wrapper {
         padding-inline: var(--bbl-space-section-sm);
     }
 }
 
 @media (width > 64rem) {
-    /* Exclude bbm-glow-card-container from the padding */
-    .section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+    .section.full-bleed-bg .content,
     .section.full-bleed-bg .default-content-wrapper {
         padding-inline: var(--bbl-space-section-xl);
     }
 }
 
 @media (width > 120rem) {
-    /* Exclude bbm-glow-card-container from the padding */
-    .section.full-bleed-bg .content:not(.bbm-glow-card-container .content),
+    .section.full-bleed-bg .content,
     .section.full-bleed-bg .default-content-wrapper {
         max-width: var(--bbl-layout-content-max-width-1920);
         padding-inline: 0;
@@ -605,9 +620,14 @@ body.wealth main :is(.button-container .button, .button) {
     margin-top: 1rem;
 }
 
+.section.background-privatebanking .button-container a.button-m.primary,
+.section.background-wealth .button-container a.button-m.primary {
+    font-weight: 400;
+}
+
 .section.background-privatebanking a.button-tertiary,
 .section.background-wealth a.button-tertiary {
-    font-weight: 700;
+    font-weight: 400;
     text-decoration: underline;
 }
 
