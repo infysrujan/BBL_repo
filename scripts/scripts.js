@@ -16,7 +16,7 @@ import {
 
 import {
   decorateSvgWithAltText,
-  decorateTerritoryButtons,
+  decorateTertiaryButtons,
   decorateButtonsV1,
   loadBreadcrumb,
   loadWelcomeBanner,
@@ -24,6 +24,7 @@ import {
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
+import initRteAnchors from './custom-rte.js';
 
 /**
  * Gets the language from the HTML tag.
@@ -124,7 +125,7 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateSectionIds(main);
   decorateBlocks(main);
-  decorateTerritoryButtons(main);
+  decorateTertiaryButtons(main);
   decorateSvgWithAltText(main);
 
   const pageVariant = getMetadata('pagevariant');
@@ -310,9 +311,7 @@ async function loadLazy(doc) {
   decorateButtonsV1(main);
   decorateSvgWithAltText(main);
 
-  const { hash } = window.location;
-  const element = hash ? doc.getElementById(hash.substring(1)) : false;
-  if (hash && element) element.scrollIntoView();
+  initRteAnchors(main, doc);
 
   const disabledSections = new Set(
     getMetadata('disable-sections', doc)

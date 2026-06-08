@@ -73,7 +73,7 @@ export function getPromotionPathFlags(pathname) {
   };
 }
 
-export function resolvePromotionApi({
+export function getPromotionApiConfig({
   pathname,
   configuredPromoType = '',
   bbmBaseUrl = '',
@@ -107,11 +107,11 @@ export function resolvePromotionApi({
   return { isBbm: true, promotionType: 'bangkok-bank-m', baseUrl: bbmBaseUrl };
 }
 
-export function resolvePromotionLang(docLang, queryLang, isBbm) {
+export function getPromotionLanguage(docLang, queryLang, isBbm) {
   return isBbm && queryLang ? queryLang : docLang;
 }
 
-export function buildPromotionDataUrl(baseUrl, lang) {
+export function getPromotionDataUrl(baseUrl, lang) {
   if (!baseUrl) return '';
 
   const [urlWithoutHash, ...hashParts] = baseUrl.split('#');
@@ -243,7 +243,7 @@ export function buildCardHtml(card, tag, placeholders = {}, options = {}) {
       ${dateLine ? `<p class="listing-card-date">${dateLine}</p>` : ''}
     </div>
     <div class="listing-card-footer">
-      <a href="${card.ctaLink || ''}" target="${target}" class="listing-card-cta button primary">${card.ctaLabel || placeholders.promoLearnMore || 'Learn More'}</a>
+      <a href="${card.ctaLink || ''}" target="${target}" class="listing-card-cta button-m primary">${card.ctaLabel || placeholders.promoLearnMore || 'Learn More'}</a>
       ${footerExtra}
     </div>
   </div>

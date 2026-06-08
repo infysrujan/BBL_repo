@@ -704,8 +704,8 @@ export default async function decorate(block) {
     isFirstLoad = false;
   });
 
-  if (autoScroll && scrollTimeDelay) {
-    const delay = parseInt(scrollTimeDelay, 10);
+  if (autoScroll) {
+    const delay = scrollTimeDelay ? parseInt(scrollTimeDelay, 10) : 3000;
     initializeAutoScroll(block, slideEls, setActive, prevArrow, nextArrow, dotButtons, delay, 1);
   }
 
