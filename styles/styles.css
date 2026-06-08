@@ -159,9 +159,8 @@ a:hover {
     text-decoration: underline;
 }
 
-.default-content-wrapper a:any-link {
+.default-content-wrapper > :not(.button-container) a:any-link {
     color: var(--bbl-color-black);
-    text-decoration: underline;
 }
 
 main img {
