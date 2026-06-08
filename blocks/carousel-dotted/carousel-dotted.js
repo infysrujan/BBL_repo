@@ -282,7 +282,13 @@ export default async function decorate(block) {
   const row6Text = showLinks ? rows[6]?.textContent?.trim() || '' : '';
   const targetRowPresent = boolValues.has(row6Text);
   const seeMoreTargetValue = targetRowPresent ? row6Text : '';
-  const nextIndex = showLinks && !targetRowPresent ? 6 : 7;
+
+  // Dynamically find where slide rows start by detecting known slideType values in children[1].
+  // This handles variants like showArrowsDots which have fewer active config rows than
+  // the hardcoded index assumes (conditional model fields are not generated when inactive).
+  const SLIDE_TYPES = new Set(['withImage', 'withoutImage', 'heroBannerImageCarousel', 'textAnimationVariant', 'contentInsertCarouselCards', 'cardListCarousel', 'mfCardListCarousel', 'withDefaultImage', 'withCircularImage', 'onlyImage']);
+  const nextIndex = rows.findIndex((r) => SLIDE_TYPES.has(r.children[1]?.textContent.trim() || ''));
+
   const firstSlide = rows[nextIndex];
   const variant = firstSlide?.children[0]?.textContent.trim() || '';
 
