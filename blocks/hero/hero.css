@@ -629,6 +629,15 @@
   padding-bottom: 0.9375rem;
 }
 
+.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) {
+  height: auto;
+}
+
+.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-wrapper {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
 .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) iframe {
   height: calc(100% + var(--bbl-space-600));
   margin-top: calc(-1.5 * var(--bbl-space-600));
