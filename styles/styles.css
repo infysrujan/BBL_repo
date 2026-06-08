@@ -159,8 +159,8 @@ a:hover {
     text-decoration: underline;
 }
 
-.default-content-wrapper > :not(.button-container) a:any-link {
-    color: var(--bbl-color-black);
+.default-content-wrapper > :not(.button-container) p a:any-link {
+    color: inherit;
 }
 
 main img {
