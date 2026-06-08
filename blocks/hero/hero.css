@@ -541,6 +541,14 @@
   letter-spacing: -0.0125rem;
 }
 
+.hero-banner-hero-with-thumbnail-images .hero-banner-content-inner-text {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
 .wealth .hero-banner-simple .hero-banner-content-inner-text {
   font-size: var(--bbl-font-size-b2);
   line-height: 1.1812;
@@ -875,9 +883,6 @@
     }
   }
 
-  .hero-banner-content-inner {
-    width: 66.6667%;
-  }
 
   .hero-banner-content-group {
     width: 66.6667%;
