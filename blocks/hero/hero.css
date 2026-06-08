@@ -325,7 +325,7 @@
 }
 
 .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
-  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   margin-block: 0 1.4375rem;
   font-weight: var(--bbl-text-hero-title-weight);
   font-size: var(--bbl-text-hero-title-size);
@@ -821,8 +821,6 @@
   }
 
   .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 5.6rem;
-    line-height: 6.44rem;
     overflow: visible;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -830,8 +828,6 @@
     overflow-y: clip;
     margin-inline: 0;
   }
-
-  
 
   .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
     font-size: 0.9rem;
