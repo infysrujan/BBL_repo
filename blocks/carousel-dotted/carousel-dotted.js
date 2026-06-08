@@ -276,7 +276,8 @@ export default async function decorate(block) {
   const autoScroll = readBoolean(rows[2]);
   const scrollTimeDelay = rows[3]?.textContent.trim() || '';
   const showLinks = readBoolean(rows[4]);
-  const seeMoreLink = showLinks ? rows[5]?.querySelector('a') : null;
+  const seeMoreButtonContainer = showLinks ? rows[5]?.querySelector('.button-container') : null;
+  const seeMoreLink = seeMoreButtonContainer?.querySelector('a') ?? (showLinks ? rows[5]?.querySelector('a') : null);
   const boolValues = new Set(['true', 'false']);
   const row6Text = showLinks ? rows[6]?.textContent?.trim() || '' : '';
   const targetRowPresent = boolValues.has(row6Text);
@@ -352,6 +353,7 @@ export default async function decorate(block) {
   const slidesFragment = slideEls.filter((s) => s.classList.contains('carousel-fragment')).length;
   const slidesContentCards = slideEls.filter((s) => s.classList.contains('content-cards')).length;
   const slidesMfCardList = slideEls.filter((s) => s.classList.contains('mf-card-list-carousel-item')).length;
+  const slidesMfFundCards = slideEls.filter((s) => s.classList.contains('mf-fund-cards-item')).length;
   const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
     && slidesWithImage === 0
     && slidesWithoutImage === 0;
@@ -646,7 +648,7 @@ export default async function decorate(block) {
     renderHost.replaceChildren(...slideEls);
   }
 
-  const noNav = allFragmentTrack && isFragmentNoScroll(slideEls);
+  const noNav = (allFragmentTrack && isFragmentNoScroll(slideEls)) || slideEls.length <= 1;
 
   if (showArrows || isMfCardListCarousel) {
     if (showArrows && arrowTrackVariant) {
@@ -656,24 +658,32 @@ export default async function decorate(block) {
       if (!noNav) {
         renderHost.replaceChildren(prevArrow, trackContainer, nextArrow, dots);
       }
-    } else {
+    } else if ((!isMfCardListCarousel || slideEls.length > 1) && !noNav) {
       renderHost.append(dots, prevArrow, nextArrow);
     }
   } else if (showDots || slidesContentCards > 0) {
     if (!noNav) {
       renderHost.append(dots);
     }
+  } else if (slidesMfFundCards > 0 && slideEls.length > 1) {
+    renderHost.append(dots);
   }
 
   if (seeMoreLink) {
     const moreWrap = document.createElement('div');
     moreWrap.className = 'carousel-dotted-more';
-    seeMoreLink.classList.add('button-tertiary', 'icon-arrow-left');
+    if (seeMoreLink.classList.contains('button-tertiary')) {
+      seeMoreLink.classList.add('icon-arrow-left');
+    }
     const openInNewTab = seeMoreTargetValue === 'true' || seeMoreLink.target === '_blank';
     if (openInNewTab) seeMoreLink.setAttribute('target', '_blank');
-    const linkWrap = document.createElement('span');
-    linkWrap.append(seeMoreLink);
-    moreWrap.append(linkWrap);
+    if (seeMoreButtonContainer) {
+      moreWrap.append(seeMoreButtonContainer);
+    } else {
+      const linkWrap = document.createElement('span');
+      linkWrap.append(seeMoreLink);
+      moreWrap.append(linkWrap);
+    }
     renderHost.append(moreWrap);
   }
 

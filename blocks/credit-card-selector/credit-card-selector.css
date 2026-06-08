@@ -654,7 +654,7 @@
 /* ── Hidden cards (beyond initial 6 in unfiltered state) ────────────────────── */
 
 .ccs-hidden {
-  display: none !important;
+  display: none;
 }
 
 /* ── Row-2 peek: clips container to show cards 4–6 at 50% height on desktop ─── */
