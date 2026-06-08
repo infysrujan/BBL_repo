@@ -42,8 +42,10 @@
 /* Page title */
 
 .search-reports-results .srr-page-title {
-  font-size: 2rem;
-  font-weight: 700;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-page-title-size);
+  font-weight: var(--bbl-text-page-title-weight);
+  line-height: var(--bbl-text-page-title-line-height);
   text-align: center;
   margin: 2rem 0 1rem;
   color: var(--bbl-color-gray-121);
@@ -85,10 +87,10 @@
 /* File row reuses .download-file-wrapper from accordion-block */
 
 .search-reports-results .srr-card-title {
-  font-family: BangkokBank-Medium, sans-serif;
-  font-size: 1.5rem;
-  font-weight: 400;
-  line-height: 26px;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-card-title-size);
+  font-weight: var(--bbl-text-card-title-weight);
+  line-height: var(--bbl-text-card-title-line-height);
   margin: 0 0 15px;
   padding-bottom: 15px;
   color: var(--bbl-color-gray-121);
@@ -124,9 +126,9 @@
 .search-reports-results .srr-card-file-row .srr-file-label {
   flex: 1;
   min-width: 0;
-  font-family: Muli-Bold, sans-serif;
-  font-size: 1rem;
-  font-weight: 400;
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-text-body-size);
+  font-weight: var(--bbl-text-body-weight);
   line-height: 44px;
   color: var(--bbl-color-grey-85);
 }
@@ -179,7 +181,7 @@
 .search-reports-results .srr-loading {
   text-align: center;
   padding: 3rem 1.5rem;
-  font-size: 1rem;
+  font-size: var(--bbl-text-body-size);
   color: var(--bbl-color-grey-85);
 }
 
@@ -292,8 +294,8 @@
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
   border-radius: 0.4375rem;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--bbl-text-button-size);
+  font-weight: var(--bbl-text-button-weight);
   text-decoration: none;
   letter-spacing: 0.01em;
 }
@@ -304,7 +306,7 @@
 
 @media (width > 47.5rem) {
   .search-reports-results .srr-page-title {
-    font-size: 2.5rem;
+    font-size: var(--bbl-text-page-title-size);
   }
 
   .search-reports-results .srr-list {
