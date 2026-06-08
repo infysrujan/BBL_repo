@@ -896,11 +896,6 @@
     width: 100%;
   }
 
-  .hero-banner-content-inner-text {
-    font-size: 1.5rem;
-    line-height: 1.725rem;
-  }
-
   .hero-banner-thumbnail-outer {
     overflow: auto;
     height: auto;
@@ -994,11 +989,6 @@
   .wealth .hero-banner-simple .hero-banner-content-inner-text {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.35rem;
-  }
-
-  .hero-banner-simple .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--bbl-font-size-h3-desktop);
-    line-height: 2.875rem;
   }
 
   /* Simple logo and title variant override */
