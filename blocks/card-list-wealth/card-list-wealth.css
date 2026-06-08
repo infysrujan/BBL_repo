@@ -3,7 +3,7 @@
 /* ── Common / Mobile-first base ────────────────────────── */
 .card-list-wealth .content {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 1rem;
   margin: 0;
   padding: 0 1.25rem;
