@@ -163,6 +163,10 @@
     overflow-x: unset;
   }
 
+  .card-list-wealth .content{
+    justify-content: center;
+  }
+
   .card-list-wealth-card {
     /* flex: 1 1 33.333%; */
     flex-basis: 25%; 
