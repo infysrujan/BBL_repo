@@ -21,9 +21,9 @@
   border-radius: 0.375rem;
   background: var(--bbl-color-white);
   color: var(--bbl-color-grey-85);
-  font-family: Muli-Bold, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   line-height: 2.75rem;
-  font-size: 0.8313rem;
+  font-size: var(--bbl-text-body-small-size);
   cursor: pointer;
   min-width: 8rem;
   justify-content: space-between;
@@ -54,9 +54,9 @@
 }
 
 .fund-prices-dropdown .fdd-title {
-  font-family: BangkokBank-Bold, Arial, sans-serif;
-  font-size: 2.5rem;
-  font-weight: var(--bbl-font-weight-regular);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-page-title-size);
+  font-weight: var(--bbl-text-page-title-weight);
   color: var(--bbl-color-black);
   margin-bottom: var(--bbl-space-100);
   display: none;
@@ -75,8 +75,8 @@
 }
 
 .fund-prices-dropdown .fdd-fund-label {
-  font-family: BangkokBank-Medium, sans-serif;
-  font-size: 0.7rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-body-b4-size);
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
 }
@@ -175,8 +175,8 @@
 
 .fund-prices-dropdown .period-dropdown-list li {
   padding: 0.625rem 1.875rem;
-  font-size: var(--bbl-font-size-b2);
-  font-family: Muli-Bold, sans-serif;
+  font-size: var(--bbl-text-body-small-size);
+  font-family: var(--bbl-font-family-medium);
   cursor: pointer;
   color: var(--bbl-color-grey-85);
 }
@@ -256,8 +256,8 @@
 .fund-prices-dropdown .stat-table th {
   background: var(--bbl-color-grey-10);
   color: var(--bbl-color-black);
-  font-size: var(--bbl-font-size-b2);
-  font-family: Muli-Bold, sans-serif;
+  font-size: var(--bbl-text-body-small-size);
+  font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);
   text-align: left;
   height: 4.375rem;
@@ -296,13 +296,13 @@
   min-width: 48rem;
   border-collapse: collapse;
   font-family: var(--bbl-font-family-primary);
-  font-size: 0.9375rem;
+  font-size: var(--bbl-text-body-size);
   table-layout: fixed;
 }
 
 .fund-prices-dropdown .detail-hist-table th {
   background: var(--bbl-color-grey-10);
-  font-family: Muli-Bold, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);
   white-space: nowrap;
   color: var(--bbl-color-black);
@@ -453,7 +453,7 @@
 
 .fund-prices-dropdown .chart-nav-item {
   font-family: var(--bbl-font-family-medium);
-  font-size: 0.9375rem;
+  font-size: var(--bbl-text-body-size);
   color: #f60;
 }
 
@@ -574,8 +574,8 @@
   .fund-prices-dropdown .period-select-btn {
     width: 100%;
     height: 2.75rem;
-    font-family: Muli-Bold, sans-serif;
-    font-size: 0.8313rem;
+    font-family: var(--bbl-font-family-medium);
+    font-size: var(--bbl-text-body-small-size);
     border-radius: 0.4375rem;
     border: solid 0.0625rem var(--bbl-color-grey-25);
   }
@@ -600,8 +600,8 @@
   }
 
   .fund-prices-dropdown .fdd-fund-label {
-    font-family: BangkokBank-Medium, sans-serif;
-    font-size: 0.7rem;
+    font-family: var(--bbl-font-family-medium);
+    font-size: var(--bbl-body-b4-size);
     font-weight: var(--bbl-font-weight-regular);
     white-space: nowrap;
     overflow: hidden;

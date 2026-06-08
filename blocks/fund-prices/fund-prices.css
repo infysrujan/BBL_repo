@@ -1,6 +1,8 @@
 .fund-prices-page-title {
-  font-size: 2.25rem;
-  line-height: 1.2;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-page-title-size);
+  font-weight: var(--bbl-text-page-title-weight);
+  line-height: var(--bbl-text-page-title-line-height);
   margin-bottom: var(--bbl-space-150);
   padding-bottom: var(--bbl-space-150);
   position: relative;
@@ -141,7 +143,7 @@
 .fund-prices-search-bar label {
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-medium);
-  font-size: 0.9375rem;
+  font-size: var(--bbl-text-label-size);
   white-space: nowrap;
 }
 
@@ -211,9 +213,9 @@
 
 .fund-prices-search-bar .fund-dropdown li {
   padding: 0.625rem 1.875rem;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-text-body-size);
   color: var(--bbl-color-black);
-  font-family: Muli-Bold, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -232,7 +234,7 @@
   border: none;
   border-radius: var(--bbl-space-050);
   font-family: var(--bbl-font-family-medium);
-  font-size: 0.9375rem;
+  font-size: var(--bbl-text-button-size);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -343,8 +345,8 @@ body.fund-prices-search-in-header header.is-not-overlapped ~ main {
 
 .fund-prices-search-bar.is-in-header label {
   flex-shrink: 0;
-  font-size: var(--bbl-font-size-b2);
-  font-family: Muli-Bold, sans-serif;
+  font-size: var(--bbl-text-label-size);
+  font-family: var(--bbl-font-family-medium);
   margin-left: 0.625rem;
   color: var(--bbl-color-white);
   white-space: nowrap;
@@ -365,7 +367,7 @@ body.fund-prices-search-in-header header.is-not-overlapped ~ main {
   padding: 0 2.75rem 0 1.125rem;
   border-radius: var(--bbl-space-100);
   background: transparent;
-  font-size: 0.8313rem;
+  font-size: var(--bbl-text-body-small-size);
   font-family: var(--bbl-font-family-medium);
   border: solid 0.0625rem var(--bbl-color-grey-25);
 }
@@ -510,7 +512,9 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
   }
 
   .fund-prices-search-bar.is-in-header label {
-    font: 0.9375rem/3rem BangkokBank-Bold, Arial, sans-serif;
+    font-family: var(--bbl-font-family-medium);
+    font-size: var(--bbl-text-label-size);
+    line-height: 3rem;
   }
 
   .fund-prices-search-bar.is-in-header .fund-select-wrapper {
