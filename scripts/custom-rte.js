@@ -1,3 +1,35 @@
+// {icon40-inline} → same line as text  |  {icon40-block} → own line below text
+const ICON_MARKER_RE = /^\s*\{icon(\d+)-(inline|block)\}\s*$/i;
+const DCW = '.default-content-wrapper';
+
+export function decorateRteInlineImages(main) {
+  main.querySelectorAll(`${DCW} p picture, ${DCW} li picture`)
+    .forEach((pic) => pic.classList.add('rte-inline-image'));
+
+  main.querySelectorAll(`${DCW} p`).forEach((markerP) => {
+    const match = ICON_MARKER_RE.exec(markerP.textContent);
+    if (!match) return;
+
+    const [, size, placement] = match;
+    const prev = markerP.previousElementSibling;
+    const picture = prev?.querySelector('picture.rte-inline-image')
+      ?? markerP.querySelector('picture.rte-inline-image');
+
+    if (picture) {
+      picture.classList.add(`icon-${size}`);
+      if (placement === 'inline') {
+        const picP = picture.closest('p');
+        const textP = picP?.previousElementSibling;
+        if (textP?.matches('p')) {
+          textP.append(picture);
+          picP.remove();
+        }
+      }
+    }
+    markerP.remove();
+  });
+}
+
 /**
  * Finds [#x.x] markers anywhere in RTE text, replaces them with an invisible
  * anchor <span> and removes the marker from visible content.
