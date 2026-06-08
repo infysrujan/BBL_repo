@@ -76,11 +76,11 @@
 }
 
 .search-reports-overlay .sr-title {
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-heading-h3-size);
-  font-weight: var(--bbl-font-weight-regular);
+  font-family: BangkokBank-Medium, sans-serif;
+  font-size: 3rem;
+  font-weight: 400;
   letter-spacing: -0.2px;
-  line-height: var(--bbl-heading-h3-line-height);
+  line-height: 46px;
   margin: 30px 0;
   padding-bottom: 30px;
   text-align: center;
@@ -95,10 +95,10 @@
 }
 
 .search-reports-overlay .sr-desc {
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-body-b1-size);
-  font-weight: var(--bbl-font-weight-regular);
-  line-height: var(--bbl-line-height-body);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 22px;
   color: var(--bbl-color-grey-85);
   text-align: center;
   padding-bottom: 30px;
@@ -123,8 +123,8 @@
   border-radius: 7px;
   padding: 0 30px 0 20px;
   cursor: pointer;
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-body-b1-size);
+  font-family: BangkokBank-Medium, sans-serif;
+  font-size: 0.95rem;
   line-height: 44px;
   background: var(--bbl-color-white);
   user-select: none;
@@ -172,8 +172,8 @@
 
 .search-reports-overlay .sr-dropdown-option {
   padding: 0.75rem 1.25rem;
-  font-size: var(--bbl-body-b1-size);
-  font-weight: var(--bbl-font-weight-medium);
+  font-size: 0.9375rem;
+  font-weight: 600;
   cursor: pointer;
   color: var(--bbl-color-gray-121);
 }
@@ -202,9 +202,9 @@
   padding: 0 20px;
   border: 0.0417rem solid var(--bbl-color-grey-150);
   border-radius: 7px;
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-body-b1-size);
-  font-weight: var(--bbl-font-weight-regular);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
   letter-spacing: 0.8px;
   line-height: 44px;
   text-align: center;
@@ -229,7 +229,7 @@
   }
 
   .search-reports-overlay .sr-title {
-    font-size: var(--bbl-heading-h3-size);
+    font-size: 3rem;
   }
 }
 
