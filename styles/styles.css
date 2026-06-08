@@ -159,6 +159,11 @@ a:hover {
     text-decoration: underline;
 }
 
+.default-content-wrapper a:any-link {
+    color: var(--bbl-text-link);
+    text-decoration: underline;
+}
+
 main img {
     max-width: 100%;
     width: auto;
