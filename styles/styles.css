@@ -160,7 +160,7 @@ a:hover {
 }
 
 .default-content-wrapper a:any-link {
-    color: var(--bbl-text-link);
+    color: var(--bbl-color-black);
     text-decoration: underline;
 }
 
