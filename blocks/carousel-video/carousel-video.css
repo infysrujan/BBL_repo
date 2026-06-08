@@ -208,7 +208,7 @@
     25% { margin-top: 4px; }
     50% { margin-top: -2px; }
     75% { margin-top: 1px; }
-    to  { margin-top: 0; }
+    100% { margin-top: 0; }
 }
 
 .carousel-video .cv-nav:hover::before {
