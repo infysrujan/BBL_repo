@@ -196,6 +196,7 @@ button.secondary,
   background: transparent;
   color: var(--bbl-color-active-blue);
   border: 2px solid var(--bbl-color-active-blue);
+  font-style: normal;
 }
 
 /* Hover */
