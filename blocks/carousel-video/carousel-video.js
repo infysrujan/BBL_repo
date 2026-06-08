@@ -260,8 +260,14 @@ export default async function decorate(block) {
 
   dotEls.forEach((dot, i) => {
     dot.addEventListener('click', () => {
+      if (i === activeIndex) return;
+      const goForward = i > activeIndex;
       setActive(i);
-      scrollToFirst(i);
+      if (goForward) {
+        scrollForward(i);
+      } else {
+        scrollBackward(i);
+      }
     });
   });
 
