@@ -1,5 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
+import { createPictureWithoutOptimization } from '../../scripts/bbl-decorators.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -194,22 +195,30 @@ export default function decorate(block) {
   if (getRemainingMs() > 0) return;
 
   // ── Build image ────────────────────────────────────────────────────────────
-  const pictureDesktop = desktopImgRow?.querySelector('picture');
-  const pictureMobile = mobileImgRow?.querySelector('picture');
-
-  if (pictureDesktop) pictureDesktop.classList.add('welcome-banner-desktop-img');
-  if (pictureMobile) pictureMobile.classList.add('welcome-banner-mobile-img');
+  const desktopImg = desktopImgRow?.querySelector('img');
+  const mobileImg = mobileImgRow?.querySelector('img');
 
   const media = doc.createElement('div');
   media.className = 'welcome-banner-media';
 
-  if (pictureDesktop && pictureMobile) {
-    media.append(pictureDesktop, pictureMobile);
-  } else if (pictureDesktop || pictureMobile) {
-    media.append(pictureDesktop || pictureMobile);
-    // If only one image exists, show it on all viewports by stripping the specific classes
-    if (pictureDesktop) pictureDesktop.classList.remove('welcome-banner-desktop-img');
-    if (pictureMobile) pictureMobile.classList.remove('welcome-banner-mobile-img');
+  if (desktopImg && mobileImg) {
+    const picture = doc.createElement('picture');
+
+    const picDesktop = createPictureWithoutOptimization(desktopImg.src, desktopImg.alt, true, [{ media: '(min-width: 47.5625rem)' }, {}]);
+    picDesktop.querySelectorAll('source[media]').forEach((source) => {
+      picture.appendChild(source);
+    });
+
+    const picMobile = createPictureWithoutOptimization(mobileImg.src, mobileImg.alt, true, [{}]);
+    picMobile.querySelectorAll('source, img').forEach((el) => {
+      picture.appendChild(el);
+    });
+
+    media.append(picture);
+  } else if (desktopImg || mobileImg) {
+    const img = desktopImg || mobileImg;
+    const picture = createPictureWithoutOptimization(img.src, img.alt, true, [{}]);
+    media.append(picture);
   }
 
   // ── Build modal shell ──────────────────────────────────────────────────────

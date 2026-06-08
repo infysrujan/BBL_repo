@@ -25,7 +25,6 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 22rem;
   box-sizing: border-box;
   position: relative;
   margin: 0 auto;
@@ -49,41 +48,39 @@
 .welcome-banner-overlay .welcome-banner-media {
   width: 100%;
   line-height: 0;
+  position: relative;
 }
 
 .welcome-banner-overlay .welcome-banner-media picture,
 .welcome-banner-overlay .welcome-banner-media img {
   display: block;
   width: 100%;
+  max-width: 100%;
   height: auto;
-  object-fit: contain;
-}
-
-.welcome-banner-overlay .welcome-banner-media picture.welcome-banner-desktop-img {
-  display: none;
-}
-
-.welcome-banner-overlay .welcome-banner-media picture.welcome-banner-mobile-img {
-  display: block;
+  object-fit: cover;
 }
 
 .welcome-banner-overlay .welcome-banner-ctas {
+  position: absolute;
+  bottom: 5%;
+  left: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--bbl-space-100);
-  width: 100%;
   padding: var(--bbl-space-150);
   box-sizing: border-box;
-  background: var(--bbl-color-white);
+  background: transparent;
 }
 
 .welcome-banner-overlay .welcome-banner-cta {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 13.125rem;
-  height: 2.75rem;
+  width: 100%;
+  max-width: 13.125rem;
+  min-height: 2.75rem;
   padding: var(--bbl-space-000) var(--bbl-space-250);
   background: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
@@ -92,11 +89,12 @@
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-medium);
   font-size: 0.9375rem;
-  line-height: 1;
+  line-height: 1.2;
   text-align: center;
   cursor: pointer;
   box-sizing: border-box;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: break-word;
   flex-shrink: 0;
 }
 
@@ -107,20 +105,14 @@
   text-decoration: none;
 }
 
-@media (width > 47.5rem) {
+@media (width > 47.5625rem) {
   .welcome-banner-overlay .welcome-banner-dialog {
     max-width: 60rem;
   }
 
-  .welcome-banner-overlay .welcome-banner-media picture.welcome-banner-desktop-img {
-    display: block;
-  }
-
-  .welcome-banner-overlay .welcome-banner-media picture.welcome-banner-mobile-img {
-    display: none;
-  }
-
   .welcome-banner-overlay .welcome-banner-ctas {
+    position: static;
+    background: var(--bbl-color-white);
     flex-direction: row;
     justify-content: center;
     gap: var(--bbl-space-200);
