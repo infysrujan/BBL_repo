@@ -1190,7 +1190,8 @@
                   "jcr:title": "Double Key Dropdown",
                   "fieldType": "drop-down",
                   "fd:viewType": "double-key-dropdown",
-                  "type": "string"
+                  "type": "string",
+                  "enforceEnum": false
                 }
               }
             }
