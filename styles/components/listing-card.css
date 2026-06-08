@@ -101,10 +101,8 @@
 }
 
 .listing-card-cta {
-  display: block;
   width: 100%;
   min-width: 100%;
-  box-sizing: border-box;
 }
 
 .listing-card-empty {
