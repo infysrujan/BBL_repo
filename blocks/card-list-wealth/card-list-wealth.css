@@ -67,6 +67,7 @@
   font-size: 0.875rem;
   line-height: 1.25rem;
   margin: 0 0 1.25rem;
+  color: var(--bbl-color-grey-70);
 }
 
 .card-eyebrow {
@@ -161,9 +162,6 @@
   .card-list-wealth .content {
     gap: 2.1875rem;
     overflow-x: unset;
-  }
-
-  .card-list-wealth .content{
     justify-content: center;
   }
 
