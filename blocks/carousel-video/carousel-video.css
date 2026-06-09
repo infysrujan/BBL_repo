@@ -13,8 +13,8 @@
 /* ── Main player ─────────────────────────────────────────────────────────── */
 .carousel-video .cv-main-player {
   position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
+  width: 24.625rem;
+  height: 12.6875rem;
   background: var(--bbl-color-black);
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
