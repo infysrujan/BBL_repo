@@ -45,9 +45,10 @@ td.merged-fund-type {
   font-size: var(--bbl-text-body-size);
   font-weight: var(--bbl-font-weight-regular);
   background: var(--bbl-color-white);
-  padding: var(--bbl-space-300) 1.125rem;
+  padding: var(--bbl-space-150) 1.125rem;
   text-align: right;
   vertical-align: middle;
+  height: var(--bbl-space-100);
 }
 
 .fund-prices-table table tr:not(.header-row) td span {
@@ -61,7 +62,10 @@ td.merged-fund-type {
   padding-left: 0;
 }
 
-.fund-prices-table table tr:not(.header-row) td.merged-fund-type,
+.fund-prices-table table tr:not(.header-row) td.merged-fund-type {
+  text-align: left;
+}
+
 .fund-prices-table table tr:not(.header-row) td.col-openendfund {
   text-align: left;
   white-space: nowrap;
@@ -72,6 +76,15 @@ td.merged-fund-type {
 .fund-prices-table table tr:not(.header-row) td.col-redemptionprice,
 .fund-prices-table table tr:not(.header-row) td.col-totalnetassets {
   text-align: right;
+  padding-right: 0;
+}
+
+.fund-prices-table table tr:not(.header-row) td.col-sellingprice {
+  padding-right: 0.625rem;
+}
+
+.fund-prices-table table tr:not(.header-row) td.col-totalnetassets {
+  padding-right: 1.125rem;
 }
 
 .fund-prices-table table tr.header-row td {
@@ -94,12 +107,17 @@ td.merged-fund-type {
 }
 
 .fund-prices-table table tr.header-row td:first-child {
-  width: 15%;
+  width: 12%;
   padding-left: 1.125rem;
 }
 
 .fund-prices-table table tr.header-row td:nth-child(2) {
-  width: 22%;
+  width: 26%;
+  padding-left: 1.0625rem;
+}
+
+.fund-prices-table table tr.header-row td:nth-child(4) {
+  padding-right: 0.625rem;
 }
 
 .fund-prices-table table tr.header-row td:last-child {
