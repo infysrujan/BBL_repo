@@ -111,7 +111,7 @@
 .external-redirect-popup-description p {
   margin-block: 0.625rem 0;
   font-family: var(--bbl-font-family-medium);
-  font-size: 0.77rem;
+  font-size: var(--bbl-font-size-b3);
   line-height: 1.4063rem;
   color: var(--bbl-color-truthful-blue);
   font-weight: var(--bbl-font-weight-regular);
@@ -227,7 +227,7 @@
   }
 
   .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 1.5rem;
+    font-size: var(--bbl-font-size-h5-desktop);
     line-height: 1.625rem;
   }
 
@@ -237,7 +237,7 @@
   }
 
   .external-redirect-popup-description p {
-    font-size: 0.96rem;
+    font-size: var(--bbl-font-size-b1);
   }
 
   :lang(th) {
