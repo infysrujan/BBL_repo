@@ -99,6 +99,18 @@ function getAuthoringPreviewData(block) {
   };
 }
 
+async function fetchAuthoringData() {
+  try {
+    const pagePath = window.location.pathname.replace('.html', '');
+    const resp = await fetch(`${pagePath}/_jcr_content.infinity.json`);
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    return data?.root?.section?.promotional_details || null;
+  } catch (e) {
+    return null;
+  }
+}
+
 function formatDate(dateStr, locale = 'en-GB') {
   if (!dateStr) return '';
   return new Date(dateStr).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
@@ -287,25 +299,20 @@ export default async function decorate(block) {
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
   const clickToViewFull = placeholders.promoClickToViewFull || '';
   const registerCtaUrl = effectiveConfigs.bbmIsRegister || '';
-  const previewData = isAuthoringInstance(block) && !card
-    ? getAuthoringPreviewData(block)
-    : null;
-
-  if (!card && !previewData) {
-    const errorMsg = placeholders.promoNoResults || 'No promotion details found.';
-    block.innerHTML = `<p class="promo-detail-error">${errorMsg}</p>`;
-    return;
-  }
-
-  const data = card || previewData;
 
   if (isAuthoringInstance(block)) {
-    block.querySelectorAll(':scope > div').forEach((row) => {
-      const key = row.children[0]?.textContent?.trim().toLowerCase().replace(/-/g, '');
-      if (key === 'promotiontype' || key === 'promoid') {
-        row.dataset.configRow = '';
-      }
-    });
+    const authoringData = await fetchAuthoringData();
+    const previewData = !authoringData ? getAuthoringPreviewData(block) : null;
+    const data = authoringData || previewData || card;
+
+    if (!data) {
+      const errorMsg = placeholders.promoNoResults || 'No promotion details found.';
+      block.innerHTML = `<p class="promo-detail-error">${errorMsg}</p>`;
+      return;
+    }
+
+    const originalChildren = [...block.children];
+
     block.classList.add('has-preview');
     let previewContainer = block.querySelector('.promo-detail-preview');
     if (!previewContainer) {
@@ -313,6 +320,7 @@ export default async function decorate(block) {
       previewContainer.className = 'promo-detail-preview';
       block.appendChild(previewContainer);
     }
+
     renderDetails(
       previewContainer,
       data,
@@ -322,16 +330,20 @@ export default async function decorate(block) {
       registerCtaUrl,
       promoId,
     );
+
+    const hidden = document.createElement('div');
+    hidden.style.display = 'none';
+    originalChildren.forEach((child) => hidden.appendChild(child));
+    block.appendChild(hidden);
+
     return;
   }
 
-  renderDetails(
-    block,
-    data,
-    periodLabel,
-    locale,
-    clickToViewFull,
-    registerCtaUrl,
-    promoId,
-  );
+  if (!card) {
+    const errorMsg = placeholders.promoNoResults || 'No promotion details found.';
+    block.innerHTML = `<p class="promo-detail-error">${errorMsg}</p>`;
+    return;
+  }
+
+  renderDetails(block, card, periodLabel, locale, clickToViewFull, registerCtaUrl, promoId);
 }
