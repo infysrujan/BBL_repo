@@ -18,7 +18,7 @@
 .forward-points-sme .fpsme-update-label {
   width: 100%;
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-85);
   margin-bottom: 0.625rem;
 }
@@ -474,7 +474,7 @@
 .forward-points-sme .fpsme-fwd-title {
   font-size: 1.4rem;
   font-family: var(--bbl-font-family-medium);
-  font-weight: 500;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
   text-align: center;
   line-height: 1.75rem;
@@ -552,7 +552,7 @@
 .forward-points-sme .fpsme-rt-head {
   font-size: var(--bbl-font-size-b1);
   font-family: var(--bbl-font-family-medium);
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-gray-142);
   padding: 1.2rem;
 }
@@ -561,7 +561,7 @@
 .forward-points-sme .fpsme-rt-period {
   font-size: var(--bbl-font-size-b1);
   font-family: var(--bbl-font-family-medium);
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-gray-142);
 }
 
