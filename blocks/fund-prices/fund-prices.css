@@ -352,7 +352,6 @@ body.fund-prices-search-in-header header.is-not-overlapped ~ main {
   color: var(--bbl-color-white);
   white-space: nowrap;
   line-height: 2.9375rem;
-  float: left;
   cursor: default;
   padding: 0;
   margin-right: 1.25rem;
