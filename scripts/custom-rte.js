@@ -4,7 +4,7 @@ const DCW = '.default-content-wrapper';
 export function decorateRteInlineImages(main) {
   main.querySelectorAll(`${DCW} p, ${DCW} li, ${DCW} td`).forEach((el) => {
     if (!el.innerHTML.includes('&amp;nbsp;')) return;
-    el.innerHTML = el.innerHTML.replace(/&amp;nbsp;/g, ' ');
+    el.innerHTML = el.innerHTML.replace(/&amp;nbsp;/g, '&nbsp;');
   });
 
   main.querySelectorAll(`${DCW} p picture, ${DCW} li picture`)
