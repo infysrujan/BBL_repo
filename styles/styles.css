@@ -17,6 +17,7 @@
 @import url('./overlay.css');
 @import url('./calendar-picker.css');
 @import url('./error-page.css');
+@import url('./rte.css');
 
 :root {
     /* site-level sizing */
@@ -169,11 +170,6 @@ main img {
     height: auto;
 }
 
-picture.rte-inline-image {
-    display: inline-block;
-    vertical-align: middle;
-}
-
 .icon {
     display: inline-block;
     height: 24px;
@@ -183,36 +179,6 @@ picture.rte-inline-image {
 .icon img {
     height: 100%;
     width: 100%;
-}
-
-picture.rte-inline-image img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.default-content-wrapper :is(ol, ul) {
-  margin: 0 0 0 var(--bbl-space-250);
-  padding: 0;
-}
-
-.default-content-wrapper :is(ol, ul) li {
-  margin: 0 0 0.625rem var(--bbl-space-250);
-}
-
-.default-content-wrapper :is(ol, ul) li p {
-  margin: 0;
-}
-
-.default-content-wrapper .has-inline-icon {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.default-content-wrapper .has-inline-icon > p {
-    margin: 0;
 }
 
 /* =========================================================================
