@@ -110,7 +110,7 @@
 /* Description — mobile-first: smaller base, larger on tablet+ */
 .external-redirect-popup-description p {
   margin-block: 0.625rem 0;
-  font-family: BangkokBank-Medium, sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-size: 0.77rem;
   line-height: 1.4063rem;
   color: var(--bbl-color-truthful-blue);
