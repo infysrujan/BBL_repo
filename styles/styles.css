@@ -174,7 +174,6 @@ picture.rte-inline-image {
     vertical-align: middle;
 }
 
-
 .icon {
     display: inline-block;
     height: 24px;
@@ -191,6 +190,19 @@ picture.rte-inline-image img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+}
+
+.default-content-wrapper :is(ol, ul) {
+  margin: 0 0 0 var(--bbl-space-250);
+  padding: 0;
+}
+
+.default-content-wrapper :is(ol, ul) li {
+  margin: 0 0 0.625rem var(--bbl-space-250);
+}
+
+.default-content-wrapper :is(ol, ul) li p {
+  margin: 0;
 }
 
 .default-content-wrapper .has-inline-icon {
