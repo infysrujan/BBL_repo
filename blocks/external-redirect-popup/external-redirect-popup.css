@@ -56,7 +56,7 @@
   align-items: center;
   justify-content: center;
   transition: opacity 0.15s ease;
-  font-size: 1.25rem;
+  font-size: var(--bbl-font-size-h5-mobile);
   color: var(--bbl-color-gray-142);
   line-height: 1;
 }
@@ -91,7 +91,7 @@
 .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6) {
   margin: 0;
   font-family: BangkokBank-Bold, 'BBL Sans', BangkokBank-Regular, sans-serif;
-  font-size: 1.3125rem;
+  font-size: var(--bbl-font-size-h5-mobile);
   line-height: 1.4219rem;
   color: var(--bbl-color-truthful-blue);
   font-weight: 400;
@@ -204,7 +204,7 @@
   }
 
   .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 1.3125rem;
+    font-size: var(--bbl-font-size-h5-mobile);
     line-height: 1.4219rem;
   }
 
