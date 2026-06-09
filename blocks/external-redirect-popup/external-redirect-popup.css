@@ -114,7 +114,7 @@
   font-size: 0.77rem;
   line-height: 1.4063rem;
   color: var(--bbl-color-truthful-blue);
-  font-weight: var(--bbl-font-weight-medium);
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 .external-redirect-popup-url {
