@@ -1,15 +1,7 @@
 {
   "ci": {
     "collect": {
-      "numberOfRuns": 2,
-      "settings": {
-        "blockedUrlPatterns": [
-          "*googletagmanager.com*",
-          "*/plugins/martech/*",
-          "*/plugins/gtm-martech/*",
-          "*/scripts/gtm-martech.js*"
-        ]
-      }
+      "numberOfRuns": 2
     },
     "assert": {
       "assertions": {
