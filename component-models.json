@@ -4767,6 +4767,13 @@
         "valueType": "date"
       },
       {
+        "component": "text",
+        "name": "customClassName",
+        "label": "Custom CSS Class Name",
+        "description": "Enter one or more CSS class names (space-separated) to apply custom styling to this date input field wrapper.",
+        "valueType": "string"
+      },
+      {
         "component": "tab",
         "label": "Validation",
         "name": "validation"
@@ -5093,6 +5100,13 @@
         "component": "text",
         "name": "placeholder",
         "label": "Placeholder text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "customClassName",
+        "label": "Custom CSS Class Name",
+        "description": "Enter one or more CSS class names (space-separated) to apply custom styling to this dropdown field wrapper.",
         "valueType": "string"
       },
       {
@@ -6761,6 +6775,10 @@
           {
             "name": "Cards",
             "value": "cards"
+          },
+          {
+            "name": "Tabs",
+            "value": "radio-tabs"
           }
         ],
         "value": "default"
