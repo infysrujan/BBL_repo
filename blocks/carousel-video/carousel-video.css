@@ -94,7 +94,7 @@
 
 
 .carousel-video .cv-thumb.active {
-  box-shadow: 0 0 10px #000;
+  box-shadow: 0 0 0.625rem var(--bbl-color-black);
   opacity: 1;
 }
 
@@ -205,9 +205,9 @@
 
 
 @keyframes wobble-vertical {
-    25% { margin-top: 4px; }
-    50% { margin-top: -2px; }
-    75% { margin-top: 1px; }
+    25% { margin-top: 0.25rem; }
+    50% { margin-top: -0.125rem; }
+    75% { margin-top: 0.0625rem; }
     100% { margin-top: 0; }
 }
 
@@ -221,7 +221,7 @@
 @media (width > 47.5rem) {
   .carousel-video-wrapper {
     padding: 0 2.5rem;
-    margin: 0 -45px;
+    margin: 0 -2.8125rem;
   }
 
   .carousel-video .cv-main-player {
