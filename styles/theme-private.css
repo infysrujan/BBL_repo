@@ -21,3 +21,8 @@ body.private main :is(.button-container .button, .button) {
 body.private .default-content-wrapper p {
     color: var(--bbl-color-grey-85);
 }
+
+body.private .bg-truthful-blue p,
+body.private .bg-truthful-dark-blue p {
+    color: var(--bbl-color-white);
+}
