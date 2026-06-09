@@ -202,17 +202,24 @@ export default function decorate(block) {
   media.className = 'welcome-banner-media';
 
   if (desktopImg && mobileImg) {
+    // Build one clean <picture> with correct source order:
+    //   1. Desktop <source> with media query  →  shown on wide viewports
+    //   2. Mobile  <img> fallback (no media)   →  shown on narrow viewports
     const picture = doc.createElement('picture');
 
-    const picDesktop = createPictureWithoutOptimization(desktopImg.src, desktopImg.alt, true, [{ media: '(min-width: 47.5625rem)' }, {}]);
-    picDesktop.querySelectorAll('source[media]').forEach((source) => {
-      picture.appendChild(source);
-    });
+    const desktopSrc = new URL(desktopImg.src, window.location.href).pathname;
+    const mobileSrc = new URL(mobileImg.src, window.location.href).pathname;
 
-    const picMobile = createPictureWithoutOptimization(mobileImg.src, mobileImg.alt, true, [{}]);
-    picMobile.querySelectorAll('source, img').forEach((el) => {
-      picture.appendChild(el);
-    });
+    const desktopSource = doc.createElement('source');
+    desktopSource.setAttribute('media', '(min-width: 47.5625rem)');
+    desktopSource.setAttribute('srcset', desktopSrc);
+    picture.appendChild(desktopSource);
+
+    const img = doc.createElement('img');
+    img.setAttribute('src', mobileSrc);
+    img.setAttribute('alt', mobileImg.alt || desktopImg.alt || '');
+    img.setAttribute('loading', 'eager');
+    picture.appendChild(img);
 
     media.append(picture);
   } else if (desktopImg || mobileImg) {
