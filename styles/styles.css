@@ -441,6 +441,11 @@ body.bangkok-bankm-card main {
     flex-direction: column;
 }
 
+.section.columns-2-25 {
+    display: flex;
+    flex-direction: column;
+}
+
 @media (width > 64rem) {
     .section.columns-3 { 
         flex-direction: row;
@@ -468,6 +473,10 @@ body.bangkok-bankm-card main {
         flex-direction: row;
     }
 
+    .section.columns-2-25 {
+        flex-direction: row;
+    }
+
     .section.columns-2-65 > * {
         padding-inline: var(--bbl-space-250);
         flex: 1;
@@ -478,12 +487,21 @@ body.bangkok-bankm-card main {
         flex: 1;
     }
 
+    .section.columns-2-25 > * {
+        padding-inline: var(--bbl-space-250);
+        flex: 1;
+    }
+
     .section.columns-2-65 > *:first-child {
         flex: 0 0 65%;
     }
 
     .section.columns-2-75 > *:first-child {
         flex: 0 0 75%;
+    }
+
+    .section.columns-2-25 > *:first-child {
+        flex: 0 0 25%;
     }
 }
 
