@@ -66,6 +66,7 @@
   font-size: 0.875rem;
   line-height: 1.25rem;
   margin: 0 0 1.25rem;
+  color: var(--bbl-color-grey-70);
 }
 
 .card-eyebrow {
