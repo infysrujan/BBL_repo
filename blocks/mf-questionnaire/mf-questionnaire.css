@@ -123,7 +123,6 @@
   display: flex;
   flex-flow: row wrap;
   gap: var(--bbl-space-100);
-  justify-content: center;
 }
 
 .mfq-risk-options .list-thumb-square li {
@@ -255,4 +254,9 @@
     width: 10.625rem;
     height: 10.625rem;
   }
+  
+  .modal-body .mfq-title {
+    font-size:var(--bbl-font-size-h3-desktop);
+    text-align: center;
+}
 }
