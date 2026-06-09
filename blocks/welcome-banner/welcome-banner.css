@@ -60,6 +60,11 @@
   object-fit: cover;
 }
 
+/* Mobile-first: show mobile image, hide desktop */
+.welcome-banner-overlay .welcome-banner-media .welcome-banner-img-desktop {
+  display: none;
+}
+
 .welcome-banner-overlay .welcome-banner-ctas {
   position: absolute;
   bottom: 5%;
@@ -108,6 +113,15 @@
 @media (width > 47.5625rem) {
   .welcome-banner-overlay .welcome-banner-dialog {
     max-width: 60rem;
+  }
+
+  /* Desktop: swap image visibility */
+  .welcome-banner-overlay .welcome-banner-media .welcome-banner-img-desktop {
+    display: block;
+  }
+
+  .welcome-banner-overlay .welcome-banner-media .welcome-banner-img-mobile {
+    display: none;
   }
 
   .welcome-banner-overlay .welcome-banner-ctas {

@@ -202,26 +202,23 @@ export default function decorate(block) {
   media.className = 'welcome-banner-media';
 
   if (desktopImg && mobileImg) {
-    // Build one clean <picture> with correct source order:
-    //   1. Desktop <source> with media query  →  shown on wide viewports
-    //   2. Mobile  <img> fallback (no media)   →  shown on narrow viewports
-    const picture = doc.createElement('picture');
-
     const desktopSrc = new URL(desktopImg.src, window.location.href).pathname;
     const mobileSrc = new URL(mobileImg.src, window.location.href).pathname;
+    const alt = mobileImg.alt || desktopImg.alt || '';
 
-    const desktopSource = doc.createElement('source');
-    desktopSource.setAttribute('media', '(min-width: 47.5625rem)');
-    desktopSource.setAttribute('srcset', desktopSrc);
-    picture.appendChild(desktopSource);
+    const imgDesktop = doc.createElement('img');
+    imgDesktop.className = 'welcome-banner-img-desktop';
+    imgDesktop.setAttribute('src', desktopSrc);
+    imgDesktop.setAttribute('alt', alt);
+    imgDesktop.setAttribute('loading', 'eager');
 
-    const img = doc.createElement('img');
-    img.setAttribute('src', mobileSrc);
-    img.setAttribute('alt', mobileImg.alt || desktopImg.alt || '');
-    img.setAttribute('loading', 'eager');
-    picture.appendChild(img);
+    const imgMobile = doc.createElement('img');
+    imgMobile.className = 'welcome-banner-img-mobile';
+    imgMobile.setAttribute('src', mobileSrc);
+    imgMobile.setAttribute('alt', alt);
+    imgMobile.setAttribute('loading', 'eager');
 
-    media.append(picture);
+    media.append(imgDesktop, imgMobile);
   } else if (desktopImg || mobileImg) {
     const img = desktopImg || mobileImg;
     const picture = createPictureWithoutOptimization(img.src, img.alt, true, [{}]);
@@ -254,7 +251,7 @@ export default function decorate(block) {
   );
 
   // ── Show banner ────────────────────────────────────────────────────────────
-  // Write the timestamp immediately so the 20-minute suppression window starts.
+  // Write the timestamp immediately so the 24-hour suppression window starts.
   writeTimestamp();
   doc.body.classList.add('modal-open');
   showModal(overlay, 'welcome-banner-overlay-visible');
