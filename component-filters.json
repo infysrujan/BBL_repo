@@ -207,7 +207,15 @@
       "tnc",
       "wizard",
       "range",
-      "double-key-dropdown"
+      "double-key-dropdown",
+      "forms-menu-card",
+      "forms-card-list"
+    ]
+  },
+  {
+    "id": "forms-card-list",
+    "components": [
+      "forms-card-list-item"
     ]
   },
   {
@@ -326,7 +334,8 @@
   {
     "id": "story-card",
     "components": [
-      "button"
+      "button",
+      "social-icon"
     ]
   },
   {

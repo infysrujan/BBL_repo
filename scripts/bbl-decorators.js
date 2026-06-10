@@ -335,7 +335,7 @@ function decorateButtonsV1(element) {
   });
 }
 
-function decorateTerritoryButtons(main) {
+function decorateTertiaryButtons(main) {
   // Find anchors that are "button" only (no variants like primary/secondary)
   // and convert them to "button territory".
   main.querySelectorAll('a.button:not([class*=" "])').forEach((a) => {
@@ -483,8 +483,16 @@ function createPictureWithoutOptimization(
   return picture;
 }
 
+function applyLinkTarget(container, selector, targetValue) {
+  const anchor = container.querySelector(selector);
+  if (anchor) {
+    const openInNewTab = targetValue === true || targetValue?.toString().toLowerCase() === 'true';
+    anchor.target = openInNewTab ? '_blank' : '_self';
+  }
+}
+
 export {
-  decorateTerritoryButtons,
+  decorateTertiaryButtons,
   decorateButtonsV1,
   decorateSvgWithAltText,
   loadBreadcrumb,
@@ -493,4 +501,5 @@ export {
   buildCookieAlert,
   getLang,
   createPictureWithoutOptimization,
+  applyLinkTarget,
 };
