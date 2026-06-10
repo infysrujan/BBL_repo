@@ -92,6 +92,7 @@
   height: calc((100vw - 2.5rem) / 1.3);
 }
 
+.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe),
 .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video) {
   height: auto;
 }
@@ -635,10 +636,6 @@
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-app-cta-mobile-fallback .button-container {
   margin: 0;
   padding-bottom: 0.9375rem;
-}
-
-.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) {
-  height: auto;
 }
 
 .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-wrapper {

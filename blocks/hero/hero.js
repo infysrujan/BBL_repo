@@ -26,9 +26,7 @@ function pauseBannerVideo(item) {
   if (iframe) {
     delete iframe.dataset.ytPendingPlay;
     if (iframe.ytPlayer) try { iframe.ytPlayer.pauseVideo(); } catch (_) { /* not ready */ }
-    iframe.contentWindow?.postMessage(
-      JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*',
-    );
+    iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
   }
 }
 
@@ -92,6 +90,10 @@ function changeBanner(block) {
 function lazyLoadThumbnails(block) {
   const outer = block.querySelector('.hero-banner-thumbnail-outer');
   if (!outer) return;
+  if (window.matchMedia('(max-width: 47.5rem)').matches) {
+    outer.classList.add('hero-banner-thumbnail-outer-active');
+    return;
+  }
   function onScroll() {
     if (window.scrollY <= 0) return;
     outer.classList.add('hero-banner-thumbnail-outer-active');
@@ -296,11 +298,6 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
   const overlay = createElement('div', 'hero-banner-iframe-overlay');
   iframe.insertAdjacentElement('afterend', overlay);
 
-  const iframeWrapper = iframe.closest('.hero-banner-video-wrapper');
-  if (window.matchMedia(MOBILE_MQ).matches && iframeWrapper) {
-    iframeWrapper.classList.add('hero-yt-not-started');
-  }
-
   loadYTScript(ytSrc);
   onYTReady(() => {
     let pollId = null;
@@ -309,10 +306,8 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
       events: {
         onReady: ({ target }) => {
           iframe.ytPlayerReady = true;
-          if (iframe.dataset.ytPendingPlay && !window.matchMedia(MOBILE_MQ).matches) {
-            delete iframe.dataset.ytPendingPlay;
-            target.unMute();
-            target.setVolume(50);
+          if (!window.matchMedia(MOBILE_MQ).matches) {
+            if (iframe.dataset.ytPendingPlay) delete iframe.dataset.ytPendingPlay;
             target.playVideo();
           }
           target.unMute();
@@ -326,7 +321,6 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
           playBtn.innerHTML = playing ? VI.pause : VI.play;
           playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
           if (playing) {
-            iframeWrapper?.classList.remove('hero-yt-not-started');
             if (!pollId) {
               pollId = setInterval(() => {
                 const cur = target.getCurrentTime();
