@@ -26,6 +26,9 @@ function pauseBannerVideo(item) {
   if (iframe) {
     delete iframe.dataset.ytPendingPlay;
     if (iframe.ytPlayer) try { iframe.ytPlayer.pauseVideo(); } catch (_) { /* not ready */ }
+    iframe.contentWindow?.postMessage(
+      JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*',
+    );
   }
 }
 
@@ -57,22 +60,28 @@ function playBannerVideo(item) {
 }
 
 function changeBanner(block) {
-  block.addEventListener('mouseenter', (e) => {
-    const thumbnail = e.target.closest('.hero-banner-thumbnail-item');
-    if (!thumbnail) return;
+  function activateThumbnail(thumbnail) {
     const { index } = thumbnail.dataset;
-
     const currentItem = block.querySelector('.hero-banner-item.hero-banner-item-active');
     if (currentItem?.dataset.index === index) return;
-
     pauseBannerVideo(currentItem);
-
     block.querySelectorAll('[data-index]').forEach((el) => {
       el.classList.toggle('hero-banner-item-active', el.classList.contains('hero-banner-item') && el.dataset.index === index);
       el.classList.toggle('hero-banner-thumbnail-item-active', el.classList.contains('hero-banner-thumbnail-item') && el.dataset.index === index);
     });
+  }
 
+  block.addEventListener('mouseenter', (e) => {
+    const thumbnail = e.target.closest('.hero-banner-thumbnail-item');
+    if (!thumbnail) return;
+    activateThumbnail(thumbnail);
     playBannerVideo(block.querySelector('.hero-banner-item.hero-banner-item-active'));
+  }, true);
+
+  block.addEventListener('click', (e) => {
+    const thumbnail = e.target.closest('.hero-banner-thumbnail-item');
+    if (!thumbnail) return;
+    activateThumbnail(thumbnail);
   }, true);
 
   block.addEventListener('mouseleave', () => {
@@ -144,7 +153,7 @@ function buildControls(bannerItem) {
       <input type="range" class="hero-ctrl-seek" min="0" max="1000" value="0" step="1" aria-label="Seek">
     </div>
     <div class="hero-ctrl-bar">
-      <button class="hero-ctrl-btn hero-ctrl-play" aria-label="Pause">${VI.pause}</button>
+      <button class="hero-ctrl-btn hero-ctrl-play" aria-label="Play">${VI.play}</button>
       <div class="hero-ctrl-vol-group">
         <button class="hero-ctrl-btn hero-ctrl-mute" aria-label="Mute">${VI.volume}</button>
         <input type="range" class="hero-ctrl-volume" min="0" max="100" value="50" step="1" aria-label="Volume">
@@ -287,6 +296,11 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
   const overlay = createElement('div', 'hero-banner-iframe-overlay');
   iframe.insertAdjacentElement('afterend', overlay);
 
+  const iframeWrapper = iframe.closest('.hero-banner-video-wrapper');
+  if (window.matchMedia(MOBILE_MQ).matches && iframeWrapper) {
+    iframeWrapper.classList.add('hero-yt-not-started');
+  }
+
   loadYTScript(ytSrc);
   onYTReady(() => {
     let pollId = null;
@@ -312,6 +326,7 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
           playBtn.innerHTML = playing ? VI.pause : VI.play;
           playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
           if (playing) {
+            iframeWrapper?.classList.remove('hero-yt-not-started');
             if (!pollId) {
               pollId = setInterval(() => {
                 const cur = target.getCurrentTime();
@@ -448,11 +463,11 @@ export default async function decorate(block) {
         iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
         iframe.setAttribute('allowfullscreen', '');
         iframe.setAttribute('loading', 'lazy');
-        bannerItem.append(iframe);
-        if (!isMobile) {
-          const bar = buildControls(bannerItem);
-          wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc);
-        }
+        const iframeWrapper = createElement('div', 'hero-banner-video-wrapper');
+        iframeWrapper.append(iframe);
+        bannerItem.append(iframeWrapper);
+        const bar = buildControls(iframeWrapper);
+        wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc);
       } else if (damVideoSrc) {
         const video = document.createElement('video');
         video.className = 'hero-banner-video';
@@ -478,6 +493,13 @@ export default async function decorate(block) {
         if (isMobile) {
         // Start paused on mobile
           video.pause();
+
+          // Reset play button to play state since video starts paused on mobile
+          const playBtn = bar.querySelector('.hero-ctrl-play');
+          if (playBtn) {
+            playBtn.innerHTML = VI.play;
+            playBtn.setAttribute('aria-label', 'Play');
+          }
 
           // Ensure center play button is visible initially
           const centerBtn = videoWrapper.querySelector(

@@ -129,7 +129,11 @@
 
 .hero-banner-video-wrapper:has(iframe.hero-banner-video) .hero-banner-video-controls,
 .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-video-controls {
-  margin-bottom: 11.4375rem;
+  margin-bottom: 25px;
+}
+
+.hero-yt-not-started iframe.hero-banner-video {
+  visibility: hidden;
 }
 
 /* ── DAM video: centered play/pause overlay (mirrors YouTube middle controls) ── */
@@ -633,6 +637,15 @@
   padding-bottom: 0.9375rem;
 }
 
+.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) {
+  height: auto;
+}
+
+.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-wrapper {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
 .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) iframe {
   height: calc(100% + var(--bbl-space-600));
   margin-top: calc(-1.5 * var(--bbl-space-600));
@@ -651,6 +664,11 @@
 
   .hero-banner-item:has(.hero-banner-video) .hero-banner-content :is(h1, h2, h3, h4, h5, h6),
   .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner-text {
+    display: none;
+  }
+
+  .hero-banner-item-active:has(iframe) .hero-banner-content-group > :not(.button-container),
+  .hero-banner-item-active:has(video) .hero-banner-content-group > :not(.button-container) {
     display: none;
   }
 
@@ -1031,6 +1049,11 @@
 
   .hero-banner-item:has(.hero-banner-video) .hero-banner-content :is(h1, h2, h3, h4, h5, h6),
   .hero-banner-item:has(.hero-banner-video) .hero-banner-content-inner-text {
+    display: none;
+  }
+
+  .hero-banner-item-active:has(iframe) .hero-banner-content-group > :not(.button-container),
+  .hero-banner-item-active:has(video) .hero-banner-content-group > :not(.button-container) {
     display: none;
   }
 
