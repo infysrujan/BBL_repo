@@ -377,7 +377,10 @@
   position: relative;
   padding-right: 0.9375rem;
   color: var(--bbl-color-active-blue);
-  font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-looped);
+  font-weight: var(--bbl-text-link-primary-weight);
+  font-size: var(--bbl-text-link-primary-size);
+  line-height: var(--bbl-text-link-primary-line-height);
+  font-family: var(--bbl-font-family-medium);
 }
 
 .cards-list-button .button-tertiary:hover {

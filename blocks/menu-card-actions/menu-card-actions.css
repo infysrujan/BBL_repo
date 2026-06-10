@@ -162,7 +162,7 @@
   font-weight: var(--bbl-text-link-primary-weight);
   font-size: var(--bbl-text-link-primary-size);
   line-height: var(--bbl-text-link-primary-line-height);
-  font-family: var(--bbl-font-family-looped);
+  font-family: var(--bbl-font-family-medium);
 }
 
 .menu-card-action-inner .menu-card-action-description ~ :is(.button-m, .global-dropdown) {
