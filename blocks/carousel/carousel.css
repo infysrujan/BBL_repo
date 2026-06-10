@@ -187,15 +187,12 @@
 }
 
 .carousel-description {
-    font-size: 0.875rem;
-    line-height: 1.2031rem;
     color: var(--bbl-color-grey-70);
     margin: 0 0 var(--bbl-space-200);
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
-    line-clamp: 4;
     text-decoration: none;
 }
 
@@ -417,15 +414,12 @@
     }
 
     .carousel-item.active .carousel-description{
-        font-size: 1rem;
-        line-height: 1.375rem;
         margin-bottom: var(--bbl-space-300);
         color: var(--bbl-color-gray-142);
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 7;
-        line-clamp: 7;
     }
 
     .carousel-cta {
