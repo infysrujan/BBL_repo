@@ -523,6 +523,76 @@ function validateCreditCardNumber(inputNum) {
   return sum % 10 === 0;
 }
 
+/**
+ * Fetches Credit Card Application Status from the tracking service.
+ * Applies the following response logic:
+ *   - 1 object  → return that object wrapped in an array
+ *   - Multiple objects with same NEW_TRANSAC_RESULT → return the one with
+ *     the latest TRANSAC_DECISION_DATE
+ *   - Multiple objects with different NEW_TRANSAC_RESULT → return the one with
+ *     the latest TRANSAC_DECISION_DATE
+ *
+ * @async
+ * @name CcApplicationStatus
+ * @param {string} idAndDob - Combined ID and date-of-birth string (e.g. "998104121980")
+ * @returns {Promise<Array>} - Array containing the single selected result object, or [] on error
+ *
+ * @example
+ * // Usage in Adaptive Form custom function
+ * const result = await CcApplicationStatus('998104121980');
+ */
+async function CcApplicationStatus(idAndDob) {
+  const BASE_URL = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/uat/CreditCardTrackingService/GetCreditCardApplyStatus';
+
+  try {
+    const response = await fetch(`${BASE_URL}?idAndDob=${encodeURIComponent(idAndDob)}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      // eslint-disable-next-line no-console
+      console.error('CcApplicationStatus API error:', response.status, response.statusText);
+      return [];
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data) || data.length === 0) {
+      return [];
+    }
+
+    // Single result — return as-is
+    if (data.length === 1) {
+      return [data[0]];
+    }
+
+    // Multiple results — pick the entry with the latest TRANSAC_DECISION_DATE
+    // TRANSAC_DECISION_DATE format: "DDMMYYYY" (e.g. "21032022")
+    const parseDate = (dateStr) => {
+      if (!dateStr || dateStr.length !== 8) return new Date(0);
+      const dd = dateStr.substring(0, 2);
+      const mm = dateStr.substring(2, 4);
+      const yyyy = dateStr.substring(4, 8);
+      return new Date(`${yyyy}-${mm}-${dd}`);
+    };
+
+    const latest = data.reduce((best, current) => {
+      const bestDate = parseDate(best.TRANSAC_DECISION_DATE);
+      const currentDate = parseDate(current.TRANSAC_DECISION_DATE);
+      return currentDate > bestDate ? current : best;
+    });
+
+    return [latest];
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus error:', error);
+    return [];
+  }
+}
+
 function getidAndDob(id, dob) {
   console.log('id', id);
   console.log('dob', dob);
@@ -572,4 +642,5 @@ export {
   getidAndDob,
   replaceOtherAndJoin,
   getSelectedLabelFromDropdown,
+  CcApplicationStatus,
 };
