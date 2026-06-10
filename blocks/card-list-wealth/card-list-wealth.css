@@ -166,7 +166,6 @@
   }
 
   .card-list-wealth-card {
-    /* flex: 1 1 33.333%; */
     flex-basis: 25%; 
     min-width: 17.5rem;
   }
