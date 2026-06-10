@@ -169,7 +169,6 @@
     color: var(--bbl-color-white);
     border-radius: var(--bbl-rounded-200);
     width: fit-content;
-    font-family: var(--bbl-font-family-looped);
     text-decoration: none;
 }
 
@@ -216,7 +215,7 @@
    display: none;
 }
 
-@media (width >= 761px) {
+@media (width > 47.5rem) {
     .carousel {
         padding-left: 3rem;
     }
@@ -237,14 +236,9 @@
         margin-right: 18.75rem;
     }
 
-    .carousel-description { 
-        font-size: 0.7875rem;
-        line-height: 1.2031rem;
-        font-family: var(--bbl-font-family-looped);
-    }
 }
 
-@media (width >= 1025px) {
+@media (width >  64rem) {
     .carousel {
         position: relative;
     }
