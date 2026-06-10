@@ -673,7 +673,7 @@
   /* Section 1 currency column: 58.33% matching live site col-md-7 layout */
   .forward-points-sme .fpsme-section-currency {
     flex: 0 0 58.33%;
-    max-width: 52%;
+    max-width: 50%;
   }
 
   .forward-points-sme .fpsme-section1-bar {
