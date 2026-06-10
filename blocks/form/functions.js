@@ -524,25 +524,28 @@ function validateCreditCardNumber(inputNum) {
 }
 
 /**
- * Fetches Credit Card Application Status from the tracking service.
- * Applies the following response logic:
- *   - 1 object  → return that object wrapped in an array
- *   - Multiple objects with same NEW_TRANSAC_RESULT → return the one with
- *     the latest TRANSAC_DECISION_DATE
- *   - Multiple objects with different NEW_TRANSAC_RESULT → return the one with
- *     the latest TRANSAC_DECISION_DATE
+ * Fetches CC application status for the given idAndDob. When the API returns
+ * multiple records, picks the one with the latest TRANSAC_DECISION_DATE.
+ * Fires successEvent with [result] or errorEvent with {error} on the form
+ * so that form rules can map the response to fields.
  *
- * @name CcApplicationStatus
- * @param {string} idAndDob - Combined ID and date-of-birth string (e.g. "998104121980")
- * @returns {Array} - Array containing the single selected result object, or [] on error
- *
- * @example
- * // Usage in Adaptive Form rule editor (Function Output)
- * CcApplicationStatus('998104121980')
+ * @param {string} idAndDob       - Combined citizen-ID + DOB from Cust_IDDOB
+ * @param {string} [successEvent] - Custom event name to fire on success
+ *                                  (e.g. 'custom:ccStatusSuccess')
+ * @param {string} [errorEvent]   - Custom event name to fire on error
+ *                                  (e.g. 'custom:ccStatusError')
+ * @return {ARRAY|PANEL}
+ * @globals
  */
-function CcApplicationStatus(idAndDob) {
+function CcApplicationStatus(idAndDob, successEvent, errorEvent, globals) {
   const configs = fetchConfigs();
   const baseUrl = configs['cc-apply-status'];
+
+  const fire = (eventName, payload) => {
+    if (eventName && globals?.functions?.dispatchEvent) {
+      globals.functions.dispatchEvent(globals.form, eventName, payload);
+    }
+  };
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', `${baseUrl}?idAndDob=${encodeURIComponent(idAndDob)}`, false);
@@ -552,6 +555,7 @@ function CcApplicationStatus(idAndDob) {
   if (xhr.status < 200 || xhr.status >= 300) {
     // eslint-disable-next-line no-console
     console.error('CcApplicationStatus API error:', xhr.status, xhr.statusText);
+    fire(errorEvent, { status: xhr.status, statusText: xhr.statusText });
     return [];
   }
 
@@ -561,35 +565,36 @@ function CcApplicationStatus(idAndDob) {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('CcApplicationStatus JSON parse error:', e);
+    fire(errorEvent, { error: e.message });
     return [];
   }
 
   if (!Array.isArray(data) || data.length === 0) {
+    fire(errorEvent, { error: 'empty response' });
     return [];
   }
 
-  // Single result — return as-is
+  let result;
   if (data.length === 1) {
-    return [data[0]];
+    [result] = data;
+  } else {
+    // Multiple results — pick the entry with the latest TRANSAC_DECISION_DATE (DDMMYYYY)
+    const parseDate = (dateStr) => {
+      if (!dateStr || dateStr.length !== 8) return new Date(0);
+      const dd = dateStr.substring(0, 2);
+      const mm = dateStr.substring(2, 4);
+      const yyyy = dateStr.substring(4, 8);
+      return new Date(`${yyyy}-${mm}-${dd}`);
+    };
+
+    result = data.reduce((best, current) => (
+      parseDate(current.TRANSAC_DECISION_DATE) > parseDate(best.TRANSAC_DECISION_DATE)
+        ? current : best
+    ));
   }
 
-  // Multiple results — pick the entry with the latest TRANSAC_DECISION_DATE
-  // TRANSAC_DECISION_DATE format: "DDMMYYYY" (e.g. "21032022")
-  const parseDate = (dateStr) => {
-    if (!dateStr || dateStr.length !== 8) return new Date(0);
-    const dd = dateStr.substring(0, 2);
-    const mm = dateStr.substring(2, 4);
-    const yyyy = dateStr.substring(4, 8);
-    return new Date(`${yyyy}-${mm}-${dd}`);
-  };
-
-  const latest = data.reduce((best, current) => {
-    const bestDate = parseDate(best.TRANSAC_DECISION_DATE);
-    const currentDate = parseDate(current.TRANSAC_DECISION_DATE);
-    return currentDate > bestDate ? current : best;
-  });
-
-  return [latest];
+  fire(successEvent, [result]);
+  return [result];
 }
 
 function getidAndDob(id, dob) {
