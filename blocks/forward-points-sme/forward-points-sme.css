@@ -148,6 +148,7 @@
 
 .forward-points-sme .fpsme-time-dropdown.is-open .fpsme-time-list {
   display: block;
+  width: 7.44rem;
 }
 
 .forward-points-sme .fpsme-time-item {
