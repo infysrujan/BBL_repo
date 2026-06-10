@@ -524,28 +524,13 @@ function validateCreditCardNumber(inputNum) {
 }
 
 /**
- * Fetches CC application status for the given idAndDob. When the API returns
- * multiple records, picks the one with the latest TRANSAC_DECISION_DATE.
- * Fires successEvent with [result] or errorEvent with {error} on the form
- * so that form rules can map the response to fields.
- *
- * @param {string} idAndDob       - Combined citizen-ID + DOB from Cust_IDDOB
- * @param {string} [successEvent] - Custom event name to fire on success
- *                                  (e.g. 'custom:ccStatusSuccess')
- * @param {string} [errorEvent]   - Custom event name to fire on error
- *                                  (e.g. 'custom:ccStatusError')
+ * @param {string} idAndDob
  * @return {ARRAY|PANEL}
  * @globals
  */
-function CcApplicationStatus(idAndDob, successEvent, errorEvent, globals) {
+function CcApplicationStatus(idAndDob, globals) {
   const configs = fetchConfigs();
   const baseUrl = configs['cc-apply-status'];
-
-  const fire = (eventName, payload) => {
-    if (eventName && globals?.functions?.dispatchEvent) {
-      globals.functions.dispatchEvent(globals.form, eventName, payload);
-    }
-  };
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', `${baseUrl}?idAndDob=${encodeURIComponent(idAndDob)}`, false);
@@ -555,7 +540,6 @@ function CcApplicationStatus(idAndDob, successEvent, errorEvent, globals) {
   if (xhr.status < 200 || xhr.status >= 300) {
     // eslint-disable-next-line no-console
     console.error('CcApplicationStatus API error:', xhr.status, xhr.statusText);
-    fire(errorEvent, { status: xhr.status, statusText: xhr.statusText });
     return [];
   }
 
@@ -565,12 +549,10 @@ function CcApplicationStatus(idAndDob, successEvent, errorEvent, globals) {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('CcApplicationStatus JSON parse error:', e);
-    fire(errorEvent, { error: e.message });
     return [];
   }
 
   if (!Array.isArray(data) || data.length === 0) {
-    fire(errorEvent, { error: 'empty response' });
     return [];
   }
 
@@ -578,22 +560,32 @@ function CcApplicationStatus(idAndDob, successEvent, errorEvent, globals) {
   if (data.length === 1) {
     [result] = data;
   } else {
-    // Multiple results — pick the entry with the latest TRANSAC_DECISION_DATE (DDMMYYYY)
     const parseDate = (dateStr) => {
       if (!dateStr || dateStr.length !== 8) return new Date(0);
-      const dd = dateStr.substring(0, 2);
-      const mm = dateStr.substring(2, 4);
-      const yyyy = dateStr.substring(4, 8);
-      return new Date(`${yyyy}-${mm}-${dd}`);
+      return new Date(`${dateStr.substring(4, 8)}-${dateStr.substring(2, 4)}-${dateStr.substring(0, 2)}`);
     };
-
     result = data.reduce((best, current) => (
       parseDate(current.TRANSAC_DECISION_DATE) > parseDate(best.TRANSAC_DECISION_DATE)
         ? current : best
     ));
   }
 
-  fire(successEvent, [result]);
+  // Dispatch directly to each field — no form rule needed
+  const setVal = (field, value) => {
+    if (field && globals?.functions?.dispatchEvent) {
+      globals.functions.dispatchEvent(field, 'custom:setProperty', { value: value ?? '' });
+    }
+  };
+
+  const sp = globals?.form?.MainFormPanel?.successPanel;
+  setVal(sp?.TnewResult, result.NEW_TRANSAC_RESULT);
+  setVal(sp?.TID, result.TRANSAC_IDDOB);
+  setVal(sp?.tresult, result.TRANSAC_RESULT);
+  setVal(sp?.TBankRelationship, result.TRANSAC_BANK_RELATIONSHIP);
+  setVal(sp?.TdecisionDate, result.TRANSAC_DECISION_DATE);
+  setVal(sp?.TNewDecisionDate, result.NEW_DECIS_DATE);
+  setVal(sp?.TrecievedDate, result.TRANSAC_RECEIVED_DATE);
+
   return [result];
 }
 
