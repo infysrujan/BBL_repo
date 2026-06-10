@@ -1,30 +1,22 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
+import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const BANNER_COOKIE = 'bbl-welcome-banner';
-const COOKIE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+const BANNER_STORAGE_KEY = 'bbl-welcome-banner';
+const SUPPRESSION_DURATION_MS = 20 * 60 * 1000; // 20 minutes
 
-// ─── Storage helpers (cookie + sessionStorage fallback) ───────────────────────
+// ─── Storage helpers (sessionStorage only — cleared when the tab closes) ──────
 
 /**
- * Reads a timestamp from cookie first, then sessionStorage as fallback.
+ * Reads the suppression timestamp from sessionStorage.
  * Silently returns 0 on any SecurityError (strict privacy modes / Incognito).
  * @returns {number} Unix timestamp in ms, or 0 if not found.
  */
 function readTimestamp() {
   try {
-    const key = encodeURIComponent(BANNER_COOKIE);
-    const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${key}=([^;]*)`));
-    const ts = match ? Number(match[1]) : 0;
-    if (ts) return ts;
-  } catch (error) {
-    console.error(error);
-  }
-
-  try {
-    return Number(sessionStorage.getItem(BANNER_COOKIE)) || 0;
+    return Number(sessionStorage.getItem(BANNER_STORAGE_KEY)) || 0;
   } catch (error) {
     console.error(error);
   }
@@ -33,22 +25,12 @@ function readTimestamp() {
 }
 
 /**
- * Persists the current timestamp to both cookie and sessionStorage.
+ * Persists the current timestamp to sessionStorage when the user clicks a CTA.
  * Silently ignores write failures in restrictive environments.
  */
 function writeTimestamp() {
-  const ts = Date.now();
-
   try {
-    const expires = new Date(ts + COOKIE_DURATION_MS).toUTCString();
-    const key = encodeURIComponent(BANNER_COOKIE);
-    document.cookie = `${key}=${ts}; expires=${expires}; path=/; SameSite=Lax`;
-  } catch (error) {
-    console.error(error);
-  }
-
-  try {
-    sessionStorage.setItem(BANNER_COOKIE, String(ts));
+    sessionStorage.setItem(BANNER_STORAGE_KEY, String(Date.now()));
   } catch (error) {
     console.error(error);
   }
@@ -61,7 +43,7 @@ function writeTimestamp() {
 function getRemainingMs() {
   const ts = readTimestamp();
   if (!ts) return 0;
-  return Math.max(0, COOKIE_DURATION_MS - (Date.now() - ts));
+  return Math.max(0, SUPPRESSION_DURATION_MS - (Date.now() - ts));
 }
 
 // ─── Date-validity guard ──────────────────────────────────────────────────────
@@ -129,10 +111,10 @@ function extractCtas(buttonRows, placeholder) {
  * Builds a single CTA anchor with navigation and dismiss logic.
  * @param {Document} doc
  * @param {object}   ctaData
- * @param {Function} dismiss
+ * @param {Function} dismissAndSuppress
  * @returns {HTMLAnchorElement}
  */
-function buildCtaAnchor(doc, ctaData, dismiss) {
+function buildCtaAnchor(doc, ctaData, dismissAndSuppress) {
   const a = doc.createElement('a');
   a.className = 'welcome-banner-cta';
   a.href = ctaData.href;
@@ -144,7 +126,7 @@ function buildCtaAnchor(doc, ctaData, dismiss) {
   a.addEventListener('click', (e) => {
     e.preventDefault();
     const { href, target } = ctaData;
-    dismiss();
+    dismissAndSuppress();
     if (!href || href === '#') return;
     if (target === '_blank') {
       window.open(href, '_blank', 'noopener,noreferrer');
@@ -160,13 +142,13 @@ function buildCtaAnchor(doc, ctaData, dismiss) {
  * Builds the CTA container with all action anchors.
  * @param {Document} doc
  * @param {Array}    ctaList
- * @param {Function} dismiss
+ * @param {Function} dismissAndSuppress
  * @returns {HTMLElement}
  */
-function buildCtas(doc, ctaList, dismiss) {
+function buildCtas(doc, ctaList, dismissAndSuppress) {
   const el = doc.createElement('div');
   el.className = 'welcome-banner-ctas';
-  ctaList.forEach((ctaData) => el.appendChild(buildCtaAnchor(doc, ctaData, dismiss)));
+  ctaList.forEach((ctaData) => el.appendChild(buildCtaAnchor(doc, ctaData, dismissAndSuppress)));
   return el;
 }
 
@@ -197,19 +179,12 @@ export default function decorate(block) {
   const pictureDesktop = desktopImgRow?.querySelector('picture');
   const pictureMobile = mobileImgRow?.querySelector('picture');
 
-  if (pictureDesktop) pictureDesktop.classList.add('welcome-banner-desktop-img');
-  if (pictureMobile) pictureMobile.classList.add('welcome-banner-mobile-img');
-
   const media = doc.createElement('div');
   media.className = 'welcome-banner-media';
 
-  if (pictureDesktop && pictureMobile) {
-    media.append(pictureDesktop, pictureMobile);
-  } else if (pictureDesktop || pictureMobile) {
-    media.append(pictureDesktop || pictureMobile);
-    // If only one image exists, show it on all viewports by stripping the specific classes
-    if (pictureDesktop) pictureDesktop.classList.remove('welcome-banner-desktop-img');
-    if (pictureMobile) pictureMobile.classList.remove('welcome-banner-mobile-img');
+  if (pictureDesktop || pictureMobile) {
+    const picture = createSmartImage(desktopImgRow, mobileImgRow);
+    if (picture) media.append(picture);
   }
 
   // ── Build modal shell ──────────────────────────────────────────────────────
@@ -221,25 +196,27 @@ export default function decorate(block) {
     closeBtnAriaLabel: 'Close welcome banner',
   });
 
-  const dismiss = () => {
-    writeTimestamp();
+  const hideBanner = () => {
     hideModal(overlay, 'welcome-banner-overlay-visible', () => {
       doc.body.classList.remove('modal-open');
     });
   };
 
-  closeBtn.addEventListener('click', dismiss);
+  const dismissAndSuppress = () => {
+    writeTimestamp();
+    hideBanner();
+  };
+
+  closeBtn.addEventListener('click', hideBanner);
 
   // ── Assemble dialog ────────────────────────────────────────────────────────
   dialog.append(
     closeBtn,
     media,
-    buildCtas(doc, extractCtas(buttonRows, placeholder), dismiss),
+    buildCtas(doc, extractCtas(buttonRows, placeholder), dismissAndSuppress),
   );
 
   // ── Show banner ────────────────────────────────────────────────────────────
-  // Write the timestamp immediately so the 20-minute suppression window starts.
-  writeTimestamp();
   doc.body.classList.add('modal-open');
   showModal(overlay, 'welcome-banner-overlay-visible');
 }
