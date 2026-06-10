@@ -367,9 +367,9 @@
 }
 
 .mfr-cta:hover {
-  background: var(--bbl-color-active-blue);
+  background: var(--bbl-color-white);
   border-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
   text-decoration: none;
 }
 
