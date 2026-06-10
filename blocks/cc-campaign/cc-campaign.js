@@ -1,8 +1,13 @@
 import { loadFragment } from '../fragment/fragment.js';
+import { fetchConfigs } from '../../scripts/config.js';
+import { getLang } from '../../scripts/scripts.js';
 
 async function fetchCampaignRow(campaignId) {
   try {
-    const resp = await fetch('/en/cc-campaign.json');
+    const configs = await fetchConfigs();
+    const lang = getLang();
+    const campaignJsonPath = (configs?.ccCampaignJsonPath || '/{lang}/cc-campaign.json').replace(/\{lang\}/g, lang);
+    const resp = await fetch(campaignJsonPath);
     if (!resp.ok) return null;
     const json = await resp.json();
     const rows = json.data || [];
@@ -37,7 +42,7 @@ async function insertBottomFragment(path) {
   if (insertTarget) insertTarget.appendChild(fragment);
 }
 
-export default async function decorate(block) {
+async function init(block) {
   const params = new URLSearchParams(window.location.search);
   const campaignId = params.get('campaignid');
   if (!campaignId) return;
@@ -45,7 +50,6 @@ export default async function decorate(block) {
   const campaign = await fetchCampaignRow(campaignId);
   if (!campaign) return;
 
-  // Load top fragment (campaign-specific title + card images)
   if (campaign.fragmentPathTop) {
     const fragment = await loadFragment(campaign.fragmentPathTop);
     if (fragment) {
@@ -53,7 +57,6 @@ export default async function decorate(block) {
     }
   }
 
-  // Inject campaignName + campaignDetail as hidden fields into the form
   const formEl = document.querySelector('.form form');
   if (formEl) {
     injectCampaignFields(formEl, campaign);
@@ -69,4 +72,8 @@ export default async function decorate(block) {
   }
 
   insertBottomFragment(campaign.fragmentPathBottom);
+}
+
+export default function decorate(block) {
+  init(block);
 }
