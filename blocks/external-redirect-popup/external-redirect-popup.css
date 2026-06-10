@@ -176,7 +176,7 @@
   background: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
   border: 0.0625rem solid var(--bbl-color-active-blue);
-  margin: 1.875rem 0 0 0.9375rem;
+  margin: 1.875rem 0 0;
   padding: 0;
 }
 
@@ -219,6 +219,7 @@
 
   .external-redirect-popup-btn-cancel {
     margin-top: 1.6875rem;
+    margin-left: 0.9375rem;
   }
 }
 
@@ -241,10 +242,20 @@
 
   .external-redirect-popup-btn {
     min-width: 8.5rem;
+    height: 2.75rem;
+  }
+
+  .external-redirect-popup-btn-accept {
+    margin-top: 1.875rem;
+  }
+
+  .external-redirect-popup-btn-cancel {
+    margin-top: 1.875rem;
   }
 
   .external-redirect-popup-description p {
     font-size: var(--bbl-font-size-b1);
+    line-height: 1.5rem;
   }
 
   :lang(th) {
