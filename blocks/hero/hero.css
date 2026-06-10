@@ -843,6 +843,7 @@
 
   .hero-banner-private-wealth-banking .hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) {
     font-family: var(--bbl-font-family-primary);
+    font-weight: var(--bbl-font-weight-regular);
   }
 
   .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
