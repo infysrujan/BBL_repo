@@ -523,12 +523,17 @@ function validateCreditCardNumber(inputNum) {
   return sum % 10 === 0;
 }
 
+// Module-level cache — set by CcApplicationStatus, read by getCcField
+let ccLastResult = null;
+
 /**
+ * Fetches CC application status, picks the latest record when multiple are
+ * returned, caches the full result, and returns NEW_TRANSAC_RESULT directly.
  * @param {string} idAndDob
- * @return {ARRAY|PANEL}
- * @globals
+ * @return {string}
  */
-function CcApplicationStatus(idAndDob, globals) {
+function CcApplicationStatus(idAndDob) {
+  ccLastResult = null;
   const configs = fetchConfigs();
   const baseUrl = configs['cc-apply-status'];
 
@@ -540,7 +545,7 @@ function CcApplicationStatus(idAndDob, globals) {
   if (xhr.status < 200 || xhr.status >= 300) {
     // eslint-disable-next-line no-console
     console.error('CcApplicationStatus API error:', xhr.status, xhr.statusText);
-    return [];
+    return '';
   }
 
   let data;
@@ -549,12 +554,10 @@ function CcApplicationStatus(idAndDob, globals) {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('CcApplicationStatus JSON parse error:', e);
-    return [];
+    return '';
   }
 
-  if (!Array.isArray(data) || data.length === 0) {
-    return [];
-  }
+  if (!Array.isArray(data) || data.length === 0) return '';
 
   let result;
   if (data.length === 1) {
@@ -570,23 +573,17 @@ function CcApplicationStatus(idAndDob, globals) {
     ));
   }
 
-  // Dispatch directly to each field — no form rule needed
-  const setVal = (field, value) => {
-    if (field && globals?.functions?.dispatchEvent) {
-      globals.functions.dispatchEvent(field, 'custom:setProperty', { value: value ?? '' });
-    }
-  };
+  ccLastResult = result;
+  return result.NEW_TRANSAC_RESULT ?? '';
+}
 
-  const sp = globals?.form?.MainFormPanel?.successPanel;
-  setVal(sp?.TnewResult, result.NEW_TRANSAC_RESULT);
-  setVal(sp?.TID, result.TRANSAC_IDDOB);
-  setVal(sp?.tresult, result.TRANSAC_RESULT);
-  setVal(sp?.TBankRelationship, result.TRANSAC_BANK_RELATIONSHIP);
-  setVal(sp?.TdecisionDate, result.TRANSAC_DECISION_DATE);
-  setVal(sp?.TNewDecisionDate, result.NEW_DECIS_DATE);
-  setVal(sp?.TrecievedDate, result.TRANSAC_RECEIVED_DATE);
-
-  return [result];
+/**
+ * Returns a named field from the last CcApplicationStatus call.
+ * @param {string} fieldName
+ * @return {string}
+ */
+function getCcField(fieldName) {
+  return ccLastResult?.[fieldName] ?? '';
 }
 
 function getidAndDob(id, dob) {
@@ -639,4 +636,5 @@ export {
   replaceOtherAndJoin,
   getSelectedLabelFromDropdown,
   CcApplicationStatus,
+  getCcField,
 };
