@@ -563,6 +563,10 @@
   color: var(--bbl-color-grey-60);
 }
 
+.wealth .hero-banner-private-wealth-banking .hero-banner-content-group :is(p) {
+  color: var(--bbl-color-black);
+}
+
 .private .hero-banner-private-wealth-banking .hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) {
   color: var(--bbl-color-grey-60);
   background: linear-gradient(90deg,
