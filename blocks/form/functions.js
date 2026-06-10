@@ -524,23 +524,11 @@ function validateCreditCardNumber(inputNum) {
 }
 
 /**
- * Fetches Credit Card Application Status from the tracking service.
- * Applies the following response logic:
- *   - 1 object  → return that object wrapped in an array
- *   - Multiple objects with same NEW_TRANSAC_RESULT → return the one with
- *     the latest TRANSAC_DECISION_DATE
- *   - Multiple objects with different NEW_TRANSAC_RESULT → return the one with
- *     the latest TRANSAC_DECISION_DATE
- *
- * @name CcApplicationStatus
- * @param {string} idAndDob - Combined ID and date-of-birth string (e.g. "998104121980")
- * @returns {Array} - Array containing the single selected result object, or [] on error
- *
- * @example
- * // Usage in Adaptive Form rule editor (Function Output)
- * CcApplicationStatus('998104121980')
+ * @param {string} idAndDob
+ * @return {ARRAY|PANEL}
+ * @globals
  */
-function CcApplicationStatus(idAndDob) {
+function CcApplicationStatus(idAndDob, globals) {
   const configs = fetchConfigs();
   const baseUrl = configs['cc-apply-status'];
 
@@ -568,28 +556,37 @@ function CcApplicationStatus(idAndDob) {
     return [];
   }
 
-  // Single result — return as-is
+  let result;
   if (data.length === 1) {
-    return [data[0]];
+    [result] = data;
+  } else {
+    const parseDate = (dateStr) => {
+      if (!dateStr || dateStr.length !== 8) return new Date(0);
+      return new Date(`${dateStr.substring(4, 8)}-${dateStr.substring(2, 4)}-${dateStr.substring(0, 2)}`);
+    };
+    result = data.reduce((best, current) => (
+      parseDate(current.TRANSAC_DECISION_DATE) > parseDate(best.TRANSAC_DECISION_DATE)
+        ? current : best
+    ));
   }
 
-  // Multiple results — pick the entry with the latest TRANSAC_DECISION_DATE
-  // TRANSAC_DECISION_DATE format: "DDMMYYYY" (e.g. "21032022")
-  const parseDate = (dateStr) => {
-    if (!dateStr || dateStr.length !== 8) return new Date(0);
-    const dd = dateStr.substring(0, 2);
-    const mm = dateStr.substring(2, 4);
-    const yyyy = dateStr.substring(4, 8);
-    return new Date(`${yyyy}-${mm}-${dd}`);
+  // Dispatch directly to each field — no form rule needed
+  const setVal = (field, value) => {
+    if (field && globals?.functions?.dispatchEvent) {
+      globals.functions.dispatchEvent(field, 'custom:setProperty', { value: value ?? '' });
+    }
   };
 
-  const latest = data.reduce((best, current) => {
-    const bestDate = parseDate(best.TRANSAC_DECISION_DATE);
-    const currentDate = parseDate(current.TRANSAC_DECISION_DATE);
-    return currentDate > bestDate ? current : best;
-  });
+  const sp = globals?.form?.MainFormPanel?.successPanel;
+  setVal(sp?.TnewResult, result.NEW_TRANSAC_RESULT);
+  setVal(sp?.TID, result.TRANSAC_IDDOB);
+  setVal(sp?.tresult, result.TRANSAC_RESULT);
+  setVal(sp?.TBankRelationship, result.TRANSAC_BANK_RELATIONSHIP);
+  setVal(sp?.TdecisionDate, result.TRANSAC_DECISION_DATE);
+  setVal(sp?.TNewDecisionDate, result.NEW_DECIS_DATE);
+  setVal(sp?.TrecievedDate, result.TRANSAC_RECEIVED_DATE);
 
-  return [latest];
+  return [result];
 }
 
 function getidAndDob(id, dob) {
