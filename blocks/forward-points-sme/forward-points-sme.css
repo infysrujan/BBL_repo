@@ -2,12 +2,6 @@
    forward-points-sme block — mobile first
    ============================================================ */
 
-.forward-points-sme .fpsme-section-fwd {
-  margin-top: var(--bbl-space-500);
-}
-
-/* ── Controls row ─────────────────────────────────────────── */
-
 .forward-points-sme .fpsme-controls {
   display: flex;
   flex-wrap: wrap;
@@ -655,14 +649,14 @@
     font-size: 1.1rem;
   }
 
-  /* Forward tables remain stacked on tablet */
+}
+
+@media (width > 64rem) {
+  /* Forward tables remain stacked on desktop */
   .forward-points-sme .fpsme-fwd-tables {
     flex-direction: row;
   }
 
-}
-
-@media (width > 64rem) {
   .forward-points-sme .fpsme-section-fwd {
     margin-top: unset;
   }
