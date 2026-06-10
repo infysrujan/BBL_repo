@@ -38,7 +38,7 @@
 .forward-points-sme .fpsme-date-input {
   width: 100%;
   height: 2.75rem;
-  padding: 0 1.25rem;
+  padding: 0 2.5rem 0 1.25rem;
   color: var(--bbl-color-gray-121);
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-150);
@@ -502,7 +502,7 @@
 }
 
 .forward-points-sme .fpsme-fwd-subtitle {
-  font-size: 0.938rem;
+  font-size: 1rem;
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-70);
   text-align: center;
@@ -527,7 +527,7 @@
 .forward-points-sme .fpsme-rt-cell {
   flex: 1 1 33.33%;
   width: 33.33%;
-  padding: 1.425rem 0.625rem;
+  padding: 1.05rem;
   font-size: 1rem;
   color: var(--bbl-color-gray-142);
   background: var(--bbl-color-white);
@@ -601,9 +601,13 @@
 }
 
 @media (width > 47.5rem) {
+  .forward-points-sme .fpsme-rt-cell {
+    padding: 1.2rem;
+  }
+
   .forward-points-sme .fpsme-table-wrap,
   .forward-points-sme .fpsme-controls {
-    padding-inline: var(--bbl-space-200);
+    padding-inline: 0.625rem;
   }
 
   .forward-points-sme .fpsme-update-label {
@@ -652,6 +656,11 @@
 }
 
 @media (width > 64rem) {
+  .forward-points-sme .fpsme-table-wrap,
+  .forward-points-sme .fpsme-controls {
+    padding-inline: var(--bbl-space-250);
+  }
+
   /* Forward tables remain stacked on desktop */
   .forward-points-sme .fpsme-fwd-tables {
     flex-direction: row;
