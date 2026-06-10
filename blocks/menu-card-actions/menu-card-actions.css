@@ -139,7 +139,6 @@
 }
 
 .menu-card-action-inner .button-m {
-    display: block;
     width: auto;
     max-width: 100%;
     text-overflow: ellipsis;
