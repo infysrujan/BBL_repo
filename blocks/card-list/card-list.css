@@ -391,7 +391,7 @@
   right: 0.1875rem;
   top: 52%;
   transform: translateY(-50%);
-  font: 300 var(--bbl-font-size-b4) / 1 icomoon, sans-serif;
+  font: 300 0.625rem / 1 icomoon, sans-serif;
   transition: all 0.3s ease-in-out;
 }
 
