@@ -68,6 +68,5 @@ export default async function decorate(block) {
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
-  // Load bottom fragment after form (if defined)
   insertBottomFragment(campaign.fragmentPathBottom);
 }
