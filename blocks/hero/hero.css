@@ -607,6 +607,14 @@
   width: 48%;
 }
 
+.hero-banner-private-wealth-banking .hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--bbl-color-grey-60);
+  font-size: var(--bbl-text-banner-title-size);
+  font-weight: var(--bbl-text-banner-title-weight);
+  line-height: var(--bbl-text-banner-title-line-height);
+  font-family: var(--bbl-font-family-medium);
+}
+
 /* ─── Simple with App CTA variant  ──────────── */
 .hero-app-ctas {
   display: flex;
@@ -833,6 +841,10 @@
     margin-bottom: 0;
   }
 
+  .hero-banner-private-wealth-banking .hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--bbl-font-family-primary);
+  }
+
   .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
     overflow: visible;
     display: -webkit-box;
@@ -1011,12 +1023,6 @@
 
   .hero-banner-private-wealth-banking .hero-banner-logo {
     margin: var(--bbl-space-600) 0 0;
-  }
-
-  .hero-banner-private-wealth-banking .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--bbl-font-size-h3-desktop);
-    line-height: 2.875rem;
-    font-family: var(--bbl-font-family-primary);
   }
 
   .hero-banner-private-wealth-banking .hero-banner-content-group {
