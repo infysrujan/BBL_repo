@@ -17,6 +17,7 @@
 @import url('./overlay.css');
 @import url('./calendar-picker.css');
 @import url('./error-page.css');
+@import url('./rte.css');
 
 :root {
     /* site-level sizing */
@@ -157,6 +158,10 @@ a:any-link {
 a:hover {
     color: var(--bbl-text-link-hover);
     text-decoration: underline;
+}
+
+.default-content-wrapper > :not(.button-container) p a:any-link {
+    color: inherit;
 }
 
 main img {
