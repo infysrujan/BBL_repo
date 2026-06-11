@@ -266,6 +266,14 @@
   margin-top: 0;
 }
 
+.menu-card-action-item:has(.global-dropdown.is-open) {
+  z-index: 10;
+}
+
+.menu-card-action.scrollable:has(.global-dropdown.is-open) {
+  overflow: visible;
+}
+
 @media (width > 47.5rem) {
   .menu-card-action.stacked {
     gap: 0 var(--bbl-space-250);

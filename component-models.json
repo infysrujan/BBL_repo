@@ -10859,6 +10859,14 @@
         "component": "container",
         "name": "defaultTargetLinkSettings",
         "label": "Target settings",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "default"
+          ]
+        },
         "fields": [
           {
             "component": "boolean",
@@ -10866,15 +10874,7 @@
             "label": "Open link in new tab",
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
-            "value": false,
-            "condition": {
-              "===": [
-                {
-                  "var": "buttonActionType"
-                },
-                "default"
-              ]
-            }
+            "value": false
           }
         ]
       },
@@ -10925,6 +10925,14 @@
         "component": "container",
         "name": "downloadTargetLinkSettings",
         "label": "Target settings",
+        "condition": {
+          "===": [
+            {
+              "var": "buttonActionType"
+            },
+            "download"
+          ]
+        },
         "fields": [
           {
             "component": "boolean",
@@ -10932,15 +10940,7 @@
             "label": "Open link in new tab",
             "description": "Enable to open the button link in a new browser tab",
             "valueType": "boolean",
-            "value": false,
-            "condition": {
-              "===": [
-                {
-                  "var": "buttonActionType"
-                },
-                "download"
-              ]
-            }
+            "value": false
           }
         ]
       },
