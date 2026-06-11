@@ -671,25 +671,15 @@ function formatDateTime(date, hour, minute) {
 
   return `${Number(day)} ${months[Number(month) - 1]} ${year} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
 }
+
 /**
- * Returns a "current/max" character-count string for display in a form field.
- * Bind the return value to the label or value of a text component via a form rule.
- *
- * @name updateTextCount
- * @param {string} fieldValue - The current value of the text field
- * @param {number|string} maxCount - The maximum allowed character count (e.g. 100)
- * @returns {string} Formatted count string (e.g. "5/100")
- *
- * @example
- * updateTextCount("Hello", 100) // returns "5/100"
- */
-function updateTextCount(field, textCountComponent) {
-  const count = (field.value || '').length;
-  const maxCount = field.maxLength || 4;
-  const text = `${count}/${maxCount}`;
-  // For plain text components
-  textCountComponent.innerHTML = `<p>${text}</p>`;
-  return text;
+* @name updateTextCount
+* @param {object} passportNumber - Passport Number field object
+* @returns {string} Character count in format x/4
+*/
+function updateTextCount(passportNumber) {
+  const count = String(passportNumber?.$value || '').length;
+  return `${count}/4`;
 }
 
 // eslint-disable-next-line import/prefer-default-export
