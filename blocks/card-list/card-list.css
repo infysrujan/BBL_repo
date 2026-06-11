@@ -480,6 +480,10 @@
   padding: var(--bbl-space-250);
 }
 
+.cards-list-button + .cards-list-date {
+  padding-top: 0.625rem;
+}
+
 .cards-list-button .global-dropdown {
   width: 100%;
   margin-top: var(--bbl-space-250);
