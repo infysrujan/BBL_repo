@@ -101,7 +101,7 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
 
   const matched = allCards.filter((card) => {
     const cardName = norm(card.name || '');
-    return normalizedNames.some((n) => cardName.includes(n) || n.includes(cardName));
+    return normalizedNames.some((n) => cardName === n || cardName.includes(n));
   });
 
   // No sourcing map available — preserve the user's selection order
@@ -109,7 +109,7 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
     return normalizedNames
       .map((n) => matched.find((c) => {
         const cardName = norm(c.name || '');
-        return cardName.includes(n) || n.includes(cardName);
+        return cardName === n || cardName.includes(n);
       }))
       .filter(Boolean);
   }
