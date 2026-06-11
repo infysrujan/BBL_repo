@@ -592,7 +592,7 @@ function renderResult(state, data, calculation) {
       data.labels.result.footnoteReturnTemplate,
       { return: formatDecimal(annualReturn) },
     )
-    : '';
+    : `*Including inflation rate of ${INFLATION_RATE}% p.a. and expected annual return ${formatDecimal(annualReturn)}%`;
   setText(root, '[data-result="footnote-return"]', returnLabel);
 }
 

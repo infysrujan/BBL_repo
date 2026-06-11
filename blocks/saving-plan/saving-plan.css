@@ -345,12 +345,13 @@
   background: var(--sp-blue);
   color: var(--bbl-color-white);
   border-radius: var(--sp-radius);
-  padding: 1.5rem 1.5rem 1.75rem;
+  padding: 1rem;
+  margin-bottom: 0.25rem;
 }
 
 .saving-plan-result-future {
   font-size: var(--bbl-text-body-small-size);
-  margin: 0 0 1.25rem;
+  margin: 0 0 3rem;
   font-weight: var(--bbl-font-weight-regular);
 }
 
@@ -963,7 +964,12 @@
   }
 
   .saving-plan-result-card {
-    padding: 1.25rem 1.125rem 1.375rem;
+    padding: 0.875rem;
+    margin-bottom: 0.2188rem;
+  }
+
+  .saving-plan-result-future {
+    margin-bottom: 2.625rem;
   }
 
   .saving-plan-result-lead {
@@ -1052,7 +1058,12 @@
   }
 
   .saving-plan-result-card {
-    padding: 1.125rem 1rem 1.25rem;
+    padding: 0.875rem;
+    margin-bottom: 0.2188rem;
+  }
+
+  .saving-plan-result-future {
+    margin-bottom: 1.25rem;
   }
 
   .saving-plan-result-lead {
