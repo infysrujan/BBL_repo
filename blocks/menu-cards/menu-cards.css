@@ -6,14 +6,14 @@
 .menu-cards .tips-insight-quick-access {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: var(--bbl-space-100);
 }
 
 .menu-cards .tips-insight-quick-access-item {
   flex: 0 0 calc(33% - 1.5rem);
-  max-width: calc(33.333% - 1.5rem);
   min-height: 8.125rem;
+  box-sizing: border-box;
   border: 1px solid rgb(0 0 0 / 10%);
   background: var(--bbl-color-white);
   border-radius: 0.4375rem;
@@ -72,11 +72,10 @@
   }
 
   .menu-cards .tips-insight-quick-access-item {
-    min-height: 12.5rem;
-    max-height: 13.4375rem;
-    flex: 0 0 calc(33.333% - 4rem);
-    max-width: calc(33.333% - 4rem);
+    height: 10.35rem;
+    flex: 0 0 calc(33.62% - 4rem);
     padding: var(--bbl-space-300);
+    box-sizing: unset;
   }
 
   .menu-cards .tips-insight-quick-access-title {
@@ -98,10 +97,7 @@
   }
 
   .menu-cards .tips-insight-quick-access-item {
-    flex: 0 0 calc(33.333% - 4rem);
-    max-width: calc(33.333% - 4rem);
-    min-height: 13.125rem;
-    padding: 1.4375rem;
+    flex: 0 0 calc(33% - 4rem);
   }
 
   .menu-cards .tips-insight-quick-access-title {
