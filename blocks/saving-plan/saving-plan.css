@@ -79,6 +79,11 @@
   line-height: var(--bbl-heading-h5-line-height);
 }
 
+.saving-plan-form-title {
+  color: var(--bbl-color-black);
+  font-weight: var(--bbl-font-weight-regular);
+}
+
 .saving-plan-additional-title {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-text-thumbnail-title-size);
