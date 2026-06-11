@@ -120,11 +120,11 @@ function buildDataFromConfig(json, lang, placeholders) {
         annualIncrease: L['inputs-annualSavingIncreaseRate'] || '',
       },
       fieldPlaceholders: {
-        balance: placeholders.savingPlanPlaceholderBalance || '0 - 999,999,999',
-        goalAmount: placeholders.savingPlanPlaceholderGoalAmount || '10,000 - 999,999,999',
-        annualReturn: placeholders.savingPlanPlaceholderAnnualReturn || '0.1 - 40',
-        goalPeriod: placeholders.savingPlanPlaceholderGoalPeriod || '1 - 30',
-        annualIncrease: placeholders.savingPlanPlaceholderAnnualIncrease || '0 - 40',
+        balance: placeholders.savingPlanPlaceholderBalance,
+        goalAmount: placeholders.savingPlanPlaceholderGoalAmount,
+        annualReturn: placeholders.savingPlanPlaceholderAnnualReturn,
+        goalPeriod: placeholders.savingPlanPlaceholderGoalPeriod,
+        annualIncrease: placeholders.savingPlanPlaceholderAnnualIncrease,
       },
       buttons: {
         clear: L['common-clearButton'] || '',
