@@ -325,7 +325,6 @@ function buildDropdownField({
   return `
     <div class="saving-plan-field saving-plan-field-dropdown" data-field="${name}" data-value="${selected?.key || ''}">
       <button type="button" class="saving-plan-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
-        <span class="saving-plan-field-icon" aria-hidden="true">${icon}</span>
         <span class="saving-plan-dropdown-current">${selected?.label || label}</span>
         <span class="saving-plan-field-chevron" aria-hidden="true"></span>
       </button>

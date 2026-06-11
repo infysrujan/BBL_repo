@@ -42,8 +42,9 @@
 .saving-plan-header-title {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-text-section-title-size);
-  font-weight: var(--bbl-text-section-title-weight);
-  margin: 0 0 1rem;
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-black);
+  margin: 0 0 2.5rem;
   letter-spacing: 0;
   line-height: var(--bbl-heading-h3-line-height);
 }
@@ -170,10 +171,10 @@
   outline: none;
   background: transparent;
   text-align: right;
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-text-body-size);
-  font-weight: var(--bbl-font-weight-medium);
-  color: var(--sp-text);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-black);
   width: 6.25rem;
   min-width: 5rem;
   flex: 0 0 auto;
@@ -241,6 +242,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.saving-plan-field-dropdown[data-value=""] .saving-plan-dropdown-current {
+  color: var(--bbl-color-grey-70);
 }
 
 .saving-plan-field-dropdown.is-open .saving-plan-field-chevron {
@@ -318,9 +323,13 @@
 }
 
 .saving-plan-form-btn-secondary {
-  background: var(--bbl-color-white);
+  background: transparent;
   color: var(--sp-blue);
-  border-color: var(--sp-blue);
+  border: 0.125rem solid var(--bbl-color-grey-20);
+}
+
+.saving-plan-form-btn.saving-plan-form-btn-secondary:disabled {
+  background: transparent;
 }
 
 .saving-plan-form-btn-primary {
@@ -960,6 +969,7 @@
 
   .saving-plan-header-title {
     font-size: var(--bbl-heading-h2-mobile);
+    margin-bottom: 2.1875rem;
   }
 
   .saving-plan-result-card {
@@ -1049,6 +1059,7 @@
 
   .saving-plan-header-title {
     font-size: var(--bbl-font-size-h3-mobile);
+    margin-bottom: 2.1875rem;
   }
 
   .saving-plan-result-card {
