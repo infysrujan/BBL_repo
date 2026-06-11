@@ -373,7 +373,7 @@
   padding: 0;
   margin: 1.875rem auto;
   grid-template-columns: 1fr;
-  gap: 1.6rem 15px;
+  gap: 1.6rem 0.9375rem;
 }
 
 .locate-us .locate-us-card {
@@ -759,7 +759,7 @@
   font-family: var(--bbl-font-family-primary);
   appearance: none;
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23606060' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("../../icons/icon_chevron_down.svg");
   background-repeat: no-repeat;
   background-position: right var(--bbl-space-200) center;
 }
@@ -1063,9 +1063,9 @@
 
   .locate-us .locate-us-cards {
     display: grid;
-    padding: 0 45px 1.875rem;
+    padding: 0 2.8125rem 1.875rem;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.125rem 40px;
+    gap: 1.125rem 2.5rem;
     margin-top: 0;
     align-items: stretch;
   }
@@ -1081,12 +1081,12 @@
     grid-template-rows: subgrid;
     grid-row: span 2;
     min-width: 0;
-    height: 210px;
+    height: 13.125rem;
     border-top-width: 0;
     padding-left: var(--bbl-space-250);
-    padding-right: 10px;
+    padding-right: 0.625rem;
     margin-right: 0;
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
   }
 
   /* 3 cards per row on tablet: use subgrid so all headers in a row share the same height */
@@ -1260,7 +1260,7 @@
 
   .locate-us .locate-us-cards {
     grid-template-columns: repeat(4, 1fr);
-    gap: 1.125rem 40px;
+    gap: 1.125rem 2.5rem;
     padding-inline: var(--bbl-space-1050);
   }
 
@@ -1358,7 +1358,7 @@
   }
 
   .locate-us .section.underline-title .default-content-wrapper {
-    padding-top: 30px;
+    padding-top: 1.875rem;
   }
 
   .locate-us .cards-list-title h3{
