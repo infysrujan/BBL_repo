@@ -23,7 +23,13 @@ function createElement(tag, ...classNames) {
   return el;
 }
 
-export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt, blockName) {
+export default function createSmartImage(
+  pictureDesktop,
+  pictureMobile,
+  imageAlt,
+  eager,
+  blockName,
+) {
   const imgDesktop = pictureDesktop?.querySelector('img');
   const imgMobile = pictureMobile?.querySelector('img');
   // Extract alt text from a cell that may contain HTML
@@ -48,6 +54,7 @@ export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt
     mobileSource.setAttribute('srcset', mobileSrc);
 
     const img = createElement('img');
+    img.setAttribute('loading', eager ? 'eager' : 'lazy');
 
     img.setAttribute('alt', altText || img.alt || '');
     img.setAttribute('src', mobileSrc);
@@ -60,6 +67,7 @@ export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt
   }
   if (blockName === 'multi-column-tiles') {
     const img = createElement('img');
+    img.setAttribute('loading', eager ? 'eager' : 'lazy');
     let allSrc = imgDesktop.getAttribute('src');
     allSrc = cleanImgSrc(allSrc);
 

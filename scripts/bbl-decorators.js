@@ -473,7 +473,7 @@ function createPictureWithoutOptimization(
       picture.appendChild(source);
     } else {
       const img = document.createElement('img');
-      if (eager) img.setAttribute('loading', 'eager');
+      img.setAttribute('loading', eager ? 'eager' : 'lazy');
       img.setAttribute('alt', alt);
       picture.appendChild(img);
       img.setAttribute('src', `${pathname}`);

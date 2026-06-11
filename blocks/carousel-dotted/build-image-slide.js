@@ -13,7 +13,7 @@ export default function buildSlideWithImage(row, index, cells) {
   const imgAlt = cells[5];
 
   if (pictureDesktop || pictureMobile) {
-    const picture = createSmartImage(pictureDesktop, pictureMobile, imgAlt);
+    const picture = createSmartImage(pictureDesktop, pictureMobile, imgAlt, false);
     if (picture) {
       const media = document.createElement('div');
       media.className = 'carousel-bg';

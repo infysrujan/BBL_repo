@@ -515,7 +515,7 @@ export default async function decorate(block) {
       const pictureMobile = imageCellMobile?.querySelector('picture');
 
       if (pictureDesktop || pictureMobile) {
-        const heroPicture = createSmartImage(pictureDesktop, pictureMobile, imageAlt);
+        const heroPicture = createSmartImage(pictureDesktop, pictureMobile, imageAlt, false);
         if (heroPicture) {
           const img = heroPicture.querySelector('img');
           if (img) {
