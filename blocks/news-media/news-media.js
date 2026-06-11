@@ -115,5 +115,11 @@ async function renderNewsMedia(block) {
 }
 
 export default function decorate(block) {
+  // No fields to show in authoring — skip decoration entirely
+  if (window.location.hostname.includes('adobeaemcloud.com')) {
+    block.hidden = true;
+    return;
+  }
+
   renderNewsMedia(block);
 }
