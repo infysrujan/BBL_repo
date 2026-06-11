@@ -101,7 +101,7 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
 
   const matched = allCards.filter((card) => {
     const cardName = norm(card.name || '');
-    return normalizedNames.some((n) => cardName === n || cardName.includes(n));
+    return normalizedNames.some((n) => cardName === n);
   });
 
   // No sourcing map available — preserve the user's selection order
