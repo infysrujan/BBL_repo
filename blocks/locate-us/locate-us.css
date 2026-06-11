@@ -381,6 +381,7 @@
   position: relative;
   border: none;
   padding: var(--bbl-space-250);
+  margin-bottom: 0;
   box-sizing: border-box;
   box-shadow: 0 0 var(--bbl-space-200) 0 var(--bbl-color-black-alpha-10);
   background-color: var(--bbl-color-white);
@@ -1086,7 +1087,7 @@
     padding-left: var(--bbl-space-250);
     padding-right: 0.625rem;
     margin-right: 0;
-    margin-bottom: 0.625rem;
+    margin-bottom: 0;
   }
 
   /* 3 cards per row on tablet: use subgrid so all headers in a row share the same height */
@@ -1151,6 +1152,7 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+    padding-right: 1.25rem;
     padding-bottom: 0;
   }
 
