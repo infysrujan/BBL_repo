@@ -39,7 +39,7 @@ async function insertBottomFragment(path) {
   if (!fragment) return;
   const formBlock = document.querySelector('.form');
   const insertTarget = formBlock?.parentElement || document.querySelector('main');
-  if (insertTarget) insertTarget.appendChild(fragment);
+  if (insertTarget) [...fragment.childNodes].forEach((child) => insertTarget.appendChild(child));
 }
 
 async function init(block) {
@@ -53,7 +53,8 @@ async function init(block) {
   if (campaign.fragmentPathTop) {
     const fragment = await loadFragment(campaign.fragmentPathTop);
     if (fragment) {
-      block.replaceChildren(...fragment.childNodes);
+      const section = block.closest('.section');
+      (section || block).replaceWith(...fragment.childNodes);
     }
   }
 
