@@ -202,7 +202,7 @@ function createCardItem(cardRow, doc) {
   };
 
   if (actionType === 'download' && actionCells.length > 0) {
-    const dlCell = actionCells.find((c) => !c.querySelector('ul')) || actionCells[0];
+    const dlCell = actionCells[actionCells.length - 1];
     const { enabled: openInNewTab, toggleCell: dlToggleCell } = extractToggledLink(
       remaining,
       (c) => c === dlCell,
