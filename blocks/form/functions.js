@@ -523,6 +523,91 @@ function validateCreditCardNumber(inputNum) {
   return sum % 10 === 0;
 }
 
+// Module-level cache — set by CcApplicationStatus, read by getCcField
+let ccLastResult = null;
+
+/**
+ * Fetches CC application status, picks the latest record when multiple are
+ * returned, caches the full result, and returns NEW_TRANSAC_RESULT directly.
+ * @param {string} idAndDob
+ * @return {string}
+ */
+function CcApplicationStatus(idAndDob) {
+  ccLastResult = null;
+
+  // fetchConfigs() is async and accesses document/window — both unavailable
+  // in the AEM Forms Rule Engine Web Worker. Read configs.json directly via
+  // synchronous XHR instead (sync XHR is permitted in workers).
+  let baseUrl = '';
+  const cfgXhr = new XMLHttpRequest();
+  cfgXhr.open('GET', '/configs.json', false);
+  cfgXhr.send(null);
+  if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
+    try {
+      const entry = JSON.parse(cfgXhr.responseText)
+        .data?.find((c) => c.Key === 'cc-apply-status');
+      baseUrl = entry?.Value || '';
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('CcApplicationStatus: failed to read configs.json', e);
+    }
+  }
+
+  if (!baseUrl) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus: cc-apply-status missing in configs.json');
+    return '';
+  }
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', `${baseUrl}?idAndDob=${encodeURIComponent(idAndDob)}`, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus API error:', xhr.status, xhr.statusText);
+    return '';
+  }
+
+  let data;
+  try {
+    data = JSON.parse(xhr.responseText);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus JSON parse error:', e);
+    return '';
+  }
+
+  if (!Array.isArray(data) || data.length === 0) return '';
+
+  let result;
+  if (data.length === 1) {
+    [result] = data;
+  } else {
+    const parseDate = (dateStr) => {
+      if (!dateStr || dateStr.length !== 8) return new Date(0);
+      return new Date(`${dateStr.substring(4, 8)}-${dateStr.substring(2, 4)}-${dateStr.substring(0, 2)}`);
+    };
+    result = data.reduce((best, current) => (
+      parseDate(current.TRANSAC_DECISION_DATE) > parseDate(best.TRANSAC_DECISION_DATE)
+        ? current : best
+    ));
+  }
+
+  ccLastResult = result;
+  return result.NEW_TRANSAC_RESULT ?? '';
+}
+
+/**
+ * Returns a named field from the last CcApplicationStatus call.
+ * @param {string} fieldName
+ * @return {string}
+ */
+function getCcField(fieldName) {
+  return ccLastResult?.[fieldName] ?? '';
+}
+
 function getidAndDob(id, dob) {
   console.log('id', id);
   console.log('dob', dob);
@@ -551,6 +636,62 @@ function getSelectedLabelFromDropdown(dropdown) {
   return dropdown.options[dropdown.selectedIndex].text.trim();
 }
 
+/**
+ * Formats date and time inputs into a single datetime string.
+ * Accepts date in "yyyy-mm-dd" or "dd/mm/yyyy" format, and hour/minute as separate inputs.
+ * Returns formatted string like "5 January 2024 14:30:00".
+ *
+ * @name formatDateTime
+ * @param {string} date - Date string in "yyyy-mm-dd" or "dd/mm/yyyy" format
+ * @param {string|number} hour - Hour component (0-23)
+ * @param {string|number} minute - Minute component (0-59)
+ * @returns {string} Formatted datetime string or empty string if inputs are invalid
+ *
+ * @example
+ * formatDateTime("2024-01-05", "14", "30") // returns "5 January 2024 14:30:00"
+ * formatDateTime("05/01/2024", "14", "30") // returns "5 January 2024 14:30:00"
+ * formatDateTime("invalid", "14", "30") // returns ""
+ * formatDateTime("2024-01-05", "", "30") // returns ""
+ */
+function formatDateTime(date, hour, minute) {
+  if (!date || !hour || !minute) return '';
+  let day;
+  let month;
+  let year;
+
+  if (String(date).includes('-')) {
+    [year, month, day] = String(date).split('-');
+  } else {
+    [day, month, year] = String(date).split('/');
+  }
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
+
+  return `${Number(day)} ${months[Number(month) - 1]} ${year} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
+}
+/**
+ * Returns a "current/max" character-count string for display in a form field.
+ * Bind the return value to the label or value of a text component via a form rule.
+ *
+ * @name updateTextCount
+ * @param {string} fieldValue - The current value of the text field
+ * @param {number|string} maxCount - The maximum allowed character count (e.g. 100)
+ * @returns {string} Formatted count string (e.g. "5/100")
+ *
+ * @example
+ * updateTextCount("Hello", 100) // returns "5/100"
+ */
+function updateTextCount(field, textCountComponent) {
+  const count = (field.value || '').length;
+  const maxCount = field.maxLength || 4;
+  const text = `${count}/${maxCount}`;
+  // For plain text components
+  textCountComponent.innerHTML = `<p>${text}</p>`;
+  return text;
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -572,4 +713,8 @@ export {
   getidAndDob,
   replaceOtherAndJoin,
   getSelectedLabelFromDropdown,
+  CcApplicationStatus,
+  getCcField,
+  formatDateTime,
+  updateTextCount,
 };
