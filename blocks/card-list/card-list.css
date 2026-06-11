@@ -480,6 +480,10 @@
   padding: var(--bbl-space-250);
 }
 
+.cards-list-item:has(.cards-list-image-logo) .download-button-wrapper .download-files {
+  padding: 0 var(--bbl-space-500) 0 var(--bbl-space-250);
+} 
+
 @media (width > 47.5rem) {
   .cards-list-remark p,
   .cards-list-subtitle p,
