@@ -614,6 +614,50 @@ function getSelectedLabelFromDropdown(dropdown) {
   return dropdown.options[dropdown.selectedIndex].text.trim();
 }
 
+/**
+ * Formats date and time into "D Month YYYY HH:mm:00" format.
+ *
+ * @name formatDateTime
+ * @param {string} date - Date string in "dd/MM/yyyy" format
+ * @param {string} hour - Hour string (e.g., "14")
+ * @param {string} minute - Minute string (e.g., "30")
+ * @returns {string} Formatted date-time string
+ *
+ * @example
+ * formatDateTime("25/12/2024", "14", "30") // returns "25 December 2024 14:30:00"
+ */
+function formatDateTime(date, hour, minute) {
+  const [day, month, year] = date.split('/');
+
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
+
+  return `${Number(day)} ${months[Number(month) - 1]} ${year} ${hour}:${minute}:00`;
+}
+
+/**
+ * Returns a "current/max" character-count string for display in a form field.
+ * Bind the return value to the label or value of a text component via a form rule.
+ *
+ * @name updateTextCount
+ * @param {string} fieldValue - The current value of the text field
+ * @param {number|string} maxCount - The maximum allowed character count (e.g. 100)
+ * @returns {string} Formatted count string (e.g. "5/100")
+ *
+ * @example
+ * updateTextCount("Hello", 100) // returns "5/100"
+ */
+function updateTextCount(field, textCountComponent) {
+  const count = (field.value || '').length;
+  const maxCount = field.maxLength || 4;
+  const text = `${count}/${maxCount}`;
+  // For plain text components
+  textCountComponent.innerHTML = `<p>${text}</p>`;
+  return text;
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -637,4 +681,6 @@ export {
   getSelectedLabelFromDropdown,
   CcApplicationStatus,
   getCcField,
+  formatDateTime,
+  updateTextCount,
 };
