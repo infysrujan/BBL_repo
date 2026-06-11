@@ -182,8 +182,9 @@ function createCardListItem(cardElement, doc) {
   }
 
   if (actionTypeText === 'select-dropdown') {
-    const label = defaultButtonDiv?.textContent?.trim() || 'Select';
-    const linksHTML = targetOrDownloadDiv?.innerHTML || '';
+    // dropdown fields: cells.length-3 = label, cells.length-2 = links (before financialDate)
+    const label = cells[cells.length - 3]?.textContent?.trim() || 'Select';
+    const linksHTML = cells[cells.length - 2]?.innerHTML || '';
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
     buttonWrapper.appendChild(createGlobalDropdown(label, linksHTML, doc));
     inner.appendChild(buttonWrapper);

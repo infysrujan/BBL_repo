@@ -304,39 +304,6 @@
           }
         },
         {
-          "component": "text",
-          "name": "dropdownLable",
-          "label": "Dropdown Lable",
-          "description": "Dropdown lable text for dropdown links",
-          "condition": {
-            "===": [
-              {
-                "var": "buttonActionType"
-              },
-              "select-dropdown"
-            ]
-          }
-        },
-        {
-          "component": "richtext",
-          "name": "drop-links",
-          "value": "",
-          "label": "Dropdown Links",
-          "valueType": "string",
-          "condition": {
-            "and": [
-              {
-                "===": [
-                  {
-                    "var": "buttonActionType"
-                  },
-                  "select-dropdown"
-                ]
-              }
-            ]
-          }
-        },
-        {
           "component": "select",
           "name": "imageLayout",
           "label": "Image Layout",
@@ -428,6 +395,39 @@
             "!!": [
               {
                 "var": "enableOverlayModal"
+              }
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "dropdownLable",
+          "label": "Dropdown Lable",
+          "description": "Dropdown lable text for dropdown links",
+          "condition": {
+            "===": [
+              {
+                "var": "buttonActionType"
+              },
+              "select-dropdown"
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "drop-links",
+          "value": "",
+          "label": "Dropdown Links",
+          "valueType": "string",
+          "condition": {
+            "and": [
+              {
+                "===": [
+                  {
+                    "var": "buttonActionType"
+                  },
+                  "select-dropdown"
+                ]
               }
             ]
           }
