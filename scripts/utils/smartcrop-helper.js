@@ -48,7 +48,6 @@ export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt
     mobileSource.setAttribute('srcset', mobileSrc);
 
     const img = createElement('img');
-    img.setAttribute('loading', 'lazy');
 
     img.setAttribute('alt', altText || img.alt || '');
     img.setAttribute('src', mobileSrc);
@@ -61,7 +60,6 @@ export default function createSmartImage(pictureDesktop, pictureMobile, imageAlt
   }
   if (blockName === 'multi-column-tiles') {
     const img = createElement('img');
-    img.setAttribute('loading', 'lazy');
     let allSrc = imgDesktop.getAttribute('src');
     allSrc = cleanImgSrc(allSrc);
 
