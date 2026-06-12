@@ -37,6 +37,7 @@
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-text-tab-header-size);
   line-height: var(--bbl-text-tab-header-line-height);
+  font-weight:var(--bbl-text-tab-header-weight);
   width: auto;
 }
 
@@ -104,6 +105,7 @@
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-text-tab-header-size);
   line-height: var(--bbl-text-tab-header-line-height);
+  font-weight:var(--bbl-text-tab-header-weight);
   cursor: pointer;
 }
 
