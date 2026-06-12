@@ -71,17 +71,18 @@ function createCardItem(cardRow, doc) {
 
   if (!cells.some((c) => c.textContent.trim().length > 0)) return null;
 
-  const [imageDiv, titleDiv, titleTypeDiv, descDiv, actionTypeDiv] = cells;
+  const [imageDiv, titleDiv, descDiv, actionTypeDiv] = cells;
 
   const img = imageDiv?.querySelector('img');
-  const titleText = titleDiv?.querySelector('h1, h2, h3, h4, h5, h6')?.textContent?.trim()
-    || titleDiv?.textContent?.trim() || '';
-  const titleType = titleTypeDiv?.textContent?.trim().toLowerCase() || 'h3';
-  const title = titleText ? `<${titleType}>${titleText}</${titleType}>` : '';
+  const headingEl = titleDiv?.querySelector('h1, h2, h3, h4, h5, h6');
+  const titleText = titleDiv?.textContent?.trim() || '';
+  const titleType = headingEl?.tagName?.toLowerCase() || 'h3';
+  const title = headingEl?.outerHTML?.trim()
+    ?? (titleText ? `<${titleType}>${titleText}</${titleType}>` : '');
   const description = descDiv?.innerHTML?.trim() || '';
   const actionType = actionTypeDiv?.textContent?.trim().toLowerCase().replace('-button', '') || 'default';
 
-  let remaining = cells.slice(5);
+  let remaining = cells.slice(4);
 
   let dateText = '';
   const lastCell = remaining[remaining.length - 1];
