@@ -1,9 +1,9 @@
 .main-nav-trigger-text {
   color: var(--bbl-color-grey-130);
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-footer-head-size);
-  font-weight: var(--bbl-text-footer-head-weight);
-  line-height: var(--bbl-text-footer-head-line-height);
+  font-size: var(  --bbl-text-nav-link-size);
+  font-weight: var(--bbl-text-nav-link-weight);
+  line-height: var(--bbl-text-nav-link-line-height);
   white-space: nowrap;
 }
 
