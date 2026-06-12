@@ -420,7 +420,7 @@
   flex: 1;
   min-width: 0;
   font-size: 1.4375rem;
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 1.2495rem;
   color: var(--bbl-color-gray-121);
   font-family: var(--bbl-font-family-medium);
@@ -531,7 +531,7 @@
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   margin-top: 2.5rem;
-  margin-bottom: 0.3125rem;
+  margin-bottom: 0.625rem;
   overflow-wrap: break-word;
   padding-right: 0.3125rem;
 }
@@ -1105,6 +1105,8 @@
 
   .locate-us .locate-us-map-sidebar .locate-us-card {
     border: none;
+    padding-bottom: 1.5rem;
+    padding-right: 0;
   }
 
   /* border already applied to all sides per-card on all viewports */
@@ -1138,9 +1140,17 @@
   .locate-us .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron {
     background-image: url('../../icons/icon_pin.svg');
     transform: none;
+    margin-right: 0.625rem;
+
   }
 
-  .locate-us:has(.locate-us-results-overseas) .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron {
+  .locate-us .locate-us-card[data-no-location="true"] .locate-us-card-chevron {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron,
+  .locate-us .locate-us-card[data-no-location="true"] .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron {
     background-image: url('../../icons/icon_nearme_disable.svg');
   }
 
@@ -1180,6 +1190,8 @@
 
   .locate-us .locate-us-map-sidebar .locate-us-card-header {
     padding: 0 0 var(--bbl-space-150);
+    padding-left: 0;
+
   }
 
   .locate-us .locate-us-map-sidebar .locate-us-card-hr {
@@ -1202,6 +1214,8 @@
     background-image: url('../../icons/icon_nearme_disable.svg');
     opacity: 0.4;
     cursor: default;
+    padding-left: 0;
+
   }
 
   /* ── Single card: center in middle column of 3-col grid ── */
