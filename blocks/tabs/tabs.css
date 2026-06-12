@@ -467,8 +467,6 @@
 /* Desktop (>= 1025px) */
 @media (width > 64rem) {
   .tabs-nav-wrapper .tabs-nav button {
-    font-size: var(--bbl-font-size-b1);
-    line-height: 1rem;
     padding: 0 0.9375rem;
   }
 
