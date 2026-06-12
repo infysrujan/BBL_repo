@@ -523,74 +523,89 @@ function validateCreditCardNumber(inputNum) {
   return sum % 10 === 0;
 }
 
+// Module-level cache — set by CcApplicationStatus, read by getCcField
+let ccLastResult = null;
+
 /**
- * Fetches Credit Card Application Status from the tracking service.
- * Applies the following response logic:
- *   - 1 object  → return that object wrapped in an array
- *   - Multiple objects with same NEW_TRANSAC_RESULT → return the one with
- *     the latest TRANSAC_DECISION_DATE
- *   - Multiple objects with different NEW_TRANSAC_RESULT → return the one with
- *     the latest TRANSAC_DECISION_DATE
- *
- * @async
- * @name CcApplicationStatus
- * @param {string} idAndDob - Combined ID and date-of-birth string (e.g. "998104121980")
- * @returns {Promise<Array>} - Array containing the single selected result object, or [] on error
- *
- * @example
- * // Usage in Adaptive Form custom function
- * const result = await CcApplicationStatus('998104121980');
+ * Fetches CC application status, picks the latest record when multiple are
+ * returned, caches the full result, and returns NEW_TRANSAC_RESULT directly.
+ * @param {string} idAndDob
+ * @return {string}
  */
-async function CcApplicationStatus(idAndDob) {
-  const BASE_URL = 'https://publish-p185039-e1939903.adobeaemcloud.com/api/uat/CreditCardTrackingService/GetCreditCardApplyStatus';
+function CcApplicationStatus(idAndDob) {
+  ccLastResult = null;
 
-  try {
-    const response = await fetch(`${BASE_URL}?idAndDob=${encodeURIComponent(idAndDob)}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-      },
-    });
-
-    if (!response.ok) {
+  // fetchConfigs() is async and accesses document/window — both unavailable
+  // in the AEM Forms Rule Engine Web Worker. Read configs.json directly via
+  // synchronous XHR instead (sync XHR is permitted in workers).
+  let baseUrl = '';
+  const cfgXhr = new XMLHttpRequest();
+  cfgXhr.open('GET', '/configs.json', false);
+  cfgXhr.send(null);
+  if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
+    try {
+      const entry = JSON.parse(cfgXhr.responseText)
+        .data?.find((c) => c.Key === 'cc-apply-status');
+      baseUrl = entry?.Value || '';
+    } catch (e) {
       // eslint-disable-next-line no-console
-      console.error('CcApplicationStatus API error:', response.status, response.statusText);
-      return [];
+      console.error('CcApplicationStatus: failed to read configs.json', e);
     }
+  }
 
-    const data = await response.json();
+  if (!baseUrl) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus: cc-apply-status missing in configs.json');
+    return '';
+  }
 
-    if (!Array.isArray(data) || data.length === 0) {
-      return [];
-    }
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', `${baseUrl}?idAndDob=${encodeURIComponent(idAndDob)}`, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
 
-    // Single result — return as-is
-    if (data.length === 1) {
-      return [data[0]];
-    }
+  if (xhr.status < 200 || xhr.status >= 300) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus API error:', xhr.status, xhr.statusText);
+    return '';
+  }
 
-    // Multiple results — pick the entry with the latest TRANSAC_DECISION_DATE
-    // TRANSAC_DECISION_DATE format: "DDMMYYYY" (e.g. "21032022")
+  let data;
+  try {
+    data = JSON.parse(xhr.responseText);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus JSON parse error:', e);
+    return '';
+  }
+
+  if (!Array.isArray(data) || data.length === 0) return '';
+
+  let result;
+  if (data.length === 1) {
+    [result] = data;
+  } else {
     const parseDate = (dateStr) => {
       if (!dateStr || dateStr.length !== 8) return new Date(0);
-      const dd = dateStr.substring(0, 2);
-      const mm = dateStr.substring(2, 4);
-      const yyyy = dateStr.substring(4, 8);
-      return new Date(`${yyyy}-${mm}-${dd}`);
+      return new Date(`${dateStr.substring(4, 8)}-${dateStr.substring(2, 4)}-${dateStr.substring(0, 2)}`);
     };
-
-    const latest = data.reduce((best, current) => {
-      const bestDate = parseDate(best.TRANSAC_DECISION_DATE);
-      const currentDate = parseDate(current.TRANSAC_DECISION_DATE);
-      return currentDate > bestDate ? current : best;
-    });
-
-    return [latest];
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('CcApplicationStatus error:', error);
-    return [];
+    result = data.reduce((best, current) => (
+      parseDate(current.TRANSAC_DECISION_DATE) > parseDate(best.TRANSAC_DECISION_DATE)
+        ? current : best
+    ));
   }
+
+  ccLastResult = result;
+  return result.NEW_TRANSAC_RESULT ?? '';
+}
+
+/**
+ * Returns a named field from the last CcApplicationStatus call.
+ * @param {string} fieldName
+ * @return {string}
+ */
+function getCcField(fieldName) {
+  return ccLastResult?.[fieldName] ?? '';
 }
 
 function getidAndDob(id, dob) {
@@ -621,6 +636,52 @@ function getSelectedLabelFromDropdown(dropdown) {
   return dropdown.options[dropdown.selectedIndex].text.trim();
 }
 
+/**
+ * Formats date and time inputs into a single datetime string.
+ * Accepts date in "yyyy-mm-dd" or "dd/mm/yyyy" format, and hour/minute as separate inputs.
+ * Returns formatted string like "5 January 2024 14:30:00".
+ *
+ * @name formatDateTime
+ * @param {string} date - Date string in "yyyy-mm-dd" or "dd/mm/yyyy" format
+ * @param {string|number} hour - Hour component (0-23)
+ * @param {string|number} minute - Minute component (0-59)
+ * @returns {string} Formatted datetime string or empty string if inputs are invalid
+ *
+ * @example
+ * formatDateTime("2024-01-05", "14", "30") // returns "5 January 2024 14:30:00"
+ * formatDateTime("05/01/2024", "14", "30") // returns "5 January 2024 14:30:00"
+ * formatDateTime("invalid", "14", "30") // returns ""
+ * formatDateTime("2024-01-05", "", "30") // returns ""
+ */
+function formatDateTime(date, hour, minute) {
+  if (!date || !hour || !minute) return '';
+  let day;
+  let month;
+  let year;
+
+  if (String(date).includes('-')) {
+    [year, month, day] = String(date).split('-');
+  } else {
+    [day, month, year] = String(date).split('/');
+  }
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
+
+  return `${Number(day)} ${months[Number(month) - 1]} ${year} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
+}
+
+/**
+* @name updateTextCount
+* @param {object} passportNumber - Passport Number field object
+* @returns {string} Character count in format x/4
+*/
+function updateTextCount(passportNumber) {
+  const count = String(passportNumber?.$value || '').length;
+  return `${count}/4`;
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -643,4 +704,7 @@ export {
   replaceOtherAndJoin,
   getSelectedLabelFromDropdown,
   CcApplicationStatus,
+  getCcField,
+  formatDateTime,
+  updateTextCount,
 };
