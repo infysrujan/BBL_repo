@@ -160,7 +160,7 @@ function createCardItem(cardRow, doc) {
     const temp = createElementFromHTML(`<div>${multipleCell.innerHTML}</div>`, doc);
     temp.querySelectorAll('a').forEach(appendDownloadLink);
   } else if (actionType === 'select-dropdown') {
-    const dropdownCell = actionCells.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length > 1);
+    const dropdownCell = actionCells.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length >= 1);
     if (dropdownCell) {
       const labelCellIdx = remaining.indexOf(dropdownCell) - 1;
       const label = (labelCellIdx >= 0 && !remaining[labelCellIdx].querySelector('a'))

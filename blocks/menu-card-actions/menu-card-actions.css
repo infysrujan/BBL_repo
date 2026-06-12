@@ -281,6 +281,18 @@
   padding: 0 var(--bbl-space-500) 0 var(--bbl-space-250);
 }
 
+.menu-card-action-description ul{
+  padding: 0.625rem 0 0;
+  margin: 0;
+}
+
+.menu-card-action-description ul li{
+  padding: .2rem;
+  margin: 0 0 0.625rem 0.875rem;
+  color: var(--bbl-color-grey-85);
+  line-height: 1.4613rem;
+}
+
 @media (width > 47.5rem) {
   .menu-card-action.stacked {
     gap: 0 var(--bbl-space-250);
@@ -303,6 +315,10 @@
   }
 
   .menu-card-action-date p {
+    font-size: var(--bbl-font-size-b2);
+  }
+
+  .menu-card-action-description ul li{
     font-size: var(--bbl-font-size-b2);
   }
 }
@@ -389,5 +405,10 @@
   .menu-card-action-date p {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.375rem;
+  }
+
+  .menu-card-action-description ul li{
+    font-size: var(--bbl-font-size-b1);
+    line-height: 1.67rem;
   }
 }
