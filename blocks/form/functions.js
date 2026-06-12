@@ -1,5 +1,4 @@
 import { getSubmitBaseUrl } from './constant.js';
-import { fetchConfigs } from '../../scripts/config.js';
 
 /**
  * Get Full Name
@@ -237,6 +236,37 @@ function addCustomHeader(payload, headerName, headerValue) {
 }
 
 /**
+ * Synchronously fetches the base URL for a given key from configs.json.
+ * This is used in functions that need to run synchronously in the AEM Forms Rule Engine.
+ *
+ * @param {string} key - The config key to look up (e.g., 'get-province-en', 'cc-apply-status')
+ * @returns {string} - The base URL from configs.json, or empty string if not found/error
+ */
+function getBaseUrl(key) {
+  let baseUrl = '';
+  const cfgXhr = new XMLHttpRequest();
+  cfgXhr.open('GET', '/configs.json', false);
+  cfgXhr.send(null);
+  if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
+    try {
+      const entry = JSON.parse(cfgXhr.responseText)
+        .data?.find((c) => c.Key === key);
+      baseUrl = entry?.Value || '';
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('CcApplicationStatus: failed to read configs.json', e);
+    }
+  }
+
+  if (!baseUrl) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus: failed to read configs.json');
+    return '';
+  }
+  return baseUrl;
+}
+
+/**
 * Fetches and normalizes province data.
 * Expected API shape:
 * [
@@ -248,10 +278,8 @@ function addCustomHeader(payload, headerName, headerValue) {
 * @returns {Array<{value: string, label: string}>}
 */
 function getProvinceData() {
-  const configs = fetchConfigs();
-  /* const baseUrl = configs.aemBaseUrl ||''; */
-  const urlPath = configs.getProvinceEn;
-  const url = `${urlPath}`;
+  const urlProvinceEnPath = getBaseUrl('get-province-en');
+  const url = `${urlProvinceEnPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -316,10 +344,9 @@ function getProvinceEnumNames() {
 * @returns {{value: string[], label: string[]}}
 */
 function getProvinceDataTh() {
-  const configs = fetchConfigs();
-  const urlPath = configs.getprovinceth;
+  const urlProvinceThPath = getBaseUrl('get-province-th');
   /* const baseUrl = configs.aemBaseUrl || ''; */
-  const url = `${urlPath}`;
+  const url = `${urlProvinceThPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -408,11 +435,11 @@ function getProvinceEnumNamesTh() {
  */
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
-  const configs = fetchConfigs();
-  const ProvinceBaseUrl = configs.branchesByProvince;
+  const branchesByProvinceUrl = getBaseUrl('branches-by-province');
+  const provinceBaseUrl = branchesByProvinceUrl.endsWith('/') ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
   const encoded = encodeURIComponent(province);
   const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
-  const url = `${ProvinceBaseUrl}${segment}/${encoded}/0/0/0/BRC`;
+  const url = `${provinceBaseUrl}${segment}/${encoded}/0/0/0/BRC`;
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', url, false);
@@ -538,26 +565,7 @@ function CcApplicationStatus(idAndDob) {
   // fetchConfigs() is async and accesses document/window — both unavailable
   // in the AEM Forms Rule Engine Web Worker. Read configs.json directly via
   // synchronous XHR instead (sync XHR is permitted in workers).
-  let baseUrl = '';
-  const cfgXhr = new XMLHttpRequest();
-  cfgXhr.open('GET', '/configs.json', false);
-  cfgXhr.send(null);
-  if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
-    try {
-      const entry = JSON.parse(cfgXhr.responseText)
-        .data?.find((c) => c.Key === 'cc-apply-status');
-      baseUrl = entry?.Value || '';
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('CcApplicationStatus: failed to read configs.json', e);
-    }
-  }
-
-  if (!baseUrl) {
-    // eslint-disable-next-line no-console
-    console.error('CcApplicationStatus: cc-apply-status missing in configs.json');
-    return '';
-  }
+  const baseUrl = getBaseUrl('cc-apply-status');
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', `${baseUrl}?idAndDob=${encodeURIComponent(idAndDob)}`, false);
