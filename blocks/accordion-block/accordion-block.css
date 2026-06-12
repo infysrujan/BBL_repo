@@ -58,8 +58,11 @@
 }
 
 .accordion-toolbar-label {
-  font: 1rem BangkokBank-Medium, sans-serif;
   color: var(--bbl-color-black);
+  font-size: var(  --bbl-text-accordion-size);
+  line-height: var(--bbl-text-accordion-line-height);
+  font-weight: var(--bbl-text-accordion-weight);
+  font-family:var(--bbl-font-family-medium);
 }
 
 .accordion-toolbar-label:hover {
