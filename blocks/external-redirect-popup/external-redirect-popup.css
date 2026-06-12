@@ -74,7 +74,7 @@
 .external-redirect-popup-body img {
   display: block;
   width: 6.25rem;
-  height: 6.9375rem;
+  height: auto;
   object-fit: contain;
   margin-top: -1.25rem;
 }
@@ -92,7 +92,7 @@
 .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6) {
   margin: 0;
   font-family: BangkokBank-Bold, 'BBL Sans', BangkokBank-Regular, sans-serif;
-  font-size: 1.3125rem;
+  font-size: var(--bbl-heading-h3-size);
   line-height: 1.4219rem;
   color: var(--bbl-color-truthful-blue);
   font-weight: 400;
