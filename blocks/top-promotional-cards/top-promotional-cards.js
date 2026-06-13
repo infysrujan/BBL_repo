@@ -58,12 +58,6 @@ function setupPanel(panel, activeCards, placeholders) {
 }
 
 export default async function decorate(block) {
-  // No fields to show in authoring — skip decoration entirely
-  if (window.location.hostname.includes('adobeaemcloud.com')) {
-    block.hidden = true;
-    return;
-  }
-
   const lang = getLang();
   const configs = await fetchConfigs();
   const baseUrl = configs?.promoCardListingCardSelector || '';
@@ -78,8 +72,7 @@ export default async function decorate(block) {
 
   const today = new Date();
   const activeCards = allCards.filter(
-    (card) => (!card.promotionStartDate || new Date(card.promotionStartDate) <= today)
-      && (!card.promotionEndDate || new Date(card.promotionEndDate) >= today),
+    (card) => !card.promotionEndDate || new Date(card.promotionEndDate) >= today,
   );
 
   const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];

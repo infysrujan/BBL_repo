@@ -168,7 +168,6 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
       const cardCats = normalizeList(card.category).map((c) => c.toLowerCase());
       if (!cardCats.includes(category.toLowerCase())) return false;
     }
-    if (card.promotionStartDate && new Date(card.promotionStartDate) > today) return false;
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
     if (subcategory) {
       const cardSubCats = normalizeList(card.subcategory).map((c) => c.toLowerCase());
