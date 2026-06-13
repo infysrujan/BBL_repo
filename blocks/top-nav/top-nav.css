@@ -17,7 +17,7 @@
 	align-items: center;
 	gap: 0.625rem;
 	color: var(--bbl-color-grey-130);
-	font-family: var(--bbl-font-family-medium);
+	font-family: var(--bbl-font-family-looped);
     font-size: var(--bbl-text-top-links-size);
     font-weight: var( --bbl-text-top-links-weight);
     line-height: var(--bbl-text-top-links-line-height);

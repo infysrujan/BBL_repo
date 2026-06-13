@@ -91,7 +91,6 @@
 
 .breadcrumb ol>li[aria-current="page"] {
   color: var(--bbl-text-link);
-  font-weight: 700;
 }
 
 @media (width > 47.5rem) {

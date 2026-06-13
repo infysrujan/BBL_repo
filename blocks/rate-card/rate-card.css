@@ -385,6 +385,7 @@
   .rate-card .tab-header a, 
 	.rate-card .tab-header a:any-link {
     padding: 0.4375rem 1rem 0.3125rem;
+    font-family:var(--bbl-font-family-medium);
   }
 
   .rate-card .country-select span,

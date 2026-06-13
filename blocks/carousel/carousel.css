@@ -163,6 +163,7 @@
     line-height: var(--bbl-text-label-tag-line-height);
     font-weight: var(--bbl-text-label-tag-weight);
     background: var(--bbl-color-blue-140);
+    font-family: var(--bbl-font-family-looped);
     display: inline-block;
     padding: 0.25rem 0.4375rem;
     margin-bottom: 0.8125rem;
@@ -397,6 +398,7 @@
         margin-bottom: 0.875rem;
         color: var(--bbl-color-white);
         border-radius: var(--bbl-rounded-200);
+        font-family:var(--bbl-font-family-medium);
     }
 
     .carousel-title {

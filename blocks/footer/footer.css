@@ -141,6 +141,7 @@
   font-size: var(--bbl-text-footer-size);
   line-height: var(--bbl-text-footer-line-height);
   font-weight: var(--bbl-text-footer-weight);
+  font-family: var(--bbl-font-family-looped);
 }
 
 /* Bottom bar (copyright, legal links) */
@@ -259,6 +260,10 @@
     width: fit-content;
     display: inline-block;
     margin-right: var(--bbl-space-250);
+  }
+
+  .footer .footer-links li {
+    font-family: var(--bbl-font-family-medium);
   }
 
   .footer .footer-links ul {
