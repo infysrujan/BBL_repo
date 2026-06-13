@@ -6508,6 +6508,32 @@
         ]
       },
       {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style",
+        "valueType": "string",
+        "required": false,
+        "options": [
+          {
+            "name": "Panel type",
+            "children": [
+              {
+                "name": "Credit Card Approved Panel",
+                "value": "cc-approved"
+              },
+              {
+                "name": "Credit Card Denied Panel",
+                "value": "cc-denied"
+              },
+              {
+                "name": "Credit Card Not Found Panel",
+                "value": "cc-notfound"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "component": "tab",
         "label": "Repeat Panel",
         "name": "repeat"
