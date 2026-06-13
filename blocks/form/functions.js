@@ -1,5 +1,4 @@
 import { getSubmitBaseUrl } from './constant.js';
-import { fetchConfigs } from '../../scripts/config.js';
 
 /**
  * Get Full Name
@@ -237,6 +236,37 @@ function addCustomHeader(payload, headerName, headerValue) {
 }
 
 /**
+ * Synchronously fetches the base URL for a given key from configs.json.
+ * This is used in functions that need to run synchronously in the AEM Forms Rule Engine.
+ *
+ * @param {string} key - The config key to look up (e.g., 'get-province-en', 'cc-apply-status')
+ * @returns {string} - The base URL from configs.json, or empty string if not found/error
+ */
+function getBaseUrl(key) {
+  let baseUrl = '';
+  const cfgXhr = new XMLHttpRequest();
+  cfgXhr.open('GET', '/configs.json', false);
+  cfgXhr.send(null);
+  if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
+    try {
+      const entry = JSON.parse(cfgXhr.responseText)
+        .data?.find((c) => c.Key === key);
+      baseUrl = entry?.Value || '';
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('CcApplicationStatus: failed to read configs.json', e);
+    }
+  }
+
+  if (!baseUrl) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus: failed to read configs.json');
+    return '';
+  }
+  return baseUrl;
+}
+
+/**
 * Fetches and normalizes province data.
 * Expected API shape:
 * [
@@ -248,10 +278,8 @@ function addCustomHeader(payload, headerName, headerValue) {
 * @returns {Array<{value: string, label: string}>}
 */
 function getProvinceData() {
-  const configs = fetchConfigs();
-  /* const baseUrl = configs.aemBaseUrl ||''; */
-  const urlPath = configs.getProvinceEn;
-  const url = `${urlPath}`;
+  const urlProvinceEnPath = getBaseUrl('get-province-en');
+  const url = `${urlProvinceEnPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -316,10 +344,9 @@ function getProvinceEnumNames() {
 * @returns {{value: string[], label: string[]}}
 */
 function getProvinceDataTh() {
-  const configs = fetchConfigs();
-  const urlPath = configs.getprovinceth;
+  const urlProvinceThPath = getBaseUrl('get-province-th');
   /* const baseUrl = configs.aemBaseUrl || ''; */
-  const url = `${urlPath}`;
+  const url = `${urlProvinceThPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -408,11 +435,11 @@ function getProvinceEnumNamesTh() {
  */
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
-  const configs = fetchConfigs();
-  const ProvinceBaseUrl = configs.branchesByProvince;
+  const branchesByProvinceUrl = getBaseUrl('branches-by-province');
+  const provinceBaseUrl = branchesByProvinceUrl.endsWith('/') ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
   const encoded = encodeURIComponent(province);
   const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
-  const url = `${ProvinceBaseUrl}${segment}/${encoded}/0/0/0/BRC`;
+  const url = `${provinceBaseUrl}${segment}/${encoded}/0/0/0/BRC`;
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', url, false);
@@ -523,6 +550,72 @@ function validateCreditCardNumber(inputNum) {
   return sum % 10 === 0;
 }
 
+// Module-level cache — set by CcApplicationStatus, read by getCcField
+let ccLastResult = null;
+
+/**
+ * Fetches CC application status, picks the latest record when multiple are
+ * returned, caches the full result, and returns NEW_TRANSAC_RESULT directly.
+ * @param {string} idAndDob
+ * @return {string}
+ */
+function CcApplicationStatus(idAndDob) {
+  ccLastResult = null;
+
+  // fetchConfigs() is async and accesses document/window — both unavailable
+  // in the AEM Forms Rule Engine Web Worker. Read configs.json directly via
+  // synchronous XHR instead (sync XHR is permitted in workers).
+  const baseUrl = getBaseUrl('cc-apply-status');
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', `${baseUrl}?idAndDob=${encodeURIComponent(idAndDob)}`, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus API error:', xhr.status, xhr.statusText);
+    return '';
+  }
+
+  let data;
+  try {
+    data = JSON.parse(xhr.responseText);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus JSON parse error:', e);
+    return '';
+  }
+
+  if (!Array.isArray(data) || data.length === 0) return '';
+
+  let result;
+  if (data.length === 1) {
+    [result] = data;
+  } else {
+    const parseDate = (dateStr) => {
+      if (!dateStr || dateStr.length !== 8) return new Date(0);
+      return new Date(`${dateStr.substring(4, 8)}-${dateStr.substring(2, 4)}-${dateStr.substring(0, 2)}`);
+    };
+    result = data.reduce((best, current) => (
+      parseDate(current.TRANSAC_DECISION_DATE) > parseDate(best.TRANSAC_DECISION_DATE)
+        ? current : best
+    ));
+  }
+
+  ccLastResult = result;
+  return result.NEW_TRANSAC_RESULT ?? '';
+}
+
+/**
+ * Returns a named field from the last CcApplicationStatus call.
+ * @param {string} fieldName
+ * @return {string}
+ */
+function getCcField(fieldName) {
+  return ccLastResult?.[fieldName] ?? '';
+}
+
 function getidAndDob(id, dob) {
   console.log('id', id);
   console.log('dob', dob);
@@ -551,6 +644,78 @@ function getSelectedLabelFromDropdown(dropdown) {
   return dropdown.options[dropdown.selectedIndex].text.trim();
 }
 
+/**
+ * Formats date and time inputs into a single datetime string.
+ * Accepts date in "yyyy-mm-dd" or "dd/mm/yyyy" format, and hour/minute as separate inputs.
+ * Returns formatted string like "5 January 2024 14:30:00".
+ *
+ * @name formatDateTime
+ * @param {string} date - Date string in "yyyy-mm-dd" or "dd/mm/yyyy" format
+ * @param {string|number} hour - Hour component (0-23)
+ * @param {string|number} minute - Minute component (0-59)
+ * @returns {string} Formatted datetime string or empty string if inputs are invalid
+ *
+ * @example
+ * formatDateTime("2024-01-05", "14", "30") // returns "5 January 2024 14:30:00"
+ * formatDateTime("05/01/2024", "14", "30") // returns "5 January 2024 14:30:00"
+ * formatDateTime("invalid", "14", "30") // returns ""
+ * formatDateTime("2024-01-05", "", "30") // returns ""
+ */
+function formatDateTime(date, hour, minute) {
+  if (!date || !hour || !minute) return '';
+  let day;
+  let month;
+  let year;
+
+  if (String(date).includes('-')) {
+    [year, month, day] = String(date).split('-');
+  } else {
+    [day, month, year] = String(date).split('/');
+  }
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
+
+  return `${Number(day)} ${months[Number(month) - 1]} ${year} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
+}
+
+/**
+* @name updateTextCount
+* @param {object} passportNumber - Passport Number field object
+* @returns {string} Character count in format x/4
+*/
+function updateTextCount(passportNumber) {
+  const count = String(passportNumber?.$value || '').length;
+  return `${count}/4`;
+}
+
+/**
+ * Returns the label name of the selected option in a dropdown.
+ * @param {string} dropdown - The dropdown value string
+ * @returns {string} The label name of the selected option
+ */
+function getSelectedLabelName(dropdown) {
+  if (!dropdown) {
+    return '';
+  }
+  const parts = String(dropdown).split('|');
+  return parts.length > 1 ? parts[1].trim() : '';
+}
+
+/**
+ * Returns the value of the selected option in a dropdown.
+ * @param {string} dropdown - The dropdown value string
+ * @returns {string} The value of the selected option
+ */
+function getSelectedLabelValue(dropdown) {
+  if (!dropdown) {
+    return '';
+  }
+  const parts = String(dropdown).split('|');
+  return parts.length > 0 ? parts[0].trim() : '';
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -572,4 +737,10 @@ export {
   getidAndDob,
   replaceOtherAndJoin,
   getSelectedLabelFromDropdown,
+  CcApplicationStatus,
+  getCcField,
+  formatDateTime,
+  updateTextCount,
+  getSelectedLabelName,
+  getSelectedLabelValue,
 };
