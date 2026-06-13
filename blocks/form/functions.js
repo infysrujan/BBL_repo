@@ -616,6 +616,49 @@ function getCcField(fieldName) {
   return ccLastResult?.[fieldName] ?? '';
 }
 
+/**
+ * Fetches plan data for the given prospect details and returns the first plan.
+ * @param {number} prospectAge
+ * @param {string} prospectGender
+ * @param {string} prospectCategory
+ * @param {number} prospectSA
+ * @return {object|null}
+ */
+function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA) {
+  const baseUrl = getBaseUrl('fetch-plan-data');
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', baseUrl, false);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(JSON.stringify({
+    prospectAge,
+    prospectGender,
+    prospectCategory,
+    prospectSA,
+  }));
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData API error:', xhr.status, xhr.statusText);
+    return null;
+  }
+
+  let response;
+  try {
+    response = JSON.parse(xhr.responseText);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData JSON parse error:', e);
+    return null;
+  }
+
+  const plans = response?.data?.plans;
+  if (!Array.isArray(plans) || plans.length === 0) return null;
+
+  return plans[0];
+}
+
 function getidAndDob(id, dob) {
   console.log('id', id);
   console.log('dob', dob);
@@ -739,6 +782,7 @@ export {
   getSelectedLabelFromDropdown,
   CcApplicationStatus,
   getCcField,
+  fetchPlanData,
   formatDateTime,
   updateTextCount,
   getSelectedLabelName,
