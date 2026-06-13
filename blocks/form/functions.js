@@ -659,6 +659,56 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
   return plans[0];
 }
 
+/**
+ * Fetches campaign details from the language-specific EDS spreadsheet and
+ * returns the name and detail for the matching campaign ID.
+ *
+ * Spreadsheet path: /{language}/cc-campaign.json
+ * Expected columns: campaignId, campaignName, campaignDetail
+ *
+ * @name fetchCcCampaignDetails
+ * @param {string} campaignId - Campaign ID to look up
+ * @param {string} language - Language code: 'th' or 'en'
+ * @returns {{ campaignName: string, campaignDetail: string }}
+ */
+function fetchCcCampaignDetails(campaignId, language) {
+  if (!campaignId || !language) return { campaignName: '', campaignDetail: '' };
+
+  const lang = String(language).toLowerCase() === 'en' ? 'en' : 'th';
+  const url = `/${lang}/cc-campaign.json`;
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    // eslint-disable-next-line no-console
+    console.error('fetchCcCampaignDetails API error:', xhr.status, xhr.statusText);
+    return { campaignName: '', campaignDetail: '' };
+  }
+
+  let data;
+  try {
+    const response = JSON.parse(xhr.responseText);
+    data = response?.data ?? response;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('fetchCcCampaignDetails JSON parse error:', e);
+    return { campaignName: '', campaignDetail: '' };
+  }
+
+  if (!Array.isArray(data)) return { campaignName: '', campaignDetail: '' };
+
+  const campaign = data.find((item) => String(item.campaignId) === String(campaignId));
+  if (!campaign) return { campaignName: '', campaignDetail: '' };
+
+  return {
+    campaignName: campaign.campaignName ?? '',
+    campaignDetail: campaign.campaignDetail ?? '',
+  };
+}
+
 function getidAndDob(id, dob) {
   console.log('id', id);
   console.log('dob', dob);
@@ -783,6 +833,7 @@ export {
   CcApplicationStatus,
   getCcField,
   fetchPlanData,
+  fetchCcCampaignDetails,
   formatDateTime,
   updateTextCount,
   getSelectedLabelName,
