@@ -6519,15 +6519,47 @@
             "children": [
               {
                 "name": "Credit Card Approved Panel",
-                "value": "cc-approved"
+                "value": "cc-app-approved"
               },
               {
                 "name": "Credit Card Denied Panel",
-                "value": "cc-denied"
+                "value": "cc-app-denied"
               },
               {
                 "name": "Credit Card Not Found Panel",
-                "value": "cc-notfound"
+                "value": "cc-app-notfound"
+              },
+              {
+                "name": "Credit Card Application Cancel",
+                "value": "cc-app-cancel"
+              },
+              {
+                "name": "Credit Card Application Pending",
+                "value": "cc-app-pending"
+              },
+              {
+                "name": "Credit Card Application Incomplete",
+                "value": "cc-app-incomplete"
+              },
+              {
+                "name": "Credit Card Application Callback",
+                "value": "cc-app-callback"
+              },
+              {
+                "name": "Credit Card Application Not Found",
+                "value": "cc-app-notfound"
+              },
+              {
+                "name": "Credit Card Application Message Form",
+                "value": "cc-app-message-form"
+              },
+              {
+                "name": "Credit Card Application Main Form",
+                "value": "cc-app-main-form"
+              },
+              {
+                "name": "Form Review Panel 2 Column",
+                "value": "form-review-2col"
               }
             ]
           }
