@@ -14,9 +14,17 @@ main .section.form-container.custom-forms {
   --cc-btn-primary: #0064ff;
   --cc-btn-disabled-bg: #d6d6d6;
   --cc-btn-disabled-border: #d6d6d6;
-  --cc-timeline-panel-width: 460px;
   --cc-form-max-width: 850px;
+  --cc-panel-max-width: 46.25rem;
+  --cc-panel-width-pct: 83%;
+  --cc-timeline-panel-width: 460px;
+  --cc-form-mobile-gutter: 0.9375rem;
   --cc-form-width: min(100vw, var(--cc-form-max-width));
+  --cc-timeline-form-width: min(var(--cc-timeline-panel-width), min(100vw, var(--cc-form-max-width)));
+  --cc-panel-form-width: min(
+    var(--cc-panel-max-width),
+    calc(min(100vw, var(--cc-form-max-width)) * 0.83)
+  );
 
   padding: 0;
 
@@ -357,12 +365,17 @@ main .section.form-container.custom-forms {
       }
 
       & .radio-group-wrapper.radio-tabs {
-        max-width: var(--cc-form-max-width);
+        max-width: var(--cc-panel-max-width);
       }
 
       & fieldset.panel-wrapper.field-wrapper {
         grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
-        max-width: var(--cc-form-max-width);
+        margin-inline: auto;
+
+        &.cc-app-main-form {
+          width: 100%;
+          max-width: var(--cc-form-max-width);
+        }
 
         & :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
           grid-column: span 12;
@@ -419,7 +432,7 @@ main .section.form-container.custom-forms {
           position: relative;
           width: 100%;
           max-width: var(--cc-timeline-panel-width);
-          margin: 0 auto;
+          margin-inline: auto;
           overflow: visible;
           grid-column: 1 / -1;
           min-height: var(--timeline-height, 287px);
@@ -507,7 +520,7 @@ main .section.form-container.custom-forms {
         }
 
         &.cc-app-approved {
-          --timeline-height: min(575px, calc(var(--cc-form-width) * 585 / 468));
+          --timeline-height: min(575px, calc(var(--cc-timeline-form-width) * 585 / 468));
 
           & > .cc-panel-item-timeline-step-1 {
             top: calc(var(--timeline-height) * 0.015);
@@ -574,7 +587,7 @@ main .section.form-container.custom-forms {
         }
 
         &:is(.cc-app-denied, .cc-app-cancel, .cc-app-pending, .cc-app-incomplete, .cc-app-callback) {
-          --timeline-height: min(433px, calc(var(--cc-form-width) * 453 / 481));
+          --timeline-height: min(433px, calc(var(--cc-timeline-form-width) * 453 / 481));
 
           & > .cc-panel-item-timeline-step-1 {
             top: calc(var(--timeline-height) * 0.01);
@@ -600,7 +613,7 @@ main .section.form-container.custom-forms {
           }
 
           & > .cc-panel-item-timeline-muted {
-            top: calc(var(--timeline-height) * 0.98);
+            top: calc(var(--timeline-height) * 0.92);
             left: 10%;
             width: 215px;
           }
@@ -635,7 +648,7 @@ main .section.form-container.custom-forms {
         }
 
         &.cc-app-notfound {
-          --timeline-height: min(287px, calc(var(--cc-form-width) * 272 / 436));
+          --timeline-height: min(287px, calc(var(--cc-timeline-form-width) * 272 / 436));
 
           min-height: var(--timeline-height);
 
@@ -669,6 +682,19 @@ main .section.form-container.custom-forms {
             max-width: none;
           }
         }
+
+        &:is(
+          .cc-app-approved,
+          .cc-app-denied,
+          .cc-app-cancel,
+          .cc-app-pending,
+          .cc-app-incomplete,
+          .cc-app-callback,
+          .cc-app-notfound
+        ) fieldset.panel-wrapper.field-wrapper {
+          width: 100%;
+          max-width: 100%;
+        }
       }
     }
   }
@@ -676,6 +702,32 @@ main .section.form-container.custom-forms {
   @media (width > 47.5rem) {
     & .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper {
       margin-left: 25%;
+    }
+  }
+
+  @media (width < 64rem) {
+    padding-inline: var(--cc-form-mobile-gutter);
+    box-sizing: border-box;
+
+    --cc-timeline-form-width: min(
+      var(--cc-timeline-panel-width),
+      calc(min(100vw, var(--cc-form-max-width)) - 2 * var(--cc-form-mobile-gutter))
+    );
+  }
+
+  & .form form fieldset.panel-wrapper.cc-app-message-form {
+    width: 100%;
+    max-width: 100%;
+    margin-inline: auto;
+
+    & > .cc-panel-item-form-input-half {
+      display: inline-block;
+      width: calc(50% - 5px);
+      vertical-align: top;
+    }
+
+    & > .cc-panel-item-form-input-half:first-of-type {
+      margin-right: 10px;
     }
   }
 
@@ -735,6 +787,7 @@ main .section.form-container.custom-forms {
       column-gap: var(--cc-form-col-gap);
       width: 100%;
       max-width: var(--cc-form-max-width);
+      margin-inline: auto;
 
       & > .field-wrapper.col-6:not(
         :is(.cc-panel-item-form-title, .cc-panel-item-form-input, .cc-panel-item-form-cover)
@@ -768,15 +821,8 @@ main .section.form-container.custom-forms {
     }
 
     & .form form fieldset.panel-wrapper.cc-app-message-form {
-      & > .cc-panel-item-form-input-half {
-        display: inline-block;
-        width: calc(50% - 5px);
-        vertical-align: top;
-      }
-
-      & > .cc-panel-item-form-input-half:first-of-type {
-        margin-right: 10px;
-      }
+      width: var(--cc-panel-width-pct);
+      max-width: var(--cc-panel-max-width);
     }
   }
 }
