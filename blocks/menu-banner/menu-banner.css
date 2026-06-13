@@ -107,8 +107,10 @@
 
 .menu-banner .title-1 > * {
   margin: 0;
-  font-size: 1.4rem;
-  line-height: 1.75rem;
+  font-size:var(--bbl-text-article-card-title-size);
+  line-height: var(--bbl-text-article-card-title-line-height);
+  font-weight: var(--bbl-text-article-card-title-weight);
+  font-family:var(--bbl-font-family-medium);
 }
 
 /* Text blue styling for em tags in RTE */
@@ -238,8 +240,6 @@
   }
 
   .menu-banner .title-1 > * {
-    font-size: 3rem;
-    line-height: 2.875rem;
     margin: 0.625rem 0 var(--bbl-space-250);
   }
 
