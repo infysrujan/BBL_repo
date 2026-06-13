@@ -51,7 +51,7 @@ function buildFooterStructure(block) {
     groupLink.className = 'footer-group';
 
     // Create title header
-    const header = document.createElement('h3');
+    const header = document.createElement('h4');
     header.className = 'footer-title';
     header.textContent = title;
 
