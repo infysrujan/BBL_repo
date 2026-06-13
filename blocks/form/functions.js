@@ -690,6 +690,32 @@ function updateTextCount(passportNumber) {
   return `${count}/4`;
 }
 
+/**
+ * Returns the label name of the selected option in a dropdown.
+ * @param {string} dropdown - The dropdown value string
+ * @returns {string} The label name of the selected option
+ */
+function getSelectedLabelName(dropdown) {
+  if (!dropdown) {
+    return '';
+  }
+  const parts = String(dropdown).split('|');
+  return parts.length > 1 ? parts[1].trim() : '';
+}
+
+/**
+ * Returns the value of the selected option in a dropdown.
+ * @param {string} dropdown - The dropdown value string
+ * @returns {string} The value of the selected option
+ */
+function getSelectedLabelValue(dropdown) {
+  if (!dropdown) {
+    return '';
+  }
+  const parts = String(dropdown).split('|');
+  return parts.length > 0 ? parts[0].trim() : '';
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -715,4 +741,6 @@ export {
   getCcField,
   formatDateTime,
   updateTextCount,
+  getSelectedLabelName,
+  getSelectedLabelValue,
 };
