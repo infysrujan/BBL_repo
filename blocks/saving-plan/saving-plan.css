@@ -1,3 +1,5 @@
+
+
 .saving-plan-block {
   --sp-blue: var(--bbl-color-active-blue);
   --sp-blue-dark: var(--bbl-color-blue-90);
@@ -28,11 +30,6 @@
   background: var(--bbl-color-white);
 }
 
-
-/* ═══════════════════════════════════════════════════════════════
-   BASE / MOBILE-FIRST (≤ 47.5rem)
-   ═══════════════════════════════════════════════════════════════ */
-
 .saving-plan-section {
   padding-top: 1.25rem;
   padding-bottom: 2rem;
@@ -40,15 +37,16 @@
 
 .saving-plan-header {
   text-align: center;
+  margin-top: 1.75rem;
   margin-bottom: 1.75rem;
 }
 
 .saving-plan-header-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-h3-mobile);
+  font-size: var(--bbl-text-calculator-title-size);
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
-  margin: 0 0 2.1875rem;
+  margin: 0 0 2.5rem;
   letter-spacing: 0;
   line-height: var(--bbl-heading-h3-line-height);
 }
@@ -58,6 +56,7 @@
   width: 4rem;
   height: 0.125rem;
   background: var(--sp-border);
+  margin-bottom: 0.875rem;
 }
 
 .saving-plan-calculator {
@@ -77,8 +76,10 @@
 }
 
 .saving-plan-form-title {
-  color: var(--bbl-color-black);
+  font-size: 1.1375rem;
   font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-black);
+  margin-bottom: 0.875rem;
 }
 
 .saving-plan-additional-title {
@@ -153,8 +154,8 @@
 }
 
 .saving-plan-field-text {
-  font-size: var(--bbl-text-body-small-size);
-  color: var(--sp-text-muted);
+  font-size: var(--bbl-font-size-b1-mobile);
+  color: var(--bbl-color-grey-70);
   line-height: 1.3;
   white-space: normal;
 }
@@ -167,11 +168,11 @@
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-text-body-size);
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-black);
+  color: var(--sp-text);
   width: 5rem;
   min-width: 3.75rem;
   flex: 0 0 auto;
-  margin-left: 0.5rem;
+  margin-left: auto;
   padding: 0.375rem 0;
 }
 
@@ -231,6 +232,7 @@
 
 .saving-plan-dropdown-current {
   flex: 1;
+  font-size: var(--bbl-font-size-b1-mobile);
   font-weight: 500;
   color: var(--sp-text);
   white-space: nowrap;
@@ -296,21 +298,25 @@
 
 .saving-plan-form-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: stretch;
   justify-content: center;
   gap: 0.75rem;
-  margin-top: 1.5rem;
+  margin-top: 0.875rem;
+  margin-bottom: 0.875rem;
 }
 
 .saving-plan-form-btn {
-  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 7.1875rem;
   width: 100%;
   min-height: 2.625rem;
-  padding: 0.5rem 1.25rem;
+  padding: 0.4375rem 0.875rem;
   border-radius: 0.5rem;
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-button-size);
+  font-size: var(--bbl-font-size-b1-mobile);
   font-weight: var(--bbl-font-weight-medium);
   cursor: pointer;
   border: 0.0625rem solid var(--sp-border);
@@ -342,7 +348,7 @@
 
 .saving-plan-form-btn:disabled {
   background: var(--sp-bg-soft);
-  border-color: var(--sp-bg-soft);
+  border: 0.125rem solid var(--bbl-color-grey-20);
   color: var(--bbl-color-grey-50);
   cursor: not-allowed;
 }
@@ -600,7 +606,7 @@
 
 .saving-plan-slider-label {
   font-family: var(--bbl-font-family-medium);
-  font-size: 0.875rem;
+  font-size: var(--bbl-text-body-small-size);
   font-weight: var(--bbl-font-weight-medium);
   color: var(--sp-text);
   margin-bottom: 0.125rem;
@@ -672,12 +678,12 @@
 .saving-plan-slider-min {
   color: var(--sp-blue);
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: var(--bbl-text-body-small-size);
 }
 
 .saving-plan-slider-value {
   font-family: var(--bbl-font-family-medium);
-  font-size: 0.875rem;
+  font-size: var(--bbl-text-body-small-size);
   font-weight: var(--bbl-font-weight-medium);
   color: var(--sp-text);
   background: var(--bbl-color-gray-122);
@@ -888,10 +894,88 @@
   background: var(--sp-blue-dark);
 }
 
+/* ── default-content-wrapper (Additional Information + Disclaimer) ── */
+.saving-plan-container .default-content-wrapper {
+  margin-top: 2.5rem;
+  font-size: var(--bbl-text-body-size);
+  color: var(--bbl-color-black);
+  line-height: 1.65rem;
+}
 
-/* ═══════════════════════════════════════════════════════════════
-   TABLET (> 47.5rem)
-   ═══════════════════════════════════════════════════════════════ */
+.saving-plan-container .default-content-wrapper p {
+  margin: 0 0 0.375rem;
+  font-size: var(--bbl-text-body-size);
+}
+
+.saving-plan-container .default-content-wrapper p > strong {
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-body-size);
+  font-weight: var(--bbl-font-weight-medium);
+}
+
+.saving-plan-container .default-content-wrapper p ~ p {
+  margin-top: 1.75rem;
+}
+
+.saving-plan-container .default-content-wrapper ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.5rem;
+}
+
+.saving-plan-container .default-content-wrapper li {
+  margin-bottom: 0.625rem;
+  line-height: 1.65;
+}
+
+
+
+.saving-plan-container .default-content-wrapper a {
+  color: var(--sp-text);
+  text-decoration: underline;
+  text-underline-offset: 0.125rem;
+}
+
+.saving-plan-container .default-content-wrapper a:hover {
+  color: var(--sp-blue);
+}
+
+/* ── saving-plan-container2 (adjacent product section) ────────────── */
+.saving-plan-container2 {
+  display: none;
+}
+
+.saving-plan-container2.is-visible {
+  display: revert;
+  max-width: 1752px;
+  margin-top: 3.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+}
+
+.saving-plan-container2.is-visible .default-content-wrapper,
+.saving-plan-container2.is-visible .card-list-wrapper {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+}
+
+.saving-plan-container2.is-visible .cards-list.scrollable.center.cards-3 {
+  margin: 0 -20px;
+  padding: 0;
+}
+
+.saving-plan-container2.is-visible .cards-list-image.cards-list-image-default {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 272 / 175;
+  max-width: 272px;
+  margin: 0;
+  padding: 0;
+}
+
+
 
 @media (width > 47.5rem) {
   .saving-plan-section {
@@ -899,19 +983,10 @@
     padding-bottom: 2.5rem;
   }
 
-  .saving-plan-header-title {
-    font-size: var(--bbl-heading-h2-mobile);
-    margin-bottom: 2.1875rem;
-  }
-
+ 
   .saving-plan-form-grid {
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
-  }
-
-  .saving-plan-field-input {
-    width: 6.25rem;
-    min-width: 5rem;
   }
 
   .saving-plan-form-actions {
@@ -920,7 +995,7 @@
   }
 
   .saving-plan-form-btn {
-    min-width: 8.75rem;
+    min-width: var(--bbl-space-1050);
     width: auto;
   }
 
@@ -928,8 +1003,16 @@
     padding: 1.25rem 1.125rem 1.375rem;
   }
 
+  .saving-plan-result-lead {
+    font-size: var(--bbl-font-size-h5-mobile);
+  }
+
   .saving-plan-result-amount {
     font-size: var(--bbl-font-size-h3-mobile);
+  }
+
+  .saving-plan-newplan-amount {
+    font-size: var(--bbl-font-size-h4-mobile);
   }
 
   .saving-plan-chart-row {
@@ -941,6 +1024,22 @@
     height: auto;
     align-self: stretch;
     padding-bottom: 0;
+  }
+
+  .saving-plan-chart-legend-row {
+    gap: 1.5rem;
+    padding: 0.5rem 1.25rem;
+  }
+
+  .saving-plan-chart-legend-item {
+    font-size: var(--bbl-text-body-small-size);
+  }
+
+  .saving-plan-chart-canvas-wrap {
+    flex: 1 1 auto;
+    width: 100%;
+    height: auto;
+    min-height: 15rem;
   }
 
   .saving-plan-info-card-slot {
@@ -956,20 +1055,8 @@
     flex: 1;
   }
 
-  .saving-plan-chart-canvas-wrap {
-    flex: 1 1 auto;
-    width: 100%;
-    height: 14rem;
-    min-height: 15rem;
-  }
-
-  .saving-plan-chart-legend-row {
-    gap: 1.5rem;
-    padding: 0.5rem 1.25rem;
-  }
-
-  .saving-plan-chart-legend-item {
-    font-size: var(--bbl-text-body-small-size);
+  .saving-plan-tweak {
+    margin-top: 2rem;
   }
 
   .saving-plan-tweak-header {
@@ -995,6 +1082,15 @@
     line-height: 1.4;
   }
 
+  .saving-plan-slider-min,
+  .saving-plan-slider-value {
+    font-size: var(--bbl-text-body-size);
+  }
+
+  .saving-plan-products {
+    margin-top: 3.5rem;
+  }
+
   .saving-plan-products-title {
     font-size: 1.125rem;
   }
@@ -1002,12 +1098,15 @@
   .saving-plan-products-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+
+  .saving-plan-field-input {
+    width: 6.25rem;
+    min-width: 5rem;
+  }
 }
 
 
-/* ═══════════════════════════════════════════════════════════════
-   DESKTOP (> 64rem)
-   ═══════════════════════════════════════════════════════════════ */
+
 
 @media (width > 64rem) {
   .saving-plan-section {
@@ -1016,26 +1115,21 @@
   }
 
   .saving-plan-header-title {
-    font-size: var(--bbl-text-section-title-size);
-    margin-bottom: 2.5rem;
+    font-size: var(--bbl-font-size-h1-desktop);
+  }
+
+  .saving-plan-header-divider {
+    margin-bottom: 1rem;
+  }
+
+  .saving-plan-form-title {
+    font-size: var(--bbl-font-size-h3-desktop);
+    margin-bottom: 1rem;
   }
 
   .saving-plan-calculator {
     grid-template-columns: minmax(0, 1fr) 22.5rem;
     gap: 1.5rem;
-  }
-
-  .saving-plan-form-title,
-  .saving-plan-result-title {
-    font-size: var(--bbl-text-thumbnail-title-size);
-  }
-
-  .saving-plan-form-actions {
-    gap: 0.75rem;
-  }
-
-  .saving-plan-result-card {
-    padding: 1.5rem 1.5rem 1.75rem;
   }
 
   .saving-plan-result-lead {
@@ -1054,12 +1148,10 @@
   .saving-plan-chart-wrap {
     height: 100%;
     align-self: stretch;
-    padding-bottom: 0;
   }
 
   .saving-plan-chart-canvas-wrap {
     flex: 1 1 0;
-    width: 100%;
     height: 0;
     min-height: 11rem;
   }
@@ -1068,8 +1160,8 @@
     height: 22.5rem;
   }
 
-  .saving-plan-tweak {
-    margin-top: 2rem;
+  .saving-plan-newplan-amount {
+    font-size: var(--bbl-text-section-title-size);
   }
 
   .saving-plan-tweak-header {
@@ -1085,117 +1177,9 @@
     grid-template-columns: repeat(3, 1fr);
     grid-auto-flow: column;
     gap: 0.375rem 1rem;
-    padding: 1rem;
   }
 
-  .saving-plan-slider-label {
-    font-size: var(--bbl-text-body-size);
+  .saving-plan-dropdown-current {
+    font-size: var(--bbl-font-size-b1-desktop);
   }
-
-  .saving-plan-slider-value {
-    font-size: var(--bbl-text-body-size);
-  }
-
-  .saving-plan-newplan-amount {
-    font-size: var(--bbl-text-section-title-size);
-  }
-
-  .saving-plan-additional {
-    margin-top: 2.5rem;
-  }
-
-  .saving-plan-products {
-    margin-top: 3.5rem;
-  }
-}
-
-
-/* ═══════════════════════════════════════════════════════════════
-   default-content-wrapper (Additional Information + Disclaimer)
-   ═══════════════════════════════════════════════════════════════ */
-
-.saving-plan-container .default-content-wrapper {
-  margin-top: 2.5rem;
-  font-size: var(--bbl-text-body-size);
-  color: var(--sp-text);
-  line-height: 1.65;
-}
-
-.saving-plan-container .default-content-wrapper p {
-  margin: 0 0 0.375rem;
-  font-size: var(--bbl-text-body-size);
-}
-
-.saving-plan-container .default-content-wrapper p > strong {
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-body-size);
-  font-weight: var(--bbl-font-weight-medium);
-}
-
-.saving-plan-container .default-content-wrapper p ~ p {
-  margin-top: 1.75rem;
-}
-
-.saving-plan-container .default-content-wrapper ul {
-  margin: 0.5rem 0 0;
-  padding-left: 1.5rem;
-}
-
-.saving-plan-container .default-content-wrapper li {
-  margin-bottom: 0.875rem;
-  line-height: 1.65;
-}
-
-.saving-plan-container .default-content-wrapper li:last-child {
-  margin-bottom: 0;
-}
-
-.saving-plan-container .default-content-wrapper a {
-  color: var(--sp-text);
-  text-decoration: underline;
-  text-underline-offset: 0.125rem;
-}
-
-.saving-plan-container .default-content-wrapper a:hover {
-  color: var(--sp-blue);
-}
-
-
-/* ═══════════════════════════════════════════════════════════════
-   saving-plan-container2 (adjacent product section)
-   ═══════════════════════════════════════════════════════════════ */
-
-.saving-plan-container2 {
-  display: none;
-}
-
-.saving-plan-container2.is-visible {
-  display: revert;
-  max-width: 109.5rem;
-  margin-top: 3.5rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0;
-}
-
-.saving-plan-container2.is-visible .default-content-wrapper,
-.saving-plan-container2.is-visible .card-list-wrapper {
-  max-width: 56.25rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0;
-}
-
-.saving-plan-container2.is-visible .cards-list.scrollable.center.cards-3 {
-  margin: 0 -1.25rem;
-  padding: 0;
-}
-
-.saving-plan-container2.is-visible .cards-list-image.cards-list-image-default {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 272 / 175;
-  max-width: 17rem;
-  margin: 0;
-  padding: 0;
 }
