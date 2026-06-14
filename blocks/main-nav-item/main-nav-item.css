@@ -1,9 +1,9 @@
 .main-nav-trigger-text {
   color: var(--bbl-color-grey-130);
-  font-family: BangkokBank-Medium, Helvetica, "Microsoft JhengHei", "Ã¥Â¾Â®Ã¨Â»Å¸Ã¦Â­Â£Ã¯Â¿Â½Ã©Â«â€ ", "Hiragino Sans GB", Arial, sans-serif;
-  font-size: 0.875rem;
-  font-weight: 700;
-  line-height: 1.2031rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(  --bbl-text-nav-link-size);
+  font-weight: var(--bbl-text-nav-link-weight);
+  line-height: var(--bbl-text-nav-link-line-height);
   white-space: nowrap;
 }
 
@@ -281,9 +281,6 @@ a.megamenu-link {
 
   .main-nav-trigger-text {
     color: var(--bbl-bg-primary);
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.375;
   }
 
   .main-nav-trigger:hover .main-nav-trigger-text,
