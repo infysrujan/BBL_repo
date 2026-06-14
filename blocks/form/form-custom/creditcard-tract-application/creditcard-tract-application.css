@@ -6,31 +6,17 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 }
 
 main .section.form-container.custom-forms:has(.cc-app-main-form) {
-  /* Layout — CC track page only (no global token equivalent) */
-  --cc-form-max-width: 850px;
-  --cc-panel-max-width: 46.25rem;
-  --cc-panel-width-pct: 83%;
-  --cc-timeline-panel-width: 460px;
-  --cc-form-mobile-gutter: 0.9375rem;
-  --cc-btn-min-width: 9.6875rem;
-  --cc-btn-height: 2.75rem;
-  --cc-btn-radius: 7px;
-  --cc-btn-padding-inline: 1rem;
-  --cc-input-height: 3.125rem;
-  --cc-input-height-desktop: 3.4375rem;
-  --cc-input-radius: 7px;
-  --cc-input-padding-inline: 20px;
   --cc-timeline-form-width: min(
-    var(--cc-timeline-panel-width),
-    calc(min(100vw, var(--cc-form-max-width)) - 2 * var(--cc-form-mobile-gutter))
+    28.75rem,
+    calc(min(100vw, 53.125rem) - 2 * 0.9375rem)
   );
 
   padding: 0;
-  padding-inline: var(--cc-form-mobile-gutter);
+  padding-inline: 0.9375rem;
 
   & :is(.form-wrapper, .form.block, .form) {
     width: 100%;
-    max-width: var(--cc-form-max-width);
+    max-width: 53.125rem;
     margin-inline: auto;
   }
 
@@ -58,43 +44,43 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
   & .field-title,
   & .cc-panel-item-form-title {
-    margin: 0 0 10px;
+    margin: 0 0 0.625rem;
     text-align: left;
     color: var(--bbl-color-grey-85);
     font-family: var(--bbl-font-family-medium);
-    font-size: 21px;
-    line-height: 22.75px;
+    font-size: 1.3125rem;
+    line-height: 1.421875rem;
     font-weight: var(--bbl-font-weight-regular);
   }
 
   /* Form inputs — match live CC application status tracking */
   & :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
     width: 100%;
-    height: var(--cc-input-height);
+    height: 3.125rem;
     margin: 0;
-    padding: 0 var(--cc-input-padding-inline);
+    padding: 0 var(--bbl-space-250);
     color: var(--bbl-color-grey-100);
     border: 1px solid var(--bbl-color-grey-150);
-    border-radius: var(--cc-input-radius);
+    border-radius: 0.4375rem;
     background-color: var(--bbl-color-white);
     font-family: var(--bbl-font-family-primary);
-    font-size: 16px;
-    line-height: 44px;
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: 2.75rem;
   }
 
   & .form select,
   & .drop-down-wrapper.field-wrapper select {
     width: 100%;
-    height: var(--cc-input-height);
+    height: 3.125rem;
     margin: 0;
-    padding: 0 24px 0 var(--cc-input-padding-inline);
+    padding: 0 var(--bbl-space-300) 0 var(--bbl-space-250);
     color: var(--bbl-color-black);
     border: 1px solid var(--bbl-color-grey-150);
-    border-radius: var(--cc-input-radius);
+    border-radius: 0.4375rem;
     background: var(--bbl-color-white) url('../../../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
     font-family: var(--bbl-font-family-medium);
-    font-size: 16px;
-    line-height: 44px;
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: 2.75rem;
     cursor: pointer;
     appearance: none;
   }
@@ -102,7 +88,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   & .form textarea {
     height: auto;
     min-height: 6.25rem;
-    padding: var(--bbl-space-100) var(--cc-input-padding-inline);
+    padding: var(--bbl-space-100) var(--bbl-space-250);
     line-height: 1.5;
   }
 
@@ -111,7 +97,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     color: var(--bbl-color-grey-150);
     font-family: var(--bbl-font-family-primary);
     font-weight: var(--bbl-font-weight-regular);
-    line-height: 44px;
+    line-height: 2.75rem;
   }
 
   & .form :is(input, select, textarea):is(:hover, :focus) {
@@ -122,7 +108,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
   & .form form :is(input, select):invalid {
     box-shadow: none;
-    height: var(--cc-input-height);
+    height: 3.125rem;
   }
 
   & .form-wrapper .form :is(
@@ -134,7 +120,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   ).field-invalid :is(input, select),
   & .form-wrapper .form .drop-down-wrapper.field-invalid select {
     margin: 0;
-    padding: 0 var(--cc-input-padding-inline);
+    padding: 0 var(--bbl-space-250);
     border-color: var(--bbl-color-red-130);
     outline: 1px solid transparent;
   }
@@ -146,7 +132,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   & .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper) {
     position: relative;
     clear: both;
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
   }
 
   & .form form :is(p, .repeat-wrapper, .field-wrapper) {
@@ -160,11 +146,11 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary),
       .cc-panel-item-panel-action-primary :is(.button, button)
     ) {
-      min-width: var(--cc-btn-min-width);
+      min-width: 9.6875rem;
       width: auto;
-      height: var(--cc-btn-height);
+      height: 2.75rem;
       margin: 0;
-      border-radius: var(--cc-btn-radius);
+      border-radius: 0.4375rem;
       font-size: var(--form-font-size-xs);
       font-weight: var(--bbl-font-weight-regular);
     }
@@ -173,7 +159,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       :is(.field-submitbuttonpanel, .field-submitbuttonpanel2, .field-button-panel) .button,
       :is(.field-submitcta, .field-cancel, [class~='field-Cancel'], form .submit-wrapper) .button
     ) {
-      line-height: 44px;
+      line-height: 2.75rem;
     }
 
     & :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) {
@@ -187,7 +173,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0 var(--cc-btn-padding-inline);
+      padding: 0 var(--bbl-space-200);
       color: var(--bbl-color-active-blue);
       border: 1px solid var(--bbl-color-active-blue);
       background: var(--bbl-color-white);
@@ -201,7 +187,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0 var(--cc-btn-padding-inline);
+      padding: 0 var(--bbl-space-200);
       line-height: normal;
     }
 
@@ -252,7 +238,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     }
 
     & fieldset.panel-wrapper.field-wrapper:not(.cc-panel-item-form-consent) .tnc-text-decoration {
-      max-height: 150px;
+      max-height: 9.375rem;
       border: none;
     }
 
@@ -260,7 +246,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       display: block;
       gap: 0;
       width: 100%;
-      max-width: var(--cc-form-max-width);
+      max-width: 53.125rem;
       margin-inline: auto;
 
       & > .field-wrapper,
@@ -274,25 +260,21 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         grid-column: auto;
       }
 
-      & :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
-        display: block;
-        text-align: left;
-        font-size: 15px;
-        font-weight: 100;
-        line-height: 25px;
-        color: var(--bbl-color-grey-85);
-      }
-
+      & :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label),
       & :is(.drop-down-wrapper, .field-wrapper:has(select)) > .field-label {
         display: block;
         width: 100%;
         margin: 0;
         padding: 0;
         text-align: left;
-        font-size: 15px;
+        font-size: 0.9375rem;
         font-weight: 100;
-        line-height: 25px;
+        line-height: 1.5625rem;
         color: var(--bbl-color-grey-85);
+      }
+
+      & :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
+        width: auto;
       }
 
       & label:is([class*=' icon-'], [class^='icon-']) {
@@ -341,30 +323,30 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         display: flex;
         flex-flow: row wrap;
         justify-content: flex-start;
-        gap: 30px;
-        margin: 0 0 10px;
+        gap: 1.875rem;
+        margin: 0 0 0.625rem;
 
         & > legend.field-label {
           display: block;
           flex: 0 0 100%;
           width: 100%;
           text-align: left;
-          margin-bottom: 10px;
+          margin-bottom: 0.625rem;
         }
 
         & .radio-wrapper {
           flex-wrap: nowrap;
-          min-width: 140px;
+          min-width: 8.75rem;
         }
 
         & input[type='radio'] {
-          width: 20px;
-          height: 20px;
+          width: var(--bbl-space-250);
+          height: var(--bbl-space-250);
         }
       }
 
       & .radio-group-wrapper.radio-tabs {
-        max-width: var(--cc-panel-max-width);
+        max-width: 46.25rem;
       }
 
       & fieldset.panel-wrapper.field-wrapper {
@@ -372,7 +354,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
         &.cc-app-main-form {
           width: 100%;
-          max-width: var(--cc-form-max-width);
+          max-width: 53.125rem;
         }
 
         &.field-submitbuttonpanel,
@@ -382,9 +364,9 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           flex-flow: row wrap;
           justify-content: center;
           align-items: center;
-          gap: 1rem;
+          gap: var(--bbl-space-200);
           width: 100%;
-          margin-top: 1rem;
+          margin-top: var(--bbl-space-200);
 
           & > .cc-panel-item {
             display: flex;
@@ -401,7 +383,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           grid-template-rows: auto auto;
           width: 100%;
           max-width: 100%;
-          margin-top: 15px;
+          margin-top: 0.9375rem;
           padding: 0 0 0 2.1875rem;
 
           & > legend {
@@ -414,7 +396,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
           & input[name='approvalcheckbox'] {
             position: absolute;
-            top: 8px;
+            top: var(--bbl-space-100);
             left: 0;
             z-index: 1;
             width: var(--bbl-space-250);
@@ -436,7 +418,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
             grid-row: 1;
             grid-column: 1;
             border-radius: var(--bbl-radius-none);
-            max-height: 175px;
+            max-height: 10.9375rem;
             margin: 3px var(--bbl-space-100) 0.9375rem 0;
             padding: 0 var(--bbl-space-100) 0 0;
             color: var(--bbl-color-grey-153);
@@ -496,38 +478,38 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           }
 
           & > .cc-panel-item-form-title {
-            font-size: 15px;
+            font-size: 0.9375rem;
             font-weight: 700;
-            line-height: 25px;
-            margin: 0 0 15px;
+            line-height: 1.5625rem;
+            margin: 0 0 0.9375rem;
             text-align: left;
           }
 
           & > .cc-panel-item-form-input-half {
-            flex: 0 0 calc(50% - 5px);
-            width: calc(50% - 5px);
-            max-width: calc(50% - 10px);
-            margin: 0 0 10px;
+            flex: 0 0 calc(50% - 0.3125rem);
+            width: calc(50% - 0.3125rem);
+            max-width: calc(50% - 0.625rem);
+            margin: 0 0 0.625rem;
             clear: none;
           }
 
           & > .cc-panel-item-form-input-half:first-of-type {
-            margin-right: 10px;
+            margin-right: 0.625rem;
           }
 
           & > .cc-panel-item-form-radio.radio-group-wrapper.horizontal {
             flex-flow: column nowrap;
             align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 0.625rem;
+            margin-bottom: 0.625rem;
 
             & > legend.field-label {
               flex: 0 0 auto;
               width: 100%;
               margin-bottom: 0;
-              font-size: 15px;
+              font-size: 0.9375rem;
               font-weight: 100;
-              line-height: 25px;
+              line-height: 1.5625rem;
               text-align: left;
             }
 
@@ -540,10 +522,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
           & fieldset.field-submitbuttonpanel2 {
             width: 100%;
-            margin-top: 15px;
+            margin-top: 0.9375rem;
             flex-direction: row-reverse;
             justify-content: center;
-            gap: 1rem;
+            gap: var(--bbl-space-200);
             border: none;
             padding: 0;
 
@@ -565,11 +547,11 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         ) {
           position: relative;
           width: 100%;
-          max-width: var(--cc-timeline-panel-width);
+          max-width: 28.75rem;
           margin-inline: auto;
           overflow: visible;
           grid-column: 1 / -1;
-          min-height: var(--timeline-height, 287px);
+          min-height: var(--timeline-height, 17.9375rem);
 
           & > .cc-panel-item-timeline-bg {
             position: absolute;
@@ -657,14 +639,14 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
             display: flex;
             justify-content: center;
             width: 100%;
-            margin-top: calc(var(--timeline-height) + 20px);
+            margin-top: calc(var(--timeline-height) + var(--bbl-space-250));
             z-index: 2;
             max-width: none;
           }
         }
 
         &.cc-app-approved {
-          --timeline-height: min(575px, calc(var(--cc-timeline-form-width) * 585 / 468));
+          --timeline-height: min(35.9375rem, calc(var(--cc-timeline-form-width) * 585 / 468));
 
           & > .cc-panel-item-timeline-step-1 {
             top: calc(var(--timeline-height) * 0.015);
@@ -674,7 +656,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           & > .cc-panel-item-timeline-step-2 {
             top: calc(var(--timeline-height) * 0.355);
             left: 10%;
-            width: min(215px, 68%);
+            width: min(13.4375rem, 68%);
           }
 
           & > .cc-panel-item-timeline-step-3 {
@@ -695,7 +677,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           & > .cc-panel-item-timeline-date {
             top: calc(var(--timeline-height) * 0.78);
             left: 48%;
-            width: min(200px, 50%);
+            width: min(12.5rem, 50%);
             max-width: none;
           }
 
@@ -708,7 +690,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
           & > .cc-panel-item-timeline-date .field-label {
             display: block;
-            margin: 0 0 4px;
+            margin: 0 0 var(--bbl-space-050);
             padding: 0;
           }
 
@@ -725,13 +707,13 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           & > .cc-panel-item-timeline-caption {
             top: calc(var(--timeline-height) * 0.87);
             left: 48%;
-            width: min(200px, 50%);
+            width: min(12.5rem, 50%);
             max-width: none;
           }
         }
 
         &:is(.cc-app-denied, .cc-app-cancel, .cc-app-pending, .cc-app-incomplete, .cc-app-callback) {
-          --timeline-height: min(433px, calc(var(--cc-timeline-form-width) * 453 / 481));
+          --timeline-height: min(27.0625rem, calc(var(--cc-timeline-form-width) * 453 / 481));
 
           & > .cc-panel-item-timeline-step-1 {
             top: calc(var(--timeline-height) * 0.01);
@@ -752,14 +734,14 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           & > .cc-panel-item-timeline-caption {
             top: calc(var(--timeline-height) * 0.63);
             left: 44%;
-            width: min(220px, 58%);
+            width: min(13.75rem, 58%);
             max-width: none;
           }
 
           & > .cc-panel-item-timeline-muted {
             top: calc(var(--timeline-height) * 0.92);
             left: 10%;
-            width: min(215px, 58%);
+            width: min(13.4375rem, 58%);
           }
         }
 
@@ -773,16 +755,16 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           }
 
           & > .cc-panel-item-callback-prompt {
-            margin-top: calc(var(--timeline-height) + 20px);
+            margin-top: calc(var(--timeline-height) + var(--bbl-space-250));
           }
 
           & > .cc-panel-item-callback-actions {
-            margin-top: 15px;
+            margin-top: 0.9375rem;
           }
         }
 
         &.cc-app-notfound {
-          --timeline-height: min(287px, calc(var(--cc-timeline-form-width) * 272 / 436));
+          --timeline-height: min(17.9375rem, calc(var(--cc-timeline-form-width) * 272 / 436));
 
           min-height: var(--timeline-height);
 
@@ -808,7 +790,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           & > .cc-panel-item-timeline-caption {
             top: calc(var(--timeline-height) * 0.85);
             left: 38%;
-            width: min(220px, 58%);
+            width: min(13.75rem, 58%);
             max-width: none;
           }
         }
@@ -832,30 +814,30 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   @media (width >= 64rem) {
     padding-inline: 0;
 
-    --cc-timeline-form-width: min(var(--cc-timeline-panel-width), min(100vw, var(--cc-form-max-width)));
+    --cc-timeline-form-width: min(28.75rem, min(100vw, 53.125rem));
 
     & .field-title,
     & .cc-panel-item-form-title {
-      font-size: 24px;
-      line-height: 26px;
+      font-size: var(--bbl-font-size-h3-desktop);
+      line-height: 1.625rem;
     }
 
     & .form form fieldset.panel-wrapper.field-wrapper.cc-app-message-form > .cc-panel-item-form-title {
-      font-size: 15px;
+      font-size: 0.9375rem;
       font-weight: 700;
-      line-height: 25px;
+      line-height: 1.5625rem;
     }
 
     & :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea),
     & .form select,
     & .drop-down-wrapper.field-wrapper select {
-      height: var(--cc-input-height-desktop);
+      height: 3.4375rem;
     }
 
     & .form form fieldset.panel-wrapper.field-wrapper {
       &.cc-app-approved {
         & > .cc-panel-item-timeline-step-2 {
-          width: 215px;
+          width: 13.4375rem;
         }
 
         & > .cc-panel-item-timeline-message {
@@ -866,7 +848,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         & > .cc-panel-item-timeline-date,
         & > .cc-panel-item-timeline-caption {
           left: 44%;
-          width: 200px;
+          width: 12.5rem;
         }
       }
 
@@ -878,11 +860,11 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
         & > .cc-panel-item-timeline-caption {
           left: 44%;
-          width: 220px;
+          width: 13.75rem;
         }
 
         & > .cc-panel-item-timeline-muted {
-          width: 215px;
+          width: 13.4375rem;
         }
       }
 
@@ -894,20 +876,17 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
         & > .cc-panel-item-timeline-caption {
           left: 46%;
-          width: 220px;
+          width: 13.75rem;
         }
       }
     }
 
     & .form form fieldset.panel-wrapper.cc-app-main-form {
-      --cc-form-col-gap: 10px;
-      --cc-form-col-width: calc((var(--cc-form-max-width) - var(--cc-form-col-gap)) / 2);
-
       display: grid;
-      grid-template-columns: var(--cc-form-col-width) var(--cc-form-col-width);
-      column-gap: var(--cc-form-col-gap);
+      grid-template-columns: calc((53.125rem - 0.625rem) / 2) calc((53.125rem - 0.625rem) / 2);
+      column-gap: 0.625rem;
       width: 100%;
-      max-width: var(--cc-form-max-width);
+      max-width: 53.125rem;
       margin-inline: auto;
 
       & > .field-wrapper.col-6:not(
@@ -937,18 +916,18 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       & > .field-wrapper.col-12:is(.cc-panel-item-form-consent, .cc-panel-item-form-actions) {
         grid-column: 1 / -1;
         width: 100%;
-        max-width: var(--cc-form-max-width);
+        max-width: 53.125rem;
       }
     }
 
     & .form form fieldset.panel-wrapper.field-wrapper.cc-app-message-form {
-      width: var(--cc-panel-width-pct);
-      max-width: var(--cc-panel-max-width);
+      width: 83%;
+      max-width: 46.25rem;
       margin-inline: auto;
 
       & > .cc-panel-item-form-radio.radio-group-wrapper.horizontal {
         flex-flow: row wrap;
-        gap: 15px;
+        gap: 0.9375rem;
         justify-content: space-between;
 
         & .radio-wrapper {
