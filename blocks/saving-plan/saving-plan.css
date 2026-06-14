@@ -299,7 +299,7 @@
 .saving-plan-form-actions {
   display: flex;
   flex-direction: row;
-  align-items: stretch;
+  align-items: center;
   justify-content: center;
   gap: 0.75rem;
   margin-top: 0.875rem;
@@ -311,7 +311,7 @@
   align-items: center;
   justify-content: center;
   min-width: 7.1875rem;
-  width: 100%;
+  width: auto;
   min-height: 2.625rem;
   padding: 0.4375rem 0.875rem;
   border-radius: 0.5rem;
@@ -329,6 +329,10 @@
   background: transparent;
   color: var(--sp-blue);
   border: 0.125rem solid var(--bbl-color-grey-20);
+}
+
+.saving-plan-form-btn-secondary:not(:disabled) {
+  border: 0.125rem solid var(--bbl-color-active-blue);
 }
 
 .saving-plan-form-btn.saving-plan-form-btn-secondary:disabled {
