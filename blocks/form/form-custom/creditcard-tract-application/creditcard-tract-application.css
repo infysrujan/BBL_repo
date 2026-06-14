@@ -379,7 +379,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         &.cc-app-main-form > .cc-panel-item-form-consent {
           position: relative;
           display: grid;
-          grid-template-columns: 1fr;
+          grid-template-columns: minmax(0, 1fr);
           grid-template-rows: auto auto;
           width: 100%;
           max-width: 100%;
@@ -416,7 +416,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
           & .tnc-text-decoration {
             grid-row: 1;
-            grid-column: 1;
+            grid-column: 1 / -1;
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
             border-radius: var(--bbl-radius-none);
             max-height: 10.9375rem;
             margin: 3px var(--bbl-space-100) 0.9375rem 0;
@@ -450,13 +453,23 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           }
 
           & :is(> .field-description, .checkbox-wrapper .field-description) {
+            grid-row: 2;
+            grid-column: 1 / -1;
             position: static;
             display: block;
             width: 100%;
+            max-width: 100%;
             margin: 0;
             padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
             font-size: 0.9375rem;
             clear: both;
+            order: unset;
+          }
+
+          & :is(.field-wrapper.col-1, .field-wrapper.col-11, .field-wrapper.col-12) {
+            grid-column: 1 / -1;
+            width: 100%;
+            max-width: 100%;
           }
         }
 
