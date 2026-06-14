@@ -583,7 +583,7 @@
 
 .saving-plan-slider-label {
   font-family: var(--bbl-font-family-medium);
-  font-size: 0.875rem;
+  font-size: var(--bbl-text-body-small-size);
   font-weight: var(--bbl-font-weight-medium);
   color: var(--sp-text);
   margin-bottom: 0.125rem;
@@ -655,12 +655,12 @@
 .saving-plan-slider-min {
   color: var(--sp-blue);
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: var(--bbl-text-body-small-size);
 }
 
 .saving-plan-slider-value {
   font-family: var(--bbl-font-family-medium);
-  font-size: 0.875rem;
+  font-size: var(--bbl-text-body-small-size);
   font-weight: var(--bbl-font-weight-medium);
   color: var(--sp-text);
   background: var(--bbl-color-gray-122);
@@ -876,7 +876,7 @@
   margin-top: 2.5rem;
   font-size: var(--bbl-text-body-size);
   color: var(--bbl-color-black);
-  line-height: 1.65;
+  line-height: 1.65rem;
 }
 
 .saving-plan-container .default-content-wrapper p {
@@ -975,7 +975,7 @@
   }
 
   .saving-plan-form-btn {
-    min-width: 8.75rem;
+    min-width: var(--bbl-space-1050);
     width: auto;
   }
 
