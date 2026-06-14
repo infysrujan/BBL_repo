@@ -56,7 +56,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-info-pannel.field-wrapper>legend {
   background-color: transparent;
   padding-left: 0;
-  margin-top: 0;
+  margin: 0;
   font-size: var(--bbl-font-size-h5-desktop);
   text-decoration: underline;
 }
@@ -145,7 +145,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   padding: 0;
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel> :is(.field-hours-exclude, .field-minutes-exclude),
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel> :is(.field-cnf-date-exclude, .field-hours-exclude, .field-minutes-exclude),
 main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch) {
   position: relative;
   grid-column: span 12;
@@ -171,7 +171,7 @@ main .section.form-container.custom-forms .form form .field-compliantnonfin-comp
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>.field-hours-exclude::after {
   content: none;
   position: absolute;
-  top: 35%;
+  top: 50%;
   right: -0.625rem;
   z-index: 2;
   color: var(--bbl-color-grey-85);
@@ -188,6 +188,10 @@ main .section.form-container.custom-forms .form form .field-compliantnonfin-comp
   white-space: normal;
 }
 
+/* Spacing to prevent panel legend/capsule from overlapping validation errors of preceding fields */
+main .section.form-container.custom-forms .form form .field-invalid+fieldset.panel-wrapper {
+  margin-top: 1.75rem;
+}
 
 /* Service Branch Panel Layout (Grid-based Layout) */
 main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) {
@@ -266,7 +270,23 @@ main .section.form-container.custom-forms .form form .text-wrapper.field-officer
 }
 
 main .section.form-container.custom-forms .form form .text-wrapper.field-officername.icon-username::before {
-  top: 1.325rem;
+  position: absolute;
+  top: 1.375rem;
+  left: 0.9375rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
+  color: var(--bbl-color-grey-150);
+  transform: translateY(-50%);
+  pointer-events: none;
+  content: "\e906";
+}
+
+main .section.form-container.custom-forms .form form .text-wrapper.field-officername.icon-username input {
+  padding-left: 2.75rem;
 }
 
 main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.field-subject {
@@ -316,7 +336,7 @@ main .section.form-container.custom-forms .form form fieldset.radio-group-wrappe
     white-space: nowrap;
   }
 
-  main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch) {
+  main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch).field-wrapper {
     grid-column: span 6;
   }
 
