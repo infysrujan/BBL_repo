@@ -318,7 +318,7 @@ function buildField({
 }
 
 function buildDropdownField({
-  name, label, value, options, icon = '',
+  name, label, value, options,
 }) {
   const selected = options.find((opt) => opt.key === value);
   const optionsMarkup = options
@@ -332,7 +332,6 @@ function buildDropdownField({
   return `
     <div class="saving-plan-field saving-plan-field-dropdown" data-field="${name}" data-value="${selected?.key || ''}">
       <button type="button" class="saving-plan-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
-        <span class="saving-plan-field-icon" aria-hidden="true">${icon}</span>
         <span class="saving-plan-dropdown-current">${selected?.label || label}</span>
         <span class="saving-plan-field-chevron" aria-hidden="true"></span>
       </button>
@@ -397,7 +396,7 @@ function buildShellMarkup(data) {
           <h3 class="saving-plan-form-title">${labels.calculateTitle}</h3>
           <div class="saving-plan-form-grid">
             ${buildDropdownField({
-    name: 'goal', label: labels.fields.goal, value: '', options: goals, icon: getIcon('goal'),
+    name: 'goal', label: labels.fields.goal, value: '', options: goals,
   })}
             ${buildField({
     name: 'balance', label: labels.fields.balance, value: defaults.balance, icon: getIcon('balance'), placeholder: labels.fieldPlaceholders.balance,

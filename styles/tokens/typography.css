@@ -168,6 +168,9 @@
   --bbl-text-banner-description-line-height: var(--bbl-heading-h3-reg-line-height);
   --bbl-text-banner-description-weight: var(--bbl-heading-h3-reg-weight);
 
+  /* --- Calculator / Form Titles --- */
+  --bbl-text-calculator-title-size: 1.4rem; /* 22.4px */
+
   /* --- Card / Section Titles --- */
   --bbl-text-article-card-title-size: var(--bbl-heading-h2-size);
   --bbl-text-article-card-title-line-height: var(--bbl-heading-h2-line-height);
