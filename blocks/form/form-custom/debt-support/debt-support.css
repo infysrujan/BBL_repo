@@ -1,5 +1,11 @@
 /* Debt Support registration — scoped via field-main-form-panel + field-loan-type */
 
+/* override global form error color */
+main .form form .field-invalid .field-description {
+padding-left: 20px;
+margin-top: 5px;
+}
+
 main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) div.form-wrapper,
 main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan-type) div.default-content-wrapper {
   padding: 0;
@@ -422,9 +428,4 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
       }
     }
   }
-}
-/* override global form error color */
-main .form form .field-invalid .field-description {
-padding-left: 20px;
-margin-top: 5px;
 }
