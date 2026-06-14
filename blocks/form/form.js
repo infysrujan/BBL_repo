@@ -83,6 +83,13 @@ function createFieldSet(fd) {
   if (fd.fieldType === 'panel') {
     wrapper.classList.add('panel-wrapper');
   }
+  const styleValue = fd.style || fd.properties?.style;
+  if (styleValue) {
+    const classes = Array.isArray(styleValue)
+      ? styleValue
+      : styleValue.trim().split(/\s+/);
+    classes.filter(Boolean).forEach((cls) => wrapper.classList.add(cls));
+  }
   if (fd.repeatable === true) {
     createRepeatablePanel(wrapper, fd);
   }
