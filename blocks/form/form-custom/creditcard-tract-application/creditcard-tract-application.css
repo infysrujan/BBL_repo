@@ -1,4 +1,28 @@
-﻿main .section.form-container.custom-forms:has(.cc-app-main-form) div.form-wrapper,
+﻿/* ==========================================================================
+   Credit Card Application Status Tracking
+   Scoped: :has(.cc-app-main-form)
+   Panel roles: creditcard-tract-application.js
+   ========================================================================== */
+
+main .section.form-container.custom-forms:has(.cc-app-main-form) .form label,
+main .section.form-container.custom-forms:has(.cc-app-main-form) .form fieldset.checkbox-group-wrapper legend,
+main .section.form-container.custom-forms:has(.cc-app-main-form) .form fieldset.radio-group-wrapper legend,
+main .section.form-container.custom-forms:has(.cc-app-main-form) .form form p {
+  font-weight: var(--form-label-font-weight);
+  font-size: var(--bbl-font-size-h4-mobile);
+  color: var(--form-label-color);
+}
+
+@media (width >= 64rem) {
+  main .section.form-container.custom-forms:has(.cc-app-main-form) .form label,
+  main .section.form-container.custom-forms:has(.cc-app-main-form) .form fieldset.checkbox-group-wrapper legend,
+  main .section.form-container.custom-forms:has(.cc-app-main-form) .form fieldset.radio-group-wrapper legend,
+  main .section.form-container.custom-forms:has(.cc-app-main-form) .form form p {
+    font-size: var(--form-font-size-xs);
+  }
+}
+
+main .section.form-container.custom-forms:has(.cc-app-main-form) div.form-wrapper,
 main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-content-wrapper {
   padding: 0;
   border-radius: unset;
@@ -6,81 +30,76 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 }
 
 main .section.form-container.custom-forms:has(.cc-app-main-form) {
+  --cc-form-max-width: 53.125rem;
+  --cc-form-gutter: 0.9375rem;
+  --cc-timeline-panel-width: 28.75rem;
+  --cc-message-form-max-width: 46.25rem;
   --cc-timeline-form-width: min(
-    28.75rem,
-    calc(min(100vw, 53.125rem) - 2 * 0.9375rem)
+    var(--cc-timeline-panel-width),
+    calc(min(100vw, var(--cc-form-max-width)) - 2 * var(--cc-form-gutter))
   );
 
   padding: 0;
-  padding-inline: 0.9375rem;
+  padding-inline: var(--cc-form-gutter);
 
   & :is(.form-wrapper, .form.block, .form) {
     width: 100%;
-    max-width: 53.125rem;
+    max-width: var(--cc-form-max-width);
     margin-inline: auto;
   }
 
+  /* Page + panel titles — form legend tokens (18px live), global line-height */
   & :is(
     h3,
     .form form .field-title h2,
     .form form .field-title .page-header,
-    .form form .field-title .label-header
+    .form form .field-title .label-header,
+    .field-title,
+    .cc-panel-item-form-title
   ) {
-    margin: 0;
+    margin: 0 0 var(--bbl-space-150);
     padding: 0;
     border: 0;
     text-align: left;
     letter-spacing: normal;
-    color: var(--bbl-color-grey-85);
+    color: var(--form-fieldset-legend-color);
     font-family: var(--bbl-font-family-medium);
-    font-size: var(--bbl-heading-h2-size);
-    line-height: var(--bbl-heading-h2-line-height);
-    font-weight: var(--bbl-font-weight-regular);
+    font-size: var(--form-fieldset-legend-font-size);
+    font-weight: var(--form-fieldset-legend-font-weight);
+    line-height: var(--bbl-heading-h4-line-height);
 
     &::before {
       background: none;
     }
   }
 
-  & .field-title,
-  & .cc-panel-item-form-title {
-    margin: 0 0 0.625rem;
-    text-align: left;
-    color: var(--bbl-color-grey-85);
-    font-family: var(--bbl-font-family-medium);
-    font-size: 1.3125rem;
-    line-height: 1.4219rem;
-    font-weight: var(--bbl-font-weight-regular);
-  }
-
-  /* Form inputs — match live CC application status tracking */
-  & :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
+  /* Inputs */
+  & :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .date-wrapper).field-wrapper :is(input, textarea) {
     width: 100%;
     height: 3.125rem;
     margin: 0;
     padding: 0 var(--bbl-space-250);
+    font-size: var(--form-input-font-size);
     color: var(--bbl-color-grey-100);
-    border: 1px solid var(--bbl-color-grey-150);
+    border: var(--form-input-border-size) solid var(--bbl-color-grey-150);
     border-radius: 0.4375rem;
-    background-color: var(--bbl-color-white);
-    font-family: var(--bbl-font-family-primary);
-    font-size: var(--bbl-font-size-b1-desktop);
-    line-height: 2.75rem;
+    background-color: var(--form-input-background-color);
+    line-height: var(--bbl-line-height-b1-desktop);
   }
 
-  & .form select,
-  & .drop-down-wrapper.field-wrapper select {
+  & :is(.form select, .drop-down-wrapper.field-wrapper select) {
     width: 100%;
     height: 3.125rem;
     margin: 0;
     padding: 0 var(--bbl-space-300) 0 var(--bbl-space-250);
+    font-size: var(--form-input-font-size);
     color: var(--bbl-color-black);
-    border: 1px solid var(--bbl-color-grey-150);
+    border: var(--form-input-border-size) solid var(--bbl-color-grey-150);
     border-radius: 0.4375rem;
-    background: var(--bbl-color-white) url('../../../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
+    background: var(--form-input-background-color) url('../../../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
     font-family: var(--bbl-font-family-medium);
-    font-size: var(--bbl-font-size-b1-desktop);
-    line-height: 2.75rem;
+    font-weight: var(--bbl-body-b1-medium-weight);
+    line-height: var(--bbl-line-height-b1-desktop);
     cursor: pointer;
     appearance: none;
   }
@@ -89,15 +108,13 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     height: auto;
     min-height: 6.25rem;
     padding: var(--bbl-space-100) var(--bbl-space-250);
-    line-height: 1.5;
+    line-height: var(--bbl-line-height-h2-mobile);
   }
 
   & .form :is(input, textarea)::placeholder {
     opacity: 1;
     color: var(--bbl-color-grey-150);
-    font-family: var(--bbl-font-family-primary);
-    font-weight: var(--bbl-font-weight-regular);
-    line-height: 2.75rem;
+    line-height: var(--bbl-line-height-b1-desktop);
   }
 
   & .form :is(input, select, textarea):is(:hover, :focus) {
@@ -108,7 +125,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
   & .form form :is(input, select):invalid {
     box-shadow: none;
-    height: 3.125rem;
   }
 
   & .form-wrapper .form :is(
@@ -129,697 +145,701 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     border-color: var(--bbl-color-orange-130);
   }
 
-  & .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper) {
+  & .form form :is(p, .repeat-wrapper, .field-wrapper) {
+    margin: 0;
+    gap: var(--form-field-gap) var(--form-field-vert-gap);
+  }
+
+  & .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper, .date-wrapper) {
     position: relative;
     clear: both;
     margin-bottom: 0.625rem;
   }
 
-  & .form form :is(p, .repeat-wrapper, .field-wrapper) {
-    margin: 0;
+  /* Mobile: stack half-width fields in a single column */
+  & .form form .field-wrapper.col-6 {
+    grid-column: span 12;
+    width: 100%;
   }
 
-  & .form {
-    & :is(
-      :is(.field-submitbuttonpanel, .field-submitbuttonpanel2, .field-button-panel) .button,
-      :is(.field-submitcta, .field-cancel, [class~='field-Cancel'], form .submit-wrapper) .button,
-      :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary),
-      .cc-panel-item-panel-action-primary :is(.button, button)
-    ) {
-      min-width: 9.6875rem;
-      width: auto;
-      height: 2.75rem;
-      margin: 0;
-      border-radius: 0.4375rem;
-      font-size: var(--form-font-size-xs);
-      font-weight: var(--bbl-font-weight-regular);
-    }
+  /* Field labels (titles use form-fieldset-legend tokens above) */
+  & .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label):not(:is(.field-title *, .cc-panel-item-form-title *)),
+  & .form form :is(.drop-down-wrapper, .field-wrapper:has(select)) > .field-label {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    color: var(--form-label-color);
+    font-size: var(--bbl-font-size-h4-mobile);
+    font-weight: var(--form-label-font-weight);
+    line-height: var(--bbl-line-height-h4-mobile);
+  }
 
-    & :is(
-      :is(.field-submitbuttonpanel, .field-submitbuttonpanel2, .field-button-panel) .button,
-      :is(.field-submitcta, .field-cancel, [class~='field-Cancel'], form .submit-wrapper) .button
-    ) {
-      line-height: 2.75rem;
-    }
+  & .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
+    width: auto;
+  }
 
-    & :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      max-width: none;
-    }
+  & .form form label:is([class*=' icon-'], [class^='icon-']) {
+    display: block;
+  }
 
-    & :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary) {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 var(--bbl-space-200);
-      color: var(--bbl-color-active-blue);
-      border: 1px solid var(--bbl-color-active-blue);
-      background: var(--bbl-color-white);
-      box-shadow: none;
-      cursor: pointer;
-      appearance: none;
-      line-height: normal;
-    }
+  & .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
+    [class*='field-firstname'],
+    [class*='field-lastname'],
+    [class*='field-name'],
+    [class*='field-phonenumber'],
+    [class*='field-mobilenumber'],
+    [class*='field-companyname'],
+    [class*='field-company'],
+    [class*='field-email'],
+    [class*='field-juristicpersonregistrationnumber']
+  )::before {
+    content: '';
+  }
 
-    & .cc-panel-item-panel-action-primary :is(.button, button) {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 var(--bbl-space-200);
-      line-height: normal;
-    }
+  /* Buttons */
+  & .form :is(
+    :is(.field-submitbuttonpanel, .field-submitbuttonpanel2, .field-button-panel) .button,
+    :is(.field-submitcta, .field-cancel, [class~='field-Cancel'], form .submit-wrapper) .button,
+    :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary),
+    .cc-panel-item-panel-action-primary :is(.button, button)
+  ) {
+    min-width: 9.6875rem;
+    width: auto;
+    height: 2.75rem;
+    margin: 0;
+    border-radius: 0.4375rem;
+    font-size: var(--bbl-font-size-h4-mobile);
+    font-weight: var(--form-title-font-weight);
+    line-height: var(--bbl-line-height-h4-mobile);
+  }
 
-    & :is(
-      :is(.button.primary, .button.tertiary, .field-submit .button):not(:disabled),
-      .cc-panel-item-panel-action-primary :is(.button, button):not(:disabled)
-    ) {
-      color: var(--bbl-color-white);
-      border: 1px solid var(--bbl-color-active-blue);
-      background: var(--bbl-color-active-blue);
-    }
+  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: none;
+  }
 
-    /* Back / secondary panel actions — override .button.primary fill rule above */
-    & :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary):not(:disabled) {
-      color: var(--bbl-color-active-blue);
-      border: 1px solid var(--bbl-color-active-blue);
-      background: var(--bbl-color-white);
-    }
+  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) :is(.button, button, .button.primary) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--bbl-space-200);
+    box-shadow: none;
+    cursor: pointer;
+    appearance: none;
+  }
 
-    & :is(
-      :is(.button.primary, .button.tertiary, .field-submit .button):disabled,
-      :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary):disabled,
-      .cc-panel-item-panel-action-primary :is(.button, button):disabled
-    ) {
-      color: var(--bbl-color-grey-60);
-      border: 1px solid var(--bbl-color-gray-300);
-      background: var(--bbl-color-gray-300);
-      cursor: not-allowed;
-      pointer-events: none;
-    }
+  & .form :is(
+    :is(.button.primary, .button.tertiary, .field-submit .button):not(:disabled),
+    .cc-panel-item-panel-action-primary :is(.button, button):not(:disabled)
+  ) {
+    color: var(--bbl-color-white);
+    border: 1px solid var(--bbl-color-active-blue);
+    background: var(--bbl-color-active-blue);
+  }
 
-    & :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary):not(:disabled):hover {
+  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary):not(:disabled) {
+    color: var(--bbl-color-active-blue);
+    border: 1px solid var(--bbl-color-active-blue);
+    background: var(--bbl-color-white);
+  }
+
+  & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary):not(:disabled):hover {
+    color: var(--bbl-color-white);
+    border-color: var(--bbl-color-active-blue);
+    background: var(--bbl-color-active-blue);
+  }
+
+  & .form :is(
+    :is(.button.primary, .button.tertiary, .field-submit .button):disabled,
+    :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary):disabled,
+    .cc-panel-item-panel-action-primary :is(.button, button):disabled
+  ) {
+    color: var(--bbl-color-grey-60);
+    border: 1px solid var(--bbl-color-gray-300);
+    background: var(--bbl-color-gray-300);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  & .form .button.secondary {
+    color: var(--bbl-color-active-blue);
+    border: 1px solid var(--bbl-color-active-blue);
+    background: var(--bbl-color-white);
+
+    &:hover {
       color: var(--bbl-color-white);
       border-color: var(--bbl-color-active-blue);
       background: var(--bbl-color-active-blue);
     }
+  }
 
-    & .button.secondary {
-      color: var(--bbl-color-active-blue);
-      border: 1px solid var(--bbl-color-active-blue);
-      background: var(--bbl-color-white);
+  & .form fieldset.panel-wrapper.field-wrapper:not(.cc-panel-item-form-consent) .tnc-text-decoration {
+    max-height: 9.375rem;
+    border: none;
+  }
 
-      &:hover {
-        color: var(--bbl-color-white);
-        border-color: var(--bbl-color-active-blue);
-        background: var(--bbl-color-active-blue);
+  @media (width < 64rem) {
+    & .form form :is(.field-short-privacy-notice, .tnc-text-decoration) :is(p, p p) {
+      font-size: var(--bbl-font-size-h4-mobile);
+      line-height: var(--bbl-line-height-h2-mobile);
+    }
+  }
+
+  & .form form {
+    display: block;
+    gap: 0;
+    width: 100%;
+    max-width: var(--cc-form-max-width);
+    margin-inline: auto;
+    font-family: var(--bbl-font-family-primary);
+    font-size: var(--form-font-size-xs);
+    font-weight: var(--form-label-font-weight);
+    line-height: var(--bbl-text-default-line-height);
+    color: var(--bbl-color-grey-85);
+
+    & > .field-wrapper,
+    & .field-wrapper,
+    & .field-wrapper.col-6,
+    & .field-wrapper.col-12 {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      clear: both;
+      grid-column: auto;
+    }
+
+    & .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image),
+    & .cc-panel-item-form-cover .image-wrapper,
+    & .cc-panel-item-timeline-bg .image-wrapper {
+      width: 100%;
+      vertical-align: middle;
+    }
+
+    & .cc-panel-item-form-cover img,
+    & .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image) img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 440 / 275;
+      object-fit: cover;
+      vertical-align: middle;
+    }
+
+    & .cc-panel-item-timeline-bg .image-wrapper img {
+      display: block;
+      width: 100%;
+      height: auto;
+      vertical-align: middle;
+    }
+
+    & .radio-group-wrapper.horizontal {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: flex-start;
+      gap: var(--bbl-line-height-h1-mobile);
+      margin: 0 0 var(--bbl-space-150);
+
+      & > legend.field-label {
+        display: block;
+        flex: 0 0 100%;
+        width: 100%;
+        text-align: left;
+        margin-bottom: var(--bbl-space-150);
+      }
+
+      & .radio-wrapper {
+        flex-wrap: nowrap;
+        min-width: 8.75rem;
+      }
+
+      & input[type='radio'] {
+        width: var(--bbl-space-250);
+        height: var(--bbl-space-250);
       }
     }
 
-    & fieldset.panel-wrapper.field-wrapper:not(.cc-panel-item-form-consent) .tnc-text-decoration {
-      max-height: 9.375rem;
-      border: none;
+    & .radio-group-wrapper.radio-tabs {
+      max-width: var(--cc-message-form-max-width);
     }
 
-    & form {
-      display: block;
-      gap: 0;
-      width: 100%;
-      max-width: 53.125rem;
+    & fieldset.panel-wrapper.field-wrapper {
       margin-inline: auto;
 
-      & > .field-wrapper,
-      & .field-wrapper,
-      & .field-wrapper.col-6,
-      & .field-wrapper.col-12 {
-        display: block;
+      &.cc-app-main-form {
         width: 100%;
-        max-width: 100%;
-        clear: both;
-        grid-column: auto;
+        max-width: var(--cc-form-max-width);
       }
 
-      & :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label),
-      & :is(.drop-down-wrapper, .field-wrapper:has(select)) > .field-label {
-        display: block;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        text-align: left;
-        font-size: 0.9375rem;
-        font-weight: 100;
-        line-height: 1.5625rem;
-        color: var(--bbl-color-grey-85);
-      }
-
-      & :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
-        width: auto;
-      }
-
-      & label:is([class*=' icon-'], [class^='icon-']) {
-        display: block;
-      }
-
-      & .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is(
-        [class*='field-firstname'],
-        [class*='field-lastname'],
-        [class*='field-name'],
-        [class*='field-phonenumber'],
-        [class*='field-mobilenumber'],
-        [class*='field-companyname'],
-        [class*='field-company'],
-        [class*='field-email'],
-        [class*='field-juristicpersonregistrationnumber']
-      )::before {
-        content: '';
-      }
-
-      & .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image),
-      & .cc-panel-item-form-cover .image-wrapper,
-      & .cc-panel-item-timeline-bg .image-wrapper {
-        width: 100%;
-        vertical-align: middle;
-      }
-
-      & .cc-panel-item-form-cover img,
-      & .cc-panel-item-form-cover:is(.image-wrapper, .field-cover-image) img {
-        display: block;
-        width: 100%;
-        height: auto;
-        aspect-ratio: 440 / 275;
-        object-fit: cover;
-        vertical-align: middle;
-      }
-
-      & .cc-panel-item-timeline-bg .image-wrapper img {
-        display: block;
-        width: 100%;
-        height: auto;
-        vertical-align: middle;
-      }
-
-      & .radio-group-wrapper.horizontal {
+      &.field-submitbuttonpanel,
+      &.field-submitbuttonpanel2,
+      &.field-button-panel {
         display: flex;
         flex-flow: row wrap;
-        justify-content: flex-start;
-        gap: 1.875rem;
-        margin: 0 0 0.625rem;
+        justify-content: center;
+        align-items: center;
+        gap: var(--bbl-space-200);
+        width: 100%;
+        margin-top: var(--bbl-space-200);
 
-        & > legend.field-label {
-          display: block;
-          flex: 0 0 100%;
-          width: 100%;
-          text-align: left;
-          margin-bottom: 0.625rem;
+        & > .cc-panel-item {
+          display: flex;
+          justify-content: center;
+          width: auto;
+          clear: none;
+        }
+      }
+
+      &.cc-app-main-form > .cc-panel-item-form-consent {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        width: 100%;
+        max-width: 100%;
+        margin-top: var(--bbl-space-200);
+        padding: 0 0 0 2.1875rem;
+
+        & > legend {
+          display: none;
         }
 
-        & .radio-wrapper {
-          flex-wrap: nowrap;
-          min-width: 8.75rem;
+        & .checkbox-wrapper {
+          display: contents;
         }
 
-        & input[type='radio'] {
+        & input[name='approvalcheckbox'] {
+          position: absolute;
+          top: var(--bbl-space-050);
+          left: 0;
+          z-index: 1;
           width: var(--bbl-space-250);
           height: var(--bbl-space-250);
-        }
-      }
-
-      & .radio-group-wrapper.radio-tabs {
-        max-width: 46.25rem;
-      }
-
-      & fieldset.panel-wrapper.field-wrapper {
-        margin-inline: auto;
-
-        &.cc-app-main-form {
-          width: 100%;
-          max-width: 53.125rem;
+          margin: 3px var(--bbl-space-100) 3px var(--bbl-space-050);
+          flex: none;
+          cursor: pointer;
+          outline: none;
         }
 
-        &.field-submitbuttonpanel,
-        &.field-submitbuttonpanel2,
-        &.field-button-panel {
-          display: flex;
-          flex-flow: row wrap;
-          justify-content: center;
-          align-items: center;
-          gap: var(--bbl-space-200);
-          width: 100%;
-          margin-top: var(--bbl-space-200);
+        & input[name='approvalcheckbox']:hover {
+          border: 1px solid var(--bbl-color-grey-125);
+        }
 
-          & > .cc-panel-item {
-            display: flex;
-            justify-content: center;
-            width: auto;
-            clear: none;
+        & input[name='approvalcheckbox']:invalid {
+          box-shadow: none;
+          outline: none;
+        }
+
+        & .tnc-text-decoration {
+          grid-row: 1;
+          grid-column: 1 / -1;
+          width: 100%;
+          min-width: 0;
+          max-width: 100%;
+          max-height: 10.9375rem;
+          margin: 0 0 1.25rem;
+          padding: 0 var(--bbl-space-100) 0 0;
+          border-radius: var(--bbl-radius-none);
+          color: var(--bbl-color-grey-85);
+          line-height: var(--bbl-line-height-h2-mobile);
+          overflow: auto;
+          scrollbar-color: var(--bbl-color-active-blue) var(--bbl-color-grey-10);
+          scrollbar-width: thin;
+
+          & :is(p, p p) {
+            margin: 0;
+            padding: 0;
+            line-height: var(--bbl-line-height-h2-mobile);
+          }
+
+          @media (width < 64rem) {
+            & :is(p, p p) {
+              font-size: var(--bbl-font-size-h4-mobile);
+            }
+          }
+
+          &::-webkit-scrollbar {
+            width: var(--bbl-space-100);
+          }
+
+          &::-webkit-scrollbar-track {
+            background: var(--bbl-color-grey-10);
+          }
+
+          &::-webkit-scrollbar-thumb {
+            background: var(--bbl-color-active-blue);
+            border-radius: var(--bbl-rounded-050);
           }
         }
 
-        &.cc-app-main-form > .cc-panel-item-form-consent {
-          position: relative;
-          display: grid;
-          grid-template-columns: minmax(0, 1fr);
-          grid-template-rows: auto auto;
+        &:is(
+          :has(.checkbox-wrapper.field-invalid),
+          :has(input[name='approvalcheckbox']:user-invalid),
+          .field-invalid
+        ) .tnc-text-decoration {
+          border-color: var(--bbl-color-orange-130);
+        }
+
+        & :is(> .field-description, .checkbox-wrapper .field-description) {
+          grid-row: 2;
+          grid-column: 1 / -1;
+          position: static;
+          display: block;
           width: 100%;
           max-width: 100%;
-          margin-top: 0.9375rem;
-          padding: 0 0 0 2.1875rem;
+          margin: 0;
+          padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
+          font-size: var(--bbl-body-b2-size);
+          font-weight: var(--bbl-body-b2-weight);
+          line-height: var(--bbl-body-b2-line-height);
+          clear: both;
+          order: unset;
+        }
+
+        & :is(.field-wrapper.col-1, .field-wrapper.col-11, .field-wrapper.col-12) {
+          grid-column: 1 / -1;
+          width: 100%;
+          max-width: 100%;
+        }
+      }
+
+      &.cc-app-message-form {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        max-width: 100%;
+        margin-inline: auto;
+
+        & > legend.field-label {
+          display: none;
+        }
+
+        & > :not(.cc-panel-item-form-input-half, .cc-panel-item-form-branch, .cc-panel-item-form-actions) {
+          width: 100%;
+        }
+
+        & > .cc-panel-item-form-title {
+          font-family: var(--bbl-font-family-medium);
+          font-size: var(--form-fieldset-legend-font-size);
+          font-weight: var(--form-fieldset-legend-font-weight);
+          line-height: var(--bbl-line-height-h2-mobile);
+          margin: 0 0 var(--bbl-space-200);
+          text-align: left;
+          color: var(--form-fieldset-legend-color);
+        }
+
+        & > .cc-panel-item-form-input-half {
+          flex: 0 0 100%;
+          width: 100%;
+          max-width: 100%;
+          margin: 0 0 0.625rem;
+          clear: both;
+        }
+
+        & > .cc-panel-item-form-input-half:first-of-type {
+          margin-right: 0;
+        }
+
+        & > .cc-panel-item-form-radio.radio-group-wrapper.horizontal {
+          flex-flow: column nowrap;
+          align-items: flex-start;
+          gap: var(--bbl-space-150);
+          margin-bottom: var(--bbl-space-150);
+
+          & > legend.field-label {
+            flex: 0 0 auto;
+            width: 100%;
+            margin-bottom: 0;
+          }
+
+          & .radio-wrapper {
+            width: 100%;
+            min-width: 0;
+            flex: 0 0 auto;
+          }
+        }
+
+        & fieldset.field-submitbuttonpanel2 {
+          width: 100%;
+          margin-top: var(--bbl-space-200);
+          flex-direction: row-reverse;
+          justify-content: center;
+          gap: var(--bbl-space-200);
+          border: none;
+          padding: 0;
 
           & > legend {
             display: none;
           }
+        }
+      }
 
-          & .checkbox-wrapper {
-            display: contents;
-          }
+      /* Status timeline panels */
+      &:is(
+        .cc-app-approved,
+        .cc-app-denied,
+        .cc-app-cancel,
+        .cc-app-pending,
+        .cc-app-incomplete,
+        .cc-app-callback,
+        .cc-app-notfound
+      ) {
+        position: relative;
+        width: 100%;
+        max-width: var(--cc-timeline-panel-width);
+        margin-inline: auto;
+        overflow: visible;
+        grid-column: 1 / -1;
+        min-height: var(--timeline-height, 17.9375rem);
 
-          & input[name='approvalcheckbox'] {
-            position: absolute;
-            top: var(--bbl-space-100);
-            left: 0;
-            z-index: 1;
-            width: var(--bbl-space-250);
-            height: var(--bbl-space-250);
-            margin: 3px var(--bbl-space-050) var(--bbl-font-size-b2) var(--bbl-space-050);
-            flex: none;
-          }
+        & > .cc-panel-item-timeline-bg {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: var(--timeline-height);
+          z-index: 0;
+          margin: 0;
 
-          & input[name='approvalcheckbox']:hover {
-            border: 1px solid var(--bbl-color-grey-125);
-          }
-
-          & input[name='approvalcheckbox']:invalid {
-            box-shadow: none;
-            outline: none;
-          }
-
-          & .tnc-text-decoration {
-            grid-row: 1;
-            grid-column: 1 / -1;
-            width: 100%;
-            min-width: 0;
-            max-width: 100%;
-            border-radius: var(--bbl-radius-none);
-            max-height: 10.9375rem;
-            margin: 3px var(--bbl-space-100) 0.9375rem 0;
-            padding: 0 var(--bbl-space-100) 0 0;
-            color: var(--bbl-color-grey-153);
-            font-size: var(--bbl-font-size-b1);
-            overflow: auto;
-            scrollbar-color: var(--bbl-color-active-blue) var(--bbl-color-grey-10);
-            scrollbar-width: thin;
-          }
-
-          & .tnc-text-decoration::-webkit-scrollbar {
-            width: var(--bbl-space-100);
-          }
-
-          & .tnc-text-decoration::-webkit-scrollbar-track {
-            background: var(--bbl-color-grey-10);
-          }
-
-          & .tnc-text-decoration::-webkit-scrollbar-thumb {
-            background: var(--bbl-color-active-blue);
-            border-radius: var(--bbl-rounded-050);
-          }
-
-          &:is(
-            :has(.checkbox-wrapper.field-invalid),
-            :has(input[name='approvalcheckbox']:user-invalid),
-            .field-invalid
-          ) .tnc-text-decoration {
-            border-color: var(--bbl-color-orange-130);
-          }
-
-          & :is(> .field-description, .checkbox-wrapper .field-description) {
-            grid-row: 2;
-            grid-column: 1 / -1;
-            position: static;
+          & img {
             display: block;
             width: 100%;
-            max-width: 100%;
-            margin: 0;
-            padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
-            font-size: 0.9375rem;
-            clear: both;
-            order: unset;
-          }
-
-          & :is(.field-wrapper.col-1, .field-wrapper.col-11, .field-wrapper.col-12) {
-            grid-column: 1 / -1;
-            width: 100%;
-            max-width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: top left;
           }
         }
 
-        &.cc-app-message-form {
-          display: flex;
-          flex-flow: row wrap;
-          justify-content: flex-start;
-          align-items: flex-start;
-          width: 100%;
-          max-width: 100%;
-          margin-inline: auto;
-
-          & > legend.field-label {
-            display: none;
-          }
-
-          & > :not(.cc-panel-item-form-input-half, .cc-panel-item-form-branch, .cc-panel-item-form-actions) {
-            width: 100%;
-          }
-
-          & > .cc-panel-item-form-title {
-            font-size: 0.9375rem;
-            font-weight: 700;
-            line-height: 1.5625rem;
-            margin: 0 0 0.9375rem;
-            text-align: left;
-          }
-
-          & > .cc-panel-item-form-input-half {
-            flex: 0 0 calc(50% - 0.3125rem);
-            width: calc(50% - 0.3125rem);
-            max-width: calc(50% - 0.625rem);
-            margin: 0 0 0.625rem;
-            clear: none;
-          }
-
-          & > .cc-panel-item-form-input-half:first-of-type {
-            margin-right: 0.625rem;
-          }
-
-          & > .cc-panel-item-form-radio.radio-group-wrapper.horizontal {
-            flex-flow: column nowrap;
-            align-items: flex-start;
-            gap: 0.625rem;
-            margin-bottom: 0.625rem;
-
-            & > legend.field-label {
-              flex: 0 0 auto;
-              width: 100%;
-              margin-bottom: 0;
-              font-size: 0.9375rem;
-              font-weight: 100;
-              line-height: 1.5625rem;
-              text-align: left;
-            }
-
-            & .radio-wrapper {
-              width: 100%;
-              min-width: 0;
-              flex: 0 0 auto;
-            }
-          }
-
-          & fieldset.field-submitbuttonpanel2 {
-            width: 100%;
-            margin-top: 0.9375rem;
-            flex-direction: row-reverse;
-            justify-content: center;
-            gap: var(--bbl-space-200);
-            border: none;
-            padding: 0;
-
-            & > legend {
-              display: none;
-            }
-          }
+        & > :is(
+          .cc-panel-item-timeline-step,
+          .cc-panel-item-timeline-step-1,
+          .cc-panel-item-timeline-step-2,
+          .cc-panel-item-timeline-step-3,
+          .cc-panel-item-timeline-status,
+          .cc-panel-item-timeline-muted
+        ) p {
+          font-size: var(--form-font-size-xs);
+          font-weight: var(--bbl-body-b1-medium-weight);
         }
 
-        /* Status timeline panels — cc-app-* panel classes + cc-panel-item roles (creditcard-tract-application.js) */
-        &:is(
-          .cc-app-approved,
-          .cc-app-denied,
-          .cc-app-cancel,
-          .cc-app-pending,
-          .cc-app-incomplete,
-          .cc-app-callback,
-          .cc-app-notfound
+        & > :is(
+          .cc-panel-item-timeline-step,
+          .cc-panel-item-timeline-step-1,
+          .cc-panel-item-timeline-step-2,
+          .cc-panel-item-timeline-step-3
+        ) p {
+          color: var(--bbl-color-blue-105);
+        }
+
+        & > .cc-panel-item-timeline-status p {
+          color: var(--bbl-color-blue-90);
+        }
+
+        & > .cc-panel-item-timeline-message p {
+          color: var(--bbl-color-grey-85);
+          font-weight: var(--bbl-text-default-weight);
+        }
+
+        & > .cc-panel-item-timeline-caption p {
+          font-size: var(--bbl-text-small-size);
+          line-height: var(--bbl-text-small-line-height);
+          color: var(--bbl-color-grey-28);
+          font-weight: var(--bbl-text-small-weight);
+        }
+
+        & > .cc-panel-item-timeline-muted p {
+          color: var(--bbl-color-white-alpha-158-70);
+        }
+
+        & > .cc-panel-item:not(
+          .cc-panel-item-timeline-bg,
+          .cc-panel-item-panel-action,
+          .cc-panel-item-callback-prompt,
+          .cc-panel-item-callback-input,
+          .cc-panel-item-callback-actions
         ) {
+          position: absolute;
+          display: block;
+          z-index: 1;
+          margin: 0;
+          width: auto;
+          max-width: 80%;
+
+          & :where(p) {
+            margin: 0;
+            line-height: var(--bbl-body-b1-line-height);
+          }
+        }
+
+        & > .cc-panel-item-panel-action {
           position: relative;
+          display: flex;
+          justify-content: center;
           width: 100%;
-          max-width: 28.75rem;
-          margin-inline: auto;
-          overflow: visible;
-          grid-column: 1 / -1;
-          min-height: var(--timeline-height, 17.9375rem);
+          margin-top: calc(var(--timeline-height) + var(--bbl-space-250));
+          z-index: 2;
+          max-width: none;
+        }
+      }
 
-          & > .cc-panel-item-timeline-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: var(--timeline-height);
-            z-index: 0;
-            margin: 0;
+      &.cc-app-approved {
+        --timeline-height: min(35.9375rem, calc(var(--cc-timeline-form-width) * 585 / 468));
 
-            & img {
-              display: block;
-              width: 100%;
-              height: 100%;
-              object-fit: contain;
-              object-position: top left;
-            }
-          }
-
-          & > :is(
-            .cc-panel-item-timeline-step,
-            .cc-panel-item-timeline-step-1,
-            .cc-panel-item-timeline-step-2,
-            .cc-panel-item-timeline-step-3,
-            .cc-panel-item-timeline-status
-          ) p {
-            font-size: var(--form-font-size-xs);
-            font-weight: var(--bbl-font-weight-medium);
-          }
-
-          & > :is(
-            .cc-panel-item-timeline-step,
-            .cc-panel-item-timeline-step-1,
-            .cc-panel-item-timeline-step-2,
-            .cc-panel-item-timeline-step-3
-          ) p {
-            color: var(--bbl-color-blue-105);
-          }
-
-          & > .cc-panel-item-timeline-status p {
-            color: var(--bbl-color-blue-90);
-          }
-
-          & > .cc-panel-item-timeline-message p {
-            color: var(--bbl-color-grey-85);
-            font-size: var(--bbl-body-b1-size);
-            font-weight: var(--bbl-font-weight-regular);
-          }
-
-          & > .cc-panel-item-timeline-caption p {
-            font-size: var(--bbl-text-small-size);
-            line-height: var(--bbl-text-small-line-height);
-            color: var(--bbl-color-grey-28);
-            font-weight: var(--bbl-font-weight-regular);
-          }
-
-          & > .cc-panel-item-timeline-muted p {
-            color: var(--bbl-color-white-alpha-158-70);
-            font-size: var(--form-font-size-xs);
-            font-weight: var(--bbl-font-weight-medium);
-          }
-
-          & > .cc-panel-item:not(
-            .cc-panel-item-timeline-bg,
-            .cc-panel-item-panel-action,
-            .cc-panel-item-callback-prompt,
-            .cc-panel-item-callback-input,
-            .cc-panel-item-callback-actions
-          ) {
-            position: absolute;
-            display: block;
-            z-index: 1;
-            margin: 0;
-            width: auto;
-            max-width: 80%;
-
-            & :where(p) {
-              margin: 0;
-              line-height: 1.3;
-            }
-          }
-
-          & > .cc-panel-item-panel-action {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin-top: calc(var(--timeline-height) + var(--bbl-space-250));
-            z-index: 2;
-            max-width: none;
-          }
+        & > .cc-panel-item-timeline-step-1 {
+          top: calc(var(--timeline-height) * 0.015);
+          left: 10%;
         }
 
-        &.cc-app-approved {
-          --timeline-height: min(35.9375rem, calc(var(--cc-timeline-form-width) * 585 / 468));
-
-          & > .cc-panel-item-timeline-step-1 {
-            top: calc(var(--timeline-height) * 0.015);
-            left: 10%;
-          }
-
-          & > .cc-panel-item-timeline-step-2 {
-            top: calc(var(--timeline-height) * 0.355);
-            left: 10%;
-            width: min(13.4375rem, 68%);
-          }
-
-          & > .cc-panel-item-timeline-step-3 {
-            top: calc(var(--timeline-height) * 0.56);
-            left: 15%;
-          }
-
-          & > .cc-panel-item-timeline-message {
-            top: calc(var(--timeline-height) * 0.61);
-            left: 14%;
-            width: 82%;
-
-            & :where(p) {
-              font-size: var(--form-font-size-xs);
-            }
-          }
-
-          & > .cc-panel-item-timeline-date {
-            top: calc(var(--timeline-height) * 0.78);
-            left: 48%;
-            width: min(12.5rem, 50%);
-            max-width: none;
-          }
-
-          & > .cc-panel-item-timeline-date :is(.field-label, input) {
-            font-size: var(--bbl-font-size-b2-desktop);
-            font-weight: var(--bbl-font-weight-regular);
-            line-height: var(--bbl-line-height-b2-desktop);
-            color: var(--bbl-color-grey-28);
-          }
-
-          & > .cc-panel-item-timeline-date .field-label {
-            display: block;
-            margin: 0 0 var(--bbl-space-050);
-            padding: 0;
-          }
-
-          & > .cc-panel-item-timeline-date input {
-            display: block;
-            width: 100%;
-            height: auto;
-            margin: 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-          }
-
-          & > .cc-panel-item-timeline-caption {
-            top: calc(var(--timeline-height) * 0.87);
-            left: 48%;
-            width: min(12.5rem, 50%);
-            max-width: none;
-          }
+        & > .cc-panel-item-timeline-step-2 {
+          top: calc(var(--timeline-height) * 0.355);
+          left: 10%;
+          width: min(13.4375rem, 68%);
         }
 
-        &:is(.cc-app-denied, .cc-app-cancel, .cc-app-pending, .cc-app-incomplete, .cc-app-callback) {
-          --timeline-height: min(27.0625rem, calc(var(--cc-timeline-form-width) * 453 / 481));
-
-          & > .cc-panel-item-timeline-step-1 {
-            top: calc(var(--timeline-height) * 0.01);
-            left: 10%;
-          }
-
-          & > .cc-panel-item-timeline-status {
-            top: calc(var(--timeline-height) * 0.23);
-            left: 16%;
-          }
-
-          & > .cc-panel-item-timeline-message {
-            top: calc(var(--timeline-height) * 0.29);
-            left: 14%;
-            width: 78%;
-          }
-
-          & > .cc-panel-item-timeline-caption {
-            top: calc(var(--timeline-height) * 0.63);
-            left: 44%;
-            width: min(13.75rem, 58%);
-            max-width: none;
-          }
-
-          & > .cc-panel-item-timeline-muted {
-            top: calc(var(--timeline-height) * 0.92);
-            left: 10%;
-            width: min(13.4375rem, 58%);
-          }
+        & > .cc-panel-item-timeline-step-3 {
+          top: calc(var(--timeline-height) * 0.56);
+          left: 15%;
         }
 
-        &.cc-app-callback {
-          & > :is(.cc-panel-item-callback-prompt, .cc-panel-item-callback-input, .cc-panel-item-callback-actions) {
-            position: relative;
-            display: block;
-            width: 100%;
-            max-width: none;
-            z-index: 2;
-          }
-
-          & > .cc-panel-item-callback-prompt {
-            margin-top: calc(var(--timeline-height) + var(--bbl-space-250));
-          }
-
-          & > .cc-panel-item-callback-actions {
-            margin-top: 0.9375rem;
-          }
+        & > .cc-panel-item-timeline-message {
+          top: calc(var(--timeline-height) * 0.61);
+          left: 14%;
+          width: 82%;
         }
 
-        &.cc-app-notfound {
-          --timeline-height: min(17.9375rem, calc(var(--cc-timeline-form-width) * 272 / 436));
-
-          min-height: var(--timeline-height);
-
-          & > .cc-panel-item-timeline-bg {
-            height: var(--timeline-height);
-          }
-
-          & > :is(.cc-panel-item-timeline-status, .cc-panel-item-timeline-message) :where(p) {
-            font-size: var(--form-font-size-xs);
-          }
-
-          & > .cc-panel-item-timeline-status {
-            top: calc(var(--timeline-height) * 0.07);
-            left: 8%;
-          }
-
-          & > .cc-panel-item-timeline-message {
-            top: calc(var(--timeline-height) * 0.16);
-            left: 7%;
-            width: 86%;
-          }
-
-          & > .cc-panel-item-timeline-caption {
-            top: calc(var(--timeline-height) * 0.85);
-            left: 38%;
-            width: min(13.75rem, 58%);
-            max-width: none;
-          }
+        & > .cc-panel-item-timeline-date {
+          top: calc(var(--timeline-height) * 0.78);
+          left: 48%;
+          width: min(12.5rem, 50%);
+          max-width: none;
         }
 
-        &:is(
-          .cc-app-approved,
-          .cc-app-denied,
-          .cc-app-cancel,
-          .cc-app-pending,
-          .cc-app-incomplete,
-          .cc-app-callback,
-          .cc-app-notfound
-        ) fieldset.panel-wrapper.field-wrapper {
+        & > .cc-panel-item-timeline-date :is(.field-label, input) {
+          font-size: var(--bbl-body-b2-size);
+          font-weight: var(--bbl-body-b2-weight);
+          line-height: var(--bbl-body-b2-line-height);
+          color: var(--bbl-color-grey-28);
+        }
+
+        & > .cc-panel-item-timeline-date .field-label {
+          display: block;
+          margin: 0 0 var(--bbl-space-050);
+          padding: 0;
+        }
+
+        & > .cc-panel-item-timeline-date input {
+          display: block;
           width: 100%;
-          max-width: 100%;
+          height: auto;
+          margin: 0;
+          padding: 0;
+          border: none;
+          background: transparent;
         }
+
+        & > .cc-panel-item-timeline-caption {
+          top: calc(var(--timeline-height) * 0.87);
+          left: 48%;
+          width: min(12.5rem, 50%);
+          max-width: none;
+        }
+      }
+
+      &:is(.cc-app-denied, .cc-app-cancel, .cc-app-pending, .cc-app-incomplete, .cc-app-callback) {
+        --timeline-height: min(27.0625rem, calc(var(--cc-timeline-form-width) * 453 / 481));
+
+        & > .cc-panel-item-timeline-step-1 {
+          top: calc(var(--timeline-height) * 0.01);
+          left: 10%;
+        }
+
+        & > .cc-panel-item-timeline-status {
+          top: calc(var(--timeline-height) * 0.23);
+          left: 16%;
+        }
+
+        & > .cc-panel-item-timeline-message {
+          top: calc(var(--timeline-height) * 0.29);
+          left: 14%;
+          width: 78%;
+        }
+
+        & > .cc-panel-item-timeline-caption {
+          top: calc(var(--timeline-height) * 0.63);
+          left: 44%;
+          width: min(13.75rem, 58%);
+          max-width: none;
+        }
+
+        & > .cc-panel-item-timeline-muted {
+          top: calc(var(--timeline-height) * 0.92);
+          left: 10%;
+          width: min(13.4375rem, 58%);
+        }
+      }
+
+      &.cc-app-callback {
+        & > :is(.cc-panel-item-callback-prompt, .cc-panel-item-callback-input, .cc-panel-item-callback-actions) {
+          position: relative;
+          display: block;
+          width: 100%;
+          max-width: none;
+          z-index: 2;
+        }
+
+        & > .cc-panel-item-callback-prompt {
+          margin-top: calc(var(--timeline-height) + var(--bbl-space-250));
+        }
+
+        & > .cc-panel-item-callback-actions {
+          margin-top: var(--bbl-space-200);
+        }
+      }
+
+      &.cc-app-notfound {
+        --timeline-height: min(17.9375rem, calc(var(--cc-timeline-form-width) * 272 / 436));
+
+        min-height: var(--timeline-height);
+
+        & > .cc-panel-item-timeline-bg {
+          height: var(--timeline-height);
+        }
+
+        & > .cc-panel-item-timeline-status {
+          top: calc(var(--timeline-height) * 0.07);
+          left: 8%;
+        }
+
+        & > .cc-panel-item-timeline-message {
+          top: calc(var(--timeline-height) * 0.16);
+          left: 7%;
+          width: 86%;
+        }
+
+        & > .cc-panel-item-timeline-caption {
+          top: calc(var(--timeline-height) * 0.85);
+          left: 38%;
+          width: min(13.75rem, 58%);
+          max-width: none;
+        }
+      }
+
+      &:is(
+        .cc-app-approved,
+        .cc-app-denied,
+        .cc-app-cancel,
+        .cc-app-pending,
+        .cc-app-incomplete,
+        .cc-app-callback,
+        .cc-app-notfound
+      ) fieldset.panel-wrapper.field-wrapper {
+        width: 100%;
+        max-width: 100%;
       }
     }
   }
@@ -827,24 +847,53 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   @media (width >= 64rem) {
     padding-inline: 0;
 
-    --cc-timeline-form-width: min(28.75rem, min(100vw, 53.125rem));
+    --cc-timeline-form-width: min(var(--cc-timeline-panel-width), min(100vw, var(--cc-form-max-width)));
 
-    & .field-title,
-    & .cc-panel-item-form-title {
-      font-size: var(--bbl-font-size-h3-desktop);
-      line-height: 1.625rem;
-    }
-
-    & .form form fieldset.panel-wrapper.field-wrapper.cc-app-message-form > .cc-panel-item-form-title {
-      font-size: 0.9375rem;
-      font-weight: 700;
-      line-height: 1.5625rem;
-    }
-
-    & :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea),
+    & :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .date-wrapper).field-wrapper :is(input, textarea),
     & .form select,
     & .drop-down-wrapper.field-wrapper select {
       height: 3.4375rem;
+      line-height: var(--bbl-line-height-h3-desktop);
+    }
+
+    & .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label):not(:is(.field-title *, .cc-panel-item-form-title *)),
+    & .form form :is(.drop-down-wrapper, .field-wrapper:has(select)) > .field-label {
+      font-size: var(--form-font-size-xs);
+      line-height: var(--bbl-line-height-b1-desktop);
+    }
+
+    /* Page + panel titles — desktop heading scale (live ~24px) */
+    & :is(
+      h3,
+      .form form .field-title h2,
+      .form form .field-title .page-header,
+      .form form .field-title .label-header,
+      .field-title,
+      .cc-panel-item-form-title
+    ) {
+      font-size: var(--bbl-heading-h3-size);
+      font-weight: var(--bbl-heading-h3-weight);
+      line-height: var(--bbl-heading-h3-line-height);
+    }
+
+    & .form form .field-wrapper.col-6 {
+      grid-column: span 6;
+    }
+
+    & .form form fieldset.panel-wrapper.cc-app-main-form > .cc-panel-item-form-consent .tnc-text-decoration :is(p, p p),
+    & .form form :is(.field-short-privacy-notice, .tnc-text-decoration) :is(p, p p) {
+      font-size: var(--form-font-size-xs);
+      line-height: var(--bbl-line-height-b1-desktop);
+    }
+
+    & .form :is(
+      :is(.field-submitbuttonpanel, .field-submitbuttonpanel2, .field-button-panel) .button,
+      :is(.field-submitcta, .field-cancel, [class~='field-Cancel'], form .submit-wrapper) .button,
+      :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) :is(.button, button, .button.primary),
+      .cc-panel-item-panel-action-primary :is(.button, button)
+    ) {
+      font-size: var(--form-font-size-xs);
+      line-height: var(--bbl-line-height-b1-desktop);
     }
 
     & .form form fieldset.panel-wrapper.field-wrapper {
@@ -896,10 +945,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
     & .form form fieldset.panel-wrapper.cc-app-main-form {
       display: grid;
-      grid-template-columns: calc((53.125rem - 0.625rem) / 2) calc((53.125rem - 0.625rem) / 2);
-      column-gap: 0.625rem;
+      grid-template-columns: calc((var(--cc-form-max-width) - var(--bbl-space-150)) / 2) calc((var(--cc-form-max-width) - var(--bbl-space-150)) / 2);
+      column-gap: var(--bbl-space-150);
       width: 100%;
-      max-width: 53.125rem;
+      max-width: var(--cc-form-max-width);
       margin-inline: auto;
 
       & > .field-wrapper.col-6:not(
@@ -929,18 +978,30 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       & > .field-wrapper.col-12:is(.cc-panel-item-form-consent, .cc-panel-item-form-actions) {
         grid-column: 1 / -1;
         width: 100%;
-        max-width: 53.125rem;
+        max-width: var(--cc-form-max-width);
       }
     }
 
     & .form form fieldset.panel-wrapper.field-wrapper.cc-app-message-form {
       width: 83%;
-      max-width: 46.25rem;
+      max-width: var(--cc-message-form-max-width);
       margin-inline: auto;
+
+      & > .cc-panel-item-form-input-half {
+        flex: 0 0 calc(50% - 0.3125rem);
+        width: calc(50% - 0.3125rem);
+        max-width: calc(50% - var(--bbl-space-150));
+        margin: 0 0 0.625rem;
+        clear: none;
+      }
+
+      & > .cc-panel-item-form-input-half:first-of-type {
+        margin-right: var(--bbl-space-150);
+      }
 
       & > .cc-panel-item-form-radio.radio-group-wrapper.horizontal {
         flex-flow: row wrap;
-        gap: 0.9375rem;
+        gap: var(--bbl-space-200);
         justify-content: space-between;
 
         & .radio-wrapper {
