@@ -1121,10 +1121,6 @@
     padding-bottom: 3rem;
   }
 
-  .saving-plan-result-future {
-    font-size: var(--bbl-font-size-b1-desktop);
-  }
-
   .saving-plan-header-title {
     font-size: var(--bbl-font-size-h1-desktop);
     margin-bottom: 2.5rem;
@@ -1159,6 +1155,7 @@
   }
 
   .saving-plan-result-future {
+    font-size: var(--bbl-font-size-b1-desktop);
     margin-bottom: 3rem;
   }
 
