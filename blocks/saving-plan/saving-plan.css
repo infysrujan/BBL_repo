@@ -1140,6 +1140,7 @@
 
   .saving-plan-form-btn {
     font-size: var(--bbl-font-size-b1-desktop);
+    height: 2.5rem;
   }
 
   .saving-plan-form-btn-primary {
