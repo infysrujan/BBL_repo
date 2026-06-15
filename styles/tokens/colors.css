@@ -63,6 +63,8 @@
   --bbl-color-grey-152: #dcdcdc;
   --bbl-color-grey-153: #696969;
   --bbl-color-grey-155: #eeeef2;
+  --bbl-color-grey-156: #f1f1f1;
+  --bbl-color-grey-157: #888;
   
 
   /* =========================================================================
@@ -87,6 +89,7 @@
   --bbl-color-blue-105: #003399;
   --bbl-color-blue-108: #002D5B;
   --bbl-color-blue-113: #022D53;
+  --bbl-color-blue-115: #4B70B7;
   /* Truthful Blue is at position ~110 */
   --bbl-color-blue-120: #031D37;
   --bbl-color-blue-130: #002087;
