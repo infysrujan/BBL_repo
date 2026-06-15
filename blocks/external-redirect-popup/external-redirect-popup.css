@@ -176,7 +176,7 @@
   background: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
   border: 0.0625rem solid var(--bbl-color-active-blue);
-  margin: 1.875rem 0 0;
+  margin: 1.875rem 0 0 0.125rem;
   padding: 0;
 }
 
