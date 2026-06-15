@@ -1,14 +1,41 @@
 ﻿/* Bangkok Bank lead-form overrides — matched to live Sitecore WFFM forms */
-
-/* Layout */
-
-main .lead-forms .section.form-container .form {
-  margin: var(--bbl-space-500) auto 0;
+main .lead-forms.section.form-container .form {
   max-width: 46.25rem;
+  margin-inline: auto;
   padding: 0;
 }
 
-main .lead-forms .section.form-container.central-aligned :is(.form-wrapper, .form.block) {
+main .form-container.lead-forms {
+  padding-inline: var(--bbl-space-section-xs);
+}
+
+main .lead-forms.section.central-aligned > .default-content-wrapper {
+  margin: 0;
+}
+
+main .lead-forms .form form p {
+  margin-bottom: 0;
+  padding: 0;
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.5;
+}
+
+main .lead-forms .form form > .plain-text-wrapper p {
+  text-align: center;
+}
+
+main .lead-forms.section.central-aligned > .default-content-wrapper p{
+  color: #4e4e4e;
+  font-size: 14px;
+  line-height: 19.25px;
+}
+
+main .lead-forms.section.central-aligned > .default-content-wrapper p strong{
+  font-family: Muli-Bold, sans-serif;
+}
+
+main .lead-forms.section.form-container.central-aligned :is(.form-wrapper, .form.block) {
   max-width: 46.25rem;
   margin-inline: auto;
 }
@@ -17,28 +44,27 @@ main .lead-forms div.form-wrapper {
   padding: 0;
   border-radius: unset;
   box-shadow: none;
+  width: 100%;
+  max-width: 46.25rem;
+  margin-inline: auto;
 }
 
 main .lead-forms div.default-content-wrapper {
   box-shadow: none;
 }
 
-main .lead-forms .default-content-wrapper> :is(h1, h2, h3, h4, h5, h6)::after {
-  left: 50%;
-  width: 80px;
-  content: '';
-  position: absolute;
-  top: auto;
-  bottom: 0;
-  height: 1px;
-  background: var(--bbl-color-grey-150);
+main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+  font-size: 30.8px;
+  line-height: normal;
+  font-family: Muli-Bold, sans-serif;
+  color: #3F3F3F;
+  letter-spacing: -0.0125rem;
+  font-weight: 700;
 }
 
-main .lead-forms .default-content-wrapper h2 {
-  font-size: 24px;
-  font-family: BangkokBank-Medium, sans-serif;
-  color: #000;
-  font-weight: var(--bbl-font-weight-regular);
+main .lead-forms.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+  margin: 2.5rem 0 1.875rem;
+  padding-bottom: 35px;
 }
 
 main .lead-forms .drop-down-wrapper {
@@ -60,7 +86,6 @@ main .lead-forms .form form :is(p, .repeat-wrapper, .field-wrapper) {
   margin: 0;
 }
 
-/* Title */
 main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .page-header) {
   position: relative;
   margin: var(--bbl-space-500) 0 var(--bbl-space-300);
@@ -90,7 +115,6 @@ main .lead-forms .form form .field-title {
   padding: 0;
 }
 
-/* Body copy */
 main .lead-forms .form form .field-infotext {
   margin: var(--bbl-space-500) 0 var(--bbl-space-250);
   margin: 10px 0 var(--bbl-space-250) 0;
@@ -98,17 +122,10 @@ main .lead-forms .form form .field-infotext {
 
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
   color: var(--bbl-color-grey-85);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
   font-size: 14px;
-  line-height: 25px;
-}
-
-main .lead-forms .form form p {
-  margin-bottom: 0;
-  padding: 0;
-  font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-regular);
-  line-height: 1.5;
+  line-height: 14px;
+  padding-right: 0;
+  margin-bottom: 10px;
 }
 
 main .lead-forms .form form .plain-text-wrapper p:last-child {
@@ -116,7 +133,8 @@ main .lead-forms .form form .plain-text-wrapper p:last-child {
 }
 
 main .lead-forms .form form .plain-text-wrapper :is(a, .custom-wffm-form) {
-  color: var(--bbl-color-grey-85);
+  color: inherit;
+  font-size: inherit;
 }
 
 main .lead-forms .form form .plain-text-wrapper a {
@@ -128,26 +146,56 @@ main .lead-forms .form form .plain-text-wrapper .custom-wffm-form {
   margin-bottom: var(--bbl-space-075);
 }
 
-/* Labels */
 main .lead-forms .form form .field-label[data-visible='false']:not(:is([class*=' icon-'], [class^='icon-'])) {
   display: none;
+}
+
+main .lead-forms .form :is([data-required='true'] > label, label.required)::after {
+  content: none;
 }
 
 main .lead-forms .form form :is(.field-wrapper:has(select), .drop-down-wrapper)>.field-label {
   display: block;
   width: 100%;
-  margin: 0 0 var(--bbl-space-050);
-  padding: var(--bbl-space-300) 0;
-  padding: 30px 0;
-  text-align: center;
-  font-size: var(--bbl-font-size-b1);
-  font-weight: 600;
+  margin: 40px 0 0;
+  text-align: left;
+  font-size: 17px;
+  line-height: 17px;
+  font-weight: 700;
   color: var(--bbl-color-grey-85);
+}
+
+main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 14px;
+  margin-block: 40px 0;
+}
+
+main .lead-forms .form select {
+  padding: 0 30px 0 20px;
+  border-color: var(--bbl-color-grey-23);
+  cursor: pointer;
+  appearance: none;
+  color: #000;
+  margin-bottom: 14px;
+  background: var(--bbl-color-white) url('../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
+  font-family: var(--bbl-font-family-medium);
+}
+
+main .lead-forms .form form .drop-down-wrapper.field-title select,
+main .lead-forms .form form .drop-down-wrapper.field-prefix-dropdown select {
+  padding: 0 30px 0 40px;
+}
+
+main .lead-forms .form form .drop-down-wrapper.field-bblprovincedropdown > .field-label {
+  margin-top: 0;
 }
 
 main .lead-forms .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
   color: var(--bbl-color-grey-85);
   font-size: 14px;
+  line-height: 14px;
   font-weight: 400;
   cursor: default;
 }
@@ -169,14 +217,6 @@ main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number
   line-height: 2.75rem;
 }
 
-main .lead-forms .form select {
-  padding: 0 var(--bbl-space-300) 0 var(--bbl-space-250);
-  border-color: var(--bbl-color-grey-23);
-  cursor: pointer;
-  appearance: none;
-  background: var(--bbl-color-white) url('../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
-  font-family: var(--bbl-font-family-medium);
-}
 
 main .lead-forms .form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
 main .lead-forms .form-wrapper .form .drop-down-wrapper.field-invalid select {
@@ -207,12 +247,11 @@ main .lead-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, 
 
 main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper [aria-live="polite"] {
   text-align: left;
-
-  /* margin-bottom: 10px; */
 }
 
 main .lead-forms .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].drop-down-wrapper).field-wrapper :is(input, select) {
   padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
+  margin-bottom: 14px;
 }
 
 main .lead-forms .form textarea {
@@ -228,6 +267,15 @@ main .lead-forms .form select option {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-b1);
   font-weight: var(--bbl-font-weight-regular);
+  line-height: 44px;
+}
+
+main .lead-forms .form input[type='date']::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+main .lead-forms .form input[type='date']:invalid::-webkit-datetime-edit {
+  color: transparent;
 }
 
 main .lead-forms .form :is(input, textarea)::placeholder {
@@ -271,10 +319,8 @@ main .lead-forms .form form .field-wrapper.col-12 {
 main .lead-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper) {
   position: relative;
   clear: both;
-  margin-bottom: 10px;
 }
 
-/* Icon fields — icomoon label or field-class fallback */
 main .lead-forms .form form label:is([class*=' icon-'], [class^='icon-']) {
   position: relative;
   display: block;
@@ -283,7 +329,6 @@ main .lead-forms .form form label:is([class*=' icon-'], [class^='icon-']) {
   padding: 0;
   overflow: visible;
 }
-
 
 main .lead-forms .form form .email-wrapper {
   font-family: icomoon, sans-serif;
@@ -295,7 +340,6 @@ main .lead-forms .form form .email-wrapper {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
 
 main .lead-forms .form form .email-wrapper.field-wrapper input {
   padding-left: 40px;
@@ -316,7 +360,7 @@ main .lead-forms .form form .email-wrapper::before {
   align-items: center;
   justify-content: center;
   width: var(--bbl-space-250);
-  height: var(--bbl-space-250);
+  height: 19px;
   color: var(--bbl-color-grey-150);
   transform: translateY(-50%);
   pointer-events: none;
@@ -338,8 +382,6 @@ main .lead-forms .form form .checkbox-group-wrapper .checkbox-wrapper .field-lab
   line-height: 25px;
 }
 
-
-
 main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper):has(.field-description).field-wrapper :is(input, textarea, select){
   margin-bottom:0;
 }
@@ -356,7 +398,6 @@ main .lead-forms .form form .radio-group-wrapper.field-invalid>.field-descriptio
   height: auto;
 }
 
-/* Submit */
 main .lead-forms .form :is(.field-submitcta .button, .field-submitcta .button:disabled, .field-cancel .button, [class~="field-Cancel"] .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button) {
   display: flex;
   align-items: center;
@@ -393,24 +434,20 @@ main .lead-forms .form .col-6:is(.field-submitcta, .submit-wrapper) :is(.button,
   margin-right: 1rem;
 }
 
-/* Convert the 1-column parent grid to flexbox to natively allow side-by-side items */
 main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel {
   display: flex;
   flex-wrap: wrap;
 }
 
-/* Force all form fields in the panel to take 100% width (stack vertically like a 1-column grid) */
 main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel>.field-wrapper {
   width: 100%;
 }
 
-/* Allow the buttons to shrink to their intrinsic width, so they naturally sit side-by-side on the same row */
 main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-submitcta.col-12,
 main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-reset.col-6 {
   width: auto;
 }
 
-/* Center the pair of buttons perfectly in the available space by using auto margins on the outsides, and a clean gap in the middle */
 main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-submitcta.col-12 {
   margin-left: auto;
   margin-right: 0.5rem;
@@ -421,7 +458,6 @@ main .lead-forms .section:has(.field-business-information-main, .field-loan-deta
   margin-right: auto;
 }
 
-/* Center solitary .col-12 buttons on the SME Form */
 main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form .col-12:is(.field-submitcta, .submit-wrapper, .reset-wrapper, .field-cancel) {
   display: flex;
   justify-content: center;
@@ -433,12 +469,10 @@ main .lead-forms .form .col-6:is(.field-cancel, .field-reset) :is(.button, butto
   margin-right: auto;
 }
 
-/* Privacy consent / TnC panel */
 main .lead-forms .form form :is(.field-privacyconsent, fieldset.panel-wrapper.field-wrapper) {
   gap: 0;
   margin: 0;
 }
-
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper {
   position: relative;
@@ -451,7 +485,6 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper {
   padding: 0;
 }
 
-/* Button panel — side-by-side Submit / Reset (must come after the grid rule above to override display) */
 main .lead-forms .form form fieldset.panel-wrapper.field-button-panel {
   display: flex;
   flex-direction: row;
@@ -489,20 +522,51 @@ input[name='BBLAdvancedCheckbox'] {
   top: 0;
   left: 0;
   z-index: 1;
+  cursor: pointer;
   width: var(--bbl-space-250);
   height: var(--bbl-space-250);
-  margin: 3px var(--bbl-space-050) var(--bbl-font-size-b2) var(--bbl-space-050);
+  margin: 3px 3px 3px 4px;
   flex: none;
+  padding: 0;
+  border: 1px solid #9e9e9e;
+  background-color: #fff;
+  appearance: none;
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:hover,
 input[name='BBLAdvancedCheckbox']:hover {
-  border: 1px solid var(--bbl-color-grey-125);
+  border: 1px solid #4b70b7;;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:checked,
+input[name='BBLAdvancedCheckbox']:checked {
+  background-color: #039;
+  border-color: #039;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(:is(input[name='approvalcheckbox'], input[name='BBLAdvancedCheckbox']):checked)::after {
+  content: '';
+  padding: initial;
+  box-sizing: border-box;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  left: 12px;
+  top: 6px;
+  width: 5px;
+  height: 10px;
+  position: absolute;
+  z-index: 2;
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:invalid,
 input[name='BBLAdvancedCheckbox']:invalid {
   box-shadow: none;
+  outline: none;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(.checkbox-wrapper.field-invalid) :is(input[name='approvalcheckbox'], input[name='BBLAdvancedCheckbox']) {
+  border-color: #9e9e9e;
   outline: none;
 }
 
@@ -513,11 +577,12 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decor
   border-radius: var(--bbl-radius-none);
   max-height: 15rem;
   margin: 3px var(--bbl-space-100) 0.9375rem 0;
-  padding-left: 0;
+  padding: 15px;
   font-size: var(--bbl-font-size-b1);
   overflow: auto;
-  scrollbar-color: #0064ff var(--bbl-color-grey-10);
   scrollbar-width: thin;
+  margin-right: 5px;
+  scrollbar-color: #888 #f1f1f1;
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar {
@@ -549,10 +614,8 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper :is(> .field-de
   clear: both;
 }
 
-/* Radio group — segmented time slot */
 main .lead-forms .form form .radio-group-wrapper.horizontal {
   justify-content: center;
-  margin-bottom: 10px;
   gap: 30px;
 }
 
@@ -573,8 +636,6 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs {
   box-sizing: border-box;
   width: 100%;
   max-width: 46.25rem;
-
-  /* margin: 0 0 var(--bbl-font-size-b2); */
   padding: 0;
   overflow: visible;
   border: none;
@@ -598,8 +659,11 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs legend.field-label {
   width: 100%;
   margin: 0 0 var(--bbl-space-100);
   padding: 0;
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: 17px;
+  line-height: 17px;
+  font-weight: 700;
   cursor: default;
+  text-align: left;
 }
 
 main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper {
@@ -659,9 +723,9 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 0 var(--bbl-space-100);
+  padding: 0 10px;
   color: var(--bbl-color-grey-85);
-  font-size: var(--bbl-font-size-b1);
+  font-size: 14px;
   font-weight: var(--bbl-font-weight-medium);
   text-align: center;
   cursor: pointer;
@@ -672,7 +736,6 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs.field-invalid .radio
   border-color: var(--bbl-color-orange-130);
 }
 
-/* Checkbox group panels — bordered box */
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
   .field-other-required-product-panel) {
   border: 1px solid var(--bbl-color-grey-150);
@@ -686,9 +749,6 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs+fieldset.panel-wrapp
   margin-top: 0.9375rem;
 }
 
-
-
-/* Compact glyphs — money & email */
 main .lead-forms .form form :is(.field-wrapper:is(.icon-money, .icon-email),
   label:is(.icon-money, .icon-email))::before {
   font-size: 0.6875rem;
@@ -717,4 +777,43 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   .field-other-required-product-panel .field-please-specify-other-product) {
   width: 100%;
 }
- 
+
+
+@media (width > 47.5rem) {
+  main .form-container.lead-forms {
+    padding-inline: 20px;
+    margin-inline: 30px;
+    width: auto;
+  }
+
+  main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label.field-label {
+    font-size: 16px;
+    line-height: 16px;
+  }
+}
+
+@media (width > 64rem) {
+  main .form-container.lead-forms {
+    padding-inline: 0;
+    margin-inline: auto;
+  }
+
+  main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    font-size: 35.2px;
+  }
+
+  main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
+    font-size: 16px;
+    line-height: 16px;
+  }
+
+  main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
+    font-size: 16px;
+    line-height: 16px;
+  }
+
+  main .lead-forms.section.central-aligned > .default-content-wrapper p{
+    font-size: 16px;
+    line-height: 22px;
+  }
+}
