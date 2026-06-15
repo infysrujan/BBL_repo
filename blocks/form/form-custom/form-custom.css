@@ -1,8 +1,8 @@
 /* Central-aligned section block sizing */
-main .section.form-container.custom-forms .section.central-aligned .block,
-main .section.form-container.custom-forms .section.central-aligned>.default-content-wrapper {
+main .section.form-container.custom-forms.central-aligned .block,
+main .section.form-container.custom-forms.central-aligned>.default-content-wrapper {
   max-width: unset;
-  margin-top: 1.5rem;
+  margin-top: var(--bbl-space-300);
 }
 
 /* Custom form grid gap override and centering */
@@ -17,27 +17,9 @@ main .section.form-container.custom-forms .form form {
 main .section.form-container.custom-forms .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea) {
   box-sizing: border-box;
   width: 100%;
-  height: 2.75rem;
   margin-top: 0;
-  margin-bottom: 0.5rem;
-  padding: 0 1.25rem;
-  font-size: 1rem;
-  line-height: 2.75rem;
-  color: rgb(0 0 0);
-  background-color: rgb(255 255 255);
-  border: 0.0417rem solid rgb(158 158 158);
-  border-radius: 0.4375rem;
-}
-
-main .section.form-container.custom-forms .form form textarea {
-  height: auto;
-  line-height: 1.5;
-  padding: 0.625rem 1.25rem;
-}
-
-/* Shared non-icon field spacing for custom forms */
-main .section.form-container.custom-forms .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'], [class*='field-phonenumber'], [class*='field-mobilenumber'], [class*='field-companyname'], [class*='field-company'], [class*='field-property-dropdown'], [class*='field-juristicpersonregistrationnumber'])> :is(input, select) {
-  padding-left: 1.25rem;
+  margin-bottom: var(--bbl-space-100);
+  padding: 0 var(--bbl-space-250);
 }
 
 main .section.form-container.custom-forms .form form .field-wrapper:not(:has(label:is([class*=' icon-'], [class^='icon-']))):is([class*='field-firstname'], [class*='field-lastname'], [class*='field-name'], [class*='field-phonenumber'], [class*='field-mobilenumber'], [class*='field-companyname'], [class*='field-company'], [class*='field-email'], [class*='field-juristicpersonregistrationnumber'])::before {
@@ -47,17 +29,16 @@ main .section.form-container.custom-forms .form form .field-wrapper:not(:has(lab
 /* Legend styling for custom-forms panel wrappers */
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper>legend {
   display: block;
-  margin: 1.25rem 0 0.625rem;
-  padding: 0.1875rem 0 0.1875rem 1rem;
+  margin: var(--bbl-space-250) var(--form-field-gap) 0.625rem;
+  padding: 0.1875rem 0 0.1875rem var(--bbl-space-200);
   text-align: left;
   background-color: var(--bbl-color-grey-10);
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-info-pannel.field-wrapper>legend {
   background-color: transparent;
-  padding-left: 0;
+  padding-left: var(--form-field-gap);
   margin: 0;
-  font-size: var(--bbl-font-size-h5-desktop);
   text-decoration: underline;
 }
 
@@ -72,7 +53,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 
 /* Checkbox group spacing & description layouts */
 main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) {
-  padding-top: 2rem;
+  padding-top: var(--bbl-space-400);
 }
 
 main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper {
@@ -94,17 +75,17 @@ main .section.form-container.custom-forms .form form .field-wrapper:has(> .check
 }
 
 main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper > .field-description) {
-  padding-bottom: 1.25rem;
+  padding-bottom: var(--bbl-space-250);
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper:is(.field-privacyconsent, .field-privacynotice) {
-  padding: 0 0 0 1.75rem;
+  padding: 0 0 0 var(--bbl-space-350);
 }
 
 
 
 main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.field-subject>legend.field-label {
-  font-size: var(--bbl-font-size-h5-desktop);
+  font-size: var(--bbl-heading-h4-size);
   font-weight: var(--bbl-font-weight-medium);
   text-align: left;
   text-decoration: underline;
@@ -112,9 +93,9 @@ main .section.form-container.custom-forms .form form fieldset.radio-group-wrappe
 
 /* Transaction Date & Time Panel Overrides (Financial & Non-Financial) */
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel {
-  column-gap: 1.25rem;
-  margin-bottom: 1rem;
-  padding: 1.25rem 1rem;
+  column-gap: var(--bbl-space-250);
+  margin-bottom: var(--bbl-space-200);
+  padding: var(--bbl-space-250) var(--bbl-space-200);
   border: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: var(--bbl-radius-md);
 }
@@ -122,17 +103,16 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>legend.field-label {
   position: absolute;
   top: 0;
-  left: 1rem;
+  left: var(--bbl-space-200);
   z-index: 2;
   display: block;
-  max-width: calc(100% - 2rem);
+  max-width: calc(100% - var(--bbl-space-400));
   margin: 0;
-  padding: 0.125rem 0.5rem;
+  padding: var(--bbl-space-025) var(--bbl-space-100);
   color: var(--bbl-color-white);
   background-color: var(--bbl-color-grey-150);
   border-radius: var(--bbl-radius-md);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b3);
+  font-size: var(--bbl-body-b3-size);
   font-weight: var(--bbl-font-weight-medium);
   line-height: 1;
   white-space: normal;
@@ -160,7 +140,6 @@ main .section.form-container.custom-forms .form form .field-compliantnonfin-comp
   width: 100%;
   height: 2.6389rem;
   margin: 0;
-  line-height: 2.6389rem;
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>div:has(select) select,
@@ -175,7 +154,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   right: -0.625rem;
   z-index: 2;
   color: var(--bbl-color-grey-85);
-  font-size: var(--bbl-font-size-h5-desktop);
+  font-size: var(--bbl-heading-h4-size);
   font-weight: var(--bbl-font-weight-medium);
   transform: translate(50%, -50%);
 }
@@ -183,14 +162,14 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel> :is(.field-cnf-date-exclude, .field-hours-exclude, .field-minutes-exclude) :is(.field-validation-error, .field-description),
 main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch) :is(.field-validation-error, .field-description) {
   width: 100%;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b2-size);
   font-weight: var(--bbl-font-weight-regular);
   white-space: normal;
 }
 
 /* Spacing to prevent panel legend/capsule from overlapping validation errors of preceding fields */
 main .section.form-container.custom-forms .form form .field-invalid+fieldset.panel-wrapper {
-  margin-top: 1.75rem;
+  margin-top: var(--bbl-space-350);
 }
 
 /* Service Branch Panel Layout (Grid-based Layout) */
@@ -198,10 +177,10 @@ main .section.form-container.custom-forms .form form .field-compliantnonfin-comp
   position: relative;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 0.9375rem 1.25rem;
+  gap: 0.9375rem var(--bbl-space-250);
   margin-top: 0;
-  margin-bottom: 1.25rem;
-  padding: 1.25rem 1rem;
+  margin-bottom: var(--bbl-space-250);
+  padding: var(--bbl-space-250) var(--bbl-space-200);
   border: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: var(--bbl-radius-md);
 }
@@ -209,16 +188,16 @@ main .section.form-container.custom-forms .form form .field-compliantnonfin-comp
 main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel)>legend.field-label {
   position: absolute;
   top: 0;
-  left: 1rem;
+  left: var(--bbl-space-200);
   z-index: 2;
   display: block;
-  max-width: calc(100% - 2rem);
+  max-width: calc(100% - var(--bbl-space-400));
   margin: 0;
-  padding: 0.125rem 0.5rem;
+  padding: var(--bbl-space-025) var(--bbl-space-100);
   color: var(--bbl-color-white);
   background-color: var(--bbl-color-grey-150);
   border-radius: var(--bbl-radius-md);
-  font-size: var(--bbl-font-size-b3);
+  font-size: var(--bbl-body-b3-size);
   font-weight: var(--bbl-font-weight-medium);
   line-height: 1;
   white-space: normal;
@@ -238,22 +217,21 @@ main .section.form-container.custom-forms .form form .field-compliantnonfin-comp
 /* Ensure Description textarea and its multiline wrapper span full width */
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper .field-wrapper.multiline-wrapper.field-description {
   grid-column: span 12;
-  width: 100%;
+  width: auto;
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper .field-wrapper.multiline-wrapper.field-description textarea {
   width: 100%;
   max-width: unset;
-  min-height: 8.5rem;
+  height: auto;
+  min-height: 10rem;
   padding-top: var(--bbl-space-150);
+  padding-bottom: var(--bbl-space-150);
+  box-sizing: border-box;
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper .field-wrapper.multiline-wrapper.field-description textarea::placeholder {
   line-height: 1.5;
-}
-
-main .section.form-container.custom-forms .form form .email-wrapper.field-wrapper {
-  font-family: inherit;
 }
 
 main .section.form-container.custom-forms .form form .email-wrapper.field-wrapper::before {
@@ -290,24 +268,20 @@ main .section.form-container.custom-forms .form form .text-wrapper.field-officer
 }
 
 main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.field-subject {
-  gap: 0.75rem;
-}
-
-main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.field-subject .radio-wrapper {
-  width: 100%;
+  gap: var(--bbl-space-150);
 }
 
 @media (width > 47.5rem) {
-  main .section.form-container.custom-forms .section.central-aligned>.default-content-wrapper {
+  main .section.form-container.custom-forms.central-aligned>.default-content-wrapper {
     margin-top: 1.875rem;
   }
 
   main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper>legend {
-    padding-left: 1.25rem;
+    padding-left: var(--bbl-space-250);
   }
 
   main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) {
-    padding-top: 2.5rem;
+    padding-top: var(--bbl-space-500);
   }
 
   main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper {
@@ -325,12 +299,12 @@ main .section.form-container.custom-forms .form form fieldset.radio-group-wrappe
 
   main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel,
   main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) {
-    padding: 1.25rem;
+    padding: var(--bbl-space-250);
   }
 
   main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>legend.field-label,
   main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel)>legend.field-label {
-    left: 1.25rem;
+    left: var(--bbl-space-250);
     width: max-content;
     max-width: none;
     white-space: nowrap;
@@ -356,10 +330,6 @@ main .section.form-container.custom-forms .form form fieldset.radio-group-wrappe
 
   main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>.field-hours-exclude::after {
     content: ':';
-  }
-
-  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper .field-wrapper.multiline-wrapper.field-description textarea {
-    min-height: 10rem;
   }
 
   main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.field-subject {

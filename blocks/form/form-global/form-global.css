@@ -18,7 +18,7 @@ main .section.form-container .form form .field-wrapper.field-invalid :is(input:n
   border-color: var(--bbl-color-red-130);
 }
 
-main .section.form-container .form form :is(.radio-wrapper, .checkbox-wrapper).field-invalid > input,
+main .section.form-container .form form :is(.radio-wrapper, .checkbox-wrapper).field-invalid>input,
 main .section.form-container .form form :is(.radio-group-wrapper, .checkbox-group-wrapper).field-invalid :is(input[type='radio'], input[type='checkbox']) {
   outline: 0.0625rem solid var(--bbl-color-red-130);
   outline-offset: 0.0625rem;
@@ -39,16 +39,18 @@ main .section.form-container .form form .field-wrapper:not(.field-invalid) :is(i
 }
 
 /* Legend font styling overrides */
-main .section.form-container .panel-wrapper > legend.field-label {
+main .section.form-container .panel-wrapper>legend.field-label {
   color: var(--bbl-color-grey-85);
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-weight: var(--bbl-font-weight-medium);
   cursor: default;
+  margin-left: var(--form-field-gap);
+  margin-right: var(--form-field-gap);
 }
 
-main .section.form-container :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
+main .section.form-container :is(.checkbox-group-wrapper, .radio-group-wrapper)>legend.field-label {
   color: var(--bbl-color-grey-85);
-  font-size: var(--bbl-font-size-h5-desktop);
+  font-size: var(--bbl-heading-h4-size);
   font-weight: var(--bbl-font-weight-regular);
   cursor: default;
   text-align: center;
@@ -67,7 +69,7 @@ main .section.form-container .form form fieldset.panel-wrapper.field-button-pane
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: var(--bbl-space-200);
 }
 
 main .section.form-container .form form fieldset.panel-wrapper.field-button-panel .field-submitcta,
@@ -78,11 +80,11 @@ main .section.form-container .form form fieldset.panel-wrapper.field-button-pane
 
 main .section.form-container .form .col-6:is(.field-submitcta, .submit-wrapper) :is(.button, button) {
   margin-left: auto;
-  margin-right: 1rem;
+  margin-right: var(--bbl-space-200);
 }
 
 main .section.form-container .form .col-6:is(.field-cancel, .field-reset) :is(.button, button) {
-  margin-left: 1rem;
+  margin-left: var(--bbl-space-200);
   margin-right: auto;
 }
 
@@ -99,8 +101,8 @@ main .section.form-container .form form .radio-group-wrapper.horizontal .radio-w
 }
 
 main .section.form-container .form form .radio-group-wrapper.horizontal input[type='radio'] {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
 }
 
 main .section.form-container .form form .radio-group-wrapper.radio-tabs {
@@ -142,7 +144,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-w
   justify-content: center;
   min-width: 0;
   height: var(--bbl-space-1000);
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--bbl-space-100);
   margin-left: 0;
   padding: 0;
   overflow: hidden;
@@ -192,7 +194,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs>.radio-w
   margin: 0;
   padding: 0 var(--bbl-space-100);
   color: var(--bbl-color-grey-85);
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   font-weight: var(--bbl-font-weight-medium);
   text-align: center;
   cursor: pointer;
@@ -205,7 +207,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs.field-in
 
 /* Select dropdown custom chevron style */
 main .section.form-container .form form select {
-  padding-right: 1.5rem;
+  padding-right: var(--bbl-space-300);
   appearance: none;
   background: var(--bbl-color-white) url('/icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
   cursor: pointer;
@@ -228,15 +230,15 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper .ch
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--bbl-space-100);
 }
 
 main .section.form-container .form form .checkbox-group-wrapper .checkbox-wrapper input[type='checkbox'] {
   flex-shrink: 0;
-  width: 1rem;
-  height: 1rem;
+  width: var(--bbl-space-200);
+  height: var(--bbl-space-200);
   cursor: pointer;
-  margin: 0.1875rem 0.5rem 0.1875rem 0.25rem;
+  margin: 0.1875rem var(--bbl-space-100) 0.1875rem var(--bbl-space-050);
 }
 
 /* Terms & Conditions (T&C) and Privacy Consent layouts */
@@ -274,12 +276,10 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is
 input[name='BBLAdvancedCheckbox'],
 main .section.form-container .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox'] {
   position: absolute;
-  top: 0;
+  top: 0.2rem;
   left: 0;
-  z-index: 1;
   width: var(--bbl-space-250);
-  height: var(--bbl-space-250);
-  margin: 0.1875rem var(--bbl-space-050) var(--bbl-font-size-b2) var(--bbl-space-050);
+  margin: 0.1875rem var(--bbl-space-050) var(--bbl-body-b2-size) var(--bbl-space-050);
   flex: none;
 }
 
@@ -302,9 +302,9 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper .tn
   max-height: 15rem;
   margin: 0.1875rem var(--bbl-space-100) 0.9375rem 0;
   padding-left: 0;
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-body-b1-size);
   overflow: auto;
-  scrollbar-color: #0064ff var(--bbl-color-grey-10);
+  scrollbar-color: var(--bbl-color-active-blue) var(--bbl-color-grey-10);
   scrollbar-width: thin;
 }
 
@@ -327,7 +327,6 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is
   width: 100%;
   margin: 0;
   padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
-  font-size: 0.9375rem;
   clear: both;
 }
 
@@ -338,7 +337,7 @@ main .section.form-container .form form .plain-text-wrapper p:last-child {
 
 main .section.form-container .form form .plain-text-wrapper.field-text {
   background-color: var(--bbl-color-grey-10);
-  padding: 0.25rem 0.625rem;
+  padding: var(--bbl-space-050) 0.625rem;
   border-radius: 0.4375rem;
   font-size: 1rem;
 }
@@ -350,27 +349,24 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   align-items: center;
   width: 9.6875rem;
   height: 2.75rem;
-  padding: 0 1.25rem;
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 2.75rem;
+  padding: 0 var(--bbl-space-250);
   box-shadow: none;
   border-radius: 0.4375rem;
-  gap: 0.5rem;
+  gap: var(--bbl-space-100);
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .field-submitcta .button {
-  margin: 1.5rem 1rem 1.5rem auto;
+  margin: var(--bbl-space-300) var(--bbl-space-200) var(--bbl-space-300) auto;
   border: 0.0417rem solid transparent;
-  background-color: rgb(0 100 255);
-  color: rgb(255 255 255);
+  background-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.field-cancel, .field-reset) .button {
-  margin: 0 1.5rem auto;
-  border: 0.0417rem solid rgb(0 100 255);
-  background-color: rgb(255 255 255);
-  color: rgb(0 100 255);
+  margin: 0 var(--bbl-space-300) auto;
+  border: 0.0417rem solid var(--bbl-color-active-blue);
+  background-color: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
 }
 
 /* Radio group alignment (vertical) */
@@ -379,18 +375,18 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper:not(.h
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 1.25rem 0;
+  margin: var(--bbl-space-250) 0;
   text-align: center;
 }
 
 /* Terms & Conditions (tnc) text area */
 main .section.form-container.custom-forms .form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration,
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper:is(.field-privacyconsent, .field-privacynotice).field-wrapper > .tnc-text-decoration {
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper:is(.field-privacyconsent, .field-privacynotice).field-wrapper>.tnc-text-decoration {
   max-height: 8rem;
   border: 0;
   box-shadow: none;
   outline: none;
-  padding: 0 1rem 0 0;
+  padding: 0 var(--bbl-space-200) 0 0;
 }
 
 main .section.form-container .form form fieldset.panel-wrapper.field-wrapper:is( :has(.checkbox-wrapper.field-invalid),
@@ -404,21 +400,17 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   .field-invalid) .tnc-text-decoration,
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper:is(.field-privacyconsent, .field-privacynotice).field-wrapper:is(:has(.checkbox-wrapper.field-invalid),
   :has(input[name='approvalcheckbox']:user-invalid),
-  .field-invalid) > .tnc-text-decoration {
+  .field-invalid)>.tnc-text-decoration {
   border: 0;
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox'] {
-  top: 0.3125rem;
-}
-
 /* Invalid states border color override for inner panel wrapper inputs */
-main .section.form-container .form form fieldset.panel-wrapper.field-transdatetimepanel:has(.field-invalid) > :is(.field-cnf-date-exclude, .field-hours-exclude, .field-minutes-exclude) :is(input, select),
-main .section.form-container .form form .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch).field-invalid :is(input, select) {
+main .section.form-container .form form fieldset.panel-wrapper.field-transdatetimepanel:has(.field-invalid)> :is(.field-cnf-date-exclude, .field-hours-exclude, .field-minutes-exclude) :is(input, select),
+main .section.form-container .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch).field-invalid :is(input, select) {
   border-color: var(--bbl-color-red-130);
 }
 
 /* Invalid state layout padding override for branch panel */
-main .section.form-container .form form .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel):has(.field-invalid) {
-  padding-bottom: 2.5rem;
+main .section.form-container .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel):has(.field-invalid) {
+  padding-bottom: var(--bbl-space-500);
 }
