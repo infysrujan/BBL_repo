@@ -7193,6 +7193,28 @@
         ]
       },
       {
+        "component": "select",
+        "name": "properties.linkType",
+        "label": "Button Style",
+        "valueType": "string",
+        "value": "primary",
+        "description": "Visual style variant for the button",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
+          }
+        ]
+      },
+      {
         "component": "tab",
         "label": "Help Content",
         "name": "help"
