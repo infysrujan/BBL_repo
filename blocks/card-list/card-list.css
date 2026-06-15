@@ -484,6 +484,10 @@
   padding: var(--bbl-space-250);
 }
 
+.cards-list-item:has(.cards-list-image-logo) .download-button-wrapper .download-files {
+  padding: 0 var(--bbl-space-500) 0 var(--bbl-space-250);
+} 
+
 .cards-list-button + .cards-list-date {
   padding-top: 0.625rem;
 }
@@ -711,32 +715,32 @@
   }
 
   .cards-list.cards-3 .cards-list-item {
-    flex: 0 0 30.22%;
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
   }
 
   .cards-list.cards-4 .cards-list-item,
   .cards-list.cards-1 .cards-list-item {
-    flex: 0 0 21.27%;
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 4);
   }
 
   .cards-list.scrollable.cards-4 .cards-list-item,
   .cards-list.scrollable.cards-1 .cards-list-item {
-    flex: 0 0 21.27%;
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 4);
   }
 
   .cards-list.carousel.cards-4 .cards-list-item,
   .cards-list.carousel.cards-1 .cards-list-item {
-    flex: 0 0 21.27%;
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 4);
   }
 
   .cards-list.scrollable.cards-3 .cards-list-item {
-    flex: 0 0 29.989%;
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
     margin-bottom: var(--bbl-space-500);
     scroll-snap-align: none;
   }
 
   .cards-list.carousel.cards-3 .cards-list-item {
-    flex: 0 0 29.989%;
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
     margin-bottom: var(--bbl-space-500);
   }
 
