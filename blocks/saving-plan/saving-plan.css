@@ -1152,6 +1152,8 @@
 
   .saving-plan-form-btn-secondary {
     padding: 0.5rem 1rem;
+  }
+
   .saving-plan-result-title {
     font-size: var(--bbl-font-size-h3-desktop);
     margin-bottom: 1rem;
