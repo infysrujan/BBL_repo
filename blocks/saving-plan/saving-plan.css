@@ -367,6 +367,7 @@
   color: var(--bbl-color-white);
   border-radius: var(--sp-radius);
   padding: 0.875rem;
+  margin-bottom: 0.2188rem;
 }
 
 .saving-plan-result-future {
@@ -1150,6 +1151,7 @@
 
   .saving-plan-result-card {
     padding: 1rem;
+    margin-bottom: 0.25rem;
   }
 
   .saving-plan-result-future {
