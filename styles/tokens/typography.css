@@ -22,6 +22,7 @@
   --bbl-font-family-primary: 'BBL Sans', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif;
   --bbl-font-family-looped: 'BBL Sans Looped', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif;
   --bbl-font-family-medium: 'BBL Sans Medium', 'BangkokBank-Medium', Tahoma, Helvetica, Arial, sans-serif;
+  --bbl-font-family-bold: 'BBL Sans Bold', system-ui, sans-serif;
 
   /* =========================================================================
      FONT WEIGHTS
@@ -79,6 +80,7 @@
   --bbl-line-height-b1-desktop: 1.375rem; /* 22px */
   --bbl-line-height-b2-desktop: 1.1875rem; /* 18px–19px, based on the client’s feedback.*/
   --bbl-line-height-b3-desktop: 1rem;     /* 16px */
+  --bbl-line-height-button: 1.3125rem;    /* 21px */
 
   /* Mobile */
   --bbl-line-height-d1-mobile: 3.3125rem; /* 53px */

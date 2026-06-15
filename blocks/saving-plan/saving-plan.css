@@ -299,6 +299,9 @@
   gap: 0.75rem;
   margin-top: 0.875rem;
   margin-bottom: 0.875rem;
+  font-size: var(--bbl-font-size-b1-mobile);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: var(--bbl-line-height-button);
 }
 
 .saving-plan-form-btn {
@@ -313,6 +316,7 @@
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-b1-mobile);
   font-weight: var(--bbl-font-weight-medium);
+  line-height: var(--bbl-line-height-button);
   cursor: pointer;
   border: 0.0625rem solid var(--sp-border);
   background: var(--bbl-color-white);
@@ -1135,7 +1139,6 @@
   }
 
   .saving-plan-form-btn {
-    height: 2.5rem;
     font-size: var(--bbl-font-size-b1-desktop);
   }
 
