@@ -1,5 +1,4 @@
 import { getSubmitBaseUrl } from './constant.js';
-import { fetchConfigs } from '../../scripts/config.js';
 
 /**
  * Get Full Name
@@ -237,6 +236,37 @@ function addCustomHeader(payload, headerName, headerValue) {
 }
 
 /**
+ * Synchronously fetches the base URL for a given key from configs.json.
+ * This is used in functions that need to run synchronously in the AEM Forms Rule Engine.
+ *
+ * @param {string} key - The config key to look up (e.g., 'get-province-en', 'cc-apply-status')
+ * @returns {string} - The base URL from configs.json, or empty string if not found/error
+ */
+function getBaseUrl(key) {
+  let baseUrl = '';
+  const cfgXhr = new XMLHttpRequest();
+  cfgXhr.open('GET', '/configs.json', false);
+  cfgXhr.send(null);
+  if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
+    try {
+      const entry = JSON.parse(cfgXhr.responseText)
+        .data?.find((c) => c.Key === key);
+      baseUrl = entry?.Value || '';
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('CcApplicationStatus: failed to read configs.json', e);
+    }
+  }
+
+  if (!baseUrl) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus: failed to read configs.json');
+    return '';
+  }
+  return baseUrl;
+}
+
+/**
 * Fetches and normalizes province data.
 * Expected API shape:
 * [
@@ -248,10 +278,8 @@ function addCustomHeader(payload, headerName, headerValue) {
 * @returns {Array<{value: string, label: string}>}
 */
 function getProvinceData() {
-  const configs = fetchConfigs();
-  /* const baseUrl = configs.aemBaseUrl ||''; */
-  const urlPath = configs.getProvinceEn;
-  const url = `${urlPath}`;
+  const urlProvinceEnPath = getBaseUrl('get-province-en');
+  const url = `${urlProvinceEnPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -316,10 +344,9 @@ function getProvinceEnumNames() {
 * @returns {{value: string[], label: string[]}}
 */
 function getProvinceDataTh() {
-  const configs = fetchConfigs();
-  const urlPath = configs.getprovinceth;
+  const urlProvinceThPath = getBaseUrl('get-province-th');
   /* const baseUrl = configs.aemBaseUrl || ''; */
-  const url = `${urlPath}`;
+  const url = `${urlProvinceThPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -408,11 +435,11 @@ function getProvinceEnumNamesTh() {
  */
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
-  const configs = fetchConfigs();
-  const ProvinceBaseUrl = configs.branchesByProvince;
+  const branchesByProvinceUrl = getBaseUrl('branches-by-province');
+  const provinceBaseUrl = branchesByProvinceUrl.endsWith('/') ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
   const encoded = encodeURIComponent(province);
   const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
-  const url = `${ProvinceBaseUrl}${segment}/${encoded}/0/0/0/BRC`;
+  const url = `${provinceBaseUrl}${segment}/${encoded}/0/0/0/BRC`;
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', url, false);
@@ -538,26 +565,7 @@ function CcApplicationStatus(idAndDob) {
   // fetchConfigs() is async and accesses document/window — both unavailable
   // in the AEM Forms Rule Engine Web Worker. Read configs.json directly via
   // synchronous XHR instead (sync XHR is permitted in workers).
-  let baseUrl = '';
-  const cfgXhr = new XMLHttpRequest();
-  cfgXhr.open('GET', '/configs.json', false);
-  cfgXhr.send(null);
-  if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
-    try {
-      const entry = JSON.parse(cfgXhr.responseText)
-        .data?.find((c) => c.Key === 'cc-apply-status');
-      baseUrl = entry?.Value || '';
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('CcApplicationStatus: failed to read configs.json', e);
-    }
-  }
-
-  if (!baseUrl) {
-    // eslint-disable-next-line no-console
-    console.error('CcApplicationStatus: cc-apply-status missing in configs.json');
-    return '';
-  }
+  const baseUrl = getBaseUrl('cc-apply-status');
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', `${baseUrl}?idAndDob=${encodeURIComponent(idAndDob)}`, false);
@@ -606,6 +614,99 @@ function CcApplicationStatus(idAndDob) {
  */
 function getCcField(fieldName) {
   return ccLastResult?.[fieldName] ?? '';
+}
+
+/**
+ * Fetches plan data for the given prospect details and returns the first plan.
+ * @param {number} prospectAge
+ * @param {string} prospectGender
+ * @param {string} prospectCategory
+ * @param {number} prospectSA
+ * @return {object|null}
+ */
+function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA) {
+  const baseUrl = getBaseUrl('fetch-plan-data');
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', baseUrl, false);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(JSON.stringify({
+    prospectAge,
+    prospectGender,
+    prospectCategory,
+    prospectSA,
+  }));
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData API error:', xhr.status, xhr.statusText);
+    return null;
+  }
+
+  let response;
+  try {
+    response = JSON.parse(xhr.responseText);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData JSON parse error:', e);
+    return null;
+  }
+
+  const plans = response?.data?.plans;
+  if (!Array.isArray(plans) || plans.length === 0) return null;
+
+  return plans[0];
+}
+
+/**
+ * Fetches campaign details from the language-specific EDS spreadsheet and
+ * returns the name and detail for the matching campaign ID.
+ *
+ * Spreadsheet path: /{language}/cc-campaign.json
+ * Expected columns: campaignId, campaignName, campaignDetail
+ *
+ * @name fetchCcCampaignDetails
+ * @param {string} campaignId - Campaign ID to look up
+ * @param {string} language - Language code: 'th' or 'en'
+ * @returns {{ campaignName: string, campaignDetail: string }}
+ */
+function fetchCcCampaignDetails(campaignId, language) {
+  if (!campaignId || !language) return { campaignName: '', campaignDetail: '' };
+
+  const lang = String(language).toLowerCase() === 'en' ? 'en' : 'th';
+  const url = `/${lang}/cc-campaign.json`;
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    // eslint-disable-next-line no-console
+    console.error('fetchCcCampaignDetails API error:', xhr.status, xhr.statusText);
+    return { campaignName: '', campaignDetail: '' };
+  }
+
+  let data;
+  try {
+    const response = JSON.parse(xhr.responseText);
+    data = response?.data ?? response;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('fetchCcCampaignDetails JSON parse error:', e);
+    return { campaignName: '', campaignDetail: '' };
+  }
+
+  if (!Array.isArray(data)) return { campaignName: '', campaignDetail: '' };
+
+  const campaign = data.find((item) => String(item.campaignId) === String(campaignId));
+  if (!campaign) return { campaignName: '', campaignDetail: '' };
+
+  return {
+    campaignName: campaign.campaignName ?? '',
+    campaignDetail: campaign.campaignDetail ?? '',
+  };
 }
 
 function getidAndDob(id, dob) {
@@ -682,6 +783,32 @@ function updateTextCount(passportNumber) {
   return `${count}/4`;
 }
 
+/**
+ * Returns the label name of the selected option in a dropdown.
+ * @param {string} dropdown - The dropdown value string
+ * @returns {string} The label name of the selected option
+ */
+function getSelectedLabelName(dropdown) {
+  if (!dropdown) {
+    return '';
+  }
+  const parts = String(dropdown).split('|');
+  return parts.length > 1 ? parts[1].trim() : '';
+}
+
+/**
+ * Returns the value of the selected option in a dropdown.
+ * @param {string} dropdown - The dropdown value string
+ * @returns {string} The value of the selected option
+ */
+function getSelectedLabelValue(dropdown) {
+  if (!dropdown) {
+    return '';
+  }
+  const parts = String(dropdown).split('|');
+  return parts.length > 0 ? parts[0].trim() : '';
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -705,6 +832,10 @@ export {
   getSelectedLabelFromDropdown,
   CcApplicationStatus,
   getCcField,
+  fetchPlanData,
+  fetchCcCampaignDetails,
   formatDateTime,
   updateTextCount,
+  getSelectedLabelName,
+  getSelectedLabelValue,
 };
