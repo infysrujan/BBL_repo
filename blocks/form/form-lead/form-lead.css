@@ -374,6 +374,15 @@ main .lead-forms .form form label:is([class*=' icon-'], [class^='icon-'])+ :is(i
   padding-left: var(--bbl-space-500);
 }
 
+main .lead-forms .form form .field-wrapper[class*='icon-']:has(> label:not([data-visible='false']))::before,
+main .lead-forms .form form .email-wrapper:has(> label:not([data-visible='false']))::before {
+  top: 3.125rem;
+}
+
+main .lead-forms .form form .drop-down-wrapper[class*='icon-']:has(> label:not([data-visible='false']))::before {
+  top: 5.375rem;
+}
+
 main .lead-forms .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
   flex-basis: auto;
   flex-shrink: 1;
