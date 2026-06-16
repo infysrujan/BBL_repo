@@ -559,6 +559,9 @@
 }
 
 .saving-plan-chart {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: block;
   box-sizing: border-box;
   width: 100%;
