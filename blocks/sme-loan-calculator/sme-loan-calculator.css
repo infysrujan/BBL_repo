@@ -236,7 +236,7 @@ main {
   border: none;
   color: var(--bbl-color-white);
   font-size: var(--bbl-font-size-15);
-  font-weight: 600;
+  font-weight: var(--bbl-font-weight-regular);
   text-align: right;
   width: 5rem;
   outline: none;
