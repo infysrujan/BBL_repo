@@ -622,8 +622,8 @@ let fetchPlanDataResult = null;
 /**
  * Fetches plan data and returns a single filtered plan based on prospectCategory and planTerm.
  *
- * Protection: matches by planCode — 8 → "8PWLBD", 12 → "12PWLBD", 16 → "16PWLBD"
- * Health: matches by rider[0].roomAndBoard — 1500 / 2000 / 3000 / 4000
+ * Protection: planTerm is the planCode string directly — "8PWLBD", "12PWLBD", "16PWLBD"
+ * Health: planTerm is the roomAndBoard value as a string — "1500", "2000", "3000", "4000"
  *
  * The matched plan object is cached in fetchPlanDataResult so getPlanField()
  * can retrieve individual fields without re-calling the API.
@@ -633,8 +633,8 @@ let fetchPlanDataResult = null;
  * @param {string} prospectGender
  * @param {string} prospectCategory - "Protection" or "Health"
  * @param {number} prospectSA
- * @param {number} planTerm - planCode prefix (8/12/16) for Protection;
- *                            roomAndBoard value (1500/2000/3000/4000) for Health
+ * @param {string|number} planTerm - planCode string (e.g. "8PWLBD") for Protection;
+ *                                  roomAndBoard number (e.g. 1500) for Health
  * @return {string} JSON string of the matched plan, or empty string on failure
  */
 function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA, planTerm) {
@@ -676,16 +676,14 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
   const plans = response?.data?.plans;
   if (!Array.isArray(plans) || plans.length === 0) return '';
 
-  const term = Number(planTerm);
+  const term = String(planTerm || '').trim();
   const category = String(prospectCategory || '').trim();
   let matched = null;
 
   if (category === 'Protection') {
-    const planCodeMap = { 8: '8PWLBD', 12: '12PWLBD', 16: '16PWLBD' };
-    const targetCode = planCodeMap[term];
-    matched = targetCode ? plans.find((p) => p.planCode === targetCode) : null;
+    matched = plans.find((p) => p.planCode === term) ?? null;
   } else if (category === 'Health') {
-    matched = plans.find((p) => p.rider?.[0]?.roomAndBoard === term) ?? null;
+    matched = plans.find((p) => p.rider?.[0]?.roomAndBoard === Number(planTerm)) ?? null;
   }
 
   if (!matched) {
