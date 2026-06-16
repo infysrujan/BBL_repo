@@ -816,11 +816,11 @@ function getSelectedLabelValue(dropdown) {
 * @name getCampaignNames
 * @param {string} campaignId - Campaign ID to look up in the campaign details JSON
 * @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
-* @returns {string[]}
+* @returns {string}
 */
 function getCampaignNames(campaignId, lang = 'th') {
   const data = fetchCcCampaignDetails(campaignId, lang);
-  return data.map((item) => item.CampaignName);
+  return data.map((item) => item.CampaignName).join(',');
 }
 
 /**
@@ -829,11 +829,11 @@ function getCampaignNames(campaignId, lang = 'th') {
 * @name getCampaignDetails
 * @param {string} campaignId - Campaign ID to look up in the campaign details JSON
 * @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
-* @returns {string[]}
+* @returns {string}
 */
 function getCampaignDetails(campaignId, lang = 'th') {
   const data = fetchCcCampaignDetails(campaignId, lang);
-  return data.map((item) => item.CampaignDetails);
+  return data.map((item) => item.CampaignDetails).join(',');
 }
 
 // eslint-disable-next-line import/prefer-default-export
