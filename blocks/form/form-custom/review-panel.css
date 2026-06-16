@@ -237,13 +237,6 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   font-size: var(--bbl-font-size-b2-desktop);
 }
 
-main .form form .form-review-2col fieldset.field-button-panel button {
-  margin: var(--bbl-space-250) 0 0;
-  text-align: center;
-  margin-top: var(--bbl-space-250);
-  gap: 1rem;
-}
-
 .form-review-2col:not(:has(.field-accuracy-check-text)) > fieldset:nth-last-of-type(2) {
   padding-bottom: var(--bbl-space-350);
   background-color: var(--bbl-color-gray-145);
