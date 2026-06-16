@@ -820,7 +820,7 @@ function getSelectedLabelValue(dropdown) {
 */
 function getCampaignNames(campaignId, lang = 'th') {
   const data = fetchCcCampaignDetails(campaignId, lang);
-  return data.CampaignName;
+  return data.campaignName;
 }
 
 /**
@@ -833,7 +833,7 @@ function getCampaignNames(campaignId, lang = 'th') {
 */
 function getCampaignDetails(campaignId, lang = 'th') {
   const data = fetchCcCampaignDetails(campaignId, lang);
-  return data.CampaignDetail;
+  return data.campaignDetail;
 }
 
 // eslint-disable-next-line import/prefer-default-export
