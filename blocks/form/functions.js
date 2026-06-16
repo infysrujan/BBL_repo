@@ -784,8 +784,6 @@ function fetchCcCampaignDetails(campaignId, language) {
 }
 
 function getidAndDob(id, dob) {
-  console.log('id', id);
-  console.log('dob', dob);
   const parts = dob.split(/[-/]/);
   // parts: [yyyy, mm, dd]  →  reorder to ddmmyyyy
   const ddmmyyyy = `${parts[2]}${parts[1]}${parts[0]}`;
