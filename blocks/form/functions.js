@@ -656,12 +656,21 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
   xhr.open('POST', baseUrl, false);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.setRequestHeader('Accept', 'application/json');
-  xhr.send(JSON.stringify({
-    prospectAge,
-    prospectGender,
-    prospectCategory,
-    prospectSA,
-  }));
+  try {
+    xhr.send(JSON.stringify({
+      prospectAge,
+      prospectGender,
+      prospectCategory,
+      prospectSA,
+    }));
+  } catch (e) {
+    // Sync XHR throws NetworkError on CORS block or connectivity failure
+    fetchPlanDataErrorMsg = e.message || 'Network error';
+    fetchPlanDataErrorStatus = 'NetworkError';
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData network/CORS error:', e.message);
+    return 'ERROR';
+  }
 
   let response;
   try {
