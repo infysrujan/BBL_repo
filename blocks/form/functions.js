@@ -820,7 +820,7 @@ function getSelectedLabelValue(dropdown) {
 */
 function getCampaignNames(campaignId, lang = 'th') {
   const data = fetchCcCampaignDetails(campaignId, lang);
-  return data.map((item) => item.CampaignName).join(',');
+  return data.CampaignName;
 }
 
 /**
@@ -833,7 +833,7 @@ function getCampaignNames(campaignId, lang = 'th') {
 */
 function getCampaignDetails(campaignId, lang = 'th') {
   const data = fetchCcCampaignDetails(campaignId, lang);
-  return data.map((item) => item.CampaignDetails).join(',');
+  return data.CampaignDetail;
 }
 
 // eslint-disable-next-line import/prefer-default-export
