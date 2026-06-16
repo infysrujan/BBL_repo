@@ -57,6 +57,9 @@
   --bbl-font-size-h3-mobile: 1.125rem;   /* 18px / 24px */
   --bbl-font-size-h4-mobile: 0.875rem;    /* 14px / 19px */
 
+  /* Intermediate */
+  --bbl-font-size-15: 0.9375rem;          /* 15px */
+
   /* Body - Desktop */
   --bbl-font-size-b1-desktop: 1rem;       /* 16px / 22px */
   --bbl-font-size-b2-desktop: 0.875rem; /* 14px / 18px */
