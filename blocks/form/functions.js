@@ -656,13 +656,17 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
   xhr.open('POST', baseUrl, false);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.setRequestHeader('Accept', 'application/json');
+  // Health uses "hospitalplan" key; Protection uses "prospectSA"
+  const isHealth = String(prospectCategory).trim() === 'Health';
+  const body = {
+    prospectAge,
+    prospectGender,
+    prospectCategory,
+    ...(isHealth ? { hospitalplan: String(planTerm) } : { prospectSA }),
+  };
+
   try {
-    xhr.send(JSON.stringify({
-      prospectAge,
-      prospectGender,
-      prospectCategory,
-      prospectSA,
-    }));
+    xhr.send(JSON.stringify(body));
   } catch (e) {
     // Sync XHR throws NetworkError on CORS block or connectivity failure
     fetchPlanDataErrorMsg = e.message || 'Network error';
