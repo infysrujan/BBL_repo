@@ -616,16 +616,36 @@ function getCcField(fieldName) {
   return ccLastResult?.[fieldName] ?? '';
 }
 
+// Module-level cache — set by fetchPlanData, read by getPlanField
+let fetchPlanDataResult = null;
+
 /**
- * Fetches plan data for the given prospect details and returns the first plan.
+ * Fetches plan data and returns a single filtered plan based on prospectCategory and planTerm.
+ *
+ * Protection: matches by planCode — 8 → "8PWLBD", 12 → "12PWLBD", 16 → "16PWLBD"
+ * Health: matches by rider[0].roomAndBoard — 1500 / 2000 / 3000 / 4000
+ *
+ * The matched plan object is cached in fetchPlanDataResult so getPlanField()
+ * can retrieve individual fields without re-calling the API.
+ *
+ * @name fetchPlanData
  * @param {number} prospectAge
  * @param {string} prospectGender
- * @param {string} prospectCategory
+ * @param {string} prospectCategory - "Protection" or "Health"
  * @param {number} prospectSA
- * @return {object|null}
+ * @param {number} planTerm - planCode prefix (8/12/16) for Protection;
+ *                            roomAndBoard value (1500/2000/3000/4000) for Health
+ * @return {string} JSON string of the matched plan, or empty string on failure
  */
-function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA) {
+function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA, planTerm) {
+  fetchPlanDataResult = null;
+
   const baseUrl = getBaseUrl('fetch-plan-data');
+  if (!baseUrl) {
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData: fetch-plan-data missing in configs.json');
+    return '';
+  }
 
   const xhr = new XMLHttpRequest();
   xhr.open('POST', baseUrl, false);
@@ -641,7 +661,7 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
   if (xhr.status < 200 || xhr.status >= 300) {
     // eslint-disable-next-line no-console
     console.error('fetchPlanData API error:', xhr.status, xhr.statusText);
-    return null;
+    return '';
   }
 
   let response;
@@ -650,13 +670,48 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('fetchPlanData JSON parse error:', e);
-    return null;
+    return '';
   }
 
   const plans = response?.data?.plans;
-  if (!Array.isArray(plans) || plans.length === 0) return null;
+  if (!Array.isArray(plans) || plans.length === 0) return '';
 
-  return plans[0];
+  const term = Number(planTerm);
+  const category = String(prospectCategory || '').trim();
+  let matched = null;
+
+  if (category === 'Protection') {
+    const planCodeMap = { 8: '8PWLBD', 12: '12PWLBD', 16: '16PWLBD' };
+    const targetCode = planCodeMap[term];
+    matched = targetCode ? plans.find((p) => p.planCode === targetCode) : null;
+  } else if (category === 'Health') {
+    matched = plans.find((p) => p.rider?.[0]?.roomAndBoard === term) ?? null;
+  }
+
+  if (!matched) {
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData: no plan matched for category', category, 'planTerm', term);
+    return '';
+  }
+
+  fetchPlanDataResult = matched;
+  return JSON.stringify(matched);
+}
+
+/**
+ * Returns a named field from the last fetchPlanData call.
+ * For nested rider fields use dot notation: "rider.0.roomAndBoard"
+ *
+ * @name getPlanField
+ * @param {string} fieldName - Top-level key (e.g. "planCode", "premium")
+ *                             or dot-path (e.g. "rider.0.roomAndBoard")
+ * @return {string}
+ */
+function getPlanField(fieldName) {
+  if (!fetchPlanDataResult) return '';
+  const value = String(fieldName).split('.')
+    .reduce((obj, k) => (obj != null ? obj[k] : null), fetchPlanDataResult);
+  return value != null ? String(value) : '';
 }
 
 /**
@@ -860,6 +915,7 @@ export {
   CcApplicationStatus,
   getCcField,
   fetchPlanData,
+  getPlanField,
   getCampaignDetails,
   getCampaignNames,
   formatDateTime,
