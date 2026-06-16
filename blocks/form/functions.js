@@ -616,8 +616,11 @@ function getCcField(fieldName) {
   return ccLastResult?.[fieldName] ?? '';
 }
 
-// Module-level cache — set by fetchPlanData, read by getPlanField
+// Module-level cache — set by fetchPlanData, read by
+// getPlanField / getRiderField / getPlanError / getPlanErrorStatus
 let fetchPlanDataResult = null;
+let fetchPlanDataErrorMsg = '';
+let fetchPlanDataErrorStatus = '';
 
 /**
  * Fetches plan data and returns a single filtered plan based on prospectCategory and planTerm.
@@ -639,6 +642,8 @@ let fetchPlanDataResult = null;
  */
 function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA, planTerm) {
   fetchPlanDataResult = null;
+  fetchPlanDataErrorMsg = '';
+  fetchPlanDataErrorStatus = '';
 
   const baseUrl = getBaseUrl('fetch-plan-data');
   if (!baseUrl) {
@@ -658,19 +663,32 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
     prospectSA,
   }));
 
-  if (xhr.status < 200 || xhr.status >= 300) {
-    // eslint-disable-next-line no-console
-    console.error('fetchPlanData API error:', xhr.status, xhr.statusText);
-    return '';
-  }
-
   let response;
   try {
     response = JSON.parse(xhr.responseText);
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.error('fetchPlanData JSON parse error:', e);
+    console.error('fetchPlanData JSON parse error (HTTP', xhr.status, '):', e);
     return '';
+  }
+
+  // Gateway / proxy error — e.g. BBL API layer returned HTTP 500
+  // with { success: false, status: 500, message: "..." }
+  if (response?.success === false) {
+    fetchPlanDataErrorMsg = response.message || 'Unknown error';
+    fetchPlanDataErrorStatus = String(response.status || 'Error');
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData gateway error:', fetchPlanDataErrorStatus, fetchPlanDataErrorMsg);
+    return 'ERROR';
+  }
+
+  // AIA API-level error — { status: "ERROR", data: {}, errMsg: "..." }
+  if (response?.status === 'ERROR') {
+    fetchPlanDataErrorMsg = response.errMsg || 'Unknown error';
+    fetchPlanDataErrorStatus = 'ERROR';
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData API returned ERROR:', fetchPlanDataErrorMsg);
+    return 'ERROR';
   }
 
   const plans = response?.data?.plans;
@@ -731,6 +749,29 @@ function getRiderField(riderCode, fieldName, defaultValue) {
   if (!rider) return fallback;
   const value = rider[fieldName];
   return value != null ? String(value) : fallback;
+}
+
+/**
+ * Returns the error message stored by the last fetchPlanData call that received
+ * an ERROR status, or '' when the last call succeeded.
+ *
+ * @name getPlanError
+ * @return {string}
+ */
+function getPlanError() {
+  return fetchPlanDataErrorMsg;
+}
+
+/**
+ * Returns the error status stored by the last fetchPlanData call:
+ * "ERROR" for an AIA API-level error, the HTTP status code string (e.g. "500")
+ * for a gateway error, or '' when the last call succeeded.
+ *
+ * @name getPlanErrorStatus
+ * @return {string}
+ */
+function getPlanErrorStatus() {
+  return fetchPlanDataErrorStatus;
 }
 
 /**
@@ -934,6 +975,8 @@ export {
   fetchPlanData,
   getPlanField,
   getRiderField,
+  getPlanError,
+  getPlanErrorStatus,
   getCampaignDetails,
   getCampaignNames,
   formatDateTime,
