@@ -713,6 +713,27 @@ function getPlanField(fieldName) {
 }
 
 /**
+ * Returns a named field from the rider matching riderCode in the last fetchPlanData result.
+ * Returns defaultValue if the riderCode is absent from the rider array.
+ *
+ * @name getRiderField
+ * @param {string} riderCode - e.g. "TI_Free", "ADBN8", "WP_FREE"
+ * @param {string} fieldName - e.g. "riderSA", "riderName"
+ * @param {string} [defaultValue] - returned when riderCode not found (default: '')
+ * @return {string}
+ */
+function getRiderField(riderCode, fieldName, defaultValue) {
+  const fallback = defaultValue != null ? String(defaultValue) : '';
+  if (!fetchPlanDataResult) return fallback;
+  const riders = fetchPlanDataResult.rider;
+  if (!Array.isArray(riders)) return fallback;
+  const rider = riders.find((r) => r.riderCode === riderCode);
+  if (!rider) return fallback;
+  const value = rider[fieldName];
+  return value != null ? String(value) : fallback;
+}
+
+/**
  * Fetches campaign details from the language-specific EDS spreadsheet and
  * returns the name and detail for the matching campaign ID.
  *
@@ -914,6 +935,7 @@ export {
   getCcField,
   fetchPlanData,
   getPlanField,
+  getRiderField,
   getCampaignDetails,
   getCampaignNames,
   formatDateTime,
