@@ -809,6 +809,33 @@ function getSelectedLabelValue(dropdown) {
   return parts.length > 0 ? parts[0].trim() : '';
 }
 
+/**
+* Returns BranchName display labels for a given province.
+* Maps to enumNames for branch dropdown.
+*
+* @name getCampaignNames
+* @param {string} campaignId - Campaign ID to look up in the campaign details JSON
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string[]}
+*/
+function getCampaignNames(campaignId, lang = 'th') {
+  const data = fetchCcCampaignDetails(campaignId, lang);
+  return data.map((item) => item.CampaignName);
+}
+
+/**
+* Returns CampaignDetail for a given campaign ID.
+*
+* @name getCampaignDetails
+* @param {string} campaignId - Campaign ID to look up in the campaign details JSON
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string[]}
+*/
+function getCampaignDetails(campaignId, lang = 'th') {
+  const data = fetchCcCampaignDetails(campaignId, lang);
+  return data.map((item) => item.CampaignDetails);
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -833,7 +860,8 @@ export {
   CcApplicationStatus,
   getCcField,
   fetchPlanData,
-  fetchCcCampaignDetails,
+  getCampaignDetails,
+  getCampaignNames,
   formatDateTime,
   updateTextCount,
   getSelectedLabelName,
