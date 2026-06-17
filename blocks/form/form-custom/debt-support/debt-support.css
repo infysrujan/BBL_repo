@@ -306,7 +306,8 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
         line-height: var(--bbl-line-height-b1-desktop);
       }
     }
-
+    
+    /* global changes for T & C and radio button */
     & .form form .field-wrapper.col-6 {
       grid-column: span 6;
     }

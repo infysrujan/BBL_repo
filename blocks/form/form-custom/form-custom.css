@@ -1,4 +1,4 @@
-﻿/* Central-aligned section block sizing */
+/* Central-aligned section block sizing */
 main .section.form-container.custom-forms.central-aligned .block,
 main .section.form-container.custom-forms.central-aligned>.default-content-wrapper {
   max-width: unset;
