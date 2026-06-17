@@ -345,7 +345,7 @@
   padding-bottom: 0.3125rem;
   color: var(--bbl-color-black);
   display: block;
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-body-b1-weight);
   font-family: var(--bbl-font-family-looped);
 }
 
