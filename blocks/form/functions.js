@@ -962,6 +962,23 @@ function getCampaignDetails(campaignId, lang = 'th') {
   return data.campaignDetail;
 }
 
+/**
+ * Returns true when the number of selected checkbox values does not exceed maxCount.
+ * Use as the expression in a Validate rule on a checkbox-group field so the form
+ * blocks submission when too many options are selected.
+ *
+ * UE Validate expression:  validateMaxCheckbox($field, 3)
+ *
+ * @name validateMaxCheckbox
+ * @param {string[]} selected - The checkbox-group value (array of selected values)
+ * @param {number} maxCount - Maximum allowed selections
+ * @return {boolean}
+ */
+function validateMaxCheckbox(selected, maxCount) {
+  const arr = Array.isArray(selected) ? selected : [];
+  return arr.length <= Number(maxCount);
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -996,4 +1013,5 @@ export {
   updateTextCount,
   getSelectedLabelName,
   getSelectedLabelValue,
+  validateMaxCheckbox,
 };
