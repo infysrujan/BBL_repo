@@ -62,6 +62,7 @@
   position: relative;
   width: 100%;
   display: block;
+  min-height: 60.75rem;
 }
 
 .hero-banner-video {
