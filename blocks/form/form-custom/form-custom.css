@@ -1,4 +1,4 @@
-/* Central aligned  section block sizing */
+/* Central-aligned section block sizing */
 main .section.form-container.custom-forms.central-aligned .block,
 main .section.form-container.custom-forms.central-aligned>.default-content-wrapper {
   max-width: unset;
@@ -45,6 +45,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 /* Override lead-form.css 1-column layouts to restore standard 12-column grids */
 main .section.form-container.custom-forms .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval) {
   grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
+  width:auto;
 }
 
 main .section.form-container.custom-forms .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval) :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
