@@ -104,5 +104,9 @@ export default async function componentDecorator(element, fd, container, formId)
     await loadComponent('file', element, fd, container, formId);
   }
 
+  if (fieldType === 'checkbox-group' && fd.properties?.maxSelect) {
+    await loadComponent('checkbox-group', element, fd, container, formId);
+  }
+
   return null;
 }

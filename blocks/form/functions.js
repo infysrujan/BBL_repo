@@ -616,14 +616,17 @@ function getCcField(fieldName) {
   return ccLastResult?.[fieldName] ?? '';
 }
 
-// Module-level cache — set by fetchPlanData, read by getPlanField
+// Module-level cache — set by fetchPlanData, read by
+// getPlanField / getRiderField / getPlanError / getPlanErrorStatus
 let fetchPlanDataResult = null;
+let fetchPlanDataErrorMsg = '';
+let fetchPlanDataErrorStatus = '';
 
 /**
  * Fetches plan data and returns a single filtered plan based on prospectCategory and planTerm.
  *
- * Protection: matches by planCode — 8 → "8PWLBD", 12 → "12PWLBD", 16 → "16PWLBD"
- * Health: matches by rider[0].roomAndBoard — 1500 / 2000 / 3000 / 4000
+ * Protection: planTerm is the planCode string directly — "8PWLBD", "12PWLBD", "16PWLBD"
+ * Health: planTerm is the roomAndBoard value as a string — "1500", "2000", "3000", "4000"
  *
  * The matched plan object is cached in fetchPlanDataResult so getPlanField()
  * can retrieve individual fields without re-calling the API.
@@ -633,12 +636,14 @@ let fetchPlanDataResult = null;
  * @param {string} prospectGender
  * @param {string} prospectCategory - "Protection" or "Health"
  * @param {number} prospectSA
- * @param {number} planTerm - planCode prefix (8/12/16) for Protection;
- *                            roomAndBoard value (1500/2000/3000/4000) for Health
+ * @param {string|number} planTerm - planCode string (e.g. "8PWLBD") for Protection;
+ *                                  roomAndBoard number (e.g. 1500) for Health
  * @return {string} JSON string of the matched plan, or empty string on failure
  */
 function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA, planTerm) {
   fetchPlanDataResult = null;
+  fetchPlanDataErrorMsg = '';
+  fetchPlanDataErrorStatus = '';
 
   const baseUrl = getBaseUrl('fetch-plan-data');
   if (!baseUrl) {
@@ -651,17 +656,24 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
   xhr.open('POST', baseUrl, false);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.setRequestHeader('Accept', 'application/json');
-  xhr.send(JSON.stringify({
+  // Health uses "hospitalplan" key; Protection uses "prospectSA"
+  const isHealth = String(prospectCategory).trim() === 'Health';
+  const body = {
     prospectAge,
     prospectGender,
     prospectCategory,
-    prospectSA,
-  }));
+    ...(isHealth ? { hospitalplan: String(planTerm) } : { prospectSA }),
+  };
 
-  if (xhr.status < 200 || xhr.status >= 300) {
+  try {
+    xhr.send(JSON.stringify(body));
+  } catch (e) {
+    // Sync XHR throws NetworkError on CORS block or connectivity failure
+    fetchPlanDataErrorMsg = e.message || 'Network error';
+    fetchPlanDataErrorStatus = 'NetworkError';
     // eslint-disable-next-line no-console
-    console.error('fetchPlanData API error:', xhr.status, xhr.statusText);
-    return '';
+    console.error('fetchPlanData network/CORS error:', e.message);
+    return 'ERROR';
   }
 
   let response;
@@ -669,23 +681,40 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
     response = JSON.parse(xhr.responseText);
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.error('fetchPlanData JSON parse error:', e);
+    console.error('fetchPlanData JSON parse error (HTTP', xhr.status, '):', e);
     return '';
+  }
+
+  // Gateway / proxy error — e.g. BBL API layer returned HTTP 500
+  // with { success: false, status: 500, message: "..." }
+  if (response?.success === false) {
+    fetchPlanDataErrorMsg = response.message || 'Unknown error';
+    fetchPlanDataErrorStatus = String(response.status || 'Error');
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData gateway error:', fetchPlanDataErrorStatus, fetchPlanDataErrorMsg);
+    return 'ERROR';
+  }
+
+  // AIA API-level error — { status: "ERROR", data: {}, errMsg: "..." }
+  if (response?.status === 'ERROR') {
+    fetchPlanDataErrorMsg = response.errMsg || 'Unknown error';
+    fetchPlanDataErrorStatus = 'ERROR';
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData API returned ERROR:', fetchPlanDataErrorMsg);
+    return 'ERROR';
   }
 
   const plans = response?.data?.plans;
   if (!Array.isArray(plans) || plans.length === 0) return '';
 
-  const term = Number(planTerm);
+  const term = String(planTerm || '').trim();
   const category = String(prospectCategory || '').trim();
   let matched = null;
 
   if (category === 'Protection') {
-    const planCodeMap = { 8: '8PWLBD', 12: '12PWLBD', 16: '16PWLBD' };
-    const targetCode = planCodeMap[term];
-    matched = targetCode ? plans.find((p) => p.planCode === targetCode) : null;
+    matched = plans.find((p) => p.planCode === term) ?? null;
   } else if (category === 'Health') {
-    matched = plans.find((p) => p.rider?.[0]?.roomAndBoard === term) ?? null;
+    matched = plans.find((p) => p.rider?.[0]?.roomAndBoard === Number(planTerm)) ?? null;
   }
 
   if (!matched) {
@@ -712,6 +741,50 @@ function getPlanField(fieldName) {
   const value = String(fieldName).split('.')
     .reduce((obj, k) => (obj != null ? obj[k] : null), fetchPlanDataResult);
   return value != null ? String(value) : '';
+}
+
+/**
+ * Returns a named field from the rider matching riderCode in the last fetchPlanData result.
+ * Returns defaultValue if the riderCode is absent from the rider array.
+ *
+ * @name getRiderField
+ * @param {string} riderCode - e.g. "TI_Free", "ADBN8", "WP_FREE"
+ * @param {string} fieldName - e.g. "riderSA", "riderName"
+ * @param {string} [defaultValue] - returned when riderCode not found (default: '')
+ * @return {string}
+ */
+function getRiderField(riderCode, fieldName, defaultValue) {
+  const fallback = defaultValue != null ? String(defaultValue) : '';
+  if (!fetchPlanDataResult) return fallback;
+  const riders = fetchPlanDataResult.rider;
+  if (!Array.isArray(riders)) return fallback;
+  const rider = riders.find((r) => r.riderCode === riderCode);
+  if (!rider) return fallback;
+  const value = rider[fieldName];
+  return value != null ? String(value) : fallback;
+}
+
+/**
+ * Returns the error message stored by the last fetchPlanData call that received
+ * an ERROR status, or '' when the last call succeeded.
+ *
+ * @name getPlanError
+ * @return {string}
+ */
+function getPlanError() {
+  return fetchPlanDataErrorMsg;
+}
+
+/**
+ * Returns the error status stored by the last fetchPlanData call:
+ * "ERROR" for an AIA API-level error, the HTTP status code string (e.g. "500")
+ * for a gateway error, or '' when the last call succeeded.
+ *
+ * @name getPlanErrorStatus
+ * @return {string}
+ */
+function getPlanErrorStatus() {
+  return fetchPlanDataErrorStatus;
 }
 
 /**
@@ -765,8 +838,6 @@ function fetchCcCampaignDetails(campaignId, language) {
 }
 
 function getidAndDob(id, dob) {
-  console.log('id', id);
-  console.log('dob', dob);
   const parts = dob.split(/[-/]/);
   // parts: [yyyy, mm, dd]  →  reorder to ddmmyyyy
   const ddmmyyyy = `${parts[2]}${parts[1]}${parts[0]}`;
@@ -891,6 +962,23 @@ function getCampaignDetails(campaignId, lang = 'th') {
   return data.campaignDetail;
 }
 
+/**
+ * Returns true when the number of selected checkbox values does not exceed maxCount.
+ * Use as the expression in a Validate rule on a checkbox-group field so the form
+ * blocks submission when too many options are selected.
+ *
+ * UE Validate expression:  validateMaxCheckbox($field, 3)
+ *
+ * @name validateMaxCheckbox
+ * @param {string[]} selected - The checkbox-group value (array of selected values)
+ * @param {number} maxCount - Maximum allowed selections
+ * @return {boolean}
+ */
+function validateMaxCheckbox(selected, maxCount) {
+  const arr = Array.isArray(selected) ? selected : [];
+  return arr.length <= Number(maxCount);
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -916,10 +1004,14 @@ export {
   getCcField,
   fetchPlanData,
   getPlanField,
+  getRiderField,
+  getPlanError,
+  getPlanErrorStatus,
   getCampaignDetails,
   getCampaignNames,
   formatDateTime,
   updateTextCount,
   getSelectedLabelName,
   getSelectedLabelValue,
+  validateMaxCheckbox,
 };
