@@ -97,6 +97,10 @@
   height: auto;
 }
 
+.hero-banner-hero-with-thumbnail-images .hero-banner-item:not(:has(.hero-banner-video-wrapper)) {
+  height: auto;
+}
+
 .hero-banner-private-wealth-banking .hero-banner-img {
   height: 21.875rem;
 }
