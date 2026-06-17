@@ -298,6 +298,12 @@
     "components": []
   },
   {
+    "id": "header-banner-slide",
+    "components": [
+      "credit-card"
+    ]
+  },
+  {
     "id": "header-section",
     "components": [
       "top-nav",

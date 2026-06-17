@@ -10122,6 +10122,82 @@
     ]
   },
   {
+    "id": "header-banner-slide",
+    "fields": [
+      {
+        "component": "text",
+        "name": "creditCardBannerTitle",
+        "label": "Credit Card Banner Title",
+        "description": "credit card banner title"
+      },
+      {
+        "component": "boolean",
+        "name": "autoScroll",
+        "label": "Auto-Scroll",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "select",
+        "name": "scrollTimeDelay",
+        "label": "Scroll Time Delay (milliseconds)",
+        "valueType": "string",
+        "value": "3000",
+        "options": [
+          {
+            "name": "3 seconds",
+            "value": "3000"
+          },
+          {
+            "name": "5 seconds",
+            "value": "5000"
+          },
+          {
+            "name": "10 seconds",
+            "value": "10000"
+          }
+        ],
+        "condition": {
+          "and": [
+            {
+              "!!": [
+                {
+                  "var": "autoScroll"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "boolean",
+        "name": "infiniteLoop",
+        "label": "Infinite Loop",
+        "valueType": "boolean",
+        "value": true
+      }
+    ]
+  },
+  {
+    "id": "credit-card",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "creditCardImage",
+        "label": "Credit Card Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "creditCardImageAlt",
+        "label": "Alt",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "header-section",
     "fields": [
       {
