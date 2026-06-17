@@ -80,6 +80,9 @@ function initCarousel(carousel, track) {
 }
 
 export default function decorate(block) {
+  const existingWrapper = block.querySelector(':scope > .header-banner-slide-wrapper');
+  if (existingWrapper) existingWrapper.remove();
+
   const blockResource = block.dataset.aueResource;
   if (blockResource) {
     block.ownerDocument.querySelectorAll('.header-banner-slide.block').forEach((other) => {
@@ -91,21 +94,29 @@ export default function decorate(block) {
     });
   }
 
-  const [titleEl,
-    isAutoPlayEl,
-    scrollTimeDelayEl,
-    infiniteLoopEl,
-    ...creditCardcells
-  ] = block.children;
+  const allRows = [...block.children];
+
+  const configRows = [];
+  const creditCardcells = [];
+
+  allRows.forEach((row) => {
+    const hasImage = row.querySelector('img, picture');
+    const isUEItem = row.querySelector('[data-aue-resource]') || row.dataset.aueResource;
+    if (hasImage || isUEItem) {
+      creditCardcells.push(row);
+    } else {
+      configRows.push(row);
+    }
+  });
+
+  const [titleEl, isAutoPlayEl, scrollTimeDelayEl, infiniteLoopEl] = configRows;
 
   const title = titleEl?.textContent?.trim();
   const isAutoPlay = isAutoPlayEl?.textContent?.trim();
   const scrollTimeDelay = scrollTimeDelayEl?.textContent?.trim();
   const infiniteLoop = infiniteLoopEl?.textContent?.trim();
 
-  [titleEl, isAutoPlayEl, scrollTimeDelayEl, infiniteLoopEl].forEach((row) => {
-    if (row) row.hidden = true;
-  });
+  configRows.forEach((row) => row?.remove());
 
   const wrapper = document.createElement('div');
   wrapper.className = 'header-banner-slide-wrapper';
@@ -126,17 +137,23 @@ export default function decorate(block) {
 
   creditCardcells.forEach((item) => {
     const [creditCardImagesEl] = item.children || [];
-    if (!creditCardImagesEl) return;
-
-    if (!creditCardImagesEl.querySelector('img')) return;
 
     const cardItem = document.createElement('div');
     cardItem.className = 'header-banner-slide-item';
-    cardItem.appendChild(creditCardImagesEl.cloneNode(true));
+    if (creditCardImagesEl) {
+      const picture = creditCardImagesEl.querySelector('picture');
+      const img = creditCardImagesEl.querySelector('img');
+      if (picture) {
+        cardItem.appendChild(picture);
+      } else if (img) {
+        cardItem.appendChild(img);
+      }
+    }
 
     moveInstrumentation(item, cardItem);
     track.appendChild(cardItem);
-    item.remove();
+    item.hidden = true;
+    item.style.display = 'none';
   });
 
   carousel.appendChild(track);
