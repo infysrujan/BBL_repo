@@ -1261,4 +1261,16 @@
   .saving-plan-dropdown-current {
     font-size: var(--bbl-font-size-b1-desktop);
   }
+
+  .saving-plan-info-card-slot .category-banner-title {
+    font-size: var(--bbl-font-size-h2-desktop);
+  }
+
+  .saving-plan-tweak-title {
+    font-size: var(--bbl-font-size-h3-desktop);
+  }
+
+  .saving-plan-newplan-title {
+    font-size: var(--bbl-font-size-h3-desktop);
+  }
 }
