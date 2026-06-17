@@ -309,21 +309,6 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
 
   const overlay = createElement('div', 'hero-banner-iframe-overlay');
   iframe.insertAdjacentElement('afterend', overlay);
-  const centerBtn = createElement('button', 'hero-banner-center-play');
-  centerBtn.setAttribute('aria-label', 'Play');
-  centerBtn.innerHTML = VI.play;
-  overlay.insertAdjacentElement('afterend', centerBtn);
-
-  // Cover YouTube's native play button by showing the video thumbnail on the overlay when paused
-  const ytThumbId = (iframe.src.match(/embed\/([^?&]+)/) || [])[1];
-  const setOverlayThumb = (visible) => {
-    if (!ytThumbId) return;
-    overlay.style.backgroundImage = visible
-      ? `url(https://img.youtube.com/vi/${ytThumbId}/hqdefault.jpg)` : '';
-    overlay.style.backgroundSize = 'cover';
-    overlay.style.backgroundPosition = 'center';
-  };
-  setOverlayThumb(true);
 
   loadYTScript(ytSrc);
   onYTReady(() => {
@@ -355,8 +340,6 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
           playBtn.innerHTML = playing ? VI.pause : VI.play;
           playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
           if (playing) {
-            centerBtn.classList.add('hero-banner-center-play-hidden');
-            setOverlayThumb(false);
             // Sync mute UI with actual player mute state
             const muted = target.isMuted();
             muteBtn.innerHTML = muted ? VI.muted : VI.volume;
@@ -371,8 +354,6 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
               }, 500);
             }
           } else {
-            centerBtn.classList.remove('hero-banner-center-play-hidden');
-            setOverlayThumb(true);
             clearInterval(pollId); pollId = null;
             if (data === PlayerState.ENDED) { target.seekTo(0); target.playVideo(); }
           }
@@ -410,8 +391,6 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
 
     wireShare(bar.querySelector('.hero-ctrl-share'));
     wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
-
-    centerBtn.addEventListener('click', () => { player.playVideo(); });
 
     overlay.addEventListener('click', () => {
       if (player.getPlayerState() === window.YT.PlayerState.PLAYING) player.pauseVideo();
