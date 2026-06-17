@@ -128,17 +128,15 @@ export default function decorate(block) {
     const [creditCardImagesEl] = item.children || [];
     if (!creditCardImagesEl) return;
 
-    const picture = creditCardImagesEl.querySelector('picture');
-    const img = creditCardImagesEl.querySelector('img');
-    if (!img) return;
+    if (!creditCardImagesEl.querySelector('img')) return;
 
     const cardItem = document.createElement('div');
     cardItem.className = 'header-banner-slide-item';
-    cardItem.appendChild((picture || img).cloneNode(true));
+    cardItem.appendChild(creditCardImagesEl.cloneNode(true));
 
     moveInstrumentation(item, cardItem);
     track.appendChild(cardItem);
-    item.hidden = true;
+    item.remove();
   });
 
   carousel.appendChild(track);

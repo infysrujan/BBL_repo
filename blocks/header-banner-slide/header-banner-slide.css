@@ -46,7 +46,3 @@
   pointer-events: none;
   -webkit-user-drag: none;
 }
-
-.header-banner-slide-item img {
-  -webkit-box-reflect: below 0 linear-gradient(to bottom, black, transparent 60%);
-}
