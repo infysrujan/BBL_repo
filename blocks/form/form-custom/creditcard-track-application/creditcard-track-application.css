@@ -862,7 +862,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         width: 100%;
         max-width: var(--cc-form-max-width);
       }
-
+      
+      /* global changes for T & C and radio button */
       & > :is(.cc-panel-item-form-actions, .field-wrapper.col-12.cc-panel-item-form-actions) {
         padding: 0;
       }

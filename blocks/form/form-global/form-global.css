@@ -1,5 +1,7 @@
 /* global form styles */
 
+/* global changes for T & C and radio button */
+
 /* Scrollbar resets for terms and conditions text area */
 main .section.form-container .form .tnc-text-decoration::-webkit-scrollbar-button,
 main .section.form-container .form .tnc-text-decoration::-webkit-scrollbar-button:single-button {
