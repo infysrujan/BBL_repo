@@ -30,7 +30,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 }
 
 main .section.form-container.custom-forms:has(.cc-app-main-form) {
-  --cc-form-max-width: 53.125rem;
+  --cc-form-max-width: 55.625rem;
   --cc-form-gutter: 0.9375rem;
   --cc-timeline-panel-width: 28.75rem;
   --cc-message-form-max-width: 46.25rem;
@@ -277,18 +277,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     }
   }
 
-  & .form fieldset.panel-wrapper.field-wrapper:not(.cc-panel-item-form-consent) .tnc-text-decoration {
-    max-height: 9.375rem;
-    border: none;
-  }
-
-  @media (width < 64rem) {
-    & .form form :is(.field-short-privacy-notice, .tnc-text-decoration) :is(p, p p) {
-      font-size: var(--bbl-font-size-h4-mobile);
-      line-height: var(--bbl-line-height-h2-mobile);
-    }
-  }
-
   & .form form {
     display: block;
     gap: 0;
@@ -309,6 +297,19 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       width: 100%;
       max-width: 100%;
       clear: both;
+      grid-column: auto;
+    }
+
+    & .field-wrapper.custom-fieldset-approval {
+      display: grid;
+      clear: none;
+    }
+
+    & .custom-fieldset-approval > fieldset.panel-wrapper {
+      display: contents;
+      width: auto;
+      max-width: none;
+      clear: none;
       grid-column: auto;
     }
 
@@ -336,7 +337,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       vertical-align: middle;
     }
 
-    & .radio-group-wrapper.horizontal {
+    & .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
       display: flex;
       flex-flow: row wrap;
       justify-content: flex-start;
@@ -390,119 +391,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           justify-content: center;
           width: auto;
           clear: none;
-        }
-      }
-
-      &.cc-app-main-form > .cc-panel-item-form-consent {
-        position: relative;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: auto auto;
-        width: 100%;
-        max-width: 100%;
-        margin-top: var(--bbl-space-200);
-        padding: 0 0 0 2.1875rem;
-
-        & > legend {
-          display: none;
-        }
-
-        & .checkbox-wrapper {
-          display: contents;
-        }
-
-        & input[name='approvalcheckbox'] {
-          position: absolute;
-          top: var(--bbl-space-050);
-          left: 0;
-          z-index: 1;
-          width: var(--bbl-space-250);
-          height: var(--bbl-space-250);
-          margin: 3px var(--bbl-space-100) 3px var(--bbl-space-050);
-          flex: none;
-          cursor: pointer;
-          outline: none;
-        }
-
-        & input[name='approvalcheckbox']:hover {
-          border: 1px solid var(--bbl-color-grey-125);
-        }
-
-        & input[name='approvalcheckbox']:invalid {
-          box-shadow: none;
-          outline: none;
-        }
-
-        & .tnc-text-decoration {
-          grid-row: 1;
-          grid-column: 1 / -1;
-          width: 100%;
-          min-width: 0;
-          max-width: 100%;
-          max-height: 10.9375rem;
-          margin: 0 0 1.25rem;
-          padding: 0 var(--bbl-space-100) 0 0;
-          border-radius: var(--bbl-radius-none);
-          color: var(--bbl-color-grey-85);
-          line-height: var(--bbl-line-height-h2-mobile);
-          overflow: auto;
-          scrollbar-color: var(--bbl-color-active-blue) var(--bbl-color-grey-10);
-          scrollbar-width: thin;
-
-          & :is(p, p p) {
-            margin: 0;
-            padding: 0;
-            line-height: var(--bbl-line-height-h2-mobile);
-          }
-
-          @media (width < 64rem) {
-            & :is(p, p p) {
-              font-size: var(--bbl-font-size-h4-mobile);
-            }
-          }
-
-          &::-webkit-scrollbar {
-            width: var(--bbl-space-100);
-          }
-
-          &::-webkit-scrollbar-track {
-            background: var(--bbl-color-grey-10);
-          }
-
-          &::-webkit-scrollbar-thumb {
-            background: var(--bbl-color-active-blue);
-            border-radius: var(--bbl-rounded-050);
-          }
-        }
-
-        &:is(
-          :has(.checkbox-wrapper.field-invalid),
-          :has(input[name='approvalcheckbox']:user-invalid),
-          .field-invalid
-        ) .tnc-text-decoration {
-          border-color: var(--bbl-color-orange-130);
-        }
-
-        & :is(> .field-description, .checkbox-wrapper .field-description) {
-          grid-row: 2;
-          grid-column: 1 / -1;
-          position: static;
-          display: block;
-          width: 100%;
-          max-width: 100%;
-          margin: 0;
-          padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
-          font-size: var(--bbl-body-b2-size);
-          font-weight: var(--bbl-body-b2-weight);
-          line-height: var(--bbl-body-b2-line-height);
-          clear: both;
-          order: unset;
-        }
-
-        & :is(.field-wrapper.col-1, .field-wrapper.col-11, .field-wrapper.col-12) {
-          grid-column: 1 / -1;
-          width: 100%;
-          max-width: 100%;
         }
       }
 
@@ -880,12 +768,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       grid-column: span 6;
     }
 
-    & .form form fieldset.panel-wrapper.cc-app-main-form > .cc-panel-item-form-consent .tnc-text-decoration :is(p, p p),
-    & .form form :is(.field-short-privacy-notice, .tnc-text-decoration) :is(p, p p) {
-      font-size: var(--form-font-size-xs);
-      line-height: var(--bbl-line-height-b1-desktop);
-    }
-
     & .form :is(
       :is(.field-submitbuttonpanel, .field-submitbuttonpanel2, .field-button-panel) .button,
       :is(.field-submitcta, .field-cancel, [class~='field-Cancel'], form .submit-wrapper) .button,
@@ -974,11 +856,19 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         margin: 0;
       }
 
-      & > :is(.cc-panel-item-form-consent, .cc-panel-item-form-actions),
-      & > .field-wrapper.col-12:is(.cc-panel-item-form-consent, .cc-panel-item-form-actions) {
+      & > :is(.custom-fieldset-approval, .cc-panel-item-form-actions),
+      & > .field-wrapper.col-12:is(.custom-fieldset-approval, .cc-panel-item-form-actions) {
         grid-column: 1 / -1;
         width: 100%;
         max-width: var(--cc-form-max-width);
+      }
+
+      & > :is(.cc-panel-item-form-actions, .field-wrapper.col-12.cc-panel-item-form-actions) {
+        padding: 0;
+      }
+
+      & > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration) {
+        max-height: 10.9375rem;
       }
     }
 
