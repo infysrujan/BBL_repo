@@ -93,11 +93,7 @@
 }
 
 .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe),
-.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video) {
-  height: auto;
-}
-
-.hero-banner-hero-with-thumbnail-images .hero-banner-item:not(:has(.hero-banner-video-wrapper)) {
+.hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video), .hero-banner-hero-with-thumbnail-images .hero-banner-item:not(:has(.hero-banner-video-wrapper)) {
   height: auto;
 }
 
@@ -134,7 +130,7 @@
 
 .hero-banner-video-wrapper:has(iframe.hero-banner-video) .hero-banner-video-controls,
 .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-video-controls {
-  margin-bottom: 25px;
+  margin-bottom: 1.5625rem;
 }
 
 .hero-yt-not-started iframe.hero-banner-video {
