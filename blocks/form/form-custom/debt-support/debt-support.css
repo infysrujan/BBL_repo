@@ -166,7 +166,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
       gap: var(--bbl-space-100);
       width: 100%;
       margin: 0;
-      padding-left: 20px;
+      padding-left: 1.25rem;
     }
 
     & .checkbox-wrapper label {
@@ -186,7 +186,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     color: var(--form-fieldset-legend-color);
     background: unset;
     text-decoration: underline;
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
   }
 
   /* Mobile: stack half-width fields in a single column */
@@ -251,7 +251,7 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     & .form form .field-loan-type .checkbox-group-wrapper .checkbox-wrapper {
       width: calc(50% - var(--bbl-space-150));
       padding-left: var(--bbl-space-250);
-      margin-bottom: 10px;
+      margin-bottom: 0.625rem;
 
       & label {
         font-size: var(--form-font-size-xs);
