@@ -256,8 +256,15 @@ function getDocumentLangFromPath(pathname) {
 }
 
 function redirectToLocale() {
-  const locale = getDocumentLangFromPath(window.location.pathname);
-  const { pathname } = window.location;
+  let { pathname } = window.location;
+
+  if (pathname.length > 1 && pathname.endsWith('/')) {
+    pathname = pathname.slice(0, -1);
+    window.location.replace(pathname + window.location.search + window.location.hash);
+    return;
+  }
+
+  const locale = getDocumentLangFromPath(pathname);
 
   if (!/^\/(en|th)(\/|$)/.test(pathname)) {
     window.location.replace(`/${locale}${pathname === '/' ? '/' : pathname}`);
