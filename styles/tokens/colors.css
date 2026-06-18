@@ -63,6 +63,7 @@
   --bbl-color-grey-152: #dcdcdc;
   --bbl-color-grey-153: #696969;
   --bbl-color-grey-155: #eeeef2;
+  --bbl-color-grey-156: #789;
   
 
   /* =========================================================================
@@ -80,6 +81,7 @@
   --bbl-color-blue-50: #7DB0FF;
   --bbl-color-blue-60: #5D99FF;
   --bbl-color-blue-70: #357EF8;
+  
   /* Active Blue is at position ~75 */
   --bbl-color-blue-80: #0068B7;
   --bbl-color-blue-90: #0048B7;
@@ -87,6 +89,9 @@
   --bbl-color-blue-105: #003399;
   --bbl-color-blue-108: #002D5B;
   --bbl-color-blue-113: #022D53;
+  --bbl-color-blue-114: #041b66;
+  --bbl-color-blue-115: #193799;
+
   /* Truthful Blue is at position ~110 */
   --bbl-color-blue-120: #031D37;
   --bbl-color-blue-130: #002087;

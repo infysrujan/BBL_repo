@@ -1,44 +1,86 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 function initCarousel(carousel, track) {
-  const total = track.children.length;
-  if (total <= 4) return;
+  const realTotal = track.children.length;
+  if (realTotal <= 4) return;
 
   const autoplay = carousel.dataset.autoplay !== 'false';
   const speed = parseInt(carousel.dataset.autoplaySpeed, 10) || 3000;
   const infinite = carousel.dataset.infinite !== 'false';
-  const maxIndex = total - 4;
   const STEP = 4;
+  const maxIndex = realTotal - STEP;
 
-  let currentIndex = 0;
+  const GAP = parseFloat(getComputedStyle(track).gap) || 0;
+  const itemWidth = (carousel.getBoundingClientRect().width - (STEP - 1) * GAP) / STEP;
+  const itemStep = itemWidth + GAP;
+  [...track.children].forEach((item) => { item.style.width = `${itemWidth}px`; });
+
+  const positions = [];
+  for (let i = 0; i <= maxIndex; i += STEP) positions.push(i);
+  if (positions[positions.length - 1] < maxIndex) positions.push(maxIndex);
+
+  const offset = infinite ? STEP : 0;
+
+  if (infinite) {
+    const realItems = [...track.children];
+    realItems.slice(-STEP).reverse().forEach((c) => track.prepend(c.cloneNode(true)));
+    realItems.slice(0, STEP).forEach((c) => track.appendChild(c.cloneNode(true)));
+  }
+
+  track.style.width = `${track.children.length * itemStep - GAP}px`;
+
+  let posIdx = 0;
   let autoplayTimer = null;
   let isDragging = false;
   let startX = 0;
+  let isWrapping = false;
 
-  function getSlideWidth() {
-    const item = track.firstElementChild;
-    if (!item) return 0;
-    return item.getBoundingClientRect().width
-      + (parseFloat(getComputedStyle(track).columnGap) || 0);
+  function moveTo(slideIdx, animate = true) {
+    if (!animate) track.style.transition = 'none';
+    track.style.transform = `translate3d(${-(offset + slideIdx) * itemStep}px, 0, 0)`;
+    if (!animate) {
+      requestAnimationFrame(() => requestAnimationFrame(() => { track.style.transition = ''; }));
+    }
   }
 
-  function slideTo(index) {
-    currentIndex = Math.max(0, Math.min(index, maxIndex));
-    track.style.transform = `translate3d(${-currentIndex * getSlideWidth()}px, 0, 0)`;
-  }
+  moveTo(0, false);
 
-  function stopAutoplay() {
-    clearInterval(autoplayTimer);
-    autoplayTimer = null;
-  }
+  function stopAutoplay() { clearInterval(autoplayTimer); autoplayTimer = null; }
 
   function next() {
-    if (!infinite && currentIndex >= maxIndex) {
-      stopAutoplay();
-      return;
+    if (isWrapping) return;
+    if (!infinite && posIdx >= positions.length - 1) { stopAutoplay(); return; }
+
+    if (infinite && posIdx >= positions.length - 1) {
+      isWrapping = true;
+      track.style.transform = `translate3d(${-(offset + realTotal) * itemStep}px, 0, 0)`;
+      track.addEventListener('transitionend', () => {
+        moveTo(0, false);
+        posIdx = 0;
+        isWrapping = false;
+      }, { once: true });
+    } else {
+      posIdx += 1;
+      moveTo(positions[posIdx]);
     }
-    const nextIndex = currentIndex + STEP;
-    slideTo(infinite && nextIndex > maxIndex ? 0 : nextIndex);
+  }
+
+  function prev() {
+    if (isWrapping) return;
+    if (!infinite && posIdx <= 0) return;
+
+    if (infinite && posIdx <= 0) {
+      isWrapping = true;
+      track.style.transform = 'translate3d(0px, 0, 0)';
+      track.addEventListener('transitionend', () => {
+        moveTo(positions[positions.length - 1], false);
+        posIdx = positions.length - 1;
+        isWrapping = false;
+      }, { once: true });
+    } else {
+      posIdx -= 1;
+      moveTo(positions[posIdx]);
+    }
   }
 
   function startAutoplay() {
@@ -61,8 +103,11 @@ function initCarousel(carousel, track) {
     isDragging = false;
     carousel.classList.remove('is-dragging');
     const diff = e.clientX - startX;
-    if (diff < -50) slideTo(currentIndex + STEP);
-    else if (diff > 50) slideTo(currentIndex - STEP);
+    if (diff < -50) {
+      next();
+    } else if (diff > 50) {
+      prev();
+    }
     startAutoplay();
   });
 
@@ -73,29 +118,32 @@ function initCarousel(carousel, track) {
 
   carousel.addEventListener('touchend', (e) => {
     const diff = e.changedTouches[0].clientX - startX;
-    if (diff < -50) slideTo(currentIndex + STEP);
-    else if (diff > 50) slideTo(currentIndex - STEP);
+    if (diff < -50) {
+      next();
+    } else if (diff > 50) {
+      prev();
+    }
     startAutoplay();
   }, { passive: true });
 }
 
 export default function decorate(block) {
-  const existingWrapper = block.querySelector(':scope > .header-banner-slide-wrapper');
-  if (existingWrapper) existingWrapper.remove();
+  block.querySelector(':scope > .header-banner-slide-title')?.remove();
+  block.querySelector(':scope > .header-banner-slide-carousel')?.remove();
+  block.querySelector(':scope > .header-banner-slide-source-rows')?.remove();
 
   const blockResource = block.dataset.aueResource;
   if (blockResource) {
     block.ownerDocument.querySelectorAll('.header-banner-slide.block').forEach((other) => {
       if (other !== block
         && other.dataset.aueResource === blockResource
-        && other.querySelector(':scope > .header-banner-slide-wrapper')) {
+        && other.querySelector(':scope > .header-banner-slide-carousel')) {
         other.remove();
       }
     });
   }
 
   const allRows = [...block.children];
-
   const configRows = [];
   const creditCardcells = [];
 
@@ -117,23 +165,23 @@ export default function decorate(block) {
   const infiniteLoop = infiniteLoopEl?.textContent?.trim();
 
   configRows.forEach((row) => row?.remove());
-
-  const wrapper = document.createElement('div');
-  wrapper.className = 'header-banner-slide-wrapper';
-
   const titleDiv = document.createElement('div');
   titleDiv.className = 'header-banner-slide-title';
   if (title) titleDiv.textContent = title;
-  wrapper.appendChild(titleDiv);
+  block.appendChild(titleDiv);
 
   const carousel = document.createElement('div');
-  carousel.className = 'header-banner-slide-carousel';
+  carousel.className = 'header-banner-slide-carousel content';
   carousel.dataset.autoplay = isAutoPlay ?? 'true';
   carousel.dataset.autoplaySpeed = scrollTimeDelay ?? '3000';
   carousel.dataset.infinite = infiniteLoop ?? 'true';
 
   const track = document.createElement('div');
   track.className = 'header-banner-slide-track';
+
+  const sourceHolder = document.createElement('div');
+  sourceHolder.className = 'header-banner-slide-source-rows';
+  sourceHolder.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;opacity:0;';
 
   creditCardcells.forEach((item) => {
     const [creditCardImagesEl] = item.children || [];
@@ -152,13 +200,18 @@ export default function decorate(block) {
 
     moveInstrumentation(item, cardItem);
     track.appendChild(cardItem);
-    item.hidden = true;
-    item.style.display = 'none';
+    sourceHolder.appendChild(item);
   });
 
   carousel.appendChild(track);
-  wrapper.appendChild(carousel);
-  block.appendChild(wrapper);
+  block.appendChild(carousel);
+  block.appendChild(sourceHolder);
 
-  requestAnimationFrame(() => requestAnimationFrame(() => initCarousel(carousel, track)));
+  const ro = new ResizeObserver((entries) => {
+    if (entries[0].contentRect.width > 0) {
+      ro.disconnect();
+      initCarousel(carousel, track);
+    }
+  });
+  ro.observe(carousel);
 }
