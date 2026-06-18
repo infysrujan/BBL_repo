@@ -1,0 +1,16 @@
+main .section.form-container.custom-forms .form form {
+  & .helper-text {
+    position: absolute;
+    bottom: 85px;
+    right: 0;
+    padding: 0;
+
+    input {
+      border: none;
+      text-align: right;
+      bottom: 80px;
+      padding: 0;
+      background: transparent;
+    }
+  }
+}
