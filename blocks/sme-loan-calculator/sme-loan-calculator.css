@@ -437,17 +437,10 @@ main {
 
   /* Slightly larger than mobile but small enough for all 4 tabs to fit on one line */
   .section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
-<<<<<<< HEAD
-     font-size: 0.8125rem;
-    line-height: 1.3;
-    padding: 1rem 0.5rem;
-    white-space: nowrap;
-=======
     font-size: 0.8125rem;
     line-height: 1.3;
     padding: 1rem 0.5rem;
     white-space: normal;
->>>>>>> cc5da841f2a86e0409829308e481378654703343
     max-width: none;
   }
 
