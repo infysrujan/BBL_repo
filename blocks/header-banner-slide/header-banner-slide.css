@@ -37,7 +37,7 @@
     left: 50%;
     transform: translateX(-50%);
     height: 0.0625rem;
-    background: var(--bbl-color-grey-156);
+    background: var(--bbl-color-grey-158);
     width: 6.25rem;
     margin-inline: auto;
     z-index: 1;
