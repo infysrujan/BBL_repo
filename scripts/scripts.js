@@ -255,6 +255,15 @@ function getDocumentLangFromPath(pathname) {
   return 'th';
 }
 
+function redirectToLocale() {
+  const locale = getDocumentLangFromPath(window.location.pathname);
+  const { pathname } = window.location;
+
+  if (!/^\/(en|th)(\/|$)/.test(pathname)) {
+    window.location.replace(`/${locale}${pathname === '/' ? '/' : pathname}`);
+  }
+}
+
 function decorateOgTitle() {
   const shortTitle = getMetadata('short-title');
   const title = shortTitle || document.title;
@@ -355,6 +364,7 @@ async function loadEager(doc) {
     },
   );
 
+  redirectToLocale();
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
