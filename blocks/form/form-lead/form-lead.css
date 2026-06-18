@@ -102,7 +102,7 @@ main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .pa
   bottom: 0;
   left: 50%;
   width: var(--bbl-space-1000);
-  height: 1px;
+  height: 0.0625rem;
   margin-left: calc(var(--bbl-space-1000) / -2);
   background: var(--bbl-color-grey-150);
 }
@@ -211,7 +211,7 @@ main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number
   height: 2.75rem;
   margin: 0 0 var(--bbl-font-size-b2);
   color: var(--bbl-color-black);
-  border: 1px solid var(--bbl-color-grey-150);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: 0.4375rem;
   font-size: var(--bbl-font-size-b1-desktop);
   line-height: 2.75rem;
@@ -221,7 +221,7 @@ main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number
 main .lead-forms .form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
 main .lead-forms .form-wrapper .form .drop-down-wrapper.field-invalid select {
   border-color: var(--bbl-color-red-130);
-  outline: 1px solid transparent;
+  outline: 0.0625rem solid transparent;
   margin: 0;
 }
 
@@ -230,7 +230,7 @@ main .lead-forms .section.form-container.custom-forms .drop-down-wrapper.field-w
   height: 2.75rem;
   margin: 0 0 var(--bbl-font-size-b2);
   color: var(--bbl-color-black);
-  border: 1px solid var(--bbl-color-grey-150);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: 0.4375rem;
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: 2.75rem;
@@ -505,14 +505,14 @@ input[name='BBLAdvancedCheckbox'] {
   margin: 0.1875rem 0.1875rem 0.1875rem 0.25rem;
   flex: none;
   padding: 0;
-  border: 1px solid var(--bbl-color-grey-150);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
   background-color: var(--bbl-color-white);
   appearance: none;
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:hover,
 input[name='BBLAdvancedCheckbox']:hover {
-  border: 1px solid var(--bbl-color-blue-115);
+  border: 0.0625rem solid var(--bbl-color-blue-115);
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:checked,
@@ -548,13 +548,13 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(.checkbox-w
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(:is(input[name='approvalcheckbox'], input[name='BBLAdvancedCheckbox'])):hover :is(input[name='approvalcheckbox'], input[name='BBLAdvancedCheckbox']) {
-  border: 1px solid var(--bbl-color-blue-115);
+  border: 0.0625rem solid var(--bbl-color-blue-115);
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
   grid-row: 1;
   grid-column: 1;
-  border: 1px solid var(--bbl-color-grey-150);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: var(--bbl-radius-none);
   max-height: 15rem;
   margin: 0.1875rem var(--bbl-space-100) 0.9375rem 0;
@@ -563,7 +563,7 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decor
   overflow: auto;
   scrollbar-width: thin;
   margin-right: 0.3125rem;
-  scrollbar-color: var(--bbl-color-grey-157) var(--bbl-color-grey-156);
+  scrollbar-color: var(--bbl-color-grey-161) var(--bbl-color-grey-158);
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar {
@@ -673,7 +673,7 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input
   height: 100%;
   margin: 0;
   background: var(--bbl-color-white);
-  border: 1px solid var(--bbl-color-grey-150);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
   border-left: none;
   border-radius: 0;
   appearance: none;
@@ -685,7 +685,7 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input
 }
 
 main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:first-of-type input[type='radio'] {
-  border-left: 1px solid var(--bbl-color-grey-150);
+  border-left: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: 0.4375rem 0 0 0.4375rem;
 }
 
@@ -719,7 +719,7 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs.field-invalid .radio
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
   .field-other-required-product-panel) {
-  border: 1px solid var(--bbl-color-grey-150);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: 0.4375rem;
   padding: var(--bbl-space-300) var(--bbl-space-500);
   padding: 0.625rem 0.625rem 0.625rem 0;
