@@ -6931,6 +6931,27 @@
         ]
       },
       {
+        "component": "radio-group",
+        "label": "Alignment",
+        "name": "align",
+        "valueType": "string",
+        "value": "left",
+        "options": [
+          {
+            "name": "Left",
+            "value": "left"
+          },
+          {
+            "name": "Center",
+            "value": "center"
+          },
+          {
+            "name": "Right",
+            "value": "right"
+          }
+        ]
+      },
+      {
         "component": "tab",
         "label": "Validation",
         "name": "validation"
