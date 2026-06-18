@@ -340,13 +340,14 @@
 }
 
 .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
-  font-size: 0.7875rem;
+  font-size: var(--bbl-text-label-tag-size);
   margin: 0.625rem 0 0;
   padding-bottom: 0.3125rem;
   color: var(--bbl-color-black);
   display: block;
-  font-weight: var(--bbl-body-b1-weight);
-  font-family: var(--bbl-font-family-looped);
+  font-weight: var( --bbl-text-label-tag-weight);
+  line-height: var(--bbl-text-label-tag-line-height);
+  font-family: var(--bbl-font-family-medium);
 }
 
 .hero-banner-content .hero-banner-content-group .hero-banner-pre-title::before {
@@ -857,11 +858,6 @@
     -webkit-box-orient: vertical;
     overflow-y: clip;
     margin-inline: 0;
-  }
-
-  .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
-    font-size: 0.9rem;
-    height: 1.8125rem;
   }
 
   :lang(th) {
