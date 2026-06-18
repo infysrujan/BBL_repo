@@ -182,7 +182,10 @@ export default async function decorate(block) {
   const hasErrorMessage = hasResultText && rows[5]?.children.length === 1;
   const errorMessage = hasErrorMessage ? cellText(rows[5]) : '';
 
-  const fields = rows.slice(hasResultText ? (hasErrorMessage ? 6 : 5) : 4).map((r) => ({
+  let fieldStart = 4;
+  if (hasResultText) fieldStart = hasErrorMessage ? 6 : 5;
+
+  const fields = rows.slice(fieldStart).map((r) => ({
     id: cellText(r, 0),
     label: cellText(r, 1),
     topText: cellText(r, 2),
@@ -406,8 +409,9 @@ export default async function decorate(block) {
     let hasError = false;
 
     for (let i = 0; i < fields.length; i += 1) {
-      if (getVal(fields[i].id) === 0) {
-        block.querySelector(`#${fields[i].id}`)?.classList.add('input-error');
+      const f = fields[i];
+      if (f.valueType !== 'decimal' && getVal(f.id) === 0) {
+        block.querySelector(`#${f.id}`)?.classList.add('input-error');
         hasError = true;
         break;
       }

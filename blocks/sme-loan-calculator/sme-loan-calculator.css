@@ -298,7 +298,7 @@ main {
 
 .sme-calc-result-label {
   display: block;
-  font-size: 1.125rem;
+  font-size: 1.3125rem;
   font-weight: 400;
   color: var(--bbl-color-white);
   letter-spacing: 0.01em;
@@ -458,11 +458,13 @@ main {
     width: 4.5rem;
     font-size: var(--bbl-font-size-15);
   }
+
   .label-cal {
     white-space: normal;
     overflow: visible;
     text-overflow: unset;
   }
+
   .box-textbox {
     align-items: flex-start;
   }
@@ -479,19 +481,25 @@ main {
 }
 
 @media (width > 64rem) {
- .section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
+  .section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
     font-size: 1rem;
     padding: 1.25rem 1rem;
   }
+
   .row.paddingmain {
     flex-direction: row;
     align-items: flex-start;
     gap: 0 1rem;
   }
+
   .col-md-4.paddingcal {
     flex: 0 0 calc((100% - 2rem) / 3);
     max-width: calc((100% - 2rem) / 3);
     min-width: 12.5rem;
     width: auto;
+  }
+
+  .sme-calc-result-label {
+    font-size: var(--bbl-font-size-h5-desktop);
   }
 }
