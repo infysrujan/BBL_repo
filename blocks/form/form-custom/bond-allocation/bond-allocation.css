@@ -1,9 +1,15 @@
 main .section.form-container.custom-forms .form form {
+  & .field-citizenid {
+    p {
+      padding-left: 1.375rem;
+    }
+  }
+
   & .helper-text {
     position: absolute;
-    bottom: 85px;
+    bottom: 5.3125rem;
     right: 0;
-    padding: 0;
+    padding-right: 1.375rem;
 
     input {
       border: none;
