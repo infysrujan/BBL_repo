@@ -4178,7 +4178,7 @@
       },
       {
         "component": "select",
-        "name": "properties.linkType",
+        "name": "linkType",
         "label": "Button Style",
         "valueType": "string",
         "value": "primary",
@@ -4437,6 +4437,13 @@
         "label": "Script validation message",
         "valueType": "string",
         "description": "Displayed when validation script fails."
+      },
+      {
+        "component": "number",
+        "name": "maxSelect",
+        "label": "Max selections allowed",
+        "valueType": "number",
+        "description": "Limits how many options a user can check. Leave empty for no limit."
       },
       {
         "component": "tab",
@@ -6564,6 +6571,10 @@
               {
                 "name": "Form Review Panel 2 Column",
                 "value": "form-review-2col"
+              },
+              {
+                "name": "Custom Fieldset Approval Panel",
+                "value": "custom-fieldset-approval"
               }
             ]
           }
@@ -6920,6 +6931,27 @@
         ]
       },
       {
+        "component": "radio-group",
+        "label": "Alignment",
+        "name": "align",
+        "valueType": "string",
+        "value": "left",
+        "options": [
+          {
+            "name": "Left",
+            "value": "left"
+          },
+          {
+            "name": "Center",
+            "value": "center"
+          },
+          {
+            "name": "Right",
+            "value": "right"
+          }
+        ]
+      },
+      {
         "component": "tab",
         "label": "Validation",
         "name": "validation"
@@ -7185,6 +7217,28 @@
           {
             "name": "12 column",
             "value": "12"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "linkType",
+        "label": "Button Style",
+        "valueType": "string",
+        "value": "primary",
+        "description": "Visual style variant for the button",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "Tertiary",
+            "value": "tertiary"
           }
         ]
       },

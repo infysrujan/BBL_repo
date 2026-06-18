@@ -1,4 +1,16 @@
 /* button styles for forms  */
+main .form form .panel-wrapper :has( > .button-wrapper) {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.875rem;
+}
+
+main .form form .panel-wrapper .submit-wrapper {
+  width: auto;
+}
+
 main .form button {
   display: flex;
   justify-content: center;
@@ -34,4 +46,3 @@ main .form button[disabled] {
   border: 0.0625rem solid var(--bbl-color-gray-300);
   pointer-events: none;
 }
- 
