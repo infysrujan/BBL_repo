@@ -74,18 +74,17 @@ main .section.form-container .form form fieldset.panel-wrapper.field-button-pane
   gap: var(--bbl-space-200);
 }
 
-main .section.form-container .form form fieldset.panel-wrapper.field-button-panel .field-submitcta,
-main .section.form-container .form form fieldset.panel-wrapper.field-button-panel .field-reset {
+main .section.form-container .form form fieldset.panel-wrapper.field-button-panel :is(.submit-wrapper, .reset-wrapper) {
   width: auto;
   margin: 0;
 }
 
-main .section.form-container .form .col-6:is(.field-submitcta, .submit-wrapper) :is(.button, button) {
+main .section.form-container .form .col-6.submit-wrapper .button {
   margin-left: auto;
   margin-right: var(--bbl-space-200);
 }
 
-main .section.form-container .form .col-6:is(.field-cancel, .field-reset) :is(.button, button) {
+main .section.form-container .form .col-6.reset-wrapper .button {
   margin-left: var(--bbl-space-200);
   margin-right: auto;
 }
@@ -343,7 +342,7 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is
   width: auto;
 }
 
-main .section.form-container .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval) {
+main .section.form-container .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) {
   position: relative;
   display: grid;
   grid-template-columns: 1fr;
@@ -376,31 +375,61 @@ main .section.form-container .form form .plain-text-wrapper.field-text {
   font-size: 1rem;
 }
 
-/* Custom Form Button Sizing & Styles */
+/* Custom Form Button Sizing & Styles — panel + wrapper classes only */
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 9.6875rem;
+  min-width: 9.6875rem;
+  width: auto;
+  max-width: fit-content;
   height: 2.75rem;
+  margin: 0;
   padding: 0 var(--bbl-space-250);
   box-shadow: none;
   border-radius: 0.4375rem;
   gap: var(--bbl-space-100);
+  font-size: var(--bbl-font-size-h4-mobile);
+  font-weight: var(--form-title-font-weight);
+  line-height: var(--bbl-line-height-h4-mobile);
+  cursor: pointer;
+  appearance: none;
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .field-submitcta .button {
-  margin: var(--bbl-space-300) var(--bbl-space-200) var(--bbl-space-300) auto;
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .submit-wrapper .button,
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.primary {
   border: 0.0417rem solid transparent;
   background-color: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.field-cancel, .field-reset) .button {
-  margin: 0 var(--bbl-space-300) auto;
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button:disabled {
+  color: var(--bbl-color-grey-60);
+  border: 0.0417rem solid var(--bbl-color-gray-300);
+  background-color: var(--bbl-color-gray-300);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled),
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.secondary:not(:disabled) {
   border: 0.0417rem solid var(--bbl-color-active-blue);
   background-color: var(--bbl-color-white);
   color: var(--bbl-color-active-blue);
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled):hover,
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.secondary:not(:disabled):hover {
+  border-color: var(--bbl-color-active-blue);
+  background-color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-white);
+}
+
+@media (width >= 64rem) {
+  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button {
+    font-size: var(--form-font-size-xs);
+    line-height: var(--bbl-line-height-b1-desktop);
+  }
 }
 
 /* Radio group alignment (vertical) */
