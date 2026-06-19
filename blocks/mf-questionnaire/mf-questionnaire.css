@@ -230,6 +230,9 @@
 
   .mfq-risk-options .list-thumb-square {
     flex-wrap: nowrap;
+    width: 100%;
+    padding: 1.875rem 0;
+    margin-top: 0.625rem;
   }
 
   .mfq-risk-options .list-thumb-square li {
