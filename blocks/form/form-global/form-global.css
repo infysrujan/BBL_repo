@@ -20,12 +20,6 @@ main .section.form-container .form form .field-wrapper.field-invalid :is(input:n
   border-color: var(--bbl-color-red-130);
 }
 
-main .section.form-container .form form :is(.radio-wrapper, .checkbox-wrapper).field-invalid>input,
-main .section.form-container .form form :is(.radio-group-wrapper, .checkbox-group-wrapper).field-invalid :is(input[type='radio'], input[type='checkbox']) {
-  outline: 0.0625rem solid var(--bbl-color-red-130);
-  outline-offset: 0.0625rem;
-}
-
 main .section.form-container .form form .field-invalid :is(.field-validation-error, .field-description) {
   color: var(--bbl-color-red-130);
   font-weight: 400;
@@ -321,8 +315,8 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper .ch
 
 main .section.form-container .form form .checkbox-group-wrapper .checkbox-wrapper input[type='checkbox'] {
   flex-shrink: 0;
-  width: var(--bbl-space-200);
-  height: var(--bbl-space-200);
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
   cursor: pointer;
   margin: 0.1875rem var(--bbl-space-100) 0.1875rem var(--bbl-space-050);
 }

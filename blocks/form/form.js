@@ -7,6 +7,8 @@ import { handleSubmit } from './submit.js';
 import DocBasedFormToAF from './transform.js';
 import decorateCreditCardTractApplication from './form-custom/creditcard-track-application/creditcard-track-application.js';
 import decorateBondAllocationForm from './form-custom/bond-allocation/bond-allocation.js';
+import decorateSipForm from './form-custom/sip-form/sip-form.js';
+import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
 import {
   checkValidation,
   createButton,
@@ -348,6 +350,8 @@ async function createFormForAuthoring(formDef) {
   });
   decorateCreditCardTractApplication(form);
   decorateBondAllocationForm(form);
+  decorateSipForm(form);
+  decorateSmeLoanForm(form);
   return form;
 }
 
@@ -404,7 +408,8 @@ export async function createForm(formDef, data, source = 'aem') {
 
   decorateCreditCardTractApplication(form);
   decorateBondAllocationForm(form);
-
+  decorateSipForm(form);
+  decorateSmeLoanForm(form);
   return {
     form,
     captcha,

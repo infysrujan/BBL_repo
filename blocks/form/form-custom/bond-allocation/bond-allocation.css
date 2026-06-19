@@ -25,10 +25,10 @@
 
   /* Outer bond-allocation-review panel — hide default success checkmark on heading */
   & .form form fieldset.panel-wrapper.field-bond-allocation-review.form-review-2col:not(:has(.field-accuracy-check-text)) {
-
     & > .plain-text-wrapper:first-of-type::before {
       display: none;
     }
+
     & > .plain-text-wrapper:first-of-type p {
       color: var(--bbl-text-primary);
     }
