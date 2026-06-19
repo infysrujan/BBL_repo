@@ -1,0 +1,40 @@
+/* Bond Allocation — scoped via .field-bond-allocation-review (Bond_Allocation_TH) */
+
+.bond-allocation-form main .section.form-container.custom-forms:has(.field-bond-allocation-review) {
+  & .form form :has(.field-citizenid) {
+    position: relative;
+  }
+
+  & .form form .field-citizenid p {
+    padding-left: 1.375rem;
+  }
+
+  & .form form .helper-text {
+    position: absolute;
+    top: 2.5rem;
+    right: 0;
+    padding-right: 1.375rem;
+  }
+
+  & .form form .helper-text input {
+    border: none;
+    text-align: right;
+    padding: 0;
+    background: transparent;
+  }
+
+  /* Outer bond-allocation-review panel — hide default success checkmark on heading */
+  & .form form fieldset.panel-wrapper.field-bond-allocation-review.form-review-2col:not(:has(.field-accuracy-check-text)) {
+    & > .plain-text-wrapper:first-of-type::before {
+      display: none;
+    }
+
+    & > .plain-text-wrapper:first-of-type p {
+      color: var(--bbl-text-primary);
+    }
+
+    & .field-wrapper:not(.panel-wrapper) > label.field-label {
+       background: var(--background-color-primary);
+    }
+  }
+}

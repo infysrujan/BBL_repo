@@ -20,6 +20,12 @@ main .section.form-container.custom-forms .form form :is(input:not([type='radio'
   margin-top: 0;
   margin-bottom: var(--bbl-space-100);
   padding: 0 var(--bbl-space-250);
+  border-radius: 0.4375rem;
+}
+
+main .section.form-container.custom-forms .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea)::placeholder{
+    opacity: 1;
+    color: var(--bbl-color-grey-150);
 }
 
 main .section.form-container.custom-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):not(:has(label:is([class*=' icon-'], [class^='icon-'])))::before {
