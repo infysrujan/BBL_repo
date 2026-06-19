@@ -1,4 +1,54 @@
 ﻿/* Bangkok Bank lead-form overrides — matched to live Sitecore WFFM forms */
+:root {
+  /* font sizes */
+  --bbl-form-font-size-11: 0.6875rem;                /* 11px */
+  --bbl-form-font-size-17: 1.0625rem;                /* 17px */
+  --bbl-form-font-size-title-mobile: 1.925rem;       /* form heading - mobile */
+  --bbl-form-font-size-title-desktop: 2.2rem;        /* form heading - desktop */
+
+  /* padding */
+  --bbl-form-padding-10: 0.625rem;                   /* 10px */
+  --bbl-form-padding-15: 0.9375rem;                  /* 15px */
+  --bbl-form-padding-30: 1.875rem;                   /* 30px */
+  --bbl-form-padding-35: 2.1875rem;                  /* 35px */
+
+  /* margin */
+  --bbl-form-margin-3: 0.1875rem;                    /* 3px */
+  --bbl-form-margin-4: 0.25rem;                      /* 4px */
+  --bbl-form-margin-5: 0.3125rem;                    /* 5px */
+  --bbl-form-margin-8: 0.5rem;                       /* 8px */
+  --bbl-form-margin-10: 0.625rem;                    /* 10px */
+  --bbl-form-margin-14: 0.875rem;                    /* 14px */
+  --bbl-form-margin-15: 0.9375rem;                   /* 15px */
+  --bbl-form-margin-30: 1.875rem;                    /* 30px */
+
+  /* gap */
+  --bbl-form-gap-3: 0.1875rem;                       /* 3px */
+  --bbl-form-gap-30: 1.875rem;                       /* 30px */
+
+  /* font weight */
+  --bbl-form-font-weight-bold: 700;
+
+  /* borders */
+  --bbl-form-border-grey: 0.0625rem solid var(--bbl-color-grey-150);
+  --bbl-form-border-blue: 0.0625rem solid var(--bbl-color-blue-115);
+  --bbl-form-border-white: solid var(--bbl-color-white);
+  --bbl-form-outline-transparent: 0.0625rem solid transparent;
+
+  /* border radius */
+  --bbl-form-border-radius-7: 0.4375rem;             /* 7px */
+
+  /* line heights */
+  --bbl-form-line-height-1: 1;
+  --bbl-form-line-height-1-3: 1.3;
+  --bbl-form-line-height-1-5: 1.5;
+  --bbl-form-line-height-14: 0.875rem;               /* 14px */
+  --bbl-form-line-height-17: 1.0625rem;              /* 17px */
+  --bbl-form-line-height-19: 1.2031rem;              /* ~19px */
+  --bbl-form-line-height-25: 1.5625rem;              /* 25px */
+  --bbl-form-line-height-44: 2.75rem;                /* 44px */
+}
+
 main .lead-forms.section.form-container .form {
   max-width: 46.25rem;
   margin-inline: auto;
@@ -18,14 +68,14 @@ main .lead-forms .form form p {
   padding: 0;
   font-size: var(--bbl-font-size-b1);
   font-weight: var(--bbl-font-weight-regular);
-  line-height: 1.5;
+  line-height: var(--bbl-form-line-height-1-5);
 }
 
 
 main .lead-forms.section.central-aligned > .default-content-wrapper p{
   color: var(--bbl-color-grey-85);
   font-size: var(--bbl-font-size-b1-mobile);
-  line-height: 1.2031rem;
+  line-height: var(--bbl-form-line-height-19);
 }
 
 main .lead-forms.section.central-aligned > .default-content-wrapper p strong{
@@ -51,7 +101,7 @@ main .lead-forms div.default-content-wrapper {
 }
 
 main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-  font-size: 1.925rem;
+  font-size: var(--bbl-form-font-size-title-mobile);
   line-height: normal;
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-grey-140);
@@ -60,8 +110,8 @@ main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
 }
 
 main .lead-forms.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
-  margin: var(--bbl-space-500) 0 1.875rem;
-  padding-bottom: 2.1875rem;
+  margin: var(--bbl-space-500) 0 var(--bbl-form-margin-30);
+  padding-bottom: var(--bbl-form-padding-35);
 }
 
 main .lead-forms .drop-down-wrapper {
@@ -69,14 +119,14 @@ main .lead-forms .drop-down-wrapper {
 }
 
 main .lead-forms .form form {
-  gap: 0.1875rem;
+  gap: var(--bbl-form-gap-3);
   max-width: 46.25rem;
   width: 100%;
   margin: 0 auto;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b1);
-  line-height: 1.3;
+  line-height: var(--bbl-form-line-height-1-3);
 }
 
 main .lead-forms .form form :is(p, .repeat-wrapper, .field-wrapper) {
@@ -86,11 +136,11 @@ main .lead-forms .form form :is(p, .repeat-wrapper, .field-wrapper) {
 main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .page-header) {
   position: relative;
   margin: var(--bbl-space-500) 0 var(--bbl-space-300);
-  padding: 0 0 2.1875rem;
+  padding: 0 0 var(--bbl-form-padding-35);
   color: var(--bbl-color-grey-140);
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-h1-mobile);
-  font-weight: 700;
+  font-weight: var(--bbl-form-font-weight-bold);
   line-height: normal;
   letter-spacing: -0.0125rem;
   text-align: center;
@@ -119,9 +169,9 @@ main .lead-forms .form form .field-infotext {
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
   color: var(--bbl-color-grey-85);
   font-size: var(--bbl-font-size-b1-mobile);
-  line-height: 0.875rem;
+  line-height: var(--bbl-form-line-height-14);
   padding-right: 0;
-  margin-bottom: 0.625rem;
+  margin-bottom: var(--bbl-form-margin-10);
 }
 
 main .lead-forms .form form .plain-text-wrapper p:last-child {
@@ -159,33 +209,33 @@ main .lead-forms .form form :is(.field-wrapper:has(select), .drop-down-wrapper)>
   display: block;
   width: 100%;
   text-align: left;
-  font-size: 1.0625rem;
-  line-height: 1.0625rem;
-  font-weight: 700;
+  font-size: var(--bbl-form-font-size-17);
+  line-height: var(--bbl-form-line-height-1);
+  font-weight: var(--bbl-form-font-weight-bold);
   color: var(--bbl-color-grey-85);
 }
 
 main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
   font-weight: var(--bbl-font-weight-regular);
   font-size: var(--bbl-font-size-b1-mobile);
-  line-height: 0.875rem;
+  line-height: var(--bbl-form-line-height-1);
   margin-block: var(--bbl-space-500) 0;
 }
 
 main .lead-forms .form select {
-  padding: 0 1.875rem 0 var(--bbl-space-250);
+  padding: 0 var(--bbl-form-padding-30) 0 var(--bbl-space-250);
   border-color: var(--bbl-color-grey-23);
   cursor: pointer;
   appearance: none;
   color: var(--bbl-color-black);
-  margin-bottom: 0.875rem;
+  margin-bottom: var(--bbl-form-margin-14);
   background: var(--bbl-color-white) url('../../../icons/dropdown.svg') no-repeat right var(--bbl-space-150) center /25px;
   font-family: var(--bbl-font-family-medium);
 }
 
 main .lead-forms .form form .drop-down-wrapper.field-title select,
 main .lead-forms .form form .drop-down-wrapper.field-prefix-dropdown select {
-  padding: 0 1.875rem 0 var(--bbl-space-500);
+  padding: 0 var(--bbl-form-padding-30) 0 var(--bbl-space-500);
 }
 
 main .lead-forms .form form .drop-down-wrapper.field-bblprovincedropdown > .field-label {
@@ -195,14 +245,14 @@ main .lead-forms .form form .drop-down-wrapper.field-bblprovincedropdown > .fiel
 main .lead-forms .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
   color: var(--bbl-color-grey-85);
   font-size: var(--bbl-font-size-b1-mobile);
-  line-height: 0.875rem;
+  line-height: var(--bbl-form-line-height-1);
   font-weight: var(--bbl-font-weight-regular);
   cursor: default;
 }
 
 main .lead-forms .form form .field-prefix-dropdown.field-wrapper .field-label,
 main .lead-forms .form form .field-province.field-wrapper .field-label {
-  padding: 0 0.625rem;
+  padding: 0 var(--bbl-form-padding-10);
   text-align: left;
 }
 
@@ -211,17 +261,17 @@ main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number
   height: 2.75rem;
   margin: 0 0 var(--bbl-font-size-b2);
   color: var(--bbl-color-black);
-  border: 0.0625rem solid var(--bbl-color-grey-150);
-  border-radius: 0.4375rem;
+  border: var(--bbl-form-border-grey);
+  border-radius: var(--bbl-form-border-radius-7);
   font-size: var(--bbl-font-size-b1-desktop);
-  line-height: 2.75rem;
+  line-height: var(--bbl-form-line-height-44);
 }
 
 
 main .lead-forms .form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
 main .lead-forms .form-wrapper .form .drop-down-wrapper.field-invalid select {
   border-color: var(--bbl-color-red-130);
-  outline: 0.0625rem solid transparent;
+  outline: var(--bbl-form-outline-transparent);
   margin: 0;
 }
 
@@ -230,10 +280,10 @@ main .lead-forms .section.form-container.custom-forms .drop-down-wrapper.field-w
   height: 2.75rem;
   margin: 0 0 var(--bbl-font-size-b2);
   color: var(--bbl-color-black);
-  border: 0.0625rem solid var(--bbl-color-grey-150);
-  border-radius: 0.4375rem;
+  border: var(--bbl-form-border-grey);
+  border-radius: var(--bbl-form-border-radius-7);
   font-size: var(--bbl-font-size-b1-mobile);
-  line-height: 2.75rem;
+  line-height: var(--bbl-form-line-height-44);
 }
 
 main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper input {
@@ -251,14 +301,14 @@ main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .tele
 
 main .lead-forms .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].drop-down-wrapper).field-wrapper :is(input, select) {
   padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
-  margin-bottom: 0.875rem;
+  margin-bottom: var(--bbl-form-margin-14);
 }
 
 main .lead-forms .form textarea {
   height: auto;
   min-height: 6.25rem;
   padding: var(--bbl-space-100) var(--bbl-space-250);
-  line-height: 1.5;
+  line-height: var(--bbl-form-line-height-1-5);
 }
 
 main .lead-forms .form select option {
@@ -267,7 +317,7 @@ main .lead-forms .form select option {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-b1);
   font-weight: var(--bbl-font-weight-regular);
-  line-height: 2.75rem;
+  line-height: var(--bbl-form-line-height-44);
 }
 
 main .lead-forms .form input[type='date']::-webkit-calendar-picker-indicator {
@@ -281,9 +331,9 @@ main .lead-forms .form input[type='date']:invalid::-webkit-datetime-edit {
 main .lead-forms .form :is(input, textarea)::placeholder {
   opacity: 1;
   color: var(--bbl-color-grey-150);
-  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
-  line-height: 2.75rem;
+  line-height: var(--bbl-form-line-height-44);
 }
 
 main .lead-forms .form :is(input, select, textarea):is(:hover, :focus) {
@@ -304,7 +354,7 @@ main .lead-forms .form form .field-invalid :is(.field-validation-error, .field-d
   position: relative;
   text-align: left;
   display: block;
-  margin: 0.3125rem 0 0 1.25rem;
+  margin: var(--bbl-form-margin-5) 0 0 var(--bbl-space-250);
   clear: both;
   color: var(--bbl-color-orange-130);
   font-size: var(--bbl-font-size-b1-desktop);
@@ -376,7 +426,7 @@ main .lead-forms .form form .checkbox-group-wrapper .checkbox-wrapper .field-lab
   flex-shrink: 1;
   font-weight: var(--bbl-font-weight-regular);
   cursor: pointer;
-  line-height: 1.5625rem;
+  line-height: var(--bbl-form-line-height-25);
 }
 
 main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper):has(.field-description).field-wrapper :is(input, textarea, select){
@@ -477,7 +527,7 @@ main .lead-forms .form form fieldset.panel-wrapper.field-button-panel .field-res
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
-  padding: 0 0 0 2.1875rem;
+  padding: 0 0 0 var(--bbl-form-padding-35);
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper>legend {
@@ -502,17 +552,17 @@ input[name='BBLAdvancedCheckbox'] {
   cursor: pointer;
   width: var(--bbl-space-250);
   height: var(--bbl-space-250);
-  margin: 0.1875rem 0.1875rem 0.1875rem 0.25rem;
+  margin: var(--bbl-form-margin-3) var(--bbl-form-margin-3) var(--bbl-form-margin-3) var(--bbl-form-margin-4);
   flex: none;
   padding: 0;
-  border: 0.0625rem solid var(--bbl-color-grey-150);
+  border: var(--bbl-form-border-grey);
   background-color: var(--bbl-color-white);
   appearance: none;
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:hover,
 input[name='BBLAdvancedCheckbox']:hover {
-  border: 0.0625rem solid var(--bbl-color-blue-115);
+  border: var(--bbl-form-border-blue);
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:checked,
@@ -525,7 +575,7 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(:is(input[n
   content: '';
   padding: initial;
   box-sizing: border-box;
-  border: solid var(--bbl-color-white);
+  border: var(--bbl-form-border-white);
   border-width: 0 0.125rem 0.125rem 0;
   transform: rotate(45deg);
   left: var(--bbl-space-150);
@@ -548,21 +598,21 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(.checkbox-w
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(:is(input[name='approvalcheckbox'], input[name='BBLAdvancedCheckbox'])):hover :is(input[name='approvalcheckbox'], input[name='BBLAdvancedCheckbox']) {
-  border: 0.0625rem solid var(--bbl-color-blue-115);
+  border: var(--bbl-form-border-blue);
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
   grid-row: 1;
   grid-column: 1;
-  border: 0.0625rem solid var(--bbl-color-grey-150);
+  border: var(--bbl-form-border-grey);
   border-radius: var(--bbl-radius-none);
   max-height: 15rem;
-  margin: 0.1875rem var(--bbl-space-100) 0.9375rem 0;
-  padding: 0.9375rem;
+  margin: var(--bbl-form-margin-3) var(--bbl-space-100) var(--bbl-form-margin-15) 0;
+  padding: var(--bbl-form-padding-15);
   font-size: var(--bbl-font-size-b1);
   overflow: auto;
   scrollbar-width: thin;
-  margin-right: 0.3125rem;
+  margin-right: var(--bbl-form-margin-5);
   scrollbar-color: var(--bbl-color-grey-161) var(--bbl-color-grey-158);
 }
 
@@ -591,13 +641,13 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper :is(> .field-de
   width: 100%;
   margin: 0;
   padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
-  font-size: 0.9375rem;
+  font-size: var(--bbl-font-size-15);
   clear: both;
 }
 
 main .lead-forms .form form .radio-group-wrapper.horizontal {
   justify-content: center;
-  gap: 1.875rem;
+  gap: var(--bbl-form-gap-30);
 }
 
 main .lead-forms .form form .radio-group-wrapper.horizontal .radio-wrapper {
@@ -640,9 +690,9 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs legend.field-label {
   width: 100%;
   margin: 0 0 var(--bbl-space-100);
   padding: 0;
-  font-size: 1.0625rem;
-  line-height: 1.0625rem;
-  font-weight: 700;
+  font-size: var(--bbl-form-font-size-17);
+  line-height: var(--bbl-form-line-height-17);
+  font-weight: var(--bbl-form-font-weight-bold);
   cursor: default;
   text-align: left;
 }
@@ -673,7 +723,7 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input
   height: 100%;
   margin: 0;
   background: var(--bbl-color-white);
-  border: 0.0625rem solid var(--bbl-color-grey-150);
+  border: var(--bbl-form-border-grey);
   border-left: none;
   border-radius: 0;
   appearance: none;
@@ -685,12 +735,12 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input
 }
 
 main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:first-of-type input[type='radio'] {
-  border-left: 0.0625rem solid var(--bbl-color-grey-150);
-  border-radius: 0.4375rem 0 0 0.4375rem;
+  border-left: var(--bbl-form-border-grey);
+  border-radius: var(--bbl-form-border-radius-7) 0 0 var(--bbl-form-border-radius-7);
 }
 
 main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:last-of-type input[type='radio'] {
-  border-radius: 0 0.4375rem 0.4375rem 0;
+  border-radius: 0 var(--bbl-form-border-radius-7) var(--bbl-form-border-radius-7) 0;
 }
 
 main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label.field-label {
@@ -704,7 +754,7 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 0 0.625rem;
+  padding: 0 var(--bbl-form-padding-10);
   color: var(--bbl-color-grey-85);
   font-size: var(--bbl-font-size-b1-mobile);
   font-weight: var(--bbl-font-weight-medium);
@@ -719,17 +769,17 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs.field-invalid .radio
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
   .field-other-required-product-panel) {
-  border: 0.0625rem solid var(--bbl-color-grey-150);
-  border-radius: 0.4375rem;
+  border: var(--bbl-form-border-grey);
+  border-radius: var(--bbl-form-border-radius-7);
   padding: var(--bbl-space-300) var(--bbl-space-500);
-  padding: 0.625rem 0.625rem 0.625rem 0;
-  margin-bottom: 0.625rem;
+  padding: var(--bbl-form-padding-10) var(--bbl-form-padding-10) var(--bbl-form-padding-10) 0;
+  margin-bottom: var(--bbl-form-margin-10);
 }
 
 
 main .lead-forms .form form :is(.field-wrapper:is(.icon-money, .icon-email),
   label:is(.icon-money, .icon-email))::before {
-  font-size: 0.6875rem;
+  font-size: var(--bbl-form-font-size-11);
   width: var(--bbl-space-200);
   height: var(--bbl-space-200);
   line-height: var(--bbl-space-200);
@@ -748,7 +798,7 @@ main .lead-forms .form form .checkbox-group-wrapper .checkbox-wrapper input[type
   width: var(--bbl-space-200);
   height: var(--bbl-space-200);
   cursor: pointer;
-  margin: 0.1875rem 0.5rem 0.1875rem 0.25rem;
+  margin: var(--bbl-form-margin-3) var(--bbl-form-margin-8) var(--bbl-form-margin-3) var(--bbl-form-margin-4);
 }
 
 main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-type-of-loan,
@@ -760,7 +810,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
 @media (width > 47.5rem) {
   main .form-container.lead-forms {
     padding-inline: var(--bbl-space-250);
-    margin-inline: 1.875rem;
+    margin-inline: var(--bbl-form-margin-30);
     width: auto;
   }
 
@@ -777,7 +827,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   }
 
   main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 2.2rem;
+    font-size: var(--bbl-form-font-size-title-desktop);
   }
 
   main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
@@ -797,6 +847,6 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
 
   main .lead-forms .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
     font-size: var(--bbl-font-size-b1-desktop);
-    line-height: 1;
+    line-height: var(--bbl-form-line-height-1);
   }
 }
