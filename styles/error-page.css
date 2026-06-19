@@ -62,9 +62,9 @@ body.error-page .header .mobile-top-bar {
     margin: 0 auto;
     padding: 0;
     font-family: var(--bbl-font-family-medium);
-    font-size: 1.3125rem;
-    font-weight: var(--bbl-font-weight-regular);
-    line-height: 1.43rem;
+    font-size: var(--bbl-text-thumbnail-card-title-size);
+    font-weight: var(--bbl-text-thumbnail-card-title-weight);
+    line-height: var(--bbl-text-thumbnail-card-title-line-height);
 }
 
 .error-page main .default-content-wrapper :is(h2,h3,h4,h5,h6)::after {
@@ -88,7 +88,7 @@ body.error-page .header .mobile-top-bar {
     margin: 0 auto;
     font-size: var(--bbl-body-b1-size);
     line-height: var(--bbl-body-b1-line-height);
-    font-weight: var(--bbl-font-weight-regular);
+    font-weight: var(--bbl-body-b1-weight);
     max-width: 100%;
     font-family: var(--bbl-font-family-primary);
     padding-bottom: 1.875rem;
@@ -122,10 +122,6 @@ body.error-page .header .mobile-top-bar {
 }
 
 @media (width > 47.5rem) {
-  .error-page main .default-content-wrapper :is(h1,h2,h3,h4,h5,h6) {
-    font-size: 1.3125rem;
-  }
-
   .error-page main .default-content-wrapper p:not(.button-container, :has(picture)) {
     width: 65%;
     max-width: 37.5rem;
@@ -145,11 +141,6 @@ body.error-page .header .mobile-top-bar {
 }
 
 @media (width > 64rem) {
-  .error-page main .default-content-wrapper :is(h1,h2,h3,h4,h5,h6) {
-    font-size: 1.5rem;
-    line-height: 1.625rem;
-  }
-
   .error-page main .default-content-wrapper p:not(.button-container, :has(picture)) {
     max-width: 100%;
     margin: 0 auto;
