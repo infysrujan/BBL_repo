@@ -129,7 +129,7 @@
 .content-insert-cards .button-container {
   margin-top: auto;
   margin-bottom: 0;
-  padding-top: var(--bbl-space-200);
+  padding-top: var(--bbl-space-250);
 }
 
 .content-insert-cards .btn-primary,
