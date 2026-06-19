@@ -6931,6 +6931,27 @@
         ]
       },
       {
+        "component": "radio-group",
+        "label": "Alignment",
+        "name": "align",
+        "valueType": "string",
+        "value": "left",
+        "options": [
+          {
+            "name": "Left",
+            "value": "left"
+          },
+          {
+            "name": "Center",
+            "value": "center"
+          },
+          {
+            "name": "Right",
+            "value": "right"
+          }
+        ]
+      },
+      {
         "component": "tab",
         "label": "Validation",
         "name": "validation"
@@ -12442,6 +12463,13 @@
         "name": "resultText",
         "label": "Result Text",
         "description": "can add the result text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "errorMessage",
+        "label": "Error Message",
+        "description": "can add the error message",
         "valueType": "string"
       }
     ]
