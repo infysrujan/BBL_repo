@@ -2,6 +2,7 @@
 :root {
   /* font sizes */
   --bbl-form-font-size-11: 0.6875rem;                /* 11px */
+  --bbl-form-font-size-15: 0.9375rem;                /* 15px */
   --bbl-form-font-size-17: 1.0625rem;                /* 17px */
   --bbl-form-font-size-title-mobile: 1.925rem;       /* form heading - mobile */
   --bbl-form-font-size-title-desktop: 2.2rem;        /* form heading - desktop */
@@ -14,9 +15,7 @@
 
   /* margin */
   --bbl-form-margin-3: 0.1875rem;                    /* 3px */
-  --bbl-form-margin-4: 0.25rem;                      /* 4px */
   --bbl-form-margin-5: 0.3125rem;                    /* 5px */
-  --bbl-form-margin-8: 0.5rem;                       /* 8px */
   --bbl-form-margin-10: 0.625rem;                    /* 10px */
   --bbl-form-margin-14: 0.875rem;                    /* 14px */
   --bbl-form-margin-15: 0.9375rem;                   /* 15px */
@@ -37,6 +36,16 @@
 
   /* border radius */
   --bbl-form-border-radius-7: 0.4375rem;             /* 7px */
+  --bbl-form-border-radius-left: var(--bbl-form-border-radius-7) 0 0 var(--bbl-form-border-radius-7);
+  --bbl-form-border-radius-right: 0 var(--bbl-form-border-radius-7) var(--bbl-form-border-radius-7) 0;
+
+  /* positions */
+  --bbl-form-left-15: 0.9375rem;                     /* 15px */
+  --bbl-form-top-22: 1.375rem;                       /* 22px */
+  --bbl-form-top-42: 2.625rem;                       /* 42px */
+  --bbl-form-top-50: 3.125rem;                       /* 50px */
+  --bbl-form-top-82: 5.1rem;                         /* ~82px */
+  --bbl-form-top-86: 5.375rem;                       /* 86px */
 
   /* line heights */
   --bbl-form-line-height-1: 1;
@@ -59,10 +68,6 @@ main .form-container.lead-forms {
   padding-inline: var(--bbl-space-section-xs);
 }
 
-main .lead-forms.section.central-aligned > .default-content-wrapper {
-  margin: 0;
-}
-
 main .lead-forms .form form p {
   margin-bottom: 0;
   padding: 0;
@@ -70,7 +75,6 @@ main .lead-forms .form form p {
   font-weight: var(--bbl-font-weight-regular);
   line-height: var(--bbl-form-line-height-1-5);
 }
-
 
 main .lead-forms.section.central-aligned > .default-content-wrapper p{
   color: var(--bbl-color-grey-85);
@@ -222,7 +226,7 @@ main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
   margin-block: var(--bbl-space-500) 0;
 }
 
-main .lead-forms .form select {
+main .section.form-container.lead-forms .form form select {
   padding: 0 var(--bbl-form-padding-30) 0 var(--bbl-space-250);
   border-color: var(--bbl-color-grey-23);
   cursor: pointer;
@@ -267,15 +271,7 @@ main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number
   line-height: var(--bbl-form-line-height-44);
 }
 
-
-main .lead-forms .form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
-main .lead-forms .form-wrapper .form .drop-down-wrapper.field-invalid select {
-  border-color: var(--bbl-color-red-130);
-  outline: var(--bbl-form-outline-transparent);
-  margin: 0;
-}
-
-main .lead-forms .section.form-container.custom-forms .drop-down-wrapper.field-wrapper select {
+main .section.form-container.lead-forms .section.form-container.custom-forms .drop-down-wrapper.field-wrapper select {
   width: 100%;
   height: 2.75rem;
   margin: 0 0 var(--bbl-font-size-b2);
@@ -350,14 +346,14 @@ main .lead-forms .form form .field-invalid :is(input, select, textarea) {
   border-color: var(--bbl-color-orange-130);
 }
 
-main .lead-forms .form form .field-invalid :is(.field-validation-error, .field-description) {
+main .section.form-container.lead-forms .form form .field-invalid :is(.field-validation-error, .field-description) {
   position: relative;
   text-align: left;
   display: block;
-  margin: var(--bbl-form-margin-5) 0 0 var(--bbl-space-250);
   clear: both;
+  padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150);
   color: var(--bbl-color-orange-130);
-  font-size: var(--bbl-font-size-b1-desktop);
+  font-size: var(--bbl-form-font-size-15);
   font-weight: var(--bbl-font-weight-regular);
 }
 
@@ -388,7 +384,7 @@ main .lead-forms .form form .field-wrapper[class*='icon-']::before,
 main .lead-forms .form form .email-wrapper::before {
   position: absolute;
   top: var(--bbl-space-350);
-  left: 0.9375rem;
+  left: var(--bbl-form-left-15);
   z-index: 1;
   display: flex;
   align-items: center;
@@ -398,6 +394,11 @@ main .lead-forms .form form .email-wrapper::before {
   color: var(--bbl-color-grey-150);
   transform: translateY(-50%);
   pointer-events: none;
+}
+
+main .lead-forms .form form .field-wrapper[class*='icon-'].field-invalid::before,
+main .lead-forms .form form .email-wrapper.field-invalid::before {
+  top: var(--bbl-form-top-22);
 }
 
 main .lead-forms .form form label:is([class*=' icon-'], [class^='icon-']):empty::before {
@@ -410,15 +411,20 @@ main .lead-forms .form form label:is([class*=' icon-'], [class^='icon-'])+ :is(i
 
 main .lead-forms .form form .field-wrapper[class*='icon-']:has(> label:not([data-visible='false']))::before,
 main .lead-forms .form form .email-wrapper:has(> label:not([data-visible='false']))::before {
-  top: 3.125rem;
+  top: var(--bbl-form-top-50);
+}
+
+main .lead-forms .form form .field-wrapper[class*='icon-'].field-invalid:has(> label:not([data-visible='false']))::before,
+main .lead-forms .form form .email-wrapper.field-invalid:has(> label:not([data-visible='false']))::before {
+  top: var(--bbl-form-top-42);
 }
 
 main .lead-forms .form form .field-initialfielditemname.field-wrapper[class*='icon-']:has(> label:not([data-visible='false']))::before {
-  top: 5.1rem;
+  top: var(--bbl-form-top-82);
 }
 
 main .lead-forms .form form .drop-down-wrapper[class*='icon-']:has(> label:not([data-visible='false']))::before {
-  top: 5.375rem;
+  top: var(--bbl-form-top-86);
 }
 
 main .lead-forms .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
@@ -552,7 +558,7 @@ input[name='BBLAdvancedCheckbox'] {
   cursor: pointer;
   width: var(--bbl-space-250);
   height: var(--bbl-space-250);
-  margin: var(--bbl-form-margin-3) var(--bbl-form-margin-3) var(--bbl-form-margin-3) var(--bbl-form-margin-4);
+  margin: var(--bbl-form-margin-3) var(--bbl-form-margin-3) var(--bbl-form-margin-3) var(--bbl-space-050);
   flex: none;
   padding: 0;
   border: var(--bbl-form-border-grey);
@@ -736,11 +742,11 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input
 
 main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:first-of-type input[type='radio'] {
   border-left: var(--bbl-form-border-grey);
-  border-radius: var(--bbl-form-border-radius-7) 0 0 var(--bbl-form-border-radius-7);
+  border-radius: var(--bbl-form-border-radius-left);
 }
 
-main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:last-of-type input[type='radio'] {
-  border-radius: 0 var(--bbl-form-border-radius-7) var(--bbl-form-border-radius-7) 0;
+main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:not(:has(~ .radio-wrapper)) input[type='radio'] {
+  border-radius: var(--bbl-form-border-radius-right);
 }
 
 main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label.field-label {
@@ -765,6 +771,7 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label
 
 main .lead-forms .form form .radio-group-wrapper.radio-tabs.field-invalid .radio-wrapper input[type='radio'] {
   border-color: var(--bbl-color-orange-130);
+  outline: none;
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
@@ -775,7 +782,6 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-
   padding: var(--bbl-form-padding-10) var(--bbl-form-padding-10) var(--bbl-form-padding-10) 0;
   margin-bottom: var(--bbl-form-margin-10);
 }
-
 
 main .lead-forms .form form :is(.field-wrapper:is(.icon-money, .icon-email),
   label:is(.icon-money, .icon-email))::before {
@@ -798,14 +804,13 @@ main .lead-forms .form form .checkbox-group-wrapper .checkbox-wrapper input[type
   width: var(--bbl-space-200);
   height: var(--bbl-space-200);
   cursor: pointer;
-  margin: var(--bbl-form-margin-3) var(--bbl-form-margin-8) var(--bbl-form-margin-3) var(--bbl-form-margin-4);
+  margin: var(--bbl-form-margin-3) var(--bbl-space-100) var(--bbl-form-margin-3) var(--bbl-space-050);
 }
 
 main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-type-of-loan,
   .field-other-required-product-panel .field-please-specify-other-product) {
   width: 100%;
 }
-
 
 @media (width > 47.5rem) {
   main .form-container.lead-forms {
