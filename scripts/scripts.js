@@ -255,20 +255,32 @@ function getDocumentLangFromPath(pathname) {
   return 'th';
 }
 
-function redirectToLocale() {
+/**
+ * Redirects to locale-prefixed URL when needed. Resolves to true when a redirect
+ * was triggered so callers can skip rendering until navigation completes.
+ * @returns {Promise<boolean>}
+ */
+async function redirectToLocale() {
   let { pathname } = window.location;
 
+  let redirectUrl;
   if (pathname.length > 1 && pathname.endsWith('/')) {
     pathname = pathname.slice(0, -1);
-    window.location.replace(pathname + window.location.search + window.location.hash);
-    return;
+    redirectUrl = pathname + window.location.search + window.location.hash;
+  } else if (!/^\/(en|th)(\/|$)/.test(pathname)) {
+    const locale = getDocumentLangFromPath(pathname);
+    redirectUrl = `/${locale}${pathname === '/' ? '/' : pathname}`;
   }
 
-  const locale = getDocumentLangFromPath(pathname);
-
-  if (!/^\/(en|th)(\/|$)/.test(pathname)) {
-    window.location.replace(`/${locale}${pathname === '/' ? '/' : pathname}`);
+  if (!redirectUrl) {
+    return false;
   }
+
+  window.location.replace(redirectUrl);
+  await new Promise((resolve) => {
+    window.addEventListener('pagehide', resolve, { once: true });
+  });
+  return true;
 }
 
 function decorateOgTitle() {
@@ -371,7 +383,6 @@ async function loadEager(doc) {
     },
   );
 
-  redirectToLocale();
   document.documentElement.lang = getDocumentLangFromPath(window.location.pathname);
   removePictureOptimizationParams(doc);
   decorateTemplateAndTheme();
@@ -482,6 +493,7 @@ function loadDelayed() {
 }
 
 async function loadPage() {
+  if (await redirectToLocale()) return;
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
