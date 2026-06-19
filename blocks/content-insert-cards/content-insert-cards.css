@@ -93,7 +93,7 @@
   color: var(--bbl-color-black);
   margin: 0;
   position: relative;
-  padding-bottom: var(--bbl-space-150);
+  padding-bottom: var(--bbl-space-250);
 }
 
 .content-insert-cards .title-2::before {
@@ -230,11 +230,6 @@
   overflow: hidden;
 }
 
-.content-insert-cards .title-2 {
-  margin-bottom: 0.625rem;
-  padding-bottom: var(--bbl-space-150);
-}
-
 .content-insert-cards .text-default {
   font-size: var(--bbl-font-size-b2);
   line-height: 1.29;
@@ -268,11 +263,6 @@
 }
 
 @media (width > 64rem) {
-.content-insert-cards .title-2 {
-  margin-bottom: 0.625rem;
-  padding-bottom: 0.9375rem;
-}
-
 .content-insert-cards .text-default {
   font-size: var(--bbl-body-b1-size);
   line-height: 1.375;
