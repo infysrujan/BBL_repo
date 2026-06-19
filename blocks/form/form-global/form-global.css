@@ -66,7 +66,7 @@ main .section.form-container div.form-wrapper {
 }
 
 /* Button panel — side-by-side Submit / Reset and alignment overrides */
-main .section.form-container .form form fieldset.panel-wrapper.field-button-panel {
+main .section.form-container .form form fieldset.panel-wrapper.field-button-panel.field-wrapper {
   display: flex;
   flex-direction: row;
   justify-content: center;
