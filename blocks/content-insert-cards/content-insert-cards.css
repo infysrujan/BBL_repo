@@ -94,6 +94,7 @@
   margin: 0;
   position: relative;
   padding-bottom: var(--bbl-space-250);
+  margin-bottom: var(--bbl-space-250);
 }
 
 .content-insert-cards .title-2::before {
@@ -109,7 +110,6 @@
 /* --- Description --- */
 .content-insert-cards .desc {
   margin-bottom: var(--bbl-space-150);
-  padding-top: var(--bbl-space-250);
 }
 
 .content-insert-cards .text-default {
