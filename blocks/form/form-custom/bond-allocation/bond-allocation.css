@@ -10,10 +10,9 @@
     h2{
       margin-top: 0;
       font-family: var(--bbl-font-family-medium);
-      font-size: var(--bbl-font-size-h1-desktop);
+      font-size: var(--bbl-font-size-h2-desktop);
       font-weight: var(--bbl-font-weight-regular);
       color: var(--bbl-color-grey-85);
-      line-height: var(--bbl-line-height-h1-desktop);
       text-align: center;
     }
   }
@@ -82,6 +81,11 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-b2-desktop);
     font-weight: var(--bbl-font-weight-regular);
+
+    &::placeholder {
+      color: var(--form-label-color);
+      opacity: 1;
+    }
   }
 
   /* ── successPanel: 3-column grid for table layout ── */
@@ -275,7 +279,7 @@
 
   /* ── infotxt / thank-you text ── */
   & .form form .field-bond-allocation-review .field-successpanel > .plain-text-wrapper {
-    padding: 1.25rem 0 0.5rem;
+    padding: 1.5625rem 0.0625rem 0.9375rem;
 
     & p {
       font-family: var(--bbl-font-family-primary);
