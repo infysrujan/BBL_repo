@@ -347,7 +347,6 @@ main .section.form-container .form form > fieldset.panel-wrapper.field-wrapper:n
   padding: 0;
 }
 
-
 main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is(> .field-description, .checkbox-wrapper .field-description):where(:not(.custom-fieldset-approval *)) {
   position: static;
   display: block;
