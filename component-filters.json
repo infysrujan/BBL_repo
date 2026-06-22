@@ -271,13 +271,20 @@
       "double-key-dropdown",
       "forms-menu-card",
       "forms-card-list",
-      "forms-card-list-item"
+      "forms-card-list-item",
+      "card-list"
     ]
   },
   {
     "id": "forms-card-list",
     "components": [
       "forms-card-list-item"
+    ]
+  },
+  {
+    "id": "card-list",
+    "components": [
+      "card-list-item"
     ]
   },
   {
