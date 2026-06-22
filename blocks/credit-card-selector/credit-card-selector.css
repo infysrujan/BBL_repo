@@ -25,6 +25,10 @@
   text-align: left;
 }
 
+.section.full-bleed-bg.credit-card-selector-container {
+  padding-inline: var(--bbl-space-200);
+}
+
 .credit-card-selector .card-selector-title {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-h3-mobile);
@@ -739,6 +743,10 @@
 
   .credit-card-selector .card-selector-header {
     padding: var(--bbl-space-400) var(--bbl-space-600) var(--bbl-space-600);
+  }
+
+  .section.full-bleed-bg.credit-card-selector-container{
+    padding-inline: var(--bbl-space-600);
   }
 
   /* Two-column grid on tablet */
