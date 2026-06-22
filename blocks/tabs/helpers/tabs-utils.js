@@ -147,7 +147,24 @@ export function createContentPanels(block, contentRows) {
 
     const cell = row.children[0];
     while (cell.firstChild) {
-      contentPanel.appendChild(cell.firstChild);
+      const child = cell.firstChild;
+      // wrapTextNodes() wraps tab-cell content in <P> when the first child is a <DIV>
+      // (DIV is not in its validWrappers list). If we leave that <P> in the DOM,
+      // addHintPageAnchors() (custom-rte.js, lazy phase) will later find it, see '['
+      // in its innerHTML (from nested block content like the forex disclaimer), and call
+      // el.innerHTML = el.innerHTML.replace(...) — destroying the decorated block.
+      // Unwrapping the <P> here removes the target before addHintPageAnchors can fire.
+      if (child.nodeType === Node.ELEMENT_NODE
+        && child.tagName === 'P'
+        && child.firstElementChild
+        && child.firstElementChild.tagName === 'DIV') {
+        while (child.firstChild) {
+          contentPanel.appendChild(child.firstChild);
+        }
+        child.remove();
+      } else {
+        contentPanel.appendChild(child);
+      }
     }
 
     tabsContent.appendChild(contentPanel);
