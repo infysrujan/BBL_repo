@@ -1,0 +1,7 @@
+main .lead-forms .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
+  color: var(--bbl-color-grey-85);
+  font-weight: 700;
+  padding-inline: 0.625rem;
+  font-size: 1.0625rem;
+  line-height: 1;
+}
