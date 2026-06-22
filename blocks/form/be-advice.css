@@ -18,6 +18,10 @@ main .lead-forms .form form .text-wrapper.field-wrapper.col-6:has(+ .text-wrappe
   margin-bottom: 0;
 }
 
+main .lead-forms .form form .text-wrapper.field-wrapper.col-6:has(+ .text-wrapper.field-wrapper.col-6):has([aria-live="polite"]) input {
+  margin-bottom: var(--bbl-form-margin-14);
+}
+
 main .lead-forms .form form :is(.field-wrapper:has(select), .drop-down-wrapper)>.field-label {
   text-align: center;
   font-weight: var(--bbl-font-weight-regular);
