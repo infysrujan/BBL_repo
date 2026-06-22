@@ -159,19 +159,29 @@ export function createContentPanels(block, contentRows) {
 }
 
 export async function loadNestedBlocks(panels) {
-  await Promise.all(panels.map(async (contentPanel) => {
-    const allDivs = contentPanel.querySelectorAll('div[class]');
-    const blocksToLoad = [...allDivs].filter((el) => {
-      if (el.classList.length !== 1) return false;
-      if (el.dataset.blockStatus) return false;
-      const className = el.classList[0];
-      if (className.startsWith('tab-') || className.startsWith('tabs-')) return false;
-      return true;
-    });
+  // Collect all unique nested blocks across ALL panels in a single synchronous pass.
+  // decorateBlock() is called immediately upon discovery so data-block-status is set
+  // before the next panel is scanned — preventing the same block appearing in multiple
+  // panels' querySelectorAll results from being decorated/loaded more than once.
+  const blocksToLoad = [];
+  const seen = new Set();
 
-    blocksToLoad.forEach((nestedBlock) => decorateBlock(nestedBlock));
-    await Promise.all(blocksToLoad.map((nestedBlock) => loadBlock(nestedBlock)));
-  }));
+  panels.forEach((contentPanel) => {
+    contentPanel.querySelectorAll('div[class]').forEach((el) => {
+      if (el.classList.length !== 1) return;
+      if (el.dataset.blockStatus) return;
+      const className = el.classList[0];
+      if (className.startsWith('tab-') || className.startsWith('tabs-')) return;
+      if (seen.has(el)) return;
+
+      // Mark as seen and immediately decorate so subsequent panels' scans skip it.
+      seen.add(el);
+      decorateBlock(el); // sets data-block-status="initialized"
+      blocksToLoad.push(el);
+    });
+  });
+
+  await Promise.all(blocksToLoad.map((nestedBlock) => loadBlock(nestedBlock)));
 }
 
 export function addKeyboardNavigation(tabsNav, tabButtons, block) {
