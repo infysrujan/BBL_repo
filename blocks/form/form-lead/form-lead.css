@@ -60,7 +60,20 @@
   --bbl-form-line-height-17: 1.0625rem;              /* 17px */
   --bbl-form-line-height-19: 1.2031rem;              /* ~19px */
   --bbl-form-line-height-25: 1.5625rem;              /* 25px */
+  --bbl-form-line-height-32: 2rem;                   /* 32px */
   --bbl-form-line-height-44: 2.75rem;                /* 44px */
+}
+
+main .section.form-container.lead-forms .form .form-message.success-message {
+    color: var(--bbl-color-grey-85);
+    background-color: transparent;
+    border-color: unset;
+    padding: unset;
+    text-align: center;
+    font-family: var(--bbl-font-family-medium) ;
+    line-height: var(--bbl-form-line-height-32);
+    font-weight: var(--bbl-font-weight-regular);
+    font-size: var(--bbl-font-size-b1-mobile);
 }
 
 main .lead-forms.section.form-container .form {
@@ -125,6 +138,13 @@ main .lead-forms.section.underline-title .default-content-wrapper > :is(h1, h2, 
 
 main .lead-forms .drop-down-wrapper {
   text-align: center;
+}
+
+main .section.form-container.lead-forms .form form .plain-text-wrapper.field-text {
+  background-color: unset;
+  padding: unset;
+  border-radius: unset;
+  font-size: unset;
 }
 
 main .lead-forms .form form {
@@ -312,7 +332,7 @@ main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .tele
   text-align: left;
 }
 
-main .lead-forms .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].drop-down-wrapper).field-wrapper :is(input, select) {
+main .lead-forms .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].drop-down-wrapper, [class*='icon-'].date-wrapper).field-wrapper :is(input, select) {
   padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
   margin-bottom: var(--bbl-form-margin-14);
 }
@@ -383,7 +403,7 @@ main .lead-forms .form form .field-wrapper.col-12 {
   gap: unset;
 }
 
-main .section.form-container.lead-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper) {
+main .section.form-container.lead-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper, .date-wrapper) {
   position: relative;
   clear: both;
 }
@@ -872,6 +892,10 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   main .form-container.lead-forms {
     padding-inline: 0;
     margin-inline: auto;
+  }
+
+  main .section.form-container.lead-forms .form .form-message.success-message {
+    font-size: var(--bbl-font-size-b1-desktop);
   }
 
   main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
