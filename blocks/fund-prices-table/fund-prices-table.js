@@ -1,3 +1,4 @@
+import { toClassName } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
@@ -257,13 +258,43 @@ function buildDefaultTable(doc) {
   return table;
 }
 
+function getCellText(cell) {
+  if (!cell) return '';
+  const paragraphs = [...cell.querySelectorAll('p')]
+    .map((p) => p.textContent.trim())
+    .filter(Boolean);
+  if (paragraphs.length) return paragraphs.join(',');
+  return cell.textContent.trim();
+}
+
+function parseVariationClasses(cell) {
+  const raw = getCellText(cell);
+  if (!raw) return [];
+  const classes = raw
+    .split(',')
+    .map((item) => toClassName(item.trim()))
+    .filter(Boolean);
+  return [...new Set(classes)];
+}
+
+function applyVariationClasses(tableEl, styles, id) {
+  if (!tableEl) return;
+  if (styles.length) tableEl.classList.add(...styles);
+  if (id) tableEl.setAttribute('id', id);
+}
+
 export default async function decorate(block) {
+  const rows = [...block.children];
+  const id = getCellText(rows[0]?.children[0]) || '';
+  const styles = parseVariationClasses(rows[1]?.children[0]);
+
   let tableEl = block.querySelector('table');
   if (!tableEl) {
     tableEl = buildDefaultTable(block.ownerDocument);
   } else {
     markHeaderRows(tableEl);
   }
+  applyVariationClasses(tableEl, styles, id);
 
   block.textContent = '';
   block.appendChild(tableEl);
