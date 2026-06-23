@@ -1,5 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
+import { applyLinkTarget, isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
@@ -103,6 +103,7 @@ function extractCtas(ctaRows, placeholder) {
       label: a.textContent.trim(),
       title: a.getAttribute('title') || '',
       openInNewTab: targetCell?.textContent?.trim(),
+      row,
       sourceAnchor: a,
     });
     return acc;
@@ -132,7 +133,7 @@ function buildCtaAnchor(doc, ctaData, dismissAndSuppress) {
   a.textContent = ctaData.label;
 
   if (ctaData.title) a.setAttribute('title', ctaData.title);
-  if (ctaData.sourceAnchor) moveInstrumentation(ctaData.sourceAnchor, a);
+  moveInstrumentation(ctaData.row ?? ctaData.sourceAnchor, a);
 
   const wrapper = doc.createElement('span');
   wrapper.appendChild(a);
@@ -168,14 +169,15 @@ function buildCtas(doc, ctaList, dismissAndSuppress) {
 // ─── Block entry point ────────────────────────────────────────────────────────
 
 export default function decorate(block) {
+  const doc = block.ownerDocument;
+  if (isAuthoringInstance(block)) {
+    block.style.display = 'none';
+    return;
+  }
+
   const [
     desktopImgRow, mobileImgRow, isActiveRow, publishDateRow, unpublishDateRow, ...ctaRows
   ] = [...block.children];
-
-  const doc = block.ownerDocument;
-
-  // Replace the block with an invisible placeholder immediately so AEM
-  // instrumentation is preserved and the section layout is unaffected.
   const placeholder = doc.createElement('div');
   placeholder.className = 'welcome-banner-placeholder';
   moveInstrumentation(block, placeholder);
