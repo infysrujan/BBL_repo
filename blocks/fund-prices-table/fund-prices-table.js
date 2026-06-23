@@ -77,15 +77,26 @@ const thaiHeaderKeyMap = Object.fromEntries(
   Object.entries(rawThaiHeaderKeyMap).map(([k, v]) => [k.normalize('NFC'), v]),
 );
 
+// Alternate #tag names some authors have used in place of the canonical keys.
+const tagAliases = {
+  fund: 'openendfund',
+  unitvalue: 'nav',
+  buybackprice: 'redemptionprice',
+  netassetvalue: 'totalnetassets',
+};
+
 function normalizeHeaderKey(header) {
   const trimmed = header.trim().normalize('NFC');
   if (thaiHeaderKeyMap[trimmed]) return thaiHeaderKeyMap[trimmed];
   // Check for a #suffix and return only the part after #
   const hashIndex = trimmed.lastIndexOf('#');
+  let key;
   if (hashIndex !== -1 && hashIndex < trimmed.length - 1) {
-    return trimmed.slice(hashIndex + 1).toLowerCase().replace(/[^a-z0-9]/g, '');
+    key = trimmed.slice(hashIndex + 1).toLowerCase().replace(/[^a-z0-9]/g, '');
+  } else {
+    key = trimmed.toLowerCase().replace(/[^a-z0-9]/g, '');
   }
-  return trimmed.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return tagAliases[key] || key;
 }
 
 function resolveColumnKey(normalizedKey, lang) {
