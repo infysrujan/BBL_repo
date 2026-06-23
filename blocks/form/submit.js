@@ -13,17 +13,27 @@ export function submitSuccess(e, form) {
   if (redirectUrl) {
     window.location.assign(encodeURI(redirectUrl));
   } else {
-    let thankYouMessage = form.parentNode.querySelector('.form-message.success-message');
-    if (!thankYouMessage) {
-      thankYouMessage = document.createElement('div');
-      thankYouMessage.className = 'form-message success-message';
-    }
-    thankYouMessage.innerHTML = thankYouMsg || DEFAULT_THANK_YOU_MESSAGE;
-    // Hide the form and show only the success message
-    form.style.display = 'none';
-    form.parentNode.insertBefore(thankYouMessage, form);
-    if (thankYouMessage.scrollIntoView) {
-      thankYouMessage.scrollIntoView({ behavior: 'smooth' });
+    const thankyouPanel = form.querySelector('fieldset[name="thankyou_visible_panel"]');
+    if (thankyouPanel) {
+      // Show the custom thank-you panel on successful submission response.
+      // Do NOT hide the form or create a .form-message.success-message element.
+      thankyouPanel.dataset.visible = 'true';
+      const reviewPanel = form.querySelector('fieldset[name="review_panel"]');
+      if (reviewPanel) reviewPanel.dataset.visible = 'false';
+      thankyouPanel.scrollIntoView?.({ behavior: 'smooth' });
+    } else {
+      let thankYouMessage = form.parentNode.querySelector('.form-message.success-message');
+      if (!thankYouMessage) {
+        thankYouMessage = document.createElement('div');
+        thankYouMessage.className = 'form-message success-message';
+      }
+      thankYouMessage.innerHTML = thankYouMsg || DEFAULT_THANK_YOU_MESSAGE;
+      // Hide the form and show only the success message
+      form.style.display = 'none';
+      form.parentNode.insertBefore(thankYouMessage, form);
+      if (thankYouMessage.scrollIntoView) {
+        thankYouMessage.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   }
   form.setAttribute('data-submitting', 'false');
@@ -31,7 +41,13 @@ export function submitSuccess(e, form) {
   if (submitBtn) submitBtn.disabled = false;
 }
 
-export function submitFailure(e, form) {
+export function submitFailure(_e, form) {
+  const thankyouPanel = form.querySelector('fieldset[name="thankyou_visible_panel"]');
+  if (thankyouPanel) {
+    thankyouPanel.dataset.visible = 'false';
+    const reviewPanel = form.querySelector('fieldset[name="review_panel"]');
+    if (reviewPanel) reviewPanel.dataset.visible = 'true';
+  }
   const defaultErrorMsg = 'Some error occured while submitting the form';
   const errorMsg = formPlaceholders?.formSubmissionErrorMessage || defaultErrorMsg;
   let errorMessage = form.querySelector('.form-message.error-message');
