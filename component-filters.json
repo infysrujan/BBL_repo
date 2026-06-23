@@ -527,7 +527,7 @@
   {
     "id": "welcome-banner",
     "components": [
-      "custom-button"
+      "button"
     ]
   }
 ]

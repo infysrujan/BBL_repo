@@ -92,10 +92,25 @@ function anchorToCtaData(a) {
  * @returns {Array}
  */
 function extractCtas(buttonRows, placeholder) {
-  const fromRows = buttonRows
-    .map((row) => row?.querySelector('a'))
-    .filter(Boolean)
-    .map(anchorToCtaData);
+  const parseBool = (el) => el?.textContent?.trim().toLowerCase() === 'true';
+
+  const fromRows = buttonRows.map((row) => {
+    const a = row.querySelector('a');
+    if (!a) return null;
+    const boolCells = [...row.children].filter((c) => {
+      const t = c.textContent?.trim().toLowerCase();
+      return (t === 'true' || t === 'false') && !c.querySelector('a, img, picture');
+    });
+    const openInNewTab = boolCells.length >= 2
+      ? parseBool(boolCells[0])
+      : a.getAttribute('target') === '_blank';
+    return {
+      href: a.getAttribute('href') || '#',
+      label: a.textContent.trim(),
+      target: openInNewTab ? '_blank' : '',
+      sourceAnchor: a,
+    };
+  }).filter(Boolean);
 
   if (fromRows.length) return fromRows;
 
