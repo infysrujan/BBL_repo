@@ -150,7 +150,7 @@ function formatBodyCellText(normalizedKey, row, columnKey, selectedDate) {
       const datePart = rawDate.split('T')[0];
       if (datePart !== selectedDate) {
         const label = row.mf_backdate ? formatBackdate(rawDate) : rawDate;
-        return `${row[columnKey]}<br><span class="dnav">${label}</span>`;
+        return `${row[columnKey]} <span class="dnav">${label}</span>`;
       }
     }
     return row[columnKey] !== undefined ? `${row[columnKey]}` : '';
