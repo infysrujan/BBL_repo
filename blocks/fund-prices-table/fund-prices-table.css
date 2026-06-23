@@ -108,12 +108,12 @@ td.merged-fund-type {
 }
 
 .fund-prices-table table tr.header-row td:first-child {
-  width: 10%;
+  width: 12%;
   padding-left: 1.125rem;
 }
 
 .fund-prices-table table tr.header-row td:nth-child(2) {
-  width: 34%;
+  width: 30%;
   padding-left: 1.0625rem;
 }
 
