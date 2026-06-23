@@ -9,11 +9,15 @@ import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
     if (init?.method === 'POST' && typeof init?.body === 'string') {
       try {
         const parsed = JSON.parse(init.body);
-        if (parsed?.data && typeof parsed.data === 'object' && !Array.isArray(parsed.data)) {
+        // AEM forms uses 'payload' key; sheet-based forms use 'data' key
+        const key = ['payload', 'data'].find(
+          (k) => parsed?.[k] && typeof parsed[k] === 'object' && !Array.isArray(parsed[k]),
+        );
+        if (key) {
           const filtered = Object.fromEntries(
-            Object.entries(parsed.data).filter(([k]) => !k.includes('_exclude')),
+            Object.entries(parsed[key]).filter(([k]) => !k.includes('_exclude')),
           );
-          const newBody = JSON.stringify({ ...parsed, data: filtered });
+          const newBody = JSON.stringify({ ...parsed, [key]: filtered });
           return nativeFetch.call(this, resource, { ...init, body: newBody });
         }
       } catch { /* non-JSON or unexpected structure — pass through */ }
