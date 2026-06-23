@@ -1,5 +1,5 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
-import { getLang, isAuthoringInstance } from '../../scripts/bbl-decorators.js';
+import { getLang, isAuthoringInstance, applyLinkTarget } from '../../scripts/bbl-decorators.js';
 import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
@@ -10,19 +10,12 @@ function formatDate(dateStr) {
   if (getLang() === 'th') {
     return `${date.getDate()} ${date.toLocaleString('th-TH', { month: 'long' })} ${date.getFullYear() + 543}`;
   }
-  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function isToggleCell(cell) {
   const text = cell?.textContent?.trim().toLowerCase() || '';
   return text === 'true' || text === 'false' || cell?.innerHTML?.trim() === '';
-}
-
-function isKeywordCell(cell) {
-  const text = cell.textContent.trim().toLowerCase();
-  if (!text || isToggleCell(cell)) return false;
-
-  return /^[a-z-]+$/.test(text) && !cell.querySelector('a, img, picture, h1, h2, h3, h4, h5, h6');
 }
 
 function extractToggledLink(cells, valueCellSelector) {
@@ -78,69 +71,18 @@ function createCardItem(cardRow, doc) {
 
   if (!cells.some((c) => c.textContent.trim().length > 0)) return null;
 
-  const findInCells = (selector) => cells.reduce((found, cell) => {
-    if (found.el) return found;
-    const el = cell.querySelector(selector);
-    return el ? { cell, el } : found;
-  }, { cell: null, el: null });
+  const [imageDiv, titleDiv, descDiv, actionTypeDiv] = cells;
 
-  const { cell: imgCell, el: imgEl } = findInCells('img');
-  const titleTypeCell = cells.find((c) => /^(h[1-6])$/i.test(c.textContent.trim()));
-  const titleType = titleTypeCell?.textContent.trim().toLowerCase() || 'h3';
+  const img = imageDiv?.querySelector('img');
+  const headingEl = titleDiv?.querySelector('h1, h2, h3, h4, h5, h6');
+  const titleText = titleDiv?.textContent?.trim() || '';
+  const titleType = headingEl?.tagName?.toLowerCase() || 'h3';
+  const title = headingEl?.outerHTML?.trim()
+    ?? (titleText ? `<${titleType}>${titleText}</${titleType}>` : '');
+  const description = descDiv?.innerHTML?.trim() || '';
+  const actionType = actionTypeDiv?.textContent?.trim().toLowerCase().replace('-button', '') || 'default';
 
-  const headingData = findInCells('h1, h2, h3, h4, h5, h6');
-  let titleCell = headingData.cell;
-  const headingEl = headingData.el;
-
-  if (!titleCell && titleTypeCell) {
-    const typeIdx = cells.indexOf(titleTypeCell);
-    if (typeIdx > 0) titleCell = cells[typeIdx - 1];
-  }
-
-  if (!titleCell) {
-    titleCell = cells.find(
-      (c) => c !== imgCell && c !== titleTypeCell && c.textContent.trim().length > 0,
-    );
-  }
-
-  const titleText = titleCell?.textContent?.trim();
-  const title = headingEl?.outerHTML?.trim() ?? (titleText ? `<${titleType}>${titleText}</${titleType}>` : '');
-
-  const hasActionContent = (c) => c.querySelector('a, ul') !== null;
-  const firstActionCellIdx = cells.findIndex(hasActionContent);
-  let actionTypeIdx = -1;
-
-  if (firstActionCellIdx > 0) {
-    for (let i = firstActionCellIdx - 1; i >= 0; i -= 1) {
-      const candidate = cells[i];
-      if (candidate !== imgCell && candidate !== titleCell && candidate !== titleTypeCell) {
-        if (isKeywordCell(candidate)) {
-          actionTypeIdx = i;
-          break;
-        }
-      }
-    }
-  } else {
-    // Fallback if no action content exists but there's a keyword cell
-    actionTypeIdx = cells.findIndex((c) => (
-      c !== imgCell
-      && c !== titleCell
-      && c !== titleTypeCell
-      && isKeywordCell(c)
-    ));
-  }
-
-  const actionType = actionTypeIdx !== -1 ? cells[actionTypeIdx].textContent.trim().toLowerCase() : '';
-
-  const descCell = actionTypeIdx > 1 ? cells[actionTypeIdx - 1] : null;
-  const description = (descCell
-    && descCell !== titleCell
-    && descCell !== imgCell
-    && descCell !== titleTypeCell)
-    ? descCell.innerHTML
-    : '';
-
-  let remaining = actionTypeIdx !== -1 ? cells.slice(actionTypeIdx + 1) : cells.slice(3);
+  let remaining = cells.slice(4);
 
   let dateText = '';
   const lastCell = remaining[remaining.length - 1];
@@ -177,12 +119,14 @@ function createCardItem(cardRow, doc) {
   const cardLinkTarget = cardLinkAnchor?.target || '';
   const cardLinkTitle = cardLinkAnchor?.title?.trim() || '';
 
-  const actionCells = remaining.filter((c) => c.querySelector('a') && !c.querySelector('h1, h2, h3, h4, h5, h6, img, picture'));
+  const actionCells = remaining.filter(
+    (c) => c.querySelector('a') && !c.querySelector('h1, h2, h3, h4, h5, h6, img, picture'),
+  );
 
   const card = createElementFromHTML('<div class="menu-card-action-item"></div>', doc);
   const inner = createElementFromHTML('<div class="menu-card-action-inner"></div>', doc);
 
-  if (imgEl) inner.appendChild(imgEl.cloneNode(true));
+  if (img) inner.appendChild(img.cloneNode(true));
 
   if (title) {
     inner.appendChild(createElementFromHTML(`<div class="menu-card-action-title">${title}</div>`, doc));
@@ -202,15 +146,21 @@ function createCardItem(cardRow, doc) {
   };
 
   if (actionType === 'download' && actionCells.length > 0) {
-    const dlAnchor = actionCells.find((c) => !c.querySelector('ul'))?.querySelector('a')
-      || actionCells[0].querySelector('a');
+    const dlCell = actionCells[actionCells.length - 1];
+    const { enabled: openInNewTab, toggleCell: dlToggleCell } = extractToggledLink(
+      remaining,
+      (c) => c === dlCell,
+    );
+    if (dlToggleCell) remaining = remaining.filter((c) => c !== dlToggleCell);
+    const dlAnchor = dlCell.querySelector('a');
+    if (dlToggleCell) applyLinkTarget(dlCell, 'a', openInNewTab);
     appendDownloadLink(dlAnchor);
   } else if (actionType === 'multiple-download' && actionCells.length > 0) {
     const multipleCell = actionCells[actionCells.length - 1];
     const temp = createElementFromHTML(`<div>${multipleCell.innerHTML}</div>`, doc);
     temp.querySelectorAll('a').forEach(appendDownloadLink);
   } else if (actionType === 'select-dropdown') {
-    const dropdownCell = actionCells.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length > 1);
+    const dropdownCell = actionCells.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length >= 1);
     if (dropdownCell) {
       const labelCellIdx = remaining.indexOf(dropdownCell) - 1;
       const label = (labelCellIdx >= 0 && !remaining[labelCellIdx].querySelector('a'))

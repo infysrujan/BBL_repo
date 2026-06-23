@@ -119,6 +119,13 @@ function buildDataFromConfig(json, lang, placeholders) {
         annualReturn: L['inputs-expectedReturnRate'] || '',
         annualIncrease: L['inputs-annualSavingIncreaseRate'] || '',
       },
+      fieldPlaceholders: {
+        balance: placeholders.savingPlanPlaceholderBalance,
+        goalAmount: placeholders.savingPlanPlaceholderGoalAmount,
+        annualReturn: placeholders.savingPlanPlaceholderAnnualReturn,
+        goalPeriod: placeholders.savingPlanPlaceholderGoalPeriod,
+        annualIncrease: placeholders.savingPlanPlaceholderAnnualIncrease,
+      },
       buttons: {
         clear: L['common-clearButton'] || '',
         calculate: L['common-calculateButtonText'] || '',
@@ -311,7 +318,7 @@ function buildField({
 }
 
 function buildDropdownField({
-  name, label, value, options, icon = '',
+  name, label, value, options,
 }) {
   const selected = options.find((opt) => opt.key === value);
   const optionsMarkup = options
@@ -325,7 +332,6 @@ function buildDropdownField({
   return `
     <div class="saving-plan-field saving-plan-field-dropdown" data-field="${name}" data-value="${selected?.key || ''}">
       <button type="button" class="saving-plan-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
-        <span class="saving-plan-field-icon" aria-hidden="true">${icon}</span>
         <span class="saving-plan-dropdown-current">${selected?.label || label}</span>
         <span class="saving-plan-field-chevron" aria-hidden="true"></span>
       </button>
@@ -390,22 +396,22 @@ function buildShellMarkup(data) {
           <h3 class="saving-plan-form-title">${labels.calculateTitle}</h3>
           <div class="saving-plan-form-grid">
             ${buildDropdownField({
-    name: 'goal', label: labels.fields.goal, value: '', options: goals, icon: getIcon('goal'),
+    name: 'goal', label: labels.fields.goal, value: '', options: goals,
   })}
             ${buildField({
-    name: 'balance', label: labels.fields.balance, value: defaults.balance, icon: getIcon('balance'),
+    name: 'balance', label: labels.fields.balance, value: defaults.balance, icon: getIcon('balance'), placeholder: labels.fieldPlaceholders.balance,
   })}
             ${buildField({
-    name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount, icon: getIcon('goal-amount'),
+    name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount, icon: getIcon('goal-amount'), placeholder: labels.fieldPlaceholders.goalAmount,
   })}
             ${buildField({
-    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || '', decimal: true, icon: getIcon('annual-return'), placeholder: '0.5-40',
+    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || '', decimal: true, icon: getIcon('annual-return'), placeholder: labels.fieldPlaceholders.annualReturn,
   })}
             ${buildField({
-    name: 'goalPeriod', label: labels.fields.goalPeriod, value: defaults.goalPeriod, icon: getIcon('goal-period'),
+    name: 'goalPeriod', label: labels.fields.goalPeriod, value: defaults.goalPeriod, icon: getIcon('goal-period'), placeholder: labels.fieldPlaceholders.goalPeriod,
   })}
             ${buildField({
-    name: 'annualIncrease', label: labels.fields.annualIncrease, value: defaults.annualIncrease, decimal: true, icon: getIcon('annual-increase'),
+    name: 'annualIncrease', label: labels.fields.annualIncrease, value: defaults.annualIncrease, decimal: true, icon: getIcon('annual-increase'), placeholder: labels.fieldPlaceholders.annualIncrease,
   })}
           </div>
           <div class="saving-plan-form-actions">
@@ -442,7 +448,6 @@ function buildShellMarkup(data) {
       <section class="saving-plan-tweak" hidden>
         <div class="saving-plan-tweak-header">
           <h3 class="saving-plan-tweak-title">${labels.tweakTitle}</h3>
-          <h4 class="saving-plan-newplan-title">${labels.newPlanTitle}</h4>
         </div>
         <div class="saving-plan-tweak-grid">
           <div class="saving-plan-tweak-sliders">
@@ -457,6 +462,7 @@ function buildShellMarkup(data) {
   })}
           </div>
           <div class="saving-plan-newplan">
+            <h4 class="saving-plan-newplan-title">${labels.newPlanTitle}</h4>
             <div class="saving-plan-newplan-card">
               <p class="saving-plan-newplan-future" data-newplan="future"></p>
               <p class="saving-plan-newplan-lead">${labels.newPlan.monthlySavingLabel}</p>
@@ -592,7 +598,7 @@ function renderResult(state, data, calculation) {
       data.labels.result.footnoteReturnTemplate,
       { return: formatDecimal(annualReturn) },
     )
-    : '';
+    : `*Including inflation rate of ${INFLATION_RATE}% p.a. and expected annual return ${formatDecimal(annualReturn)}%`;
   setText(root, '[data-result="footnote-return"]', returnLabel);
 }
 

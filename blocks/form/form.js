@@ -5,6 +5,10 @@ import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
 import { handleSubmit } from './submit.js';
 import DocBasedFormToAF from './transform.js';
+import decorateCreditCardTractApplication from './form-custom/creditcard-track-application/creditcard-track-application.js';
+import decorateBondAllocationForm from './form-custom/bond-allocation/bond-allocation.js';
+import decorateSipForm from './form-custom/sip-form/sip-form.js';
+import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
 import {
   checkValidation,
   createButton,
@@ -82,6 +86,13 @@ function createFieldSet(fd) {
   wrapper.name = fd.name;
   if (fd.fieldType === 'panel') {
     wrapper.classList.add('panel-wrapper');
+  }
+  const styleValue = fd.style || fd.properties?.style;
+  if (styleValue) {
+    const classes = Array.isArray(styleValue)
+      ? styleValue
+      : styleValue.trim().split(/\s+/);
+    classes.filter(Boolean).forEach((cls) => wrapper.classList.add(cls));
   }
   if (fd.repeatable === true) {
     createRepeatablePanel(wrapper, fd);
@@ -337,6 +348,10 @@ async function createFormForAuthoring(formDef) {
     }
     return [];
   });
+  decorateCreditCardTractApplication(form);
+  decorateBondAllocationForm(form);
+  decorateSipForm(form);
+  decorateSmeLoanForm(form);
   return form;
 }
 
@@ -391,6 +406,10 @@ export async function createForm(formDef, data, source = 'aem') {
     handleSubmit(e, form, captcha);
   });
 
+  decorateCreditCardTractApplication(form);
+  decorateBondAllocationForm(form);
+  decorateSipForm(form);
+  decorateSmeLoanForm(form);
   return {
     form,
     captcha,

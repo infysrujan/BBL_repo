@@ -1,5 +1,4 @@
 import { getSubmitBaseUrl } from './constant.js';
-import { fetchConfigs } from '../../scripts/config.js';
 
 /**
  * Get Full Name
@@ -237,6 +236,37 @@ function addCustomHeader(payload, headerName, headerValue) {
 }
 
 /**
+ * Synchronously fetches the base URL for a given key from configs.json.
+ * This is used in functions that need to run synchronously in the AEM Forms Rule Engine.
+ *
+ * @param {string} key - The config key to look up (e.g., 'get-province-en', 'cc-apply-status')
+ * @returns {string} - The base URL from configs.json, or empty string if not found/error
+ */
+function getBaseUrl(key) {
+  let baseUrl = '';
+  const cfgXhr = new XMLHttpRequest();
+  cfgXhr.open('GET', '/configs.json', false);
+  cfgXhr.send(null);
+  if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
+    try {
+      const entry = JSON.parse(cfgXhr.responseText)
+        .data?.find((c) => c.Key === key);
+      baseUrl = entry?.Value || '';
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('CcApplicationStatus: failed to read configs.json', e);
+    }
+  }
+
+  if (!baseUrl) {
+    // eslint-disable-next-line no-console
+    console.error('CcApplicationStatus: failed to read configs.json');
+    return '';
+  }
+  return baseUrl;
+}
+
+/**
 * Fetches and normalizes province data.
 * Expected API shape:
 * [
@@ -248,10 +278,8 @@ function addCustomHeader(payload, headerName, headerValue) {
 * @returns {Array<{value: string, label: string}>}
 */
 function getProvinceData() {
-  const configs = fetchConfigs();
-  /* const baseUrl = configs.aemBaseUrl ||''; */
-  const urlPath = configs.getProvinceEn;
-  const url = `${urlPath}`;
+  const urlProvinceEnPath = getBaseUrl('get-province-en');
+  const url = `${urlProvinceEnPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -316,10 +344,9 @@ function getProvinceEnumNames() {
 * @returns {{value: string[], label: string[]}}
 */
 function getProvinceDataTh() {
-  const configs = fetchConfigs();
-  const urlPath = configs.getprovinceth;
+  const urlProvinceThPath = getBaseUrl('get-province-th');
   /* const baseUrl = configs.aemBaseUrl || ''; */
-  const url = `${urlPath}`;
+  const url = `${urlProvinceThPath}`;
   const xhr = new XMLHttpRequest();
 
   xhr.open('GET', url, false);
@@ -408,11 +435,11 @@ function getProvinceEnumNamesTh() {
  */
 function fetchBranchesByProvince(province, lang = 'th') {
   if (!province) return [];
-  const configs = fetchConfigs();
-  const ProvinceBaseUrl = configs.branchesByProvince;
+  const branchesByProvinceUrl = getBaseUrl('branches-by-province');
+  const provinceBaseUrl = branchesByProvinceUrl.endsWith('/') ? branchesByProvinceUrl : `${branchesByProvinceUrl}/`;
   const encoded = encodeURIComponent(province);
   const segment = lang === 'en' ? 'SearchThaiLandEnWithLocation' : 'SearchThaiLandThWithLocation';
-  const url = `${ProvinceBaseUrl}${segment}/${encoded}/0/0/0/BRC`;
+  const url = `${provinceBaseUrl}${segment}/${encoded}/0/0/0/BRC`;
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', url, false);
@@ -538,26 +565,7 @@ function CcApplicationStatus(idAndDob) {
   // fetchConfigs() is async and accesses document/window — both unavailable
   // in the AEM Forms Rule Engine Web Worker. Read configs.json directly via
   // synchronous XHR instead (sync XHR is permitted in workers).
-  let baseUrl = '';
-  const cfgXhr = new XMLHttpRequest();
-  cfgXhr.open('GET', '/configs.json', false);
-  cfgXhr.send(null);
-  if (cfgXhr.status >= 200 && cfgXhr.status < 300) {
-    try {
-      const entry = JSON.parse(cfgXhr.responseText)
-        .data?.find((c) => c.Key === 'cc-apply-status');
-      baseUrl = entry?.Value || '';
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('CcApplicationStatus: failed to read configs.json', e);
-    }
-  }
-
-  if (!baseUrl) {
-    // eslint-disable-next-line no-console
-    console.error('CcApplicationStatus: cc-apply-status missing in configs.json');
-    return '';
-  }
+  const baseUrl = getBaseUrl('cc-apply-status');
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', `${baseUrl}?idAndDob=${encodeURIComponent(idAndDob)}`, false);
@@ -608,9 +616,228 @@ function getCcField(fieldName) {
   return ccLastResult?.[fieldName] ?? '';
 }
 
+// Module-level cache — set by fetchPlanData, read by
+// getPlanField / getRiderField / getPlanError / getPlanErrorStatus
+let fetchPlanDataResult = null;
+let fetchPlanDataErrorMsg = '';
+let fetchPlanDataErrorStatus = '';
+
+/**
+ * Fetches plan data and returns a single filtered plan based on prospectCategory and planTerm.
+ *
+ * Protection: planTerm is the planCode string directly — "8PWLBD", "12PWLBD", "16PWLBD"
+ * Health: planTerm is the roomAndBoard value as a string — "1500", "2000", "3000", "4000"
+ *
+ * The matched plan object is cached in fetchPlanDataResult so getPlanField()
+ * can retrieve individual fields without re-calling the API.
+ *
+ * @name fetchPlanData
+ * @param {number} prospectAge
+ * @param {string} prospectGender
+ * @param {string} prospectCategory - "Protection" or "Health"
+ * @param {number} prospectSA
+ * @param {string|number} planTerm - planCode string (e.g. "8PWLBD") for Protection;
+ *                                  roomAndBoard number (e.g. 1500) for Health
+ * @return {string} JSON string of the matched plan, or empty string on failure
+ */
+function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA, planTerm) {
+  fetchPlanDataResult = null;
+  fetchPlanDataErrorMsg = '';
+  fetchPlanDataErrorStatus = '';
+
+  const baseUrl = getBaseUrl('fetch-plan-data');
+  if (!baseUrl) {
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData: fetch-plan-data missing in configs.json');
+    return '';
+  }
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', baseUrl, false);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('Accept', 'application/json');
+  // Health uses "hospitalplan" key; Protection uses "prospectSA"
+  const isHealth = String(prospectCategory).trim() === 'Health';
+  const body = {
+    prospectAge,
+    prospectGender,
+    prospectCategory,
+    ...(isHealth ? { hospitalplan: String(planTerm) } : { prospectSA }),
+  };
+
+  try {
+    xhr.send(JSON.stringify(body));
+  } catch (e) {
+    // Sync XHR throws NetworkError on CORS block or connectivity failure
+    fetchPlanDataErrorMsg = e.message || 'Network error';
+    fetchPlanDataErrorStatus = 'NetworkError';
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData network/CORS error:', e.message);
+    return 'ERROR';
+  }
+
+  let response;
+  try {
+    response = JSON.parse(xhr.responseText);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData JSON parse error (HTTP', xhr.status, '):', e);
+    return '';
+  }
+
+  // Gateway / proxy error — e.g. BBL API layer returned HTTP 500
+  // with { success: false, status: 500, message: "..." }
+  if (response?.success === false) {
+    fetchPlanDataErrorMsg = response.message || 'Unknown error';
+    fetchPlanDataErrorStatus = String(response.status || 'Error');
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData gateway error:', fetchPlanDataErrorStatus, fetchPlanDataErrorMsg);
+    return 'ERROR';
+  }
+
+  // AIA API-level error — { status: "ERROR", data: {}, errMsg: "..." }
+  if (response?.status === 'ERROR') {
+    fetchPlanDataErrorMsg = response.errMsg || 'Unknown error';
+    fetchPlanDataErrorStatus = 'ERROR';
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData API returned ERROR:', fetchPlanDataErrorMsg);
+    return 'ERROR';
+  }
+
+  const plans = response?.data?.plans;
+  if (!Array.isArray(plans) || plans.length === 0) return '';
+
+  const term = String(planTerm || '').trim();
+  const category = String(prospectCategory || '').trim();
+  let matched = null;
+
+  if (category === 'Protection') {
+    matched = plans.find((p) => p.planCode === term) ?? null;
+  } else if (category === 'Health') {
+    matched = plans.find((p) => p.rider?.[0]?.roomAndBoard === Number(planTerm)) ?? null;
+  }
+
+  if (!matched) {
+    // eslint-disable-next-line no-console
+    console.error('fetchPlanData: no plan matched for category', category, 'planTerm', term);
+    return '';
+  }
+
+  fetchPlanDataResult = matched;
+  return JSON.stringify(matched);
+}
+
+/**
+ * Returns a named field from the last fetchPlanData call.
+ * For nested rider fields use dot notation: "rider.0.roomAndBoard"
+ *
+ * @name getPlanField
+ * @param {string} fieldName - Top-level key (e.g. "planCode", "premium")
+ *                             or dot-path (e.g. "rider.0.roomAndBoard")
+ * @return {string}
+ */
+function getPlanField(fieldName) {
+  if (!fetchPlanDataResult) return '';
+  const value = String(fieldName).split('.')
+    .reduce((obj, k) => (obj != null ? obj[k] : null), fetchPlanDataResult);
+  return value != null ? String(value) : '';
+}
+
+/**
+ * Returns a named field from the rider matching riderCode in the last fetchPlanData result.
+ * Returns defaultValue if the riderCode is absent from the rider array.
+ *
+ * @name getRiderField
+ * @param {string} riderCode - e.g. "TI_Free", "ADBN8", "WP_FREE"
+ * @param {string} fieldName - e.g. "riderSA", "riderName"
+ * @param {string} [defaultValue] - returned when riderCode not found (default: '')
+ * @return {string}
+ */
+function getRiderField(riderCode, fieldName, defaultValue) {
+  const fallback = defaultValue != null ? String(defaultValue) : '';
+  if (!fetchPlanDataResult) return fallback;
+  const riders = fetchPlanDataResult.rider;
+  if (!Array.isArray(riders)) return fallback;
+  const rider = riders.find((r) => r.riderCode === riderCode);
+  if (!rider) return fallback;
+  const value = rider[fieldName];
+  return value != null ? String(value) : fallback;
+}
+
+/**
+ * Returns the error message stored by the last fetchPlanData call that received
+ * an ERROR status, or '' when the last call succeeded.
+ *
+ * @name getPlanError
+ * @return {string}
+ */
+function getPlanError() {
+  return fetchPlanDataErrorMsg;
+}
+
+/**
+ * Returns the error status stored by the last fetchPlanData call:
+ * "ERROR" for an AIA API-level error, the HTTP status code string (e.g. "500")
+ * for a gateway error, or '' when the last call succeeded.
+ *
+ * @name getPlanErrorStatus
+ * @return {string}
+ */
+function getPlanErrorStatus() {
+  return fetchPlanDataErrorStatus;
+}
+
+/**
+ * Fetches campaign details from the language-specific EDS spreadsheet and
+ * returns the name and detail for the matching campaign ID.
+ *
+ * Spreadsheet path: /{language}/cc-campaign.json
+ * Expected columns: campaignId, campaignName, campaignDetail
+ *
+ * @name fetchCcCampaignDetails
+ * @param {string} campaignId - Campaign ID to look up
+ * @param {string} language - Language code: 'th' or 'en'
+ * @returns {{ campaignName: string, campaignDetail: string }}
+ */
+function fetchCcCampaignDetails(campaignId, language) {
+  if (!campaignId || !language) return { campaignName: '', campaignDetail: '' };
+
+  const lang = String(language).toLowerCase() === 'en' ? 'en' : 'th';
+  const url = `/${lang}/cc-campaign.json`;
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, false);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send(null);
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    // eslint-disable-next-line no-console
+    console.error('fetchCcCampaignDetails API error:', xhr.status, xhr.statusText);
+    return { campaignName: '', campaignDetail: '' };
+  }
+
+  let data;
+  try {
+    const response = JSON.parse(xhr.responseText);
+    data = response?.data ?? response;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('fetchCcCampaignDetails JSON parse error:', e);
+    return { campaignName: '', campaignDetail: '' };
+  }
+
+  if (!Array.isArray(data)) return { campaignName: '', campaignDetail: '' };
+
+  const campaign = data.find((item) => String(item.campaignId) === String(campaignId));
+  if (!campaign) return { campaignName: '', campaignDetail: '' };
+
+  return {
+    campaignName: campaign.campaignName ?? '',
+    campaignDetail: campaign.campaignDetail ?? '',
+  };
+}
+
 function getidAndDob(id, dob) {
-  console.log('id', id);
-  console.log('dob', dob);
   const parts = dob.split(/[-/]/);
   // parts: [yyyy, mm, dd]  →  reorder to ddmmyyyy
   const ddmmyyyy = `${parts[2]}${parts[1]}${parts[0]}`;
@@ -671,25 +898,85 @@ function formatDateTime(date, hour, minute) {
 
   return `${Number(day)} ${months[Number(month) - 1]} ${year} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
 }
+
 /**
- * Returns a "current/max" character-count string for display in a form field.
- * Bind the return value to the label or value of a text component via a form rule.
- *
- * @name updateTextCount
- * @param {string} fieldValue - The current value of the text field
- * @param {number|string} maxCount - The maximum allowed character count (e.g. 100)
- * @returns {string} Formatted count string (e.g. "5/100")
- *
- * @example
- * updateTextCount("Hello", 100) // returns "5/100"
+* @name updateTextCount
+* @param {object} passportNumber - Passport Number field object
+* @returns {string} Character count in format x/4
+*/
+function updateTextCount(passportNumber) {
+  const count = String(passportNumber?.$value || '').length;
+  return `${count}/4`;
+}
+
+/**
+ * Returns the label name of the selected option in a dropdown.
+ * @param {string} dropdown - The dropdown value string
+ * @returns {string} The label name of the selected option
  */
-function updateTextCount(field, textCountComponent) {
-  const count = (field.value || '').length;
-  const maxCount = field.maxLength || 4;
-  const text = `${count}/${maxCount}`;
-  // For plain text components
-  textCountComponent.innerHTML = `<p>${text}</p>`;
-  return text;
+function getSelectedLabelName(dropdown) {
+  if (!dropdown) {
+    return '';
+  }
+  const parts = String(dropdown).split('|');
+  return parts.length > 1 ? parts[1].trim() : '';
+}
+
+/**
+ * Returns the value of the selected option in a dropdown.
+ * @param {string} dropdown - The dropdown value string
+ * @returns {string} The value of the selected option
+ */
+function getSelectedLabelValue(dropdown) {
+  if (!dropdown) {
+    return '';
+  }
+  const parts = String(dropdown).split('|');
+  return parts.length > 0 ? parts[0].trim() : '';
+}
+
+/**
+* Returns BranchName display labels for a given province.
+* Maps to enumNames for branch dropdown.
+*
+* @name getCampaignNames
+* @param {string} campaignId - Campaign ID to look up in the campaign details JSON
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string}
+*/
+function getCampaignNames(campaignId, lang = 'th') {
+  const data = fetchCcCampaignDetails(campaignId, lang);
+  return data.campaignName;
+}
+
+/**
+* Returns CampaignDetail for a given campaign ID.
+*
+* @name getCampaignDetails
+* @param {string} campaignId - Campaign ID to look up in the campaign details JSON
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string}
+*/
+function getCampaignDetails(campaignId, lang = 'th') {
+  const data = fetchCcCampaignDetails(campaignId, lang);
+  return data.campaignDetail;
+}
+
+/**
+ * Returns true when the number of selected checkbox values does not exceed maxCount.
+ * Use as the expression in a Validate rule on a checkbox-group field so the form
+ * blocks submission when too many options are selected.
+ *
+ * UE Validate expression:  validateMaxCheckbox($field, 3)
+ *
+ * @name validateMaxCheckbox
+ * @param {string[]} selected - The checkbox-group value (array of selected values)
+ * @param {number} maxCount - Maximum allowed selections
+ * @return {boolean}
+ */
+function validateMaxCheckbox(selected, maxCount) {
+  const arr = Array.isArray(selected) ? selected : [];
+  return arr.length <= Number(maxCount);
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -715,6 +1002,16 @@ export {
   getSelectedLabelFromDropdown,
   CcApplicationStatus,
   getCcField,
+  fetchPlanData,
+  getPlanField,
+  getRiderField,
+  getPlanError,
+  getPlanErrorStatus,
+  getCampaignDetails,
+  getCampaignNames,
   formatDateTime,
   updateTextCount,
+  getSelectedLabelName,
+  getSelectedLabelValue,
+  validateMaxCheckbox,
 };
