@@ -70,7 +70,6 @@ main .section.form-container.custom-forms .form form .field-wrapper:has(> .check
 }
 
 main .section.form-container.custom-forms .form form .field-wrapper:has(> .checkbox-group-wrapper) .field-wrapper > .field-label {
-  position: absolute;
   top: 0.625rem;
   z-index: 1;
   left: 0;
