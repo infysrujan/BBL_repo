@@ -5,22 +5,47 @@ import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
   if (window.aemFormExcludeInterceptor) return;
   window.aemFormExcludeInterceptor = true;
   const nativeFetch = window.fetch;
+
+  function filterExclude(obj) {
+    return Object.fromEntries(Object.entries(obj).filter(([k]) => !k.includes('_exclude')));
+  }
+
   window.fetch = async function fetchExcludeFilter(resource, init) {
-    if (init?.method === 'POST' && typeof init?.body === 'string') {
-      try {
-        const parsed = JSON.parse(init.body);
-        // AEM forms uses 'payload' key; sheet-based forms use 'data' key
-        const key = ['payload', 'data'].find(
-          (k) => parsed?.[k] && typeof parsed[k] === 'object' && !Array.isArray(parsed[k]),
-        );
-        if (key) {
-          const filtered = Object.fromEntries(
-            Object.entries(parsed[key]).filter(([k]) => !k.includes('_exclude')),
+    if (init?.method === 'POST') {
+      // AEM forms: multipart/form-data, 'data' field = JSON { payload: {...}, 'payload-hash': ... }
+      if (init.body instanceof FormData) {
+        try {
+          const dataStr = init.body.get('data');
+          if (typeof dataStr === 'string') {
+            const parsed = JSON.parse(dataStr);
+            const { payload } = parsed;
+            if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
+              const filtered = filterExclude(payload);
+              const newFormData = new FormData();
+              init.body.forEach((value, key) => {
+                const newVal = key === 'data'
+                  ? JSON.stringify({ ...parsed, payload: filtered })
+                  : value;
+                newFormData.append(key, newVal);
+              });
+              return nativeFetch.call(this, resource, { ...init, body: newFormData });
+            }
+          }
+        } catch { /* unexpected structure — pass through */ }
+      }
+      // Sheet-based forms: JSON string body with 'data' or 'payload' key
+      if (typeof init.body === 'string') {
+        try {
+          const parsed = JSON.parse(init.body);
+          const key = ['payload', 'data'].find(
+            (k) => parsed?.[k] && typeof parsed[k] === 'object' && !Array.isArray(parsed[k]),
           );
-          const newBody = JSON.stringify({ ...parsed, [key]: filtered });
-          return nativeFetch.call(this, resource, { ...init, body: newBody });
-        }
-      } catch { /* non-JSON or unexpected structure — pass through */ }
+          if (key) {
+            const newBody = JSON.stringify({ ...parsed, [key]: filterExclude(parsed[key]) });
+            return nativeFetch.call(this, resource, { ...init, body: newBody });
+          }
+        } catch { /* not filterable JSON — pass through */ }
+      }
     }
     return nativeFetch.call(this, resource, init);
   };
