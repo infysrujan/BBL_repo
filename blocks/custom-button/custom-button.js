@@ -11,16 +11,32 @@ export default function decorate(block) {
     const anchor = row.querySelector('a');
     if (!anchor) return;
 
-    const boolCells = [...row.children].filter((cell) => {
+    const allCells = [...row.children];
+    const boolCells = allCells.filter((cell) => {
       const t = cell.textContent.trim().toLowerCase();
       return t === 'true' || t === 'false';
     });
 
-    const targetLink = boolCells.length >= 2 ? parseBool(boolCells[0]) : anchor.target === '_blank';
-    const enableModal = boolCells.length >= 2 ? parseBool(boolCells[1]) : parseBool(boolCells[0]);
-    const enableCookieModal = boolCells.length >= 3 ? parseBool(boolCells[2]) : false;
+    // UE writes empty string for false booleans; Word/SharePoint writes explicit "false".
+    // When no explicit "false" is found, use positional reading (UE format):
+    //   cell[1]=targetLink, cell[2]=enableModal, cell[3]=enableCookieModal
+    // Otherwise fall back to the boolCells filter approach (Word format).
+    const hasExplicitFalse = boolCells.some((c) => c.textContent.trim().toLowerCase() === 'false');
+    let targetLink;
+    let enableModal;
+    let enableCookieModal;
+    if (hasExplicitFalse) {
+      targetLink = boolCells.length >= 2 ? parseBool(boolCells[0]) : anchor.target === '_blank';
+      enableModal = boolCells.length >= 2 ? parseBool(boolCells[1]) : parseBool(boolCells[0]);
+      enableCookieModal = boolCells.length >= 3 ? parseBool(boolCells[2]) : false;
+    } else {
+      targetLink = parseBool(allCells[1]);
+      enableModal = parseBool(allCells[2]);
+      enableCookieModal = parseBool(allCells[3]);
+    }
 
-    boolCells.forEach((cell) => { cell.hidden = true; });
+    const cellsToHide = hasExplicitFalse ? boolCells : allCells.slice(1);
+    cellsToHide.forEach((cell) => { cell.hidden = true; });
 
     if (enableCookieModal) {
       const href = anchor.getAttribute('href');
