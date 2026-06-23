@@ -68,8 +68,8 @@
 .search-reports-results .srr-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 0 80px;
+  gap: 2rem;
+  padding: 0 var(--bbl-space-1000);
   margin-inline: 0;
   width: 100%;
   box-sizing: border-box;
@@ -78,7 +78,7 @@
 /* Card — outer white box reuses .download-section from download-file.css */
 
 .search-reports-results .download-section {
-  padding: 30px;
+  padding: 1.875rem;
   box-shadow: rgb(0 0 0 / 10%) 0 0 16px 0;
   margin-bottom: 0;
   max-width: none;
@@ -96,8 +96,8 @@
   font-size: var(--bbl-font-size-h5-desktop);
   font-weight: var(--bbl-text-card-title-weight);
   line-height: var(--bbl-text-card-title-line-height);
-  margin: 0 0 15px;
-  padding-bottom: 15px;
+  margin: 0 0 0.9375rem;
+  padding-bottom: 0;
   color: var(--bbl-color-gray-121);
 }
 
@@ -121,11 +121,11 @@
   background: var(--bbl-color-ice-blue, #e6eef4);
   border: none;
   box-shadow: rgb(221 221 221 / 50%) 0 2px 8px 0;
-  padding: 0 10px 0 30px;
+  padding: 0 0.625rem 0 1.875rem;
   border-radius: 0;
-  height: 44px;
+  height: 2.75rem;
   box-sizing: border-box;
-  margin-bottom: 7px;
+  margin-bottom: 0.4375rem;
 }
 
 .search-reports-results .srr-card-file-row .srr-file-label {
@@ -134,7 +134,7 @@
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-text-body-size);
   font-weight: var(--bbl-text-body-weight);
-  line-height: 44px;
+  line-height: 2.75rem;
   color: var(--bbl-color-grey-85);
 }
 
