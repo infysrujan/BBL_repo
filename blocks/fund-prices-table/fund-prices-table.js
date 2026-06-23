@@ -45,7 +45,8 @@ export async function fetchNavEnabledDaysForMonth({ year, month }) {
 
 function getLang() {
   const path = typeof window !== 'undefined' ? window.location.pathname : '';
-  if (path.startsWith('/th') || path.startsWith('/BangkokBankThai')) return 'th';
+  const segments = path.split('/');
+  if (segments.includes('th') || segments.includes('BangkokBankThai')) return 'th';
   return 'en';
 }
 
@@ -58,7 +59,7 @@ const localizedHeaderMap = {
   totalnetassets: 'mfr_sAUM',
 };
 
-const thaiHeaderKeyMap = {
+const rawThaiHeaderKeyMap = {
   ประเภทกองทุน: 'fundtype',
   กองทุนเปิด: 'openendfund',
   กองทุน: 'openendfund',
@@ -70,8 +71,14 @@ const thaiHeaderKeyMap = {
   มูลค่าทรัพย์สินสุทธิ: 'totalnetassets',
 };
 
+// Normalize keys (NFC) so Thai combining-character encoding differences
+// between this source file and authored content don't silently break lookup.
+const thaiHeaderKeyMap = Object.fromEntries(
+  Object.entries(rawThaiHeaderKeyMap).map(([k, v]) => [k.normalize('NFC'), v]),
+);
+
 function normalizeHeaderKey(header) {
-  const trimmed = header.trim();
+  const trimmed = header.trim().normalize('NFC');
   if (thaiHeaderKeyMap[trimmed]) return thaiHeaderKeyMap[trimmed];
   // Check for a #suffix and return only the part after #
   const hashIndex = trimmed.lastIndexOf('#');
