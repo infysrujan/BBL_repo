@@ -185,7 +185,7 @@ export default async function decorate(block) {
 
   const searchBtn = createTaggedElement('button', {
     className: 'sr-search-btn sr-search-btn-disabled',
-    text: ctaLabel === 'Search for Reports' ? 'Search' : ctaLabel,
+    text: ctaLabel,
     attrs: { type: 'button' },
   });
 
