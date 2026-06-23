@@ -1,5 +1,27 @@
 import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
 
+// Strip _exclude fields from AEM forms submit payload (afb-runtime posts via fetch internally).
+(function installExcludeFieldsInterceptor() {
+  if (window.aemFormExcludeInterceptor) return;
+  window.aemFormExcludeInterceptor = true;
+  const nativeFetch = window.fetch;
+  window.fetch = async function fetchExcludeFilter(resource, init) {
+    if (init?.method === 'POST' && typeof init?.body === 'string') {
+      try {
+        const parsed = JSON.parse(init.body);
+        if (parsed?.data && typeof parsed.data === 'object' && !Array.isArray(parsed.data)) {
+          const filtered = Object.fromEntries(
+            Object.entries(parsed.data).filter(([k]) => !k.includes('_exclude')),
+          );
+          const newBody = JSON.stringify({ ...parsed, data: filtered });
+          return nativeFetch.call(this, resource, { ...init, body: newBody });
+        }
+      } catch { /* non-JSON or unexpected structure — pass through */ }
+    }
+    return nativeFetch.call(this, resource, init);
+  };
+}());
+
 let formPlaceholders = {};
 
 export function setFormPlaceholders(placeholders) {
