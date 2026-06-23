@@ -565,7 +565,7 @@
   gap: 1rem;
 }
 
-.tax-calculator .tax-calc-tax-cards-two > * {
+.tax-calculator .tax-calc-tax-cards-two>* {
   flex: 1;
   min-width: 0;
 }
@@ -804,7 +804,12 @@
   white-space: normal;
   max-width: 50%;
   word-break: normal;
-  overflow-wrap: break-word; /* To allow wrapping */
+  overflow-wrap: break-word;
+}
+
+/* Hide target section on Steps 1 and 2 */
+.section.central-aligned.underline-title.center-title.card-list-container.hidden {
+  display: none;
 }
 
 /* ============================================================
@@ -977,7 +982,7 @@
     gap: 1rem;
   }
 
-  .tax-calculator .tax-calc-tax-cards-two > * {
+  .tax-calculator .tax-calc-tax-cards-two>* {
     flex: 1;
     min-width: 0;
   }
@@ -1334,7 +1339,7 @@
     gap: 1.5rem;
   }
 
-  .tax-calculator .tax-calc-tax-cards-two > * {
+  .tax-calculator .tax-calc-tax-cards-two>* {
     flex: 1;
     min-width: 0;
   }
