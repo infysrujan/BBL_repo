@@ -151,27 +151,23 @@ export function appendRowFromData(tableEl, dataArray) {
   const tbody = tableEl.querySelector('tbody');
   if (!tbody) return;
 
-  let headerRow = tbody.querySelector('.header-row');
-
-  if (!headerRow) {
-    const firstRow = tbody.querySelector('tr');
-    if (firstRow) {
-      const tds = firstRow.querySelectorAll('td');
-      headerMappingCellsByTable.set(
-        tableEl,
-        Array.from(tds).map((td) => td.cloneNode(true)),
-      );
-      tds.forEach((td) => {
-        if (typeof td.textContent === 'string') {
-          // Remove any occurrence of '#' followed by a word (e.g., "#fundtype")
-          td.textContent = td.textContent.replace(/\s*#\w+\b/g, '');
-        }
-      });
-      headerRow = firstRow;
-      headerRow.classList.add('header-row');
-    }
-  }
+  const headerRow = tbody.querySelector('.header-row') || tbody.querySelector('tr');
   if (!headerRow) return;
+
+  if (!headerMappingCellsByTable.has(tableEl)) {
+    const tds = headerRow.querySelectorAll('td');
+    headerMappingCellsByTable.set(
+      tableEl,
+      Array.from(tds).map((td) => td.cloneNode(true)),
+    );
+    tds.forEach((td) => {
+      if (typeof td.textContent === 'string') {
+        // Remove any occurrence of '#' followed by a word (e.g., "#fundtype")
+        td.textContent = td.textContent.replace(/\s*#\w+\b/g, '');
+      }
+    });
+    headerRow.classList.add('header-row');
+  }
 
   if (!Array.isArray(dataArray)) return;
 
