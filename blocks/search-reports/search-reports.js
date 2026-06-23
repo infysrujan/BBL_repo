@@ -153,8 +153,8 @@ export default async function decorate(block) {
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
   const searchParamsUrl = configs.reportsSearchParamsUrl || '';
 
-  const ctaLabel = placeholders.reportsCtaLabel || 'Search for Reports';
-  const modalTitle = placeholders.reportsModalTitle || 'Search Report';
+  const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel || 'Search for Reports';
+  const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || placeholders.reportsModalTitle || 'Search Report';
   const modalDesc = rows[2]?.firstElementChild?.innerHTML?.trim() || '';
 
   const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
