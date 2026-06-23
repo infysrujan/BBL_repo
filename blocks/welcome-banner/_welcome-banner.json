@@ -45,7 +45,7 @@
     {
       "id": "welcome-banner",
       "components": [
-        "button"
+        "custom-button"
       ]
     }
   ]
