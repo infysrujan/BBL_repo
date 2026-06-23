@@ -53,8 +53,8 @@ const localizedHeaderMap = {
   fundtype: { en: 'mf_cateEng', th: 'mf_cateTha' },
   openendfund: { en: 'mf_sEng', th: 'mf_sTha' },
   nav: 'mfr_fNav',
-  sellingprice: 'mfr_fBuy',
-  redemptionprice: 'mfr_fSel',
+  sellingprice: 'mfr_fSel',
+  redemptionprice: 'mfr_fBuy',
   totalnetassets: 'mfr_sAUM',
 };
 
