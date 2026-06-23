@@ -110,8 +110,8 @@ function getSearchConfig(rows, placeholders = {}) {
     learnMoreLabel: blockConfig.learnMoreLabel,
     loadMoreLabel: blockConfig.learnMoreLabel,
     ariaLabel: placeholders.ariaLableSearch,
-    searchImage: placeholders.imageUrl ? blockConfig.searchImage : ' ',
-    searchImageAlt: placeholders.imageAltText || blockConfig.searchImageAlt,
+    searchImage: blockConfig.searchImage || placeholders.imageUrl || '',
+    searchImageAlt: blockConfig.searchImageAlt || placeholders.imageAltText || '',
   };
 }
 
