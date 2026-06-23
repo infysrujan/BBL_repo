@@ -14,6 +14,10 @@ export async function getApiUrls() {
 
 let latestMdate = null;
 
+/** Cloned header cells (with `#key` suffixes)
+ * used for column mapping after display text is stripped. */
+const headerMappingCellsByTable = new WeakMap();
+
 export function parseLocalDateFromYmd(ymd) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd).trim());
   if (!m) return null;
@@ -72,13 +76,24 @@ const thaiHeaderKeyMap = {
 function normalizeHeaderKey(header) {
   const trimmed = header.trim();
   if (thaiHeaderKeyMap[trimmed]) return thaiHeaderKeyMap[trimmed];
+  // Check for a #suffix and return only the part after #
+  const hashIndex = trimmed.lastIndexOf('#');
+  if (hashIndex !== -1 && hashIndex < trimmed.length - 1) {
+    return trimmed.slice(hashIndex + 1).toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
   return trimmed.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
 function resolveColumnKey(normalizedKey, lang) {
   const mapped = localizedHeaderMap[normalizedKey];
   if (!mapped) return normalizedKey;
-  return typeof mapped === 'object' ? mapped[lang] : mapped;
+  if (
+    typeof mapped === 'object'
+    && (normalizedKey === 'fundtype' || normalizedKey === 'openendfund')
+  ) {
+    return mapped[lang];
+  }
+  return mapped;
 }
 
 function buildCategoryOrder(rows, categoryKey) {
@@ -106,22 +121,18 @@ function clearNonHeaderRows(tbody) {
   tbody.querySelectorAll('tr:not(.header-row)').forEach((tr) => tr.remove());
 }
 
-function formatBackdate(iso) {
-  const date = new Date(iso);
-  return Number.isNaN(date.getTime()) ? iso : date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-
-function formatBodyCellText(normalizedKey, row, columnKey) {
+/** Display text for a body cell
+ * (open-end fund column adds date suffix when row date ≠ selected). */
+function formatBodyCellText(normalizedKey, row, columnKey, selectedDate) {
   if (normalizedKey === 'openendfund') {
-    const rawDate = row.mf_backdate || row.mfr_dDataDate || row.mf_dnav;
-    if (rawDate && row[columnKey] !== undefined) {
-      const datePart = rawDate.split('T')[0];
-      if (datePart !== latestMdate) {
-        const label = row.mf_backdate ? formatBackdate(rawDate) : rawDate;
-        return `${row[columnKey]} <span class="dnav">${label}</span>`;
-      }
+    const fundDate = row.mfr_dDataDate
+      ? row.mfr_dDataDate
+      : row.mf_dnav;
+    const dnav = row.mfr_dDataDate ? row.mfr_dDataDate : row.mf_dnav;
+    if (fundDate !== selectedDate && columnKey && row[columnKey] !== undefined) {
+      return `${row[columnKey]} <span class="dnav">${dnav}</span>`;
     }
-    return row[columnKey] !== undefined ? `${row[columnKey]}` : '';
+    return `${row[columnKey]}`;
   }
   if (columnKey && row[columnKey] !== undefined) {
     const value = String(row[columnKey]);
@@ -137,16 +148,34 @@ function formatBodyCellText(normalizedKey, row, columnKey) {
 export function appendRowFromData(tableEl, dataArray) {
   const lang = getLang();
   const tbody = tableEl.querySelector('tbody');
-  if (!tbody || !Array.isArray(dataArray)) return;
+  if (!tbody) return;
 
   let headerRow = tbody.querySelector('.header-row');
+
   if (!headerRow) {
-    const first = tbody.querySelector('tr');
-    if (first) { headerRow = first; headerRow.classList.add('header-row'); }
+    const firstRow = tbody.querySelector('tr');
+    if (firstRow) {
+      const tds = firstRow.querySelectorAll('td');
+      headerMappingCellsByTable.set(
+        tableEl,
+        Array.from(tds).map((td) => td.cloneNode(true)),
+      );
+      tds.forEach((td) => {
+        if (typeof td.textContent === 'string') {
+          // Remove any occurrence of '#' followed by a word (e.g., "#fundtype")
+          td.textContent = td.textContent.replace(/\s*#\w+\b/g, '');
+        }
+      });
+      headerRow = firstRow;
+      headerRow.classList.add('header-row');
+    }
   }
   if (!headerRow) return;
 
-  const headers = [...headerRow.querySelectorAll('td')];
+  if (!Array.isArray(dataArray)) return;
+
+  const headers = headerMappingCellsByTable.get(tableEl)
+    || Array.from(headerRow.querySelectorAll('td'));
   const categoryKey = lang === 'th' ? 'mf_cateTha' : 'mf_cateEng';
   const order = buildCategoryOrder(dataArray, categoryKey);
   const groups = groupRowsByCategory(dataArray, categoryKey);
@@ -172,7 +201,7 @@ export function appendRowFromData(tableEl, dataArray) {
         }
         const td = tableEl.ownerDocument.createElement('td');
         td.classList.add(`col-${nk}`);
-        td.innerHTML = formatBodyCellText(nk, row, ck);
+        td.innerHTML = formatBodyCellText(nk, row, ck, latestMdate);
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
