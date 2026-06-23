@@ -91,28 +91,21 @@ function anchorToCtaData(a) {
  * @param {Element}   placeholder
  * @returns {Array}
  */
-function extractCtas(buttonRows, placeholder) {
-  const parseBool = (el) => el?.textContent?.trim().toLowerCase() === 'true';
-
-  const fromRows = buttonRows.map((row) => {
-    const a = row.querySelector('a');
-    if (!a) return null;
-    const boolCells = [...row.children].filter((c) => {
-      const t = c.textContent?.trim().toLowerCase();
-      return (t === 'true' || t === 'false') && !c.querySelector('a, img, picture');
-    });
-    const openInNewTab = boolCells.length >= 2
-      ? parseBool(boolCells[0])
-      : a.getAttribute('target') === '_blank';
-    return {
+function extractCtas(ctaRows, placeholder) {
+  const fromBlock = [];
+  for (let i = 0; i < ctaRows.length; i += 5) {
+    const [linkRow, textRow, titleRow, , openNewTabRow] = ctaRows.slice(i, i + 5);
+    const a = linkRow?.querySelector('a');
+    if (!a) break;
+    fromBlock.push({
       href: a.getAttribute('href') || '#',
-      label: a.textContent.trim(),
-      target: openInNewTab ? '_blank' : '',
+      label: textRow?.textContent?.trim() || a.textContent.trim(),
+      title: titleRow?.textContent?.trim() || '',
+      target: openNewTabRow?.textContent?.trim().toLowerCase() === 'true' ? '_blank' : '',
       sourceAnchor: a,
-    };
-  }).filter(Boolean);
-
-  if (fromRows.length) return fromRows;
+    });
+  }
+  if (fromBlock.length) return fromBlock;
 
   const fallbackAnchors = [
     ...placeholder.closest('.section')?.querySelectorAll('.default-content-wrapper a') ?? [],
@@ -135,6 +128,7 @@ function buildCtaAnchor(doc, ctaData, dismissAndSuppress) {
   a.href = ctaData.href;
   a.textContent = ctaData.label;
 
+  if (ctaData.title) a.setAttribute('title', ctaData.title);
   if (ctaData.target) a.setAttribute('target', ctaData.target);
   if (ctaData.sourceAnchor) moveInstrumentation(ctaData.sourceAnchor, a);
 
@@ -171,7 +165,7 @@ function buildCtas(doc, ctaList, dismissAndSuppress) {
 
 export default function decorate(block) {
   const [
-    desktopImgRow, mobileImgRow, isActiveRow, publishDateRow, unpublishDateRow, ...buttonRows
+    desktopImgRow, mobileImgRow, isActiveRow, publishDateRow, unpublishDateRow, ...ctaRows
   ] = [...block.children];
 
   const doc = block.ownerDocument;
@@ -228,7 +222,7 @@ export default function decorate(block) {
   dialog.append(
     closeBtn,
     media,
-    buildCtas(doc, extractCtas(buttonRows, placeholder), dismissAndSuppress),
+    buildCtas(doc, extractCtas(ctaRows, placeholder), dismissAndSuppress),
   );
 
   // ── Show banner ────────────────────────────────────────────────────────────

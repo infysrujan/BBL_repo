@@ -526,8 +526,6 @@
   },
   {
     "id": "welcome-banner",
-    "components": [
-      "button"
-    ]
+    "components": []
   }
 ]
