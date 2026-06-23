@@ -68,7 +68,8 @@ td.merged-fund-type {
 
 .fund-prices-table table tr:not(.header-row) td.col-openendfund {
   text-align: left;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .fund-prices-table table tr:not(.header-row) td.col-nav,
