@@ -9,6 +9,7 @@
   background: var(--bbl-color-white);
   min-height: 100vh;
   padding-bottom: 3rem;
+  overflow-x: hidden;
 }
 
 /* Results header band */
@@ -95,6 +96,7 @@
   margin-bottom: 0;
   max-width: none;
   width: 100%;
+  min-width: 0;
   box-sizing: border-box;
   margin-inline: auto;
 }
@@ -111,6 +113,8 @@
   margin: 0 0 0.9375rem;
   padding-bottom: 0;
   color: var(--bbl-color-gray-121);
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 @media (width <= 47.5rem) {
