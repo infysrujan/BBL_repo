@@ -15,10 +15,6 @@ export async function getApiUrls() {
 
 let latestMdate = null;
 
-/** Cloned header cells (with `#key` suffixes)
- * used for column mapping after display text is stripped. */
-const headerMappingCellsByTable = new WeakMap();
-
 export function parseLocalDateFromYmd(ymd) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd).trim());
   if (!m) return null;
@@ -126,14 +122,11 @@ function clearNonHeaderRows(tbody) {
  * (open-end fund column adds date suffix when row date ≠ selected). */
 function formatBodyCellText(normalizedKey, row, columnKey, selectedDate) {
   if (normalizedKey === 'openendfund') {
-    const fundDate = row.mfr_dDataDate
-      ? row.mfr_dDataDate
-      : row.mf_dnav;
-    const dnav = row.mfr_dDataDate ? row.mfr_dDataDate : row.mf_dnav;
-    if (fundDate !== selectedDate && columnKey && row[columnKey] !== undefined) {
+    const dnav = row.mfr_dDataDate || row.mf_dnav;
+    if (dnav && dnav !== selectedDate && columnKey && row[columnKey] !== undefined) {
       return `${row[columnKey]} <span class="dnav">${dnav}</span>`;
     }
-    return `${row[columnKey]}`;
+    return row[columnKey] !== undefined ? `${row[columnKey]}` : '';
   }
   if (columnKey && row[columnKey] !== undefined) {
     const value = String(row[columnKey]);
@@ -153,26 +146,21 @@ export function appendRowFromData(tableEl, dataArray) {
 
   const headerRow = tbody.querySelector('.header-row') || tbody.querySelector('tr');
   if (!headerRow) return;
+  headerRow.classList.add('header-row');
 
-  if (!headerMappingCellsByTable.has(tableEl)) {
-    const tds = headerRow.querySelectorAll('td');
-    headerMappingCellsByTable.set(
-      tableEl,
-      Array.from(tds).map((td) => td.cloneNode(true)),
-    );
-    tds.forEach((td) => {
-      if (typeof td.textContent === 'string') {
-        // Remove any occurrence of '#' followed by a word (e.g., "#fundtype")
-        td.textContent = td.textContent.replace(/\s*#\w+\b/g, '');
-      }
-    });
-    headerRow.classList.add('header-row');
-  }
+  const headers = [...headerRow.querySelectorAll('td')];
+  headers.forEach((td) => {
+    if (!td.dataset.colKey) {
+      td.dataset.colKey = normalizeHeaderKey(td.textContent.trim());
+    }
+    // Remove any occurrence of '#' followed by a word (e.g., "#fundtype")
+    if (typeof td.textContent === 'string' && td.textContent.includes('#')) {
+      td.textContent = td.textContent.replace(/\s*#\w+\b/g, '');
+    }
+  });
 
   if (!Array.isArray(dataArray)) return;
 
-  const headers = headerMappingCellsByTable.get(tableEl)
-    || Array.from(headerRow.querySelectorAll('td'));
   const categoryKey = lang === 'th' ? 'mf_cateTha' : 'mf_cateEng';
   const order = buildCategoryOrder(dataArray, categoryKey);
   const groups = groupRowsByCategory(dataArray, categoryKey);
@@ -184,7 +172,7 @@ export function appendRowFromData(tableEl, dataArray) {
     group.forEach((row, idx) => {
       const tr = tableEl.ownerDocument.createElement('tr');
       headers.forEach((headerCell) => {
-        const nk = normalizeHeaderKey(headerCell.textContent.trim());
+        const nk = headerCell.dataset.colKey;
         const ck = resolveColumnKey(nk, lang);
         if (nk === 'fundtype') {
           if (idx === 0) {
