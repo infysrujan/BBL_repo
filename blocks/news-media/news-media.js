@@ -1,5 +1,4 @@
 import { getLang } from '../../scripts/scripts.js';
-import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { buildCardHtml, buildPaginationHtml, bindPaginationClick } from '../../scripts/utils/card-helpers.js';
@@ -83,18 +82,6 @@ async function renderNewsMedia(block) {
   const [data, placeholders] = await Promise.all([fetchJson(dataUrl), fetchPlaceholders()]);
   const allCards = data?.news || [];
   const categories = data?.categories || [];
-
-  if (isAuthoringInstance(block)) {
-    block.classList.add('has-preview');
-    let previewPanel = block.querySelector('.news-media-listing-preview');
-    if (!previewPanel) {
-      previewPanel = document.createElement('div');
-      previewPanel.className = 'news-media-listing-preview';
-      block.appendChild(previewPanel);
-    }
-    setupPanel(previewPanel, allCards, '', locale, pageSize, placeholders);
-    return;
-  }
 
   document.querySelector('.tabs.block')?.classList.add('news-media-tabs');
 
