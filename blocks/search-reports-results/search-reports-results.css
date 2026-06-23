@@ -310,10 +310,6 @@
 }
 
 @media (width > 47.5rem) {
-  .search-reports-results .srr-page-title {
-    font-size: var(--bbl-text-page-title-size);
-  }
-
   .search-reports-results .srr-list {
     margin-inline: 0;
     width: 100%;
