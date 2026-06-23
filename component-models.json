@@ -14086,32 +14086,38 @@
         "name": "Unpublish-Date",
         "label": "Unpublish Date",
         "placeholder": "YYYY-MM-DD HH:mm:ss"
-      },
+      }
+    ]
+  },
+  {
+    "id": "welcome-banner-cta",
+    "fields": [
       {
         "component": "aem-content",
-        "name": "thaiCtaLink",
-        "label": "Thai CTA: Link",
-        "description": "Destination URL for the Thai CTA button"
+        "name": "link",
+        "label": "Link",
+        "description": "Destination URL for the button"
       },
       {
         "component": "text",
-        "name": "thaiCtaText",
-        "label": "Thai CTA: Text",
-        "description": "Button label text displayed on the Thai CTA"
+        "name": "linkText",
+        "label": "Text",
+        "description": "Button label text",
+        "required": true
       },
       {
         "component": "text",
-        "name": "thaiCtaTitle",
-        "label": "Thai CTA: Title attribute (optional)",
-        "description": "Accessibility title attribute for the Thai CTA button (optional)"
+        "name": "linkTitle",
+        "label": "Title",
+        "description": "Accessibility title attribute (optional)"
       },
       {
         "component": "select",
-        "name": "thaiCtaType",
-        "label": "Thai CTA: Type",
-        "description": "Button style variant for the Thai CTA",
+        "name": "linkType",
+        "label": "Type",
+        "description": "Button style variant",
         "valueType": "string",
-        "value": "primary",
+        "value": "",
         "options": [
           {
             "name": "Primary",
@@ -14128,60 +14134,19 @@
         ]
       },
       {
-        "component": "boolean",
-        "name": "thaiCtaOpenNewTab",
-        "label": "Thai CTA: Open in new tab",
-        "description": "Enable to open the Thai CTA link in a new browser tab",
-        "valueType": "boolean",
-        "value": false
-      },
-      {
-        "component": "aem-content",
-        "name": "englishCtaLink",
-        "label": "English CTA: Link",
-        "description": "Destination URL for the English CTA button"
-      },
-      {
-        "component": "text",
-        "name": "englishCtaText",
-        "label": "English CTA: Text",
-        "description": "Button label text displayed on the English CTA"
-      },
-      {
-        "component": "text",
-        "name": "englishCtaTitle",
-        "label": "English CTA: Title attribute (optional)",
-        "description": "Accessibility title attribute for the English CTA button (optional)"
-      },
-      {
-        "component": "select",
-        "name": "englishCtaType",
-        "label": "English CTA: Type",
-        "description": "Button style variant for the English CTA",
-        "valueType": "string",
-        "value": "primary",
-        "options": [
+        "component": "container",
+        "name": "targetSettings",
+        "label": "Target settings",
+        "fields": [
           {
-            "name": "Primary",
-            "value": "primary"
-          },
-          {
-            "name": "Secondary",
-            "value": "secondary"
-          },
-          {
-            "name": "Tertiary",
-            "value": "tertiary"
+            "component": "boolean",
+            "name": "targetLink",
+            "label": "Open link in new tab",
+            "description": "Enable to open the button link in a new browser tab",
+            "valueType": "boolean",
+            "value": false
           }
         ]
-      },
-      {
-        "component": "boolean",
-        "name": "englishCtaOpenNewTab",
-        "label": "English CTA: Open in new tab",
-        "description": "Enable to open the English CTA link in a new browser tab",
-        "valueType": "boolean",
-        "value": false
       }
     ]
   }

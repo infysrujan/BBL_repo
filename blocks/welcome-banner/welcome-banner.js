@@ -1,4 +1,5 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
@@ -79,7 +80,8 @@ function anchorToCtaData(a) {
   return {
     href: a.getAttribute('href') || '#',
     label: a.textContent.trim(),
-    target: a.getAttribute('target') || '',
+    title: '',
+    openInNewTab: a.getAttribute('target') === '_blank',
     sourceAnchor: a,
   };
 }
@@ -92,19 +94,20 @@ function anchorToCtaData(a) {
  * @returns {Array}
  */
 function extractCtas(ctaRows, placeholder) {
-  const fromBlock = [];
-  for (let i = 0; i < ctaRows.length; i += 5) {
-    const [linkRow, textRow, titleRow, , openNewTabRow] = ctaRows.slice(i, i + 5);
-    const a = linkRow?.querySelector('a');
-    if (!a) break;
-    fromBlock.push({
+  const fromBlock = ctaRows.reduce((acc, row) => {
+    const [buttonCell, targetCell] = [...row.children];
+    const a = buttonCell?.querySelector('a');
+    if (!a) return acc;
+    acc.push({
       href: a.getAttribute('href') || '#',
-      label: textRow?.textContent?.trim() || a.textContent.trim(),
-      title: titleRow?.textContent?.trim() || '',
-      target: openNewTabRow?.textContent?.trim().toLowerCase() === 'true' ? '_blank' : '',
+      label: a.textContent.trim(),
+      title: a.getAttribute('title') || '',
+      openInNewTab: targetCell?.textContent?.trim(),
       sourceAnchor: a,
     });
-  }
+    return acc;
+  }, []);
+
   if (fromBlock.length) return fromBlock;
 
   const fallbackAnchors = [
@@ -129,19 +132,20 @@ function buildCtaAnchor(doc, ctaData, dismissAndSuppress) {
   a.textContent = ctaData.label;
 
   if (ctaData.title) a.setAttribute('title', ctaData.title);
-  if (ctaData.target) a.setAttribute('target', ctaData.target);
   if (ctaData.sourceAnchor) moveInstrumentation(ctaData.sourceAnchor, a);
 
+  const wrapper = doc.createElement('span');
+  wrapper.appendChild(a);
+  applyLinkTarget(wrapper, 'a', ctaData.openInNewTab);
+
   a.addEventListener('click', (e) => {
-    e.preventDefault();
-    const { href, target } = ctaData;
-    dismissAndSuppress();
-    if (!href || href === '#') return;
-    if (target === '_blank') {
-      window.open(href, '_blank', 'noopener,noreferrer');
-    } else {
-      window.location.href = href;
+    const { href } = ctaData;
+    if (!href || href === '#') {
+      e.preventDefault();
+      dismissAndSuppress();
+      return;
     }
+    dismissAndSuppress();
   });
 
   return a;
