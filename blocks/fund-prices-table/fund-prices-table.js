@@ -150,12 +150,20 @@ export function appendRowFromData(tableEl, dataArray) {
 
   const headers = [...headerRow.querySelectorAll('td')];
   headers.forEach((td) => {
-    if (!td.dataset.colKey) {
-      td.dataset.colKey = normalizeHeaderKey(td.textContent.trim());
-    }
-    // Remove any occurrence of '#' followed by a word (e.g., "#fundtype")
-    if (typeof td.textContent === 'string' && td.textContent.includes('#')) {
-      td.textContent = td.textContent.replace(/\s*#\w+\b/g, '');
+    const text = typeof td.textContent === 'string' ? td.textContent.trim() : '';
+    if (text.includes('#')) {
+      // Tag is the source of truth while present — always re-derive from it,
+      // and remember the key since the tag itself is about to be stripped.
+      td.dataset.colKey = normalizeHeaderKey(text);
+      td.dataset.colKeyTagged = 'true';
+      td.textContent = text.replace(/\s*#\w+\b/g, '');
+    } else if (td.dataset.colKeyTagged === 'true') {
+      // Tag was stripped from the visible text in an earlier pass —
+      // keep using the key captured back then.
+    } else {
+      // No tag now or ever (also self-heals any stale/legacy cached key) —
+      // always derive from the current visible text so edits stay in sync.
+      td.dataset.colKey = normalizeHeaderKey(text);
     }
   });
 
