@@ -136,13 +136,22 @@ function clearNonHeaderRows(tbody) {
   tbody.querySelectorAll('tr:not(.header-row)').forEach((tr) => tr.remove());
 }
 
+function formatBackdate(iso) {
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime()) ? iso : date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+}
+
 /** Display text for a body cell
  * (open-end fund column adds date suffix when row date ≠ selected). */
 function formatBodyCellText(normalizedKey, row, columnKey, selectedDate) {
   if (normalizedKey === 'openendfund') {
-    const dnav = row.mfr_dDataDate || row.mf_dnav;
-    if (dnav && dnav !== selectedDate && columnKey && row[columnKey] !== undefined) {
-      return `${row[columnKey]} <span class="dnav">${dnav}</span>`;
+    const rawDate = row.mf_backdate || row.mfr_dDataDate || row.mf_dnav;
+    if (rawDate && columnKey && row[columnKey] !== undefined) {
+      const datePart = rawDate.split('T')[0];
+      if (datePart !== selectedDate) {
+        const label = row.mf_backdate ? formatBackdate(rawDate) : rawDate;
+        return `${row[columnKey]} <span class="dnav">${label}</span>`;
+      }
     }
     return row[columnKey] !== undefined ? `${row[columnKey]}` : '';
   }
