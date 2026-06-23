@@ -131,9 +131,9 @@
 .search-reports-results .srr-card-file-row .srr-file-label {
   flex: 1;
   min-width: 0;
-  font-family: var(--bbl-font-family-primary);
+  font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-text-body-size);
-  font-weight: var(--bbl-text-body-weight);
+  font-weight: var(--bbl-font-weight-medium);
   line-height: 2.75rem;
   color: var(--bbl-color-grey-85);
 }
