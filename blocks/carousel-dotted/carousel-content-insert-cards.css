@@ -130,9 +130,9 @@
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .title-2 {
-  font-size: 1.3125rem;
-  line-height: 1.08;
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-text-thumbnail-card-title-size);
+  line-height: var(--bbl-text-thumbnail-card-title-line-height);
+  font-weight: var(--bbl-text-thumbnail-card-title-weight);
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   margin: 0;
