@@ -2,7 +2,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
-import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
+import { isAuthoringInstance, fetchBlockAuthoringData } from '../../scripts/bbl-decorators.js';
 import {
   createModalShell,
   showModal,
@@ -97,18 +97,6 @@ function getAuthoringPreviewData(block) {
     registerCtaLabel: config['register-cta-label'] || config.registerctalabel || '',
     ctaLabel: config['cta-label'] || config.ctalabel || '',
   };
-}
-
-async function fetchAuthoringData() {
-  try {
-    const pagePath = window.location.pathname.replace('.html', '');
-    const resp = await fetch(`${pagePath}/_jcr_content.infinity.json`);
-    if (!resp.ok) return null;
-    const data = await resp.json();
-    return data?.root?.section?.promotional_details || null;
-  } catch (e) {
-    return null;
-  }
 }
 
 function formatDate(dateStr, locale = 'en-GB') {
@@ -301,7 +289,7 @@ export default async function decorate(block) {
   const registerCtaUrl = effectiveConfigs.bbmIsRegister || '';
 
   if (isAuthoringInstance(block)) {
-    const authoringData = await fetchAuthoringData();
+    const authoringData = await fetchBlockAuthoringData('promotional_details');
     const previewData = !authoringData ? getAuthoringPreviewData(block) : null;
     const data = authoringData || previewData || card;
 

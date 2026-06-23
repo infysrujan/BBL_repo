@@ -158,7 +158,7 @@ function isTruthyFlag(value) {
 
 function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
   const {
-    category, subcategory, cardType, area,
+    category, subcategory, cardType, area, skipExpiry = false,
   } = filters;
   const today = new Date();
 
@@ -168,7 +168,8 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
       const cardCats = normalizeList(card.category).map((c) => c.toLowerCase());
       if (!cardCats.includes(category.toLowerCase())) return false;
     }
-    if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
+    if (!skipExpiry && card.promotionEndDate
+      && new Date(card.promotionEndDate) < today) return false;
     if (subcategory) {
       const cardSubCats = normalizeList(card.subcategory).map((c) => c.toLowerCase());
       if (!cardSubCats.includes(subcategory.toLowerCase())) return false;
@@ -212,6 +213,7 @@ function setupPanel(
     hidePagination = false,
     isBbm: isBbmPanel = false,
     isHighlightsPanel = false,
+    skipExpiry = false,
   } = options;
   const labelCategory = placeholders.promoFilterCategory || 'Category';
   const labelCardType = placeholders.promoFilterCardType || 'Card Type';
@@ -281,6 +283,7 @@ function setupPanel(
       subcategory: state.subcategory,
       cardType: activeCardType,
       area: state.area,
+      skipExpiry,
     }, state.page, pageSize, isHighlightsPanel);
 
     gridEl.innerHTML = cards.length
@@ -475,6 +478,7 @@ export default async function decorate(block) {
         isBbm,
         isHighlightsPanel,
         immediate: true,
+        skipExpiry: true,
         baseUrl: promotionApi?.baseUrl,
       },
     );
