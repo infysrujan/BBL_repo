@@ -506,8 +506,7 @@ export default async function decorate(block) {
         videoWrapper.append(video);
         bannerItem.append(videoWrapper);
         const bar = buildControls(videoWrapper);
-        const damSharePath = new URL(damVideoSrc, window.location.href).pathname;
-        wireDAMControls(video, bar, videoWrapper, bannerItem, damSharePath);
+        wireDAMControls(video, bar, videoWrapper, bannerItem, damVideoSrc);
 
         if (isMobile) {
         // Start paused on mobile
