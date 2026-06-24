@@ -585,7 +585,7 @@ export default async function decorate(block) {
       }
     }
     form.dataset.redirectUrl = formDef.redirectUrl || '';
-    form.dataset.thankYouMsg = formDef.thankYouMsg || '';
+    form.dataset.thankYouMsg = formDef.thankYouMessage || formDef.thankYouMsg || '';
     form.dataset.action = formDef.action || pathname?.split('.json')[0];
     form.dataset.source = source;
     form.dataset.rules = rules;
