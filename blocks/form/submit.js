@@ -60,7 +60,8 @@ export function setFormPlaceholders(placeholders) {
 export function submitSuccess(e, form) {
   const { payload } = e;
   const authoredThankYouMsg = form.dataset.thankYouMsg;
-  const redirectUrl = form.dataset.redirectUrl || (!authoredThankYouMsg && payload?.body?.redirectUrl);
+  const redirectUrl = form.dataset.redirectUrl
+    || (!authoredThankYouMsg && payload?.body?.redirectUrl);
   const thankYouMsg = authoredThankYouMsg || payload?.body?.thankYouMessage;
 
   const thankyouPanel = form.querySelector('fieldset[name="thankyou_visible_panel"]');
