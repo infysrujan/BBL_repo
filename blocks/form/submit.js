@@ -62,7 +62,6 @@ export function submitSuccess(e, form) {
   const redirectUrl = form.dataset.redirectUrl || payload?.body?.redirectUrl;
   const thankYouMsg = form.dataset.thankYouMsg || payload?.body?.thankYouMessage;
 
-  // Custom panel takes priority over any server-supplied redirectUrl or default message.
   const thankyouPanel = form.querySelector('fieldset[name="thankyou_visible_panel"]');
   if (thankyouPanel) {
     thankyouPanel.dataset.visible = 'true';
