@@ -807,11 +807,6 @@
   overflow-wrap: break-word;
 }
 
-/* Hide target section on Steps 1 and 2 */
-.card-list-container.hidden {
-  display: none;
-}
-
 /* ============================================================
    Tablet: min-width 47.5rem (760px)
    ============================================================ */
