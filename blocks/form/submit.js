@@ -62,12 +62,11 @@ export function submitSuccess(e, form) {
   const redirectUrl = form.dataset.redirectUrl || payload?.body?.redirectUrl;
   const thankYouMsg = form.dataset.thankYouMsg || payload?.body?.thankYouMessage;
 
-  // Generic: any panel whose name contains 'thankyou' gets the success treatment.
-  // createFieldWrapper adds class field-{toClassName(name)}, so the class attribute
-  // will contain 'thankyou' for any panel named *thankyou*.
-  const thankyouPanel = form.querySelector('fieldset.panel-wrapper[class*="thankyou"]');
+  const thankyouPanel = form.querySelector('fieldset[name="thankyou_visible_panel"]');
   if (thankyouPanel) {
     thankyouPanel.dataset.visible = 'true';
+    const reviewPanel = form.querySelector('fieldset[name="review_panel"]');
+    if (reviewPanel) reviewPanel.dataset.visible = 'false';
     thankyouPanel.scrollIntoView?.({ behavior: 'smooth' });
   } else if (redirectUrl) {
     window.location.assign(encodeURI(redirectUrl));
@@ -91,15 +90,11 @@ export function submitSuccess(e, form) {
 }
 
 export function submitFailure(_e, form) {
-  const thankyouPanel = form.querySelector('fieldset.panel-wrapper[class*="thankyou"]');
+  const thankyouPanel = form.querySelector('fieldset[name="thankyou_visible_panel"]');
   if (thankyouPanel) {
     thankyouPanel.dataset.visible = 'false';
-    // Restore the top-level panel that owns the submit button — that is always the
-    // active step before submit fired, regardless of its name.
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const activePanel = [...form.querySelectorAll(':scope > fieldset.panel-wrapper')]
-      .find((p) => p !== thankyouPanel && p.contains(submitBtn));
-    if (activePanel) activePanel.dataset.visible = 'true';
+    const reviewPanel = form.querySelector('fieldset[name="review_panel"]');
+    if (reviewPanel) reviewPanel.dataset.visible = 'true';
   }
   const defaultErrorMsg = 'Some error occured while submitting the form';
   const errorMsg = formPlaceholders?.formSubmissionErrorMessage || defaultErrorMsg;
