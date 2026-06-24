@@ -1255,7 +1255,7 @@ export default async function decorate(block) {
     const state = {};
 
     const toggleCardListVisibility = (show) => {
-      const sec = document.querySelector('.section.central-aligned.underline-title.center-title.card-list-container');
+      const sec = document.querySelector('.card-list-container');
       if (sec) {
         sec.classList.toggle('hidden', !show);
       }
