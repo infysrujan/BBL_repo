@@ -189,10 +189,10 @@ function wireShare(btn, url) {
   });
 }
 
-function wireFullscreen(btn, bannerItem) {
+function wireFullscreen(btn, mediaEl) {
   btn.addEventListener('click', () => {
     if (document.fullscreenElement) document.exitFullscreen();
-    else bannerItem.requestFullscreen();
+    else mediaEl.requestFullscreen();
   });
   document.addEventListener('fullscreenchange', () => {
     btn.setAttribute('aria-label', document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen');
@@ -272,7 +272,7 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem, shareUrl) {
   seekBar.addEventListener('input', () => { if (video.duration) video.currentTime = (seekBar.value / 1000) * video.duration; });
 
   wireShare(bar.querySelector('.hero-ctrl-share'), shareUrl);
-  wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
+  wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), videoWrapper);
 }
 
 // YouTube IFrame API bootstrap (once per page)
@@ -390,7 +390,7 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
     });
 
     wireShare(bar.querySelector('.hero-ctrl-share'), shareUrl);
-    wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
+    wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), iframe);
 
     overlay.addEventListener('click', () => {
       if (player.getPlayerState() === window.YT.PlayerState.PLAYING) player.pauseVideo();
