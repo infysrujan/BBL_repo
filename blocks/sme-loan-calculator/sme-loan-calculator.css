@@ -1,6 +1,6 @@
 /* ── Block-scoped design tokens ──────────────────────────── */
 :root {
-  --bbl-font-size-15: 0.9375rem; /* 15px */
+  --bbl-font-size-15: 0.9375rem;
 }
 
 /* ── Wrapper paragraph reset (must precede higher-specificity rules) ── */
