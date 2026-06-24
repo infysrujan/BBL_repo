@@ -808,7 +808,7 @@
 }
 
 /* Hide target section on Steps 1 and 2 */
-.section.central-aligned.underline-title.center-title.card-list-container.hidden {
+.card-list-container.hidden {
   display: none;
 }
 
