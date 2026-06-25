@@ -66,7 +66,7 @@ function printContent(containerEl) {
       <div class="fund-prices-print-datetime">${formatPrintDate(now)}, ${formatPrintTime(now)}</div>
       <div class="fund-prices-print-page-title">Fund Prices - BBL Asset Management</div>
       <div></div>
-      <div class="fund-prices-print-logo"><img src="/icons/logo.svg" alt="Bangkok Bank" /></div>
+      <div class="fund-prices-print-logo"><img src="/icons/logo-print.svg" alt="Bangkok Bank" /></div>
       <div></div>
       <div class="fund-prices-print-search">Search Fund</div>
     </div>
@@ -92,11 +92,12 @@ function printContent(containerEl) {
     });
     printRoot.querySelector('.fund-prices-print-table-wrap').appendChild(table);
   }
-  const orig = doc.body.innerHTML;
-  doc.body.innerHTML = printRoot.outerHTML;
+
+  doc.body.classList.add('fund-prices-is-printing');
+  doc.body.appendChild(printRoot);
   window.print();
-  doc.body.innerHTML = orig;
-  window.location.reload();
+  printRoot.remove();
+  doc.body.classList.remove('fund-prices-is-printing');
 }
 
 function isDateOlderThanFundHistoryLimit(date) {

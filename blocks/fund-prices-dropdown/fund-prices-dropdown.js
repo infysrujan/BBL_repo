@@ -350,7 +350,7 @@ export default async function decorate(block) {
       <div class="fdd-print-datetime"></div>
       <div class="fdd-print-page-title">Fund Prices - BBL Asset Management</div>
       <div></div>
-      <div class="fdd-print-logo"><img src="/icons/logo.svg" alt="Bangkok Bank" /></div>
+      <div class="fdd-print-logo"><img src="/icons/logo-print.svg" alt="Bangkok Bank" /></div>
       <div></div>
       <div class="fdd-print-search">${labels.backLabel === 'Fund Prices' ? 'Search Fund' : labels.backLabel}</div>
     </div>
