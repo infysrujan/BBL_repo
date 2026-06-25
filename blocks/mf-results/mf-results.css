@@ -172,7 +172,6 @@
 
 .mfr-no-results {
   text-align: center;
-  padding-top: 1.875rem;
   font-size: var(--bbl-font-size-b1, 1rem);
   color: var(--bbl-color-grey-70);
   margin:0;
