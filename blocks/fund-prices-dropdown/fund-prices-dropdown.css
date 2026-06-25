@@ -839,7 +839,12 @@
     display: none !important;
   }
 
-  #fdd-print-root .chart-wrap {
+  #fdd-print-root .fdd-chart-panel.hidden,
+  #fdd-print-root .fdd-table-panel.hidden {
+    display: none !important;
+  }
+
+  #fdd-print-root .fdd-chart-panel:not(.hidden) .chart-wrap {
     display: block !important;
     border: 1px solid #cfcfcf !important;
     border-radius: 0 !important;
@@ -849,8 +854,35 @@
     break-inside: avoid;
   }
 
-  #fdd-print-root .fdd-table-panel {
-    display: none !important;
+  #fdd-print-root .fdd-table-panel:not(.hidden) {
+    display: block !important;
+    margin: 0 0 35px !important;
+  }
+
+  #fdd-print-root .fdd-table-panel:not(.hidden) .detail-hist-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    font: 10px/1.2 Arial, sans-serif !important;
+  }
+
+  #fdd-print-root .fdd-table-panel:not(.hidden) .detail-hist-table th {
+    height: auto !important;
+    padding: 2px 5px 1px !important;
+    background: #fff !important;
+    color: #000 !important;
+    border-top: 1px solid #000 !important;
+    border-bottom: 1px solid #000 !important;
+    font: 700 10px/1.2 Arial, sans-serif !important;
+  }
+
+  #fdd-print-root .fdd-table-panel:not(.hidden) .detail-hist-table td {
+    padding: 2px 5px 1px !important;
+    color: #000 !important;
+    border-bottom: 1px solid #cfcfcf !important;
+    font: 10px/1.2 Arial, sans-serif !important;
+    white-space: normal !important;
   }
 
   #fdd-print-root .chart-header {
