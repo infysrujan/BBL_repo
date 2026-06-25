@@ -184,8 +184,8 @@
 
 .saving-plan-field-input::placeholder {
   color: var(--bbl-color-gray-143);
-  font-size: var(--bbl-text-body-small-size);
-  font-weight: 300;
+  font-size: 0.875rem;
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 .saving-plan-field-error-message {
@@ -239,7 +239,7 @@
 .saving-plan-dropdown-current {
   flex: 1;
   font-size: var(--bbl-font-size-b1-mobile);
-  font-weight: 500;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--sp-text);
   white-space: nowrap;
   overflow: hidden;
@@ -1291,5 +1291,9 @@
 
   .saving-plan-newplan-title {
     font-size: var(--bbl-font-size-h3-desktop);
+  }
+
+  .saving-plan-field-input::placeholder {
+    font-size: 1rem;
   }
 }
