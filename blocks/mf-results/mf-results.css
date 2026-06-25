@@ -394,8 +394,12 @@
     font-size: var(--bbl-font-size-b1, 1rem);
   }
 
-  .mfr-no-results {
-    padding-bottom: 1.875rem;
+  .section.central-aligned.mf-results-container > .default-content-wrapper {
+  margin: 0;
+  }
+
+  .mf-results-container .default-content-wrapper p {
+  padding: 1.875rem;
   }
 
   .card-list.mf-results .cards-list.scrollable {
@@ -404,6 +408,7 @@
     scroll-snap-type: none;
     gap: 0 var(--bbl-space-250);
     padding: 0;
+    justify-content: center;
   }
 
   .card-list.mf-results .cards-list.scrollable .cards-list-item {
