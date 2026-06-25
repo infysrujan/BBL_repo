@@ -1,4 +1,7 @@
 
+:root {
+  --sp-line-height-result-currency: 1.08rem; /* 17.28px */
+}
 
 .saving-plan-block {
   --sp-blue: var(--bbl-color-active-blue);
@@ -176,7 +179,7 @@
   color: var(--sp-text);
   width: 5rem;
   min-width: 3.75rem;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   margin-left: auto;
   padding: 0.375rem 0;
 }
@@ -405,12 +408,14 @@
   align-items: baseline;
   gap: 0.375rem;
   margin: 0;
+  line-height: var(--bbl-line-height-h1-desktop);
 }
 
 .saving-plan-result-amount {
   font-size: var(--bbl-text-calculator-title-size);
   font-weight: var(--bbl-font-weight-regular);
   line-height: 1;
+  font-family: var(--bbl-font-family-medium);
 }
 
 
@@ -419,6 +424,7 @@
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-40);
   opacity: 0.9;
+  line-height: var(--sp-line-height-result-currency);
 }
 
 .saving-plan-result-footnote {
@@ -1227,23 +1233,25 @@
 
   .saving-plan-result-lead {
     font-size: var(--bbl-font-size-h3-desktop);
+    line-height: var(--bbl-line-height-h3-desktop);
   }
 
   .saving-plan-result-card {
     padding: 1rem;
     margin-bottom: 0.25rem;
     border: 0.0417rem solid var(--sp-border);
-    line-height: var(--bbl-line-height-body);
-    height: 11.8125rem;
+    line-height: var(--bbl-line-height-h3-mobile);
   }
 
   .saving-plan-result-future {
     font-size: var(--bbl-font-size-b1-desktop);
     margin-bottom: 3rem;
+    line-height: var(--bbl-line-height-button);
   }
 
   .saving-plan-result-amount {
     font-size: var(--bbl-font-size-h1-desktop);
+    line-height: var(--bbl-line-height-h1-desktop);
   }
 
   .saving-plan-chart-row {
