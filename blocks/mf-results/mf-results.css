@@ -10,6 +10,11 @@
   margin: 0 auto;
   background: var(--bbl-color-white);
   box-sizing: border-box;
+  padding: 0 var(--bbl-space-200);
+}
+
+.section.underline-title.mf-results-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+  margin: 3.75rem 0 1.875rem;
 }
 
 /* ── Disclaimer ───────────────────────────────────────────────────────────── */
@@ -423,10 +428,6 @@
 /* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
 
 @media (width > 64rem) {
-  .mfr-wrapper {
-    padding: var(--bbl-space-600) var(--bbl-space-200);
-  }
-
   .card-list.mf-results .cards-list.scrollable {
     gap: 0 var(--bbl-space-500);
   }
