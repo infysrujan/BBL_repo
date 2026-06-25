@@ -227,6 +227,31 @@
   font-family: var(--bbl-font-family-primary);
 }
 
+@media (width <= 47.5rem) {
+  .fund-prices-dropdown .fdd-period-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fund-prices-dropdown .period-select-wrapper {
+    display: block;
+    width: 100%;
+  }
+
+  .fund-prices-dropdown .period-date-range {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-auto-flow: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .fund-prices-dropdown .calendar-input input {
+    width: 100%;
+  }
+}
+
 .fund-prices-dropdown .stat-tables-print-row {
   display: flex;
   justify-content: space-between;
