@@ -272,7 +272,7 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem) {
   seekBar.addEventListener('input', () => { if (video.duration) video.currentTime = (seekBar.value / 1000) * video.duration; });
 
   wireShare(bar.querySelector('.hero-ctrl-share'));
-  wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
+  wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), videoWrapper);
 }
 
 // YouTube IFrame API bootstrap (once per page)
