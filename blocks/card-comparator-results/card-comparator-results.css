@@ -4,6 +4,7 @@
 }
 
 .card-comparator-results .ccr-description :is(h1, h2, h3, h4, h5, h6) {
+  font-size: var(--bbl-font-size-h1-desktop);
   color: var(--bbl-color-black);
   line-height: 2.875rem;
 }
