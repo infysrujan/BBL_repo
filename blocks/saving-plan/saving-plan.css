@@ -1256,6 +1256,10 @@
     align-self: stretch;
   }
 
+  .saving-plan-field-text {
+    font-size: var(--bbl-font-size-b1-desktop);
+  }
+
   .saving-plan-chart-canvas-wrap {
     flex: 1 1 0;
     height: 0;
