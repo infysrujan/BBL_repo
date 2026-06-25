@@ -181,9 +181,9 @@ function buildControls(bannerItem) {
   return bar;
 }
 
-function wireShare(btn) {
+function wireShare(btn, url) {
   btn.addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).catch(() => {});
+    navigator.clipboard.writeText(url || window.location.href).catch(() => {});
     btn.classList.add('hero-ctrl-share-active');
     setTimeout(() => btn.classList.remove('hero-ctrl-share-active'), 2000);
   });
@@ -199,7 +199,7 @@ function wireFullscreen(btn, bannerItem) {
   });
 }
 
-function wireDAMControls(video, bar, videoWrapper, bannerItem) {
+function wireDAMControls(video, bar, videoWrapper, bannerItem, shareUrl) {
   const playBtn = bar.querySelector('.hero-ctrl-play');
   const muteBtn = bar.querySelector('.hero-ctrl-mute');
   const volSlider = bar.querySelector('.hero-ctrl-volume');
@@ -273,6 +273,8 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem) {
 
   wireShare(bar.querySelector('.hero-ctrl-share'));
   wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), videoWrapper);
+  wireShare(bar.querySelector('.hero-ctrl-share'), shareUrl);
+  wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
 }
 
 // YouTube IFrame API bootstrap (once per page)
@@ -298,7 +300,7 @@ function loadYTScript(src) {
 }
 
 let ytCounter = 0;
-function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
+function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
   const playBtn = bar.querySelector('.hero-ctrl-play');
   const muteBtn = bar.querySelector('.hero-ctrl-mute');
   const volSlider = bar.querySelector('.hero-ctrl-volume');
@@ -389,7 +391,7 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
       if (dur) player.seekTo((seekBar.value / 1000) * dur, true);
     });
 
-    wireShare(bar.querySelector('.hero-ctrl-share'));
+    wireShare(bar.querySelector('.hero-ctrl-share'), shareUrl);
     wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
 
     overlay.addEventListener('click', () => {
@@ -479,13 +481,13 @@ export default async function decorate(block) {
         const bar = buildControls(iframeWrapper);
         if (isMobile) {
           iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=0&controls=0&enablejsapi=1&playsinline=1` : youtubeUrl;
-          wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc);
+          wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc, youtubeUrl);
         } else {
           windowLoaded.then(() => {
             const isActive = bannerItem.classList.contains('hero-banner-item-active');
             const autoplay = isActive ? 1 : 0;
             iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=${autoplay}&mute=1&controls=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}` : youtubeUrl;
-            wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc);
+            wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc, youtubeUrl);
           });
         }
       } else if (damVideoSrc) {
@@ -506,7 +508,7 @@ export default async function decorate(block) {
         videoWrapper.append(video);
         bannerItem.append(videoWrapper);
         const bar = buildControls(videoWrapper);
-        wireDAMControls(video, bar, videoWrapper, bannerItem);
+        wireDAMControls(video, bar, videoWrapper, bannerItem, damVideoSrc);
 
         if (isMobile) {
         // Start paused on mobile
