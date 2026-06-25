@@ -149,8 +149,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.375rem;
-  height: 1.375rem;
   flex-shrink: 0;
   color: var(--sp-blue);
 }
@@ -1219,8 +1217,12 @@
   }
 
   .saving-plan-calculator {
-    grid-template-columns: minmax(0, 1fr) 22.5rem;
-    gap: 1.5rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .saving-plan-form {
+    grid-column: 1 / 3;
   }
 
   .saving-plan-result-lead {
@@ -1230,6 +1232,9 @@
   .saving-plan-result-card {
     padding: 1rem;
     margin-bottom: 0.25rem;
+    border: 0.0417rem solid var(--sp-border);
+    line-height: var(--bbl-line-height-body);
+    height: 11.8125rem;
   }
 
   .saving-plan-result-future {
