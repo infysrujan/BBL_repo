@@ -267,7 +267,7 @@ export default async function decorate(block) {
       }
       isSessionMobileView = sessionStorage.getItem('mobile-app-view') === 'true';
     } catch (e) {
-      // Ignore sessionStorage errors
+      console.error('Failed to access sessionStorage for mobile-app-view:', e);
     }
     if (hasCardRef || isSessionMobileView) {
       searchParams.set('card_ref', 'true');
