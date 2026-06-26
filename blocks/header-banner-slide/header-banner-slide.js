@@ -133,9 +133,7 @@ export default function decorate(block) {
   const creditCardcells = [];
 
   allRows.forEach((row) => {
-    const hasImage = row.querySelector('img, picture');
-    const isUEItem = row.querySelector('[data-aue-resource]') || row.dataset.aueResource;
-    if (hasImage || isUEItem) {
+    if (row.querySelector('img, picture')) {
       creditCardcells.push(row);
     } else {
       configRows.push(row);
@@ -149,7 +147,6 @@ export default function decorate(block) {
   const scrollTimeDelay = scrollTimeDelayEl?.textContent?.trim();
   const infiniteLoop = infiniteLoopEl?.textContent?.trim();
 
-  configRows.forEach((row) => row?.remove());
   const titleDiv = document.createElement('div');
   titleDiv.className = 'header-banner-slide-title';
   if (title) titleDiv.textContent = title;
@@ -187,6 +184,8 @@ export default function decorate(block) {
     track.appendChild(cardItem);
     sourceHolder.appendChild(item);
   });
+
+  configRows.forEach((row) => sourceHolder.appendChild(row));
 
   carousel.appendChild(track);
   block.appendChild(carousel);
