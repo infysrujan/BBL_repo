@@ -69,7 +69,6 @@
 .locate-us .locate-us-service-btn {
   width: 100%;
   height: 2.75rem;
-  padding: 0 var(--bbl-space-200) 0 var(--bbl-space-250);
   border: 0.0625rem solid var(--bbl-color-gray-300);
   border-radius: var(--bbl-radius-md);
   background-color: var(--bbl-color-gray-144);
@@ -124,12 +123,13 @@
   color: var(--bbl-color-gray-121);
   cursor: pointer;
   font-family: var(--bbl-font-family-primary);
-  font-weight: 700;
+  font-weight: 600;
+  line-height: 0.95rem;
 }
 
 .locate-us .locate-us-service-item-placeholder {
   color: var(--bbl-color-blue-90);
-  font-weight: 700;
+  font-weight: 600;
   cursor: default;
 }
 
@@ -247,7 +247,7 @@
   padding: 0.625rem 1.875rem;
   margin: var(--bbl-space-025) 0;
   font-size: var(--bbl-font-size-b1);
-  font-weight: 700;
+  font-weight: 600;
   color: var(--bbl-color-gray-121);
   cursor: pointer;
   font-family: var(--bbl-font-family-primary);
@@ -1338,7 +1338,7 @@
   }
 
   .section.underline-title .default-content-wrapper #locate-us {
-    font-size: var(--bbl-font-size-h3-desktop);
+    font-size: var(--bbl-font-size-h1-desktop);
   }
 
   .locate-us .cards-list-inner {
