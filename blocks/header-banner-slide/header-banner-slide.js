@@ -128,21 +128,6 @@ function initCarousel(carousel, track) {
 }
 
 export default function decorate(block) {
-  block.querySelector(':scope > .header-banner-slide-title')?.remove();
-  block.querySelector(':scope > .header-banner-slide-carousel')?.remove();
-  block.querySelector(':scope > .header-banner-slide-source-rows')?.remove();
-
-  const blockResource = block.dataset.aueResource;
-  if (blockResource) {
-    block.ownerDocument.querySelectorAll('.header-banner-slide.block').forEach((other) => {
-      if (other !== block
-        && other.dataset.aueResource === blockResource
-        && other.querySelector(':scope > .header-banner-slide-carousel')) {
-        other.remove();
-      }
-    });
-  }
-
   const allRows = [...block.children];
   const configRows = [];
   const creditCardcells = [];
