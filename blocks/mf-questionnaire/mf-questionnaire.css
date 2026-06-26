@@ -248,6 +248,11 @@
 /* ── Desktop (> 64rem) ────────────────────────────────────────────────────── */
 
 @media (width > 64rem) {
+  .mfq-risk-options .list-thumb-square {
+    flex-wrap:nowrap;
+    width:auto;
+  }
+  
   .mfq-risk-options .list-thumb-square li {
     width: 9.375rem;  
     height: 9.375rem; 
