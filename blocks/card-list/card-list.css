@@ -369,6 +369,15 @@
   background: var(--bbl-color-grey-60);
 }
 
+.cards-list-button .button-container{
+  margin: 0;
+}
+
+.cards-list-button .button-m{
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
 .cards-list-button .button-tertiary::after {
   display: none;
 }
@@ -467,10 +476,6 @@
   font-weight: var(--bbl-font-family-regular);
 }
 
-.modal-body .section.central-aligned .block {
-  margin-inline: 0;
-}
-
 .cards-list-inner:has(.cards-list-downloads) {
   flex: none;
 }
@@ -503,6 +508,10 @@
 
 .cards-list:is(.scrollable, .carousel):has(.global-dropdown.is-open) {
   overflow: visible;
+}
+
+.card-list-container.hidden {
+  display: none;
 }
 
 @media (width > 47.5rem) {

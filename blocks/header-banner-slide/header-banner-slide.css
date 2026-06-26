@@ -1,6 +1,11 @@
+.header-banner-slide {
+  --bbl-hbs-gradient-start: #041b66;
+  --bbl-hbs-gradient-end: #193799;
+}
+
 .header-banner-slide-wrapper {
     min-height: 8.125rem;
-    background: linear-gradient(0deg, var(--bbl-color-blue-114) 50%, var(--bbl-color-blue-115) 100%) top / 100% 8.125rem no-repeat;
+    background: linear-gradient(0deg, var(--bbl-hbs-gradient-start) 50%, var(--bbl-hbs-gradient-end) 100%) top / 100% 8.125rem no-repeat;
     margin-block: 0 -4.5rem;
 }
 
@@ -37,7 +42,7 @@
     left: 50%;
     transform: translateX(-50%);
     height: 0.0625rem;
-    background: var(--bbl-color-grey-158);
+    background: var(--bbl-color-grey-160);
     width: 6.25rem;
     margin-inline: auto;
     z-index: 1;

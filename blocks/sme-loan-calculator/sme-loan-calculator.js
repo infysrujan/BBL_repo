@@ -1,21 +1,41 @@
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
+/**
+ * SME Loan Calculator
+ *
+ * Authoring model (matches the Universal Editor structure):
+ *   - A "Tab Section" contains one "SME Loan Calculator" block per tab.
+ *   - The block's own rows author: button name, default result value, description,
+ *     2nd button name, result text, error message.
+ *   - Each child "SME Field" row authors: Id, Label, Group Title, Unit name, Value Type.
+ *
+ * Each tab's formula is fetched from /content/bangkokbank/configs by key:
+ *   sme-monthly-payment, sme-loan-balance, sme-term-period-monthly, sme-working-capital-needs
+ * The field Ids (P, A, n, i, B, C, D, ...) are the variables used in those formulas.
+ *
+ * This file is deliberately tab-agnostic: it discovers the field Ids, picks the
+ * matching config formula, and evaluates it. Interest-rate handling is driven by
+ * the formula text itself rather than hardcoded per tab.
+ */
 export default async function decorate(block) {
   const placeholders = await fetchPlaceholders();
 
-  // ── Helpers (defined first to satisfy no-use-before-define) ──
+  // ── Generic DOM helpers ──
   function el(tag, cls) {
     const e = document.createElement(tag);
     if (cls) e.className = cls;
     return e;
   }
 
-  function appendTh(row, text) {
+  function appendTh(row, text, opts = {}) {
     const th = document.createElement('th');
     th.className = 'lineth';
+    if (opts.rowSpan) th.rowSpan = opts.rowSpan;
+    if (opts.colSpan) th.colSpan = opts.colSpan;
     th.textContent = text;
     row.appendChild(th);
+    return th;
   }
 
   function appendTd(row, text) {
@@ -25,7 +45,9 @@ export default async function decorate(block) {
     row.appendChild(td);
   }
 
-  // CSP-safe recursive descent parser — object pattern avoids mutual no-use-before-define
+  // ── CSP-safe recursive-descent expression evaluator ──
+  // Supports + - * / , ^ and **, unary +/-, parentheses, and Math.log( ).
+  // Object-literal form avoids mutual no-use-before-define lint issues.
   function evalExpr(str) {
     const p = {
       pos: 0,
@@ -44,17 +66,13 @@ export default async function decorate(block) {
         if (str.startsWith('Math.log(', this.pos)) {
           this.pos += 9;
           const val = this.parseExpression();
-          if (this.peek() === ')') {
-            this.pos += 1;
-          }
+          if (this.peek() === ')') this.pos += 1;
           return Math.log(val);
         }
         if (this.peek() === '(') {
           this.pos += 1;
           const val = this.parseExpression();
-          if (this.peek() === ')') {
-            this.pos += 1;
-          }
+          if (this.peek() === ')') this.pos += 1;
           return val;
         }
         return this.parseNumber();
@@ -111,30 +129,38 @@ export default async function decorate(block) {
     return p.parseExpression();
   }
 
+  /**
+   * Normalize an authored formula ("A = P*(...)" / "n = [lnA-ln(A-Pi)]/ln(1+i)")
+   * into a numeric result given a map of variable -> value.
+   */
   function formulaCompute(formulaStr, vals) {
+    if (!formulaStr) return NaN;
     const eqIdx = formulaStr.indexOf('=');
-    if (eqIdx === -1) return NaN;
-
-    let expr = formulaStr.slice(eqIdx + 1).trim();
+    // Use the right-hand side if present, otherwise treat the whole string as an expression.
+    let expr = (eqIdx === -1 ? formulaStr : formulaStr.slice(eqIdx + 1)).trim();
 
     expr = expr.replace(/\[/g, '(').replace(/\]/g, ')');
     expr = expr.replace(/\bln\s*\(/g, 'Math.log(');
     expr = expr.replace(/\bln([A-Za-z])\b/g, 'Math.log($1)');
     expr = expr.replace(/\s+/g, '');
+    // Insert implicit multiplications: 2( -> 2*( , )( -> )*( , )x -> )*x
     expr = expr.replace(/(?<![.\w])([A-Za-z0-9])\(/g, '$1*(');
     expr = expr.replace(/\)\(/g, ')*(');
     expr = expr.replace(/\)([A-Za-z])/g, ')*$1');
 
     const varSet = new Set(Object.keys(vals));
 
+    // Adjacent single-letter variables (e.g. "Pi" -> "P*i") only when both are known vars.
     expr = expr.replace(/\b([A-Za-z])([A-Za-z])\b/g, (m, a, b) => {
       if (varSet.has(a) && varSet.has(b)) return `${a}*${b}`;
       return m;
     });
 
+    // Balance any unclosed parentheses defensively.
     const diff = (expr.match(/\(/g) || []).length - (expr.match(/\)/g) || []).length;
     if (diff > 0) expr += ')'.repeat(diff);
 
+    // Substitute variables (longest first so multi-char names win; ids are single-char here).
     [...varSet].sort((a, b) => b.length - a.length).forEach((name) => {
       expr = expr.replace(new RegExp(`(?<![\\w.])${name}(?!\\w)`, 'g'), `(${vals[name]})`);
     });
@@ -142,14 +168,17 @@ export default async function decorate(block) {
     return evalExpr(expr.replace(/\s+/g, ''));
   }
 
+  // ── Field card builder ──
   function buildFieldCard(f) {
     const card = el('div', 'col-md-4 paddingcal');
     const box = el('div', 'box-textbox');
+
     const lblCol = el('div', 'col-md-6 col-xs-6');
     const lbl = el('label', 'label-cal');
     lbl.setAttribute('for', f.id);
     lbl.textContent = f.label;
     lblCol.appendChild(lbl);
+
     const inpCol = el('div', 'col-md-6 col-xs-6 alignright');
     const inp = el('input', 'textbox-cal');
     inp.type = 'text';
@@ -157,11 +186,14 @@ export default async function decorate(block) {
     inp.autocomplete = 'off';
     inp.inputMode = f.valueType === 'decimal' ? 'decimal' : 'numeric';
     inp.value = f.valueType === 'decimal' ? '0.00' : '0';
-    if (f.valueType === 'decimal') inp.placeholder = '0.00';
+    // Consistent placeholder for every field (integer + decimal), so all tabs look alike.
+    inp.placeholder = f.valueType === 'decimal' ? '0.00' : '0';
     inpCol.appendChild(inp);
+
     box.appendChild(lblCol);
     box.appendChild(inpCol);
     card.appendChild(box);
+
     if (f.bottomText) {
       const bt = el('div', 'fontcondition alignright padbottom25');
       bt.textContent = f.bottomText;
@@ -170,6 +202,7 @@ export default async function decorate(block) {
     return card;
   }
 
+  // ── Parse the authored block rows ──
   const rows = [...block.children];
   const cellText = (row, col = 0) => row?.children[col]?.textContent.trim() ?? '';
 
@@ -177,18 +210,28 @@ export default async function decorate(block) {
   const resultValue = cellText(rows[1]) || '0.00';
   const description = cellText(rows[2]);
   const addToTableButtonName = cellText(rows[3]);
-  const hasResultText = rows[5]?.children.length === 1;
-  const resultText = hasResultText ? cellText(rows[5]) : '';
+  const hasResultText = rows[4]?.children.length === 1;
+  const resultText = hasResultText ? cellText(rows[4]) : '';
+  const hasErrorMessage = hasResultText && rows[5]?.children.length === 1;
+  const errorMessage = hasErrorMessage ? cellText(rows[5]) : '';
 
-  const fields = rows.slice(hasResultText ? 6 : 5).map((r) => ({
+  let fieldStart = 4;
+  if (hasResultText) fieldStart = hasErrorMessage ? 6 : 5;
+
+  // SME Field columns: Id | Label | Group Title | Unit name | Value Type
+  const fields = rows.slice(fieldStart).map((r) => ({
     id: cellText(r, 0),
     label: cellText(r, 1),
     topText: cellText(r, 2),
     bottomText: cellText(r, 3),
-    valueType: cellText(r, 4) || 'integer',
-  }));
+    // Authoring uses "Integer"/"Decimal" (capitalized); every comparison here is lowercase.
+    valueType: (cellText(r, 4) || 'integer').toLowerCase(),
+  })).filter((f) => f.id); // drop any stray/empty rows so no field has an empty id
 
   const ids = fields.map((f) => f.id);
+
+  // ── Determine which tab/formula this block represents ──
+  // Detection is by the unique field-id signature of each tab.
   let calcType = 'monthly';
   if (ids.includes('H')) calcType = 'wc';
   else if (ids.includes('A') && ids.includes('n') && !ids.includes('P')) calcType = 'loanbalance';
@@ -204,15 +247,36 @@ export default async function decorate(block) {
   const siteConfigs = await fetchConfigs();
   const formulaDescription = siteConfigs[configKeyMap[calcType]] || '';
 
+  // Result presentation per tab. `integer` => round up to whole months.
   const resultConfig = {
-    monthly: { prefix: resultText, suffix: ' baht.', integer: false },
-    loanbalance: { prefix: resultText, suffix: ' baht.', integer: false },
-    term: { prefix: resultText, suffix: ' month.', integer: true },
-    wc: { prefix: resultText, suffix: ' baht.', integer: false },
+    monthly: { suffix: ' baht.', integer: false },
+    loanbalance: { suffix: ' baht.', integer: false },
+    term: { suffix: ' month.', integer: true },
+    wc: { suffix: ' baht.', integer: false },
   };
-  const rc = resultConfig[calcType];
+  const rc = { prefix: resultText, ...resultConfig[calcType] };
 
-  // ── Group fields into rows (max 3 per row, new group on topText) ──
+  /**
+   * Decide how a field's value should be fed into the formula.
+   *
+   * The only conversion the SME formulas need is annual-percent -> monthly-decimal
+   * for the conventional interest rate `i`, and only when the formula uses `i` bare
+   * (i.e. it does not already divide it by 100 itself). The amortization formulas
+   * (loan balance, term) use a bare `i`, so we convert annual% / 1200. The monthly
+   * formula divides `i/100` itself, so `i` is passed raw there.
+   *
+   * Every other field — including other percentage inputs like D, G or coefficients
+   * like H in the working-capital formula — is passed exactly as typed, because those
+   * formulas already include their own `/100` where needed.
+   */
+  const formulaNoSpace = formulaDescription.replace(/\s+/g, '');
+  const fieldScale = (id) => {
+    if (id !== 'i') return 1;
+    const dividesItself = /i\)?\/100/.test(formulaNoSpace) || formulaNoSpace.includes('i/100');
+    return dividesItself ? 1 : 1 / 1200;
+  };
+
+  // ── Group fields into rows (max 3 per row; a non-empty Group Title starts a new group) ──
   const fieldGroups = [];
   let cur = { header: '', fields: [] };
   fields.forEach((f) => {
@@ -228,11 +292,10 @@ export default async function decorate(block) {
   if (cur.fields.length) fieldGroups.push(cur);
 
   // ── Build DOM ──
-  // Hide original rows instead of removing them so UE data-aue-* attributes stay in the DOM
+  // Hide original rows instead of removing them so UE data-aue-* attributes stay in the DOM.
   rows.forEach((r) => { r.style.display = 'none'; });
 
   const dark = el('div', 'sme-calc-dark-section');
-
   fieldGroups.forEach((group) => {
     const row = el('div', 'row paddingmain');
     if (group.header) {
@@ -240,9 +303,7 @@ export default async function decorate(block) {
       hdr.textContent = group.header;
       row.appendChild(hdr);
     }
-    group.fields.forEach((f) => {
-      row.appendChild(buildFieldCard(f));
-    });
+    group.fields.forEach((f) => row.appendChild(buildFieldCard(f)));
     dark.appendChild(row);
   });
 
@@ -256,17 +317,10 @@ export default async function decorate(block) {
 
   // Result section
   const resultSection = el('div', 'sme-calc-result-section');
-
   const resultLabel = el('p', 'sme-calc-result-label');
   resultLabel.textContent = `${resultValue}`;
   resultSection.appendChild(resultLabel);
   let resultNum = null;
-
-  if (formulaDescription) {
-    const fp = el('p', 'sme-calc-formula-description');
-    fp.textContent = formulaDescription;
-    resultSection.appendChild(fp);
-  }
 
   if (description) {
     const dp = el('p', 'sme-calc-description');
@@ -280,7 +334,7 @@ export default async function decorate(block) {
   resultSection.appendChild(addBtn);
   block.appendChild(resultSection);
 
-  // Comparison table (hidden until first ADD TO TABLE)
+  // Comparison table (revealed on first ADD TO TABLE)
   const tableSection = el('div', 'sme-calc-table-section');
   tableSection.hidden = true;
 
@@ -298,40 +352,18 @@ export default async function decorate(block) {
   const resulttbl = el('div', 'resulttbl');
   const table = el('table', 'tablelong fontcomparetable');
   const thead = document.createElement('thead');
-
   const hasGroups = fieldGroups.some((g) => g.header && g.fields.length > 1);
 
   if (hasGroups) {
     const row1 = document.createElement('tr');
     const row2 = document.createElement('tr');
-
-    const resTh = document.createElement('th');
-    resTh.className = 'lineth';
-    resTh.rowSpan = 2;
-    resTh.textContent = resultColHeader[calcType];
-    row1.appendChild(resTh);
-
+    appendTh(row1, resultColHeader[calcType], { rowSpan: 2 });
     fieldGroups.forEach((group) => {
       if (group.header && group.fields.length > 1) {
-        const gTh = document.createElement('th');
-        gTh.className = 'lineth';
-        gTh.colSpan = group.fields.length;
-        gTh.textContent = group.header;
-        row1.appendChild(gTh);
-        group.fields.forEach((f) => {
-          const th = document.createElement('th');
-          th.className = 'lineth';
-          th.textContent = f.label;
-          row2.appendChild(th);
-        });
+        appendTh(row1, group.header, { colSpan: group.fields.length });
+        group.fields.forEach((f) => appendTh(row2, f.label));
       } else {
-        group.fields.forEach((f) => {
-          const th = document.createElement('th');
-          th.className = 'lineth';
-          th.rowSpan = 2;
-          th.textContent = f.label;
-          row1.appendChild(th);
-        });
+        group.fields.forEach((f) => appendTh(row1, f.label, { rowSpan: 2 }));
       }
     });
     thead.appendChild(row1);
@@ -350,7 +382,7 @@ export default async function decorate(block) {
   tableSection.appendChild(resulttbl);
   block.appendChild(tableSection);
 
-  // ── Calculation ──
+  // ── Values & calculation ──
   let lastResult = null;
 
   const getVal = (id) => {
@@ -365,49 +397,82 @@ export default async function decorate(block) {
     return n.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
   };
 
+  // Build the variable map, applying the annual->monthly conversion only where needed.
   const compute = () => {
-    const fieldValues = {};
+    const vals = {};
     fields.forEach((f) => {
-      fieldValues[f.id] = getVal(f.id);
+      vals[f.id] = getVal(f.id) * fieldScale(f.id);
+    });
+    return formulaCompute(formulaDescription, vals);
+  };
+
+  const touchedDecimalFields = new Set();
+
+  function validateAndMarkErrors() {
+    fields.forEach((f) => {
+      block.querySelector(`#${f.id}`)?.classList.remove('input-error');
     });
 
-    if (calcType === 'term') {
-      // Formula from config: n = [lnA-ln(A-Pi)]/ln(1+i)
-      // A = monthly payment (field P), P = principal (field A), i = annual% / 1200
-      const result = formulaCompute(formulaDescription, {
-        A: fieldValues.P,
-        P: fieldValues.A,
-        i: fieldValues.i / 1200,
-      });
-      return Number.isFinite(result) ? result : 0;
+    let hasError = false;
+    let showMessage = false;
+
+    // Scenarios 1–3: highlight the first field whose value is 0
+    for (let i = 0; i < fields.length; i += 1) {
+      const f = fields[i];
+      if (getVal(f.id) === 0) {
+        block.querySelector(`#${f.id}`)?.classList.add('input-error');
+        hasError = true;
+        // Show error message only when the user has interacted with this decimal field
+        if (f.valueType === 'decimal' && touchedDecimalFields.has(f.id)) {
+          showMessage = true;
+        }
+        break;
+      }
     }
 
-    if (calcType === 'loanbalance') {
-      // Formula from config: P = A*((1+i)^n-1)/(i(1+i)^n)
-      // i = annual% / 1200
-      const result = formulaCompute(formulaDescription, {
-        ...fieldValues,
-        i: fieldValues.i / 1200,
-      });
-      return Number.isFinite(result) ? result : 0;
-    }
+    // Scenario 4: decimal fields with value > 100 — red highlight only, no message
+    fields.forEach((f) => {
+      if (f.valueType === 'decimal' && getVal(f.id) > 100) {
+        block.querySelector(`#${f.id}`)?.classList.add('input-error');
+        hasError = true;
+      }
+    });
 
-    const result = formulaCompute(formulaDescription, fieldValues);
-    return Number.isFinite(result) ? result : 0;
+    return { valid: !hasError, showMessage };
+  }
+
+  const showError = (msg) => {
+    resultLabel.textContent = '';
+    resultLabel.style.whiteSpace = 'pre-wrap';
+    resultNum = el('strong', 'sme-result-number');
+    resultNum.textContent = msg;
+    resultLabel.append(resultNum);
+    lastResult = null;
   };
 
   calcBtn.addEventListener('click', () => {
-    lastResult = compute();
-    const displayVal = rc.integer
+    const { valid, showMessage } = validateAndMarkErrors();
+    if (!valid) {
+      if (showMessage) showError(`${resultText} ${errorMessage}`);
+      return;
+    }
+
+    const raw = compute();
+    // Term must be a positive, finite number of months; other tabs just need a finite number.
+    const invalid = !Number.isFinite(raw) || (calcType === 'term' && !(raw > 0));
+    if (invalid) {
+      showError(errorMessage || 'Cannot Calculate');
+      return;
+    }
+
+    lastResult = raw;
+    resultLabel.textContent = '';
+    resultLabel.style.whiteSpace = 'pre-wrap';
+    resultNum = el('strong', 'sme-result-number');
+    resultNum.textContent = rc.integer
       ? Math.floor(lastResult).toLocaleString('en-US')
       : fmt(lastResult);
-    if (!resultNum) {
-      resultLabel.textContent = '';
-      resultLabel.style.whiteSpace = 'pre-wrap';
-      resultNum = el('strong', 'sme-result-number');
-      resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
-    }
-    resultNum.textContent = displayVal;
+    resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
   });
 
   // ── Input behaviour ──
@@ -429,15 +494,18 @@ export default async function decorate(block) {
     });
 
     inp.addEventListener('input', () => {
-      if (!decimal) {
+      inp.classList.remove('input-error');
+      if (decimal) {
+        touchedDecimalFields.add(f.id);
+      } else {
         const pos = inp.selectionStart;
         const raw = inp.value.replace(/,/g, '');
         const num = parseInt(raw, 10);
         if (!Number.isNaN(num)) {
           const formatted = num.toLocaleString('en-US');
-          const diff = formatted.length - inp.value.length;
+          const delta = formatted.length - inp.value.length;
           inp.value = formatted;
-          inp.setSelectionRange(pos + diff, pos + diff);
+          inp.setSelectionRange(pos + delta, pos + delta);
         }
       }
     });
@@ -454,7 +522,7 @@ export default async function decorate(block) {
     });
   });
 
-  // ── Add to table ──
+  // ── Add to comparison table ──
   addBtn.addEventListener('click', () => {
     if (lastResult === null) return;
     tableSection.hidden = false;
