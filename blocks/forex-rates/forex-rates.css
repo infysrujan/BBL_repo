@@ -17,7 +17,7 @@
 .forex-rates .forex-rates-calendar-label {
   width: 100%;
   font-size: var(--bbl-font-size-b2);
-  font-weight: 900;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-85);
   line-height: 2.75rem;
 }
@@ -409,7 +409,8 @@
 
 .forex-rates .forex-rates-table tbody td {
   padding: 0.625rem;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-body-b1-size);
+  font-weight:var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-70);
   vertical-align: middle;
   height: 2.25rem;
@@ -548,7 +549,6 @@
   }
 
   .forex-rates .forex-rates-table tbody td {
-    font-size: var(--bbl-font-size-b1);
     padding: 0.75rem 1rem;
   }
 
