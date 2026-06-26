@@ -66,7 +66,7 @@ export default async function componentDecorator(element, fd, container, formId)
   // decorators to ensure custom component logic executes first.
   const { ':type': type = '', fieldType } = fd;
 
-  if (type.endsWith('wizard')) {
+  if (type.endsWith('wizard') && type !== 'bbl-wizard') {
     await loadComponent('wizard', element, fd, container, formId);
   }
 
