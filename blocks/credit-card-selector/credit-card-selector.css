@@ -31,7 +31,7 @@
 
 .credit-card-selector .card-selector-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: 48px;
+  font-size: var(--bbl-font-size-h1-desktop);
   font-weight: var(--bbl-font-weight-medium);
   line-height: 2rem;
   color: var(--bbl-color-black);
@@ -45,7 +45,7 @@
   box-sizing: border-box;
   max-width: none;
   width: 100%;
-  padding-left: 70px;
+  padding-left: 4.375rem;
 }
 
 /* Remove the decorative underline below the title for this section */
@@ -60,7 +60,7 @@
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-medium);
   color: var(--bbl-color-black);
-  font-size: 48px;
+  font-size: var(--bbl-font-size-h1-desktop);
   line-height: 1.2;
   width: 100%;
   max-width: 100%;
@@ -264,7 +264,7 @@
 /* Hover — blue border preview */
 .credit-card-selector .option-card:hover {
   border-color: var(--bbl-color-active-blue);
-  box-shadow: 2.77083px 2.77083px 0 rgb(0 100 255 / 17%);
+  box-shadow: 0.1732rem 0.1732rem 0 rgb(0 100 255 / 17%);
 }
 
 .credit-card-selector .option-card.is-selected {
@@ -359,7 +359,7 @@
   background-color: var(--bbl-color-gray-300);
   color: var(--bbl-color-grey-60);
   cursor: not-allowed;
-  border: 0.063px solid var(--bbl-color-gray-300);
+  border: 0.0039rem solid var(--bbl-color-gray-300);
 }
 
 .credit-card-selector .selector-button-primary:hover:not(:disabled) {
@@ -524,7 +524,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 20px 0;
+  padding: 1.25rem 1.25rem 0;
   box-sizing: border-box;
 }
 
@@ -582,7 +582,7 @@
   font-weight: var(--bbl-font-weight-medium);
   text-decoration: none;
   transition: background-color 0.2s ease;
-  border: 0.063px solid var(--bbl-color-active-blue);
+  border: 0.0039rem solid var(--bbl-color-active-blue);
 }
 
 .card-list.credit-card .cards-list-button a::before,
