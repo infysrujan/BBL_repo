@@ -2,7 +2,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 
 function initCarousel(carousel, track) {
   const realTotal = track.children.length;
-  if (realTotal <= 4) return;
+  if (realTotal <= 1) return;
 
   const autoplay = carousel.dataset.autoplay !== 'false';
   const speed = parseInt(carousel.dataset.autoplaySpeed, 10) || 3000;
