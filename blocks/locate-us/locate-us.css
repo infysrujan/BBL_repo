@@ -251,6 +251,7 @@
   color: var(--bbl-color-gray-121);
   cursor: pointer;
   font-family: var(--bbl-font-family-primary);
+  line-height: 0.95rem;
 }
 
 .locate-us .locate-us-province-item-header {
@@ -728,10 +729,11 @@
 .locate-us .locate-us-district-item {
   padding: 0.625rem 1.875rem;
   font-size: var(--bbl-font-size-b1);
-  font-weight: 700;
+  font-weight: 600;
   color: var(--bbl-color-gray-121);
   cursor: pointer;
   font-family: var(--bbl-font-family-primary);
+  line-height: 0.95rem;
 }
 
 .locate-us .locate-us-district-item-header {
