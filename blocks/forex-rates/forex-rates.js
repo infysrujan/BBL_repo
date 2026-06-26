@@ -149,7 +149,7 @@ function renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYe
     <td class="is-right">${escapeHtml(rate.billDdTt)}</td>
   </tr>`).join('');
 
-  const columnWidths = ['30%', '70%', '12%', '12%', '19%', '19%', '19%'];
+  const columnWidths = ['11.7%', '19.2%', '14.8%', '14.8%', '14.7%', '14.7%', '19%'];
   const headings = authoring.columns.map((heading, i) => `<th width="${columnWidths[i] || 'auto'}">${heading}</th>`).join('');
 
   block.innerHTML = `<section class="forex-rates-content">
