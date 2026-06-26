@@ -123,13 +123,13 @@
   color: var(--bbl-color-gray-121);
   cursor: pointer;
   font-family: var(--bbl-font-family-primary);
-  font-weight: 600;
+  font-weight: 400;
   line-height: 0.95rem;
 }
 
 .locate-us .locate-us-service-item-placeholder {
   color: var(--bbl-color-blue-90);
-  font-weight: 600;
+  font-weight: 400;
   cursor: default;
 }
 
@@ -247,7 +247,7 @@
   padding: 0.625rem 1.875rem;
   margin: var(--bbl-space-025) 0;
   font-size: var(--bbl-font-size-b1);
-  font-weight: 600;
+  font-weight: 400;
   color: var(--bbl-color-gray-121);
   cursor: pointer;
   font-family: var(--bbl-font-family-primary);
@@ -474,9 +474,9 @@
   margin-bottom: var(--bbl-space-050);
 }
 
-.locate-us .card-list{
-    padding: var(--bbl-space-250);
-  }
+.locate-us .card-list {
+  padding: var(--bbl-space-250);
+}
 
 .locate-us .locate-us-card-label {
   min-width: 3.75rem;
@@ -729,7 +729,7 @@
 .locate-us .locate-us-district-item {
   padding: 0.625rem 1.875rem;
   font-size: var(--bbl-font-size-b1);
-  font-weight: 600;
+  font-weight: 400;
   color: var(--bbl-color-gray-121);
   cursor: pointer;
   font-family: var(--bbl-font-family-primary);
@@ -944,7 +944,7 @@
     font-size: 1.3125rem;
   }
 
-  .locate-us .card-list{
+  .locate-us .card-list {
     padding: var(--bbl-space-250);
   }
 
@@ -1178,7 +1178,7 @@
     padding-top: 0;
     padding-right: 0.3125rem;
     padding-left: 0;
-    
+
   }
 
   .locate-us .locate-us-card-hr {
@@ -1222,7 +1222,7 @@
 
   /* ── Single card: center in middle column of 3-col grid ── */
 
-  .locate-us .locate-us-cards > .locate-us-card:only-child {
+  .locate-us .locate-us-cards>.locate-us-card:only-child {
     grid-column: 2;
     justify-self: center;
     max-width: 15.875rem;
@@ -1273,7 +1273,7 @@
 
 }
 
-@media (47.5rem < width <= 64rem) {
+@media (47.5rem < width <=64rem) {
   .locate-us .locate-us-card-detail {
     padding-right: 0;
   }
@@ -1340,7 +1340,7 @@
   }
 
   .section.underline-title .default-content-wrapper #locate-us {
-    font-size: var(--bbl-font-size-h1-desktop);
+    font-size: var(--bbl-font-size-h2-desktop);
   }
 
   .locate-us .cards-list-inner {
@@ -1364,7 +1364,7 @@
     margin-top: 2.0625rem;
   }
 
-  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form{
+  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form {
     max-width: 50%;
     flex: 1;
   }
@@ -1387,7 +1387,7 @@
     padding-top: 1.875rem;
   }
 
-  .locate-us .cards-list-title h3{
+  .locate-us .cards-list-title h3 {
     height: 100%;
     margin-bottom: 1.875rem;
     font-family: var(--bbl-font-family-primary);
