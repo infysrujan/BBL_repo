@@ -2,8 +2,7 @@
 
 :root {
   /* Not available in typography tokens, so defined locally */
-  --bbl-multi-column-tiles-title-size-mobile: 1.0625rem; /* 17px */
-  --bbl-multi-column-tiles-title-size-desktop: 1.25rem;  /* 20px */
+  --bbl-multi-column-tiles-title-size-mobile: 1.0625rem; 
 }
 
 .multi-column-tiles-container {
@@ -179,7 +178,7 @@
   }
 
   .multi-column-tiles-image {
-    height: 37.5rem; /* 600px - fixed so height is independent of viewport/DevTools */
+    height: 37.5rem; 
   }
 
   .multi-column-tiles-title {
