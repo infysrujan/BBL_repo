@@ -128,24 +128,14 @@ function initCarousel(carousel, track) {
 }
 
 export default function decorate(block) {
-  const allRows = [...block.children];
-  const configRows = [];
-  const creditCardcells = [];
+  const [titleRow, autoScrollRow, scrollDelayRow, infiniteLoopRow, ...slideItems] = block.children;
 
-  allRows.forEach((row) => {
-    if (row.querySelector('img, picture')) {
-      creditCardcells.push(row);
-    } else {
-      configRows.push(row);
-    }
-  });
+  const title = titleRow?.children[0]?.textContent?.trim() || '';
+  const isAutoPlay = autoScrollRow?.children[0]?.textContent?.trim() !== 'false';
+  const scrollTimeDelay = scrollDelayRow?.children[0]?.textContent?.trim() || '3000';
+  const infiniteLoop = infiniteLoopRow?.children[0]?.textContent?.trim() !== 'false';
 
-  const [titleEl, isAutoPlayEl, scrollTimeDelayEl, infiniteLoopEl] = configRows;
-
-  const title = titleEl?.textContent?.trim();
-  const isAutoPlay = isAutoPlayEl?.textContent?.trim();
-  const scrollTimeDelay = scrollTimeDelayEl?.textContent?.trim();
-  const infiniteLoop = infiniteLoopEl?.textContent?.trim();
+  block.innerHTML = '';
 
   const titleDiv = document.createElement('div');
   titleDiv.className = 'header-banner-slide-title';
@@ -154,9 +144,9 @@ export default function decorate(block) {
 
   const carousel = document.createElement('div');
   carousel.className = 'header-banner-slide-carousel content';
-  carousel.dataset.autoplay = isAutoPlay ?? 'true';
-  carousel.dataset.autoplaySpeed = scrollTimeDelay ?? '3000';
-  carousel.dataset.infinite = infiniteLoop ?? 'true';
+  carousel.dataset.autoplay = String(isAutoPlay);
+  carousel.dataset.autoplaySpeed = scrollTimeDelay;
+  carousel.dataset.infinite = String(infiniteLoop);
 
   const track = document.createElement('div');
   track.className = 'header-banner-slide-track';
@@ -165,27 +155,20 @@ export default function decorate(block) {
   sourceHolder.className = 'header-banner-slide-source-rows';
   sourceHolder.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;opacity:0;';
 
-  creditCardcells.forEach((item) => {
-    const [creditCardImagesEl] = item.children || [];
+  slideItems.forEach((item) => {
+    const [imageCell] = item.children || [];
+    const picture = imageCell?.querySelector('picture');
+    const img = imageCell?.querySelector('img');
 
     const cardItem = document.createElement('div');
     cardItem.className = 'header-banner-slide-item';
-    if (creditCardImagesEl) {
-      const picture = creditCardImagesEl.querySelector('picture');
-      const img = creditCardImagesEl.querySelector('img');
-      if (picture) {
-        cardItem.appendChild(picture);
-      } else if (img) {
-        cardItem.appendChild(img);
-      }
-    }
+    if (picture) cardItem.appendChild(picture);
+    else if (img) cardItem.appendChild(img);
 
     moveInstrumentation(item, cardItem);
     track.appendChild(cardItem);
     sourceHolder.appendChild(item);
   });
-
-  configRows.forEach((row) => sourceHolder.appendChild(row));
 
   carousel.appendChild(track);
   block.appendChild(carousel);
