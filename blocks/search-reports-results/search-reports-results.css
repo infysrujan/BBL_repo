@@ -71,7 +71,7 @@
   flex-direction: column;
   gap: 2rem;
   padding: 0 var(--bbl-space-container-xs);
-  margin-inline: 0;
+  margin-inline: auto;
   width: 100%;
   box-sizing: border-box;
 }
@@ -342,14 +342,22 @@
 
 @media (width > 47.5rem) {
   .search-reports-results .srr-list {
-    margin-inline: 0;
+    margin-inline: auto;
     width: 100%;
   }
 }
 
 @media (width > 64rem) {
   .search-reports-results .srr-list {
-    margin-inline: 0;
+    margin-inline: auto;
     width: 100%;
+  }
+}
+
+/* Beyond this width the page is effectively zoomed out past ~67% on a typical
+   desktop screen — freeze the card width instead of letting it keep growing. */
+@media (width > 120rem) {
+  .search-reports-results .srr-list {
+    max-width: 120rem;
   }
 }
