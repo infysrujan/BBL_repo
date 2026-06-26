@@ -420,7 +420,12 @@
   .rate-card .link-primary.pull-right {
     font-size: 0.8rem;
   }
-  
+
+/* --------------------------------------------------------------------------
+   EQUAL-HEIGHT COLUMNS — Desktop only
+   Switch columns-3 section to CSS grid when rate-card is present.
+   Grid rows naturally make all children equal height without height:100% propagation.
+   -------------------------------------------------------------------------- */
   .section.columns-3:has(.rate-card) {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
