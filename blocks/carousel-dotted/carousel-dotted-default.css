@@ -183,9 +183,9 @@
 
 .carousel-dotted .carousel-badge {
   display: inline-block;
-  font-size: 0.7875rem;
-  font-weight: var(--bbl-font-weight-medium);
-  line-height: 0.9844rem;
+  font-size: var(--bbl-text-label-tag-size);
+  font-weight: var(--bbl-text-label-tag-weight);
+  line-height: var(--bbl-text-label-tag-line-height);
   background: var(--bbl-color-blue-140);
   color: var(--bbl-color-white);
   padding: var(--bbl-space-050) 0.4375rem;
@@ -195,10 +195,10 @@
 }
 
 .carousel-dotted .carousel-dotted-description {
-  font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-regular);
-  font-size: 1.1375rem;
-  line-height: 1.2495rem;
+  font-family: var(--bbl-font-family-primary);
+  font-weight: var(--bbl-text-default-weight);
+  font-size: var(--bbl-text-default-size);
+  line-height: var(--bbl-text-default-line-height);
   color: var(--bbl-color-black);
   margin-bottom: 1.875rem;
 }
@@ -514,11 +514,11 @@
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-title :is(h1, h2, h3, h4, h5, h6) {
-  font-family: Muli-Bold, sans-serif;
-  font-size: 1.4rem;
-  line-height: 1.3746rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-article-card-title-size);
+  line-height: var(--bbl-text-article-card-title-line-height);
   color: var(--bbl-color-black);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-text-article-card-title-weight);
   padding: var(--bbl-space-200) 0 0;
   margin-block: 0 0.625rem;
   transform: translateY(18.75rem);
@@ -543,9 +543,10 @@
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-subtitle p{
-  font-size: 1.1375rem;
-  line-height: 1.57;
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-text-default-size);
+  line-height: var(--bbl-text-default-line-height);
+  font-weight: var(--bbl-text-default-weight);
+  font-family: var(--bbl-font-family-primary);
   overflow: hidden;
   margin: 0;
   display: -webkit-box;
@@ -598,10 +599,10 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
   font-family: var(--bbl-font-family-medium);
-  font-size: 1.3125rem;
-  line-height: 1.4219rem;
+  font-size: var(--bbl-text-article-card-title-size);
+  line-height: var(--bbl-text-article-card-title-line-height);
   color: var(--bbl-color-black);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-text-article-card-title-weight);
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 p {
@@ -610,10 +611,10 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default {
   font-family: var(--bbl-font-family-primary);
-  font-size: 0.875rem;
-  line-height: 1.45;
+  font-size: var(--bbl-text-default-size);
+  line-height: var(--bbl-text-default-line-height);
   color: var(--bbl-color-grey-70);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-text-default-weight);
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default p {
@@ -788,8 +789,6 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-dotted-description {
-    font-size: 1.3125rem;
-    line-height: 1.4219rem;
     margin-bottom: var(--bbl-space-300);
   }
 
@@ -981,16 +980,7 @@ p.text-large.text-light {
     margin-right: 1.875rem;
   }
 
-  .carousel-dotted .carousel-badge {
-    font-weight: var(--bbl-font-weight-medium);
-    font-size: 0.9rem;
-    line-height: 1.125rem;
-  }
-
   .carousel-dotted .carousel-dotted-description {
-    font-weight: var(--bbl-font-weight-regular);
-    font-size: var(--bbl-space-400);
-    line-height: var(--bbl-space-400);
     margin-bottom: var(--bbl-space-300);
   }
 
@@ -1011,11 +1001,6 @@ p.text-large.text-light {
     bottom: var(--bbl-space-500);
   }
 
-  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--bbl-font-size-h3-desktop);
-    line-height: 2.875rem;
-  }
-
   :lang(th) {
     .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-title :is(h1) {
       line-height: 3.75rem;
@@ -1033,12 +1018,7 @@ p.text-large.text-light {
       line-height: 1.375rem;
     }
   }
-
-  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-subtitle p {
-    font-size: 1.5rem;
-    line-height: 1.625rem;
-  }
-
+  
   .carousel-dotted.all-hero-banner-image-carousel .slick-dots {
     bottom: 4.6875rem;
   }
@@ -1057,14 +1037,10 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
-    font-size: 1.5rem;
-    line-height: 1.625rem;
     margin: unset;
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image .text-default {
-    font-size: 1rem;
-    line-height: 1.375rem;
     margin-top: 2.5rem;
   }
 
@@ -1075,4 +1051,3 @@ p.text-large.text-light {
     font-family: var(--bbl-font-family-looped);
   }
 }
-
