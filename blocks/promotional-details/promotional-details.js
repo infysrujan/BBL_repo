@@ -51,19 +51,46 @@ function getRegisterCtaUrl(isRegister, registerCtaUrl, data) {
 
 function readBlockData(block) {
   const firstRow = block.querySelector(':scope > div');
-  if (!firstRow || firstRow.children.length < 2) return null;
-  const config = readBlockConfig(block);
+  if (!firstRow) return null;
+
+  // Key-value format (2 columns per row): use readBlockConfig
+  if (firstRow.children.length >= 2) {
+    const config = readBlockConfig(block);
+    return {
+      title: config.title || '',
+      detailImageUrl: config.detailimageurl || '',
+      detailDescription: config.detaildescription || '',
+      promotionStartDate: config.promotionstartdate || '',
+      promotionEndDate: config.promotionenddate || '',
+      responsibleLendingDisclaimerEnabled: config.responsiblelendingdisclaimerenabled || '',
+      responsibleLendingDisclaimerText: config.responsiblelendingdisclaimertext || '',
+      isRegister: config.isregister || '',
+      registerCtaLabel: config.registerctalabel || '',
+      ctaLabel: config.ctalabel || '',
+    };
+  }
+
+  const rows = [...block.querySelectorAll(':scope > div')];
+  const txt = (i) => rows[i]?.children[0]?.textContent?.trim() || '';
+  const innerHtml = (i) => rows[i]?.children[0]?.innerHTML?.trim() || '';
+  const imgSrc = (i) => rows[i]?.querySelector('img')?.src || '';
+
+  const PROMO_TYPES = ['credit-card', 'bangkok-bank-m'];
+  const o = PROMO_TYPES.includes(txt(0).toLowerCase()) ? 1 : 0;
+
+  const titleHeading = rows[o + 1]?.querySelector('h1,h2,h3,h4,h5,h6');
+
   return {
-    title: config.title || '',
-    detailImageUrl: config['detail-image-url'] || '',
-    detailDescription: config['detail-description'] || '',
-    promotionStartDate: config['promotion-start-date'] || '',
-    promotionEndDate: config['promotion-end-date'] || '',
-    responsibleLendingDisclaimerEnabled: config['responsible-lending-disclaimer-enabled'],
-    responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text'] || '',
-    isRegister: config['is-register'] || '',
-    registerCtaLabel: config['register-cta-label'] || '',
-    ctaLabel: config['cta-label'] || '',
+    title: titleHeading?.innerHTML?.trim() || txt(o + 1),
+    detailImageUrl: imgSrc(o + 3),
+    detailDescription: innerHtml(o + 5),
+    promotionStartDate: txt(o + 11),
+    promotionEndDate: txt(o + 12),
+    responsibleLendingDisclaimerEnabled: txt(o + 18),
+    responsibleLendingDisclaimerText: innerHtml(o + 19),
+    isRegister: txt(o + 20),
+    registerCtaLabel: txt(o + 21),
+    ctaLabel: txt(o + 14),
   };
 }
 
