@@ -65,7 +65,7 @@
 
 .fund-prices-dropdown .fdd-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-h3-desktop);
+  font-size: 3rem;
   font-weight: var(--bbl-text-page-title-weight);
   color: var(--bbl-color-black);
   margin-bottom: 0.5rem;

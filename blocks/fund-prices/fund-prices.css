@@ -1,6 +1,6 @@
 .fund-prices-page-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-h3-desktop);
+  font-size: 3rem;
   font-weight: var(--bbl-text-page-title-weight);
   line-height: var(--bbl-text-page-title-line-height);
   margin-bottom: var(--bbl-space-150);
@@ -429,6 +429,10 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
   width: var(--bbl-space-600);
   height: var(--bbl-space-025);
   background-color: var(--bbl-color-grey-150);
+}
+
+main:has(.fund-prices) .default-content-wrapper > h2:first-child {
+  font-size: 3rem;
 }
 
 @media (width > 47.5rem) {
