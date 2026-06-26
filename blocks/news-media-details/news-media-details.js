@@ -1,6 +1,4 @@
 import { getLang, isAuthoringInstance, fetchBlockAuthoringData } from '../../scripts/bbl-decorators.js';
-import { fetchConfigs } from '../../scripts/config.js';
-import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
 
@@ -47,19 +45,6 @@ function readFromCells(block) {
   };
 }
 
-async function fetchFromJson(aboutUsId, lang) {
-  if (!aboutUsId) return null;
-  try {
-    const configs = await fetchConfigs();
-    const baseUrl = configs?.newsMediaBaseUrl || '';
-    const dataUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
-    const json = await fetchGet(dataUrl, { throwOnError: false });
-    return json?.news?.find((c) => c.aboutUsId === aboutUsId) || null;
-  } catch {
-    return null;
-  }
-}
-
 function buildDetailHtml(card, locale) {
   return `
     <div class="news-media-detail-inner">
@@ -77,12 +62,7 @@ async function renderNewsDetail(block) {
   const locale = LOCALE_MAP[lang] || 'en-US';
   const isAuthoring = isAuthoringInstance(block);
 
-  let card = readFromCells(block);
-
-  if (card && !card.title && !card.detailDescription && card.aboutUsId) {
-    const fetched = await fetchFromJson(card.aboutUsId, lang);
-    if (fetched) card = { ...card, ...fetched };
-  }
+  const card = readFromCells(block);
 
   if (isAuthoring) {
     const authoringData = await fetchBlockAuthoringData('news_media_details');

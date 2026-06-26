@@ -1,26 +1,15 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
-import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
-import { isAuthoringInstance, fetchBlockAuthoringData } from '../../scripts/bbl-decorators.js';
+import { readBlockConfig } from '../../scripts/aem.js';
+import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import {
   createModalShell,
   showModal,
   hideModal,
   setupModalHandlers,
 } from '../../scripts/utils/modal.js';
-import {
-  getPromotionDataUrl,
-  fetchJson,
-  getPromotionPathFlags,
-  handleMobileAppView,
-  mergeLocalConfig,
-  normalizePath,
-  normalizePromotionType,
-  normalizeQueryLang,
-  getPromotionApiConfig,
-  getPromotionLanguage,
-} from '../../scripts/utils/card-helpers.js';
+import { handleMobileAppView } from '../../scripts/utils/card-helpers.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-GB' };
 
@@ -43,11 +32,11 @@ function formatPromoDate(dateStr) {
   return `${mm}/${dd}/${d.getFullYear()}`;
 }
 
-function getRegisterCtaUrl(isRegister, registerCtaUrl, data, promoId) {
+function getRegisterCtaUrl(isRegister, registerCtaUrl, data) {
   if (!isRegisterEnabled(isRegister) || !registerCtaUrl) return '';
 
   const tokenMap = {
-    'PROMO-ID': data?.id || promoId || '',
+    'PROMO-ID': data?.id || '',
     'PROMO-TITLE': (data?.title || '').replace(/<[^>]*>/g, '').trim(),
     'PROMO-START-DATE': formatPromoDate(data?.promotionStartDate),
     'PROMO-END-DATE': formatPromoDate(data?.promotionEndDate),
@@ -60,42 +49,21 @@ function getRegisterCtaUrl(isRegister, registerCtaUrl, data, promoId) {
   );
 }
 
-function extractBlockConfig(block) {
+function readBlockData(block) {
   const firstRow = block.querySelector(':scope > div');
-  const isKeyValueRows = firstRow && firstRow.children.length >= 2;
-
-  if (isKeyValueRows) {
-    const config = readBlockConfig(block);
-    const promotionType = (config['promotion-type'] || config.promotiontype || '').trim();
-    const promoId = (config['promo-id'] || config.promoid || '').trim();
-    return { promotionType, promoId };
-  }
-
-  const rows = [...block.querySelectorAll(':scope > div')];
-  const promotionType = rows[0]?.textContent?.trim() || '';
-  const maybeIsRegister = rows[1]?.textContent?.trim().toLowerCase() || '';
-  const isRegisterLike = ['no', 'yes', 'd'].includes(maybeIsRegister);
-  const promoRow = isRegisterLike ? rows[2] : rows[1];
-  const promoId = promoRow?.textContent?.trim() || '';
-  return { promotionType, promoId };
-}
-
-function getAuthoringPreviewData(block) {
-  const firstRow = block.querySelector(':scope > div');
-  const isKeyValueRows = firstRow && firstRow.children.length >= 2;
-  if (!isKeyValueRows) return {};
+  if (!firstRow || firstRow.children.length < 2) return null;
   const config = readBlockConfig(block);
   return {
     title: config.title || '',
-    detailImageUrl: config['detail-image-url'] || config.detailimageurl || '',
-    detailDescription: config['detail-description'] || config.detaildescription || '',
-    promotionStartDate: config['promotion-start-date'] || config.promotionstartdate || '',
-    promotionEndDate: config['promotion-end-date'] || config.promotionenddate || '',
-    responsibleLendingDisclaimerEnabled: config['responsible-lending-disclaimer-enabled'] || config.responsiblelendingdisclaimerenabled,
-    responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text'] || config.responsiblelendingdisclaimertext || '',
-    isRegister: config['is-register'] || config.isregister || '',
-    registerCtaLabel: config['register-cta-label'] || config.registerctalabel || '',
-    ctaLabel: config['cta-label'] || config.ctalabel || '',
+    detailImageUrl: config['detail-image-url'] || '',
+    detailDescription: config['detail-description'] || '',
+    promotionStartDate: config['promotion-start-date'] || '',
+    promotionEndDate: config['promotion-end-date'] || '',
+    responsibleLendingDisclaimerEnabled: config['responsible-lending-disclaimer-enabled'],
+    responsibleLendingDisclaimerText: config['responsible-lending-disclaimer-text'] || '',
+    isRegister: config['is-register'] || '',
+    registerCtaLabel: config['register-cta-label'] || '',
+    ctaLabel: config['cta-label'] || '',
   };
 }
 
@@ -185,7 +153,7 @@ function bindImageModal(container, imageUrl, altText) {
   });
 }
 
-function renderDetails(container, data, periodLabel, locale, viewFull, registerCtaUrl, promoId) {
+function renderDetails(container, data, periodLabel, locale, viewFull, registerCtaUrl) {
   const title = data?.title
     ? `<h2 class="promo-detail-title">${data.title}</h2>`
     : '';
@@ -202,7 +170,7 @@ function renderDetails(container, data, periodLabel, locale, viewFull, registerC
   const disclaimerText = data?.responsibleLendingDisclaimerText || '';
   const isRegister = data?.isRegister || '';
   const ctaLabel = getRegisterCtaLabel(isRegister, data);
-  const ctaUrl = getRegisterCtaUrl(isRegister, registerCtaUrl, data, promoId);
+  const ctaUrl = getRegisterCtaUrl(isRegister, registerCtaUrl, data);
 
   const rowClass = imageHtml ? 'promo-detail-row' : 'promo-detail-row promo-detail-row-no-image';
   const imageColHtml = imageHtml ? `
@@ -233,74 +201,27 @@ function renderDetails(container, data, periodLabel, locale, viewFull, registerC
   if (imageUrl) bindImageModal(container, imageUrl, cleanTitle);
 }
 
-async function fetchPromotionalData(url, promoId) {
-  if (!url) return null;
-  const json = await fetchJson(url);
-  if (!json) return null;
-  const { cards } = json;
-  const normalizedCurrent = normalizePath(window.location.pathname);
-  return (
-    cards?.find((c) => normalizePath(c.ctaLink) === normalizedCurrent)
-    || cards?.find((c) => c.id === promoId)
-    || null
-  );
-}
-
 export default async function decorate(block) {
   const searchParams = new URLSearchParams(window.location.search);
   handleMobileAppView(searchParams);
 
-  const { promotionType: blockPromoType, promoId } = extractBlockConfig(block);
-  const { pathname } = window.location;
-  const { isBbmPath, isCreditCardPath } = getPromotionPathFlags(pathname);
-
-  const docLang = getLang();
-  const queryLang = normalizeQueryLang(searchParams.get('sc_lang'));
-  const isBbmPreConfig = isBbmPath
-    || (!isCreditCardPath && normalizePromotionType(blockPromoType) === 'bangkok-bank-m');
-  const lang = getPromotionLanguage(docLang, queryLang, isBbmPreConfig);
-
-  const configs = await fetchConfigs();
-  const effectiveConfigs = configs || {};
-  if (!configs || !configs.promotionalCardSelector || lang !== 'en') {
-    await mergeLocalConfig(pathname, lang, effectiveConfigs, toCamelCase);
-  }
-
-  const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
-  const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
-
-  const promotionApi = getPromotionApiConfig({
-    pathname,
-    configuredPromoType: blockPromoType,
-    bbmBaseUrl,
-    creditBaseUrl,
-  });
-
+  const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-GB';
-  const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);
 
-  const [placeholders, card] = await Promise.all([
+  const [placeholders, configs] = await Promise.all([
     fetchPlaceholders(),
-    fetchPromotionalData(promotionsUrl, promoId),
+    fetchConfigs(),
   ]);
 
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
   const clickToViewFull = placeholders.promoClickToViewFull || '';
-  const registerCtaUrl = effectiveConfigs.bbmIsRegister || '';
+  const registerCtaUrl = (configs || {}).bbmIsRegister || '';
+  const data = readBlockData(block);
 
   if (isAuthoringInstance(block)) {
-    const authoringData = await fetchBlockAuthoringData('promotional_details');
-    const previewData = !authoringData ? getAuthoringPreviewData(block) : null;
-    const data = authoringData || previewData || card;
-
-    if (!data) {
-      const errorMsg = placeholders.promoNoResults || 'No promotion details found.';
-      block.innerHTML = `<p class="promo-detail-error">${errorMsg}</p>`;
-      return;
-    }
+    if (!data || !Object.values(data).some(Boolean)) return;
 
     const originalChildren = [...block.children];
-
     block.classList.add('has-preview');
     let previewContainer = block.querySelector('.promo-detail-preview');
     if (!previewContainer) {
@@ -309,29 +230,20 @@ export default async function decorate(block) {
       block.appendChild(previewContainer);
     }
 
-    renderDetails(
-      previewContainer,
-      data,
-      periodLabel,
-      locale,
-      clickToViewFull,
-      registerCtaUrl,
-      promoId,
-    );
+    renderDetails(previewContainer, data, periodLabel, locale, clickToViewFull, registerCtaUrl);
 
     const hidden = document.createElement('div');
     hidden.style.display = 'none';
     originalChildren.forEach((child) => hidden.appendChild(child));
     block.appendChild(hidden);
-
     return;
   }
 
-  if (!card) {
+  if (!data || !Object.values(data).some(Boolean)) {
     const errorMsg = placeholders.promoNoResults || 'No promotion details found.';
     block.innerHTML = `<p class="promo-detail-error">${errorMsg}</p>`;
     return;
   }
 
-  renderDetails(block, card, periodLabel, locale, clickToViewFull, registerCtaUrl, promoId);
+  renderDetails(block, data, periodLabel, locale, clickToViewFull, registerCtaUrl);
 }
