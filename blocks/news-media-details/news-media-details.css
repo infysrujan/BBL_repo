@@ -22,8 +22,8 @@
 }
 
 .news-media-details .news-media-detail-date {
-  font-size: var(--bbl-text-small-size);
-  line-height: var(--bbl-text-small-line-height);
+  font-size: var(--bbl-text-default-size);
+  line-height: var(--bbl-text-default-line-height);
   margin: 0;
 }
 
@@ -38,8 +38,8 @@
 }
 
 .news-media-details .news-media-detail-description p {
-  font-size: var(--bbl-text-small-size);
-  line-height: var(--bbl-text-small-line-height);
+  font-size: var(--bbl-text-default-size);
+  line-height: var(--bbl-text-default-line-height);
   margin-block: 0;
 }
 
