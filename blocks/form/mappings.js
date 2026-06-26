@@ -90,7 +90,7 @@ export default async function componentDecorator(element, fd, container, formId)
     await loadComponent('forms-menu-card', element, fd, container, formId);
   }
 
-  if (fd['fd:viewType'] === 'bbl-wizard') {
+  if (fd['fd:viewType'] === 'bbl-wizard' || type === 'bbl-wizard') {
     await loadComponent('bblwizard', element, fd, container, formId);
   }
 
