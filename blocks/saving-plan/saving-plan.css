@@ -1323,6 +1323,6 @@
   }
 
   .saving-plan-field-input::placeholder {
-    font-size: 1rem;
+    font-size:  var(--bbl-font-size-h4-desktop);
   }
 }
