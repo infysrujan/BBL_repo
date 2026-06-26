@@ -161,6 +161,9 @@ function formatBodyCellText(normalizedKey, row, columnKey, selectedDate) {
     if (!Number.isNaN(num) && Math.abs(num) >= 1000) {
       return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
     }
+    if (!Number.isNaN(num)) {
+      return num.toFixed(4);
+    }
     return value === 'null' ? 'N/A' : value;
   }
   return '';
