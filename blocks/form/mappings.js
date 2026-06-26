@@ -90,6 +90,10 @@ export default async function componentDecorator(element, fd, container, formId)
     await loadComponent('forms-menu-card', element, fd, container, formId);
   }
 
+  if (fd['fd:viewType'] === 'bbl-wizard') {
+    await loadComponent('bblwizard', element, fd, container, formId);
+  }
+
   // forms-card-list: responsive card grid container (panelcontainer base).
   if (fd['fd:viewType'] === 'forms-card-list' || type === 'forms-card-list') {
     await loadComponent('forms-card-list', element, fd, container, formId);
