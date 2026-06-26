@@ -190,6 +190,10 @@
                 {
                   "name": "Lead Forms",
                   "value": "lead-forms"
+                },
+                {
+                  "name": "Wizard Forms",
+                  "value": "wizard-forms"
                 }
               ]
             }
@@ -282,7 +286,8 @@
         "mf-comparator-results",
         "mf-comparator",
         "mf-questionnaire",
-        "cc-campaign"
+        "cc-campaign",
+        "custom-button"
       ]
     }
   ]
