@@ -3,6 +3,7 @@
 :root {
   /* Not available in typography tokens, so defined locally */
   --bbl-multi-column-tiles-title-size-mobile: 1.0625rem; 
+  --bbl-multi-column-tiles-title-size-desktop: 1.25rem;  
 }
 
 .multi-column-tiles-container {
