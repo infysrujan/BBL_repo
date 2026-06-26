@@ -13,10 +13,6 @@
   padding: 0 var(--bbl-space-200);
 }
 
-.section.underline-title.mf-results-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
-  margin: 3.75rem 0 1.875rem;
-}
-
 /* ── Disclaimer ───────────────────────────────────────────────────────────── */
 
 .mfr-disclaimer {
@@ -391,10 +387,6 @@
 @media (width > 47.5rem) {
   .mfr-cta {
     font-size: var(--bbl-font-size-b1, 1rem);
-  }
-
-  .section.central-aligned.mf-results-container > .default-content-wrapper {
-  margin: 0;
   }
 
   .mf-results-container .default-content-wrapper p {
