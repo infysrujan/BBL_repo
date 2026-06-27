@@ -36,7 +36,8 @@ fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 {
 }
 
 fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 label {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   margin: 0;
   color: var(--bbl-color-grey-85, #555);
   font-size: 0.875rem;
@@ -46,11 +47,12 @@ fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 label {
 
 /* Strip input to transparent display text */
 main fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 input {
-  flex-shrink: 0;
-  width: auto;
+  flex: 0 0 auto;
+  width: auto !important;
   min-width: 4rem;
   padding: 0 !important;
   margin: 0 !important;
+  margin-bottom: 0 !important;
   height: auto !important;
   border: none !important;
   background: transparent !important;
@@ -106,7 +108,8 @@ fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 {
 }
 
 fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 label {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   margin: 0;
   font-size: 1.125rem;
   font-weight: 500;
@@ -115,11 +118,12 @@ fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 label {
 
 /* Large blue premium value */
 main fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 input {
-  flex-shrink: 0;
-  width: auto;
+  flex: 0 0 auto;
+  width: auto !important;
   min-width: 4rem;
   padding: 0 !important;
   margin: 0 !important;
+  margin-bottom: 0 !important;
   height: auto !important;
   border: none !important;
   background: transparent !important;
