@@ -183,6 +183,23 @@
                   "value": "background-privatebanking"
                 }
               ]
+            },
+            {
+              "name": "Forms Theme",
+              "children": [
+                {
+                  "name": "Custom Forms",
+                  "value": "custom-forms"
+                },
+                {
+                  "name": "Lead Forms",
+                  "value": "lead-forms"
+                },
+                {
+                  "name": "Wizard Forms",
+                  "value": "wizard-forms"
+                }
+              ]
             }
           ]
         }
@@ -272,7 +289,9 @@
         "mf-results",
         "mf-comparator-results",
         "mf-comparator",
-        "mf-questionnaire"
+        "mf-questionnaire",
+        "cc-campaign",
+        "custom-button"
       ]
     }
   ]

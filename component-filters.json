@@ -89,8 +89,70 @@
       "mf-results",
       "mf-comparator-results",
       "mf-comparator",
-      "mf-questionnaire"
+      "mf-questionnaire",
+      "cc-campaign",
+      "custom-button"
     ]
+  },
+  {
+    "id": "text",
+    "rte": {
+      "toolbar": {
+        "format": [
+          "bold",
+          "italic",
+          "underline",
+          "strike"
+        ],
+        "alignment": [
+          "left",
+          "center",
+          "right",
+          "justify"
+        ],
+        "indentation": [
+          "indent",
+          "outdent"
+        ],
+        "blocks": [
+          "paragraph",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6"
+        ],
+        "list": [
+          "bullet_list",
+          "ordered_list"
+        ],
+        "insert": [
+          "link",
+          "unlink",
+          "image",
+          "special_characters"
+        ],
+        "sr_script": [
+          "superscript",
+          "subscript"
+        ],
+        "editor": [
+          "removeformat",
+          "paste_text"
+        ],
+        "sections": [
+          "format",
+          "alignment",
+          "indentation",
+          "blocks",
+          "list",
+          "insert",
+          "sr_script",
+          "editor"
+        ]
+      }
+    }
   },
   {
     "id": "bbm-glow-card",
@@ -180,6 +242,12 @@
     ]
   },
   {
+    "id": "custom-button",
+    "components": [
+      "button"
+    ]
+  },
+  {
     "id": "form",
     "components": [
       "captcha",
@@ -209,7 +277,9 @@
       "range",
       "double-key-dropdown",
       "forms-menu-card",
-      "forms-card-list"
+      "forms-card-list",
+      "forms-card-list-item",
+      "bbl-wizard"
     ]
   },
   {
@@ -432,7 +502,9 @@
       "forex-rates",
       "forex-graph",
       "sme-loan-calculator",
-      "table"
+      "table",
+      "card-list",
+      "menu-card-actions"
     ]
   },
   {

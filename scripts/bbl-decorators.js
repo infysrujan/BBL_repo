@@ -4,10 +4,7 @@ import {
   getMetadata,
   buildBlock,
   decorateBlock,
-  decorateBlocks,
-  decorateSections,
   loadBlock,
-  loadSections,
 } from './aem.js';
 
 /**
@@ -231,45 +228,75 @@ function isHomepage() {
   return ['/', '/en', '/th-TH', '/th-th'].includes(p);
 }
 
-async function loadWelcomeBanner(doc) {
-  doc.querySelectorAll('.welcome-banner-wrapper').forEach((wrapper) => {
-    const section = wrapper.closest('.section');
-    if (section) section.remove();
-    else wrapper.remove();
-  });
+function preloadWelcomeBannerImage(fragment, basePath) {
+  const block = fragment.querySelector('.welcome-banner');
+  if (!block) return;
 
-  if (!isHomepage()) return;
+  const mobileRow = block.children[1];
+  const img = mobileRow?.querySelector('img');
+  const src = img?.getAttribute('src');
+  if (!src) return;
+
+  const resolvedSrc = src.startsWith('./')
+    ? new URL(src, new URL(basePath, window.location)).href
+    : src;
+  if (document.querySelector(`link[rel="preload"][as="image"][href="${resolvedSrc}"]`)) return;
+
+  const link = document.createElement('link');
+  link.rel = 'preload';
+  link.as = 'image';
+  link.href = resolvedSrc;
+  link.setAttribute('fetchpriority', 'high');
+  document.head.append(link);
+}
+
+async function waitForImageLoad(img) {
+  if (!img || img.complete) return;
+  await new Promise((resolve) => {
+    img.setAttribute('loading', 'eager');
+    img.setAttribute('fetchpriority', 'high');
+    img.addEventListener('load', resolve, { once: true });
+    img.addEventListener('error', resolve, { once: true });
+  });
+}
+
+let welcomeBannerLoadPromise;
+
+async function loadWelcomeBanner(doc) {
+  if (!isHomepage()) {
+    return undefined;
+  }
+  if (welcomeBannerLoadPromise) {
+    await welcomeBannerLoadPromise;
+    return undefined;
+  }
 
   const lang = doc.documentElement.lang || 'en';
   const path = `/${lang}/fragments/welcome-banner/welcome-banner`;
 
-  let resp;
-  try {
-    resp = await fetch(`${path}.plain.html`);
-  } catch {
-    return;
-  }
-  if (!resp.ok) return;
-
-  const main = document.createElement('main');
-  main.innerHTML = await resp.text();
-
-  main.querySelectorAll('img[src^="./media_"]').forEach((el) => {
-    el.src = new URL(el.getAttribute('src'), new URL(path, window.location)).href;
+  welcomeBannerLoadPromise = new Promise((resolve) => {
+    document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
+      detail: {
+        path,
+        onHtmlParsed: preloadWelcomeBannerImage,
+        callback: async (fragment) => {
+          if (!fragment) {
+            // eslint-disable-next-line no-console
+            console.error('[Welcome Banner] Fragment not found at', path);
+            resolve();
+            return;
+          }
+          const main = doc.querySelector('main');
+          [...fragment.querySelectorAll(':scope > .section')].forEach((s) => main.append(s));
+          await waitForImageLoad(doc.querySelector('.welcome-banner-media img'));
+          resolve();
+        },
+      },
+    }));
   });
-  main.querySelectorAll('source[srcset^="./media_"]').forEach((el) => {
-    el.srcset = new URL(el.getAttribute('srcset'), new URL(path, window.location)).href;
-  });
 
-  // Attach to document.body so showModal can access document.body during decorate()
-  main.style.display = 'none';
-  document.body.appendChild(main);
-
-  decorateSections(main);
-  decorateBlocks(main);
-  await loadSections(main);
-
-  main.remove();
+  await welcomeBannerLoadPromise;
+  return undefined;
 }
 
 async function loadBreadcrumb(doc) {
@@ -397,6 +424,18 @@ function isAuthoringInstance(block) {
   return hasAueAttrs && window.self !== window.top;
 }
 
+async function fetchBlockAuthoringData(blockKey) {
+  try {
+    const pagePath = window.location.pathname.replace('.html', '');
+    const resp = await fetch(`${pagePath}/_jcr_content.infinity.json`);
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    return data?.root?.section?.[blockKey] || null;
+  } catch {
+    return null;
+  }
+}
+
 if (window.LAZY_PHASE) {
   handleGlobalLinkClicks();
 } else {
@@ -453,8 +492,7 @@ async function buildCookieAlert(main) {
         path: fragmentPath,
         callback: (fragment) => {
           if (!fragment) {
-            // eslint-disable-next-line no-console
-            console.warn('[cookie-alert] Fragment not found at', fragmentPath);
+            console.error('[cookie-alert] Fragment not found at', fragmentPath);
             return;
           }
           // Move the decorated sections directly (preserves event listeners).
@@ -498,6 +536,7 @@ function createPictureWithoutOptimization(
     } else {
       const img = document.createElement('img');
       img.setAttribute('loading', eager ? 'eager' : 'lazy');
+      if (eager) img.setAttribute('fetchpriority', 'high');
       img.setAttribute('alt', alt);
       picture.appendChild(img);
       img.setAttribute('src', `${pathname}`);
@@ -522,6 +561,7 @@ export {
   loadBreadcrumb,
   loadWelcomeBanner,
   isAuthoringInstance,
+  fetchBlockAuthoringData,
   buildCookieAlert,
   getLang,
   createPictureWithoutOptimization,

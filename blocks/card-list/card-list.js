@@ -1,5 +1,6 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
+import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
 import { applyLinkTarget, getLang, isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
@@ -17,7 +18,7 @@ function formatMenuCardDate(dateStr) {
     const day = date.getDate();
     return `${day} ${month} ${buddhistYear}`;
   }
-  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function parseBooleanFlag(value, defaultValue = false) {
@@ -164,19 +165,26 @@ function createCardListItem(cardElement, doc) {
   }
 
   if (actionTypeText === 'default' && defaultButton) {
-    const buttonLink = defaultButton.cloneNode(true);
-    buttonLink.removeAttribute('data-modal');
-
-    if (enableOverlayModal && overlayHref) {
-      buttonLink.removeAttribute('href');
-      buttonLink.setAttribute('data-modal', overlayHref);
-    } else {
-      buttonLink.removeAttribute('data-modal');
-    }
-
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
-    buttonWrapper.appendChild(buttonLink);
-    applyLinkTarget(buttonWrapper, 'a', openInNewTab);
+    buttonWrapper.innerHTML = defaultButtonDiv.innerHTML;
+    const buttonLink = buttonWrapper.querySelector('a');
+    if (buttonLink) {
+      buttonLink.removeAttribute('data-modal');
+      if (enableOverlayModal && overlayHref) {
+        buttonLink.removeAttribute('href');
+        buttonLink.setAttribute('data-modal', overlayHref);
+      }
+    }
+    applyLinkTarget(buttonWrapper, 'a.button-m', openInNewTab);
+    inner.appendChild(buttonWrapper);
+  }
+
+  if (actionTypeText === 'select-dropdown') {
+    // dropdown fields: cells.length-3 = label, cells.length-2 = links (before financialDate)
+    const label = cells[cells.length - 3]?.textContent?.trim() || 'Select';
+    const linksHTML = cells[cells.length - 2]?.innerHTML || '';
+    const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
+    buttonWrapper.appendChild(createGlobalDropdown(label, linksHTML, doc));
     inner.appendChild(buttonWrapper);
   }
 

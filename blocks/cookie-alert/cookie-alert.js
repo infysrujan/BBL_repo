@@ -115,11 +115,6 @@ export default async function decorate(block) {
 
   const configs = await fetchConfigs();
 
-  if (document.querySelector('.popup-modal-card-offer')) {
-    block.closest('.section')?.remove();
-    return;
-  }
-
   // Create banner structure while preserving block attributes
   const banner = document.createElement('div');
   banner.className = 'cookie-alert-banner';
@@ -167,7 +162,7 @@ export default async function decorate(block) {
           copyAnchorAttributes(anchor, btn);
           moveInstrumentation(anchor, btn);
 
-          const fragmentPath = configs.cookieAlertCookieModalPath;
+          const fragmentPath = href || configs.cookieAlertCookieModalPath;
           btn.addEventListener('click', async () => {
             const loaded = await ensureCookieModal(fragmentPath);
             if (loaded && typeof window.showCookieModal === 'function') {

@@ -66,7 +66,7 @@ export default async function componentDecorator(element, fd, container, formId)
   // decorators to ensure custom component logic executes first.
   const { ':type': type = '', fieldType } = fd;
 
-  if (type.endsWith('wizard')) {
+  if (type.endsWith('wizard') && type !== 'bbl-wizard') {
     await loadComponent('wizard', element, fd, container, formId);
   }
 
@@ -90,6 +90,10 @@ export default async function componentDecorator(element, fd, container, formId)
     await loadComponent('forms-menu-card', element, fd, container, formId);
   }
 
+  if (fd['fd:viewType'] === 'bbl-wizard' || type === 'bbl-wizard') {
+    await loadComponent('bblwizard', element, fd, container, formId);
+  }
+
   // forms-card-list: responsive card grid container (panelcontainer base).
   if (fd['fd:viewType'] === 'forms-card-list' || type === 'forms-card-list') {
     await loadComponent('forms-card-list', element, fd, container, formId);
@@ -102,6 +106,14 @@ export default async function componentDecorator(element, fd, container, formId)
 
   if (fieldType === 'file-input') {
     await loadComponent('file', element, fd, container, formId);
+  }
+
+  if (fieldType === 'checkbox-group' && fd.properties?.maxSelect) {
+    await loadComponent('checkbox-group', element, fd, container, formId);
+  }
+
+  if (fieldType === 'radio-group') {
+    await loadComponent('radio-group', element, fd, container, formId);
   }
 
   return null;

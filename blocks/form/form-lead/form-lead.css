@@ -1,0 +1,937 @@
+﻿/* Bangkok Bank lead-form overrides — matched to live Sitecore WFFM forms */
+:root {
+  /* font sizes */
+  --bbl-form-font-size-11: 0.6875rem;                /* 11px */
+  --bbl-form-font-size-15: 0.9375rem;                /* 15px */
+  --bbl-form-font-size-16: 1rem;                     /* 16px */
+  --bbl-form-font-size-17: 1.0625rem;                /* 17px */
+  --bbl-form-font-size-title-mobile: 1.925rem;       /* form heading - mobile */
+  --bbl-form-font-size-title-desktop: 2.2rem;        /* form heading - desktop */
+
+  /* padding */
+  --bbl-form-padding-10: 0.625rem;                   /* 10px */
+  --bbl-form-padding-15: 0.9375rem;                  /* 15px */
+  --bbl-form-padding-30: 1.875rem;                   /* 30px */
+  --bbl-form-padding-35: 2.1875rem;                  /* 35px */
+
+  /* margin */
+  --bbl-form-margin-3: 0.1875rem;                    /* 3px */
+  --bbl-form-margin-5: 0.3125rem;                    /* 5px */
+  --bbl-form-margin-8: 0.5rem;                       /* 8px */
+  --bbl-form-margin-10: 0.625rem;                    /* 10px */
+  --bbl-form-margin-14: 0.875rem;                    /* 14px */
+  --bbl-form-margin-15: 0.9375rem;                   /* 15px */
+  --bbl-form-margin-30: 1.875rem;                    /* 30px */
+
+  /* gap */
+  --bbl-form-gap-3: 0.1875rem;                       /* 3px */
+  --bbl-form-gap-30: 1.875rem;                       /* 30px */
+
+  /* font weight */
+  --bbl-form-font-weight-bold: 700;
+
+  /* borders */
+  --bbl-form-border-grey: 0.0625rem solid var(--bbl-color-grey-150);
+  --bbl-form-border-blue: 0.0625rem solid var(--bbl-color-blue-115);
+  --bbl-form-border-white: solid var(--bbl-color-white);
+  --bbl-form-outline-transparent: 0.0625rem solid transparent;
+
+  /* border radius */
+  --bbl-form-border-radius-7: 0.4375rem;             /* 7px */
+  --bbl-form-border-radius-left: var(--bbl-form-border-radius-7) 0 0 var(--bbl-form-border-radius-7);
+  --bbl-form-border-radius-right: 0 var(--bbl-form-border-radius-7) var(--bbl-form-border-radius-7) 0;
+
+  /* positions */
+  --bbl-form-left-15: 0.9375rem;                     /* 15px */
+  --bbl-form-top-22: 1.375rem;                       /* 22px */
+  --bbl-form-top-30: 1.875rem;                       /* 30px */
+  --bbl-form-top-42: 2.625rem;                       /* 42px */
+  --bbl-form-top-45: 2.8125rem;                      /* 45px */
+  --bbl-form-top-46: 2.875rem;                       /* 46px */
+  --bbl-form-top-50: 3.125rem;                       /* 50px */
+  --bbl-form-top-82: 5.1rem;                         /* ~82px */
+  --bbl-form-top-86: 5.375rem;                       /* 86px */
+
+  /* line heights */
+  --bbl-form-line-height-1: 1;
+  --bbl-form-line-height-1-3: 1.3;
+  --bbl-form-line-height-1-5: 1.5;
+  --bbl-form-line-height-14: 0.875rem;               /* 14px */
+  --bbl-form-line-height-17: 1.0625rem;              /* 17px */
+  --bbl-form-line-height-19: 1.2031rem;              /* ~19px */
+  --bbl-form-line-height-25: 1.5625rem;              /* 25px */
+  --bbl-form-line-height-32: 2rem;                   /* 32px */
+  --bbl-form-line-height-44: 2.75rem;                /* 44px */
+}
+
+main .section.form-container.lead-forms .form .form-message.success-message {
+    color: var(--bbl-color-grey-85);
+    background-color: transparent;
+    border-color: unset;
+    padding: unset;
+    text-align: center;
+    font-family: var(--bbl-font-family-medium) ;
+    line-height: var(--bbl-form-line-height-32);
+    font-weight: var(--bbl-font-weight-regular);
+    font-size: var(--bbl-font-size-b1-mobile);
+}
+
+main .lead-forms.section.form-container .form {
+  max-width: 46.25rem;
+  margin-inline: auto;
+  padding: 0;
+}
+
+main .form-container.lead-forms {
+  padding-inline: var(--bbl-space-section-xs);
+}
+
+main .lead-forms .form form p {
+  margin-bottom: 0;
+  padding: 0;
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: var(--bbl-form-line-height-1-5);
+}
+
+main .lead-forms.section.central-aligned > .default-content-wrapper p{
+  color: var(--bbl-color-grey-85);
+  font-size: var(--bbl-font-size-b1-mobile);
+  line-height: var(--bbl-form-line-height-19);
+}
+
+main .lead-forms.section.central-aligned > .default-content-wrapper p strong{
+  font-family: var(--bbl-font-family-medium);
+}
+
+main .lead-forms.section.form-container.central-aligned :is(.form-wrapper, .form.block) {
+  max-width: 46.25rem;
+  margin-inline: auto;
+}
+
+main .lead-forms div.form-wrapper {
+  padding: 0;
+  border-radius: unset;
+  box-shadow: none;
+  width: 100%;
+  max-width: 46.25rem;
+  margin-inline: auto;
+}
+
+main .lead-forms div.default-content-wrapper {
+  box-shadow: none;
+}
+
+main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+  font-size: var(--bbl-form-font-size-title-mobile);
+  line-height: normal;
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-color-grey-140);
+  letter-spacing: -0.0125rem;
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+main .lead-forms.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+  margin: var(--bbl-space-500) 0 var(--bbl-form-margin-30);
+  padding-bottom: var(--bbl-form-padding-35);
+}
+
+main .lead-forms .drop-down-wrapper {
+  text-align: center;
+}
+
+main .section.form-container.lead-forms .form form .plain-text-wrapper.field-text {
+  background-color: unset;
+  padding: unset;
+  border-radius: unset;
+  font-size: unset;
+}
+
+main .lead-forms .form form {
+  gap: var(--bbl-form-gap-3);
+  max-width: 46.25rem;
+  width: 100%;
+  margin: 0 auto;
+  color: var(--bbl-color-grey-85);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-font-size-b1);
+  line-height: var(--bbl-form-line-height-1-3);
+}
+
+main .lead-forms .form form :is(p, .repeat-wrapper, .field-wrapper) {
+  margin: 0;
+}
+
+main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .page-header) {
+  position: relative;
+  margin: var(--bbl-space-500) 0 var(--bbl-space-300);
+  padding: 0 0 var(--bbl-form-padding-35);
+  color: var(--bbl-color-grey-140);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-h1-mobile);
+  font-weight: var(--bbl-form-font-weight-bold);
+  line-height: normal;
+  letter-spacing: -0.0125rem;
+  text-align: center;
+}
+
+main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .page-header)::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: var(--bbl-space-1000);
+  height: 0.0625rem;
+  margin-left: calc(var(--bbl-space-1000) / -2);
+  background: var(--bbl-color-grey-150);
+}
+
+main .lead-forms .form form .field-title {
+  margin: 0;
+  padding: 0;
+}
+
+main .lead-forms .form form .field-infotext {
+  margin: var(--bbl-space-500) 0 var(--bbl-space-250);
+}
+
+main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
+  color: var(--bbl-color-grey-85);
+  font-size: var(--bbl-font-size-b1-mobile);
+  line-height: var(--bbl-form-line-height-14);
+  padding-right: 0;
+  margin-bottom: var(--bbl-form-margin-10);
+}
+
+main .lead-forms .form form .plain-text-wrapper p:last-child {
+  margin-bottom: 0;
+}
+
+main .lead-forms .form form .plain-text-wrapper :is(a, .custom-wffm-form) {
+  color: inherit;
+  font-size: inherit;
+}
+
+main .lead-forms .form form .plain-text-wrapper a {
+  text-decoration: underline;
+}
+
+main .lead-forms .form form .plain-text-wrapper .custom-wffm-form {
+  padding: 0 var(--bbl-space-100);
+  margin-bottom: var(--bbl-space-075);
+}
+
+main .lead-forms .form form .field-label[data-visible='false']:not(:is([class*=' icon-'], [class^='icon-'])) {
+  display: none;
+}
+
+main .lead-forms .form :is([data-required='true'] > label, label.required)::after {
+  content: none;
+}
+
+main .lead-forms .form form .field-initialfielditemname > .field-label {
+  display: block;
+  margin-top: var(--bbl-space-500);
+}
+
+main .lead-forms .form form :is(.field-wrapper:has(select), .drop-down-wrapper)>.field-label {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-size: var(--bbl-form-font-size-17);
+  line-height: var(--bbl-form-line-height-1);
+  font-weight: var(--bbl-form-font-weight-bold);
+  color: var(--bbl-color-grey-85);
+}
+
+main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
+  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-font-size-b1-mobile);
+  line-height: var(--bbl-form-line-height-1);
+  margin-block: var(--bbl-space-500) 0;
+}
+
+main .lead-forms .form form .field-initialfielditemname.field-invalid > .field-label {
+  height: auto;
+}
+
+main .section.form-container.lead-forms .form form select {
+  padding: 0 var(--bbl-form-padding-30) 0 var(--bbl-space-250);
+  border-color: var(--bbl-color-grey-23);
+  cursor: pointer;
+  appearance: none;
+  color: var(--bbl-color-black);
+  margin-bottom: var(--bbl-form-margin-14);
+  background: var(--bbl-color-white) url('../../../icons/dropdown.svg') no-repeat right var(--bbl-space-150) center /25px;
+  font-family: var(--bbl-font-family-medium);
+}
+
+main .lead-forms .form form .drop-down-wrapper.field-title select,
+main .lead-forms .form form .drop-down-wrapper.field-prefix-dropdown select {
+  padding: 0 var(--bbl-form-padding-30) 0 var(--bbl-space-500);
+}
+
+main .lead-forms .form form .drop-down-wrapper.field-bblprovincedropdown > .field-label {
+  margin-top: 0;
+}
+
+main .lead-forms .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
+  color: var(--bbl-color-grey-85);
+  font-size: var(--bbl-font-size-b1-mobile);
+  line-height: var(--bbl-form-line-height-1);
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: default;
+}
+
+main .lead-forms .form form .field-prefix-dropdown.field-wrapper .field-label,
+main .lead-forms .form form .field-province.field-wrapper .field-label {
+  padding: 0 var(--bbl-form-padding-10);
+  text-align: left;
+}
+
+main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
+  width: 100%;
+  height: 2.75rem;
+  margin: 0 0 var(--bbl-font-size-b2);
+  color: var(--bbl-color-black);
+  border: var(--bbl-form-border-grey);
+  border-radius: var(--bbl-form-border-radius-7);
+  font-size: var(--bbl-font-size-b1-desktop);
+  line-height: var(--bbl-form-line-height-44);
+}
+
+main .lead-forms .form form .field-wrapper[class*='icon-'] select {
+  margin-top: var(--bbl-form-margin-8);
+}
+
+main .section.form-container.lead-forms .section.form-container.custom-forms .drop-down-wrapper.field-wrapper select {
+  width: 100%;
+  height: 2.75rem;
+  margin: 0 0 var(--bbl-font-size-b2);
+  color: var(--bbl-color-black);
+  border: var(--bbl-form-border-grey);
+  border-radius: var(--bbl-form-border-radius-7);
+  font-size: var(--bbl-font-size-b1-mobile);
+  line-height: var(--bbl-form-line-height-44);
+}
+
+main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper input {
+  padding: 0 var(--bbl-space-250);
+  font-family: var(--bbl-font-family-primary);
+}
+
+main .lead-forms .form form .field-wrapper[class*='icon-'] input {
+  margin-top: var(--bbl-form-margin-8);
+}
+
+main .lead-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):has([aria-live="polite"]) input {
+  margin-bottom: var(--bbl-form-margin-14);
+}
+
+main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper [aria-live="polite"] {
+  text-align: left;
+}
+
+main .lead-forms .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].drop-down-wrapper, [class*='icon-'].date-wrapper).field-wrapper :is(input, select) {
+  padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
+  margin-bottom: var(--bbl-form-margin-14);
+}
+
+main .lead-forms .form textarea {
+  height: auto;
+  min-height: 6.25rem;
+  padding: var(--bbl-space-100) var(--bbl-space-250);
+  line-height: var(--bbl-form-line-height-1-5);
+}
+
+main .lead-forms .form select option {
+  color: var(--bbl-color-black);
+  background-color: var(--bbl-color-white);
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: var(--bbl-form-line-height-44);
+}
+
+main .lead-forms .form input[type='date']::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+main .lead-forms .form input[type='date']:invalid::-webkit-datetime-edit {
+  color: transparent;
+}
+
+main .lead-forms .form :is(input, textarea)::placeholder {
+  opacity: 1;
+  color: var(--bbl-color-grey-150);
+  font-family: var(--bbl-font-family-primary);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: var(--bbl-form-line-height-44);
+}
+
+main .lead-forms .form :is(input, select, textarea):is(:hover, :focus) {
+  color: var(--bbl-color-black);
+  border-color: var(--bbl-color-blue-90);
+  outline: none;
+}
+
+main .lead-forms .form form :is(input, select):invalid {
+  box-shadow: none;
+}
+
+main .section.form-container.lead-forms .form form .field-wrapper.field-invalid :is(input:not([type='radio'], [type='checkbox']), select, textarea){
+  border-color: var(--bbl-color-orange-130);
+}
+
+main .section.form-container.lead-forms .form form .field-invalid :is(.field-validation-error, .field-description) {
+  position: relative;
+  top: -10px;
+  text-align: left;
+  display: block;
+  clear: both;
+  padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) var(--bbl-form-padding-10);
+  color: var(--bbl-color-orange-130);
+  font-size: var(--bbl-form-font-size-15);
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+main .section.form-container.lead-forms .form form .drop-down-wrapper.field-invalid .field-validation-error {
+  margin-top: var(--bbl-form-margin-8);
+}
+
+main .lead-forms .form form .field-wrapper.col-12 {
+  gap: unset;
+}
+
+main .section.form-container.lead-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper, .date-wrapper) {
+  position: relative;
+  clear: both;
+}
+
+main .section.form-container.lead-forms .form form label:is([class*=' icon-'], [class^='icon-']) {
+  position: relative;
+  display: block;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+main .section.form-container.lead-forms .form form .email-wrapper.field-wrapper input {
+  padding-left: var(--bbl-space-500);
+}
+
+
+main .lead-forms .form form .field-wrapper[class*='icon-']::before,
+main .lead-forms .form form .email-wrapper::before {
+  position: absolute;
+  top: var(--bbl-form-top-30);
+  left: var(--bbl-form-left-15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bbl-space-250);
+  height: 1.1875rem;
+  color: var(--bbl-color-grey-150);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+main .lead-forms .form form .email-wrapper::before {
+ content: "\e919";
+  font-family: icomoon, sans-serif;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  font-size: 0.75rem;
+}
+
+main .lead-forms .form form .field-wrapper[class*='icon-'].field-invalid::before,
+main .lead-forms .form form .email-wrapper.field-invalid::before {
+  top: var(--bbl-form-top-30);
+}
+
+main .lead-forms .form form label:is([class*=' icon-'], [class^='icon-']):empty::before {
+  display: flex;
+}
+
+main .lead-forms .form form label:is([class*=' icon-'], [class^='icon-'])+ :is(input, select) {
+  padding-left: var(--bbl-space-500);
+}
+
+main .lead-forms .form form .field-wrapper[class*='icon-']:has(> label:not([data-visible='false']))::before,
+main .lead-forms .form form .email-wrapper:has(> label:not([data-visible='false']))::before {
+  top: var(--bbl-form-top-50);
+}
+
+main .lead-forms .form form :is(.text-wrapper, .number-wrapper, .telephone-wrapper, .email-wrapper)[class*='icon-']:has(> label:not([data-visible='false']))::before {
+  top: var(--bbl-form-top-45);
+}
+
+main .lead-forms .form form .field-wrapper[class*='icon-'].field-invalid:has(> label:not([data-visible='false']))::before,
+main .lead-forms .form form .email-wrapper.field-invalid:has(> label:not([data-visible='false']))::before {
+  top: var(--bbl-form-top-50);
+}
+
+main .lead-forms .form form :is(.text-wrapper, .number-wrapper, .telephone-wrapper, .email-wrapper)[class*='icon-'].field-invalid:has(> label:not([data-visible='false']))::before {
+  top: var(--bbl-form-top-45);
+}
+
+main .lead-forms .form form .field-initialfielditemname.field-wrapper[class*='icon-']:has(> label:not([data-visible='false']))::before {
+  top: var(--bbl-form-top-86);
+}
+
+main .lead-forms .form form .field-initialfielditemname.field-wrapper[class*='icon-'].field-invalid:has(> label:not([data-visible='false']))::before {
+  top: var(--bbl-form-top-86);
+}
+
+main .lead-forms .form form .drop-down-wrapper[class*='icon-']:has(> label:not([data-visible='false']))::before {
+  top: var(--bbl-form-top-86);
+}
+
+main .lead-forms .form form .drop-down-wrapper[class*='icon-'].field-invalid:has(> label:not([data-visible='false']))::before {
+  top: var(--bbl-form-top-86);
+}
+
+main .lead-forms .form form .checkbox-group-wrapper .checkbox-wrapper .field-label {
+  flex-basis: auto;
+  flex-shrink: 1;
+  font-weight: var(--bbl-font-weight-regular);
+  cursor: pointer;
+  line-height: var(--bbl-form-line-height-25);
+}
+
+main .lead-forms .form form .field-wrapper[class*='icon-']:has(> label:not([data-visible='false'])) > .field-label {
+  display: block;
+  font-size: var(--bbl-form-font-size-16);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-grey-85);
+}
+
+main .lead-forms .section.form-container.custom-forms :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper):has(.field-description).field-wrapper :is(input, textarea, select){
+  margin-bottom: 0;
+}
+
+main .lead-forms .form form .radio-group-wrapper>.field-description {
+  flex: 0 0 100%;
+  width: 100%;
+  margin-top: 0;
+  order: 2;
+  clear: none;
+}
+
+main .lead-forms .form form .radio-group-wrapper.field-invalid>.field-description {
+  height: auto;
+}
+
+main .lead-forms .form :is(.field-submitcta .button, .field-submitcta .button:disabled, .field-cancel .button, [class~="field-Cancel"] .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button) {
+  min-width: 9.6875rem;
+  margin: var(--bbl-space-300) auto;
+}
+
+main .lead-forms .form :is(.field-submitcta .button, .field-cancel .button, form button[name='cancel'], form button[name='Cancel'], form button[type='reset'], form button[type='submit'], form .submit-wrapper button):is(:hover, :disabled:hover) {
+  color: var(--bbl-color-white);
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue);
+}
+
+main .lead-forms .form .col-6:is(.field-submitcta, .submit-wrapper) :is(.button, button) {
+  margin-left: auto;
+  margin-right: var(--bbl-space-200);
+}
+
+main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel>.field-wrapper {
+  width: 100%;
+}
+
+main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-submitcta.col-12,
+main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-reset.col-6 {
+  width: auto;
+}
+
+main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-submitcta.col-12 {
+  margin-left: auto;
+  margin-right: var(--bbl-space-100);
+}
+
+main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form fieldset.panel-wrapper.field-main-form-panel .field-reset.col-6 {
+  margin-left: var(--bbl-space-100);
+  margin-right: auto;
+}
+
+main .lead-forms .section:has(.field-business-information-main, .field-loan-details-main) .form .col-12:is(.field-submitcta, .submit-wrapper, .reset-wrapper, .field-cancel) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main .lead-forms .form .col-6:is(.field-cancel, .field-reset) :is(.button, button) {
+  margin-left: var(--bbl-space-200);
+  margin-right: auto;
+}
+
+main .lead-forms .form form :is(.field-privacyconsent, fieldset.panel-wrapper.field-wrapper) {
+  gap: 0;
+  margin: 0;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  grid-column: span 12;
+  width: 100%;
+  max-width: 46.25rem;
+  padding: 0;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-button-panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: var(--bbl-space-200);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-button-panel .field-submitcta,
+main .lead-forms .form form fieldset.panel-wrapper.field-button-panel .field-reset {
+  width: auto;
+  margin: 0;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
+  padding: 0 0 0 var(--bbl-form-padding-35);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper>legend {
+  display: none;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
+  grid-column: 1;
+  width: auto;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .checkbox-wrapper {
+  display: contents;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox'],
+input[name='BBLAdvancedCheckbox'] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  cursor: pointer;
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
+  margin: var(--bbl-form-margin-3) var(--bbl-form-margin-3) var(--bbl-form-margin-3) var(--bbl-space-050);
+  flex: none;
+  padding: 0;
+  border: var(--bbl-form-border-grey);
+  background-color: var(--bbl-color-white);
+  appearance: none;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:hover,
+input[name='BBLAdvancedCheckbox']:hover {
+  border: var(--bbl-form-border-blue);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:checked,
+input[name='BBLAdvancedCheckbox']:checked {
+  background-color: var(--bbl-color-blue-105);
+  border-color: var(--bbl-color-blue-105);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(:is(input[name='approvalcheckbox'], input[name='BBLAdvancedCheckbox']):checked)::after {
+  content: '';
+  padding: initial;
+  box-sizing: border-box;
+  border: var(--bbl-form-border-white);
+  border-width: 0 0.125rem 0.125rem 0;
+  transform: rotate(45deg);
+  left: var(--bbl-space-150);
+  top: var(--bbl-space-075);
+  width: 0.3125rem;
+  height: 0.625rem;
+  position: absolute;
+  z-index: 2;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper input[name='approvalcheckbox']:invalid,
+input[name='BBLAdvancedCheckbox']:invalid {
+  box-shadow: none;
+  outline: none;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(.checkbox-wrapper.field-invalid) :is(input[name='approvalcheckbox'], input[name='BBLAdvancedCheckbox']) {
+  border-color: var(--bbl-color-grey-150);
+  outline: none;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:has(:is(input[name='approvalcheckbox'], input[name='BBLAdvancedCheckbox'])):hover :is(input[name='approvalcheckbox'], input[name='BBLAdvancedCheckbox']) {
+  border: var(--bbl-form-border-blue);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration {
+  grid-row: 1;
+  grid-column: 1;
+  border: var(--bbl-form-border-grey);
+  border-radius: var(--bbl-radius-none);
+  max-height: 15rem;
+  margin: var(--bbl-form-margin-3) var(--bbl-space-100) var(--bbl-form-margin-15) 0;
+  padding: var(--bbl-form-padding-15);
+  font-size: var(--bbl-font-size-b1);
+  overflow: auto;
+  scrollbar-width: thin;
+  margin-right: var(--bbl-form-margin-5);
+  scrollbar-color: var(--bbl-color-grey-161) var(--bbl-color-grey-158);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar {
+  width: var(--bbl-space-100);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar-track {
+  background: var(--bbl-color-grey-10);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .tnc-text-decoration::-webkit-scrollbar-thumb {
+  background: var(--bbl-color-grey-153);
+  border-radius: var(--bbl-rounded-050);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:is( :has(.checkbox-wrapper.field-invalid),
+  :has(input[name='approvalcheckbox']:user-invalid),
+  .field-invalid) .tnc-text-decoration {
+  border-color: var(--bbl-color-orange-130);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper :is(> .field-description, .checkbox-wrapper .field-description) {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: var(--bbl-space-075) var(--bbl-space-250) var(--bbl-space-150) 0;
+  font-size: var(--bbl-font-size-15);
+  clear: both;
+}
+
+main .lead-forms .form form .radio-group-wrapper.horizontal {
+  justify-content: center;
+  gap: var(--bbl-form-gap-30);
+}
+
+main .lead-forms .form form .radio-group-wrapper.horizontal .radio-wrapper {
+  flex-wrap: nowrap;
+  min-width: 8.75rem;
+}
+
+main .lead-forms .form form .radio-group-wrapper.horizontal input[type='radio'] {
+  width: var(--bbl-space-250);
+  height: var(--bbl-space-250);
+}
+
+main .lead-forms .form form .radio-group-wrapper.radio-tabs {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 46.25rem;
+  padding: 0;
+  overflow: visible;
+  border: none;
+}
+
+main .lead-forms .form form .radio-group-wrapper.radio-tabs.horizontal {
+  flex-flow: row wrap;
+  gap: 0;
+}
+
+main .lead-forms .form form :is(.field-type-of-loan, .field-other-required-products) legend.field-label {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--bbl-space-200);
+  text-align: center;
+}
+
+main .section.form-container.lead-forms .form form .radio-group-wrapper.radio-tabs legend.field-label {
+  display: block;
+  flex: 0 0 100%;
+  width: 100%;
+  margin: 0 0 var(--bbl-space-100);
+  padding: 0;
+  font-size: var(--bbl-form-font-size-17);
+  line-height: var(--bbl-form-line-height-17);
+  font-weight: var(--bbl-form-font-weight-bold);
+  cursor: default;
+  text-align: left;
+}
+
+main .section.form-container.lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper {
+  position: relative;
+  display: flex;
+  flex: 1 0 25%;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: var(--bbl-space-1000);
+  margin: 0 0 var(--bbl-space-100);
+  padding: 0;
+  overflow: hidden;
+  border: none;
+  gap: 0;
+}
+
+main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input[type='radio'] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: var(--bbl-color-white);
+  border: var(--bbl-form-border-grey);
+  border-left: none;
+  border-radius: 0;
+  appearance: none;
+  cursor: pointer;
+}
+
+main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper input[type='radio']:checked {
+  background-color: var(--bbl-color-blue-145);
+}
+
+main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:first-of-type input[type='radio'] {
+  border-left: var(--bbl-form-border-grey);
+  border-radius: var(--bbl-form-border-radius-left);
+}
+
+main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper:not(:has(~ .radio-wrapper)) input[type='radio'] {
+  border-radius: var(--bbl-form-border-radius-right);
+}
+
+main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label.field-label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-basis: auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 var(--bbl-form-padding-10);
+  color: var(--bbl-color-grey-85);
+  font-size: var(--bbl-font-size-b1-mobile);
+  font-weight: var(--bbl-font-weight-medium);
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+}
+
+main .lead-forms .form form .radio-group-wrapper.radio-tabs.field-invalid .radio-wrapper input[type='radio'] {
+  border-color: var(--bbl-color-orange-130);
+  outline: none;
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper:is(.field-type-of-loan-panel,
+  .field-other-required-product-panel) {
+  border: var(--bbl-form-border-grey);
+  border-radius: var(--bbl-form-border-radius-7);
+  padding: var(--bbl-space-300) var(--bbl-space-500);
+  padding: var(--bbl-form-padding-10) var(--bbl-form-padding-10) var(--bbl-form-padding-10) 0;
+  margin-bottom: var(--bbl-form-margin-10);
+}
+
+main .lead-forms .form form :is(.field-wrapper:is(.icon-money, .icon-email),
+  label:is(.icon-money, .icon-email))::before {
+  font-size: var(--bbl-form-font-size-11);
+  width: var(--bbl-space-200);
+  height: var(--bbl-space-200);
+  line-height: var(--bbl-space-200);
+  top: var(--bbl-space-350);
+}
+
+main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .checkbox-group-wrapper .checkbox-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: var(--bbl-space-100);
+}
+
+main .lead-forms .form form .checkbox-group-wrapper .checkbox-wrapper input[type='checkbox'] {
+  flex-shrink: 0;
+  width: var(--bbl-space-200);
+  height: var(--bbl-space-200);
+  cursor: pointer;
+  margin: var(--bbl-form-margin-3) var(--bbl-space-100) var(--bbl-form-margin-3) var(--bbl-space-050);
+}
+
+main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-type-of-loan,
+  .field-other-required-product-panel .field-please-specify-other-product) {
+  width: 100%;
+}
+
+@media (width > 47.5rem) {
+  main .form-container.lead-forms {
+    padding-inline: var(--bbl-space-250);
+    margin-inline: var(--bbl-form-margin-30);
+    width: auto;
+  }
+
+  main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label.field-label {
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: var(--bbl-line-height-b3-desktop);
+  }
+}
+
+@media (width > 64rem) {
+  main .form-container.lead-forms {
+    padding-inline: 0;
+    margin-inline: auto;
+  }
+
+  main .section.form-container.lead-forms .form .form-message.success-message {
+    font-size: var(--bbl-font-size-b1-desktop);
+  }
+
+  main .lead-forms .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    font-size: var(--bbl-form-font-size-title-desktop);
+  }
+
+  main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: var(--bbl-line-height-b3-desktop);
+  }
+
+  main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: var(--bbl-line-height-b3-desktop);
+  }
+
+  main .lead-forms.section.central-aligned > .default-content-wrapper p{
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: var(--bbl-line-height-b1-desktop);
+  }
+
+  main .lead-forms .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: var(--bbl-form-line-height-1);
+  }
+}
