@@ -123,14 +123,14 @@
   color: var(--bbl-color-gray-121);
   cursor: pointer;
   font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-regular);
-  line-height: var(--bbl-line-height-b3-mobile);
+  font-weight: var(--bbl-body-b1-weight);
+  line-height: var(--bbl-body-b1-line-height);
   text-transform: capitalize;
 }
 
 .locate-us .locate-us-service-item-placeholder {
   color: var(--bbl-color-blue-90);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-body-b1-weight);
   cursor: default;
 }
 
@@ -248,11 +248,11 @@
   padding: 0.625rem 1.875rem;
   margin: var(--bbl-space-025) 0;
   font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-body-b1-weight);
   color: var(--bbl-color-gray-121);
   cursor: pointer;
   font-family: var(--bbl-font-family-medium);
-  line-height: var(--bbl-line-height-b3-mobile);
+  line-height: var(--bbl-body-b1-line-height);
 }
 
 .locate-us .locate-us-province-item-header {
@@ -730,11 +730,11 @@
 .locate-us .locate-us-district-item {
   padding: 0.625rem 1.875rem;
   font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-body-b1-weight);
   color: var(--bbl-color-gray-121);
   cursor: pointer;
   font-family: var(--bbl-font-family-medium);
-  line-height: var(--bbl-line-height-b3-mobile);;
+  line-height: var(--bbl-body-b1-line-height);
 }
 
 .locate-us .locate-us-district-item-header {
