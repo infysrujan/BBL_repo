@@ -2,7 +2,7 @@
   text-decoration: none;
 }
 
-:is(.custom-button-container, .background-privatebanking) .button-container {
+:is(.custom-button-container, .center-content) .button-container {
   display: flex;
   justify-content: center;
 }
