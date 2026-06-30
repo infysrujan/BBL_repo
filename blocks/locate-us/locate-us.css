@@ -78,7 +78,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: var(--bbl-font-family-primary);
+  font-family: var(--bbl-font-family-medium);
   text-align: left;
 }
 
@@ -122,14 +122,15 @@
   font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-gray-121);
   cursor: pointer;
-  font-family: var(--bbl-font-family-primary);
-  font-weight: 400;
-  line-height: 0.95rem;
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: var(--bbl-line-height-b3-mobile);
+  text-transform: capitalize;
 }
 
 .locate-us .locate-us-service-item-placeholder {
   color: var(--bbl-color-blue-90);
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   cursor: default;
 }
 
@@ -247,11 +248,11 @@
   padding: 0.625rem 1.875rem;
   margin: var(--bbl-space-025) 0;
   font-size: var(--bbl-font-size-b1);
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-gray-121);
   cursor: pointer;
-  font-family: var(--bbl-font-family-primary);
-  line-height: 0.95rem;
+  font-family: var(--bbl-font-family-medium);
+  line-height: var(--bbl-line-height-b3-mobile);
 }
 
 .locate-us .locate-us-province-item-header {
@@ -729,11 +730,11 @@
 .locate-us .locate-us-district-item {
   padding: 0.625rem 1.875rem;
   font-size: var(--bbl-font-size-b1);
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-gray-121);
   cursor: pointer;
-  font-family: var(--bbl-font-family-primary);
-  line-height: 0.95rem;
+  font-family: var(--bbl-font-family-medium);
+  line-height: var(--bbl-line-height-b3-mobile);;
 }
 
 .locate-us .locate-us-district-item-header {
