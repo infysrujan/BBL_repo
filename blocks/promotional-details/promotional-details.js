@@ -53,7 +53,6 @@ function readBlockData(block) {
   const firstRow = block.querySelector(':scope > div');
   if (!firstRow) return null;
 
-  // Key-value format (2 columns per row): use readBlockConfig
   if (firstRow.children.length >= 2) {
     const config = readBlockConfig(block);
     return {
@@ -66,7 +65,6 @@ function readBlockData(block) {
       responsibleLendingDisclaimerText: config.responsiblelendingdisclaimertext || '',
       isRegister: config.isregister || '',
       registerCtaLabel: config.registerctalabel || '',
-      ctaLabel: config.ctalabel || '',
     };
   }
 
@@ -74,11 +72,21 @@ function readBlockData(block) {
   const txt = (i) => rows[i]?.children[0]?.textContent?.trim() || '';
   const innerHtml = (i) => rows[i]?.children[0]?.innerHTML?.trim() || '';
   const imgSrc = (i) => rows[i]?.querySelector('img')?.src || '';
-
   const PROMO_TYPES = ['credit-card', 'bangkok-bank-m'];
-  const o = PROMO_TYPES.includes(txt(0).toLowerCase()) ? 1 : 0;
+  const promoType = txt(0).toLowerCase();
+  const o = PROMO_TYPES.includes(promoType) ? 1 : 0;
+  const isBBM = promoType === 'bangkok-bank-m';
 
   const titleHeading = rows[o + 1]?.querySelector('h1,h2,h3,h4,h5,h6');
+
+  const len = rows.length;
+  const hasRldEnabledField = len >= o + 22;
+
+  const rldEnabled = hasRldEnabledField ? txt(len - 4) : '';
+  const rldTextRaw = innerHtml(len - 3);
+  const rldEnabledIsTrue = rldEnabled.toLowerCase() === 'true';
+  const rldText = hasRldEnabledField && !rldEnabledIsTrue ? '' : rldTextRaw;
+  const rldEnabledOut = hasRldEnabledField ? rldEnabled : (rldText && 'true') || '';
 
   return {
     title: titleHeading?.innerHTML?.trim() || txt(o + 1),
@@ -86,11 +94,10 @@ function readBlockData(block) {
     detailDescription: innerHtml(o + 5),
     promotionStartDate: txt(o + 11),
     promotionEndDate: txt(o + 12),
-    responsibleLendingDisclaimerEnabled: txt(o + 18),
-    responsibleLendingDisclaimerText: innerHtml(o + 19),
-    isRegister: txt(o + 20),
-    registerCtaLabel: txt(o + 21),
-    ctaLabel: txt(o + 14),
+    responsibleLendingDisclaimerEnabled: rldEnabledOut,
+    responsibleLendingDisclaimerText: rldText,
+    isRegister: isBBM ? txt(len - 2) : '',
+    registerCtaLabel: isBBM ? txt(len - 1) : '',
   };
 }
 
@@ -107,7 +114,7 @@ function buildDateHtml(start, end, label, locale) {
 }
 
 function buildDisclaimerHtml(enabled, text) {
-  if (!enabled || !text) return '';
+  if (String(enabled || '').trim().toLowerCase() !== 'true' || !text) return '';
   return `<div class="promo-detail-disclaimer pad-top-30">${text}</div>`;
 }
 
@@ -115,7 +122,7 @@ function buildRegisterCtaHtml(label, url) {
   if (!label || !url) return '';
   return `
     <div class="promo-detail-cta button-container">
-        <a href="${url}" class="button primary promo-detail-register-btn">${label}</a>
+        <a href="${url}" class="button-m primary promo-detail-register-btn">${label}</a>
     </div>`;
 }
 
@@ -127,7 +134,6 @@ function bindImageModal(container, imageUrl, altText) {
 
     const doc = container.ownerDocument;
 
-    // Guard against rapid double-clicks opening multiple modals
     if (doc.body.classList.contains('modal-open')) return;
 
     const wrapper = doc.createElement('div');
@@ -158,7 +164,6 @@ function bindImageModal(container, imageUrl, altText) {
     };
 
     closeBtn.addEventListener('click', closeModal);
-    // Explicitly disable escapeKey in setupModalHandlers to prevent listener leaks on the document
     setupModalHandlers(wrapper, content, closeModal, { escapeKey: false, clickOutside: true });
     doc.addEventListener('keydown', handleEscape);
     wrapper.append(backdrop, content);
@@ -219,11 +224,15 @@ function renderDetails(container, data, periodLabel, locale, viewFull, registerC
             <div class="promo-detail-description">${description}</div>
             ${buildDateHtml(startDate, endDate, periodLabel, locale)}
             ${buildRegisterCtaHtml(ctaLabel, ctaUrl)}
-            ${buildDisclaimerHtml(disclaimerEnabled, disclaimerText)}
           </div>
         </div>
       </div>
     </div>`;
+
+  const disclaimerHtml = buildDisclaimerHtml(disclaimerEnabled, disclaimerText);
+  if (disclaimerHtml) {
+    container.querySelector('.promo-detail-content')?.insertAdjacentHTML('beforeend', disclaimerHtml);
+  }
 
   if (imageUrl) bindImageModal(container, imageUrl, cleanTitle);
 }
@@ -235,6 +244,9 @@ export default async function decorate(block) {
   const lang = getLang();
   const locale = LOCALE_MAP[lang] || 'en-GB';
 
+  const data = readBlockData(block);
+  if (!isAuthoringInstance(block)) block.innerHTML = '';
+
   const [placeholders, configs] = await Promise.all([
     fetchPlaceholders(),
     fetchConfigs(),
@@ -243,7 +255,6 @@ export default async function decorate(block) {
   const periodLabel = placeholders.promotionPeriodText || 'Promotion Period:';
   const clickToViewFull = placeholders.promoClickToViewFull || '';
   const registerCtaUrl = (configs || {}).bbmIsRegister || '';
-  const data = readBlockData(block);
 
   if (isAuthoringInstance(block)) {
     if (!data || !Object.values(data).some(Boolean)) return;
