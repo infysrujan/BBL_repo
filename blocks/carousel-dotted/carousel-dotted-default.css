@@ -235,39 +235,21 @@
 
 .carousel-dotted .slick-dots {
   position: absolute;
-
-  /* bottom: var(--bbl-space-250); */
-
-  /* left: var(--bbl-space-300); */
-
-  /* right: auto; */
-
-  /* display: flex; */
-
-  /* gap: var(--bbl-space-100); */
-
-  /* list-style: none; */
-
-  /* padding: var(--bbl-space-000); */
-
-  /* margin: var(--bbl-space-000); */
+  display: flex;
+  gap: var(--bbl-space-100);
+  list-style: none;
   z-index: 2;
-  
-  /* width: auto; */
-
-  /* height: auto; */
+  width: auto;
+  height: auto;
 
   /* max-width: calc(100% - 2 * var(--bbl-space-300)); */
-
-  /* align-items: center; */
-
-  /* flex-wrap: nowrap; */
-
-  /* overflow: hidden; */
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow: hidden;
   margin: 0;
   padding: 0;
-  bottom: 200px;
-  right: 16px;
+  bottom: 12.5rem;
+  right: 1rem;
 }
 
 .carousel-dotted.all-text-animation-variant .slick-dots {
@@ -399,12 +381,14 @@
 }
 
 /* Remove the default SVG ::after arrow from button-tertiary */
-.carousel-dotted .button-tertiary::after {
+
+/* .carousel-dotted .button-tertiary::after {
   display: none;
-}
+} */
 
 /* Re-enable ::after with icomoon arrow for with-image and without-image slides only */
-.carousel-dotted .carousel-dotted-item.with-image .button-tertiary::after,
+
+/* .carousel-dotted .carousel-dotted-item.with-image .button-tertiary::after,
 .carousel-dotted .carousel-dotted-item.without-image .button-tertiary::after,
 .carousel-dotted.all-with-image .carousel-dotted-more .button-tertiary::after,
 .carousel-dotted.all-without-image .carousel-dotted-more .button-tertiary::after {
@@ -416,6 +400,24 @@
   font-size: 0.625rem;
   margin-left: 1rem;
   transition: margin-left 0.3s ease;
+} */
+
+.carousel-dotted.all-with-image .button-container,
+.carousel-dotted.all-without-image .button-container {
+  margin: 0;
+}
+
+.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .button-container {
+  margin-block: var(--bbl-space-300) var(--bbl-space-200);
+}
+
+.carousel-dotted-item.with-image .carousel-dotted-content .button-container {
+  position: absolute;
+  bottom: 1.25rem;
+}
+
+.carousel-dotted-item.with-image .carousel-dotted-more {
+  bottom: 1.25rem;
 }
 
 .carousel-dotted .button-tertiary {
@@ -533,6 +535,12 @@
   min-height: unset;
 }
 
+.carousel-dotted.dots-center-inside-container.all-without-image .slick-dots {
+  transform: unset;
+  left: 1.5rem;
+  bottom: 1.25rem;
+}
+
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-title :is(h1, h2, h3, h4, h5, h6) {
   font-family: var(--bbl-font-family-medium);
@@ -578,10 +586,6 @@
 .bangkok-bankm-card .carousel-dotted:is(.all-hero-banner-image-carousel)
 .carousel-subtitle p{
    color: var(--bbl-color-white);
-}
-
-.carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .button-container {
-  margin-block: var(--bbl-space-300) var(--bbl-space-200);
 }
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
@@ -769,8 +773,12 @@ p.text-large.text-light {
   .carousel-dotted .carousel-dotted-item.is-active {
     opacity: 1;
     height: 100%;
-    min-height: 445px;
+    
   }
+
+  .carousel-dotted.all-with-image .carousel-dotted-item.is-active {
+    min-height: 27.8125rem;
+  } 
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant, .has-hero-variant) .carousel-track-wrapper {
     transition: transform 700ms cubic-bezier(0.4, 0, 0.4, 1);
