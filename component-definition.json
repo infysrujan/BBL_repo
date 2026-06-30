@@ -1246,6 +1246,22 @@
           }
         },
         {
+          "title": "BBL Wizard Steps",
+          "id": "bbl-wizard",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/fd/components/form/text/v1/text",
+                "template": {
+                  "jcr:title": "BBL Wizard Steps",
+                  "fieldType": "plain-text",
+                  "fd:viewType": "bbl-wizard"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Forward Points SME",
           "id": "forward-points-sme",
           "plugins": {

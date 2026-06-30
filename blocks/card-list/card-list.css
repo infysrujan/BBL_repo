@@ -284,9 +284,10 @@
 }
 
 .cards-list-promo-tag {
-  font-size: 0.7875rem;
-  line-height: 0.9844rem;
-  font-weight: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-label-tag-size);
+  line-height: var(--bbl-text-label-tag-line-height);
+  font-weight: var(--bbl-text-label-tag-weight);
+  font-family: var(--bbl-font-family-medium);
   max-width: max-content;
   background: var(--bbl-color-blue-140);
   display: inline-block;
@@ -768,11 +769,6 @@
 
   .cards-list-image.cards-list-image-profile {
     height: calc(15.625rem + 60 * ((100vw - 20rem) / 1600));
-  }
-
-  .cards-list-promo-tag {
-    font-size: 0.9rem;
-    line-height: 1.125rem;
   }
 
   .card-list-modal-title {

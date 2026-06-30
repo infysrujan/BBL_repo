@@ -26,6 +26,10 @@
   border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
 }
 
+.bangkok-bankm-card .hero-banner.hero-banner-simple {
+  background-color: var(--bbl-color-white);
+}
+
 .hero-banner-container {
   width: 100%;
   overflow: hidden;
@@ -358,6 +362,7 @@
 }
 
 .hero-banner-content-inner-text {
+  font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-text-banner-description-size);
   line-height: var(--bbl-text-banner-description-line-height);
   font-weight: var(--bbl-text-banner-description-weight);
@@ -460,6 +465,10 @@
 .hero-banner-simple,
 .hero-banner-simple-logo-banner {
   margin-bottom: 1.875rem;
+}
+
+.hero-banner-simple {
+  padding-bottom: 1.875rem;
 }
 
 .hero-banner-simple::after {
@@ -706,6 +715,10 @@
     position: absolute;
     padding-top: 0;
     bottom: 1.875rem;
+  }
+
+  .hero-banner-simple {
+    padding-bottom: 0;
   }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-content.content {
