@@ -1,6 +1,6 @@
 
 :root {
-  --sp-line-height-result-currency: 1.08rem; /* 17.28px */
+  --bbl-line-height-result-currency: 1.08rem; /* 17.28px */
 }
 
 .saving-plan-block {
@@ -424,7 +424,7 @@
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-40);
   opacity: 0.9;
-  line-height: var(--sp-line-height-result-currency);
+  line-height: var(--bbl-line-height-result-currency);
 }
 
 .saving-plan-result-footnote {
