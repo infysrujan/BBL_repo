@@ -99,6 +99,7 @@
   width: 100%;
   background-position: center;
   transition: opacity 600ms ease;
+  height: 197px;
 }
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
@@ -171,6 +172,7 @@
   padding: var(--bbl-space-250);
   min-height: 12.6875rem;
   max-height: 12.6875rem;
+  box-sizing: border-box;
 }
 
 /* Without-image variation: text-only layout */
@@ -248,7 +250,7 @@
   overflow: hidden;
   margin: 0;
   padding: 0;
-  bottom: 12.5rem;
+  bottom: 10.1875rem;
   right: 1rem;
 }
 
@@ -774,6 +776,10 @@ p.text-large.text-light {
     opacity: 1;
     height: 100%;
     
+  }
+  
+  .carousel-dotted-item.with-image .carousel-dotted-content .button-container {
+    position: unset;
   }
 
   .carousel-dotted.all-with-image .carousel-dotted-item.is-active {
