@@ -76,7 +76,7 @@
 }
 
 .credit-card-comparator .product-comparing + .product-comparing {
-  border-left: 1px solid var(--bbl-color-grey-150);
+  border-left: 0.0625rem solid var(--bbl-color-grey-150);
   padding-left: 1.25rem;
 }
 
