@@ -409,6 +409,14 @@
   margin: 0;
 }
 
+.carousel-dotted.all-with-image .carousel-dotted-more .button-container a {
+  visibility: hidden;
+}
+
+.carousel-dotted.all-with-image .carousel-dotted-more .button-container a::after {
+  visibility: visible;
+}
+
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .button-container {
   margin-block: var(--bbl-space-300) var(--bbl-space-200);
 }
@@ -777,7 +785,7 @@ p.text-large.text-light {
     height: 100%;
     
   }
-  
+
   .carousel-dotted-item.with-image .carousel-dotted-content .button-container {
     position: unset;
   }
@@ -794,6 +802,10 @@ p.text-large.text-light {
   (flex layout + overflow is set globally above the media queries) */
   .carousel-dotted.all-without-image .carousel-dotted-item.without-image {
     min-height: 27.8125rem;
+  }
+
+  .carousel-dotted.all-with-image .carousel-dotted-more .button-container a {
+    visibility: visible;
   }
 
   .carousel-dotted .carousel-bg {
