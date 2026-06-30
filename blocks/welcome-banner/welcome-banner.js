@@ -1,5 +1,4 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { applyLinkTarget, isAuthoringInstance, decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 
@@ -78,8 +77,9 @@ function isDateActive(startStr, endStr) {
  */
 function anchorToCtaData(a) {
   return {
-    title: a.getAttribute('title') || '',
-    openInNewTab: a.getAttribute('target') === '_blank',
+    href: a.getAttribute('href') || '#',
+    label: a.textContent.trim(),
+    target: a.getAttribute('target') || '',
     sourceAnchor: a,
   };
 }
@@ -91,29 +91,13 @@ function anchorToCtaData(a) {
  * @param {Element}   placeholder
  * @returns {Array}
  */
-function extractCtas(ctaRows, placeholder) {
-  const fromBlock = ctaRows.reduce((acc, row) => {
-    const [buttonCell, targetCell] = [...row.children];
-    const a = buttonCell?.querySelector('a');
-    if (!a) return acc;
+function extractCtas(buttonRows, placeholder) {
+  const fromRows = buttonRows
+    .map((row) => row?.querySelector('a'))
+    .filter(Boolean)
+    .map(anchorToCtaData);
 
-    // Fix bare-URL link text so decorateButtonsV1 classifies the button correctly
-    const titleAttr = a.getAttribute('title') || '';
-    if (a.textContent.trim() === (a.getAttribute('href') || '') && titleAttr) {
-      a.textContent = titleAttr;
-    }
-    decorateButtonsV1(buttonCell);
-
-    acc.push({
-      title: titleAttr,
-      openInNewTab: targetCell?.textContent?.trim() || (a.getAttribute('target') === '_blank' && 'true'),
-      row,
-      sourceAnchor: a,
-    });
-    return acc;
-  }, []);
-
-  if (fromBlock.length) return fromBlock;
+  if (fromRows.length) return fromRows;
 
   const fallbackAnchors = [
     ...placeholder.closest('.section')?.querySelectorAll('.default-content-wrapper a') ?? [],
@@ -131,28 +115,23 @@ function extractCtas(ctaRows, placeholder) {
  * @returns {HTMLAnchorElement}
  */
 function buildCtaAnchor(doc, ctaData, dismissAndSuppress) {
-  const a = ctaData.sourceAnchor.cloneNode(true);
-  a.classList.add('welcome-banner-cta');
+  const a = doc.createElement('a');
+  a.className = 'welcome-banner-cta';
+  a.href = ctaData.href;
+  a.textContent = ctaData.label;
 
-  moveInstrumentation(ctaData.row ?? ctaData.sourceAnchor, a);
+  if (ctaData.target) a.setAttribute('target', ctaData.target);
+  if (ctaData.sourceAnchor) moveInstrumentation(ctaData.sourceAnchor, a);
 
-  const targetWrapper = doc.createElement('span');
-  targetWrapper.appendChild(a);
-  applyLinkTarget(targetWrapper, 'a', ctaData.openInNewTab);
-
-  // pointerdown fires before the global capture-phase click handler (which calls
-  // stopImmediatePropagation for external URLs), so the banner always dismisses.
-  a.addEventListener('pointerdown', dismissAndSuppress);
-  // Keyboard Enter triggers click but not pointerdown — handle separately.
-  a.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') dismissAndSuppress();
-  });
-  // Prevent navigation for empty/hash hrefs only.
   a.addEventListener('click', (e) => {
-    const href = a.getAttribute('href') || '';
-    if (!href || href === '#') {
-      e.preventDefault();
-      dismissAndSuppress();
+    e.preventDefault();
+    const { href, target } = ctaData;
+    dismissAndSuppress();
+    if (!href || href === '#') return;
+    if (target === '_blank') {
+      window.open(href, '_blank', 'noopener,noreferrer');
+    } else {
+      window.location.href = href;
     }
   });
 
@@ -176,15 +155,14 @@ function buildCtas(doc, ctaList, dismissAndSuppress) {
 // ─── Block entry point ────────────────────────────────────────────────────────
 
 export default function decorate(block) {
-  const doc = block.ownerDocument;
-  if (isAuthoringInstance(block)) {
-    block.style.display = 'none';
-    return;
-  }
-
   const [
-    desktopImgRow, mobileImgRow, isActiveRow, publishDateRow, unpublishDateRow, ...ctaRows
+    desktopImgRow, mobileImgRow, isActiveRow, publishDateRow, unpublishDateRow, ...buttonRows
   ] = [...block.children];
+
+  const doc = block.ownerDocument;
+
+  // Replace the block with an invisible placeholder immediately so AEM
+  // instrumentation is preserved and the section layout is unaffected.
   const placeholder = doc.createElement('div');
   placeholder.className = 'welcome-banner-placeholder';
   moveInstrumentation(block, placeholder);
@@ -235,7 +213,7 @@ export default function decorate(block) {
   dialog.append(
     closeBtn,
     media,
-    buildCtas(doc, extractCtas(ctaRows, placeholder), dismissAndSuppress),
+    buildCtas(doc, extractCtas(buttonRows, placeholder), dismissAndSuppress),
   );
 
   // ── Show banner ────────────────────────────────────────────────────────────

@@ -15,21 +15,6 @@
           }
         }
       }
-    },
-    {
-      "title": "Welcome Banner CTA",
-      "id": "welcome-banner-cta",
-      "plugins": {
-        "xwalk": {
-          "page": {
-            "resourceType": "core/franklin/components/block/v1/block/item",
-            "template": {
-              "name": "Welcome Banner CTA",
-              "model": "welcome-banner-cta"
-            }
-          }
-        }
-      }
     }
   ],
   "models": [
@@ -54,21 +39,14 @@
           "placeholder": "YYYY-MM-DD HH:mm:ss"
         }
       ]
-    },
-    {
-      "id": "welcome-banner-cta",
-      "fields": [
-        {
-          "...": "../../models/elements/_button-fields.json"
-        }
-      ]
     }
   ],
   "filters": [
     {
       "id": "welcome-banner",
-      "components": ["welcome-banner-cta"],
-      "maxItems": 2
+      "components": [
+        "button"
+      ]
     }
   ]
 }

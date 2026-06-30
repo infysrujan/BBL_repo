@@ -2332,21 +2332,6 @@
               }
             }
           }
-        },
-        {
-          "title": "Welcome Banner CTA",
-          "id": "welcome-banner-cta",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Welcome Banner CTA",
-                  "model": "welcome-banner-cta"
-                }
-              }
-            }
-          }
         }
       ]
     }

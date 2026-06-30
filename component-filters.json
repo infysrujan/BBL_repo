@@ -528,8 +528,7 @@
   {
     "id": "welcome-banner",
     "components": [
-      "welcome-banner-cta"
-    ],
-    "maxItems": 2
+      "button"
+    ]
   }
 ]
