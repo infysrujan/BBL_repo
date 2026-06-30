@@ -199,10 +199,10 @@
 }
 
 .carousel-dotted .carousel-dotted-description {
-  font-family: var(--bbl-font-family-primary);
-  font-weight: var(--bbl-text-default-weight);
-  font-size: var(--bbl-text-default-size);
-  line-height: var(--bbl-text-default-line-height);
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
+  font-size: 1.1375rem;
+  line-height: 1.2495rem;
   color: var(--bbl-color-black);
   margin-bottom: 1.875rem;
 }
