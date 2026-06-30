@@ -65,6 +65,7 @@
   font: 1rem BangkokBank-Medium, sans-serif;
   color: var(--bbl-color-black);
   text-transform: uppercase;
+  text-decoration: none;
   display: block;
   position: relative;
   padding-right: 1.75rem;
