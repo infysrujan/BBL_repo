@@ -133,8 +133,10 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  background-size: cover;
-  background-position: center;
+  
+  /* background-size: contain; */
+
+  /* background-position: center; */
 }
 
 .carousel-dotted.all-text-animation-variant .carousel-bg img {
@@ -233,21 +235,39 @@
 
 .carousel-dotted .slick-dots {
   position: absolute;
-  bottom: var(--bbl-space-250);
-  left: var(--bbl-space-300);
-  right: auto;
-  display: flex;
-  gap: var(--bbl-space-100);
-  list-style: none;
-  padding: var(--bbl-space-000);
-  margin: var(--bbl-space-000);
+
+  /* bottom: var(--bbl-space-250); */
+
+  /* left: var(--bbl-space-300); */
+
+  /* right: auto; */
+
+  /* display: flex; */
+
+  /* gap: var(--bbl-space-100); */
+
+  /* list-style: none; */
+
+  /* padding: var(--bbl-space-000); */
+
+  /* margin: var(--bbl-space-000); */
   z-index: 2;
-  width: auto;
-  height: auto;
-  max-width: calc(100% - 2 * var(--bbl-space-300));
-  align-items: center;
-  flex-wrap: nowrap;
-  overflow: hidden;
+  
+  /* width: auto; */
+
+  /* height: auto; */
+
+  /* max-width: calc(100% - 2 * var(--bbl-space-300)); */
+
+  /* align-items: center; */
+
+  /* flex-wrap: nowrap; */
+
+  /* overflow: hidden; */
+  margin: 0;
+  padding: 0;
+  bottom: 200px;
+  right: 16px;
 }
 
 .carousel-dotted.all-text-animation-variant .slick-dots {
@@ -304,8 +324,9 @@
 
 /* Dot positioning variants */
 .carousel-dotted.all-with-image .slick-dots {
-  justify-content: flex-end;
-  top: 13.125rem;
+  /* justify-content: flex-end; */
+
+  /* top: 13.125rem; */
 }
 
 .carousel-dotted.all-without-image {
@@ -729,19 +750,26 @@ p.text-large.text-light {
 
   /* Keep with-image variant visible when slides are absolutely positioned */
   .carousel-dotted.all-with-image {
-    min-height: 25.8125rem;
+    /* min-height: 25.8125rem; */
+    height: 100%;
   }
 
   .carousel-dotted .carousel-dotted-item {
-    position: absolute;
-    inset: 0;
-    display: block;
-    opacity: 0;
-    transition: opacity 400ms ease;
+    /* position: absolute; */
+
+    /* inset: 0; */
+
+    /* display: block; */
+
+    /* opacity: 0; */
+
+    /* transition: opacity 400ms ease; */
   }
 
   .carousel-dotted .carousel-dotted-item.is-active {
     opacity: 1;
+    height: 100%;
+    min-height: 445px;
   }
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant, .has-hero-variant) .carousel-track-wrapper {
