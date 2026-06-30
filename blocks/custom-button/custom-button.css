@@ -2,7 +2,7 @@
   text-decoration: none;
 }
 
-:is(.custom-button-container, .center-content) .button-container {
+.center-content.custom-button-container .button-container {
   display: flex;
   justify-content: center;
 }
