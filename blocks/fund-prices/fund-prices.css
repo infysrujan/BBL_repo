@@ -15,7 +15,7 @@
   bottom: 0;
   left: 0;
   width: var(--bbl-space-600);
-  height: 2px;
+  height: 0.125rem;
   background: var(--bbl-color-grey-30, var(--bbl-color-grey-125));
 }
 
@@ -565,16 +565,16 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
   }
 
   body.fund-prices-is-printing {
-    background: #fff !important;
-    color: #000 !important;
+    background: #fff;
+    color: #000;
   }
 
   body.fund-prices-is-printing > *:not(#fund-prices-print-root) {
-    display: none !important;
+    display: none;
   }
 
   #fund-prices-print-root {
-    display: block !important;
+    display: block;
     box-sizing: border-box;
     min-height: 278mm;
     position: relative;
@@ -585,10 +585,10 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
   #fund-prices-print-root .fund-prices-print-masthead {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    row-gap: 12px;
+    row-gap: 0.75rem;
     align-items: start;
-    margin-bottom: 20px;
-    font: 8px/1.2 Arial, sans-serif;
+    margin-bottom: 1.25rem;
+    font: 0.5rem/1.2 Arial, sans-serif;
   }
 
   #fund-prices-print-root .fund-prices-print-page-title {
@@ -598,8 +598,8 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
 
   #fund-prices-print-root .fund-prices-print-logo {
     display: block;
-    width: 104px;
-    height: 26px;
+    width: 6.5rem;
+    height: 1.625rem;
   }
 
   #fund-prices-print-root .fund-prices-print-logo img {
@@ -610,27 +610,27 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
 
   #fund-prices-print-root .fund-prices-print-search {
     grid-column: 3;
-    justify-self: start;
-    margin-top: 38px;
-    margin-left: 73px;
+    justify-self: end;
+    margin-top: 2.375rem;
+    margin-left: 0;
     font-weight: 700;
   }
 
   #fund-prices-print-root .fund-prices-print-title {
-    margin: 0 0 7px;
-    font: 700 30px/1.08 Arial, sans-serif;
+    margin: 0 0 0.4375rem;
+    font: 700 1.875rem/1.08 Arial, sans-serif;
     color: #000;
   }
 
   #fund-prices-print-root .fund-prices-print-rule {
-    width: 28px;
-    border-top: 2px solid #000;
-    margin-bottom: 9px;
+    width: 1.75rem;
+    border-top: 0.125rem solid #000;
+    margin-bottom: 0.5625rem;
   }
 
   #fund-prices-print-root .fund-prices-print-date {
-    margin-bottom: 4px;
-    font: 8px/1.35 Arial, sans-serif;
+    margin-bottom: 0.25rem;
+    font: 0.5rem/1.35 Arial, sans-serif;
   }
 
   #fund-prices-print-root .fund-prices-print-date strong,
@@ -639,19 +639,19 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
   }
 
   #fund-prices-print-root .fund-prices-print-date span {
-    margin: 10px 0 0 13px;
-    font-size: 10px;
+    margin: 0.625rem 0 0 0.8125rem;
+    font-size: 0.625rem;
   }
 
   #fund-prices-print-root .fund-prices-print-date span::after {
     content: '';
     display: inline-block;
-    width: 8px;
-    height: 8px;
-    margin-left: 8px;
-    border: 1px solid #8aa;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-left: 0.5rem;
+    border: 0.0625rem solid #8aa;
     box-sizing: border-box;
-    vertical-align: -1px;
+    vertical-align: -0.0625rem;
   }
 
   #fund-prices-print-root .fund-prices-table {
@@ -668,7 +668,7 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     min-width: 0;
     table-layout: fixed;
     border: none;
-    border-top: 1px solid #000;
+    border-top: 0.0625rem solid #000;
     border-collapse: collapse;
     background: #fff;
     font-family: Arial, sans-serif;
@@ -681,10 +681,10 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
   #fund-prices-print-root .fund-prices-table table tr.header-row td {
     background: #fff;
     color: #000;
-    border-bottom: 1px solid #000;
+    border-bottom: 0.0625rem solid #000;
     border-top: none;
-    padding: 7px 8px 6px;
-    font: 700 9px/1.05 Arial, sans-serif;
+    padding: 0.4375rem 0.5rem 0.375rem;
+    font: 700 0.5625rem/1.05 Arial, sans-serif;
     white-space: nowrap;
     vertical-align: bottom;
     text-align: right;
@@ -693,9 +693,9 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
   #fund-prices-print-root .fund-prices-table table tr:not(.header-row) td {
     background: #fff;
     color: #000;
-    border-bottom: 1px solid #d5d5d5;
-    padding: 7px 8px 6px;
-    font: 9px/1.18 Arial, sans-serif;
+    border-bottom: 0.0625rem solid #d5d5d5;
+    padding: 0.4375rem 0.5rem 0.375rem;
+    font: 0.5625rem/1.18 Arial, sans-serif;
     text-align: right;
     vertical-align: middle;
   }
@@ -711,8 +711,8 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
 
   #fund-prices-print-root .fund-prices-table table tr:not(.header-row) td span {
     color: #000;
-    font: 700 italic 8px/1.1 Arial, sans-serif;
-    padding-left: 7px;
+    font: 700 italic 0.5rem/1.1 Arial, sans-serif;
+    padding-left: 0.4375rem;
   }
 
   #fund-prices-print-root .fund-prices-table table tr.header-row td:first-child,
@@ -745,9 +745,9 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     right: 0;
     bottom: 7mm;
     left: 0;
-    padding-top: 8px;
-    border-top: 1px solid #000;
-    font: 8px/1 Arial, sans-serif;
+    padding-top: 0.5rem;
+    border-top: 0.0625rem solid #000;
+    font: 0.5rem/1 Arial, sans-serif;
     color: #000;
   }
 }
