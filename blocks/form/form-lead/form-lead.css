@@ -917,7 +917,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
 
   main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
     font-size: var(--bbl-font-size-b1-desktop);
-    line-height: var(--bbl-line-height-b3-desktop);
+    line-height: 1.3rem;
   }
 
   main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
