@@ -65,6 +65,13 @@
   flex-flow: column wrap;
   align-items: flex-start;
   gap: 1.625rem;
+  margin-bottom: var(--bbl-space-300);
+}
+
+.fund-prices .fund-prices-table table tr.header-row td {
+  font-weight: bold;
+  white-space: nowrap;
+  color: black;
 }
 
 .fund-prices .calendar-wrapper {
