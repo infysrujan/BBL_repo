@@ -190,7 +190,6 @@ export default async function decorate(block) {
   const titleDivider = createTaggedElement('div', { className: 'sr-title-divider' });
   const descEl = createTaggedElement('div', { className: 'sr-desc' });
   descEl.innerHTML = modalDesc;
-  if (modalDescCell) moveInstrumentation(modalDescCell, descEl);
 
   const searchBtn = createTaggedElement('button', {
     className: 'sr-search-btn sr-search-btn-disabled',
