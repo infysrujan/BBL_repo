@@ -858,10 +858,6 @@
     height: var(--bbl-space-250);
   }
 
-  .retirement-calculator .rc-step-label {
-    font-size: var(--bbl-font-size-b1);
-  }
-
   .retirement-calculator .rc-field-error {
     font-size: 0.9rem;
   }
@@ -1007,10 +1003,6 @@
   .retirement-calculator .rc-step-circle {
     width: 1.3125rem;
     height: 1.3125rem;
-    font-size: var(--bbl-font-size-b1);
-  }
-
-  .retirement-calculator .rc-step-label {
     font-size: var(--bbl-font-size-b1);
   }
 
