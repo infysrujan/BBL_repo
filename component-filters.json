@@ -312,6 +312,10 @@
     ]
   },
   {
+    "id": "search-reports",
+    "components": []
+  },
+  {
     "id": "sme-loan-calculator",
     "components": [
       "sme-field"

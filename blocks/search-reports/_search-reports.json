@@ -10,6 +10,7 @@
             "template": {
               "name": "Search Reports",
               "model": "search-reports",
+              "filter": "search-reports",
               "ctaLabel": "Search",
               "modalTitle": "Search for Reports",
               "modalDescription": "You can search for financial reports by selecting the type of report and the year"
@@ -47,5 +48,10 @@
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "search-reports",
+      "components": []
+    }
+  ]
 }
