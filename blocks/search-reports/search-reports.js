@@ -158,6 +158,11 @@ export default async function decorate(block) {
   const modalDescRow = rows[2];
   const modalDesc = modalDescRow?.firstElementChild?.textContent?.trim() || '';
 
+  // Remove orphan AEM UE node for modalDescription that appears outside the block in the DOM
+  document.querySelectorAll('[data-aue-prop="modalDescription"],[data-aue-label="Modal Description"]').forEach((el) => {
+    if (!el.closest('.search-reports')) el.remove();
+  });
+
   const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
 
   // Replace block with a placeholder in <main> and move block-level instrumentation to it
