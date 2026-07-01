@@ -65,7 +65,7 @@
   }
 
   & .form form select {
-    font-family: BangkokBank-Medium;
+    font-family: BangkokBank-Medium, sans-serif;
     font-size: 0.95rem;
     font-weight: 400;
   }
@@ -73,7 +73,7 @@
   & .form form .field-description p {
     text-align: right;
     font-size: 14px;
-    color: rgb(146, 146, 146);
+    color: rgb(146 146 146);
   }
 
   & .form form .form-review-2col fieldset.panel-wrapper.field-wrapper > legend {
