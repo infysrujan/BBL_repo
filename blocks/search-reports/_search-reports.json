@@ -39,7 +39,6 @@
           "name": "modalDescription",
           "label": "Modal Description",
           "valueType": "string",
-          "multiLine": true,
           "required": false
         }
       ]

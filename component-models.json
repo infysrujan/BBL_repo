@@ -12034,7 +12034,7 @@
         "required": true
       },
       {
-        "component": "richtext",
+        "component": "text",
         "name": "modalDescription",
         "label": "Modal Description",
         "valueType": "string",
