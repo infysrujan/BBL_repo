@@ -332,6 +332,10 @@
               {
                 "name": "Columns 2(65-35)",
                 "value": "columns-2-65"
+              },
+              {
+                "name": "Columns 2(25-75)",
+                "value": "columns-2-25"
               }
             ]
           },
@@ -2591,7 +2595,7 @@
       {
         "component": "aem-tag",
         "name": "cardTypes",
-        "label": "Card Types",
+        "label": "Fund Types",
         "valueType": "string",
         "condition": {
           "===": [
@@ -7925,6 +7929,64 @@
         "name": "tooltip",
         "label": "Short description",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "bbl-wizard",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Basic",
+        "name": "basic"
+      },
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Name",
+        "valueType": "string",
+        "required": true,
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^[^$].*",
+          "customErrorMsg": "Name cannot start with $"
+        }
+      },
+      {
+        "component": "text",
+        "name": "jcr:title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "visible",
+        "label": "Show Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "tab",
+        "label": "Steps",
+        "name": "steps"
+      },
+      {
+        "component": "text",
+        "name": "properties.stepTitles",
+        "label": "Step Labels",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "Label shown under each step circle, one per row. Number of rows = total steps."
+      },
+      {
+        "component": "text",
+        "name": "properties.stepPanels",
+        "label": "Step Panel Names",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "The 'name' property of the form panel for each step, one per row. Order and count must match Step Labels."
       }
     ]
   },
