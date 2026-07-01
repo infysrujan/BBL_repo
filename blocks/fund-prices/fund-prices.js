@@ -1,15 +1,237 @@
+import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
-import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
-import {
-  getApiUrls,
-  fetchNavEnabledDaysForMonth,
-  parseLocalDateFromYmd,
-} from '../fund-prices-table/fund-prices-table.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
-import { MAX_FUND_PRICE_HISTORY_YEARS } from '../fund-prices-dropdown/fund-prices-dropdown.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
+import { fetchConfigs } from '../../scripts/config.js';
+
+const MAX_FUND_PRICE_HISTORY_YEARS = 3;
+
+export function parseLocalDateFromYmd(ymd) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd).trim());
+  if (!m) return null;
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const valid = d.getFullYear() === Number(m[1])
+    && d.getMonth() === Number(m[2]) - 1
+    && d.getDate() === Number(m[3]);
+  return valid ? d : null;
+}
+
+export async function fetchNavEnabledDaysForMonth({ year, month }) {
+  const configs = await fetchConfigs();
+  const base = configs.fundPricesGetUpdateInMonthUrl || '';
+  const data = await fetchGet(`${base}/${year}/${month + 1}/0`);
+  if (!Array.isArray(data)) return [];
+  return data.map((i) => (i?.Day != null ? Number(i.Day) : NaN)).filter((d) => !Number.isNaN(d));
+}
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+
+async function fetchAllFundPrices(date) {
+  const configs = await fetchConfigs();
+  const ALL_FUND_PRICES_BASE = configs.fundPricesAllFundPricesUrl || '';
+  const dd = pad2(date.getDate());
+  const mm = pad2(date.getMonth() + 1);
+  const yyyy = date.getFullYear();
+  const data = await fetchGet(`${ALL_FUND_PRICES_BASE}/${dd}/${mm}/${yyyy}`);
+  return Array.isArray(data) ? data : [];
+}
+
+// ─── Table rendering helpers ──────────────────────────────────────────────────
+
+const localizedHeaderMap = {
+  fundtype: { en: 'mf_cateEng', th: 'mf_cateTha' },
+  openendfund: { en: 'mf_sEng', th: 'mf_sTha' },
+  nav: 'mfr_fNav',
+  sellingprice: 'mfr_fSel',
+  redemptionprice: 'mfr_fBuy',
+  totalnetassets: 'mfr_sAUM',
+};
+
+const rawThaiHeaderKeyMap = {
+  ประเภทกองทุน: 'fundtype',
+  กองทุนเปิด: 'openendfund',
+  กองทุน: 'openendfund',
+  มูลค่าหน่วยลงทุน: 'nav',
+  nav: 'nav',
+  ราคาขาย: 'sellingprice',
+  ราคารับซื้อคืน: 'redemptionprice',
+  มูลค่าทรัพย์สินสุทธิรวม: 'totalnetassets',
+  มูลค่าทรัพย์สินสุทธิ: 'totalnetassets',
+};
+
+// Normalize keys (NFC) so Thai combining-character encoding differences
+// between this source file and authored content don't silently break lookup.
+const thaiHeaderKeyMap = Object.fromEntries(
+  Object.entries(rawThaiHeaderKeyMap).map(([k, v]) => [k.normalize('NFC'), v]),
+);
+
+const tagAliases = {
+  fund: 'openendfund',
+  unitvalue: 'nav',
+  buybackprice: 'redemptionprice',
+  netassetvalue: 'totalnetassets',
+};
+
+function normalizeHeaderKey(header) {
+  const trimmed = header.trim().normalize('NFC');
+  if (thaiHeaderKeyMap[trimmed]) return thaiHeaderKeyMap[trimmed];
+  const hashIndex = trimmed.lastIndexOf('#');
+  let key;
+  if (hashIndex !== -1 && hashIndex < trimmed.length - 1) {
+    key = trimmed.slice(hashIndex + 1).toLowerCase().replace(/[^a-z0-9]/g, '');
+  } else {
+    key = trimmed.toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+  return tagAliases[key] || key;
+}
+
+function resolveColumnKey(normalizedKey, lang) {
+  const mapped = localizedHeaderMap[normalizedKey];
+  if (!mapped) return normalizedKey;
+  if (
+    typeof mapped === 'object'
+    && (normalizedKey === 'fundtype' || normalizedKey === 'openendfund')
+  ) {
+    return mapped[lang];
+  }
+  return mapped;
+}
+
+function buildCategoryOrder(rows, categoryKey) {
+  const order = [];
+  const seen = new Set();
+  rows.forEach((row) => {
+    if (row[categoryKey] !== undefined && !seen.has(row[categoryKey])) {
+      order.push(row[categoryKey]);
+      seen.add(row[categoryKey]);
+    }
+  });
+  return order;
+}
+
+function groupRowsByCategory(rows, categoryKey) {
+  return rows.reduce((acc, row) => {
+    const cat = row[categoryKey];
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(row);
+    return acc;
+  }, {});
+}
+
+function clearNonHeaderRows(tbody) {
+  tbody.querySelectorAll('tr:not(.header-row)').forEach((tr) => tr.remove());
+}
+
+function formatBackdate(iso) {
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime()) ? iso : date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+}
+
+function formatBodyCellText(normalizedKey, row, columnKey, selectedDate) {
+  if (normalizedKey === 'openendfund') {
+    const rawDate = row.mf_backdate || row.mfr_dDataDate || row.mf_dnav;
+    if (rawDate && columnKey && row[columnKey] !== undefined) {
+      const datePart = rawDate.split('T')[0];
+      if (datePart !== selectedDate) {
+        const label = row.mf_backdate ? formatBackdate(rawDate) : rawDate;
+        return `${row[columnKey]} <span class="dnav">${label}</span>`;
+      }
+    }
+    return row[columnKey] !== undefined ? `${row[columnKey]}` : '';
+  }
+  if (columnKey && row[columnKey] !== undefined) {
+    const value = String(row[columnKey]);
+    const num = parseFloat(value);
+    if (!Number.isNaN(num) && Math.abs(num) >= 1000) {
+      return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+    }
+    if (!Number.isNaN(num)) {
+      return num.toFixed(4);
+    }
+    return value === 'null' ? 'N/A' : value;
+  }
+  return '';
+}
+
+/** Cloned header cells (with `#key` suffixes) used for column mapping
+ * after display text is stripped. */
+const headerMappingCellsByTable = new WeakMap();
+
+function appendRowFromData(tableBlock, dataArray, latestMdate) {
+  const lang = getLang();
+  const tbody = tableBlock.querySelector('tbody');
+  if (!tbody) return;
+
+  let headerRow = tbody.querySelector('.header-row');
+  if (!headerRow) {
+    const firstRow = tbody.querySelector('tr');
+    if (firstRow) {
+      const tds = firstRow.querySelectorAll('td');
+      headerMappingCellsByTable.set(
+        tableBlock,
+        Array.from(tds).map((td) => td.cloneNode(true)),
+      );
+      tds.forEach((td) => {
+        // eslint-disable-next-line no-param-reassign
+        td.textContent = td.textContent.replace(/\s*#\w+\b/g, '');
+      });
+      headerRow = firstRow;
+      headerRow.classList.add('header-row');
+    }
+  }
+  if (!headerRow) return;
+  if (!Array.isArray(dataArray)) return;
+
+  const headerMappingCells = headerMappingCellsByTable.get(tableBlock)
+    || Array.from(headerRow.querySelectorAll('td'));
+
+  const categoryKey = lang === 'th' ? 'mf_cateTha' : 'mf_cateEng';
+  const order = buildCategoryOrder(dataArray, categoryKey);
+  const groups = groupRowsByCategory(dataArray, categoryKey);
+
+  clearNonHeaderRows(tbody);
+
+  order.forEach((category) => {
+    const group = groups[category];
+    group.forEach((row, idx) => {
+      const tr = tableBlock.ownerDocument.createElement('tr');
+      headerMappingCells.forEach((headerCell) => {
+        const nk = normalizeHeaderKey(headerCell.textContent.trim());
+        const ck = resolveColumnKey(nk, lang);
+        if (nk === 'fundtype') {
+          if (idx === 0) {
+            const td = tableBlock.ownerDocument.createElement('td');
+            td.textContent = row[ck] !== undefined ? row[ck] : '';
+            td.rowSpan = group.length;
+            td.classList.add('merged-fund-type');
+            tr.appendChild(td);
+          }
+          return;
+        }
+        const td = tableBlock.ownerDocument.createElement('td');
+        td.classList.add(`col-${nk}`);
+        td.innerHTML = formatBodyCellText(nk, row, ck, latestMdate);
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+  });
+}
+
+async function refreshTableFromPrices(tableBlock, fallbackFunds, date, latestMdate) {
+  let prices;
+  try {
+    prices = await fetchAllFundPrices(date);
+  } catch {
+    prices = fallbackFunds;
+  }
+  const data = prices && prices.length ? prices : fallbackFunds;
+  appendRowFromData(tableBlock, data, latestMdate);
+}
+
+// ─── fund-prices UI helpers ───────────────────────────────────────────────────
 
 function moveSearchBarToHeader(el, doc) {
   const check = () => {
@@ -21,9 +243,7 @@ function moveSearchBarToHeader(el, doc) {
     doc.body.classList.add('fund-prices-search-in-header');
     headerBlock.appendChild(el);
     const h1 = doc.querySelector('h1');
-    if (h1) {
-      h1.classList.add('fund-prices-page-title');
-    }
+    if (h1) h1.classList.add('fund-prices-page-title');
     return true;
   };
   if (check()) return;
@@ -83,14 +303,14 @@ function printContent(containerEl) {
     </div>
   `;
 
-  const table = clone.querySelector('.fund-prices-table');
-  if (table) {
-    table.querySelectorAll('td.merged-fund-type').forEach((td) => {
+  const tableBlock = clone.querySelector('.table');
+  if (tableBlock) {
+    tableBlock.querySelectorAll('td.merged-fund-type').forEach((td) => {
       if (td.textContent.trim() === 'FIF') {
         td.closest('tr').classList.add('print-page-break');
       }
     });
-    printRoot.querySelector('.fund-prices-print-table-wrap').appendChild(table);
+    printRoot.querySelector('.fund-prices-print-table-wrap').appendChild(tableBlock);
   }
 
   doc.body.classList.add('fund-prices-is-printing');
@@ -110,8 +330,6 @@ function isDateOlderThanFundHistoryLimit(date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate()) < cutoff;
 }
 
-// ─── Parse EDS block data ─────────────────────────────────────────────────────
-
 async function parseBlockData(block) {
   const rows = Array.from(block.children);
   const ph = await fetchPlaceholders();
@@ -125,8 +343,6 @@ async function parseBlockData(block) {
     allFundsLabel: rows[6]?.querySelector('p')?.textContent?.trim() || ph.fundPricesAllFundsLabel || 'ALL FUNDS',
   };
 }
-
-// ─── DOM builders ─────────────────────────────────────────────────────────────
 
 function buildFundSelectorBar(doc, funds, searchLabel, allFundsLabel, goLabel) {
   const bar = doc.createElement('div');
@@ -258,18 +474,21 @@ export default async function decorate(block) {
     return;
   }
 
-  const ftBlock = section?.querySelector('.fund-prices-table');
+  // Find the generic table block in the same section
+  const tableBlock = section?.querySelector('.table');
+  if (tableBlock) tableBlock.classList.add('fund-prices-table');
 
   let funds = [];
   let latestMdate = null;
   let calendarDate = new Date();
   let currentDate = calendarDate;
+  let cachedFunds = [];
 
   try {
-    const { ALL_FUND_NAMES_URL, LATEST_DATE_URL } = await getApiUrls();
+    const configs = await fetchConfigs();
     const [latestJson, namesData] = await Promise.all([
-      fetchGet(LATEST_DATE_URL, { throwOnError: false }),
-      fetchGet(ALL_FUND_NAMES_URL, { throwOnError: false }),
+      fetchGet(configs.fundPricesLatestDateUrl || '', { throwOnError: false }),
+      fetchGet(configs.fundPricesAllFundsNameUrl || '', { throwOnError: false }),
     ]);
     if (latestJson) {
       const rawDate = Array.isArray(latestJson) ? latestJson[0]?.mDate : latestJson?.mDate;
@@ -279,17 +498,15 @@ export default async function decorate(block) {
     }
     if (namesData) {
       funds = Array.isArray(namesData) ? namesData : [];
+      cachedFunds = funds;
     }
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('fund-prices: init failed', e);
   }
 
-  function dispatchTableRefresh(date) {
-    ftBlock?.dispatchEvent(new CustomEvent('fund-prices-table:refresh', {
-      detail: { date, latestDate: latestMdate },
-    }));
-  }
+  // Initial table population
+  if (tableBlock) await refreshTableFromPrices(tableBlock, cachedFunds, calendarDate, latestMdate);
 
   /* ── Root ── */
   const root = doc.createElement('div');
@@ -349,7 +566,7 @@ export default async function decorate(block) {
       errorMessage.classList.add('hidden');
       errorMessage.hidden = true;
       currentDate = selectedDate;
-      dispatchTableRefresh(selectedDate);
+      if (tableBlock) refreshTableFromPrices(tableBlock, cachedFunds, selectedDate, latestMdate);
     },
   });
 
@@ -359,23 +576,14 @@ export default async function decorate(block) {
   toolbar.appendChild(printLabel);
 
   mainView.append(toolbar, errorMessage);
-  root.appendChild(mainView);
+
+  if (tableBlock) {
+    root.append(mainView, tableBlock, disclaimer);
+  } else {
+    root.append(mainView, disclaimer);
+  }
 
   block.appendChild(root);
-
-  if (ftBlock) {
-    if (ftBlock.dataset.ready === 'true') {
-      dispatchTableRefresh(calendarDate);
-    } else {
-      ftBlock.addEventListener('fund-prices-table:ready', () => dispatchTableRefresh(calendarDate), { once: true });
-    }
-  }
-
-  if (ftBlock) {
-    ftBlock.after(disclaimer);
-  } else {
-    mainView.appendChild(disclaimer);
-  }
 
   /* ── Print handler ── */
   printLabel.addEventListener('click', (e) => {
@@ -394,7 +602,7 @@ export default async function decorate(block) {
   /* ── Show/hide helpers ── */
   function showMainView() {
     mainView.classList.remove('hidden');
-    if (ftBlock) ftBlock.classList.remove('hidden');
+    if (tableBlock) tableBlock.classList.remove('hidden');
     fundSelector.el.classList.remove('hidden');
     doc.body.classList.remove('fund-prices-detail-active');
     fddBlock?.dispatchEvent(new CustomEvent('fund-prices-dropdown:hide'));
@@ -402,7 +610,7 @@ export default async function decorate(block) {
 
   function showDetailView(fund) {
     mainView.classList.add('hidden');
-    if (ftBlock) ftBlock.classList.add('hidden');
+    if (tableBlock) tableBlock.classList.add('hidden');
     fundSelector.el.classList.remove('hidden');
     doc.body.classList.add('fund-prices-detail-active');
     fddBlock?.dispatchEvent(new CustomEvent('fund-prices-dropdown:show', {
@@ -417,7 +625,7 @@ export default async function decorate(block) {
       showDetailView(selected);
     } else {
       showMainView();
-      dispatchTableRefresh(currentDate);
+      if (tableBlock) refreshTableFromPrices(tableBlock, cachedFunds, currentDate, latestMdate);
     }
   });
 
@@ -425,6 +633,6 @@ export default async function decorate(block) {
   fddBlock?.addEventListener('fund-prices-dropdown:back', () => {
     showMainView();
     fundSelector.resetToAll();
-    dispatchTableRefresh(currentDate);
+    if (tableBlock) refreshTableFromPrices(tableBlock, cachedFunds, currentDate, latestMdate);
   });
 }
