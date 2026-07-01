@@ -156,7 +156,10 @@ export default async function decorate(block) {
   const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel || 'Search for Reports';
   const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || placeholders.reportsModalTitle || 'Search Report';
   const modalDescRow = rows[2];
-  const modalDesc = modalDescRow?.firstElementChild?.innerHTML?.trim() || '';
+  const modalDescCell = modalDescRow?.children?.length > 1
+    ? modalDescRow.lastElementChild
+    : modalDescRow?.firstElementChild;
+  const modalDesc = modalDescCell?.innerHTML?.trim() || '';
 
   const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
 
@@ -187,7 +190,7 @@ export default async function decorate(block) {
   const titleDivider = createTaggedElement('div', { className: 'sr-title-divider' });
   const descEl = createTaggedElement('div', { className: 'sr-desc' });
   descEl.innerHTML = modalDesc;
-  if (modalDescRow) moveInstrumentation(modalDescRow, descEl);
+  if (modalDescCell) moveInstrumentation(modalDescCell, descEl);
 
   const searchBtn = createTaggedElement('button', {
     className: 'sr-search-btn sr-search-btn-disabled',
