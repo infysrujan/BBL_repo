@@ -1,6 +1,7 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModalShell, showModal, hideModal } from '../../scripts/utils/modal.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
+import { applyLinkTarget, decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -93,9 +94,15 @@ function anchorToCtaData(a) {
  */
 function extractCtas(buttonRows, placeholder) {
   const fromRows = buttonRows
-    .map((row) => row?.querySelector('a'))
-    .filter(Boolean)
-    .map(anchorToCtaData);
+    .map((row) => {
+      decorateButtonsV1(row);
+      const a = row?.querySelector('a');
+      if (!a) return null;
+      const targetFlag = row?.children[1]?.textContent?.trim();
+      if (targetFlag !== undefined) applyLinkTarget(row, 'a', targetFlag);
+      return anchorToCtaData(a);
+    })
+    .filter(Boolean);
 
   if (fromRows.length) return fromRows;
 
@@ -116,11 +123,12 @@ function extractCtas(buttonRows, placeholder) {
  */
 function buildCtaAnchor(doc, ctaData, dismissAndSuppress) {
   const a = doc.createElement('a');
-  a.className = 'welcome-banner-cta';
+  a.className = ['welcome-banner-cta', ctaData.sourceAnchor?.className].filter(Boolean).join(' ');
   a.href = ctaData.href;
   a.textContent = ctaData.label;
 
   if (ctaData.target) a.setAttribute('target', ctaData.target);
+  a.dataset.bypassRedirect = 'true';
   if (ctaData.sourceAnchor) moveInstrumentation(ctaData.sourceAnchor, a);
 
   a.addEventListener('click', (e) => {
