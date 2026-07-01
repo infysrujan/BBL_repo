@@ -12032,14 +12032,6 @@
         "label": "Modal Title",
         "valueType": "string",
         "required": true
-      },
-      {
-        "component": "text",
-        "name": "modalDescription",
-        "label": "Modal Description",
-        "valueType": "string",
-        "multiLine": true,
-        "required": false
       }
     ]
   },

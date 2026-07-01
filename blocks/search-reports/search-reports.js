@@ -155,11 +155,7 @@ export default async function decorate(block) {
 
   const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel || 'Search for Reports';
   const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || placeholders.reportsModalTitle || 'Search Report';
-  const modalDescRow = rows[2];
-  const modalDescCell = modalDescRow?.children?.length > 1
-    ? modalDescRow.lastElementChild
-    : modalDescRow?.firstElementChild;
-  const modalDesc = modalDescCell?.innerHTML?.trim() || '';
+  const modalDesc = placeholders.reportsModalDescription || '';
 
   const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
 
