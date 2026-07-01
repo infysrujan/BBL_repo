@@ -283,21 +283,24 @@ function printContent(containerEl) {
   const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
 
   const now = new Date();
+  const pageTitle = doc.querySelector('h1')?.textContent?.trim() || 'Fund Prices - BBL Asset Management';
+  const searchLabelText = containerEl.querySelector('.fund-prices-search-bar label')?.textContent?.trim() || 'Search Fund';
+  const dateLabelText = containerEl.querySelector('.calendar-wrapper strong')?.textContent?.trim() || 'As of :';
   const printRoot = doc.createElement('div');
   printRoot.id = 'fund-prices-print-root';
   printRoot.innerHTML = `
     <div class="fund-prices-print-masthead">
       <div class="fund-prices-print-datetime">${formatPrintDate(now)}, ${formatPrintTime(now)}</div>
-      <div class="fund-prices-print-page-title">Fund Prices - BBL Asset Management</div>
+      <div class="fund-prices-print-page-title">${pageTitle}</div>
       <div></div>
       <div class="fund-prices-print-logo brand-logo-container">${brandLogo}</div>
       <div></div>
-      <div class="fund-prices-print-search">Search Fund</div>
+      <div class="fund-prices-print-search">${searchLabelText}</div>
     </div>
-    <h1 class="fund-prices-print-title">Fund Prices - BBL Asset Management</h1>
+    <h1 class="fund-prices-print-title">${pageTitle}</h1>
     <div class="fund-prices-print-rule"></div>
     <div class="fund-prices-print-date">
-      <strong>As of :</strong>
+      <strong>${dateLabelText}</strong>
       <span>${selectedDate}</span>
     </div>
     <div class="fund-prices-print-table-wrap"></div>
@@ -307,7 +310,7 @@ function printContent(containerEl) {
     </div>
   `;
 
-  const tableBlock = clone.querySelector('.table');
+  const tableBlock = clone.querySelector('.fund-prices-table');
   if (tableBlock) {
     tableBlock.querySelectorAll('td.merged-fund-type').forEach((td) => {
       if (td.textContent.trim() === 'FIF') {
@@ -478,9 +481,20 @@ export default async function decorate(block) {
     return;
   }
 
-  // Find the generic table block in the same section
-  const tableBlock = section?.querySelector('.table');
-  if (tableBlock) tableBlock.classList.add('fund-prices-table');
+  // Find the generic table block in the same section (accept legacy 'fund-prices-table' block name too)
+  const tableBlock = section?.querySelector('.table, .fund-prices-table');
+  if (tableBlock) {
+    tableBlock.classList.add('fund-prices-table');
+    // When authored via Universal Editor, variation classes land on the block div rather than
+    // as a text row, so table.js never copies them to the inner <table>. Do it here.
+    const innerTable = tableBlock.querySelector('table');
+    if (innerTable) {
+      const tableVariations = ['outline-border', 'border-bottom', 'border-light-gray', 'solid-white', 'border-bottom-tight-cols', 'merge-tables', 'nested-table'];
+      tableVariations.forEach((cls) => {
+        if (tableBlock.classList.contains(cls)) innerTable.classList.add(cls);
+      });
+    }
+  }
 
   let funds = [];
   let latestMdate = null;
