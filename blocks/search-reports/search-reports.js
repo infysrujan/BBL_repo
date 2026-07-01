@@ -155,12 +155,16 @@ export default async function decorate(block) {
 
   const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel || 'Search for Reports';
   const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || placeholders.reportsModalTitle || 'Search Report';
-  const modalDescRow = rows[2]?.firstElementChild;
-  const modalDesc = modalDescRow?.innerHTML?.trim() || '';
+  const modalDescRow = rows[2];
+  const modalDesc = modalDescRow?.firstElementChild?.innerHTML?.trim() || '';
 
   const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
 
-  block.innerHTML = '';
+  // Replace block with a placeholder in <main> and move block-level instrumentation to it
+  const placeholder = block.ownerDocument.createElement('div');
+  placeholder.className = 'search-reports-placeholder';
+  moveInstrumentation(block, placeholder);
+  block.replaceWith(placeholder);
 
   // Build modal overlay
   const overlay = createTaggedElement('div', {
