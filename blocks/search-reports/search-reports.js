@@ -1,4 +1,4 @@
-import { getLang } from '../../scripts/scripts.js';
+import { getLang, moveInstrumentation } from '../../scripts/scripts.js';
 import { decorateIcons } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
@@ -155,7 +155,8 @@ export default async function decorate(block) {
 
   const ctaLabel = rows[0]?.firstElementChild?.textContent?.trim() || placeholders.reportsCtaLabel || 'Search for Reports';
   const modalTitle = rows[1]?.firstElementChild?.textContent?.trim() || placeholders.reportsModalTitle || 'Search Report';
-  const modalDesc = rows[2]?.firstElementChild?.innerHTML?.trim() || '';
+  const modalDescRow = rows[2]?.firstElementChild;
+  const modalDesc = modalDescRow?.innerHTML?.trim() || '';
 
   const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
 
@@ -182,6 +183,7 @@ export default async function decorate(block) {
   const titleDivider = createTaggedElement('div', { className: 'sr-title-divider' });
   const descEl = createTaggedElement('div', { className: 'sr-desc' });
   descEl.innerHTML = modalDesc;
+  if (modalDescRow) moveInstrumentation(modalDescRow, descEl);
 
   const searchBtn = createTaggedElement('button', {
     className: 'sr-search-btn sr-search-btn-disabled',
