@@ -278,6 +278,10 @@ function printContent(containerEl) {
   const selectedDate = inp?.value || '';
   if (inp) inp.parentNode?.replaceChild(doc.createTextNode(selectedDate), inp);
 
+  const logoEl = doc.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || doc.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+
   const now = new Date();
   const printRoot = doc.createElement('div');
   printRoot.id = 'fund-prices-print-root';
@@ -286,7 +290,7 @@ function printContent(containerEl) {
       <div class="fund-prices-print-datetime">${formatPrintDate(now)}, ${formatPrintTime(now)}</div>
       <div class="fund-prices-print-page-title">Fund Prices - BBL Asset Management</div>
       <div></div>
-      <div class="fund-prices-print-logo"><img src="/icons/logo-print.svg" alt="Bangkok Bank" /></div>
+      <div class="fund-prices-print-logo brand-logo-container">${brandLogo}</div>
       <div></div>
       <div class="fund-prices-print-search">Search Fund</div>
     </div>
@@ -578,9 +582,9 @@ export default async function decorate(block) {
   mainView.append(toolbar, errorMessage);
 
   if (tableBlock) {
-    root.append(mainView, tableBlock, disclaimer);
+    root.append(mainView, tableBlock);
   } else {
-    root.append(mainView, disclaimer);
+    root.append(mainView);
   }
 
   block.appendChild(root);
@@ -596,6 +600,8 @@ export default async function decorate(block) {
   root.appendChild(fddRawBlock);
   decorateBlock(fddRawBlock);
   await loadBlock(fddRawBlock);
+
+  root.appendChild(disclaimer);
 
   const fddBlock = root.querySelector('.fund-prices-dropdown');
 

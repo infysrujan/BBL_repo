@@ -685,6 +685,7 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     border-top: none;
     padding: 7px 8px 6px;
     font: 700 9px/1.05 Arial, sans-serif;
+    white-space: nowrap;
     vertical-align: bottom;
     text-align: right;
   }

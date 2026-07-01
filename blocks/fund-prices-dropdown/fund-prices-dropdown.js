@@ -363,7 +363,7 @@ export default async function decorate(block) {
       <div class="fdd-print-datetime"></div>
       <div class="fdd-print-page-title">Fund Prices - BBL Asset Management</div>
       <div></div>
-      <div class="fdd-print-logo"><img src="/icons/logo-print.svg" alt="Bangkok Bank" /></div>
+      <div class="fdd-print-logo brand-logo-container"></div>
       <div></div>
       <div class="fdd-print-search">${labels.backLabel === 'Fund Prices' ? 'Search Fund' : labels.backLabel}</div>
     </div>
@@ -636,6 +636,10 @@ export default async function decorate(block) {
     e.preventDefault();
     const { body, defaultView } = block.ownerDocument;
     const printRoot = block.cloneNode(true);
+    const logoEl = block.ownerDocument.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+      || block.ownerDocument.querySelector('.brand-logo-container picture, .brand-logo-container img');
+    const printLogoEl = printRoot.querySelector('.fdd-print-logo');
+    if (logoEl && printLogoEl) printLogoEl.appendChild(logoEl.cloneNode(true));
     const disclaimer = block.closest('.section')?.querySelector('.fund-prices-disclaimer-text')?.cloneNode(true);
     const printFooter = block.ownerDocument.createElement('div');
     printRoot.id = 'fdd-print-root';
