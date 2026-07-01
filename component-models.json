@@ -12032,6 +12032,13 @@
         "label": "Modal Title",
         "valueType": "string",
         "required": true
+      },
+      {
+        "component": "text",
+        "name": "modalDescription",
+        "label": "Modal Description",
+        "valueType": "string",
+        "required": true
       }
     ]
   },
