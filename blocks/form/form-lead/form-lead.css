@@ -255,6 +255,19 @@ main .lead-forms .form form .field-initialfielditemname.field-invalid > .field-l
   height: auto;
 }
 
+main .lead-forms .form textarea {
+  height: auto;
+  min-height: 6.25rem;
+  padding: var(--bbl-space-100) var(--bbl-space-250);
+  line-height: var(--bbl-form-line-height-1-5);
+}
+
+main .lead-forms .form form input,
+main .lead-forms .form form textarea,
+main .lead-forms .form form select{
+    height:44px;
+}
+
 main .section.form-container.lead-forms .form form select {
   padding: 0 var(--bbl-form-padding-30) 0 var(--bbl-space-250);
   border-color: var(--bbl-color-grey-23);
@@ -335,13 +348,6 @@ main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .tele
 main .lead-forms .form :is([class*=' icon-'].text-wrapper, [class*='icon-'].drop-down-wrapper, [class*='icon-'].date-wrapper).field-wrapper :is(input, select) {
   padding: 0 var(--bbl-space-250) 0 var(--bbl-space-500);
   margin-bottom: var(--bbl-form-margin-14);
-}
-
-main .lead-forms .form textarea {
-  height: auto;
-  min-height: 6.25rem;
-  padding: var(--bbl-space-100) var(--bbl-space-250);
-  line-height: var(--bbl-form-line-height-1-5);
 }
 
 main .lead-forms .form select option {
