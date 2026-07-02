@@ -11883,7 +11883,17 @@
         "component": "richtext",
         "name": "detailDescription",
         "label": "Detail Description (appears on the promotional page)",
-        "valueType": "string"
+        "valueType": "string",
+        "rte": {
+          "toolbar": {
+            "insert": [
+              "image"
+            ],
+            "sections": [
+              "insert"
+            ]
+          }
+        }
       },
       {
         "component": "aem-tag",
