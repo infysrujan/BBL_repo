@@ -255,32 +255,22 @@ function getDocumentLangFromPath(pathname) {
   return 'th';
 }
 
-/**
- * Redirects to locale-prefixed URL when needed. Resolves to true when a redirect
- * was triggered so callers can skip rendering until navigation completes.
- * @returns {Promise<boolean>}
- */
-async function redirectToLocale() {
+function redirectToLocale() {
   let { pathname } = window.location;
 
-  let redirectUrl;
+  // Remove trailing slash if present (except for root)
   if (pathname.length > 1 && pathname.endsWith('/')) {
     pathname = pathname.slice(0, -1);
-    redirectUrl = pathname + window.location.search + window.location.hash;
-  } else if (!/^\/(en|th)(\/|$)/.test(pathname)) {
-    const locale = getDocumentLangFromPath(pathname);
-    redirectUrl = `/${locale}${pathname === '/' ? '/' : pathname}`;
+    window.location.href = pathname + window.location.search + window.location.hash;
+    return;
   }
 
-  if (!redirectUrl) {
-    return false;
-  }
+  const locale = getDocumentLangFromPath(pathname);
 
-  window.location.replace(redirectUrl);
-  await new Promise((resolve) => {
-    window.addEventListener('pagehide', resolve, { once: true });
-  });
-  return true;
+  // If locale doesn't exist in path, redirect
+  if (!/^\/(en|th)(\/|$)/.test(pathname)) {
+    window.location.href = `/${locale}${pathname === '/' ? '/' : pathname}`;
+  }
 }
 
 function decorateOgTitle() {
