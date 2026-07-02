@@ -12265,7 +12265,7 @@
         "component": "text",
         "name": "linkText",
         "label": "Search Button Text",
-        "description": "SearchButton label text",
+        "description": "Search Button label text",
         "required": true
       },
       {
