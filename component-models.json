@@ -12264,8 +12264,8 @@
       {
         "component": "text",
         "name": "linkText",
-        "label": "Text",
-        "description": "Button label text",
+        "label": "Search Button Text",
+        "description": "SearchButton label text",
         "required": true
       },
       {
@@ -12283,8 +12283,8 @@
       {
         "component": "text",
         "name": "learnMoreLinkText",
-        "label": "Text",
-        "description": "Button label text",
+        "label": "Learn More Button Text",
+        "description": "Learn More Button label text",
         "required": true
       },
       {
