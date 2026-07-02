@@ -383,19 +383,6 @@
     ]
   },
   {
-    "id": "promotional-details",
-    "rte": {
-      "toolbar": {
-        "insert": [
-          "image"
-        ],
-        "sections": [
-          "insert"
-        ]
-      }
-    }
-  },
-  {
     "id": "rate-card",
     "components": [
       "rate-card-item"

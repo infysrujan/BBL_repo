@@ -262,15 +262,5 @@
       ]
     }
   ],
-  "filters": [
-    {
-      "id": "promotional-details",
-      "rte": {
-        "toolbar": {
-          "insert": ["image"],
-          "sections": ["insert"]
-        }
-      }
-    }
-  ]
+  "filters": []
 }
