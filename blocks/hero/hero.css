@@ -80,7 +80,6 @@
 }
 
 .hero-banner-hero-with-thumbnail-images .hero-banner-video {
-  aspect-ratio: 5/4;
   cursor: pointer;
   height: auto;
 }
@@ -847,6 +846,14 @@
     margin-top: 2.5625rem;
   }
 
+  .hero-banner-video-controls {
+    margin-bottom: 0;
+  }
+
+  .hero-banner-item:has(.hero-banner-video) .hero-banner-video-controls {
+    height: 5.625rem;
+  }
+
   .hero-banner::after {
     content: none;
   }
@@ -1059,10 +1066,6 @@
   }
 
   
-
-  .hero-banner-video-controls {
-    margin-bottom: 0;
-  }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-controls {
     pointer-events: auto;
