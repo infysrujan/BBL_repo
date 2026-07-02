@@ -535,6 +535,226 @@ function wireFilterEvents(
   });
 }
 
+// ─── print ────────────────────────────────────────────────────────────────────
+/** Same approach as blocks/bcap/bcap.js: print an isolated document instead of
+ * the live page, so the fixed header/nav and the site's max-width layout
+ * don't shrink the table or swallow the logo. Interactive-only controls are
+ * removed or swapped for their plain-text value, mirroring how bcap replaces
+ * its calendar input with a text node before printing. */
+function printElement(block) {
+  const section = block.closest('.section') || block;
+  const content = section.cloneNode(true);
+
+  // 1. Remove controls with no printable meaning (filters, popups, selection
+  // checkboxes, sort icons, the Go button, the download-link column).
+  content.querySelectorAll([
+    '.db-controls-right',
+    '.db-filter-wrapper',
+    '.db-calendar',
+    '.db-mp-popup',
+    '.db-go-btn',
+    '.db-sort-icon',
+    '.db-td-check',
+    '.db-th-download',
+    '.db-td-dl',
+  ].join(', ')).forEach((el) => el.remove());
+
+  // The live table's header renders the first column ("Symbol") with a
+  // colspan of 2 (a pre-existing quirk kept for the live view's column
+  // widths), but the body only ever renders one Symbol cell — that phantom
+  // extra column shifts every column after it out of alignment with its
+  // header, most visibly leaving "Maturity Date" with no data beneath it.
+  // Only that cell has both rowspan="2" and colspan="2" together (grouped
+  // headers like "Bidding Price" have colspan without rowspan, and every
+  // other single column has rowspan without colspan), so it can be
+  // corrected here without touching the shared column-generation logic
+  // that the live table also relies on.
+  content.querySelectorAll('.db-table thead th[rowspan="2"][colspan="2"]')
+    .forEach((th) => th.removeAttribute('colspan'));
+
+  // 2. Replace the date/time controls with their plain-text value.
+  const dateDisplay = content.querySelector('.db-date-display');
+  if (dateDisplay) {
+    dateDisplay.replaceWith(document.createTextNode(dateDisplay.textContent));
+  }
+  content.querySelectorAll('.db-cal-icon').forEach((el) => el.remove());
+
+  const timeDropdown = content.querySelector('.db-time-dropdown');
+  if (timeDropdown) {
+    const label = timeDropdown.querySelector('.db-time-label');
+    timeDropdown.replaceWith(document.createTextNode(label ? label.textContent : ''));
+  }
+
+  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  if (!logoEl) return;
+  // Use the browser's already-resolved absolute image URL rather than cloning
+  // a <picture> as-is — its srcset sources are relative and can fail to
+  // re-resolve once written into a freshly opened, blank print window.
+  const logoImg = logoEl.tagName === 'IMG' ? logoEl : logoEl.querySelector('img');
+  if (!logoImg) return;
+  const logoSrc = logoImg.currentSrc || logoImg.src;
+  const brandLogo = `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoImg.alt || 'Bangkok Bank')}">`;
+
+  const printWindow = window.open('', '', 'height=600,width=900');
+
+  const printCss = `
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+
+    .header {
+      position: unset;
+    }
+
+    .brand-logo-container {
+      width: 12.5rem;
+      height: 3.125rem;
+      margin-block: 3rem 1rem;
+    }
+
+    h2 {
+      font-size: 2rem;
+    }
+
+    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
+      width: 2.25rem;
+      height: 0.125rem;
+      background-color: black;
+    }
+    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+      margin: 0;
+      padding: 0;
+    }
+
+    .dynamic-board {
+      margin-top: 2rem;
+    }
+
+    /* Table: same minimal, printer-friendly style as bcap's print table —
+       no vertical rules or shaded header, a thin black rule under the
+       header row, and small, tight-padded text. */
+    .dynamic-board .db-table {
+      width: 100%;
+      border: 0;
+      border-collapse: collapse;
+      font-size: 0.625rem;
+      color: var(--bbl-color-grey-70);
+    }
+
+    .dynamic-board .db-table thead,
+    .dynamic-board .db-table thead th {
+      position: static;
+      top: auto;
+    }
+
+    .dynamic-board .db-table thead th,
+    .dynamic-board .db-table thead tr:first-child th,
+    .dynamic-board .db-table thead tr:last-child th {
+      background: transparent;
+      color: black;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-align: left;
+      height: auto;
+      padding: 0.1875rem 0.3125rem;
+      border: none;
+      border-top: 0.125rem solid black;
+      border-bottom: 0.125rem solid black;
+    }
+
+    .dynamic-board .db-table tbody td {
+      background: transparent;
+      border: none;
+      padding-block: 0.1875rem;
+      vertical-align: middle;
+      font-size: 0.625rem;
+    }
+
+    .dynamic-board .db-table tbody tr:nth-child(even),
+    .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr {
+      background: transparent;
+      position: static;
+    }
+
+    .dynamic-board .db-remarks-content {
+      height: auto;
+      overflow: visible;
+      font-size: 0.5rem;
+    }
+
+    @media print {
+      .dynamic-board .db-table thead {
+        display: table-header-group;
+      }
+
+      .dynamic-board .db-table tbody {
+        display: table-row-group;
+      }
+
+      .dynamic-board .db-table {
+        break-inside: auto;
+      }
+
+      .dynamic-board .db-table tbody tr {
+        break-inside: avoid;
+      }
+    }
+  `;
+
+  const printHtml = `
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <title>Print</title>
+      <link rel="stylesheet" href="/styles/styles.css">
+      <link rel="stylesheet" href="/styles/fonts.css">
+      <link rel="stylesheet" href="/blocks/header/header.css">
+      <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
+      <link rel="stylesheet" href="/blocks/dynamic-board/dynamic-board.css">
+      <style>${printCss}</style>
+    </head>
+    <body class="appear">
+      <header class="header-wrapper">
+        <div class="header block" data-block-status="loaded">
+          <div class="header-content">
+            <div class="main-nav-desktop">
+              <div class="brand-logo block">
+                <div class="brand-logo-container">
+                  ${brandLogo}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main>
+        <div class="section underline-title table-container">
+          ${content.innerHTML.trim()}
+        </div>
+      </main>
+    </body>
+  </html>
+  `;
+  const runPrint = () => {
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 100);
+  };
+  if (printWindow.document.readyState === 'complete') {
+    requestAnimationFrame(runPrint);
+  } else {
+    printWindow.addEventListener('load', runPrint);
+  }
+
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
+}
+
 // ─── main decorate ────────────────────────────────────────────────────────────
 export default async function decorate(block) {
   const authoring = parseAuthoring(block);
@@ -849,7 +1069,7 @@ export default async function decorate(block) {
   });
 
   // ── print ──
-  printBtn.addEventListener('click', () => window.print());
+  printBtn.addEventListener('click', () => printElement(block));
 
   // ── remarks ──
   initRemarks(block.querySelector('#db-remarks'), placeholders);

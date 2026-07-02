@@ -771,6 +771,10 @@
   border: none;
 }
 
+.dynamic-board .db-table thead th[rowspan='2'] {
+  height: 6.25rem;
+}
+
 .dynamic-board .db-table thead tr {
   background: var(--bbl-color-blue-9);
 }
