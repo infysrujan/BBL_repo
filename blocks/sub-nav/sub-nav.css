@@ -130,9 +130,3 @@
     outline: 0.125rem solid var(--bbl-color-white);
     outline-offset: 0.125rem;
 }
-
-@media (width > 47.5rem) {
-    .sub-nav.block {
-        margin-top: -0.079rem;
-    }
-}

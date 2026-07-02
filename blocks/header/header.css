@@ -296,7 +296,7 @@ header.is-not-overlapped ~ main {
 
   header.is-not-overlapped ~ main {
     /* matches header height */
-    padding-top: var(--header-d-height, 7.8125rem);
+    padding-top: var(--header-d-height, 7.78rem);
   }
 
   .header .megamenu-panel .megamenu-inner .megamenu-column-links {
