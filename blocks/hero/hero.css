@@ -880,7 +880,6 @@
 
   .section.full-bleed-bg .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
     bottom: 4.6875rem;
-    padding: 0 var(--bbl-space-1050);
     text-align: left;
   }
 
