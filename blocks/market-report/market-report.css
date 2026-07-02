@@ -64,7 +64,7 @@
 
 .market-report-col-left .market-report-author {
   font-family: var(--bbl-font-family-primary);
-  font-size: var(---bbl-body-b1-size);
+  font-size: var(--bbl-body-b1-size);
   font-weight: var(--bbl-font-weight-regular);
   line-height: var(--bbl-body-b1-line-height);
   color: var(--bbl-color-black);

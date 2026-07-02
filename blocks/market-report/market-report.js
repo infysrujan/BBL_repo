@@ -364,7 +364,7 @@ function appendMktValuesAsHtml(container, rows) {
     ${html} <span>${rows[0].mktvalue.trim()}</span>
   `;
   container.innerHTML = updatedHtml;
-  container.classList.add("market-report-author");
+  container.classList.add('market-report-author');
   const p = document.createElement('p');
   p.innerHTML = rows[1].mktvalue;
 
