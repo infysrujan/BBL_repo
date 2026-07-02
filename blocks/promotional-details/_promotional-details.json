@@ -104,13 +104,7 @@
           "component": "richtext",
           "name": "detailDescription",
           "label": "Detail Description (appears on the promotional page)",
-          "valueType": "string",
-          "rte": {
-            "toolbar": {
-              "insert": ["image"],
-              "sections": ["insert"]
-            }
-          }
+          "valueType": "string"
         },
         {
           "component": "aem-tag",
@@ -268,5 +262,15 @@
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "promotional-details",
+      "rte": {
+        "toolbar": {
+          "insert": ["image"],
+          "sections": ["insert"]
+        }
+      }
+    }
+  ]
 }
