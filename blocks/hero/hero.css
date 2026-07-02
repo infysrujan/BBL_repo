@@ -697,6 +697,7 @@
 @media (width > 47.5rem) {
   .hero-banner-item:has(.hero-banner-video) .hero-banner-video-controls {
     z-index: 12;
+    height: 5rem;
   }
 
   .hero-banner-video-wrapper:has(iframe.hero-banner-video) .hero-banner-video-controls,
@@ -1037,7 +1038,6 @@
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-video-wrapper {
     height: 100%;
-    aspect-ratio: unset;
   }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper):fullscreen .hero-banner-video-wrapper {
