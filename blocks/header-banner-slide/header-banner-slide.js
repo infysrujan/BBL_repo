@@ -1,5 +1,4 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
 function initCarousel(carousel, track) {
   const realTotal = track.children.length;
@@ -129,8 +128,6 @@ function initCarousel(carousel, track) {
 }
 
 export default function decorate(block) {
-  if (isAuthoringInstance(block)) return;
-
   const [titleRow, autoScrollRow, scrollDelayRow, infiniteLoopRow, ...slideItems] = block.children;
 
   const title = titleRow?.children[0]?.textContent?.trim() || '';
