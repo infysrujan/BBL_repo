@@ -121,7 +121,7 @@ body.mobile-app-view .breadcrumb {
 
   .breadcrumb ol>li {
     float: left;
-    padding-right: var(--bbl-space-inline-md);
+    padding-right: 0.9375rem;
   }
 
   .breadcrumb ol>li::before {
