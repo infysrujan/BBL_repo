@@ -1,8 +1,11 @@
-.header {
+:root {
   --header-m-height: 5rem;
-  --header-d-height: 7.8125rem;
-  --nav-height: 5.375rem;
+  --header-d-height: 7.78rem;
+}
 
+.header {
+  --nav-height: 5.375rem;
+  
   position: absolute;
   top: 0;
   left: 0;
