@@ -853,11 +853,6 @@
     display: flex;
   }
 
-  .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner {
-    min-height: 0;
-    align-items: normal;
-  }
-
   .hero-banner-item.no-mobile-app-cta .hero-app-cta-mobile-fallback {
     display: none;
   }
