@@ -754,7 +754,7 @@
 }
 
 .dynamic-board .db-table thead th {
-  padding: 0.625rem 0.9rem;
+  padding: 0 1.875rem 0 0.625rem;
   font-size: var(--bbl-font-size-b2);
   font-weight: 700;
   color: var(--bbl-color-black);
@@ -784,7 +784,7 @@
 }
 
 .dynamic-board .db-table thead tr:last-child th {
-  top: 4.35rem;
+  top: 3.125rem;
   border-top: 0.0625rem solid var(--bbl-color-grey-152);
 }
 
@@ -829,7 +829,7 @@
 }
 
 .dynamic-board .db-table tbody td {
-  padding: 0.625rem var(--bbl-space-150);
+  padding: 0.625rem 0.3125rem;
   font-size: var(--bbl-font-size-b2);
   color: var(--bbl-color-grey-70);
   vertical-align: middle;
