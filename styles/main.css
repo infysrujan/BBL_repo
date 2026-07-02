@@ -308,7 +308,6 @@ main img {
 .section.bg-truthful-blue  *,
 .section.bg-truthful-dark-blue  *{
     color: var(--bbl-color-white);
-    margin-top: -0.391rem;
 }
 
 .section.center-content .default-content-wrapper * {
