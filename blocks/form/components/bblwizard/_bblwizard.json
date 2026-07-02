@@ -1,16 +1,16 @@
 {
   "definitions": [
     {
-      "title": "Forms Card List Item",
-      "id": "forms-card-list-item",
+      "title": "BBL Wizard Steps",
+      "id": "bbl-wizard",
       "plugins": {
         "xwalk": {
           "page": {
             "resourceType": "core/fd/components/form/image/v1/image",
             "template": {
-              "jcr:title": "Forms Card List Item",
+              "jcr:title": "BBL Wizard Steps",
               "fieldType": "image",
-              "fd:viewType": "forms-card-list-item"
+              "fd:viewType": "bbl-wizard"
             }
           }
         }
@@ -19,7 +19,7 @@
   ],
   "models": [
     {
-      "id": "forms-card-list-item",
+      "id": "bbl-wizard",
       "fields": [
         {
           "component": "tab",
@@ -39,6 +39,12 @@
           }
         },
         {
+          "component": "text",
+          "name": "jcr:title",
+          "label": "Title",
+          "valueType": "string"
+        },
+        {
           "component": "boolean",
           "name": "visible",
           "label": "Show Component",
@@ -47,35 +53,26 @@
         },
         {
           "component": "tab",
-          "label": "Card",
-          "name": "card"
-        },
-        {
-          "component": "reference",
-          "valueType": "string",
-          "name": "properties.icon",
-          "label": "Icon",
-          "multi": false
+          "label": "Steps",
+          "name": "steps"
         },
         {
           "component": "text",
+          "name": "properties.stepTitles",
+          "label": "Step Labels",
           "valueType": "string",
-          "name": "properties.iconAlt",
-          "label": "Icon Alt Text",
-          "value": ""
+          "multi": true,
+          "required": true,
+          "description": "Label shown under each step circle, one per row. Number of rows = total steps."
         },
         {
           "component": "text",
-          "name": "title",
-          "label": "Card Title",
-          "valueType": "string"
-        },
-        {
-          "component": "richtext",
-          "name": "properties.cardDescription",
-          "label": "Card Description",
+          "name": "properties.stepPanels",
+          "label": "Step Panel Names",
           "valueType": "string",
-          "value": ""
+          "multi": true,
+          "required": true,
+          "description": "The 'name' property of the form panel for each step, one per row. Order and count must match Step Labels."
         }
       ]
     }

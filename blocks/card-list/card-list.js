@@ -1,6 +1,6 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
-import createGlobalDropdown from '../../scripts/utils/dropdown-helpers.js';
+import createGlobalDropdown, { attachScrollableDropdownPanel } from '../../scripts/utils/dropdown-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
 import { applyLinkTarget, getLang, isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 
@@ -165,19 +165,17 @@ function createCardListItem(cardElement, doc) {
   }
 
   if (actionTypeText === 'default' && defaultButton) {
-    const buttonLink = defaultButton.cloneNode(true);
-    buttonLink.removeAttribute('data-modal');
-
-    if (enableOverlayModal && overlayHref) {
-      buttonLink.removeAttribute('href');
-      buttonLink.setAttribute('data-modal', overlayHref);
-    } else {
-      buttonLink.removeAttribute('data-modal');
-    }
-
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
-    buttonWrapper.appendChild(buttonLink);
-    applyLinkTarget(buttonWrapper, 'a', openInNewTab);
+    buttonWrapper.innerHTML = defaultButtonDiv.innerHTML;
+    const buttonLink = buttonWrapper.querySelector('a');
+    if (buttonLink) {
+      buttonLink.removeAttribute('data-modal');
+      if (enableOverlayModal && overlayHref) {
+        buttonLink.removeAttribute('href');
+        buttonLink.setAttribute('data-modal', overlayHref);
+      }
+    }
+    applyLinkTarget(buttonWrapper, 'a.button-m', openInNewTab);
     inner.appendChild(buttonWrapper);
   }
 
@@ -322,6 +320,9 @@ export default function decorate(block) {
   });
 
   block.appendChild(container);
+
+  const isScrollableLayout = cardListLayout === 'scrollable' || cardListLayout === 'carousel';
+  if (isScrollableLayout) attachScrollableDropdownPanel(container, doc);
 
   if (isAuthoring) {
     stripAuthoringInstrumentation(container);

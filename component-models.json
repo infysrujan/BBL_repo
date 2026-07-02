@@ -332,6 +332,10 @@
               {
                 "name": "Columns 2(65-35)",
                 "value": "columns-2-65"
+              },
+              {
+                "name": "Columns 2(25-75)",
+                "value": "columns-2-25"
               }
             ]
           },
@@ -383,6 +387,10 @@
               {
                 "name": "Lead Forms",
                 "value": "lead-forms"
+              },
+              {
+                "name": "Wizard Forms",
+                "value": "wizard-forms"
               }
             ]
           }
@@ -2587,7 +2595,7 @@
       {
         "component": "aem-tag",
         "name": "cardTypes",
-        "label": "Card Types",
+        "label": "Fund Types",
         "valueType": "string",
         "condition": {
           "===": [
@@ -6375,6 +6383,10 @@
           {
             "name": "123,421%",
             "value": "#,###,##0%"
+          },
+          {
+            "name": "123,421,567",
+            "value": "###,###,###"
           }
         ]
       },
@@ -6889,6 +6901,10 @@
           {
             "name": "Tabs",
             "value": "radio-tabs"
+          },
+          {
+            "name": "Tick",
+            "value": "radio-tick"
           }
         ],
         "value": "default"
@@ -6927,6 +6943,27 @@
           {
             "name": "Vertically",
             "value": "vertical"
+          }
+        ]
+      },
+      {
+        "component": "radio-group",
+        "label": "Alignment",
+        "name": "align",
+        "valueType": "string",
+        "value": "left",
+        "options": [
+          {
+            "name": "Left",
+            "value": "left"
+          },
+          {
+            "name": "Center",
+            "value": "center"
+          },
+          {
+            "name": "Right",
+            "value": "right"
           }
         ]
       },
@@ -7900,6 +7937,64 @@
     ]
   },
   {
+    "id": "bbl-wizard",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Basic",
+        "name": "basic"
+      },
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Name",
+        "valueType": "string",
+        "required": true,
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^[^$].*",
+          "customErrorMsg": "Name cannot start with $"
+        }
+      },
+      {
+        "component": "text",
+        "name": "jcr:title",
+        "label": "Title",
+        "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "visible",
+        "label": "Show Component",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "tab",
+        "label": "Steps",
+        "name": "steps"
+      },
+      {
+        "component": "text",
+        "name": "properties.stepTitles",
+        "label": "Step Labels",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "Label shown under each step circle, one per row. Number of rows = total steps."
+      },
+      {
+        "component": "text",
+        "name": "properties.stepPanels",
+        "label": "Step Panel Names",
+        "valueType": "string",
+        "multi": true,
+        "required": true,
+        "description": "The 'name' property of the form panel for each step, one per row. Order and count must match Step Labels."
+      }
+    ]
+  },
+  {
     "id": "double-key-dropdown",
     "fields": [
       {
@@ -8098,190 +8193,6 @@
     ]
   },
   {
-    "id": "forms-card-list-item",
-    "fields": [
-      {
-        "component": "tab",
-        "label": "Basic",
-        "name": "basic"
-      },
-      {
-        "component": "text",
-        "name": "name",
-        "label": "Name",
-        "valueType": "string",
-        "required": true,
-        "valueFormat": "regexp",
-        "validation": {
-          "regExp": "^[^$].*",
-          "customErrorMsg": "Name cannot start with $"
-        }
-      },
-      {
-        "component": "boolean",
-        "name": "visible",
-        "label": "Show Component",
-        "valueType": "boolean",
-        "value": true
-      },
-      {
-        "component": "tab",
-        "label": "Card",
-        "name": "card"
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "properties.icon",
-        "label": "Icon",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "properties.iconAlt",
-        "label": "Icon Alt Text",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "name": "title",
-        "label": "Card Title",
-        "valueType": "string"
-      },
-      {
-        "component": "richtext",
-        "name": "properties.cardDescription",
-        "label": "Card Description",
-        "valueType": "string",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "id": "forms-card-list",
-    "fields": [
-      {
-        "component": "tab",
-        "label": "Basic",
-        "name": "basic"
-      },
-      {
-        "component": "text",
-        "name": "name",
-        "label": "Name",
-        "valueType": "string",
-        "required": true,
-        "valueFormat": "regexp",
-        "validation": {
-          "regExp": "^[^$].*",
-          "customErrorMsg": "Name cannot start with $"
-        }
-      },
-      {
-        "component": "text",
-        "name": "jcr:title",
-        "label": "Title",
-        "valueType": "string"
-      },
-      {
-        "component": "boolean",
-        "name": "hideTitle",
-        "label": "Hide title",
-        "valueType": "boolean"
-      },
-      {
-        "component": "datasource-bindref",
-        "name": "dataRef",
-        "label": "Bind reference",
-        "valueType": "string"
-      },
-      {
-        "component": "boolean",
-        "name": "unboundFormElement",
-        "label": "Mark as Unbound Form Element",
-        "valueType": "boolean"
-      },
-      {
-        "component": "boolean",
-        "name": "visible",
-        "label": "Show Component",
-        "valueType": "boolean",
-        "value": true
-      },
-      {
-        "component": "boolean",
-        "name": "enabled",
-        "label": "Enable Component",
-        "valueType": "boolean",
-        "value": true
-      },
-      {
-        "component": "boolean",
-        "name": "readOnly",
-        "label": "Read-only",
-        "valueType": "boolean"
-      },
-      {
-        "component": "select",
-        "name": "colspan",
-        "label": "Column Span",
-        "valueType": "string",
-        "value": "12",
-        "options": [
-          {
-            "name": "1 column",
-            "value": "1"
-          },
-          {
-            "name": "2 column",
-            "value": "2"
-          },
-          {
-            "name": "3 column",
-            "value": "3"
-          },
-          {
-            "name": "4 column",
-            "value": "4"
-          },
-          {
-            "name": "5 column",
-            "value": "5"
-          },
-          {
-            "name": "6 column",
-            "value": "6"
-          },
-          {
-            "name": "7 column",
-            "value": "7"
-          },
-          {
-            "name": "8 column",
-            "value": "8"
-          },
-          {
-            "name": "9 column",
-            "value": "9"
-          },
-          {
-            "name": "10 column",
-            "value": "10"
-          },
-          {
-            "name": "11 column",
-            "value": "11"
-          },
-          {
-            "name": "12 column",
-            "value": "12"
-          }
-        ]
-      }
-    ]
-  },
-  {
     "id": "forms-menu-card",
     "fields": [
       {
@@ -8394,6 +8305,24 @@
         "valueType": "string",
         "multi": true,
         "description": "Description for each card, one per row. Supports inline HTML (e.g. asterisk footnotes). Order must match Card Titles."
+      },
+      {
+        "component": "select",
+        "name": "properties.cardStyle",
+        "label": "Card Style",
+        "valueType": "string",
+        "value": "menu-card-default",
+        "description": "Choose how cards are displayed: default grid layout or horizontal scrollable row.",
+        "options": [
+          {
+            "name": "Default",
+            "value": "menu-card-default"
+          },
+          {
+            "name": "Scrollable",
+            "value": "menu-card-scrollable"
+          }
+        ]
       }
     ]
   },
@@ -9739,6 +9668,24 @@
         "valueType": "string",
         "multi": true,
         "description": "Description for each card, one per row. Supports inline HTML (e.g. asterisk footnotes). Order must match Card Titles."
+      },
+      {
+        "component": "select",
+        "name": "properties.cardStyle",
+        "label": "Card Style",
+        "valueType": "string",
+        "value": "menu-card-default",
+        "description": "Choose how cards are displayed: default grid layout or horizontal scrollable row.",
+        "options": [
+          {
+            "name": "Default",
+            "value": "menu-card-default"
+          },
+          {
+            "name": "Scrollable",
+            "value": "menu-card-scrollable"
+          }
+        ]
       }
     ]
   },
@@ -12442,6 +12389,13 @@
         "name": "resultText",
         "label": "Result Text",
         "description": "can add the result text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "errorMessage",
+        "label": "Error Message",
+        "description": "can add the error message",
         "valueType": "string"
       }
     ]

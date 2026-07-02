@@ -1,0 +1,8 @@
+.custom-button a {
+  text-decoration: none;
+}
+
+.center-content.custom-button-container .button-container {
+  display: flex;
+  justify-content: center;
+}
