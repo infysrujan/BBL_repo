@@ -103,9 +103,6 @@
   }
 
   .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 100%;
     gap: 0;
     width: 100%;
     min-width: 0;
@@ -130,6 +127,7 @@
     .carousel-dotted-item.carousel-fragment {
     width: 100%;
     min-width: 100%;
+    height: auto;
   }
 
   .carousel-dotted.all-carousel-fragment
