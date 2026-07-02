@@ -746,21 +746,12 @@
     color: var(--bbl-color-white);
   }
 
-  .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner {
-    text-align: unset;
-    color: unset;
-    transform: unset;
-    min-height: unset;
-    display: unset;
-    flex-direction: unset;
-    align-items: unset;
-    justify-content: unset;
-    top: unset;
+  .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner .hero-banner-content-group > :not(.button-container) {
+   display: none;
   }
 
   .section.full-bleed-bg .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
     position: absolute;
-    padding: 0;
     color: var(--bbl-color-white);
     text-align: center;
   }
@@ -839,6 +830,11 @@
     display: flex;
   }
 
+  .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner {
+    min-height: 0;
+    align-items: normal;
+  }
+
   .hero-banner-item.no-mobile-app-cta .hero-app-cta-mobile-fallback {
     display: none;
   }
@@ -869,21 +865,15 @@
     padding: 0 var(--bbl-space-1050) 0;
   }
 
-  .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content.content {
-    text-align: unset;
-    color: unset;
-    transform: unset;
-    min-height: unset;
-    display: unset;
-    flex-direction: unset;
-    align-items: unset;
-    justify-content: unset;
-    top: unset;
+
+  .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner .hero-banner-content-group > :not(.button-container) {
+    display: none;
   }
 
   .section.full-bleed-bg .hero-banner-item:has(.hero-banner-video) .hero-banner-content.content {
     bottom: 4.6875rem;
     padding: 0 var(--bbl-space-1050);
+    text-align: left;
   }
 
   .hero-banner-content-inner .button-container {
@@ -1016,7 +1006,6 @@
   }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-video {
-    aspect-ratio: 192 / 85;
     height: auto;
   }
 
@@ -1085,6 +1074,11 @@
     justify-content: space-between;
   }
 
+  .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner {
+    min-height: 0;
+    align-items: normal;
+  }
+
   .hero-banner-private-wealth-banking .hero-banner-logo-wrapper {
     width: 16.25rem;
     height: 4.0625rem;
@@ -1107,17 +1101,14 @@
   }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper video) .hero-banner-content-inner .button-container a {
-    margin-left: 2.9375rem;
     margin-bottom: 1.5625rem;
   }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(.hero-banner-video-wrapper video) .hero-banner-content-inner .button-container .button-m.primary {
-    margin-left: 2.9375rem;
     margin-bottom: 3.125rem;
   }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe.hero-banner-video) .hero-banner-content-inner .button-container a {
-    margin-left: 1.5625rem;
     margin-bottom: 3.125rem;
   }
 }
