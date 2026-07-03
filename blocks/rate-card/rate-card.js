@@ -118,14 +118,14 @@ function createTableElement(columnNames, data, dataType, sourceElement) {
       tbody += data.map((item) => `
         <tr>
           <td>${item.DepositNameEn || '-'}</td>
-          <td class="text-right"><span class="percent">${item.DepositRates || '0.00'}</td></span>
+          <td class="text-right"><span class="percent">${item.DepositRates || '0.00'}</span></td>
         </tr>
       `).join('');
     } else if (dataType === 'loan') {
       tbody += data.map((item) => `
         <tr>
           <td>${item.LoanNameEn || '-'}</td>
-          <td class="text-right"><span class="percent">${item.LoanRates || '0.00'}</td></span>
+          <td class="text-right"><span class="percent">${item.LoanRates || '0.00'}</span></td>
         </tr>
       `).join('');
     } else if (dataType === 'fund') {
