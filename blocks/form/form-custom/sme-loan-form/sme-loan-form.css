@@ -47,7 +47,7 @@
 
   & .form form fieldset.panel-wrapper.field-wrapper > legend:not([data-visible='false']) {
     width: 100%;
-    margin: 20px 0 10px;
+    margin: 1.25rem 0 0.625rem;
     padding: var(--bbl-space-075);
     text-align: left;
     font-size: 1rem;
@@ -57,7 +57,7 @@
     border-bottom: 0.0625rem solid var(--bbl-color-white);
     border-right: 0.0625rem solid var(--bbl-color-white);
     font-weight: 600;
-    font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+    font-family: var(--bbl-font-family-primary);
   }
 
   & .form form input:disabled {
