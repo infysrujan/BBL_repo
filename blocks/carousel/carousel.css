@@ -1,6 +1,5 @@
 .carousel {
     margin-bottom: var(--bbl-space-300);
-    padding-left: 1rem;
 }
 
 .carousel-header {
@@ -196,7 +195,7 @@
 
 .carousel-description {
     color: var(--bbl-color-grey-70);
-    margin: 0 0 var(--bbl-space-200);
+    margin: 0 0 var(--bbl-space-300);
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -216,15 +215,7 @@
     line-clamp: 4;
 }
 
-.carousel-cta {
-   display: none;
-}
-
 @media (width > 47.5rem) {
-    .carousel {
-        padding-left: 3rem;
-    }
-
     .carousel-header {
         padding-right: 3rem;
     }
@@ -433,7 +424,6 @@
 
     .carousel-cta {
         display: inline-block;
-        position: absolute;
         bottom: var(--bbl-space-200);
     }
 
@@ -450,9 +440,5 @@
         padding: var(--bbl-space-400);
         color: var(--bbl-color-white);
         max-width: 360px;
-    }
-
-    .carousel-item:not(.active) .carousel-content .carousel-cta {
-        top: 55%;
     }
 }
