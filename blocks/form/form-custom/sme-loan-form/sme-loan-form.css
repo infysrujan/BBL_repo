@@ -65,7 +65,7 @@
   }
 
   & .form form select {
-    font-family: BangkokBank-Medium, sans-serif;
+    font-family: var(--bbl-font-family-medium);
     font-size: 0.95rem;
     font-weight: 400;
   }
