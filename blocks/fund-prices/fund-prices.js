@@ -8,6 +8,14 @@ import { fetchConfigs } from '../../scripts/config.js';
 
 const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 
+// getLang() reads document.documentElement.lang which may not be set yet when
+// async API calls resolve. Fall back to the URL path segment for reliability.
+function getPageLang() {
+  const first = window.location.pathname.split('/').filter(Boolean)[0];
+  if (first === 'th' || first === 'en') return first;
+  return getLang();
+}
+
 export function parseLocalDateFromYmd(ymd) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd).trim());
   if (!m) return null;
@@ -160,7 +168,7 @@ function formatBodyCellText(normalizedKey, row, columnKey, selectedDate) {
 const headerMappingCellsByTable = new WeakMap();
 
 function appendRowFromData(tableBlock, dataArray, latestMdate) {
-  const lang = getLang();
+  const lang = getPageLang();
   const tbody = tableBlock.querySelector('tbody');
   if (!tbody) return;
 
@@ -242,8 +250,8 @@ function moveSearchBarToHeader(el, doc) {
     el.classList.add('is-in-header');
     doc.body.classList.add('fund-prices-search-in-header');
     headerBlock.appendChild(el);
-    const h1 = doc.querySelector('h1');
-    if (h1) h1.classList.add('fund-prices-page-title');
+    const pageTitleEl = doc.querySelector('main .default-content-wrapper h1, main .default-content-wrapper h2');
+    if (pageTitleEl) pageTitleEl.classList.add('fund-prices-page-title');
     return true;
   };
   if (check()) return;
@@ -283,9 +291,9 @@ function printContent(containerEl) {
   const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
 
   const now = new Date();
-  const pageTitle = doc.querySelector('h1')?.textContent?.trim() || 'Fund Prices - BBL Asset Management';
+  const pageTitle = doc.querySelector('main .default-content-wrapper h1, main .default-content-wrapper h2')?.textContent?.trim() || 'Fund Prices - BBL Asset Management';
   const searchLabelText = containerEl.querySelector('.fund-prices-search-bar label')?.textContent?.trim() || 'Search Fund';
-  const dateLabelText = containerEl.querySelector('.calendar-wrapper strong')?.textContent?.trim() || 'As of :';
+  const dateLabelText = containerEl.querySelector('.calendar-wrapper p')?.textContent?.trim() || 'As of :';
   const printRoot = doc.createElement('div');
   printRoot.id = 'fund-prices-print-root';
   printRoot.innerHTML = `
@@ -379,7 +387,7 @@ function buildFundSelectorBar(doc, funds, searchLabel, allFundsLabel, goLabel) {
   allOption.classList.add('active');
   list.appendChild(allOption);
 
-  const lang = getLang();
+  const lang = getPageLang();
   funds.forEach((f) => {
     const name = lang === 'th' ? (f.mf_sTha || f.mf_sEng) : (f.mf_sEng || f.mf_sTha);
     if (!name) return;
@@ -481,7 +489,8 @@ export default async function decorate(block) {
     return;
   }
 
-  // Find the generic table block in the same section (accept legacy 'fund-prices-table' block name too)
+  // Find the generic table block in the same section
+  // (accept legacy 'fund-prices-table' block name too)
   const tableBlock = section?.querySelector('.table, .fund-prices-table');
   if (tableBlock) {
     tableBlock.classList.add('fund-prices-table');

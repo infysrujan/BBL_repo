@@ -1,6 +1,7 @@
 import { attachCalendarPicker, formatCalendarDate, getCalendarLang } from '../../scripts/utils/calendar-picker.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
 export const MAX_FUND_PRICE_HISTORY_YEARS = 3;
 
@@ -317,36 +318,37 @@ function renderHistTable(tbody, history) {
 
 export default async function decorate(block) {
   const authoredRows = [...block.children];
-  function txt(i, fallback) {
-    return authoredRows[i]?.querySelector('p')?.textContent?.trim() || fallback;
+  const ph = await fetchPlaceholders();
+  function txt(i, phKey, fallback) {
+    return authoredRows[i]?.querySelector('p')?.textContent?.trim() || ph[phKey] || fallback;
   }
   const labels = {
-    title: txt(0, 'Fund Price Details'),
-    printLabel: txt(1, 'Print'),
-    backLabel: txt(2, 'Fund Prices'),
-    statHighHeader: txt(3, 'Highest Fund Price'),
-    statLowHeader: txt(4, 'Lowest Fund Price'),
-    navColHeader: txt(5, 'NAV'),
-    graphTab: txt(6, 'GRAPH'),
-    tableTab: txt(7, 'VIEW TABLE DATA'),
-    beginNavLabel: txt(8, 'Beginning NAV'),
-    endNavLabel: txt(9, 'Ending NAV'),
-    histDateHeader: txt(10, 'Date'),
-    histSellHeader: txt(11, 'Selling Price'),
-    histRedeemHeader: txt(12, 'Redemption Price'),
-    statRowSelected: txt(13, 'In the selected period'),
-    statRowYear: txt(14, 'During the last 12 months'),
-    statRowInception: txt(15, 'Since Inception'),
-    fromLabel: txt(16, 'From'),
-    toLabel: txt(17, 'To'),
-    rangeError: txt(18, 'Date range should be between 3 years'),
-    period1w: txt(19, '1 Week'),
-    period1m: txt(20, '1 Month'),
-    period3m: txt(21, '3 Months'),
-    period6m: txt(22, '6 Months'),
-    period1y: txt(23, '1 Year'),
-    period3y: txt(24, '3 Years'),
-    periodDr: txt(25, 'Date Range'),
+    title: txt(0, 'fundPricesDropdownTitle', 'Fund Price Details'),
+    printLabel: txt(1, 'fundPricesDropdownPrint', 'Print'),
+    backLabel: txt(2, 'fundPricesDropdownBack', 'Fund Prices'),
+    statHighHeader: txt(3, 'fundPricesDropdownStatHigh', 'Highest Fund Price'),
+    statLowHeader: txt(4, 'fundPricesDropdownStatLow', 'Lowest Fund Price'),
+    navColHeader: txt(5, 'fundPricesDropdownNav', 'NAV'),
+    graphTab: txt(6, 'fundPricesDropdownGraph', 'GRAPH'),
+    tableTab: txt(7, 'fundPricesDropdownTable', 'VIEW TABLE DATA'),
+    beginNavLabel: txt(8, 'fundPricesDropdownBeginNav', 'Beginning NAV'),
+    endNavLabel: txt(9, 'fundPricesDropdownEndNav', 'Ending NAV'),
+    histDateHeader: txt(10, 'fundPricesDropdownHistDate', 'Date'),
+    histSellHeader: txt(11, 'fundPricesDropdownHistSell', 'Selling Price'),
+    histRedeemHeader: txt(12, 'fundPricesDropdownHistRedeem', 'Redemption Price'),
+    statRowSelected: txt(13, 'fundPricesDropdownStatSelected', 'In the selected period'),
+    statRowYear: txt(14, 'fundPricesDropdownStatYear', 'During the last 12 months'),
+    statRowInception: txt(15, 'fundPricesDropdownStatInception', 'Since Inception'),
+    fromLabel: txt(16, 'fundPricesDropdownFrom', 'From'),
+    toLabel: txt(17, 'fundPricesDropdownTo', 'To'),
+    rangeError: txt(18, 'fundPricesDropdownRangeError', 'Date range should be between 3 years'),
+    period1w: txt(19, 'fundPricesDropdownPeriod1w', '1 Week'),
+    period1m: txt(20, 'fundPricesDropdownPeriod1m', '1 Month'),
+    period3m: txt(21, 'fundPricesDropdownPeriod3m', '3 Months'),
+    period6m: txt(22, 'fundPricesDropdownPeriod6m', '6 Months'),
+    period1y: txt(23, 'fundPricesDropdownPeriod1y', '1 Year'),
+    period3y: txt(24, 'fundPricesDropdownPeriod3y', '3 Years'),
+    periodDr: txt(25, 'fundPricesDropdownPeriodDr', 'Date Range'),
   };
   const PERIOD_OPTIONS = [
     { code: '1W', label: labels.period1w },
