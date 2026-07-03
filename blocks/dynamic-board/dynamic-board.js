@@ -1,13 +1,14 @@
 import parseAuthoring, { parseTableHeading, parseMaturityTypes } from './helpers/authoring-helpers.js';
 import {
-  parseCsvConfigList, buildIntlMonthLabels, buildIntlDayLabels,
-  formatDisplayDate, formatMaturityDate, formatRemainTerm, remainTermToMonths,
-  buildCalendarGrid, formatMonthYear, formatMonthYearDisplay,
+  parseCsvConfigList, buildIntlMonthLabels,
+  formatMaturityDate, formatRemainTerm, remainTermToMonths,
+  formatMonthYear, formatMonthYearDisplay,
 } from './helpers/date-helpers.js';
 import createApiService from './helpers/api-helpers.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
+import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 
 const MAX_SELECTED = 5;
 
@@ -61,14 +62,10 @@ function createState(defaultSortKey = 'REMAIN_TERM') {
     updates: [],
     timeDropdownOpen: false,
     rates: [],
-    enabledDays: new Set(),
     selectedIds: [],
     sortKey: defaultSortKey,
     sortAsc: true,
     sortUserSet: false,
-    calOpen: false,
-    calYear: null,
-    calMonth: null,
     filterOpen: false,
     filterMaturity: null,
     filterFrom: { month: curMonth, year: curYear },
@@ -81,45 +78,6 @@ function createState(defaultSortKey = 'REMAIN_TERM') {
     columns: [],
     maturityTypes: [],
   };
-}
-
-// ─── calendar ─────────────────────────────────────────────────────────────────
-function renderCalendar(calEl, state, placeholders) {
-  const {
-    calYear: y, calMonth: m, enabledDays, date: sel,
-  } = state;
-  const cells = buildCalendarGrid(y, m);
-  const today = new Date();
-  const isCurMonth = today.getFullYear() === y && today.getMonth() === m;
-  const selDay = sel && sel.getFullYear() === y && sel.getMonth() === m ? sel.getDate() : null;
-
-  const rows = Array.from({ length: 6 }, (_, r) => {
-    const dayCells = cells.slice(r * 7, r * 7 + 7).map(({ day, otherMonth }) => {
-      if (otherMonth) return '<td class="db-cal-other">&nbsp;</td>';
-      const enabled = enabledDays.has(day);
-      const cls = [
-        'db-cal-day',
-        enabled ? 'db-cal-enabled' : 'db-cal-disabled',
-        day === selDay ? 'db-cal-selected' : '',
-        isCurMonth && day === today.getDate() ? 'db-cal-today' : '',
-      ].filter(Boolean).join(' ');
-      return enabled
-        ? `<td class="${cls}"><button type="button" class="db-cal-day-btn" data-day="${day}">${day}</button></td>`
-        : `<td class="${cls}"><span>${day}</span></td>`;
-    }).join('');
-    return `<tr>${dayCells}</tr>`;
-  }).join('');
-
-  calEl.innerHTML = `
-    <div class="db-cal-header">
-      <button type="button" class="db-cal-nav db-cal-prev" aria-label="${placeholders?.dynamicBoardPrevMonthAria || 'Previous month'}"><i class="icon-arrow-left" aria-hidden="true"></i></button>
-      <span class="db-cal-title">${state.monthLabels[m]} ${y + state.buddhistYearOffset}</span>
-      <button type="button" class="db-cal-nav db-cal-next" aria-label="${placeholders?.dynamicBoardNextMonthAria || 'Next month'}"><i class="icon-arrow-left" aria-hidden="true"></i></button>
-    </div>
-    <table class="db-cal-table">
-      <thead><tr>${state.dayLabels.map((d) => `<th>${d}</th>`).join('')}</tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
 }
 
 // ─── time dropdown ────────────────────────────────────────────────────────────
@@ -340,16 +298,6 @@ function initRemarks(remarksEl, placeholders) {
 }
 
 // ─── data loaders ─────────────────────────────────────────────────────────────
-async function loadEnabledDays(state) {
-  try {
-    const calDate = new Date(state.calYear, state.calMonth, 1);
-    const data = await state.api.getDayInMonth(calDate);
-    state.enabledDays = new Set(data.map((d) => parseInt(d.Day, 10)));
-  } catch {
-    state.enabledDays = new Set();
-  }
-}
-
 async function loadUpdates(state) {
   try {
     const data = await state.api.getUpdatesInDay(state.date);
@@ -538,19 +486,28 @@ function wireFilterEvents(
 // ─── print ────────────────────────────────────────────────────────────────────
 /** Same approach as blocks/bcap/bcap.js: print an isolated document instead of
  * the live page, so the fixed header/nav and the site's max-width layout
- * don't shrink the table or swallow the logo. Interactive-only controls are
- * removed or swapped for their plain-text value, mirroring how bcap replaces
- * its calendar input with a text node before printing. */
+ * don't shrink the table or swallow the logo. Controls that have no printable
+ * *meaning* (filters, popups, selection checkboxes) are removed outright, but
+ * the date/time fields keep their live bordered look — only the parts that
+ * are purely interactive (the time dropdown's chevron and option list) are
+ * dropped, since the goal is for the printed page to read like the live page
+ * rather than like a stripped-down text summary. */
 function printElement(block) {
   const section = block.closest('.section') || block;
   const content = section.cloneNode(true);
+
+  // Keep the section's own authored classes (e.g. `center-title`) instead of
+  // guessing a fixed set — that's what drives the live page's centered
+  // heading/underline via styles/main.css, and dropping it silently
+  // left-aligned everything in the print output.
+  const sectionClasses = new Set(content.classList);
+  sectionClasses.add('table-container');
 
   // 1. Remove controls with no printable meaning (filters, popups, selection
   // checkboxes, sort icons, the Go button, the download-link column).
   content.querySelectorAll([
     '.db-controls-right',
     '.db-filter-wrapper',
-    '.db-calendar',
     '.db-mp-popup',
     '.db-go-btn',
     '.db-sort-icon',
@@ -572,18 +529,19 @@ function printElement(block) {
   content.querySelectorAll('.db-table thead th[rowspan="2"][colspan="2"]')
     .forEach((th) => th.removeAttribute('colspan'));
 
-  // 2. Replace the date/time controls with their plain-text value.
-  const dateDisplay = content.querySelector('.db-date-display');
-  if (dateDisplay) {
-    dateDisplay.replaceWith(document.createTextNode(dateDisplay.textContent));
-  }
-  content.querySelectorAll('.db-cal-icon').forEach((el) => el.remove());
+  // 2. Keep the date/time fields' bordered look (matching the live page) —
+  // only drop the bits that are purely interactive affordances with no
+  // printed meaning: the time dropdown's chevron and its (already hidden)
+  // option list.
+  content.querySelectorAll('.db-time-chevron, .db-time-list').forEach((el) => el.remove());
 
-  const timeDropdown = content.querySelector('.db-time-dropdown');
-  if (timeDropdown) {
-    const label = timeDropdown.querySelector('.db-time-label');
-    timeDropdown.replaceWith(document.createTextNode(label ? label.textContent : ''));
-  }
+  // cloneNode does carry over an <input>'s live value, but that's a DOM
+  // property, not a `value` attribute — and content.innerHTML below only
+  // serializes attributes, so without this the date field prints empty.
+  // Promoting it to an attribute here is what makes it survive that
+  // string round-trip into the print window's fresh document.
+  const dateInput = content.querySelector('.db-date-display');
+  if (dateInput) dateInput.setAttribute('value', dateInput.value);
 
   const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
     || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
@@ -596,7 +554,7 @@ function printElement(block) {
   const logoSrc = logoImg.currentSrc || logoImg.src;
   const brandLogo = `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoImg.alt || 'Bangkok Bank')}">`;
 
-  const printWindow = window.open('', '', 'height=600,width=900');
+  const printWindow = window.open('', '', 'height=500,width=800');
 
   const printCss = `
     @page {
@@ -643,6 +601,17 @@ function printElement(block) {
 
     .dynamic-board {
       margin-top: 2rem;
+    }
+
+    /* The A4 print area (~45rem) falls under the 47.5rem breakpoint where
+       .db-date-wrap/.db-time-wrap are each width:100% (stacked, one per
+       row) — that's correct for a real narrow phone, but on the wider print
+       page it leaves the date and time fields stranded on their own rows
+       instead of sitting side by side under the label, like the live page. */
+    .dynamic-board .db-date-wrap,
+    .dynamic-board .db-time-wrap {
+      width: auto;
+      flex: 0 1 auto;
     }
 
     /* Table: same printer-friendly sizing/padding as before, but with a
@@ -742,7 +711,7 @@ function printElement(block) {
         </div>
       </header>
       <main>
-        <div class="section underline-title table-container">
+        <div class="${[...sectionClasses].join(' ')}">
           ${content.innerHTML.trim()}
         </div>
       </main>
@@ -773,7 +742,6 @@ export default async function decorate(block) {
   const state = createState(configs?.dynamicBoardDefaultSortKey);
   const language = getLang();
   state.monthLabels = parseCsvConfigList(placeholders?.monthLabels, buildIntlMonthLabels(language));
-  state.dayLabels = parseCsvConfigList(placeholders?.dayLabels, buildIntlDayLabels(language));
   state.buddhistYearOffset = language === 'th' ? Number(configs?.sharedBuddhistYearOffset) || 0 : 0;
   const isGov = authoring.boardType.toLowerCase().includes('government');
   state.api = createApiService(configs, authoring.boardType);
@@ -793,9 +761,8 @@ export default async function decorate(block) {
       <div class="db-controls-left">
         <span class="db-cal-label">${escapeHtml(authoring.calendarLabel)}</span>
         <div class="db-date-wrap">
-          <button type="button" class="db-date-display" id="db-date-display" aria-label="${placeholders?.dynamicBoardSelectDateAria || 'Select date'}" aria-expanded="false">--</button>
+          <input type="text" class="db-date-display" id="db-date-display" readonly aria-label="${placeholders?.dynamicBoardSelectDateAria || 'Select date'}">
           <button type="button" class="db-cal-icon icon-calendar" aria-label="${escapeHtml(authoring.calendarLabel)}" aria-expanded="false"></button>
-          <div class="db-calendar" id="db-calendar" hidden aria-label="${placeholders?.dynamicBoardDatePickerAria || 'Date picker'}"></div>
         </div>
         <div class="db-time-wrap">
           <div class="db-time-dropdown" id="db-time-dropdown" role="combobox" aria-expanded="false" aria-haspopup="listbox">
@@ -855,7 +822,6 @@ export default async function decorate(block) {
     if (src && dst) moveInstrumentation(src, dst);
   });
 
-  const calEl = block.querySelector('#db-calendar');
   const dateDisplay = block.querySelector('#db-date-display');
   const calIcon = block.querySelector('.db-cal-icon');
   const timeDropdownEl = block.querySelector('#db-time-dropdown');
@@ -889,71 +855,38 @@ export default async function decorate(block) {
     state.updates = lu ? [{ Day: lu.Day, Update: lu.Update, Time: lu.Time }] : [];
     state.rates = Array.isArray(latestRates) ? latestRates : [];
 
-    state.calYear = state.date.getFullYear();
-    state.calMonth = state.date.getMonth();
-
-    dateDisplay.textContent = formatDisplayDate(state.date, state.monthLabels);
     renderTimeDropdown(timeListEl, timeLabelEl, state);
     renderThead(thead, state);
     renderTable(tbodySel, tbodyAll, state);
-
-    // preload enabled days in background
-    loadEnabledDays(state);
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('Dynamic board init failed:', err);
   }
 
-  // ── calendar open/close ──
-  function setCalOpen(open) {
-    state.calOpen = open;
-    calEl.hidden = !open;
-    dateDisplay.setAttribute('aria-expanded', String(open));
-    calIcon.setAttribute('aria-expanded', String(open));
-    if (open) renderCalendar(calEl, state, placeholders);
-  }
-
-  async function toggleCal() {
-    if (!state.calOpen) {
-      if (!state.date) state.date = new Date();
-      state.calYear = state.calYear || state.date.getFullYear();
-      state.calMonth = state.calMonth ?? state.date.getMonth();
-      if (!state.enabledDays.size) await loadEnabledDays(state);
-      setCalOpen(true);
-    } else {
-      setCalOpen(false);
-    }
-  }
-
-  dateDisplay.addEventListener('click', (e) => { e.stopPropagation(); toggleCal(); });
-  calIcon.addEventListener('click', (e) => { e.stopPropagation(); toggleCal(); });
-
-  calEl.addEventListener('click', async (e) => {
-    e.stopPropagation();
-    const btn = e.target.closest('.db-cal-day-btn, .db-cal-nav');
-    if (!btn) return;
-
-    if (btn.classList.contains('db-cal-prev')) {
-      state.calMonth -= 1;
-      if (state.calMonth < 0) { state.calMonth = 11; state.calYear -= 1; }
-      await loadEnabledDays(state);
-      renderCalendar(calEl, state, placeholders);
-    } else if (btn.classList.contains('db-cal-next')) {
-      state.calMonth += 1;
-      if (state.calMonth > 11) { state.calMonth = 0; state.calYear += 1; }
-      await loadEnabledDays(state);
-      renderCalendar(calEl, state, placeholders);
-    } else if (btn.dataset.day) {
-      const day = parseInt(btn.dataset.day, 10);
-      state.date = new Date(state.calYear, state.calMonth, day);
-      dateDisplay.textContent = formatDisplayDate(state.date, state.monthLabels);
-      setCalOpen(false);
+  // ── calendar ── (same picker as blocks/bcap/bcap.js, via scripts/utils/calendar-picker.js)
+  if (!state.date) state.date = new Date();
+  const datePicker = attachCalendarPicker({
+    input: dateDisplay,
+    value: state.date,
+    fetchEnabledDays: async ({ year, month }) => {
+      try {
+        const days = await state.api.getDayInMonth(new Date(year, month, 1));
+        return days.map((d) => parseInt(d.Day, 10));
+      } catch {
+        return [];
+      }
+    },
+    onChange: async (selectedDate) => {
+      state.date = selectedDate;
       await loadUpdates(state);
       renderTimeDropdown(timeListEl, timeLabelEl, state);
-    }
+    },
   });
 
-  document.addEventListener('click', () => { if (state.calOpen) setCalOpen(false); });
+  calIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    datePicker.open();
+  });
 
   // ── time dropdown ──
   const toggleTimeDropdown = (open) => {
