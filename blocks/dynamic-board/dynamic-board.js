@@ -606,7 +606,7 @@ function printElement(block) {
     }
 
     .dynamic-board .db-table {
-      width: 100%;
+      width: 90%;
       border: 0.0625rem solid black;
       /* Outline as a fallback outer border — it can't be partially
          overridden by any single cell's border like border-collapse can. */
