@@ -486,25 +486,16 @@ function wireFilterEvents(
 // ─── print ────────────────────────────────────────────────────────────────────
 /** Same approach as blocks/bcap/bcap.js: print an isolated document instead of
  * the live page, so the fixed header/nav and the site's max-width layout
- * don't shrink the table or swallow the logo. Controls that have no printable
- * *meaning* (filters, popups, selection checkboxes) are removed outright, but
- * the date/time fields keep their live bordered look — only the parts that
- * are purely interactive (the time dropdown's chevron and option list) are
- * dropped, since the goal is for the printed page to read like the live page
- * rather than like a stripped-down text summary. */
+ * don't shrink the table or swallow the logo. */
 function printElement(block) {
   const section = block.closest('.section') || block;
   const content = section.cloneNode(true);
 
-  // Keep the section's own authored classes (e.g. `center-title`) instead of
-  // guessing a fixed set — that's what drives the live page's centered
-  // heading/underline via styles/main.css, and dropping it silently
-  // left-aligned everything in the print output.
+  // Heading centering is handled separately below via the always-present
+  // `table-container` class rather than depending on authored classes here.
   const sectionClasses = new Set(content.classList);
   sectionClasses.add('table-container');
 
-  // 1. Remove controls with no printable meaning (filters, popups, selection
-  // checkboxes, sort icons, the Go button, the download-link column).
   content.querySelectorAll([
     '.db-controls-right',
     '.db-filter-wrapper',
@@ -516,39 +507,25 @@ function printElement(block) {
     '.db-td-dl',
   ].join(', ')).forEach((el) => el.remove());
 
-  // The live table's header renders the first column ("Symbol") with a
-  // colspan of 2 (a pre-existing quirk kept for the live view's column
-  // widths), but the body only ever renders one Symbol cell — that phantom
-  // extra column shifts every column after it out of alignment with its
-  // header, most visibly leaving "Maturity Date" with no data beneath it.
-  // Only that cell has both rowspan="2" and colspan="2" together (grouped
-  // headers like "Bidding Price" have colspan without rowspan, and every
-  // other single column has rowspan without colspan), so it can be
-  // corrected here without touching the shared column-generation logic
-  // that the live table also relies on.
+  // The live header's first column has colspan=2 for layout reasons the body
+  // doesn't match (only one Symbol cell), which shifts every later column
+  // out of alignment — drop it only where it's paired with rowspan=2.
   content.querySelectorAll('.db-table thead th[rowspan="2"][colspan="2"]')
     .forEach((th) => th.removeAttribute('colspan'));
 
-  // 2. Keep the date/time fields' bordered look (matching the live page) —
-  // only drop the bits that are purely interactive affordances with no
-  // printed meaning: the time dropdown's chevron and its (already hidden)
-  // option list.
   content.querySelectorAll('.db-time-chevron, .db-time-list').forEach((el) => el.remove());
 
-  // cloneNode does carry over an <input>'s live value, but that's a DOM
-  // property, not a `value` attribute — and content.innerHTML below only
-  // serializes attributes, so without this the date field prints empty.
-  // Promoting it to an attribute here is what makes it survive that
-  // string round-trip into the print window's fresh document.
+  // cloneNode carries over an <input>'s live value as a DOM property, but
+  // content.innerHTML below only serializes attributes — promote it so the
+  // date survives that string round-trip into the print window.
   const dateInput = content.querySelector('.db-date-display');
   if (dateInput) dateInput.setAttribute('value', dateInput.value);
 
   const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
     || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
   if (!logoEl) return;
-  // Use the browser's already-resolved absolute image URL rather than cloning
-  // a <picture> as-is — its srcset sources are relative and can fail to
-  // re-resolve once written into a freshly opened, blank print window.
+  // A cloned <picture>'s relative srcset can fail to resolve in the print
+  // window, so use the browser's already-resolved absolute image URL.
   const logoImg = logoEl.tagName === 'IMG' ? logoEl : logoEl.querySelector('img');
   if (!logoImg) return;
   const logoSrc = logoImg.currentSrc || logoImg.src;
@@ -562,14 +539,22 @@ function printElement(block) {
       margin: 10mm;
     }
 
+    /* Chrome's "Background graphics" print toggle is off by default and
+       would otherwise drop background-color/-image, e.g. the underline
+       below, even though it renders fine in a normal on-screen view. */
+    html, body, * {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
     .header,
     .header-wrapper,
     .main-nav-desktop,
     .brand-logo,
     .brand-logo-container {
-      display: block !important;
-      visibility: visible !important;
-      position: static !important;
+      display: block;
+      visibility: visible;
+      position: static;
     }
 
     .brand-logo-container {
@@ -579,49 +564,56 @@ function printElement(block) {
     }
 
     .brand-logo-container img {
-      display: block !important;
-      width: 12.5rem !important;
-      height: 3.125rem !important;
+      display: block;
+      width: 12.5rem;
+      height: 3.125rem;
       object-fit: contain;
     }
 
-    h2 {
+    /* Scoped to the always-present .table-container rather than
+       center-title/underline-title, so it centers regardless of authoring. */
+    .table-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+      position: relative;
+      margin: 0;
+      padding: 0 0 1.875rem;
       font-size: 2rem;
+      text-align: center;
     }
 
-    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
+    .table-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
       width: 2.25rem;
       height: 0.125rem;
       background-color: black;
-    }
-    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
-      margin: 0;
-      padding: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
 
     .dynamic-board {
       margin-top: 2rem;
     }
 
-    /* The A4 print area (~45rem) falls under the 47.5rem breakpoint where
-       .db-date-wrap/.db-time-wrap are each width:100% (stacked, one per
-       row) — that's correct for a real narrow phone, but on the wider print
-       page it leaves the date and time fields stranded on their own rows
-       instead of sitting side by side under the label, like the live page. */
+    /* A4's print width falls under the 47.5rem breakpoint where these are
+       each width:100% (stacked), so shrink them to sit side by side. */
     .dynamic-board .db-date-wrap,
     .dynamic-board .db-time-wrap {
       width: auto;
       flex: 0 1 auto;
     }
 
-    /* Table: same printer-friendly sizing/padding as before, but with a
-       full grid of cell borders (rather than bcap's borderless style) so
-       rows and columns are clearly separated on paper. */
     .dynamic-board .db-table {
       width: 100%;
       border: 0.0625rem solid black;
+      /* Outline as a fallback outer border — it can't be partially
+         overridden by any single cell's border like border-collapse can. */
+      outline: 0.0625rem solid black;
+      outline-offset: -0.0625rem;
       border-collapse: collapse;
-      font-size: 0.625rem;
+      font-size: 0.8125rem;
       color: var(--bbl-color-grey-70);
     }
 
@@ -636,20 +628,37 @@ function printElement(block) {
     .dynamic-board .db-table thead tr:last-child th {
       background: transparent;
       color: black;
-      font-size: 0.75rem;
+      font-size: 0.875rem;
       font-weight: 700;
-      text-align: left;
       height: auto;
-      padding: 0.1875rem 0.3125rem;
+      padding: 0.25rem 0.4375rem;
       border: 0.0625rem solid black;
     }
 
     .dynamic-board .db-table tbody td {
       background: transparent;
       border: 0.0625rem solid black;
-      padding-block: 0.1875rem;
+      padding: 0.25rem 0.4375rem;
       vertical-align: middle;
-      font-size: 0.625rem;
+      font-size: 0.8125rem;
+    }
+
+    /* The live table strips the last header cell's border-right; restore it. */
+    .dynamic-board .db-table thead th:last-child {
+      border-right: 0.0625rem solid black;
+    }
+
+    /* Reset every color/background inside the table so none of the live
+       page's colors (symbol links, active-sort highlight, ...) leak in. */
+    .dynamic-board .db-table,
+    .dynamic-board .db-table * {
+      color: black;
+      background: transparent;
+    }
+
+    .dynamic-board .db-remarks-content,
+    .dynamic-board .db-remarks-content * {
+      color: black;
     }
 
     .dynamic-board .db-table tbody tr:nth-child(even),
@@ -661,7 +670,7 @@ function printElement(block) {
     .dynamic-board .db-remarks-content {
       height: auto;
       overflow: visible;
-      font-size: 0.5rem;
+      font-size: 0.75rem;
     }
 
     @media print {
