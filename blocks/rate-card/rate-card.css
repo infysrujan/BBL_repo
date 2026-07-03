@@ -417,10 +417,6 @@
     font-size: 1.5rem;
   }
 
-  .rate-card .link-primary.pull-right {
-    font-size: 0.8rem;
-  }
-
 /* --------------------------------------------------------------------------
    EQUAL-HEIGHT COLUMNS — Desktop only
    Switch columns-3 section to CSS grid when rate-card is present.
