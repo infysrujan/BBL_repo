@@ -216,6 +216,10 @@
     line-clamp: 4;
 }
 
+.carousel-cta {
+   display: none;
+}
+
 @media (width > 47.5rem) {
     .carousel {
         padding-left: 3rem;
