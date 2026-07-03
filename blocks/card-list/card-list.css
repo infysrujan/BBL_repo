@@ -380,39 +380,6 @@
   box-sizing: border-box;
 }
 
-.cards-list-button .button-tertiary::after {
-  display: none;
-}
-
-.cards-list-button .button-tertiary {
-  position: relative;
-  padding-right: 0.9375rem;
-  color: var(--bbl-color-active-blue);
-  font-weight: var(--bbl-text-link-primary-weight);
-  font-size: var(--bbl-text-link-primary-size);
-  line-height: var(--bbl-text-link-primary-line-height);
-  font-family: var(--bbl-font-family-medium);
-}
-
-.cards-list-button .button-tertiary:hover {
-  color: var(--bbl-color-blue-90);
-  text-decoration: none;
-}
-
-.cards-list-button .button-tertiary::before {
-  content: "\e901";
-  position: absolute;
-  right: 0.1875rem;
-  top: 52%;
-  transform: translateY(-50%);
-  font: 300 0.625rem / 1 icomoon, sans-serif;
-  transition: all 0.3s ease-in-out;
-}
-
-.cards-list-button .button-tertiary:hover::before {
-  transform: translateY(-50%) translateX(0.25rem);
-}
-
 .cards-list.scrollable::-webkit-scrollbar {
   height: 0.125rem;
 }
