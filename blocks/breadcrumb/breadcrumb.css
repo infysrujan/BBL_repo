@@ -44,7 +44,7 @@
   content: none;
 }
 
-.breadcrumb ol>li:last-child::after {
+.breadcrumb ol > li:last-child:not(:only-child)::after {
   content: "";
   height: var(--bbl-space-025);
   width: calc(50% - var(--bbl-space-200));
