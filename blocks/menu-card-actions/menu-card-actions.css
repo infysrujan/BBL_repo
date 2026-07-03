@@ -70,6 +70,21 @@
   overflow: visible;
 }
 
+.menu-card-action-description :is(p, li) a {
+  color: inherit;
+}
+
+.menu-card-action-description :is(p, li) a[class] {
+  display: inline;
+  font-weight: inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.menu-card-action-description :is(p, li) a[class]::after {
+  display: none;
+}
+
 .menu-card-action-item-link,
 .menu-card-action-item-link:any-link {
   color: inherit;
@@ -87,11 +102,6 @@
 .menu-card-action-item-link .menu-card-action-inner {
   flex: 1;
   transition: border 0.3s ease, box-shadow 0.3s ease;
-}
-
-.menu-card-action-item-link:hover,
-.menu-card-action-item-link:hover * {
-  text-decoration: none;
 }
 
 .menu-card-action-item-link:hover .menu-card-action-inner {

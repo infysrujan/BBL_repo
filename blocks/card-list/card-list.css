@@ -59,6 +59,21 @@
   font-weight: var(--bbl-text-default-weight);
 }
 
+.cards-list-description :is(p, li) a {
+  color: inherit;
+}
+
+.cards-list-description :is(p, li) a[class] {
+  display: inline;
+  font-weight: inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.cards-list-description :is(p, li) a[class]::after {
+  display: none;
+}
+
 .cards-list-promo-tag p {
   margin: 0;
 }
