@@ -196,7 +196,7 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
       <td class="db-td-num">${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}</td>
       <td class="db-td-dl">
-        <a href="${state.downloadUrl.replace('{{SYMBOL}}', sym)}" download aria-label="Download ${sym} factsheet">
+        <a href="${state.downloadUrl.replace('{{SYMBOL}}', sym.toLowerCase())}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
         </a>
       </td>
@@ -604,14 +604,27 @@ function printElement(block) {
       margin: 10mm;
     }
 
-    .header {
-      position: unset;
+    .header,
+    .header-wrapper,
+    .main-nav-desktop,
+    .brand-logo,
+    .brand-logo-container {
+      display: block !important;
+      visibility: visible !important;
+      position: static !important;
     }
 
     .brand-logo-container {
       width: 12.5rem;
       height: 3.125rem;
       margin-block: 3rem 1rem;
+    }
+
+    .brand-logo-container img {
+      display: block !important;
+      width: 12.5rem !important;
+      height: 3.125rem !important;
+      object-fit: contain;
     }
 
     h2 {
@@ -632,12 +645,12 @@ function printElement(block) {
       margin-top: 2rem;
     }
 
-    /* Table: same minimal, printer-friendly style as bcap's print table —
-       no vertical rules or shaded header, a thin black rule under the
-       header row, and small, tight-padded text. */
+    /* Table: same printer-friendly sizing/padding as before, but with a
+       full grid of cell borders (rather than bcap's borderless style) so
+       rows and columns are clearly separated on paper. */
     .dynamic-board .db-table {
       width: 100%;
-      border: 0;
+      border: 0.0625rem solid black;
       border-collapse: collapse;
       font-size: 0.625rem;
       color: var(--bbl-color-grey-70);
@@ -659,14 +672,12 @@ function printElement(block) {
       text-align: left;
       height: auto;
       padding: 0.1875rem 0.3125rem;
-      border: none;
-      border-top: 0.125rem solid black;
-      border-bottom: 0.125rem solid black;
+      border: 0.0625rem solid black;
     }
 
     .dynamic-board .db-table tbody td {
       background: transparent;
-      border: none;
+      border: 0.0625rem solid black;
       padding-block: 0.1875rem;
       vertical-align: middle;
       font-size: 0.625rem;
@@ -721,7 +732,7 @@ function printElement(block) {
         <div class="header block" data-block-status="loaded">
           <div class="header-content">
             <div class="main-nav-desktop">
-              <div class="brand-logo block">
+              <div class="brand-logo block" data-block-status="loaded">
                 <div class="brand-logo-container">
                   ${brandLogo}
                 </div>
