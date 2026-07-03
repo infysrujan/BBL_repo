@@ -68,6 +68,10 @@
   max-width: 100%;
 }
 
+.cross-banner-button {
+  margin-left: auto;
+}
+
 .cross-banner-button .button-container {
   margin: 0;
 }
@@ -178,8 +182,8 @@ body.private
 
   .cross-banner-title,
   .cross-banner-description {
-    flex: 0 0 33.25%;
-    max-width: 33.25%;
+    max-width: 21.875rem;
+    width: 100%;
   }
 
   .cross-banner-button {
