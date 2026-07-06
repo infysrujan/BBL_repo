@@ -17,7 +17,7 @@ main .custom-forms .form form p {
 
 main .form-container.custom-forms .form :is(h1, h2, h3, h4, h5, h6){
   position: relative;
-  font-size: 3rem;
+  font-size: var(--bbl-form-font-size-48);
   text-align: center;
   color: var(--bbl-color-black);
   font-weight: var(--bbl-font-weight-regular);
