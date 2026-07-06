@@ -166,6 +166,18 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     padding-block: 0;
   }
 
+  /* Stack horizontal radio options one below another (labels too long to sit side by side) */
+  & .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) .radio-wrapper {
+    flex-wrap: wrap;
+    min-width: 100%;
+    padding: 0 var(--bbl-form-padding-10);
+  }
+
+  & .form form .radio-group-wrapper.align-left > legend.field-label {
+    text-align: left;
+    padding: 0 var(--bbl-form-padding-10);
+  }
+
   & .form form .field-loan-type .checkbox-group-wrapper {
     display: flex;
     flex-flow: row wrap;
