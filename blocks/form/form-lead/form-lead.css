@@ -939,6 +939,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   main .lead-forms .form form h2{
     font-size: var(--bbl-form-font-size-16);
     line-height: 1.3rem;
+    padding: 0 var(--bbl-form-padding-10);
   }
 
   main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
@@ -954,5 +955,6 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   main .lead-forms .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label) {
     font-size: var(--bbl-font-size-b1-desktop);
     line-height: var(--bbl-form-line-height-1);
+    padding: 0 var(--bbl-form-padding-10);
   }
 }
