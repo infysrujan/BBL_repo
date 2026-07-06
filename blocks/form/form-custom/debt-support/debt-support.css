@@ -166,7 +166,6 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     padding-block: 0;
   }
 
-  /* Stack horizontal radio options one below another (labels too long to sit side by side) */
   & .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) .radio-wrapper {
     flex-wrap: wrap;
     min-width: 100%;
