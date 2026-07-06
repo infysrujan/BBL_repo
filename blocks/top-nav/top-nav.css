@@ -46,14 +46,18 @@
 
 @media (width > 64rem) {
 	.top-nav {
-		padding: 0.625rem 5.25rem;
+		padding: 0;
+		width: 100%;
 	}
 
 	.top-nav ul {
+		max-width: var(--bbl-layout-content-max-width-1920);
+		margin: 0 auto;
+		box-sizing: border-box;
 		justify-content: flex-end;
 		flex-direction: row;
 		align-items: center;
-		padding: 0;
+		padding: 0.625rem 5.25rem;
 		gap: 1.875rem;
 	}
 
