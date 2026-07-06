@@ -607,14 +607,29 @@ function printElement(block) {
 
     .dynamic-board .db-table {
       width: 90%;
+      /* table-layout: fixed was tried here, but it only measures the FIRST
+         header row's cells to size columns — this table's first row has
+         colspan="2" group headers (Bidding/Offering Price) whose real
+         sub-column split only exists in the second row, so fixed layout
+         can't place that split and the sub-headers overlap. table-layout:
+         auto (the default) measures every row correctly; combined with
+         overflow-wrap/word-break below and min-width:0 (already reset by
+         dynamic-board.css's own @media print block) it still shrinks to
+         fit the page instead of overflowing. */
       border: 0.0625rem solid black;
       /* Outline as a fallback outer border — it can't be partially
          overridden by any single cell's border like border-collapse can. */
       outline: 0.0625rem solid black;
       outline-offset: -0.0625rem;
       border-collapse: collapse;
-      font-size: 0.8125rem;
-      color: var(--bbl-color-grey-70);
+      font-size: 0.6875rem;
+      color: #78787D;
+    }
+
+    .dynamic-board .db-table th,
+    .dynamic-board .db-table td {
+      overflow-wrap: break-word;
+      word-break: break-word;
     }
 
     .dynamic-board .db-table thead,
@@ -626,21 +641,34 @@ function printElement(block) {
     .dynamic-board .db-table thead th,
     .dynamic-board .db-table thead tr:first-child th,
     .dynamic-board .db-table thead tr:last-child th {
-      background: transparent;
-      color: black;
-      font-size: 0.875rem;
+      /* Chrome's print engine frequently drops a background painted at the
+         thead/tr level even with print-color-adjust: exact set globally —
+         setting it directly on each th is what actually survives printing.
+         Hard-coded hex (not var()) so it doesn't depend on the popup having
+         fully resolved the site's CSS custom properties before printing. */
+      background-color: #e5e8f4;
+      font-size: 0.6875rem;
       font-weight: 700;
       height: auto;
-      padding: 0.25rem 0.4375rem;
+      padding: 0.1875rem 0.25rem;
       border: 0.0625rem solid black;
     }
 
     .dynamic-board .db-table tbody td {
-      background: transparent;
       border: 0.0625rem solid black;
-      padding: 0.25rem 0.4375rem;
+      padding: 0.1875rem 0.25rem;
       vertical-align: middle;
-      font-size: 0.8125rem;
+      font-size: 0.6875rem;
+    }
+
+    /* Same as the thead case above: set row-striping/selection backgrounds
+       on the td itself, since a tr-level background can fail to print. */
+    .dynamic-board .db-table tbody tr:nth-child(even) td {
+      background-color: #f8f9fc;
+    }
+
+    .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr td {
+      background-color: #e5edf4;
     }
 
     /* The live table strips the last header cell's border-right; restore it. */
@@ -648,22 +676,8 @@ function printElement(block) {
       border-right: 0.0625rem solid black;
     }
 
-    /* Reset every color/background inside the table so none of the live
-       page's colors (symbol links, active-sort highlight, ...) leak in. */
-    .dynamic-board .db-table,
-    .dynamic-board .db-table * {
-      color: black;
-      background: transparent;
-    }
-
-    .dynamic-board .db-remarks-content,
-    .dynamic-board .db-remarks-content * {
-      color: black;
-    }
-
     .dynamic-board .db-table tbody tr:nth-child(even),
     .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr {
-      background: transparent;
       position: static;
     }
 
@@ -727,21 +741,36 @@ function printElement(block) {
     </body>
   </html>
   `;
-  const runPrint = () => {
-    printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 100);
-  };
-  if (printWindow.document.readyState === 'complete') {
-    requestAnimationFrame(runPrint);
-  } else {
-    printWindow.addEventListener('load', runPrint);
-  }
-
   printWindow.document.write(printHtml);
   printWindow.document.close();
+
+  // readyState/rAF/a flat 100ms timer used to race against the popup's own
+  // <link> stylesheets and web fonts, printing with default UA styles
+  // whenever the CSS hadn't finished loading yet (e.g. on a cold cache).
+  // Wait on the actual load signals instead, capped by a safety timeout.
+  const waitForStylesheets = () => Promise.all(
+    [...printWindow.document.querySelectorAll('link[rel="stylesheet"]')].map((link) => (
+      link.sheet
+        ? Promise.resolve()
+        : new Promise((resolve) => {
+          link.addEventListener('load', resolve, { once: true });
+          link.addEventListener('error', resolve, { once: true });
+        })
+    )),
+  );
+  const waitForFonts = () => printWindow.document.fonts?.ready ?? Promise.resolve();
+  const timeout = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
+
+  Promise.race([
+    Promise.all([waitForStylesheets(), waitForFonts()]),
+    timeout(3000),
+  ]).then(() => {
+    printWindow.focus();
+    requestAnimationFrame(() => {
+      printWindow.print();
+      printWindow.close();
+    });
+  });
 }
 
 // ─── main decorate ────────────────────────────────────────────────────────────
