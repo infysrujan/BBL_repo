@@ -291,9 +291,9 @@ function printContent(containerEl) {
   const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
 
   const now = new Date();
-  const pageTitle = doc.querySelector('main .default-content-wrapper h1, main .default-content-wrapper h2')?.textContent?.trim() || 'Fund Prices - BBL Asset Management';
-  const searchLabelText = containerEl.querySelector('.fund-prices-search-bar label')?.textContent?.trim() || 'Search Fund';
-  const dateLabelText = containerEl.querySelector('.calendar-wrapper p')?.textContent?.trim() || 'As of :';
+  const pageTitle = doc.querySelector('main .default-content-wrapper h1, main .default-content-wrapper h2')?.textContent?.trim();
+  const searchLabelText = containerEl.querySelector('.fund-prices-search-bar label')?.textContent?.trim();
+  const dateLabelText = containerEl.querySelector('.calendar-wrapper p')?.textContent?.trim();
   const printRoot = doc.createElement('div');
   printRoot.id = 'fund-prices-print-root';
   printRoot.innerHTML = `
@@ -353,9 +353,9 @@ async function parseBlockData(block) {
     printLabelHtml: richTextFromRow(rows[1]),
     errorMessageHtml: richTextFromRow(rows[2]),
     disclaimerHtml: richTextFromRow(rows[3]),
-    searchLabel: rows[4]?.querySelector('p')?.textContent?.trim() || ph.fundPricesSearchLabel || 'Search Fund',
-    goLabel: rows[5]?.querySelector('p')?.textContent?.trim() || ph.fundPricesGoLabel || 'GO',
-    allFundsLabel: rows[6]?.querySelector('p')?.textContent?.trim() || ph.fundPricesAllFundsLabel || 'ALL FUNDS',
+    searchLabel: ph.fundPricesSearchLabel,
+    goLabel: ph.fundPricesGoLabel,
+    allFundsLabel: ph.fundPricesAllFundsLabel,
   };
 }
 

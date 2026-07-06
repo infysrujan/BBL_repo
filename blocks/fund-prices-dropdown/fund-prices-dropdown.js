@@ -317,38 +317,37 @@ function renderHistTable(tbody, history) {
 }
 
 export default async function decorate(block) {
-  const authoredRows = [...block.children];
   const ph = await fetchPlaceholders();
-  function txt(i, phKey, fallback) {
-    return authoredRows[i]?.querySelector('p')?.textContent?.trim() || ph[phKey] || fallback;
+  function txt(phKey) {
+    return ph[phKey];
   }
   const labels = {
-    title: txt(0, 'fundPricesDropdownTitle', 'Fund Price Details'),
-    printLabel: txt(1, 'fundPricesDropdownPrint', 'Print'),
-    backLabel: txt(2, 'fundPricesDropdownBack', 'Fund Prices'),
-    statHighHeader: txt(3, 'fundPricesDropdownStatHigh', 'Highest Fund Price'),
-    statLowHeader: txt(4, 'fundPricesDropdownStatLow', 'Lowest Fund Price'),
-    navColHeader: txt(5, 'fundPricesDropdownNav', 'NAV'),
-    graphTab: txt(6, 'fundPricesDropdownGraph', 'GRAPH'),
-    tableTab: txt(7, 'fundPricesDropdownTable', 'VIEW TABLE DATA'),
-    beginNavLabel: txt(8, 'fundPricesDropdownBeginNav', 'Beginning NAV'),
-    endNavLabel: txt(9, 'fundPricesDropdownEndNav', 'Ending NAV'),
-    histDateHeader: txt(10, 'fundPricesDropdownHistDate', 'Date'),
-    histSellHeader: txt(11, 'fundPricesDropdownHistSell', 'Selling Price'),
-    histRedeemHeader: txt(12, 'fundPricesDropdownHistRedeem', 'Redemption Price'),
-    statRowSelected: txt(13, 'fundPricesDropdownStatSelected', 'In the selected period'),
-    statRowYear: txt(14, 'fundPricesDropdownStatYear', 'During the last 12 months'),
-    statRowInception: txt(15, 'fundPricesDropdownStatInception', 'Since Inception'),
-    fromLabel: txt(16, 'fundPricesDropdownFrom', 'From'),
-    toLabel: txt(17, 'fundPricesDropdownTo', 'To'),
-    rangeError: txt(18, 'fundPricesDropdownRangeError', 'Date range should be between 3 years'),
-    period1w: txt(19, 'fundPricesDropdownPeriod1w', '1 Week'),
-    period1m: txt(20, 'fundPricesDropdownPeriod1m', '1 Month'),
-    period3m: txt(21, 'fundPricesDropdownPeriod3m', '3 Months'),
-    period6m: txt(22, 'fundPricesDropdownPeriod6m', '6 Months'),
-    period1y: txt(23, 'fundPricesDropdownPeriod1y', '1 Year'),
-    period3y: txt(24, 'fundPricesDropdownPeriod3y', '3 Years'),
-    periodDr: txt(25, 'fundPricesDropdownPeriodDr', 'Date Range'),
+    title: txt('fundPricesDropdownTitle'),
+    printLabel: txt('fundPricesDropdownPrint'),
+    backLabel: txt('fundPricesDropdownBack'),
+    statHighHeader: txt('fundPricesDropdownStatHigh'),
+    statLowHeader: txt('fundPricesDropdownStatLow'),
+    navColHeader: txt('fundPricesDropdownNav'),
+    graphTab: txt('fundPricesDropdownGraph'),
+    tableTab: txt('fundPricesDropdownTable'),
+    beginNavLabel: txt('fundPricesDropdownBeginNav'),
+    endNavLabel: txt('fundPricesDropdownEndNav'),
+    histDateHeader: txt('fundPricesDropdownHistDate'),
+    histSellHeader: txt('fundPricesDropdownHistSell'),
+    histRedeemHeader: txt('fundPricesDropdownHistRedeem'),
+    statRowSelected: txt('fundPricesDropdownStatSelected'),
+    statRowYear: txt('fundPricesDropdownStatYear'),
+    statRowInception: txt('fundPricesDropdownStatInception'),
+    fromLabel: txt('fundPricesDropdownFrom'),
+    toLabel: txt('fundPricesDropdownTo'),
+    rangeError: txt('fundPricesDropdownRangeError'),
+    period1w: txt('fundPricesDropdownPeriod1w'),
+    period1m: txt('fundPricesDropdownPeriod1m'),
+    period3m: txt('fundPricesDropdownPeriod3m'),
+    period6m: txt('fundPricesDropdownPeriod6m'),
+    period1y: txt('fundPricesDropdownPeriod1y'),
+    period3y: txt('fundPricesDropdownPeriod3y'),
+    periodDr: txt('fundPricesDropdownPeriodDr'),
   };
   const PERIOD_OPTIONS = [
     { code: '1W', label: labels.period1w },
