@@ -176,7 +176,6 @@
 .rate-card table tbody td:not(:first-child) {
   text-align: right;
   font-size: 1.3125rem;
-  font-variant-numeric: tabular-nums;
 }
 
 /* --------------------------------------------------------------------------
