@@ -1,22 +1,32 @@
 .field-subject > legend {
   color: var(--bbl-text-primary);
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-body-b1-weight);
-  font-size: var(--bbl-body-b1-size);
+  font-size: 1.25rem;
   text-decoration: underline;
+  padding: 0.625rem 0 0;
 }
 
 .field-title h2 {
   text-align: center;
+  color: var(--bbl-text-primary);
+  font-family: var(--bbl-font-family-primary);
+  font-weight: var(--bbl-heading-h2-weight);
+  font-size: var(--bbl-heading-h2-size);
+  line-height: 2.875rem;
+
 }
 
-@media(width > 64rem) {
-  .field-subject > legend {
-    font-size: 1.25rem;
-    padding-top: 0.625rem;
-  }
+.field-transdatetimepanel > legend.field-label{
+  font-size: var(--bbl-body-b1-size);
+  padding: 0.3125rem 0.625rem;
+}
 
-  .field-title h2 {
-    font-size: var(--bbl-heading-h1-size);
-  }
+.field-invalid :is(.field-validation-error, .field-description) {
+  padding-left: 1rem;
+  margin-top: 0.3125rem;
+}
+
+.field-info-pannel > legend{
+  padding: 0;
 }
