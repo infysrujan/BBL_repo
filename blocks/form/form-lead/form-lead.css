@@ -100,8 +100,8 @@ main .lead-forms .form form p {
 }
 
 main .lead-forms .form form h2{
-    font-size: 14px;
-    line-height: 18.2px;
+    font-size: 0.875rem;
+    line-height: 1.1375rem;
   }
 
 main .lead-forms.section.central-aligned > .default-content-wrapper p{
@@ -937,8 +937,8 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   }
 
   main .lead-forms .form form h2{
-    font-size: 16px;
-    line-height: 20.8px;
+    font-size: var(--bbl-form-font-size-16);
+    line-height: 1.3rem;
   }
 
   main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
