@@ -115,6 +115,15 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: BBLSans-Medium-Numers;
+  src: url("../fonts/BBLSans-Md-numbers.woff") format("woff"),
+    url("../fonts/BBLSans-Md-Numers.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+}
+
 /* Icon font */
 @font-face {
   font-family: icomoon;
