@@ -176,7 +176,6 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel> :is(.field-cnf-date-exclude, .field-hours-exclude, .field-minutes-exclude),
 main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch) {
   position: relative;
-  grid-column: span 12;
   width: 100%;
   padding: 0;
   margin: 0;
@@ -220,7 +219,6 @@ main .section.form-container.custom-forms .form form .field-compliantnonfin-comp
   position: relative;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 0.9375rem var(--bbl-space-250);
   margin-top: 0;
   margin-bottom: var(--bbl-space-250);
   padding: var(--bbl-space-250) var(--bbl-space-200);

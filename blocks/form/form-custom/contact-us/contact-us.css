@@ -1,5 +1,4 @@
-.field-subject > legend {
-  color: var(--bbl-text-primary);
+.field-subject>legend {
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-body-b1-weight);
   font-size: 1.25rem;
@@ -14,12 +13,6 @@
   font-weight: var(--bbl-heading-h2-weight);
   font-size: var(--bbl-heading-h2-size);
   line-height: 2.875rem;
-
-}
-
-.field-transdatetimepanel > legend.field-label{
-  font-size: var(--bbl-body-b1-size);
-  padding: 0.3125rem 0.625rem;
 }
 
 .field-invalid :is(.field-validation-error, .field-description) {
@@ -27,6 +20,55 @@
   margin-top: 0.3125rem;
 }
 
-.field-info-pannel > legend{
-  padding: 0;
+.field-description textarea {
+  resize: none;
+}
+
+main .section.form-container.custom-forms .form form .field-productservices1-exclude select,
+main .section.form-container.custom-forms .form form .field-categorydropdown-exclude select,
+main .section.form-container.custom-forms .form form .field-categorydropdown2-exclude select {
+  font-size: 0.95rem;
+  font-weight: var(--bbl-font-weight-medium);
+  font-family: var(--bbl-font-family-medium);
+  color: var(--bbl-text-primary);
+  margin-bottom: 1rem;
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel {
+  row-gap: 0.5rem;
+}
+
+main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.field-subject {
+  gap: 0;
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-info-pannel.field-wrapper>legend {
+  background-color: transparent;
+  padding: 0 0.625rem;
+  margin: 0;
+  text-decoration: underline;
+  color: var(--form-fieldset-legend-color);
+  font-size: 1.25rem;
+  font-weight: var(--bbl-font-weight-medium);
+  font-family: var(--bbl-font-family-medium);
+}
+
+main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) {
+  margin-top: var(--bbl-space-250);
+  margin-bottom: 0;
+}
+
+main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.field-subject>legend.field-label {
+  font-size: 1.25rem;
+  font-weight: var(--bbl-font-weight-medium);
+  text-align: left;
+  color: var(--form-fieldset-legend-color);
+  padding: 0 0.625rem;
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>legend.field-label,
+main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel)>legend.field-label {
+  width: max-content;
+  font-size: 1rem;
+  padding: 0.3125rem 0.625rem;
 }
