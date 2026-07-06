@@ -196,7 +196,7 @@
 
 .carousel-description {
     color: var(--bbl-color-grey-70);
-    margin: 0 0 var(--bbl-space-200);
+    margin: 0 0 var(--bbl-space-300);
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -224,7 +224,7 @@
     .carousel {
         padding-left: 3rem;
     }
-
+    
     .carousel-header {
         padding-right: 3rem;
     }
@@ -433,7 +433,6 @@
 
     .carousel-cta {
         display: inline-block;
-        position: absolute;
         bottom: var(--bbl-space-200);
     }
 
@@ -450,9 +449,5 @@
         padding: var(--bbl-space-400);
         color: var(--bbl-color-white);
         max-width: 360px;
-    }
-
-    .carousel-item:not(.active) .carousel-content .carousel-cta {
-        top: 55%;
     }
 }
