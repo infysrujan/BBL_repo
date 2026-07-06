@@ -1,0 +1,22 @@
+.field-subject > legend {
+  color: var(--bbl-text-primary);
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-body-b1-weight);
+  font-size: var(--bbl-body-b1-size);
+  text-decoration: underline;
+}
+
+.field-title h2 {
+  text-align: center;
+}
+
+@media(width > 64rem) {
+  .field-subject > legend {
+    font-size: 1.25rem;
+    padding-top: 0.625rem;
+  }
+
+  .field-title h2 {
+    font-size: var(--bbl-heading-h1-size);
+  }
+}
