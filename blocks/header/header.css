@@ -249,7 +249,6 @@ header.is-not-overlapped ~ main {
     transition: background-color 0.3s ease, position 0.3s ease;
   }
 
-  /* Inner wrapper - centered content at 1752px */
   .header .main-nav-inner {
     width: 100%;
     box-sizing: border-box;
