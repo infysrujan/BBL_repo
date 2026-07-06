@@ -788,7 +788,8 @@ main .section.form-container.lead-forms .form form .radio-group-wrapper.radio-ta
   flex: 0 0 100%;
   width: 100%;
   margin: 0 0 var(--bbl-space-100);
-  padding: 0;
+  padding: 0 var(--bbl-form-padding-10);
+  font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-form-font-size-17);
   line-height: var(--bbl-form-line-height-17);
   font-weight: var(--bbl-form-font-weight-bold);
