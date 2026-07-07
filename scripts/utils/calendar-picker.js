@@ -15,7 +15,8 @@
  * Manual entry is enabled by default (`allowManualEntry: true`). While typing, the calendar
  * preview updates immediately (highlight + month navigation). `onChange` fires only on Enter
  * or when a day is picked in the grid. Blur / click-outside retains the typed value and
- * preview selection without calling `onChange`. When `fetchEnabledDays` is set and a committed
+ * preview selection without calling `onChange` or re-fetching enabled days when the parsed
+ * input matches the current selection. When `fetchEnabledDays` is set and a committed
  * manual date is not in the API response, the picker snaps to the nearest previous enabled
  * day (searching earlier months when needed). Pass `{ readOnly: true }` or
  * `{ allowManualEntry: false }` for calendar-only selection.
@@ -560,6 +561,12 @@ export function attachCalendarPicker(options) {
       return;
     }
 
+    // Click-outside / blur without a committed change: keep selection, no fetch/onChange.
+    if (selected && sameDay(parsed, selected)) {
+      syncLabel();
+      return;
+    }
+
     if (fetchEnabledDays) {
       (async () => {
         const resolved = await resolveManualEntryDate(parsed);
@@ -764,11 +771,6 @@ export function attachCalendarPicker(options) {
   input.addEventListener('blur', onInputBlur);
 
   syncLabel();
-  if (fetchEnabledDays) {
-    applyMonthAndFetchEnabledDays();
-  } else if (selected) {
-    renderGrid();
-  }
 
   return {
     open: openPopover,
