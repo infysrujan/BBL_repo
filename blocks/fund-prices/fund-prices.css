@@ -69,19 +69,25 @@
 }
 
 .fund-prices .fund-prices-table table tr.header-row td {
-  font-weight: bold;
+  font: 1rem Muli-Bold, Arial, sans-serif;
+  color: var(--bbl-color-black);
+  height: 2.875rem;
+  vertical-align: middle;
   white-space: nowrap;
-  color: black;
+}
+
+.fund-prices .fund-prices-table table tr:not(.header-row) td {
+  color: var(--bbl-color-grey-70);
+  font-family: BangkokBank-Regular, Tahoma, Helvetica, Arial, sans-serif;
+  font-weight: 400;
 }
 
 .fund-prices .fund-prices-table .dnav {
-  font-size: 0.6875rem;
   font-style: italic;
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: 0.6875rem;
+  line-height: 1.63;
   letter-spacing: -0.0063rem;
-  line-height: 1.1206rem;
-  color: var(--bbl-color-grey-70);
-  font-family: var(--bbl-font-family-primary);
+  padding-left: 0.3125rem;
 }
 
 .fund-prices .calendar-wrapper {
