@@ -102,6 +102,7 @@ h6 {
 
 strong{
   font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 p,
@@ -551,4 +552,16 @@ main img {
     height: 0;
     overflow: hidden;
     scroll-margin-top: var(--header-scroll-offset);
+}
+
+.loading {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    inset: 0;
+    background: url("/icons/loading.gif") center 12.5rem / 1.875rem no-repeat var(--bbl-color-white-alpha-30);
+}
+
+.loading.is-active {
+    display: block;
 }

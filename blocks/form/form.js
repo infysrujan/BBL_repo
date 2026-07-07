@@ -1,6 +1,8 @@
 import { createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './components/repeat/repeat.js';
-import { emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE } from './constant.js';
+import {
+  emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE,
+} from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
 import { handleSubmit } from './submit.js';
