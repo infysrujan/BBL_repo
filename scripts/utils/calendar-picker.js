@@ -12,8 +12,10 @@
  *     onChange: (d) => console.log(d),
  *   });
  *
- * The field is set to `readOnly` so values come from the calendar only (override with
- * `{ readOnly: false }`). Use `type="text"`. For a separate visible label, pass `labelElement`.
+ * Manual entry is enabled by default (`allowManualEntry: true`). Typed dates are parsed on
+ * blur or Enter using the localized display format and common `DD/MM/YYYY` patterns. Pass
+ * `{ readOnly: true }` or `{ allowManualEntry: false }` for calendar-only selection.
+ * Use `type="text"`. For a separate visible label, pass `labelElement`.
  */
 
 const MONTHS_EN = [
@@ -88,6 +90,64 @@ function sameDay(a, b) {
     && a.getDate() === b.getDate();
 }
 
+function isValidLocalDate(year, monthIndex, day) {
+  const d = new Date(year, monthIndex, day);
+  return d.getFullYear() === year
+    && d.getMonth() === monthIndex
+    && d.getDate() === day;
+}
+
+function resolveMonthIndex(token, lang) {
+  const t = token.replace(/\.$/, '').trim().toLowerCase();
+  if (!t) return -1;
+  const short = lang === 'th' ? MONTHS_SHORT_TH : MONTHS_SHORT_EN;
+  const full = lang === 'th' ? MONTHS_TH : MONTHS_EN;
+  let idx = short.findIndex((m) => m.replace(/\.$/, '').toLowerCase() === t);
+  if (idx >= 0) return idx;
+  idx = full.findIndex((m) => m.toLowerCase() === t);
+  return idx;
+}
+
+function normalizeYear(rawYear, lang) {
+  const y = Number.parseInt(rawYear, 10);
+  if (Number.isNaN(y)) return null;
+  if (lang === 'th' && y >= 2400) return y - BE_OFFSET;
+  return y;
+}
+
+/**
+ * @param {string} text
+ * @param {'en' | 'th'} lang
+ * @returns {Date | null} local calendar day, or null when unparseable
+ */
+export function parseCalendarDate(text, lang) {
+  const trimmed = String(text || '').trim();
+  if (!trimmed) return null;
+
+  const numeric = trimmed.match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/);
+  if (numeric) {
+    const day = Number.parseInt(numeric[1], 10);
+    const monthIndex = Number.parseInt(numeric[2], 10) - 1;
+    const year = normalizeYear(numeric[3], lang);
+    if (year !== null && isValidLocalDate(year, monthIndex, day)) {
+      return startOfDay(new Date(year, monthIndex, day));
+    }
+    return null;
+  }
+
+  const labeled = trimmed.match(/^(\d{1,2})\s+(\S+)\s+(\d{4})$/);
+  if (labeled) {
+    const day = Number.parseInt(labeled[1], 10);
+    const monthIndex = resolveMonthIndex(labeled[2], lang);
+    const year = normalizeYear(labeled[3], lang);
+    if (year !== null && monthIndex >= 0 && isValidLocalDate(year, monthIndex, day)) {
+      return startOfDay(new Date(year, monthIndex, day));
+    }
+  }
+
+  return null;
+}
+
 function positionPopover(trigger, popover, doc) {
   const rect = trigger.getBoundingClientRect();
   const { bottom, left: rectLeft, top } = rect;
@@ -125,11 +185,14 @@ function positionPopover(trigger, popover, doc) {
  * @property {(date: Date) => void} [onChange] - Fires when a date is chosen
  * @property {HTMLElement} [labelElement] - If set, formatted date is written here instead of
  *   `input.value`
- * @property {boolean} [readOnly=true] - When true, sets `input.readOnly` so typing is disabled
+ * @property {boolean} [allowManualEntry=true] - When true, users can type dates (blur / Enter)
+ * @property {boolean} [readOnly] - When true, calendar-only; defaults to `!allowManualEntry`
  * @property {(ctx: { year: number, month: number }) => Promise<number[] | null | undefined>}
  *   [fetchEnabledDays] - When set, only days whose calendar date (1–31) appear in the resolved
  *   array are selectable for the visible month (`month` is 0-based). Called when the popover
  *   opens and whenever prev/next month is used. While loading, all days are disabled.
+ * @property {() => void} [onPopoverOpen] - Fires when the calendar popover opens.
+ * @property {() => void} [onPopoverClose] - Fires when the calendar popover closes.
  */
 
 /**
@@ -146,8 +209,11 @@ export function attachCalendarPicker(options) {
     isDateDisabled = () => false,
     onChange,
     labelElement: labelElementOpt,
-    readOnly: readOnlyOption = true,
+    allowManualEntry: allowManualEntryOption = true,
+    readOnly: readOnlyOption,
     fetchEnabledDays,
+    onPopoverOpen,
+    onPopoverClose,
   } = options;
 
   const input = inputOption ?? triggerAlias;
@@ -155,8 +221,12 @@ export function attachCalendarPicker(options) {
     throw new Error('attachCalendarPicker: `input` must be an HTMLInputElement');
   }
 
-  if (readOnlyOption) {
+  const allowManualEntry = allowManualEntryOption !== false;
+  const readOnly = readOnlyOption ?? !allowManualEntry;
+  if (readOnly) {
     input.readOnly = true;
+  } else {
+    input.readOnly = false;
   }
 
   let selected = initialValue ? startOfDay(initialValue) : null;
@@ -166,6 +236,7 @@ export function attachCalendarPicker(options) {
   /** @type {Set<number> | null} null while loading when fetchEnabledDays is used */
   let enabledDaysInViewMonth = null;
   let monthFetchGeneration = 0;
+  let suppressBlurCommit = false;
 
   const getLang = () => getCalendarLang(doc);
 
@@ -220,6 +291,64 @@ export function attachCalendarPicker(options) {
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
+  function applySelectedDate(cellDate) {
+    selected = startOfDay(cellDate);
+    viewYear = selected.getFullYear();
+    viewMonth = selected.getMonth();
+    syncLabel();
+    notifyInputCommitted();
+    onChange?.(selected);
+  }
+
+  async function isDateAllowedByFetch(date) {
+    if (!fetchEnabledDays) return true;
+    try {
+      const days = await fetchEnabledDays({ year: date.getFullYear(), month: date.getMonth() });
+      const set = new Set();
+      (Array.isArray(days) ? days : []).forEach((n) => {
+        const dn = Number(n);
+        if (dn >= 1 && dn <= 31) set.add(dn);
+      });
+      return set.has(date.getDate());
+    } catch {
+      return false;
+    }
+  }
+
+  function commitManualInput() {
+    if (readOnly || labelElementOpt) return;
+    const lang = getLang();
+    const raw = input.value.trim();
+    if (!raw) {
+      syncLabel();
+      return;
+    }
+
+    const parsed = parseCalendarDate(raw, lang);
+    if (!parsed || isDateDisabled(parsed)) {
+      syncLabel();
+      return;
+    }
+
+    if (selected && sameDay(parsed, selected)) {
+      return;
+    }
+
+    if (fetchEnabledDays) {
+      (async () => {
+        const allowed = await isDateAllowedByFetch(parsed);
+        if (!allowed) {
+          syncLabel();
+          return;
+        }
+        applySelectedDate(parsed);
+      })();
+      return;
+    }
+
+    applySelectedDate(parsed);
+  }
+
   function renderWeekdayLabels() {
     weekdaysRow.replaceChildren();
     const lang = getLang();
@@ -232,9 +361,12 @@ export function attachCalendarPicker(options) {
   }
 
   function closePopover() {
+    if (!isOpen) return;
     isOpen = false;
+    monthFetchGeneration += 1;
     input.setAttribute('aria-expanded', 'false');
     popover.hidden = true;
+    onPopoverClose?.();
   }
 
   function renderGrid() {
@@ -313,6 +445,7 @@ export function attachCalendarPicker(options) {
       viewMonth = selected.getMonth();
     }
     renderWeekdayLabels();
+    onPopoverOpen?.();
     applyMonthAndFetchEnabledDays();
     positionPopover(input, popover, doc);
   }
@@ -323,10 +456,7 @@ export function attachCalendarPicker(options) {
     const day = Number.parseInt(btn.dataset.day, 10);
     if (Number.isNaN(day)) return;
     const cellDate = startOfDay(new Date(viewYear, viewMonth, day));
-    selected = cellDate;
-    syncLabel();
-    notifyInputCommitted();
-    onChange?.(cellDate);
+    applySelectedDate(cellDate);
     closePopover();
   }
 
@@ -375,9 +505,9 @@ export function attachCalendarPicker(options) {
   input.setAttribute('aria-expanded', 'false');
   input.setAttribute('autocomplete', 'off');
 
-  /** Opens when tabbing in; first pointer focus does not double-close with click. */
+  /** Calendar-only fields open on focus; editable fields open on click so tab+type works. */
   function onInputFocusIn() {
-    if (!isOpen) openPopover();
+    if (readOnly && !isOpen) openPopover();
   }
 
   function onInputClick(e) {
@@ -385,8 +515,35 @@ export function attachCalendarPicker(options) {
     if (!isOpen) openPopover();
   }
 
+  function onInputKeydown(e) {
+    if (readOnly) return;
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commitManualInput();
+      closePopover();
+    }
+  }
+
+  function onInputBlur() {
+    if (readOnly) return;
+    window.setTimeout(() => {
+      if (suppressBlurCommit) {
+        suppressBlurCommit = false;
+        return;
+      }
+      commitManualInput();
+    }, 0);
+  }
+
+  function onPopoverMouseDown() {
+    suppressBlurCommit = true;
+  }
+
+  popover.addEventListener('mousedown', onPopoverMouseDown);
   input.addEventListener('focusin', onInputFocusIn);
   input.addEventListener('click', onInputClick);
+  input.addEventListener('keydown', onInputKeydown);
+  input.addEventListener('blur', onInputBlur);
 
   syncLabel();
   if (fetchEnabledDays) {
@@ -401,8 +558,11 @@ export function attachCalendarPicker(options) {
     destroy() {
       monthFetchGeneration += 1;
       grid.removeEventListener('click', onGridClick);
+      popover.removeEventListener('mousedown', onPopoverMouseDown);
       input.removeEventListener('focusin', onInputFocusIn);
       input.removeEventListener('click', onInputClick);
+      input.removeEventListener('keydown', onInputKeydown);
+      input.removeEventListener('blur', onInputBlur);
       doc.removeEventListener('click', onDocClick);
       doc.removeEventListener('keydown', onKeydown);
       doc.defaultView.removeEventListener('resize', onReposition);
