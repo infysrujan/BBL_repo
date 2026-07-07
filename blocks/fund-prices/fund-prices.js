@@ -1,5 +1,5 @@
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
-import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
+import { attachCalendarPicker, formatLongDate } from '../../scripts/utils/calendar-picker.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { getLang } from '../../scripts/scripts.js';
@@ -132,18 +132,18 @@ function clearNonHeaderRows(tbody) {
   tbody.querySelectorAll('tr:not(.header-row)').forEach((tr) => tr.remove());
 }
 
-function formatBackdate(iso) {
+function formatBackdate(iso, lang) {
   const date = new Date(iso);
-  return Number.isNaN(date.getTime()) ? iso : date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+  return Number.isNaN(date.getTime()) ? iso : formatLongDate(date, lang);
 }
 
-function formatBodyCellText(normalizedKey, row, columnKey, selectedDate) {
+function formatBodyCellText(normalizedKey, row, columnKey, selectedDate, lang) {
   if (normalizedKey === 'openendfund') {
     const rawDate = row.mf_backdate || row.mfr_dDataDate || row.mf_dnav;
     if (rawDate && columnKey && row[columnKey] !== undefined) {
       const datePart = rawDate.split('T')[0];
       if (datePart !== selectedDate) {
-        const label = row.mf_backdate ? formatBackdate(rawDate) : rawDate;
+        const label = row.mf_backdate ? formatBackdate(rawDate, lang) : rawDate;
         return `${row[columnKey]} <span class="dnav">${label}</span>`;
       }
     }
@@ -220,7 +220,7 @@ function appendRowFromData(tableBlock, dataArray, latestMdate) {
         }
         const td = tableBlock.ownerDocument.createElement('td');
         td.classList.add(`col-${nk}`);
-        td.innerHTML = formatBodyCellText(nk, row, ck, latestMdate);
+        td.innerHTML = formatBodyCellText(nk, row, ck, latestMdate, lang);
         tr.appendChild(td);
       });
       tbody.appendChild(tr);

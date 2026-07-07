@@ -69,6 +69,24 @@ export function formatCalendarDate(date, lang) {
   return `${d} ${m} ${y}`;
 }
 
+/**
+ * @param {Date} date - local date (time ignored)
+ * @param {'en' | 'th'} lang
+ * @returns {string} e.g. `1 July 2026` or `1 กรกฎาคม 2569`
+ */
+export function formatLongDate(date, lang) {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
+  const d = date.getDate();
+  if (lang === 'th') {
+    const m = MONTHS_TH[date.getMonth()];
+    const y = date.getFullYear() + BE_OFFSET;
+    return `${d} ${m} ${y}`;
+  }
+  const m = MONTHS_EN[date.getMonth()];
+  const y = date.getFullYear();
+  return `${d} ${m} ${y}`;
+}
+
 function padMonthHeader(year, monthIndex, lang) {
   if (lang === 'th') {
     return `${MONTHS_TH[monthIndex]} ${year + BE_OFFSET}`;
