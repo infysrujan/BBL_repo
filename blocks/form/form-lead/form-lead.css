@@ -526,8 +526,8 @@ main .lead-forms .form form .checkbox-group-wrapper .checkbox-wrapper .field-lab
 
 main .lead-forms .form form .field-wrapper[class*='icon-']:has(> label:not([data-visible='false'])) > .field-label {
   display: block;
-  font-size: var(--bbl-form-font-size-16);
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-form-font-size-17);
+  font-weight: var(--bbl-form-font-weight-bold);
   color: var(--bbl-color-grey-85);
 }
 
