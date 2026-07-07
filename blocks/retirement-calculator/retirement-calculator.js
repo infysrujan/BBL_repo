@@ -366,7 +366,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
   container.appendChild(footer);
   block.appendChild(container);
 
-  const nextBtn = footer.querySelector('button-m primary');
+  const nextBtn = footer.querySelector('.button-m.primary');
 
   const validateCrossFields = () => {
     const currentAge = currentAgeField.getValue();
@@ -556,7 +556,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   container.appendChild(footer);
   block.appendChild(container);
 
-  const calculateBtn = footer.querySelector('button-m primary');
+  const calculateBtn = footer.querySelector('.button-m.primary');
 
   const validateSavingsCross = () => {
     const returnRate = savingsReturnRateField.getValue();
@@ -577,7 +577,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
 
   container.addEventListener('input', () => { validateSavingsCross(); syncBtnState(); });
 
-  footer.querySelector('button-m secondary').addEventListener('click', onBack);
+  footer.querySelector('.button-m.secondary').addEventListener('click', onBack);
 
   calculateBtn.addEventListener('click', async () => {
     calculateBtn.disabled = true;
@@ -798,7 +798,7 @@ function renderJourney3(block, data, state, onBack) {
   container.appendChild(footer);
   block.appendChild(container);
 
-  footer.querySelector('button-m secondary').addEventListener('click', onBack);
+  footer.querySelector('.button-m.secondary').addEventListener('click', onBack);
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────────
