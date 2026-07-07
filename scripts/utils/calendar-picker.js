@@ -15,7 +15,9 @@
  * Manual entry is enabled by default (`allowManualEntry: true`). While typing, the calendar
  * preview updates immediately (highlight + month navigation). `onChange` fires only on Enter
  * or when a day is picked in the grid. Blur / click-outside retains the typed value and
- * preview selection without calling `onChange`. Pass `{ readOnly: true }` or
+ * preview selection without calling `onChange`. When `fetchEnabledDays` is set and a committed
+ * manual date is not in the API response, the picker snaps to the nearest previous enabled
+ * day (searching earlier months when needed). Pass `{ readOnly: true }` or
  * `{ allowManualEntry: false }` for calendar-only selection.
  * Use `type="text"`. For a separate visible label, pass `labelElement`.
  */
@@ -469,19 +471,66 @@ export function attachCalendarPicker(options) {
     }
   }
 
+  async function loadEnabledDaysForMonth(year, month) {
+    try {
+      const days = await fetchEnabledDays({ year, month });
+      return (Array.isArray(days) ? days : [])
+        .map((n) => Number(n))
+        .filter((n) => n >= 1 && n <= 31)
+        .sort((a, b) => a - b);
+    } catch {
+      return [];
+    }
+  }
+
   async function isDateAllowedByFetch(date) {
     if (!fetchEnabledDays) return true;
-    try {
-      const days = await fetchEnabledDays({ year: date.getFullYear(), month: date.getMonth() });
-      const set = new Set();
-      (Array.isArray(days) ? days : []).forEach((n) => {
-        const dn = Number(n);
-        if (dn >= 1 && dn <= 31) set.add(dn);
-      });
-      return set.has(date.getDate());
-    } catch {
-      return false;
+    const enabled = await loadEnabledDaysForMonth(date.getFullYear(), date.getMonth());
+    return enabled.includes(date.getDate());
+  }
+
+  /**
+   * @param {Date} date - local calendar day (start of day)
+   * @returns {Promise<Date | null>}
+   */
+  async function findNearestPreviousEnabledDate(date) {
+    if (!fetchEnabledDays) return date;
+
+    const maxMonthsBack = 120;
+
+    async function searchMonth(year, month, maxDay, monthsRemaining) {
+      if (monthsRemaining <= 0) return null;
+
+      const enabled = await loadEnabledDaysForMonth(year, month);
+      for (let j = enabled.length - 1; j >= 0; j -= 1) {
+        const day = enabled[j];
+        if (day <= maxDay) {
+          const resolved = startOfDay(new Date(year, month, day));
+          if (!isDateDisabled(resolved)) return resolved;
+        }
+      }
+
+      const previousMonth = new Date(year, month - 1, 1);
+      return searchMonth(
+        previousMonth.getFullYear(),
+        previousMonth.getMonth(),
+        31,
+        monthsRemaining - 1,
+      );
     }
+
+    return searchMonth(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      maxMonthsBack,
+    );
+  }
+
+  async function resolveManualEntryDate(parsed) {
+    if (!fetchEnabledDays) return parsed;
+    if (await isDateAllowedByFetch(parsed)) return parsed;
+    return findNearestPreviousEnabledDate(parsed);
   }
 
   function previewManualInput() {
@@ -508,6 +557,19 @@ export function attachCalendarPicker(options) {
     const parsed = parseCalendarDate(raw, lang);
     if (!parsed || isDateDisabled(parsed)) {
       syncLabel();
+      return;
+    }
+
+    if (fetchEnabledDays) {
+      (async () => {
+        const resolved = await resolveManualEntryDate(parsed);
+        if (resolved) {
+          updateSelectionPreview(resolved);
+          syncLabel();
+        } else {
+          syncLabel();
+        }
+      })();
       return;
     }
 
@@ -544,12 +606,9 @@ export function attachCalendarPicker(options) {
 
     if (fetchEnabledDays) {
       (async () => {
-        const allowed = await isDateAllowedByFetch(parsed);
-        if (!allowed) {
-          syncLabel();
-          return;
-        }
-        finalize(parsed);
+        const resolved = await resolveManualEntryDate(parsed);
+        if (resolved) finalize(resolved);
+        else syncLabel();
       })();
       return;
     }
