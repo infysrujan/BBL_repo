@@ -27,7 +27,6 @@
 
 .retirement-calculator .rc-title {
   margin: 0 0 2.1875rem;
-  font-size: clamp(1.4rem, 6vw, 3rem);
   font-weight: 500;
   color: var(--bbl-color-black);
   text-align: center;
@@ -725,7 +724,6 @@
   }
 
   .retirement-calculator .rc-title {
-    font-size: 1.5938rem;
     margin: var(--bbl-space-300) 0 var(--bbl-space-600);
   }
 
