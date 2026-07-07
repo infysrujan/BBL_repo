@@ -276,7 +276,7 @@ function formatPrintTime(date = new Date()) {
   return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 }
 
-function printContent(containerEl) {
+function printContent(containerEl, pageTitle, searchLabelText) {
   if (!containerEl) return;
   const doc = containerEl.ownerDocument;
   const clone = containerEl.cloneNode(true);
@@ -291,8 +291,6 @@ function printContent(containerEl) {
   const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
 
   const now = new Date();
-  const pageTitle = doc.querySelector('main .default-content-wrapper h1, main .default-content-wrapper h2')?.textContent?.trim();
-  const searchLabelText = containerEl.querySelector('.fund-prices-search-bar label')?.textContent?.trim();
   const dateLabelText = containerEl.querySelector('.calendar-wrapper p')?.textContent?.trim();
   const printRoot = doc.createElement('div');
   printRoot.id = 'fund-prices-print-root';
@@ -356,6 +354,7 @@ async function parseBlockData(block) {
     searchLabel: ph.fundPricesSearchLabel,
     goLabel: ph.fundPricesGoLabel,
     allFundsLabel: ph.fundPricesAllFundsLabel,
+    pageTitle: ph.fundPricesPageTitle,
   };
 }
 
@@ -457,18 +456,20 @@ export default async function decorate(block) {
   const section = block.closest('.section');
   const {
     dateLabelHtml, printLabelHtml, errorMessageHtml, disclaimerHtml,
-    searchLabel, goLabel, allFundsLabel,
+    searchLabel, goLabel, allFundsLabel, pageTitle,
   } = await parseBlockData(block);
 
   block.innerHTML = '';
 
   const pageHeading = section?.querySelector('.default-content-wrapper h1, .default-content-wrapper h2, .default-content-wrapper h3');
-  if (pageHeading && pageHeading.tagName !== 'H2') {
-    const h2 = doc.createElement('h2');
-    h2.id = pageHeading.id;
-    h2.className = pageHeading.className;
-    h2.innerHTML = pageHeading.innerHTML;
-    pageHeading.replaceWith(h2);
+  if (pageHeading) {
+    const h2 = pageHeading.tagName === 'H2' ? pageHeading : doc.createElement('h2');
+    if (pageHeading.tagName !== 'H2') {
+      h2.id = pageHeading.id;
+      h2.className = pageHeading.className;
+    }
+    h2.textContent = pageTitle;
+    if (pageHeading.tagName !== 'H2') pageHeading.replaceWith(h2);
   }
 
   if (isAuthoringInstance(block)) {
@@ -615,7 +616,7 @@ export default async function decorate(block) {
   /* ── Print handler ── */
   printLabel.addEventListener('click', (e) => {
     e.preventDefault();
-    printContent(section ?? root);
+    printContent(section ?? root, pageTitle, searchLabel);
   });
 
   /* ── Dynamically build and load fund-prices-dropdown block ── */
