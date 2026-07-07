@@ -142,12 +142,3 @@ export const SUBMISSION_SERVICE = 'https://forms.adobe.com/adobe/forms/af/submit
 export function getSubmitBaseUrl() {
   return getSubmitUrl('submit-url');
 }
-
-/**
- * Synchronously fetches the base URL used to resolve AEM DAM asset paths
- * (e.g. "/content/dam/...") referenced by Adaptive Form image fields, from configs.json.
- * @returns {string} - The asset base URL from configs.json, or empty string if not found/error
- */
-export function getAssetBaseUrl() {
-  return getSubmitUrl('asset-base-url');
-}

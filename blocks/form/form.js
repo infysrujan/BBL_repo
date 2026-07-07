@@ -1,7 +1,7 @@
 import { createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './components/repeat/repeat.js';
 import {
-  emailPattern, getAssetBaseUrl, getSubmitBaseUrl, SUBMISSION_SERVICE,
+  emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE,
 } from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
@@ -133,33 +133,12 @@ function createPlainText(fd) {
   return wrapper;
 }
 
-// createOptimizedPicture only keeps the pathname of the src it's given (it assumes
-// same-origin assets), so a DAM repository path needs its host stitched back onto the
-// generated <source>/<img> attributes after the fact.
-function prefixDamAssetHost(picture, assetBaseUrl) {
-  picture.querySelectorAll('source, img').forEach((el) => {
-    const attr = el.hasAttribute('srcset') ? 'srcset' : 'src';
-    const value = el.getAttribute(attr);
-    if (value && value.startsWith('/')) {
-      el.setAttribute(attr, `${assetBaseUrl}${value}`);
-    }
-  });
-  return picture;
-}
-
 function createImage(fd) {
   const field = createFieldWrapper(fd);
   field.id = fd?.id;
   const imagePath = fd.value || fd.properties['fd:repoPath'] || '';
   const altText = fd.altText || fd.name;
-  const picture = createOptimizedPicture(imagePath, altText);
-  if (imagePath.startsWith('/content/dam/')) {
-    const assetBaseUrl = getAssetBaseUrl();
-    if (assetBaseUrl) {
-      prefixDamAssetHost(picture, assetBaseUrl);
-    }
-  }
-  field.append(picture);
+  field.append(createOptimizedPicture(imagePath, altText));
   return field;
 }
 
