@@ -241,14 +241,21 @@ header.is-not-overlapped ~ main {
     pointer-events: none;
   }
 
-  /* Main nav - transparent, overlaps banner */
+  /* Main nav - full-width background container */
   .header .main-nav-desktop {
+    width: 100%;
+    max-width: none;
+    background-color: transparent;
+    transition: background-color 0.3s ease, position 0.3s ease;
+  }
+
+  .header .main-nav-inner {
+    width: 100%;
+    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.25rem 5.25rem;
-    background-color: transparent;
-    transition: background-color 0.3s ease, position 0.3s ease;
   }
 
   /* Main nav - scrolled state: fixed with dark background */
@@ -307,5 +314,13 @@ header.is-not-overlapped ~ main {
 
   .header .megamenu-panel .megamenu-inner {
     display: block;
+  }
+}
+
+@media (width > 120rem) {
+  .header .main-nav-inner {
+    max-width: var(--bbl-layout-content-max-width-1920);
+    margin: 0 auto;
+    padding-inline: 0;
   }
 }
