@@ -217,9 +217,9 @@ main .section.form-container.custom-forms:has(.field-main-form-panel .field-loan
     margin: 0;
     padding: 0.625rem 0 var(--bbl-space-075) 0.625rem;
     text-align: left;
-    font-family: var(--bbl-font-family-medium);
+    font-family: var(--bbl-font-family-primary);
     font-size: var(--form-fieldset-legend-font-size);
-    font-weight: var(--form-fieldset-legend-font-weight);
+    font-weight: var(--bbl-form-font-weight-bold);
     line-height: var(--bbl-heading-h4-line-height);
     color: var(--form-fieldset-legend-color);
     background: unset;
