@@ -163,11 +163,6 @@
     grid-column: 3;
   }
 
-  & .form form .plain-text-wrapper p:last-child p{
-  text-align: center;
-  }
-}
-
   /* Place inputs in grid row 4 */
   & .form form .field-bond-allocation-review .field-series > input {
     grid-row: 4;
@@ -236,6 +231,10 @@
       color: var(--bbl-color-grey-85);
       line-height: var(--bbl-line-height-b1-desktop);
     }
+  }
+
+  & .form form .plain-text-wrapper p:last-child p{
+    text-align: center;
   }
 
   /* ── Bondholder number: centered inline ── */
@@ -321,3 +320,4 @@
       order: -1;
     }
   }
+}
