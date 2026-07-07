@@ -346,6 +346,7 @@ main .lead-forms .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .tele
 
 main .lead-forms .form form .field-wrapper[class*='icon-'] input {
   margin-top: var(--bbl-form-margin-8);
+  color: var(--bbl-color-black);
 }
 
 main .lead-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):has([aria-live="polite"]) input {
