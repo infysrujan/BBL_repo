@@ -625,10 +625,10 @@ function printElement(block) {
          overflow-wrap/word-break below and min-width:0 (already reset by
          dynamic-board.css's own @media print block) it still shrinks to
          fit the page instead of overflowing. */
-      border: 0.0625rem solid black;
+      border: 2px solid #c8c8cc;
       /* Outline as a fallback outer border — it can't be partially
          overridden by any single cell's border like border-collapse can. */
-      outline: 0.0625rem solid black;
+      outline: 2px solid #c8c8cc;
       outline-offset: -0.0625rem;
       border-collapse: collapse;
       font-size: 0.6875rem;
