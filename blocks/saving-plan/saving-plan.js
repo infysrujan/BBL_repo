@@ -644,7 +644,7 @@ function syncSliderDisplays(root) {
     const max = parseFloat(input.max) || 100;
     const val = parseFloat(input.value) || 0;
     const pct = ((val - min) / (max - min)) * 100;
-    input.style.background = `linear-gradient(to right, var(--sp-blue) ${pct}%, var(--sp-slider-track) ${pct}%)`;
+    input.style.background = `linear-gradient(to right, var(--bbl-color-active-blue) ${pct}%, var(--bbl-color-grey-27) ${pct}%)`;
   });
 }
 
