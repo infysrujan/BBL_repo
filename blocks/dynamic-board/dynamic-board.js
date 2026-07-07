@@ -515,6 +515,11 @@ function printElement(block) {
 
   content.querySelectorAll('.db-time-chevron, .db-time-list').forEach((el) => el.remove());
 
+  // Authored rich text renders the first remark paragraph's bold as an
+  // inline style; strip it here (on the print clone only) so font-weight
+  // is controlled by printCss instead.
+  content.querySelector('.db-remarks-content p:first-child')?.removeAttribute('style');
+
   // cloneNode carries over an <input>'s live value as a DOM property, but
   // content.innerHTML below only serializes attributes — promote it so the
   // date survives that string round-trip into the print window.
@@ -605,6 +610,10 @@ function printElement(block) {
       flex: 0 1 auto;
     }
 
+    .dynamic-board .db-time-label {
+      color: var(--bbl-color-black) !important;
+    }
+
     .dynamic-board .db-table {
       width: 90%;
       /* table-layout: fixed was tried here, but it only measures the FIRST
@@ -646,16 +655,18 @@ function printElement(block) {
          setting it directly on each th is what actually survives printing.
          Hard-coded hex (not var()) so it doesn't depend on the popup having
          fully resolved the site's CSS custom properties before printing. */
-      background-color: #e5e8f4;
+      background-color: white;
       font-size: 0.6875rem;
-      font-weight: 700;
+      font-weight: 700 !important;
       height: auto;
       padding: 0.1875rem 0.25rem;
-      border: 0.0625rem solid black;
+      border: 0.125rem solid var(--bbl-color-grey-10) !important;
     }
 
     .dynamic-board .db-table tbody td {
-      border: 0.0625rem solid black;
+      border: 0.125rem solid var(--bbl-color-grey-30) !important;
+      border-right-color: var(--bbl-color-white) !important;
+      color: black !important;
       padding: 0.1875rem 0.25rem;
       vertical-align: middle;
       font-size: 0.6875rem;
@@ -664,7 +675,7 @@ function printElement(block) {
     /* Same as the thead case above: set row-striping/selection backgrounds
        on the td itself, since a tr-level background can fail to print. */
     .dynamic-board .db-table tbody tr:nth-child(even) td {
-      background-color: #f8f9fc;
+      background-color: white;
     }
 
     .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr td {
@@ -673,7 +684,7 @@ function printElement(block) {
 
     /* The live table strips the last header cell's border-right; restore it. */
     .dynamic-board .db-table thead th:last-child {
-      border-right: 0.0625rem solid black;
+      border-right: 0.125rem solid var(--bbl-color-grey-10) !important;
     }
 
     .dynamic-board .db-table tbody tr:nth-child(even),
@@ -685,6 +696,15 @@ function printElement(block) {
       height: auto;
       overflow: visible;
       font-size: 0.75rem;
+      line-height: 1.25rem !important;
+    }
+
+    .dynamic-board .db-remarks-content p {
+      color: black !important;
+    }
+
+    .dynamic-board .db-remarks-content p:first-child {
+      font-weight: 900 !important;
     }
 
     @media print {
