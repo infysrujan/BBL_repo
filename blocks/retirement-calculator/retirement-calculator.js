@@ -360,7 +360,7 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
 
   const footer = parseHTML(`
     <div class="rc-actions">
-      <button type="button" class="rc-next-btn">${getString(labels, 'buttonsNextButton', 'Next')}</button>
+      <button type="button" class="button-m primary">${getString(labels, 'buttonsNextButton', 'Next')}</button>
     </div>
   `);
   container.appendChild(footer);
@@ -549,8 +549,8 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
 
   const footer = parseHTML(`
     <div class="rc-actions">
-      <button type="button" class="rc-back-btn">${getString(labels, 'buttonsBackButton', 'Back')}</button>
-      <button type="button" class="rc-calculate-btn">${getString(labels, 'buttonsCalculateButton', 'Calculate')}</button>
+      <button type="button" class="button-m secondary">${getString(labels, 'buttonsBackButton', 'Back')}</button>
+      <button type="button" class="button-m primary">${getString(labels, 'buttonsCalculateButton', 'Calculate')}</button>
     </div>
   `);
   container.appendChild(footer);
@@ -792,7 +792,7 @@ function renderJourney3(block, data, state, onBack) {
 
   const footer = parseHTML(`
     <div class="rc-actions">
-      <button type="button" class="rc-back-btn">${getString(labels, 'buttonsBackButton', 'Back')}</button>
+      <button type="button" class="button-m secondary">${getString(labels, 'buttonsBackButton', 'Back')}</button>
     </div>
   `);
   container.appendChild(footer);
