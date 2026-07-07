@@ -99,6 +99,7 @@
   color: var(--bbl-color-black);
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-body-b1-weight);
+  line-height: var(--bbl-body-b1-line-height);
 }
 
 .retirement-calculator .rc-step-connector {
