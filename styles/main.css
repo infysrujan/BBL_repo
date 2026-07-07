@@ -446,10 +446,10 @@ main img {
 
     .section.columns-2-50 {
         flex-direction: row;
+        gap: 2.5rem;
     }
 
     .section.columns-2-50 > * {
-        padding-inline: var(--bbl-space-250);
         flex: 1;
     }
 
