@@ -543,7 +543,7 @@ export default async function decorate(block) {
     chartBeginNav.textContent = fmtNav(stats.Begin_mfr_fNav);
     chartEndNav.textContent = fmtNav(stats.End_mfr_fNav);
     renderChart(chartSvg, sorted, currentPeriod);
-    renderHistTable(histTbody, [...sorted].reverse());
+    renderHistTable(histTbody, sorted);
 
     if (chartSvg.chartResizeObserver) chartSvg.chartResizeObserver.disconnect();
     if (window.innerWidth < 768) {

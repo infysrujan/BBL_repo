@@ -366,7 +366,6 @@
 
 .fund-prices-dropdown .detail-hist-table td:first-child {
   text-align: left;
-  color: var(--bbl-color-grey-85);
 }
 
 .fund-prices-dropdown .detail-hist-table th:not(:first-child),
