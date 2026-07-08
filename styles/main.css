@@ -528,12 +528,23 @@ main img {
    ========================================================================= */
 
 .pad-top-30 {
-    padding-top: 1.875rem;
+    padding-top: 1.5rem;
 }
 
 .pad-bot-30 {
-    padding-bottom: 1.875rem;
+    padding-bottom: 1.5rem;
 }
+
+@media (width > 64rem) {
+    .pad-top-30 {
+        padding-top: 2rem;
+    }
+    
+    .pad-bot-30 {
+        padding-bottom: 2rem;
+    }  
+}
+
 
 .mar-top-30 {
     margin-top: 1.875rem;
