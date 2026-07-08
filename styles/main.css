@@ -434,6 +434,13 @@ main img {
     gap: var(--bbl-space-300);
 }
 
+@media (width > 47.5rem) {
+    .section.columns-2-50 {
+    flex-direction: row;
+    gap:  1.25rem;
+    }
+}
+
 @media (width > 64rem) {
     .section.columns-3 { 
         flex-direction: row;
