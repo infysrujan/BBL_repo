@@ -1,10 +1,5 @@
 /* Mobile (all devices base) */
 
-:root {
-  /* Not available in typography tokens, so defined locally */
-  --bbl-multi-column-tiles-title-size-mobile: 1.0625rem;
-}
-
 .multi-column-tiles-container {
   padding: 0;
   padding-inline: 0;
@@ -100,7 +95,7 @@
   z-index: 1;
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-multi-column-tiles-title-size-mobile);
+  font-size: var(--bbl-font-size-h3-mobile);
   line-height: 1.375;
   letter-spacing: 0.0313rem;
   font-weight: var(--bbl-font-weight-medium);
