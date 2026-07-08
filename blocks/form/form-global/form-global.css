@@ -363,7 +363,7 @@ main .section.form-container .form form .plain-text-wrapper p {
 }
 
 main .section.form-container .form form .tnc-text-decoration p{
-  margin-bottom: 10px;
+  margin-bottom: var(--bbl-form-margin-10);
   text-align: left;
 }
 
