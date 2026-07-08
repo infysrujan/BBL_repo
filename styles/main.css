@@ -421,6 +421,7 @@ main img {
 .section.columns-2-50 {
     display: flex;
     flex-direction: column;
+    gap:1.875rem;
 }
 
 .section.columns-2-65 {
@@ -437,7 +438,6 @@ main img {
 @media (width > 47.5rem) {
     .section.columns-2-50 {
     flex-direction: row;
-    gap:  1.25rem;
     }
 }
 
@@ -453,7 +453,6 @@ main img {
 
     .section.columns-2-50 {
         flex-direction: row;
-        gap: 2.5rem;
     }
 
     .section.columns-2-50 > * {
