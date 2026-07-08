@@ -342,9 +342,9 @@ function printContent(containerEl, pageTitle, searchLabelText) {
       const continuationMeta = doc.createElement('tr');
       continuationMeta.className = 'fund-prices-print-continuation-meta';
       continuationMeta.innerHTML = `
-        <td colspan="2">${formatPrintDate(now)}, ${formatPrintTime(now)}</td>
-        <td colspan="2">${pageTitle}</td>
-        <td colspan="2"></td>
+        <td>${formatPrintDate(now)}, ${formatPrintTime(now)}</td>
+        <td colspan="4">${pageTitle}</td>
+        <td></td>
       `;
       continuationHead.append(continuationMeta, headerRow.cloneNode(true));
 

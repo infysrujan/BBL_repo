@@ -739,6 +739,7 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
 
   #fund-prices-print-root .fund-prices-table table tr.fund-prices-print-continuation-meta td:nth-child(2) {
     text-align: center;
+    white-space: nowrap;
   }
 
   #fund-prices-print-root .fund-prices-table table tr {
