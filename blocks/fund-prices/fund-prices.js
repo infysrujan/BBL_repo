@@ -1,5 +1,6 @@
 import { buildBlock, decorateBlock, loadBlock } from '../../scripts/aem.js';
-import { attachCalendarPicker, formatLongDate } from '../../scripts/utils/calendar-picker.js';
+import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
+import { formatLongDate } from '../../scripts/utils/datelang.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { getLang } from '../../scripts/scripts.js';

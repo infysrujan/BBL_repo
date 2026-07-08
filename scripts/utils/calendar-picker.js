@@ -23,19 +23,13 @@
  * Use `type="text"`. For a separate visible label, pass `labelElement`.
  */
 
-const MONTHS_EN = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
+import {
+  MONTHS_EN, MONTHS_TH, BE_OFFSET, formatLongDate,
+} from './datelang.js';
 
 const MONTHS_SHORT_EN = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-];
-
-const MONTHS_TH = [
-  'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-  'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม',
 ];
 
 const MONTHS_SHORT_TH = [
@@ -46,7 +40,7 @@ const MONTHS_SHORT_TH = [
 const WEEKDAYS_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const WEEKDAYS_TH = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
 
-const BE_OFFSET = 543;
+export { formatLongDate };
 
 /**
  * @param {Document} doc
@@ -72,24 +66,6 @@ export function formatCalendarDate(date, lang) {
     return `${d} ${m} ${y}`;
   }
   const m = MONTHS_SHORT_EN[date.getMonth()];
-  const y = date.getFullYear();
-  return `${d} ${m} ${y}`;
-}
-
-/**
- * @param {Date} date - local date (time ignored)
- * @param {'en' | 'th'} lang
- * @returns {string} e.g. `1 July 2026` or `1 กรกฎาคม 2569`
- */
-export function formatLongDate(date, lang) {
-  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
-  const d = date.getDate();
-  if (lang === 'th') {
-    const m = MONTHS_TH[date.getMonth()];
-    const y = date.getFullYear() + BE_OFFSET;
-    return `${d} ${m} ${y}`;
-  }
-  const m = MONTHS_EN[date.getMonth()];
   const y = date.getFullYear();
   return `${d} ${m} ${y}`;
 }
