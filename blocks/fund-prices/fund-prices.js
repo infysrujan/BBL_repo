@@ -153,6 +153,7 @@ function formatBodyCellText(normalizedKey, row, columnKey, selectedDate, lang) {
   if (columnKey && row[columnKey] !== undefined) {
     const value = String(row[columnKey]);
     const num = parseFloat(value);
+    if (!Number.isNaN(num) && num === 0) return 'N/A';
     if (!Number.isNaN(num) && Math.abs(num) >= 1000) {
       return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
     }

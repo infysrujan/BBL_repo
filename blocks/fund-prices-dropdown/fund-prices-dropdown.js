@@ -60,6 +60,8 @@ async function fetchFundDetailHistory(fundId, fromDate, toDate) {
 }
 
 function fmtNav(v) {
+  const num = Number(v);
+  if (!Number.isNaN(num) && num === 0) return 'N/A';
   return typeof v === 'number' ? v.toFixed(4) : (v ?? 'N/A');
 }
 
