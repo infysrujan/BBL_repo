@@ -1,6 +1,8 @@
 import { createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './components/repeat/repeat.js';
-import { emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE } from './constant.js';
+import {
+  emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE,
+} from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
 import { handleSubmit } from './submit.js';
@@ -134,7 +136,7 @@ function createPlainText(fd) {
 function createImage(fd) {
   const field = createFieldWrapper(fd);
   field.id = fd?.id;
-  const imagePath = fd.value || fd.properties['fd:repoPath'] || '';
+  const imagePath = (fd.value || fd.properties['fd:repoPath'] || '').replaceAll('_', '-').toLowerCase();
   const altText = fd.altText || fd.name;
   field.append(createOptimizedPicture(imagePath, altText));
   return field;

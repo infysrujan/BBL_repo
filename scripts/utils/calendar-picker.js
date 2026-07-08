@@ -23,19 +23,13 @@
  * Use `type="text"`. For a separate visible label, pass `labelElement`.
  */
 
-const MONTHS_EN = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
+import {
+  MONTHS_EN, MONTHS_TH, BE_OFFSET, formatLongDate,
+} from './datelang.js';
 
 const MONTHS_SHORT_EN = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-];
-
-const MONTHS_TH = [
-  'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-  'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม',
 ];
 
 const MONTHS_SHORT_TH = [
@@ -46,7 +40,7 @@ const MONTHS_SHORT_TH = [
 const WEEKDAYS_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const WEEKDAYS_TH = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
 
-const BE_OFFSET = 543;
+export { formatLongDate };
 
 /**
  * @param {Document} doc
