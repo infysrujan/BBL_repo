@@ -136,12 +136,16 @@
   }
 
   .story-card .outer {
+    flex: 1 1 50%;
+    min-width: 0;
+    width: auto;
     padding: 0 3rem 0 1.25rem;
   }
 
   .story-card .thumb {
     margin: 0;
-    min-width: 50%;
+    flex: 0 0 50%;
+    min-width: 0;
   }
 
   .story-card .thumb picture,

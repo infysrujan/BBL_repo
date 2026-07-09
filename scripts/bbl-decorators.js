@@ -271,8 +271,9 @@ async function loadWelcomeBanner(doc) {
     return undefined;
   }
 
-  const lang = doc.documentElement.lang || 'en';
-  const path = `/${lang}/fragments/welcome-banner/welcome-banner`;
+  const configData = await fetchConfigs();
+  const path = configData?.welcomeBannerFragmentPath;
+  if (!path) return undefined;
 
   welcomeBannerLoadPromise = new Promise((resolve) => {
     document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
