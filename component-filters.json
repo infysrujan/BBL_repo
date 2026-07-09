@@ -289,24 +289,6 @@
     ]
   },
   {
-    "id": "fund-prices-table",
-    "rte": {
-      "toolbar": {
-        "insert": [
-          "table"
-        ],
-        "editor": [
-          "removeformat"
-        ],
-        "sections": [
-          "insert",
-          "editor"
-        ]
-      }
-    },
-    "components": []
-  },
-  {
     "id": "header-section",
     "components": [
       "top-nav",
@@ -387,10 +369,6 @@
     "components": [
       "rate-card-item"
     ]
-  },
-  {
-    "id": "search-reports",
-    "components": []
   },
   {
     "id": "sme-loan-calculator",
