@@ -33,11 +33,7 @@ function resolveImageUrl(card) {
 
 function resolveCardPageUrl(card) {
   // eslint-disable-next-line no-underscore-dangle
-  const raw = card._path || card.readMoreUrl || card.cardPageUrl || card.detailUrl || card.pageUrl || '';
-  if (!raw) return '';
-  if (typeof raw === 'string') return raw;
-  // eslint-disable-next-line no-underscore-dangle
-  return raw._publishUrl || raw._authorUrl || raw._path || '';
+  return card.mfPageUrl?._path || '#';
 }
 
 // ── Data fetching ──────────────────────────────────────────────────────────────
