@@ -92,7 +92,6 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    text-transform: capitalize;
 }
 
 .sub-nav .sub-nav-select .global-dropdown-panel li a:hover {
