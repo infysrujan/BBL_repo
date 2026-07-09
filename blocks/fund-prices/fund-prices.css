@@ -237,7 +237,7 @@
 
 .fund-prices-search-bar .fund-dropdown li {
   padding: 0.625rem 1.875rem;
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-color-black);
   font-family: var(--bbl-font-family-medium);
   cursor: pointer;
