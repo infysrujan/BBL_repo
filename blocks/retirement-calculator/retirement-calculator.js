@@ -360,13 +360,13 @@ function renderJourney1(block, data, onNext, savedValues = {}) {
 
   const footer = parseHTML(`
     <div class="rc-actions">
-      <button type="button" class="rc-next-btn">${getString(labels, 'buttonsNextButton', 'Next')}</button>
+      <button type="button" class="button-m primary">${getString(labels, 'buttonsNextButton', 'Next')}</button>
     </div>
   `);
   container.appendChild(footer);
   block.appendChild(container);
 
-  const nextBtn = footer.querySelector('.rc-next-btn');
+  const nextBtn = footer.querySelector('.button-m.primary');
 
   const validateCrossFields = () => {
     const currentAge = currentAgeField.getValue();
@@ -549,14 +549,14 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
 
   const footer = parseHTML(`
     <div class="rc-actions">
-      <button type="button" class="rc-back-btn">${getString(labels, 'buttonsBackButton', 'Back')}</button>
-      <button type="button" class="rc-calculate-btn">${getString(labels, 'buttonsCalculateButton', 'Calculate')}</button>
+      <button type="button" class="button-m secondary">${getString(labels, 'buttonsBackButton', 'Back')}</button>
+      <button type="button" class="button-m primary">${getString(labels, 'buttonsCalculateButton', 'Calculate')}</button>
     </div>
   `);
   container.appendChild(footer);
   block.appendChild(container);
 
-  const calculateBtn = footer.querySelector('.rc-calculate-btn');
+  const calculateBtn = footer.querySelector('.button-m.primary');
 
   const validateSavingsCross = () => {
     const returnRate = savingsReturnRateField.getValue();
@@ -577,7 +577,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
 
   container.addEventListener('input', () => { validateSavingsCross(); syncBtnState(); });
 
-  footer.querySelector('.rc-back-btn').addEventListener('click', onBack);
+  footer.querySelector('.button-m.secondary').addEventListener('click', onBack);
 
   calculateBtn.addEventListener('click', async () => {
     calculateBtn.disabled = true;
@@ -792,13 +792,13 @@ function renderJourney3(block, data, state, onBack) {
 
   const footer = parseHTML(`
     <div class="rc-actions">
-      <button type="button" class="rc-back-btn">${getString(labels, 'buttonsBackButton', 'Back')}</button>
+      <button type="button" class="button-m secondary">${getString(labels, 'buttonsBackButton', 'Back')}</button>
     </div>
   `);
   container.appendChild(footer);
   block.appendChild(container);
 
-  footer.querySelector('.rc-back-btn').addEventListener('click', onBack);
+  footer.querySelector('.button-m.secondary').addEventListener('click', onBack);
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────────
@@ -809,10 +809,21 @@ export default async function decorate(block) {
     const data = await loadData();
     const state = {};
 
-    // eslint-disable-next-line no-use-before-define
-    const goToJourney3 = () => renderJourney3(block, data, state, goToJourney2);
+    const toggleCardListVisibility = (show) => {
+      const sec = document.querySelector('.card-list-container');
+      if (sec) {
+        sec.classList.toggle('hidden', !show);
+      }
+    };
+
+    const goToJourney3 = () => {
+      toggleCardListVisibility(true);
+      // eslint-disable-next-line no-use-before-define
+      renderJourney3(block, data, state, goToJourney2);
+    };
 
     const goToJourney2 = () => {
+      toggleCardListVisibility(false);
       // eslint-disable-next-line no-use-before-define
       renderJourney2(block, data, state, goToJourney1, (journey2Values, apiResult1, apiResult2) => {
         state.journey2 = journey2Values;
@@ -823,6 +834,7 @@ export default async function decorate(block) {
     };
 
     const goToJourney1 = () => {
+      toggleCardListVisibility(false);
       renderJourney1(block, data, (journey1Values, apiResult) => {
         state.journey1 = journey1Values;
         state.j1ApiResult = apiResult;

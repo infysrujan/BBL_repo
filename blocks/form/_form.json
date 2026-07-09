@@ -41,6 +41,9 @@
     },
     {
       "...": "./components/forms-menu-card/_forms-menu-card.json#/definitions"
+    },
+    {
+      "...": "./components/bblwizard/_bblwizard.json#/definitions"
     }
   ],
   "models": [
@@ -119,7 +122,16 @@
         "wizard",
         "range",
         "double-key-dropdown",
-        "forms-menu-card"
+        "forms-menu-card",
+        "forms-card-list",
+        "forms-card-list-item",
+        "bbl-wizard"
+      ]
+    },
+    {
+      "id": "forms-card-list",
+      "components": [
+        "forms-card-list-item"
       ]
     }
   ]

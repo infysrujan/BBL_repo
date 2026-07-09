@@ -132,6 +132,33 @@ export function createCarouselArrows(tabsNav, tabsNavWrapper) {
   requestAnimationFrame(updateArrows);
 }
 
+/*
+ * Groups a tab-panel's raw children the same way decorateSections() groups a
+ * page section: consecutive loose content (headings, paragraphs) gets wrapped
+ * in one default-content-wrapper, and every classed block div gets its own
+ * dedicated wrapper — so decorateBlock() later stamps the block's
+ * `${blockName}-wrapper` class onto a div that holds only that block.
+ */
+function groupPanelContent(contentPanel, rawFrag) {
+  const children = [...rawFrag.childNodes];
+  let wrapper = null;
+  let defaultContent = false;
+
+  children.forEach((child) => {
+    const isClassedDiv = child.nodeType === Node.ELEMENT_NODE
+      && child.tagName === 'DIV'
+      && child.className;
+
+    if (isClassedDiv || !defaultContent) {
+      wrapper = document.createElement('div');
+      defaultContent = !isClassedDiv;
+      if (defaultContent) wrapper.classList.add('default-content-wrapper');
+      contentPanel.appendChild(wrapper);
+    }
+    wrapper.appendChild(child);
+  });
+}
+
 export function createContentPanels(block, contentRows) {
   const tabsContent = document.createElement('div');
   tabsContent.className = 'tabs-content';
@@ -146,9 +173,32 @@ export function createContentPanels(block, contentRows) {
     contentPanel.setAttribute('aria-hidden', index === 0 ? 'false' : 'true');
 
     const cell = row.children[0];
+    const rawFrag = document.createDocumentFragment();
     while (cell.firstChild) {
-      contentPanel.appendChild(cell.firstChild);
+      const child = cell.firstChild;
+      // wrapTextNodes() wraps tab-cell content in <P> when the first child is a <DIV>
+      // (DIV is not in its validWrappers list). If we leave that <P> in the DOM,
+      // addHintPageAnchors() (custom-rte.js, lazy phase) will later find it, see '['
+      // in its innerHTML (from nested block content like the forex disclaimer), and call
+      // el.innerHTML = el.innerHTML.replace(...) — destroying the decorated block.
+      // Unwrapping the <P> here removes the target before addHintPageAnchors can fire.
+      // The <P> wraps a single <DIV> that itself bundles the real flat content
+      // (heading, text, nested block) — unwrap that inner <DIV> too, so
+      // groupPanelContent sees separate items instead of one opaque node.
+      if (child.nodeType === Node.ELEMENT_NODE
+        && child.tagName === 'P'
+        && child.firstElementChild
+        && child.firstElementChild.tagName === 'DIV') {
+        const innerDiv = child.firstElementChild;
+        while (innerDiv.firstChild) {
+          rawFrag.appendChild(innerDiv.firstChild);
+        }
+        child.remove();
+      } else {
+        rawFrag.appendChild(child);
+      }
     }
+    groupPanelContent(contentPanel, rawFrag);
 
     tabsContent.appendChild(contentPanel);
     row.remove();
@@ -159,19 +209,30 @@ export function createContentPanels(block, contentRows) {
 }
 
 export async function loadNestedBlocks(panels) {
-  await Promise.all(panels.map(async (contentPanel) => {
-    const allDivs = contentPanel.querySelectorAll('div[class]');
-    const blocksToLoad = [...allDivs].filter((el) => {
-      if (el.classList.length !== 1) return false;
-      if (el.dataset.blockStatus) return false;
-      const className = el.classList[0];
-      if (className.startsWith('tab-') || className.startsWith('tabs-')) return false;
-      return true;
-    });
+  // Collect all unique nested blocks across ALL panels in a single synchronous pass.
+  // decorateBlock() is called immediately upon discovery so data-block-status is set
+  // before the next panel is scanned — preventing the same block appearing in multiple
+  // panels' querySelectorAll results from being decorated/loaded more than once.
+  const blocksToLoad = [];
+  const seen = new Set();
 
-    blocksToLoad.forEach((nestedBlock) => decorateBlock(nestedBlock));
-    await Promise.all(blocksToLoad.map((nestedBlock) => loadBlock(nestedBlock)));
-  }));
+  panels.forEach((contentPanel) => {
+    contentPanel.querySelectorAll('div[class]').forEach((el) => {
+      if (el.classList.length !== 1) return;
+      if (el.dataset.blockStatus) return;
+      const className = el.classList[0];
+      if (className.startsWith('tab-') || className.startsWith('tabs-')) return;
+      if (className === 'default-content-wrapper') return;
+      if (seen.has(el)) return;
+
+      // Mark as seen and immediately decorate so subsequent panels' scans skip it.
+      seen.add(el);
+      decorateBlock(el); // sets data-block-status="initialized"
+      blocksToLoad.push(el);
+    });
+  });
+
+  await Promise.all(blocksToLoad.map((nestedBlock) => loadBlock(nestedBlock)));
 }
 
 export function addKeyboardNavigation(tabsNav, tabButtons, block) {

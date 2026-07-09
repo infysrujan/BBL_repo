@@ -1,7 +1,7 @@
 .card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-  font-size: 1.4rem;
-  font-weight: var(--bbl-font-family-regular);
-  line-height: 1.375rem;
+  font-size: var(--bbl-text-section-title-size);
+  line-height: var(--bbl-text-section-title-line-height);
+  font-weight: var(--bbl-text-section-title-weight);
   letter-spacing: -0.0125rem;
 }
 
@@ -26,7 +26,7 @@
 .cards-list-remark p,
 .cards-list-subtitle p,
 .cards-list-description p {
-  font-weight: var(--bbl-font-family-regular);
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-70);
 }
 
@@ -54,8 +54,24 @@
 }
 
 .cards-list-description p {
-  line-height: 1.203rem;
-  margin-block: 0 0.625rem;
+  line-height: var(--bbl-text-default-line-height);
+  font-size: var(--bbl-text-default-size);
+  font-weight: var(--bbl-text-default-weight);
+}
+
+.cards-list-description :is(p, li) a {
+  color: inherit;
+}
+
+.cards-list-description :is(p, li) a[class] {
+  display: inline;
+  font-weight: inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.cards-list-description :is(p, li) a[class]::after {
+  display: none;
 }
 
 .cards-list-promo-tag p {
@@ -63,6 +79,7 @@
 }
 
 .cards-list-date p {
+  font-size: var(--bbl-body-b1-size);
   line-height: 1.203rem;
   color: var(--bbl-color-grey-85);
   margin: 0;
@@ -283,9 +300,10 @@
 }
 
 .cards-list-promo-tag {
-  font-size: 0.7875rem;
-  line-height: 0.9844rem;
-  font-weight: var(--bbl-font-family-medium);
+  font-size: var(--bbl-text-label-tag-size);
+  line-height: var(--bbl-text-label-tag-line-height);
+  font-weight: var(--bbl-text-label-tag-weight);
+  font-family: var(--bbl-font-family-medium);
   max-width: max-content;
   background: var(--bbl-color-blue-140);
   display: inline-block;
@@ -320,9 +338,9 @@
   position: relative;
   color: var(--bbl-color-black);
   min-height: 4.4375rem;
-  font-size: 1.1375rem;
-  line-height: 1.2495rem;
-  font-weight: var(--bbl-font-family-regular);
+  font-size: var(--bbl-text-thumbnail-card-title-size);
+  line-height: var(--bbl-text-thumbnail-card-title-line-height);
+  font-weight: var(--bbl-text-thumbnail-card-title-weight);
   padding-bottom: 0.9375rem;
   margin-block: 0 0.9375rem;
   overflow-wrap: anywhere;
@@ -368,34 +386,13 @@
   background: var(--bbl-color-grey-60);
 }
 
-.cards-list-button .button-tertiary::after {
-  display: none;
+.cards-list-button .button-container{
+  margin: 0;
 }
 
-.cards-list-button .button-tertiary {
-  position: relative;
-  padding-right: 0.9375rem;
-  color: var(--bbl-color-active-blue);
-  font: var(--bbl-font-weight-regular) 0.7rem/0.98rem var(--bbl-font-family-looped);
-}
-
-.cards-list-button .button-tertiary:hover {
-  color: var(--bbl-color-blue-90);
-  text-decoration: none;
-}
-
-.cards-list-button .button-tertiary::before {
-  content: "\e901";
-  position: absolute;
-  right: 0.1875rem;
-  top: 52%;
-  transform: translateY(-50%);
-  font: 300 var(--bbl-font-size-b4) / 1 icomoon, sans-serif;
-  transition: all 0.3s ease-in-out;
-}
-
-.cards-list-button .button-tertiary:hover::before {
-  transform: translateY(-50%) translateX(0.25rem);
+.cards-list-button .button-m{
+  min-width: 100%;
+  box-sizing: border-box;
 }
 
 .cards-list.scrollable::-webkit-scrollbar {
@@ -463,10 +460,6 @@
   font-weight: var(--bbl-font-family-regular);
 }
 
-.modal-body .section.central-aligned .block {
-  margin-inline: 0;
-}
-
 .cards-list-inner:has(.cards-list-downloads) {
   flex: none;
 }
@@ -477,17 +470,35 @@
 
 .cards-list-date {
   margin-top: auto;
-  padding-top: var(--bbl-space-250);
+  padding: var(--bbl-space-250);
+}
+
+.cards-list-item:has(.cards-list-image-logo) .download-button-wrapper .download-files {
+  padding: 0 var(--bbl-space-500) 0 var(--bbl-space-250);
+} 
+
+.cards-list-button + .cards-list-date {
+  padding-top: 0.625rem;
+}
+
+.cards-list-button .global-dropdown {
+  width: 100%;
+  margin-top: var(--bbl-space-250);
+}
+
+.cards-list-item:has(.global-dropdown.is-open) {
+  z-index: 10;
+}
+
+.cards-list:is(.scrollable, .carousel):has(.global-dropdown.is-open) {
+  z-index: 10;
+}
+
+.card-list-container.hidden {
+  display: none;
 }
 
 @media (width > 47.5rem) {
-  .cards-list-remark p,
-  .cards-list-subtitle p,
-  .cards-list-description p,
-  .cards-list-date p {
-    font-size: var(--bbl-font-size-b2);
-  }
-
   .card-list-container .default-content-wrapper p {
     font-size: var(--bbl-font-size-b2);
   }
@@ -552,16 +563,6 @@
     height: 100vw;
   }
 
-  .cards-list-image.cards-list-image-profile {
-    height: calc(100vw * .4);
-    max-height: 17.375rem;
-  }
-
-  .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 1.3125rem;
-    line-height: 1.4219rem;
-  }
-
   :lang(th) {
     .cards-list-title :is(h1) {
       line-height: 3.75rem;
@@ -597,14 +598,17 @@
   .card-list-modal-last-title+.card-list-modal-text {
     font-size: var(--bbl-font-size-b2);
   }
+
+  .cards-list-button .global-dropdown.is-open .global-dropdown-panel {
+    width: max-content;
+  }
+
+  .cards-list:is(.scrollable, .carousel) .global-dropdown-panel li a {
+    white-space: normal;
+  }
 }
 
 @media (width > 64rem) {
-  .card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 3rem;
-    line-height: 2.875rem;
-  }
-
   :lang(th) {
     .card-list-container .default-content-wrapper :is(h1) {
       line-height: 3.75rem;
@@ -639,11 +643,9 @@
     }
   }
 
+  .cards-list-date p,
   .cards-list-remark p,
-  .cards-list-subtitle p,
-  .cards-list-description p,
-  .cards-list-date p {
-    font-size: var(--bbl-font-size-b1);
+  .cards-list-subtitle p{
     line-height: 1.375rem;
   }
 
@@ -655,6 +657,10 @@
   .cards-list {
     gap: 0 var(--bbl-space-500);
     align-items: stretch;
+  }
+
+  .cards-list:is(.scrollable, .carousel) .global-dropdown-panel li a {
+    white-space: nowrap;
   }
 
   .cards-list.scrollable {
@@ -703,32 +709,32 @@
   }
 
   .cards-list.cards-3 .cards-list-item {
-    flex: 0 0 30.22%;
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
   }
 
   .cards-list.cards-4 .cards-list-item,
   .cards-list.cards-1 .cards-list-item {
-    flex: 0 0 21.27%;
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 4);
   }
 
   .cards-list.scrollable.cards-4 .cards-list-item,
   .cards-list.scrollable.cards-1 .cards-list-item {
-    flex: 0 0 21.27%;
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 4);
   }
 
   .cards-list.carousel.cards-4 .cards-list-item,
   .cards-list.carousel.cards-1 .cards-list-item {
-    flex: 0 0 21.27%;
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 4);
   }
 
   .cards-list.scrollable.cards-3 .cards-list-item {
-    flex: 0 0 29.989%;
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
     margin-bottom: var(--bbl-space-500);
     scroll-snap-align: none;
   }
 
   .cards-list.carousel.cards-3 .cards-list-item {
-    flex: 0 0 29.989%;
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
     margin-bottom: var(--bbl-space-500);
   }
 
@@ -747,20 +753,6 @@
 
   .cards-list-image.cards-list-image-profile {
     height: calc(15.625rem + 60 * ((100vw - 20rem) / 1600));
-  }
-
-  .cards-list-promo-tag {
-    font-size: 0.9rem;
-    line-height: 1.125rem;
-  }
-
-  .cards-list:has(.cards-list-promo-tag) .cards-list-content:not(:has(.cards-list-promo-tag))::before {
-    height: 1.125rem;
-  }
-
-  .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--bbl-font-size-h5-desktop);
-    line-height: 1.625rem;
   }
 
   .card-list-modal-title {

@@ -96,7 +96,7 @@
 
 .search-reports-overlay .sr-desc {
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   font-weight: var(--bbl-text-body-weight);
   line-height: var(--bbl-text-body-line-height);
   color: var(--bbl-color-grey-85);
@@ -171,8 +171,8 @@
 }
 
 .search-reports-overlay .sr-dropdown-option {
-  padding: var(--bbl-space-150) var(--bbl-space-250);
-  font-size: var(--bbl-text-body-size);
+  padding: 0.75rem 1.25rem;
+  font-size: var(--bbl-text-default-size);
   font-weight: var(--bbl-font-weight-medium);
   cursor: pointer;
   color: var(--bbl-color-gray-121);

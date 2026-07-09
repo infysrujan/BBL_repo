@@ -1,7 +1,6 @@
 /* Currency Converter Expanded Block
    Mobile-first styles matching bob.css and JS structure
-   All selectors scoped under .currency-converter-expanded */
-
+   All selectors scoped under .currency-converter-expanded *
 /* Main container */
 .currency-converter-expanded .converter-expanded-container {
   width: 100%;
@@ -193,7 +192,7 @@
   padding: 0.3125rem 1.5625rem;
   margin-bottom: 0.625rem;
   border: none;
-  font-size: 0.875rem;
+  font-size: var(--bbl-font-size-b1-mobile);
   box-sizing: border-box;
 }
 
@@ -308,7 +307,6 @@
 
 /* Calculate button */
 .currency-converter-expanded .converter-expanded-btn {
-  padding-right: 3.75rem;
   width: 100%;
   max-width: min-content;
   height: 2.75rem;
@@ -326,30 +324,30 @@
   justify-content: center;
   gap: 0.5rem;
   font-family: var(--bbl-font-family-medium);
+  padding: 0 3.75rem 0 1.25rem;
+  position: relative;
 }
 
 .currency-converter-expanded .converter-expanded-btn::after {
   content: "\e900";
-  color: var(--bbl-color-blue-indigo);
-  display: inline-block;
-  font-family: icomoon, sans-serif;
-  vertical-align: middle;
-  flex: 0 0 auto;
-  transition: transform 0.2s ease-in-out;
-  height: 1.5625rem;
-  font-size: 1.5625rem;
-  position: absolute;
-  right: 0.625rem; 
-  top: 0.4375rem;
+    position: absolute;
+    right: 0.625rem;
+    top: 1.5rem;
+    transform: translateY(-50%);
+    color: var(--bbl-color-blue-indigo);
+    display: block;
+    font-family: icomoon, sans-serif;
+    font-size: 1.5625rem;
+    line-height: 1;
+    transition: transform 0.2s ease-in-out;
 }
 
 .currency-converter-expanded .converter-expanded-btn:hover {
-  opacity: 0.9;
   background: var(--bbl-color-white);
 }
 
 .currency-converter-expanded .converter-expanded-btn:hover::after {
-  transform: scaleX(1.3);
+  transform: translateY(-50%) scaleX(1.3);
 }
 
 .currency-converter-expanded .converter-expanded-btn:disabled {
@@ -431,6 +429,7 @@
   margin-bottom: 0;
 }
 
+
 /* Desktop styles */
 @media (width > 47.5rem) {
   .currency-converter-expanded .guide-txt {
@@ -466,7 +465,7 @@
 
   .currency-converter-expanded .converter-expanded-btn::after {
     height: 100%;
-    top: 0.1875rem;
+    top:2.1rem;
   }
 
   .currency-converter-expanded .converter-expanded-disclaimer {
@@ -495,4 +494,5 @@
     line-height: 1.1206rem;
   }
 }
-    
+
+

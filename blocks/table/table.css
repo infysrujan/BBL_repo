@@ -43,6 +43,10 @@
   border: 0.0625rem solid var(--bbl-color-grey-30);
 }
 
+.table table td a {
+  color: inherit;
+}
+
 /* --------------------------------------------------------------------------
    BORDER TYPE VARIANTS (specificity 0,2,3)
    -------------------------------------------------------------------------- */
@@ -173,6 +177,11 @@
   vertical-align: middle;
 }
 
+/* Header Pastel Blue — #A1C6FF background */
+.table table.header-pastel-blue .header-row {
+  background-color: var(--bbl-color-blue-40);
+}
+
 /* --------------------------------------------------------------------------
    CELL VARIANTS — center aligned (specificity 0,3,3)
    -------------------------------------------------------------------------- */
@@ -235,6 +244,10 @@
    -------------------------------------------------------------------------- */
 .table table.zebra-light-gray tr:nth-child(odd) {
   background-color: var(--bbl-color-grey-10);
+}
+
+.table table.solid-white {
+  background-color: var(--bbl-color-white);
 }
 
 /* --------------------------------------------------------------------------

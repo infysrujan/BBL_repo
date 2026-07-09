@@ -1,10 +1,18 @@
 import { createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './components/repeat/repeat.js';
-import { emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE } from './constant.js';
+import {
+  emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE,
+} from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
 import { handleSubmit } from './submit.js';
 import DocBasedFormToAF from './transform.js';
+import decorateCreditCardTractApplication from './form-custom/creditcard-track-application/creditcard-track-application.js';
+import decorateBondAllocationForm from './form-custom/bond-allocation/bond-allocation.js';
+import decorateSipForm from './form-custom/sip-form/sip-form.js';
+import decorateDebtSupportForm from './form-custom/debt-support/debt-support.js';
+import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
+import decorateReliefMeasures from './form-custom/relief-measures/relief-measures.js';
 import {
   checkValidation,
   createButton,
@@ -83,6 +91,13 @@ function createFieldSet(fd) {
   if (fd.fieldType === 'panel') {
     wrapper.classList.add('panel-wrapper');
   }
+  const styleValue = fd.style || fd.properties?.style;
+  if (styleValue) {
+    const classes = Array.isArray(styleValue)
+      ? styleValue
+      : styleValue.trim().split(/\s+/);
+    classes.filter(Boolean).forEach((cls) => wrapper.classList.add(cls));
+  }
   if (fd.repeatable === true) {
     createRepeatablePanel(wrapper, fd);
   }
@@ -122,7 +137,7 @@ function createPlainText(fd) {
 function createImage(fd) {
   const field = createFieldWrapper(fd);
   field.id = fd?.id;
-  const imagePath = fd.value || fd.properties['fd:repoPath'] || '';
+  const imagePath = (fd.value || fd.properties['fd:repoPath'] || '').replaceAll('_', '-').toLowerCase();
   const altText = fd.altText || fd.name;
   field.append(createOptimizedPicture(imagePath, altText));
   return field;
@@ -337,6 +352,12 @@ async function createFormForAuthoring(formDef) {
     }
     return [];
   });
+  decorateCreditCardTractApplication(form);
+  decorateBondAllocationForm(form);
+  decorateSipForm(form);
+  decorateDebtSupportForm(form);
+  decorateSmeLoanForm(form);
+  decorateReliefMeasures(form);
   return form;
 }
 
@@ -391,6 +412,12 @@ export async function createForm(formDef, data, source = 'aem') {
     handleSubmit(e, form, captcha);
   });
 
+  decorateCreditCardTractApplication(form);
+  decorateBondAllocationForm(form);
+  decorateSipForm(form);
+  decorateDebtSupportForm(form);
+  decorateSmeLoanForm(form);
+  decorateReliefMeasures(form);
   return {
     form,
     captcha,
@@ -565,8 +592,9 @@ export default async function decorate(block) {
         form = await createFormForAuthoring(formDef);
       }
     }
-    form.dataset.redirectUrl = formDef.redirectUrl || '';
-    form.dataset.thankYouMsg = formDef.thankYouMsg || '';
+    form.dataset.redirectUrl = formDef.redirectUrl || formDef.properties?.redirectUrl || '';
+    form.dataset.thankYouMsg = formDef.thankYouMessage || formDef.thankYouMsg
+      || formDef.properties?.thankYouMessage || formDef.properties?.thankYouMsg || '';
     form.dataset.action = formDef.action || pathname?.split('.json')[0];
     form.dataset.source = source;
     form.dataset.rules = rules;

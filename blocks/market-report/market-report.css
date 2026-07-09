@@ -15,6 +15,25 @@
   visibility: hidden;
 }
 
+.market-report-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.market-report-col-left,
+.market-report-col-right {
+  flex: 2 1 0;
+}
+
+.market-report-page-content > .market-report-col .market-report-col-left {
+  flex: 4 1 0;
+}
+
+.market-report-page-content > .market-report-col .market-report-col-right {
+  flex: 1 1 0;
+}
+
 .market-report-col-left :is(h1, h2, h3, h4, h5, h6),
 .market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
   font-size: 1rem;
@@ -40,12 +59,22 @@
 
 .market-report-written-by {
   margin-block: 1.875rem;
+  color: var(--bbl-color-grey-85);
+}
+
+.market-report-col-left .market-report-author {
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-body-b1-size);
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: var(--bbl-body-b1-line-height);
+  color: var(--bbl-color-black);
 }
 
 .market-report-page a.print-button.icon-print {
   font: 1rem BangkokBank-Medium, sans-serif;
   color: var(--bbl-color-black);
   text-transform: uppercase;
+  text-decoration: none;
   display: block;
   position: relative;
   padding-right: 1.75rem;
@@ -109,4 +138,10 @@
   height: 0.0625rem;
   overflow: hidden;
   box-sizing: border-box;
+}
+
+@media (width > 64rem) {
+  .market-report-col {
+    flex-direction: row;
+  }
 }

@@ -1,7 +1,17 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { decorateButtonsV1, applyLinkTarget } from '../../scripts/bbl-decorators.js';
+import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 import { fetchConfigs } from '../../scripts/config.js';
+
+const MOBILE_MQ = `(width <= ${
+  getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-mobile-max').trim()
+})`;
+
+const windowLoaded = document.readyState === 'complete'
+  ? Promise.resolve()
+  : new Promise((resolve) => { window.addEventListener('load', resolve, { once: true }); });
+
+let globalMuted = true;
 
 function getYouTubeId(url) {
   const regex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
@@ -22,28 +32,39 @@ function pauseBannerVideo(item) {
   if (iframe) {
     delete iframe.dataset.ytPendingPlay;
     if (iframe.ytPlayer) try { iframe.ytPlayer.pauseVideo(); } catch (_) { /* not ready */ }
+    iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
   }
 }
 
+function applyGlobalMute(heroBanner) {
+  heroBanner.querySelectorAll('video.hero-banner-video').forEach((video) => {
+    video.muted = globalMuted;
+  });
+  heroBanner.querySelectorAll('iframe.hero-banner-video').forEach((iframe) => {
+    if (iframe.ytPlayer && iframe.ytPlayerReady) {
+      if (globalMuted) iframe.ytPlayer.mute(); else iframe.ytPlayer.unMute();
+      if (typeof iframe.syncYTMuteUI === 'function') iframe.syncYTMuteUI(globalMuted);
+    }
+  });
+}
+
 function playBannerVideo(item) {
+  if (window.matchMedia(MOBILE_MQ).matches) return;
   const video = item?.querySelector('video.hero-banner-video');
   if (video) {
-    video.muted = false;
-    video.removeAttribute('muted');
-    video.play()
-      .then(() => { video.volume = 0.5; })
-      .catch(() => {
-        video.muted = true;
-        video.play().then(() => { video.volume = 0.5; }).catch(() => {});
-      });
+    video.muted = globalMuted;
+    video.play().catch(() => {
+      video.muted = true;
+      video.play().catch(() => {});
+    });
   }
   const iframe = item?.querySelector('iframe.hero-banner-video');
   if (iframe) {
     if (iframe.ytPlayer && iframe.ytPlayerReady) {
       try {
-        iframe.ytPlayer.unMute();
-        iframe.ytPlayer.setVolume(50);
+        if (globalMuted) iframe.ytPlayer.mute(); else iframe.ytPlayer.unMute();
         iframe.ytPlayer.playVideo();
+        if (typeof iframe.syncYTMuteUI === 'function') iframe.syncYTMuteUI(globalMuted);
       } catch (_) { /* player not ready yet */ }
     } else {
       iframe.dataset.ytPendingPlay = '1';
@@ -52,32 +73,38 @@ function playBannerVideo(item) {
 }
 
 function changeBanner(block) {
-  block.addEventListener('mouseenter', (e) => {
-    const thumbnail = e.target.closest('.hero-banner-thumbnail-item');
-    if (!thumbnail) return;
+  function activateThumbnail(thumbnail) {
     const { index } = thumbnail.dataset;
-
     const currentItem = block.querySelector('.hero-banner-item.hero-banner-item-active');
     if (currentItem?.dataset.index === index) return;
-
     pauseBannerVideo(currentItem);
-
     block.querySelectorAll('[data-index]').forEach((el) => {
       el.classList.toggle('hero-banner-item-active', el.classList.contains('hero-banner-item') && el.dataset.index === index);
       el.classList.toggle('hero-banner-thumbnail-item-active', el.classList.contains('hero-banner-thumbnail-item') && el.dataset.index === index);
     });
+  }
 
+  block.addEventListener('mouseenter', (e) => {
+    const thumbnail = e.target.closest('.hero-banner-thumbnail-item');
+    if (!thumbnail) return;
+    activateThumbnail(thumbnail);
     playBannerVideo(block.querySelector('.hero-banner-item.hero-banner-item-active'));
   }, true);
 
-  block.addEventListener('mouseleave', () => {
-    pauseBannerVideo(block.querySelector('.hero-banner-item.hero-banner-item-active'));
-  });
+  block.addEventListener('click', (e) => {
+    const thumbnail = e.target.closest('.hero-banner-thumbnail-item');
+    if (!thumbnail) return;
+    activateThumbnail(thumbnail);
+  }, true);
 }
 
 function lazyLoadThumbnails(block) {
   const outer = block.querySelector('.hero-banner-thumbnail-outer');
   if (!outer) return;
+  if (window.matchMedia('(max-width: 47.5rem)').matches) {
+    outer.classList.add('hero-banner-thumbnail-outer-active');
+    return;
+  }
   function onScroll() {
     if (window.scrollY <= 0) return;
     outer.classList.add('hero-banner-thumbnail-outer-active');
@@ -98,6 +125,27 @@ function createElement(tag, ...classNames) {
   const el = document.createElement(tag);
   if (classNames.length) el.classList.add(...classNames);
   return el;
+}
+
+/**
+ * Applies className to a cell's content as one unit. If the cell has a single
+ * child (the common case — one paragraph), the class goes directly on it. If
+ * an author split the text into multiple paragraphs, wrap them all in one
+ * div carrying the class, so every paragraph gets styled consistently
+ * instead of only the first one.
+ */
+function normalizeCellContent(cell, className) {
+  if (!cell?.firstElementChild) return;
+  if (cell.children.length === 1) {
+    cell.firstElementChild.classList.add(className);
+    return;
+  }
+  const wrapper = document.createElement('div');
+  wrapper.classList.add(className);
+  while (cell.firstChild) {
+    wrapper.appendChild(cell.firstChild);
+  }
+  cell.appendChild(wrapper);
 }
 
 function createThumbItem(picture, index, { strip = false, active = false } = {}) {
@@ -139,7 +187,7 @@ function buildControls(bannerItem) {
       <input type="range" class="hero-ctrl-seek" min="0" max="1000" value="0" step="1" aria-label="Seek">
     </div>
     <div class="hero-ctrl-bar">
-      <button class="hero-ctrl-btn hero-ctrl-play" aria-label="Pause">${VI.pause}</button>
+      <button class="hero-ctrl-btn hero-ctrl-play" aria-label="Play">${VI.play}</button>
       <div class="hero-ctrl-vol-group">
         <button class="hero-ctrl-btn hero-ctrl-mute" aria-label="Mute">${VI.volume}</button>
         <input type="range" class="hero-ctrl-volume" min="0" max="100" value="50" step="1" aria-label="Volume">
@@ -223,12 +271,13 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem) {
     volSlider.value = muted ? 0 : Math.round(video.volume * 100);
   };
 
-  muteBtn.addEventListener('click', () => { video.muted = !video.muted; });
+  muteBtn.addEventListener('click', () => {
+    globalMuted = !globalMuted;
+    applyGlobalMute(bannerItem.closest('.block'));
+  });
   video.addEventListener('volumechange', syncMuteBtn);
 
-  muteBtn.innerHTML = VI.volume;
-  muteBtn.setAttribute('aria-label', 'Mute');
-  volSlider.value = Math.round(video.volume * 100);
+  syncMuteBtn();
 
   volSlider.addEventListener('input', () => {
     video.volume = volSlider.value / 100;
@@ -279,6 +328,9 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
 
   if (!iframe.id) { ytCounter += 1; iframe.id = `hero-yt-${ytCounter}`; }
 
+  const overlay = createElement('div', 'hero-banner-iframe-overlay');
+  iframe.insertAdjacentElement('afterend', overlay);
+
   loadYTScript(ytSrc);
   onYTReady(() => {
     let pollId = null;
@@ -287,15 +339,20 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
       events: {
         onReady: ({ target }) => {
           iframe.ytPlayerReady = true;
-          if (iframe.dataset.ytPendingPlay) {
-            delete iframe.dataset.ytPendingPlay;
-            target.unMute();
-            target.setVolume(50);
+          iframe.syncYTMuteUI = (muted) => {
+            muteBtn.innerHTML = muted ? VI.muted : VI.volume;
+            muteBtn.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
+            volSlider.value = muted ? 0 : Math.round(target.getVolume());
+          };
+          const isDesktopActiveSlide = !window.matchMedia(MOBILE_MQ).matches
+            && bannerItem.classList.contains('hero-banner-item-active');
+          if (isDesktopActiveSlide) {
+            if (iframe.dataset.ytPendingPlay) delete iframe.dataset.ytPendingPlay;
+            if (globalMuted) target.mute(); else target.unMute();
             target.playVideo();
           }
-          target.unMute();
           target.setVolume(50);
-          volSlider.value = 50;
+          iframe.syncYTMuteUI(globalMuted);
           timeEl.textContent = `0:00 / ${fmtTime(target.getDuration())}`;
         },
         onStateChange: ({ data, target }) => {
@@ -304,6 +361,11 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
           playBtn.innerHTML = playing ? VI.pause : VI.play;
           playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
           if (playing) {
+            // Sync mute UI with actual player mute state
+            const muted = target.isMuted();
+            muteBtn.innerHTML = muted ? VI.muted : VI.volume;
+            muteBtn.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
+            volSlider.value = muted ? 0 : Math.round(target.getVolume());
             if (!pollId) {
               pollId = setInterval(() => {
                 const cur = target.getCurrentTime();
@@ -327,11 +389,8 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
     });
 
     muteBtn.addEventListener('click', () => {
-      if (player.isMuted()) {
-        player.unMute(); muteBtn.innerHTML = VI.volume; muteBtn.setAttribute('aria-label', 'Mute'); volSlider.value = player.getVolume();
-      } else {
-        player.mute(); muteBtn.innerHTML = VI.muted; muteBtn.setAttribute('aria-label', 'Unmute'); volSlider.value = 0;
-      }
+      globalMuted = !globalMuted;
+      applyGlobalMute(bannerItem.closest('.block'));
     });
 
     volSlider.addEventListener('input', () => {
@@ -353,6 +412,11 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
 
     wireShare(bar.querySelector('.hero-ctrl-share'));
     wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
+
+    overlay.addEventListener('click', () => {
+      if (player.getPlayerState() === window.YT.PlayerState.PLAYING) player.pauseVideo();
+      else player.playVideo();
+    });
   });
 }
 
@@ -408,7 +472,8 @@ export default async function decorate(block) {
     const headingCell = row.children[col]; col += 1;
     const textCell = row.children[col]; col += 1;
     const linkCell = row.children[col]; col += 1;
-    if (!row.children[col]?.querySelector('picture, a[href]')) col += 1;
+    const skipCell = row.children[col];
+    if (skipCell && !skipCell.textContent?.trim() && !skipCell.querySelector('picture, a[href]')) col += 1;
     const appStoreImageCell = row.children[col]; col += 1;
     const appStoreLinkCell = row.children[col]; col += 1;
     const googlePlayImageCell = row.children[col]; col += 1;
@@ -426,33 +491,35 @@ export default async function decorate(block) {
       if (youtubeUrl) {
         const ytId = getYouTubeId(youtubeUrl);
         const iframe = document.createElement('iframe');
-        if (isMobile) {
-          iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?mute=1&loop=1&playlist=${ytId}` : youtubeUrl;
-        } else {
-          iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&controls=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}` : youtubeUrl;
-        }
         iframe.className = 'hero-banner-video';
         iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
         iframe.setAttribute('allowfullscreen', '');
         iframe.setAttribute('loading', 'lazy');
-        bannerItem.append(iframe);
-        if (!isMobile) {
-          const bar = buildControls(bannerItem);
+        const iframeWrapper = createElement('div', 'hero-banner-video-wrapper');
+        iframeWrapper.append(iframe);
+        bannerItem.append(iframeWrapper);
+        const bar = buildControls(iframeWrapper);
+        if (isMobile) {
+          iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=0&controls=0&enablejsapi=1&playsinline=1` : youtubeUrl;
           wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc);
+        } else {
+          windowLoaded.then(() => {
+            const isActive = bannerItem.classList.contains('hero-banner-item-active');
+            const autoplay = isActive ? 1 : 0;
+            iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=${autoplay}&mute=1&controls=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}` : youtubeUrl;
+            wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc);
+          });
         }
       } else if (damVideoSrc) {
         const video = document.createElement('video');
         video.className = 'hero-banner-video';
-        video.muted = true;
-        video.setAttribute('muted', '');
-        video.loop = true;
         video.playsInline = true;
         video.setAttribute('playsinline', '');
         if (!isMobile) {
-          video.autoplay = true;
-          video.setAttribute('autoplay', '');
+          video.muted = true;
+          video.setAttribute('muted', '');
+          video.loop = true;
         }
-        if (isMobile) video.controls = true;
         const source = document.createElement('source');
         source.src = damVideoSrc;
         source.type = 'video/mp4';
@@ -460,17 +527,32 @@ export default async function decorate(block) {
         const videoWrapper = createElement('div', 'hero-banner-video-wrapper');
         videoWrapper.append(video);
         bannerItem.append(videoWrapper);
-        if (!isMobile) {
-          const bar = buildControls(videoWrapper);
-          wireDAMControls(video, bar, videoWrapper, bannerItem);
-          if (i === defaultIndex) {
-            video.addEventListener('play', () => {
-              video.muted = false;
-              video.removeAttribute('muted');
-              video.volume = 0.5;
-            }, { once: true });
-            video.play().catch(() => {});
+        const bar = buildControls(videoWrapper);
+        wireDAMControls(video, bar, videoWrapper, bannerItem);
+
+        if (isMobile) {
+        // Start paused on mobile
+          video.pause();
+
+          // Reset play button to play state since video starts paused on mobile
+          const playBtn = bar.querySelector('.hero-ctrl-play');
+          if (playBtn) {
+            playBtn.innerHTML = VI.play;
+            playBtn.setAttribute('aria-label', 'Play');
           }
+
+          // Ensure center play button is visible initially
+          const centerBtn = videoWrapper.querySelector(
+            '.hero-banner-center-play',
+          );
+
+          if (centerBtn) {
+            centerBtn.classList.remove(
+              'hero-banner-center-play-hidden',
+            );
+          }
+        } else if (i === defaultIndex) {
+          windowLoaded.then(() => video.play().catch(() => {}));
         }
       }
     } else {
@@ -478,12 +560,17 @@ export default async function decorate(block) {
       const pictureMobile = imageCellMobile?.querySelector('picture');
 
       if (pictureDesktop || pictureMobile) {
-        const heroPicture = createSmartImage(pictureDesktop, pictureMobile, imageAlt);
+        const heroPicture = createSmartImage(
+          pictureDesktop,
+          pictureMobile,
+          imageAlt,
+          i === defaultIndex,
+        );
         if (heroPicture) {
           const img = heroPicture.querySelector('img');
           if (img) {
             img.className = 'hero-banner-img';
-            img.loading = 'lazy';
+            if (i === defaultIndex) img.fetchPriority = 'high';
           }
           bannerItem.append(heroPicture);
         }
@@ -505,12 +592,14 @@ export default async function decorate(block) {
       preTitleEl.classList.add('hero-banner-pre-title');
       if (preTitleEl.firstElementChild) preTitleEl.firstElementChild.classList.add('hero-banner-pre-title');
     }
-    if (textCell?.firstElementChild) textCell.firstElementChild.classList.add('hero-banner-content-inner-text');
+    normalizeCellContent(textCell, 'hero-banner-content-inner-text');
     const isAppCta = variant === 'simple-app-cta';
     [preTitleCell, headingCell, textCell, ...(isAppCta ? [] : [linkCell])].forEach((cell) => {
-      if (cell) contentGroup.innerHTML += cell.innerHTML;
+      if (!cell) return;
+      while (cell.firstChild) {
+        contentGroup.appendChild(cell.firstChild);
+      }
     });
-    decorateButtonsV1(contentGroup);
 
     if (isAppCta) {
       const appCtasEl = createElement('div', 'hero-app-ctas');
@@ -540,7 +629,7 @@ export default async function decorate(block) {
         }
       }
     }
-    applyLinkTarget(contentGroup, 'a.button', targetValue);
+    if (targetValue) applyLinkTarget(contentGroup, 'a.button-m', targetValue);
 
     contentInner.append(contentGroup);
     const content = createElement('div', 'hero-banner-content', 'content');

@@ -139,6 +139,10 @@
                 {
                   "name":"Columns 2(65-35)",
                   "value": "columns-2-65"
+                },
+                {
+                  "name":"Columns 2(25-75)",
+                  "value": "columns-2-25"
                 }
               ]
             },
@@ -177,6 +181,23 @@
                 {
                   "name": "Background Private Banking",
                   "value": "background-privatebanking"
+                }
+              ]
+            },
+            {
+              "name": "Forms Theme",
+              "children": [
+                {
+                  "name": "Custom Forms",
+                  "value": "custom-forms"
+                },
+                {
+                  "name": "Lead Forms",
+                  "value": "lead-forms"
+                },
+                {
+                  "name": "Wizard Forms",
+                  "value": "wizard-forms"
                 }
               ]
             }
@@ -268,7 +289,9 @@
         "mf-results",
         "mf-comparator-results",
         "mf-comparator",
-        "mf-questionnaire"
+        "mf-questionnaire",
+        "cc-campaign",
+        "custom-button"
       ]
     }
   ]

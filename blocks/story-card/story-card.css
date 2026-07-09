@@ -80,9 +80,10 @@
 
 .story-card .title-1 {
   margin: 0.625rem 0 1.25rem;
-  font-size: 1.4rem;
-  line-height: 1.375rem;
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-text-article-card-title-size);
+  line-height: var(--bbl-text-article-card-title-line-height);
+  font-weight: var(--bbl-text-article-card-title-weight);
+  font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
 }
 
@@ -123,7 +124,6 @@
 @media (width > 47.5rem) {
   .story-card .thumb-full {
     flex-direction: row;
-    justify-content: space-between;
   }
 
   .story-card.image-right .thumb-full {
@@ -135,18 +135,22 @@
     height: 28.125rem;
   }
 
+  .story-card .outer {
+    flex: 1 1 50%;
+    min-width: 0;
+    width: auto;
+    padding: 0 3rem 0 1.25rem;
+  }
+
   .story-card .thumb {
     margin: 0;
-    min-width: 50%;
+    flex: 0 0 50%;
+    min-width: 0;
   }
 
   .story-card .thumb picture,
   .story-card .thumb img {
     height: 28.125rem;
-  }
-
-  .story-card .outer {
-    padding: 0 3rem 0 1.25rem;
   }
 
   .story-card.image-right .outer {
@@ -169,11 +173,6 @@
 
   .story-card .sub-title-medium.line {
     font-size: 1rem;
-  }
-
-  .story-card .title-1 {
-    font-size: 3rem;
-    line-height: 2.875rem;
   }
 
   .story-card .text-default {

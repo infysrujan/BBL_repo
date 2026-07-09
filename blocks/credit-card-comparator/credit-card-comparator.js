@@ -31,37 +31,36 @@ function saveComparatorCookie(selectedCards) {
 //   Row 1: linkText    (text)
 //   Row 2: linkTitle   (text, optional)
 //   Row 3: linkType    (select: primary | secondary | tertiary)
-//   Row 4: targetLink  (boolean, inside targetSettings container)
 function readBlockConfig(block) {
   const rows = [...block.children];
   rows.forEach((row) => moveInstrumentation(row, block));
 
-  const readText = (row) => row?.children[0]?.querySelector('p')?.textContent?.trim()
+  const readCellText = (row) => row?.children[0]?.querySelector('p')?.textContent?.trim()
     ?? row?.children[0]?.textContent?.trim()
     ?? '';
 
   // Row 0: link — aem-content renders as <a href="published-url"> or plain-text path
   const cell0 = rows[0]?.children[0];
   const anchor = cell0?.querySelector('a');
-  const link = anchor?.href ?? readText(rows[0]);
+  const link = anchor?.href ?? readCellText(rows[0]);
+
+  const textRows = rows.slice(1);
 
   return {
     link,
-    linkText: readText(rows[1]) || 'Compare',
-    linkTitle: readText(rows[2]),
-    linkType: readText(rows[3]) || 'primary',
-    targetLink: readText(rows[4]) === 'true',
+    linkText: readCellText(textRows[0]) || 'Compare',
+    linkTitle: readCellText(textRows[1]),
+    linkType: readCellText(textRows[2]) || 'primary',
   };
 }
 
 // ── DOM builders ───────────────────────────────────────────────────────────────
 
-// Create the hidden warning banner shown when the card-selection limit is reached
+// Create the warning banner shown when the card-selection limit is reached
 function buildErrorDiv(warningText) {
   const el = document.createElement('div');
   el.className = 'compare-error';
   el.textContent = warningText;
-  el.hidden = true;
   return el;
 }
 
@@ -159,7 +158,7 @@ export default async function decorate(block) {
   [...block.children].forEach((row) => { row.classList.remove('ccs-source-row'); });
 
   const {
-    link, linkText, linkTitle, linkType, targetLink,
+    link, linkText, linkTitle, linkType,
   } = readBlockConfig(block);
 
   // Hide authored rows via CSS class with !important (UE cannot override this)
@@ -173,13 +172,9 @@ export default async function decorate(block) {
   } = buildComparatorDOM(block, warningText, linkText, linkType);
   if (linkTitle) ctaBtn.title = linkTitle;
 
-  let warningTimer = null;
-
-  // Show the max-limit warning banner and auto-dismiss it after 4 seconds
+  // Show the max-limit warning banner — stays visible until a card is removed
   function showWarning() {
-    clearTimeout(warningTimer);
-    errorDiv.hidden = false;
-    warningTimer = setTimeout(() => { errorDiv.hidden = true; }, 4000);
+    errorDiv.classList.add('is-visible');
   }
 
   // Sync the bar, button state, cookie, and sessionStorage whenever the card selection changes
@@ -188,8 +183,7 @@ export default async function decorate(block) {
     block.classList.toggle('active', count > 0);
     ctaBtn.disabled = count < MIN_COMPARE;
     if (count < MAX_COMPARE) {
-      clearTimeout(warningTimer);
-      errorDiv.hidden = true;
+      errorDiv.classList.remove('is-visible');
     }
     saveComparatorCookie(selectedCards);
     // Persist to sessionStorage so the bar survives a same-tab page refresh
@@ -205,7 +199,7 @@ export default async function decorate(block) {
       document.dispatchEvent(new CustomEvent('credit-card-compare-show', { detail: { cards } }));
       resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (link) {
-      window.open(`${link}?compare-product-btn=`, targetLink ? '_blank' : '_self');
+      window.open(`${link}?compare-product-btn=`, '_self');
     }
   });
 

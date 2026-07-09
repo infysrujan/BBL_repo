@@ -237,38 +237,10 @@ export default async function decorate(block) {
   if (block.dataset.carouselInit) return;
   block.dataset.carouselInit = 'true';
 
-  const rows = [...block.children].filter((row) => !row.classList.contains('carousel-rendered'));
+  const rows = [...block.children];
   const hasAuthoringAttrs = rows.some((row) => [...row.attributes]
     .some(({ name }) => name.startsWith('data-aue-')));
   const isAuthoring = hasAuthoringAttrs && window.self !== window.top;
-  const sourceRows = rows;
-
-  const stripAuthoringAttrs = (root) => {
-    if (!root) return;
-    const all = [root, ...root.querySelectorAll('*')];
-    all.forEach((el) => {
-      [...el.attributes]
-        .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
-        .forEach(({ name }) => el.removeAttribute(name));
-    });
-  };
-
-  const ensureRenderHost = () => {
-    if (!isAuthoring) return block;
-    let host = block.querySelector(':scope > .carousel-rendered');
-    if (!host) {
-      host = document.createElement('div');
-      host.className = 'carousel-rendered';
-      block.append(host);
-    }
-    return host;
-  };
-
-  if (isAuthoring) {
-    sourceRows.forEach((row) => {
-      row.style.display = 'none';
-    });
-  }
 
   // Read configuration values from block rows
   const dotsAlignment = readDotsAlignment(rows[0]);
@@ -276,12 +248,19 @@ export default async function decorate(block) {
   const autoScroll = readBoolean(rows[2]);
   const scrollTimeDelay = rows[3]?.textContent.trim() || '';
   const showLinks = readBoolean(rows[4]);
-  const seeMoreLink = showLinks ? rows[5]?.querySelector('a') : null;
+  const seeMoreButtonContainer = showLinks ? rows[5]?.querySelector('.button-container') : null;
+  const seeMoreLink = seeMoreButtonContainer?.querySelector('a') ?? (showLinks ? rows[5]?.querySelector('a') : null);
   const boolValues = new Set(['true', 'false']);
   const row6Text = showLinks ? rows[6]?.textContent?.trim() || '' : '';
   const targetRowPresent = boolValues.has(row6Text);
   const seeMoreTargetValue = targetRowPresent ? row6Text : '';
-  const nextIndex = showLinks && !targetRowPresent ? 6 : 7;
+
+  // Dynamically find where slide rows start by detecting known slideType values in children[1].
+  // This handles variants like showArrowsDots which have fewer active config rows than
+  // the hardcoded index assumes (conditional model fields are not generated when inactive).
+  const SLIDE_TYPES = new Set(['withImage', 'withoutImage', 'heroBannerImageCarousel', 'textAnimationVariant', 'contentInsertCarouselCards', 'cardListCarousel', 'mfCardListCarousel', 'withDefaultImage', 'withCircularImage', 'onlyImage']);
+  const nextIndex = rows.findIndex((r) => SLIDE_TYPES.has(r.children[1]?.textContent.trim() || ''));
+
   const firstSlide = rows[nextIndex];
   const variant = firstSlide?.children[0]?.textContent.trim() || '';
 
@@ -290,9 +269,7 @@ export default async function decorate(block) {
   const isMfCardListCarousel = variant === 'mf-card-list-carousel';
 
   const slides = rows.slice(nextIndex);
-  const renderSlides = isAuthoring
-    ? slides.map((row) => row.cloneNode(true))
-    : slides;
+  const renderSlides = slides;
   block.classList.add('content');
 
   if (showDots) {
@@ -311,7 +288,7 @@ export default async function decorate(block) {
     block.classList.add('mf-card-list-carousel');
   }
 
-  if (autoScroll) {
+  if (autoScroll && !isAuthoring) {
     block.classList.add('auto-scroll');
     if (scrollTimeDelay) block.dataset.scrollDelay = scrollTimeDelay;
   }
@@ -352,6 +329,7 @@ export default async function decorate(block) {
   const slidesFragment = slideEls.filter((s) => s.classList.contains('carousel-fragment')).length;
   const slidesContentCards = slideEls.filter((s) => s.classList.contains('content-cards')).length;
   const slidesMfCardList = slideEls.filter((s) => s.classList.contains('mf-card-list-carousel-item')).length;
+  const slidesMfFundCards = slideEls.filter((s) => s.classList.contains('mf-fund-cards-item')).length;
   const allHeroBanner = (slidesHeroBanner > 0 || slidesTextAnimation > 0)
     && slidesWithImage === 0
     && slidesWithoutImage === 0;
@@ -598,7 +576,7 @@ export default async function decorate(block) {
     && slidesHeroBanner === 0
     && slidesTextAnimation === 0;
 
-  const renderHost = ensureRenderHost();
+  const renderHost = block;
   if (allHeroBanner) {
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
@@ -646,7 +624,7 @@ export default async function decorate(block) {
     renderHost.replaceChildren(...slideEls);
   }
 
-  const noNav = allFragmentTrack && isFragmentNoScroll(slideEls);
+  const noNav = (allFragmentTrack && isFragmentNoScroll(slideEls)) || slideEls.length <= 1;
 
   if (showArrows || isMfCardListCarousel) {
     if (showArrows && arrowTrackVariant) {
@@ -656,30 +634,33 @@ export default async function decorate(block) {
       if (!noNav) {
         renderHost.replaceChildren(prevArrow, trackContainer, nextArrow, dots);
       }
-    } else {
+    } else if ((!isMfCardListCarousel || slideEls.length > 1) && !noNav) {
       renderHost.append(dots, prevArrow, nextArrow);
     }
   } else if (showDots || slidesContentCards > 0) {
     if (!noNav) {
       renderHost.append(dots);
     }
+  } else if (slidesMfFundCards > 0 && slideEls.length > 1) {
+    renderHost.append(dots);
   }
 
   if (seeMoreLink) {
     const moreWrap = document.createElement('div');
     moreWrap.className = 'carousel-dotted-more';
-    seeMoreLink.classList.add('button-tertiary', 'icon-arrow-left');
     const openInNewTab = seeMoreTargetValue === 'true' || seeMoreLink.target === '_blank';
     if (openInNewTab) seeMoreLink.setAttribute('target', '_blank');
-    const linkWrap = document.createElement('span');
-    linkWrap.append(seeMoreLink);
-    moreWrap.append(linkWrap);
+    if (seeMoreButtonContainer) {
+      moreWrap.append(seeMoreButtonContainer);
+    } else {
+      const linkWrap = document.createElement('span');
+      linkWrap.append(seeMoreLink);
+      moreWrap.append(linkWrap);
+    }
     renderHost.append(moreWrap);
   }
 
-  if (isAuthoring) {
-    stripAuthoringAttrs(renderHost);
-  }
+  // No attribute stripping in authoring mode
 
   if (slideEls.length) {
     setActive(0);
@@ -704,8 +685,8 @@ export default async function decorate(block) {
     isFirstLoad = false;
   });
 
-  if (autoScroll && scrollTimeDelay) {
-    const delay = parseInt(scrollTimeDelay, 10);
+  if (autoScroll && !isAuthoring) {
+    const delay = scrollTimeDelay ? parseInt(scrollTimeDelay, 10) : 3000;
     initializeAutoScroll(block, slideEls, setActive, prevArrow, nextArrow, dotButtons, delay, 1);
   }
 
