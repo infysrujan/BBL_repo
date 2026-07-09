@@ -421,7 +421,7 @@ main img {
 .section.columns-2-50 {
     display: flex;
     flex-direction: column;
-    gap:1.875rem;
+    gap:var(--bbl-space-300);
 }
 
 .section.columns-2-65 {
@@ -453,6 +453,7 @@ main img {
 
     .section.columns-2-50 {
         flex-direction: row;
+        gap:var(--bbl-space-400);
     }
 
     .section.columns-2-50 > * {
