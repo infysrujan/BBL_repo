@@ -127,6 +127,27 @@ function createElement(tag, ...classNames) {
   return el;
 }
 
+/**
+ * Applies className to a cell's content as one unit. If the cell has a single
+ * child (the common case — one paragraph), the class goes directly on it. If
+ * an author split the text into multiple paragraphs, wrap them all in one
+ * div carrying the class, so every paragraph gets styled consistently
+ * instead of only the first one.
+ */
+function normalizeCellContent(cell, className) {
+  if (!cell?.firstElementChild) return;
+  if (cell.children.length === 1) {
+    cell.firstElementChild.classList.add(className);
+    return;
+  }
+  const wrapper = document.createElement('div');
+  wrapper.classList.add(className);
+  while (cell.firstChild) {
+    wrapper.appendChild(cell.firstChild);
+  }
+  cell.appendChild(wrapper);
+}
+
 function createThumbItem(picture, index, { strip = false, active = false } = {}) {
   const item = createElement('li', 'hero-banner-thumbnail-item');
   if (active) item.classList.add('hero-banner-thumbnail-item-active');
@@ -571,10 +592,13 @@ export default async function decorate(block) {
       preTitleEl.classList.add('hero-banner-pre-title');
       if (preTitleEl.firstElementChild) preTitleEl.firstElementChild.classList.add('hero-banner-pre-title');
     }
-    if (textCell?.firstElementChild) textCell.firstElementChild.classList.add('hero-banner-content-inner-text');
+    normalizeCellContent(textCell, 'hero-banner-content-inner-text');
     const isAppCta = variant === 'simple-app-cta';
     [preTitleCell, headingCell, textCell, ...(isAppCta ? [] : [linkCell])].forEach((cell) => {
-      if (cell) contentGroup.innerHTML += cell.innerHTML;
+      if (!cell) return;
+      while (cell.firstChild) {
+        contentGroup.appendChild(cell.firstChild);
+      }
     });
 
     if (isAppCta) {
