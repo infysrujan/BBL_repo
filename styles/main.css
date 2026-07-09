@@ -33,8 +33,8 @@ body {
     background-color: var(--bbl-bg-primary);
     color: var(--bbl-text-primary);
     font-family: var(--bbl-font-family-primary);
-    font-size: var(--bbl-text-body-size);
-    line-height: var(--bbl-text-body-line-height);
+    font-size: var(--bbl-text-default-size);
+    line-height: var(--bbl-text-default-line-height);
 }
 
 body.appear {

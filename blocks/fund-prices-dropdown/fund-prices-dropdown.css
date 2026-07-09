@@ -18,7 +18,7 @@
 .fund-prices-dropdown .period-select-btn .period-select-label {
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-medium);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-color-grey-85);
   margin: 0 0.625rem 0 0;
 }
@@ -334,7 +334,7 @@
   min-width: 48rem;
   border-collapse: collapse;
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   table-layout: fixed;
 }
 
