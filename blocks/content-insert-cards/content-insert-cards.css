@@ -93,8 +93,8 @@
   color: var(--bbl-color-black);
   margin: 0;
   position: relative;
-  padding-bottom: var(--bbl-space-250);
-  margin-bottom: var(--bbl-space-250);
+  padding-bottom: 0.9375rem;
+  margin-bottom: 0.625rem;
 }
 
 .content-insert-cards .title-2::before {

@@ -152,9 +152,9 @@
   border: none;
 }
 
-.cards-list-item:has(.cards-list-image-logo) {
+/* .cards-list-item:has(.cards-list-image-logo) {
   height: calc(100% - 0.5625rem);
-}
+} */
 
 .cards-list:is(.scrollable, .carousel) .cards-list-item {
   flex: 0 0 16.875rem;
