@@ -759,7 +759,7 @@
   #fdd-print-root .fdd-print-date-range span,
   #fdd-print-root .fdd-print-date-range strong {
     display: block;
-    font-weight: 400;
+    font-weight: var(--bbl-font-weight-regular);
   }
 
   #fdd-print-root .fdd-print-date-range strong {
