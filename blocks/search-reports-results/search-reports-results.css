@@ -127,7 +127,7 @@
   flex: 1;
   min-width: 0;
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   font-weight: var(--bbl-text-body-weight);
   line-height: 44px;
   color: var(--bbl-color-grey-85);
@@ -181,7 +181,7 @@
 .search-reports-results .srr-loading {
   text-align: center;
   padding: 3rem 1.5rem;
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-color-grey-85);
 }
 

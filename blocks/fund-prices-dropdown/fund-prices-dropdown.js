@@ -60,6 +60,8 @@ async function fetchFundDetailHistory(fundId, fromDate, toDate) {
 }
 
 function fmtNav(v) {
+  const num = Number(v);
+  if (!Number.isNaN(num) && num === 0) return 'N/A';
   return typeof v === 'number' ? v.toFixed(4) : (v ?? 'N/A');
 }
 
@@ -489,6 +491,8 @@ export default async function decorate(block) {
   let latestMdate = null;
   let drFrom = new Date();
   let drTo = new Date();
+  let currentFromDate = null;
+  let currentToDate = null;
 
   function periodDateRange(periodCode) {
     const end = latestMdate ? (parseLocalDateFromYmd(latestMdate) ?? new Date()) : new Date();
@@ -511,8 +515,14 @@ export default async function decorate(block) {
     return `"${currentFund?.name}" Open-end Fund : ${period} : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
   }
 
+  function buildPrintSubtitle(fromDate, toDate) {
+    return `"${currentFund?.name}" Open-end Fund : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
+  }
+
   async function renderDetail(fromDate, toDate) {
     const subtitle = buildSubtitle(fromDate, toDate);
+    currentFromDate = fromDate;
+    currentToDate = toDate;
     fundLabel.textContent = subtitle;
     printFrom.textContent = formatCalendarDate(fromDate, getCalendarLang());
     printTo.textContent = formatCalendarDate(toDate, getCalendarLang());
@@ -533,7 +543,7 @@ export default async function decorate(block) {
     chartBeginNav.textContent = fmtNav(stats.Begin_mfr_fNav);
     chartEndNav.textContent = fmtNav(stats.End_mfr_fNav);
     renderChart(chartSvg, sorted, currentPeriod);
-    renderHistTable(histTbody, [...sorted].reverse());
+    renderHistTable(histTbody, sorted);
 
     if (chartSvg.chartResizeObserver) chartSvg.chartResizeObserver.disconnect();
     if (window.innerWidth < 768) {
@@ -645,8 +655,14 @@ export default async function decorate(block) {
     const printFooter = block.ownerDocument.createElement('div');
     printRoot.id = 'fdd-print-root';
     printRoot.classList.remove('hidden');
+    printRoot.classList.toggle('fdd-print-custom-range', currentPeriod === 'DR');
     printRoot.hidden = false;
     printRoot.querySelectorAll('.fund-prices-print-label, .fdd-back-btn').forEach((el) => el.remove());
+    if (currentFromDate && currentToDate) {
+      const printSubtitle = buildPrintSubtitle(currentFromDate, currentToDate);
+      printRoot.querySelectorAll('.fdd-fund-label, .chart-subtitle')
+        .forEach((el) => { el.textContent = printSubtitle; });
+    }
     if (disclaimer) printRoot.appendChild(disclaimer);
     printFooter.className = 'fdd-print-footer';
     printFooter.innerHTML = '<span>https://www.bangkokbank.com/en/Personal/Save-And-Invest/Mutual-Funds/Fund-Prices</span><span>1/2</span>';

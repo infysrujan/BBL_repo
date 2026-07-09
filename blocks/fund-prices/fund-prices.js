@@ -153,6 +153,7 @@ function formatBodyCellText(normalizedKey, row, columnKey, selectedDate, lang) {
   if (columnKey && row[columnKey] !== undefined) {
     const value = String(row[columnKey]);
     const num = parseFloat(value);
+    if (!Number.isNaN(num) && num === 0) return 'N/A';
     if (!Number.isNaN(num) && Math.abs(num) >= 1000) {
       return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
     }
@@ -319,11 +320,49 @@ function printContent(containerEl, pageTitle, searchLabelText) {
 
   const tableBlock = clone.querySelector('.fund-prices-table');
   if (tableBlock) {
-    tableBlock.querySelectorAll('td.merged-fund-type').forEach((td) => {
-      if (td.textContent.trim() === 'FIF') {
-        td.closest('tr').classList.add('print-page-break');
+    const table = tableBlock.querySelector('table');
+    const headerRow = table?.querySelector('tr.header-row');
+    const fifRow = [...(table?.querySelectorAll('tr') || [])].find(
+      (row) => row.querySelector('td.merged-fund-type')?.textContent.trim() === 'FIF',
+    );
+
+    /*
+     * Keep the first printed page exactly as authored.  The rows beginning with
+     * FIF are moved to a second table whose THEAD is repeated by the browser on
+     * every continuation page.
+     */
+    if (table && headerRow && fifRow) {
+      const continuationTable = table.cloneNode(false);
+      const continuationColumns = doc.createElement('colgroup');
+      [15, 39, 10, 10, 10, 16].forEach((width) => {
+        const column = doc.createElement('col');
+        column.style.width = `${width}%`;
+        continuationColumns.appendChild(column);
+      });
+      const continuationHead = doc.createElement('thead');
+      const continuationMeta = doc.createElement('tr');
+      continuationMeta.className = 'fund-prices-print-continuation-meta';
+      continuationMeta.innerHTML = `
+        <td>${formatPrintDate(now)}, ${formatPrintTime(now)}</td>
+        <td colspan="4">${pageTitle}</td>
+        <td></td>
+      `;
+      continuationHead.append(continuationMeta, headerRow.cloneNode(true));
+
+      const continuationBody = doc.createElement('tbody');
+      let row = fifRow;
+      while (row) {
+        const nextRow = row.nextElementSibling;
+        continuationBody.appendChild(row);
+        row = nextRow;
       }
-    });
+      continuationTable.append(continuationColumns, continuationHead, continuationBody);
+
+      const continuation = doc.createElement('div');
+      continuation.className = 'fund-prices-print-continuation';
+      continuation.appendChild(continuationTable);
+      tableBlock.appendChild(continuation);
+    }
     printRoot.querySelector('.fund-prices-print-table-wrap').appendChild(tableBlock);
   }
 
