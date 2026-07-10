@@ -287,8 +287,6 @@ async function loadWelcomeBanner(doc) {
             resolve();
             return;
           }
-          const main = doc.querySelector('main');
-          [...fragment.querySelectorAll(':scope > .section')].forEach((s) => main.append(s));
           await waitForImageLoad(doc.querySelector('.welcome-banner-media img'));
           resolve();
         },
