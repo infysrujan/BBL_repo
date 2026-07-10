@@ -6,7 +6,7 @@ function isCreditCardForm(form) {
   if (!form) return false;
 
   // createForm() runs before the form is mounted in the section wrapper.
-  return form.querySelector('.credit-card-form-panel, .creditcard-form-panel') !== null;
+  return form.querySelector('.field-creditcard, .credit-card-form-panel, .creditcard-form-panel') !== null;
 }
 
 /**
