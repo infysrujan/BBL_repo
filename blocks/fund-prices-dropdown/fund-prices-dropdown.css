@@ -68,14 +68,14 @@
   font-size: var(--bbl-heading-h1-size);
   font-weight: var(--bbl-text-page-title-weight);
   color: var(--bbl-color-black);
-  margin-bottom: 0.5rem;
+  margin: 1.5rem 0 2rem;
   display: none;
 }
 
 .fund-prices-dropdown .fdd-title-rule {
   border: none;
   border-top: 0.125rem solid var(--bbl-color-grey-30);
-  margin: var(--bbl-space-150) 0 1.6875rem;
+  margin: 2rem 0 2.5rem;
   width: var(--bbl-space-600);
   display: none;
 }

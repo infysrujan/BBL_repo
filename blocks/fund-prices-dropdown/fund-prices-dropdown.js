@@ -45,6 +45,14 @@ function isRangeExceedsLimit(fromDate, toDate) {
   return fromDate < limitedFrom;
 }
 
+function isWeekendOrAfterYesterday(date) {
+  const day = date.getDay();
+  if (day === 0 || day === 6) return true;
+  const now = new Date();
+  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+  return date > yesterday;
+}
+
 async function fetchFundDetailStats(fundId, fromDate, toDate) {
   const configs = await fetchConfigs();
   const apiBase = configs.fundPricesApiUrl || '';
@@ -189,9 +197,8 @@ function renderChart(svgEl, history, period) {
   const lastIdx = history.length - 1;
   let labelSet;
   if (!useRotation) {
-    // 1W: always show first, middle, last
-    const midIdx = Math.round(lastIdx / 2);
-    labelSet = new Set([0, midIdx, lastIdx]);
+    // 1W: show every data point
+    labelSet = new Set(history.map((_, i) => i));
   } else {
     const labelSpacing = isMobileView ? 38 : 50;
     const maxXLabels = Math.min(history.length, Math.floor(innerW / labelSpacing));
@@ -574,13 +581,13 @@ export default async function decorate(block) {
   attachCalendarPicker({
     input: drFromInput,
     value: drFrom,
-    allDaysEnabled: true,
+    isDateDisabled: isWeekendOrAfterYesterday,
     onChange: (d) => { drFrom = d; validateAndRenderDetail(); },
   });
   attachCalendarPicker({
     input: drToInput,
     value: drTo,
-    allDaysEnabled: true,
+    isDateDisabled: isWeekendOrAfterYesterday,
     onChange: (d) => { drTo = d; validateAndRenderDetail(); },
   });
 
@@ -603,13 +610,14 @@ export default async function decorate(block) {
     periodSelectBtn.classList.toggle('active', period === 'DR');
     if (period === 'DR') {
       const end = latestMdate ? (parseLocalDateFromYmd(latestMdate) ?? new Date()) : new Date();
-      const start = new Date(end.getFullYear(), end.getMonth() - 1, end.getDate());
+      const start = new Date(end.getFullYear(), end.getMonth(), 1);
       drFrom = start;
       drTo = end;
       const lang = getCalendarLang();
       drFromInput.value = formatCalendarDate(start, lang);
       drToInput.value = formatCalendarDate(end, lang);
       periodDateRangeEl.classList.remove('hidden');
+      validateAndRenderDetail();
     } else {
       periodDateRangeEl.classList.add('hidden');
       validateAndRenderDetail();
