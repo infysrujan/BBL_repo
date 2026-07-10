@@ -178,7 +178,7 @@
 }
 
 /* Header Pastel Blue — #A1C6FF background */
-.table table.header-pastel-blue .header-row {
+.table table.header-primary-blue-s01 .header-row {
   background-color: var(--bbl-color-blue-40);
 }
 

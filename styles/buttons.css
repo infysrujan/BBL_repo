@@ -60,10 +60,10 @@ button,
 button,
 .button,
 .button-s {
-  min-height: 1.75rem;
+  height: 3.125rem;
   padding: 0 var(--bbl-space-250);
   font-size: 0.875rem;
-  min-width: 4.5rem;
+  width: 6.25rem;
 }
 
 /* --- Medium (Desktop) - 44px height --- */

@@ -127,7 +127,11 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
 function buildCompareCard(card, doc, labels) {
   const name = card.name || card.title || card.FundName || card.fundName || '';
   const imgSrc = resolveImageUrl(card);
-  const readMoreHref = resolveCardPageUrl(card);
+  let readMoreHref = resolveCardPageUrl(card);
+  // Remove "/content/bangkokbank" from the start of readMoreHref, if present
+  if (readMoreHref.startsWith('/content/bangkokbank')) {
+    readMoreHref = readMoreHref.replace(/^\/content\/bangkokbank/, '');
+  }
 
   const getField = (...keys) => {
     for (let i = 0; i < keys.length; i += 1) {

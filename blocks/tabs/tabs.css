@@ -590,3 +590,14 @@
   margin: 0;
   display: block;
 }
+
+/* SPACING inside TAB PANEL between different blocks except download block */
+.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+  padding-bottom: 1.5rem;
+}
+
+@media (width > 64rem) {
+  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+    padding-bottom: 2rem;
+  }
+}
