@@ -26,7 +26,7 @@
 .cards-list-remark p,
 .cards-list-subtitle p,
 .cards-list-description p {
-  font-weight: var(--bbl-font-family-regular);
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-70);
 }
 
@@ -152,9 +152,9 @@
   border: none;
 }
 
-.cards-list-item:has(.cards-list-image-logo) {
+/* .cards-list-item:has(.cards-list-image-logo) {
   height: calc(100% - 0.5625rem);
-}
+} */
 
 .cards-list:is(.scrollable, .carousel) .cards-list-item {
   flex: 0 0 16.875rem;
