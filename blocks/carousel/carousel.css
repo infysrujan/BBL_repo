@@ -392,7 +392,6 @@
         margin-bottom: var(--bbl-space-200);
         -webkit-line-clamp: 4;
         line-clamp: 4;
-        max-width: 20rem;
     }
 
     .carousel-description {
