@@ -398,6 +398,14 @@
   text-align: center;
 }
 
+.forex-rates .forex-rates-table thead th:nth-child(1) {
+  width: 30%;
+}
+
+.forex-rates .forex-rates-table thead th:nth-child(2) {
+  width: 70%;
+}
+
 .forex-rates .forex-rates-table tbody tr {
   border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
   height: 3.5rem;
