@@ -132,6 +132,10 @@
   padding-top: var(--bbl-space-250);
 }
 
+.content-insert-card .button-m {
+  max-width: 100%;
+}
+
 @media (width > 47.5rem) {
 .content-insert-cards .content-insert-cards-wrapper {
   gap: var(--bbl-space-500);
