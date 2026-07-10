@@ -13,15 +13,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) .form form p {
   color: var(--bbl-color-grey-85);
 }
 
-@media (width >= 64rem) {
-  main .section.form-container.custom-forms:has(.cc-app-main-form) .form label,
-  main .section.form-container.custom-forms:has(.cc-app-main-form) .form fieldset.checkbox-group-wrapper legend,
-  main .section.form-container.custom-forms:has(.cc-app-main-form) .form fieldset.radio-group-wrapper legend,
-  main .section.form-container.custom-forms:has(.cc-app-main-form) .form form p {
-    font-size: var(--form-font-size-xs);
-  }
-}
-
 main .section.form-container.custom-forms:has(.cc-app-main-form) div.form-wrapper,
 main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-content-wrapper {
   padding: 0;
@@ -390,27 +381,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       &.cc-app-main-form {
         width: 100%;
         max-width: var(--cc-form-max-width);
-
-        @media (width < 64rem) {
-          display: flex;
-          flex-flow: column nowrap;
-          gap: 0;
-
-          /* Mobile: stack title, inputs, cover, consent, and actions vertically */
-          & > .field-wrapper:not(.field-button-panel),
-          & > fieldset.field-wrapper:not(.field-button-panel) {
-            display: block;
-            flex: none;
-            width: 100%;
-            max-width: 100%;
-            grid-column: 1 / -1;
-            clear: both;
-          }
-
-          & > .field-wrapper.cc-panel-item-form-cover {
-            margin-top: var(--bbl-space-150);
-          }
-        }
       }
 
       &.field-submitbuttonpanel,
@@ -765,10 +735,40 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     }
   }
 
+  @media (width < 64rem) {
+    /* Mobile: stack title, inputs, cover, consent, and actions vertically */
+    & .form form fieldset.panel-wrapper.field-wrapper.cc-app-main-form {
+      display: flex;
+      flex-flow: column nowrap;
+      gap: 0;
+
+      & > .field-wrapper:not(.field-button-panel),
+      & > fieldset.field-wrapper:not(.field-button-panel) {
+        display: block;
+        flex: none;
+        width: 100%;
+        max-width: 100%;
+        grid-column: 1 / -1;
+        clear: both;
+      }
+
+      & > .field-wrapper.cc-panel-item-form-cover {
+        margin-top: var(--bbl-space-150);
+      }
+    }
+  }
+
   @media (width >= 64rem) {
     padding-inline: 0;
 
     --cc-timeline-form-width: min(var(--cc-timeline-panel-width), min(100vw, var(--cc-form-max-width)));
+
+    & .form label,
+    & .form fieldset.checkbox-group-wrapper legend,
+    & .form fieldset.radio-group-wrapper legend,
+    & .form form p {
+      font-size: var(--form-font-size-xs);
+    }
 
     & :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .date-wrapper).field-wrapper :is(input, textarea),
     & .form select,
