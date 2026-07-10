@@ -9,9 +9,9 @@
 .field-title h2 {
   text-align: center;
   color: var(--bbl-text-primary);
-  font-family: var(--bbl-font-family-primary);
-  font-weight: var(--bbl-heading-h2-weight);
-  font-size: var(--bbl-heading-h2-size);
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
+  font-size: 1.6rem;
   line-height: 2.875rem;
 }
 
@@ -47,10 +47,10 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   padding: 0 0.625rem;
   margin: 0;
   text-decoration: underline;
-  color: var(--form-fieldset-legend-color);
+  color: var(--bbl-color-grey-85);
   font-size: 1.25rem;
-  font-weight: var(--bbl-font-weight-medium);
-  font-family: var(--bbl-font-family-medium);
+  font-weight: 700;
+  font-family: var(--bbl-font-family-primary);
 }
 
 main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) {
@@ -60,10 +60,10 @@ main .section.form-container.custom-forms .form form .field-compliantnonfin-comp
 
 main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.field-subject>legend.field-label {
   font-size: 1.25rem;
-  font-weight: var(--bbl-font-weight-medium);
-  text-align: left;
-  color: var(--form-fieldset-legend-color);
-  padding: 0 0.625rem;
+  font-weight: 700;
+  color: var(--bbl-color-grey-85);
+  padding: 0.625rem 0 0 0.625rem;
+  font-family: var(--bbl-font-family-primary);
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>legend.field-label,
@@ -71,4 +71,22 @@ main .section.form-container.custom-forms .form form .field-compliantnonfin-comp
   width: max-content;
   font-size: 1rem;
   padding: 0.3125rem 0.625rem;
+  line-height: var(--bbl-body-b3-line-height);
+  font-weight: var(--bbl-font-weight-regular);
+}
+
+.panel-wrapper .field-wrapper .drop-down-wrapper.field-province-exclude.field-wrapper,
+.panel-wrapper .field-wrapper .drop-down-wrapper.field-branch-exclude.field-wrapper{
+    grid-column: span 12;
+}
+
+@media(width > 48rem) {
+  .panel-wrapper .field-wrapper .drop-down-wrapper.field-province-exclude.field-wrapper,
+  .panel-wrapper .field-wrapper .drop-down-wrapper.field-branch-exclude.field-wrapper{
+      grid-column: span 6;
+  }
+
+  .field-title h2 {
+  font-size: var(--bbl-form-font-size-48);
+  }
 }
