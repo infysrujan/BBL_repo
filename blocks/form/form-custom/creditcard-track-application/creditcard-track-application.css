@@ -181,7 +181,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     padding: 0;
     text-align: left;
     color: var(--form-label-color);
-    font-size: 15px;
+    font-size: var(--bbl-form-font-size-15);
     font-weight: var(--form-label-font-weight);
     line-height: var(--bbl-line-height-h4-mobile);
   }
