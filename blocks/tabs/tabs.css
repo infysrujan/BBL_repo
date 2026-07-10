@@ -411,7 +411,7 @@
     min-height: var(--bbl-space-200);
     height: unset;
     max-height: max-content;
-    text-wrap: wrap;
+    text-wrap: nowrap;
   }
 
   .tabs-nav-wrapper .tabs-nav li:last-child {
