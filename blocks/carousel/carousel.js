@@ -151,16 +151,22 @@ function initCarousel(track) {
     return left;
   }
 
-  function getTrackOffset(gap) {
-    return -getActiveNaturalLeft(gap);
-  }
-
   function getContentGridOffset() {
     if (isUltraWide()) {
       return Math.max(0, (window.innerWidth - getContentMaxWidth()) / 2);
     }
 
-    return parseInt(getComputedStyle(carousel).paddingLeft, 10) || 0;
+    const title = carousel.querySelector('.carousel-header h2');
+    return title ? parseInt(getComputedStyle(title).paddingLeft, 10) || 0 : 0;
+  }
+
+  function getTrackOffset(gap) {
+    if (window.innerWidth < DESKTOP_BREAKPOINT) return 0;
+
+    const gridOffset = getContentGridOffset();
+    if (currentIndex === 0) return gridOffset;
+
+    return -getActiveNaturalLeft(gap) + gridOffset;
   }
 
   function getContentGridEnd() {

@@ -240,20 +240,21 @@
 @media (width > 64rem) {
     .carousel {
         position: relative;
+        padding-left: 0;
+    }
+
+    .carousel-header h2 {
         padding-left: 84px;
     }
 
     .carousel .carousel-wrapper {
         position: relative;
+        overflow: hidden;
     }
 
     .carousel-header {
         margin: 22px 0 var(--bbl-space-500);
         padding-right: 84px;
-    }
-
-    .carousel-wrapper:has(.carousel-prev:enabled) .carousel-header {
-        padding-left: 84px;
     }
 
     :lang(th) {
@@ -471,17 +472,14 @@
 @media (width > 120rem) {
     .carousel {
         --carousel-grid-offset: calc((100vw - var(--bbl-layout-content-max-width-1920)) / 2);
-
-        padding-left: 0;
-    }
-
-    .carousel .carousel-track {
-        margin-left: var(--carousel-grid-offset);
     }
 
     .carousel-header {
-        padding-left: var(--carousel-grid-offset);
         padding-right: var(--carousel-grid-offset);
+    }
+
+    .carousel-header h2 {
+        padding-left: var(--carousel-grid-offset);
     }
 
     .carousel-item.active {
