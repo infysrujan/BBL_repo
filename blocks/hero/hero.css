@@ -365,7 +365,7 @@
   line-height: 1rem;
 }
 
-.hero-banner-content-inner-text {
+.hero-banner-content-inner-text p {
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-text-banner-description-size);
   line-height: var(--bbl-text-banner-description-line-height);
@@ -522,7 +522,7 @@
   background: var(--bbl-color-black);
 }
 
-:is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text {
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text p {
   color: var(--bbl-color-black);
   margin: 0;
   overflow: hidden;
@@ -536,7 +536,7 @@
   line-height: 1.7875rem;
 }
 
-.hero-banner-private-wealth-banking .hero-banner-content-inner-text {
+.hero-banner-private-wealth-banking .hero-banner-content-inner-text p{
   line-height: 1.375rem;
   padding: 0;
   margin: var(--bbl-space-100) 0 0;
@@ -568,7 +568,7 @@
   letter-spacing: -0.0125rem;
 }
 
-.hero-banner-hero-with-thumbnail-images .hero-banner-content-inner-text {
+.hero-banner-hero-with-thumbnail-images .hero-banner-content-inner-text p{
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -576,7 +576,7 @@
   -webkit-box-orient: vertical;
 }
 
-.wealth .hero-banner-simple .hero-banner-content-inner-text {
+.wealth .hero-banner-simple .hero-banner-content-inner-text p{
   font-size: var(--bbl-font-size-b2);
   line-height: 1.1812;
   padding-bottom: 0.9375rem;
@@ -714,7 +714,7 @@
     margin-bottom: 4.0625rem;
   }
 
-  :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text {
+  :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text p {
     color: var(--bbl-color-white);
   }
 
@@ -765,7 +765,7 @@
     }
   }
 
-  .wealth .hero-banner-simple .hero-banner-content-inner-text {
+  .wealth .hero-banner-simple .hero-banner-content-inner-text p {
     padding-bottom: 0;
   }
 
@@ -1064,16 +1064,16 @@
     pointer-events: auto;
   }
 
-  .hero-banner-simple .hero-banner-content-inner-text {
+  .hero-banner-simple .hero-banner-content-inner-text p {
     color: var(--bbl-color-white);
   }
 
-  .hero-banner-private-wealth-banking .hero-banner-content-inner-text {
+  .hero-banner-private-wealth-banking .hero-banner-content-inner-text p {
     line-height: 1.625rem;
     margin: var(--bbl-space-200) 0 0;
   }
 
-  .wealth .hero-banner-simple .hero-banner-content-inner-text {
+  .wealth .hero-banner-simple .hero-banner-content-inner-text p {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.35rem;
   }
