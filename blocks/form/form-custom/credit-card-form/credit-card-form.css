@@ -7,12 +7,16 @@
   border-radius: var(--bbl-radius-md);
 }
 
-.credit-card-form main .section.form-container.custom-forms .form form .field-callback select{
- font-size: 0.8315rem;
- font-family: var(--bbl-font-family-medium);
- font-weight: var(--bbl-font-weight-regular);
- color: var(--bbl-text-primary);
- line-height: 1.5;
+.credit-card-form main .section.form-container.custom-forms .form form input::placeholder {
+  color: var(--bbl-color-grey-40);
+}
+
+.credit-card-form main .section.form-container.custom-forms .form form .field-callback select {
+  font-size: 0.8315rem;
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-text-primary);
+  line-height: 1.5;
 }
 
 .credit-card-form main .section.form-container.custom-forms .form form h2 {
