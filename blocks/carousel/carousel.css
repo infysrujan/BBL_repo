@@ -284,6 +284,7 @@
         background: rgb(255 255 255 / 90%);
         width: 4.125rem;
         height: 4.125rem;
+        min-width: 4.125rem;
         border-radius: 50%;
         cursor: pointer;
         z-index: 10;
@@ -417,7 +418,7 @@
 
     .carousel-item:not(.active) {
         position: relative;
-        width: 30%;
+        width: calc(30% - 21px);
         height: 490px;
     }
 
