@@ -223,7 +223,7 @@ main img {
     text-align: center;
 }
 
-.section.center-image .default-content-wrapper > p {
+.section.center-image .default-content-wrapper > p:has(>picture) {
     text-align: center;
 }
 
