@@ -229,13 +229,29 @@
 }
 
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button {
-  white-space: nowrap;
   flex-shrink: 0;
   margin: 0.6875rem;
   color: var(--bbl-color-grey-85);
   height: unset;
   padding: var(--bbl-space-250) var(--bbl-space-075);
   text-transform: uppercase;
+}
+
+/* icon-tab-carousel only: live renders each item as a fixed ~110px slide
+   (JS-assigned width from its slick-carousel), so longer labels like
+   "Hotel & Travel" wrap onto a second line within that width instead of
+   staying on one line. Our buttons have no width constraint and inherited
+   white-space: nowrap above, so longer labels just stayed on one unnaturally
+   wide line instead. Give this variant's buttons a comparable fixed width
+   and let them wrap normally to match. */
+.tabs.icon-tab-carousel .tabs-nav button {
+  width: 6.875rem;
+  white-space: normal;
+  text-align: center;
+}
+
+.tabs.simple-tab-carousel .tabs-nav button {
+  white-space: nowrap;
 }
 
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button::before {
