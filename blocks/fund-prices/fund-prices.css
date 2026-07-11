@@ -75,12 +75,31 @@
   height: 2.875rem;
   vertical-align: middle;
   white-space: nowrap;
+  text-align: right;
 }
 
 .fund-prices .fund-prices-table table tr:not(.header-row) td {
   color: var(--bbl-color-grey-70);
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
+  vertical-align: middle;
+  text-align: right;
+}
+
+/* Mirrors the print stylesheet's tr.header-row td:first-child/:nth-child(2)
+   override (see @media print below): every column defaults to right-align
+   (matches the numeric columns), only Fund Type/Open-End Fund go back to
+   left. Print already gets this treatment; screen never had it. */
+.fund-prices .fund-prices-table table tr.header-row td:first-child,
+.fund-prices .fund-prices-table table tr.header-row td:nth-child(2) {
+  text-align: left;
+}
+
+/* Mirrors the print stylesheet's .merged-fund-type/.col-openendfund
+   override (see @media print below). */
+.fund-prices .fund-prices-table table tr:not(.header-row) td.merged-fund-type,
+.fund-prices .fund-prices-table table tr:not(.header-row) td.col-openendfund {
+  text-align: left;
 }
 
 .fund-prices .fund-prices-table .dnav {
