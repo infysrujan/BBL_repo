@@ -126,7 +126,7 @@ function renderThead(thead, state) {
       row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}">${escapeHtml(col.label)}${sortIcon(col.sortKey, state)}</th>`;
     }
   });
-  row1 += '<th rowspan="2" class="db-th-download"></th></tr>';
+  row1 += '</tr>';
   row2 += '</tr>';
   thead.innerHTML = row1 + row2;
 }
@@ -152,9 +152,9 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(fmtPct(rate.OFFER_YIELD))}</td>
       <td class="db-td-num">${escapeHtml(formatRemainTerm(rate.REMAIN_TERM || '00.00.00'))}</td>
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
-      <td class="db-td-num">${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}</td>
-      <td class="db-td-dl">
-        <a href="${state.downloadUrl.replace('{{SYMBOL}}', sym.toLowerCase())}" download aria-label="Download ${sym} factsheet">
+      <td class="db-td-num db-td-maturity">
+        ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}
+        <a class="db-td-dl" href="${state.downloadUrl.replace('{{SYMBOL}}', sym.toLowerCase())}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
         </a>
       </td>
@@ -503,7 +503,6 @@ function printElement(block) {
     '.db-go-btn',
     '.db-sort-icon',
     '.db-td-check',
-    '.db-th-download',
     '.db-td-dl',
   ].join(', ')).forEach((el) => el.remove());
 
