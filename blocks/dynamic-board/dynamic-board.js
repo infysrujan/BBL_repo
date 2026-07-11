@@ -562,6 +562,10 @@ function printElement(block) {
       position: static;
     }
 
+    .brand-logo.block {
+      background-color: var(--bbl-color-truthful-blue);
+    }
+
     .brand-logo-container {
       width: 12.5rem;
       height: 3.125rem;
@@ -593,7 +597,7 @@ function printElement(block) {
       transform: translateX(-50%);
       width: 2.25rem;
       height: 0.125rem;
-      background-color: black;
+      background-color: #9E9E9E;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
@@ -610,10 +614,6 @@ function printElement(block) {
       flex: 0 1 auto;
     }
 
-    .dynamic-board .db-time-label {
-      color: var(--bbl-color-black) !important;
-    }
-
     .dynamic-board .db-table {
       width: 90%;
       /* table-layout: fixed was tried here, but it only measures the FIRST
@@ -625,10 +625,10 @@ function printElement(block) {
          overflow-wrap/word-break below and min-width:0 (already reset by
          dynamic-board.css's own @media print block) it still shrinks to
          fit the page instead of overflowing. */
-      border: 2px solid #c8c8cc;
+      border: 2px solid #EBEBEB;
       /* Outline as a fallback outer border — it can't be partially
          overridden by any single cell's border like border-collapse can. */
-      outline: 2px solid #c8c8cc;
+      outline: 2px solid #EBEBEB;
       outline-offset: -0.0625rem;
       border-collapse: collapse;
       font-size: 0.6875rem;
@@ -655,16 +655,16 @@ function printElement(block) {
          setting it directly on each th is what actually survives printing.
          Hard-coded hex (not var()) so it doesn't depend on the popup having
          fully resolved the site's CSS custom properties before printing. */
-      background-color: white;
+      background-color: #F1F3F9;
       font-size: 0.6875rem;
       font-weight: 700 !important;
       height: auto;
       padding: 0.1875rem 0.25rem;
-      border: 0.125rem solid var(--bbl-color-grey-10) !important;
+      border: 0.125rem solid var(--bbl-color-grey-20) !important;
     }
 
     .dynamic-board .db-table tbody td {
-      border: 0.125rem solid var(--bbl-color-grey-30) !important;
+      border: 0.125rem solid var(--bbl-color-grey-20) !important;
       border-right-color: var(--bbl-color-white) !important;
       color: black !important;
       padding: 0.1875rem 0.25rem;
@@ -672,10 +672,14 @@ function printElement(block) {
       font-size: 0.6875rem;
     }
 
+    .dynamic-board .db-td-symbol {
+      color: #0064FF !important;
+    }
+
     /* Same as the thead case above: set row-striping/selection backgrounds
        on the td itself, since a tr-level background can fail to print. */
     .dynamic-board .db-table tbody tr:nth-child(even) td {
-      background-color: white;
+      background-color: #F8F9FC;
     }
 
     .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr td {
@@ -684,7 +688,7 @@ function printElement(block) {
 
     /* The live table strips the last header cell's border-right; restore it. */
     .dynamic-board .db-table thead th:last-child {
-      border-right: 0.125rem solid var(--bbl-color-grey-10) !important;
+      border-right: 0.125rem solid var(--bbl-color-grey-20) !important;
     }
 
     .dynamic-board .db-table tbody tr:nth-child(even),
@@ -763,6 +767,15 @@ function printElement(block) {
   `;
   printWindow.document.write(printHtml);
   printWindow.document.close();
+
+  // window.open('') leaves the popup's location at about:blank, which is what
+  // Chrome's print header/footer shows — replace it with the real page URL
+  // (same-origin, so this doesn't trigger a navigation).
+  try {
+    printWindow.history.replaceState(null, '', window.location.href);
+  } catch {
+    // ignore — footer just falls back to about:blank
+  }
 
   // readyState/rAF/a flat 100ms timer used to race against the popup's own
   // <link> stylesheets and web fonts, printing with default UA styles
