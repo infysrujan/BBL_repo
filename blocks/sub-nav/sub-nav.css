@@ -54,7 +54,7 @@
 .sub-nav .sub-nav-select.global-dropdown {
     min-width: 13.75rem;
     width: auto;
-    max-width: 22rem;
+    max-width: none;
 }
 
 .sub-nav .sub-nav-select .global-dropdown-trigger {
