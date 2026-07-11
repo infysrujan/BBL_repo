@@ -97,11 +97,12 @@
 .menu-banner .list-thumb-square li {
   width: 9.375rem;
   height: 9.375rem;
+  margin: 0 0.0625rem 0.625rem;
 }
 
 .menu-banner .list-thumb-square li > a {
-  max-width: 9.375rem;
-  height: 7.1875rem;
+  box-sizing: border-box;
+  height: 100%;
 }
 
 .menu-banner .title-1 a:active, 
@@ -221,14 +222,12 @@
 
   .menu-banner .thumb-square {
     padding: var(--bbl-space-250);
-    min-height: 6.25rem;
-    gap: var(--bbl-space-250);
   }
 
   .menu-banner .visual-img {
     width: 3.75rem;
     height: 3.75rem;
-    margin-top: 0.3125rem;
+    margin-top: 0.7125rem;
   }
 }
 
