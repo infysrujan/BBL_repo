@@ -169,20 +169,7 @@
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav {
   display: flex;
   gap: 0.9375rem;
-
-  /* Live keeps its slides clear of the prev/next arrow buttons instead of
-     letting them render underneath. The arrows are 2.5rem (--bbl-space-500)
-     wide, offset -0.875rem outside .tabs-nav-wrapper, so 1.625rem of each
-     arrow overlaps this row. padding-inline can't fix this: it only
-     reserves space before the very first slide and after the very last one
-     in the scrollable content, not around whichever slide currently lands
-     at the edge mid-scroll — the overflow-x:auto scrollport itself still
-     spans the full wrapper width regardless of padding. margin-inline
-     instead shrinks the scrollport's own box, so the clipped/visible area
-     permanently stops short of the arrows at every scroll position —
-     --bbl-space-400 (2rem) clears the 1.625rem overlap with a small gap. */
-  width: calc(100% - (2 * var(--bbl-space-400)));
-  margin-inline: var(--bbl-space-400);
+  padding: 0;
   flex-wrap: nowrap;
   overflow-x: auto;
   scroll-behavior: smooth;
@@ -242,35 +229,13 @@
 }
 
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button {
+  white-space: nowrap;
   flex-shrink: 0;
   margin: 0.6875rem;
   color: var(--bbl-color-grey-85);
   height: unset;
   padding: var(--bbl-space-250) var(--bbl-space-075);
   text-transform: uppercase;
-}
-
-/* icon-tab-carousel only: a fixed width only produces a whole number of
-   visible slides at the exact viewport it was measured from — anywhere
-   else within the same breakpoint range the math doesn't divide evenly,
-   leaving the last slide partially cut off at the edge (confirmed: a
-   155px width measured at 977px left only a partial 4th icon visible at
-   768px, in the same breakpoint range). flex-basis as a percentage of
-   .tabs-nav's width instead guarantees exactly N slides always fill the
-   row exactly, self-adjusting like live's slick-carousel does when it
-   recomputes width = containerWidth / slidesToShow on every resize.
-   N=4 here (mobile) is inferred from the 72px/343px live measurement at
-   375px (floor(343/72)=4) — not yet confirmed by a live screenshot count
-   the way tablet's N=5 below is. white-space: normal lets labels wrap
-   inside whatever width that resolves to. */
-.tabs.icon-tab-carousel .tabs-nav button {
-  flex-basis: calc((100% - 5.5rem) / 4);
-  white-space: normal;
-  text-align: center;
-}
-
-.tabs.simple-tab-carousel .tabs-nav button {
-  white-space: nowrap;
 }
 
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav button::before {
@@ -432,49 +397,23 @@
     display: table-cell;
   }
 
-  /* Matches the live site's .stories .tab-header: a plain CSS table
-     (table-layout: auto, the default), not flexbox — confirmed against the
-     live DOM that it uses no table-layout, overflow-wrap, or word-break
-     override at all, and still keeps each tab at its own natural width
-     while staying capped by max-width: 100% (inherited from the generic
-     .tabs-nav-wrapper .tabs-nav rule above). The actual table-cell lands on
-     the <li> that simple-tab.js/media-tab.js wrap each button in (see
-     .tabs-nav-wrapper .tabs-nav li above) — putting display: table-cell on
-     the <button> itself doesn't render correctly in this browser, since
-     buttons don't reliably support that display value. */
   .tabs.simple-tab .tabs-nav,
   .tabs.media-tab .tabs-nav {
-    display: table;
-    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
   }
 
   .tabs.simple-tab .tabs-nav button,
   .tabs.media-tab .tabs-nav button {
-    /* <button> defaults to nowrap in this browser's UA stylesheet (unlike
-       the <a> the live site uses), so a label's natural spaces never get a
-       chance to wrap — its min-content is the full unbroken text, which is
-       what was ballooning the table past its container. Forcing normal
-       wrapping here is what actually fixes the overflow; overflow-wrap:
-       anywhere is kept as a secondary guard for a genuinely unbreakable
-       run of characters once wrapping is otherwise possible.
-       Margin tightened from 0.9375rem to --bbl-space-050 (4px): at the
-       narrowest tablet widths (~761px) the longer default labels (e.g.
-       "Major Shareholders") didn't have enough room to stay on one line
-       with the wider margin, even with zero added/duplicated text. */
-    white-space: normal;
-    overflow-wrap: anywhere;
     padding: 0;
-    margin: 0 var(--bbl-space-050);
+    margin: 0 0.9375rem;
     min-height: var(--bbl-space-200);
     height: unset;
     max-height: max-content;
-  }
-
-  /* Same reasoning as the button margin above — give default (non-extended)
-     labels enough room to stay on one line at the narrowest tablet widths. */
-  .tabs.simple-tab .tabs-nav li,
-  .tabs.media-tab .tabs-nav li {
-    padding: 0 var(--bbl-space-050);
+    text-wrap: wrap;
+    white-space: normal;
+    min-width: 0;
   }
 
   .tabs-nav-wrapper .tabs-nav li:last-child {
@@ -536,15 +475,6 @@
     text-align: left;
     display: table-cell;
   }
-
-  /* icon-tab-carousel: N=5 confirmed by direct screenshot count on live at
-     both 768px and 977px viewports (Newsletter/Dining/Shopping/Hotel &
-     Travel/Health & Beauty, no partial 6th item) — flex-basis keeps
-     exactly 5 slides filling the row across this whole breakpoint range
-     instead of a fixed width that only fit at one sampled viewport. */
-  .tabs.icon-tab-carousel .tabs-nav button {
-    flex-basis: calc((100% - 6.875rem) / 5);
-  }
 }
 
 /* Desktop (>= 1025px) */
@@ -557,65 +487,8 @@
     padding: 0 0.9375rem;
   }
 
-  /* Without this, .tabs-nav-wrapper .tabs-nav li's padding jumps from
-     var(--bbl-space-100) to 0.9375rem right at this breakpoint — eating
-     extra width from every cell at the exact moment the viewport gets
-     wider, which can trigger wrapping that wasn't needed one pixel
-     narrower. Keep simple-tab/media-tab's cell padding consistent across
-     the 1024/1025 boundary instead of jumping.
-     Also tightened slightly further, from --bbl-space-100 (8px) to
-     --bbl-space-050 (4px): --bbl-text-tab-header-size (styles/tokens/
-     typography.css) switches from 14px to 16px at this same 1025px
-     breakpoint, so the same label needs ~14% more width the instant
-     desktop type kicks in. The viewport doesn't catch up to that until
-     ~1071px, so tabs that fit at 1024px can wrap between 1025–1071px.
-     Reclaiming space from cell padding (and button margin below) closes
-     that gap instead of waiting on extra viewport width. */
-  .tabs.simple-tab .tabs-nav li,
-  .tabs.media-tab .tabs-nav li {
-    padding: 0 var(--bbl-space-050);
-  }
-
-  .tabs.simple-tab .tabs-nav button,
-  .tabs.media-tab .tabs-nav button {
-    margin: 0 var(--bbl-space-050);
-  }
-
-  /* .section (styles/main.css) jumps its own padding-inline from
-     --bbl-space-section-sm (48px) to --bbl-space-section-xl (84px) at this
-     same 1025px breakpoint — a 72px total loss of width for the tabs'
-     container right when the viewport gets wider, which is what actually
-     drives the wrap regression above (not the li/button padding alone).
-     That .section rule is global and used by every section on the site, so
-     it shouldn't change; instead, override it just for this component via
-     the tabs-container class that's already on the same element, keeping
-     its side padding at the smaller tablet value across this boundary. */
-  .section.tabs-container {
-    padding-inline: var(--bbl-space-section-sm);
-  }
-
-  /* .section.central-aligned .block (styles/main.css) also caps its block
-     descendant to max-width: 900px at this same 1025px breakpoint — since
-     the tabs block itself has class "block" (class="tabs block simple-tab")
-     inside this central-aligned container, it gets squeezed to 900px on top
-     of the padding-inline jump above. Cancel that cap for this block only,
-     same reasoning as above: the global rule stays for every other section,
-     this override is scoped to the tabs block specifically. */
-  .section.central-aligned .tabs.block {
-    max-width: none;
-  }
-
   .tabs.tiled-tab .tabs-nav li {
     max-width: 18.75rem;
-  }
-
-  /* icon-tab-carousel: N=10 inferred from the 116px/1240px live measurement
-     at 1440px (floor(1240/116)=10) — not yet confirmed by a live screenshot
-     count the way tablet's N=5 above is. flex-basis keeps this whole-item
-     fit self-adjusting across the full >64rem range instead of drifting
-     like a fixed width would. */
-  .tabs.icon-tab-carousel .tabs-nav button {
-    flex-basis: calc((100% - 13.75rem) / 10);
   }
 }
 
@@ -627,8 +500,7 @@
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav .tabs-nav {
   display: flex;
   gap: 0.9375rem;
-  width: calc(100% - (2 * var(--bbl-space-400)));
-  margin-inline: var(--bbl-space-400);
+  padding: 0;
   flex-wrap: nowrap;
   overflow-x: auto;
   scroll-behavior: smooth;
