@@ -679,7 +679,7 @@ function printElement(block) {
     /* Same as the thead case above: set row-striping/selection backgrounds
        on the td itself, since a tr-level background can fail to print. */
     .dynamic-board .db-table tbody tr:nth-child(even) td {
-      background-color: #F8F9FC;
+      background-color: white;
     }
 
     .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr td {
