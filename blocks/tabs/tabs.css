@@ -169,7 +169,20 @@
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-nav {
   display: flex;
   gap: 0.9375rem;
-  padding: 0;
+
+  /* Live keeps its slides clear of the prev/next arrow buttons instead of
+     letting them render underneath. The arrows are 2.5rem (--bbl-space-500)
+     wide, offset -0.875rem outside .tabs-nav-wrapper, so 1.625rem of each
+     arrow overlaps this row. padding-inline can't fix this: it only
+     reserves space before the very first slide and after the very last one
+     in the scrollable content, not around whichever slide currently lands
+     at the edge mid-scroll — the overflow-x:auto scrollport itself still
+     spans the full wrapper width regardless of padding. margin-inline
+     instead shrinks the scrollport's own box, so the clipped/visible area
+     permanently stops short of the arrows at every scroll position —
+     --bbl-space-400 (2rem) clears the 1.625rem overlap with a small gap. */
+  width: calc(100% - (2 * var(--bbl-space-400)));
+  margin-inline: var(--bbl-space-400);
   flex-wrap: nowrap;
   overflow-x: auto;
   scroll-behavior: smooth;
@@ -237,15 +250,21 @@
   text-transform: uppercase;
 }
 
-/* icon-tab-carousel only: live renders each item as a fixed ~110px slide
-   (JS-assigned width from its slick-carousel), so longer labels like
-   "Hotel & Travel" wrap onto a second line within that width instead of
-   staying on one line. Our buttons have no width constraint and inherited
-   white-space: nowrap above, so longer labels just stayed on one unnaturally
-   wide line instead. Give this variant's buttons a comparable fixed width
-   and let them wrap normally to match. */
+/* icon-tab-carousel only: a fixed width only produces a whole number of
+   visible slides at the exact viewport it was measured from — anywhere
+   else within the same breakpoint range the math doesn't divide evenly,
+   leaving the last slide partially cut off at the edge (confirmed: a
+   155px width measured at 977px left only a partial 4th icon visible at
+   768px, in the same breakpoint range). flex-basis as a percentage of
+   .tabs-nav's width instead guarantees exactly N slides always fill the
+   row exactly, self-adjusting like live's slick-carousel does when it
+   recomputes width = containerWidth / slidesToShow on every resize.
+   N=4 here (mobile) is inferred from the 72px/343px live measurement at
+   375px (floor(343/72)=4) — not yet confirmed by a live screenshot count
+   the way tablet's N=5 below is. white-space: normal lets labels wrap
+   inside whatever width that resolves to. */
 .tabs.icon-tab-carousel .tabs-nav button {
-  width: 6.875rem;
+  flex-basis: calc((100% - 5.5rem) / 4);
   white-space: normal;
   text-align: center;
 }
@@ -517,6 +536,15 @@
     text-align: left;
     display: table-cell;
   }
+
+  /* icon-tab-carousel: N=5 confirmed by direct screenshot count on live at
+     both 768px and 977px viewports (Newsletter/Dining/Shopping/Hotel &
+     Travel/Health & Beauty, no partial 6th item) — flex-basis keeps
+     exactly 5 slides filling the row across this whole breakpoint range
+     instead of a fixed width that only fit at one sampled viewport. */
+  .tabs.icon-tab-carousel .tabs-nav button {
+    flex-basis: calc((100% - 6.875rem) / 5);
+  }
 }
 
 /* Desktop (>= 1025px) */
@@ -580,6 +608,15 @@
   .tabs.tiled-tab .tabs-nav li {
     max-width: 18.75rem;
   }
+
+  /* icon-tab-carousel: N=10 inferred from the 116px/1240px live measurement
+     at 1440px (floor(1240/116)=10) — not yet confirmed by a live screenshot
+     count the way tablet's N=5 above is. flex-basis keeps this whole-item
+     fit self-adjusting across the full >64rem range instead of drifting
+     like a fixed width would. */
+  .tabs.icon-tab-carousel .tabs-nav button {
+    flex-basis: calc((100% - 13.75rem) / 10);
+  }
 }
 
 /* Authoring-only: carousel nav wrapper */
@@ -590,7 +627,8 @@
 .tabs:is(.simple-tab-carousel, .icon-tab-carousel) .tabs-authoring-carousel-nav .tabs-nav {
   display: flex;
   gap: 0.9375rem;
-  padding: 0;
+  width: calc(100% - (2 * var(--bbl-space-400)));
+  margin-inline: var(--bbl-space-400);
   flex-wrap: nowrap;
   overflow-x: auto;
   scroll-behavior: smooth;
