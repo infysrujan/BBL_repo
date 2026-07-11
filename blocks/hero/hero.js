@@ -596,7 +596,9 @@ export default async function decorate(block) {
     }
     normalizeCellContent(textCell, 'hero-banner-content-inner-text');
     const isAppCta = variant === 'simple-app-cta';
-    [preTitleCell, headingCell, textCell, ...(isAppCta ? [] : [linkCell])].forEach((cell) => {
+    const hasButtonLink = !isAppCta && !!linkCell?.querySelector('a[href]');
+    const cells = [preTitleCell, headingCell, textCell, ...(hasButtonLink ? [linkCell] : [])];
+    cells.forEach((cell) => {
       if (!cell) return;
       while (cell.firstChild) {
         contentGroup.appendChild(cell.firstChild);
