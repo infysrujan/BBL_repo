@@ -615,7 +615,7 @@ function printElement(block) {
     }
 
     .dynamic-board .db-table {
-      width: 90%;
+      width: 75%;
       /* table-layout: fixed was tried here, but it only measures the FIRST
          header row's cells to size columns — this table's first row has
          colspan="2" group headers (Bidding/Offering Price) whose real
@@ -777,10 +777,11 @@ function printElement(block) {
     // ignore — footer just falls back to about:blank
   }
 
-  // readyState/rAF/a flat 100ms timer used to race against the popup's own
-  // <link> stylesheets and web fonts, printing with default UA styles
-  // whenever the CSS hadn't finished loading yet (e.g. on a cold cache).
-  // Wait on the actual load signals instead, capped by a safety timeout.
+  // Wait on the popup's own <link> stylesheets and web fonts to actually
+  // finish loading before printing, capped by a generous safety timeout so a
+  // genuinely stuck resource can't hang the print forever. A too-short cap
+  // here is what causes intermittent broken print layouts (unstyled table,
+  // visible remarks-shadow overlay) on a cold cache/slow network.
   const waitForStylesheets = () => Promise.all(
     [...printWindow.document.querySelectorAll('link[rel="stylesheet"]')].map((link) => (
       link.sheet
@@ -796,12 +797,18 @@ function printElement(block) {
 
   Promise.race([
     Promise.all([waitForStylesheets(), waitForFonts()]),
-    timeout(3000),
+    timeout(8000),
   ]).then(() => {
     printWindow.focus();
+    // Double rAF: the first callback fires before the browser has applied
+    // the styles/fonts that just resolved above, so the table's auto column
+    // widths and the remarks-shadow removal can still reflect a stale layout
+    // — waiting a second frame lets that layout pass complete before print.
     requestAnimationFrame(() => {
-      printWindow.print();
-      printWindow.close();
+      requestAnimationFrame(() => {
+        printWindow.print();
+        printWindow.close();
+      });
     });
   });
 }
