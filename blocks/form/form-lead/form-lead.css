@@ -1,12 +1,15 @@
-﻿/* Bangkok Bank lead-form overrides — matched to live Sitecore WFFM forms */
+/* Bangkok Bank lead-form overrides — matched to live Sitecore WFFM forms */
 :root {
   /* font sizes */
   --bbl-form-font-size-11: 0.6875rem;                /* 11px */
   --bbl-form-font-size-14: 0.875rem;                /* 14px */
   --bbl-form-font-size-15: 0.9375rem;                /* 15px */
+  --bbl-form-font-size-15-2: 0.95rem;                /* 15.2px */
   --bbl-form-font-size-16: 1rem;                     /* 16px */
   --bbl-form-font-size-17: 1.0625rem;                /* 17px */
+  --bbl-form-font-size-20: 1.25rem;                  /* 20px */
   --bbl-form-font-size-21: 1.3125rem;                /* 21px */
+  --bbl-form-font-size-22: 1.4rem;                   /* ~22px */
   --bbl-form-font-size-44: 2.75rem;                   /* 44px */
   --bbl-form-font-size-48: 3rem;                     /* 48px */
   --bbl-form-font-size-title-mobile: 1.925rem;       /* form heading - mobile */
@@ -15,6 +18,8 @@
   /* padding */
   --bbl-form-padding-10: 0.625rem;                   /* 10px */
   --bbl-form-padding-15: 0.9375rem;                  /* 15px */
+  --bbl-form-padding-16: 1rem;                       /* 16px */
+  --bbl-form-padding-20: 1.25rem;                    /* 20px */
   --bbl-form-padding-30: 1.875rem;                   /* 30px */
   --bbl-form-padding-35: 2.1875rem;                  /* 35px */
   --bbl-form-padding-70: 4.375rem;                  /* 70px */
@@ -27,9 +32,11 @@
   --bbl-form-margin-14: 0.875rem;                    /* 14px */
   --bbl-form-margin-15: 0.9375rem;                   /* 15px */
   --bbl-form-margin-30: 1.875rem;                    /* 30px */
+  --bbl-form-margin-32: 2rem;                        /* 32px */
 
   /* gap */
   --bbl-form-gap-3: 0.1875rem;                       /* 3px */
+  --bbl-form-gap-8: 0.5rem;                          /* 8px */
   --bbl-form-gap-30: 1.875rem;                       /* 30px */
 
   /* font weight */
@@ -64,9 +71,11 @@
   --bbl-form-line-height-14: 0.875rem;               /* 14px */
   --bbl-form-line-height-17: 1.0625rem;              /* 17px */
   --bbl-form-line-height-19: 1.2031rem;              /* ~19px */
+  --bbl-form-line-height-21: 1.2891rem;              /* 20.625px */
   --bbl-form-line-height-25: 1.5625rem;              /* 25px */
   --bbl-form-line-height-32: 2rem;                   /* 32px */
   --bbl-form-line-height-44: 2.75rem;                /* 44px */
+  --bbl-form-line-height-46: 2.875rem;               /* 46px */
 
   /* Colors */
   --bbl-color-gray-299: #f7f7f7;
