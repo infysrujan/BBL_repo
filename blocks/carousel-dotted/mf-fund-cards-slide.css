@@ -39,7 +39,7 @@
 /* ── Description (notes/disclaimer below carousel) ───────────────────────── */
 
 .mf-fund-cards-description {
-  margin: var(--bbl-space-500) auto;
+  margin-top: var(--bbl-space-1000);
   max-width: 56.25rem; /* 900px */
   padding: 0 var(--bbl-space-300);
   font-family: var(--bbl-font-family-primary);
@@ -160,28 +160,6 @@
   padding: 0 1.25rem 1.25rem;
 }
 
-/* Read More — full-width solid blue (primary) */
-
-.card-list.mf-card-list .cards-list-button a {
-  display: grid;
-  align-items: center;
-  width: 100%;
-  min-height: 2.75rem;
-  height: auto;
-  padding: 0.3125rem 0;
-  box-sizing: border-box;
-  border-radius: 0.4375rem;
-  background-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1, 1rem);
-  line-height: 1.375rem;
-  text-align: center;
-  text-decoration: none;
-  transition: all 0.3s;
-}
-
 .card-list.mf-card-list .cards-list-button a::before,
 .card-list.mf-card-list .cards-list-button a::after {
   display: none;
@@ -197,26 +175,8 @@
 /* ── Compare button — sits inside .cards-list-button below Read More ──────── */
 
 .card-list.mf-card-list .mfr-compare-btn {
-  display: grid;
-  align-items: center;
-  width: 100%;
-  min-height: 2.75rem;
-  height: auto;
-  padding: 0.3125rem 0;
-  box-sizing: border-box;
-  border-radius: 0.4375rem;
-  background-color: transparent;
-  color: var(--bbl-color-active-blue);
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b1, 1rem);
-  line-height: 1.375rem;
-  text-align: center;
-  cursor: pointer;
   margin-top: 0.625rem;
-  margin-left: 0;
-  transition: all 0.3s;
-}
+} 
 
 .card-list.mf-card-list .mfr-compare-btn:hover {
   background-color: var(--bbl-color-active-blue);
