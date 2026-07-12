@@ -1,4 +1,4 @@
-const ICON_MARKER_RE = /#icon(\d*)(?:-(inline|block))?/i;
+const ICON_MARKER_RE = /#icon(\d*)(?:x(\d+))?(?:-(inline|block))?/i;
 const DCW = '.default-content-wrapper';
 
 export function decorateRteInlineImages(main) {
@@ -14,8 +14,9 @@ export function decorateRteInlineImages(main) {
     const match = ICON_MARKER_RE.exec(markerP.textContent);
     if (!match) return;
 
-    const [fullMatch, size] = match;
-    const px = `${parseInt(size, 10) || 40}px`;
+    const [fullMatch, width, height] = match;
+    const widthPx = `${parseInt(width, 10) || 40}px`;
+    const heightPx = `${parseInt(height, 10) || parseInt(width, 10) || 40}px`;
 
     const prev = markerP.previousElementSibling;
     const next = markerP.nextElementSibling;
@@ -27,8 +28,8 @@ export function decorateRteInlineImages(main) {
       ?? markerP.querySelector('picture.rte-inline-image');
 
     if (picture) {
-      picture.style.width = px;
-      picture.style.height = px;
+      picture.style.width = widthPx;
+      picture.style.height = heightPx;
 
       const segments = markerP.innerHTML.split(/<br\s*\/?>/i);
       const markerOnNewLine = segments.length > 1
