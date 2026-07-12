@@ -726,7 +726,8 @@ export default async function decorate(block) {
   const firstMainChild = main?.firstElementChild;
   const { body } = document;
   if (
-    (!firstMainChild || !firstMainChild.classList.contains('hero-container'))
+    (!firstMainChild || (!firstMainChild.classList.contains('hero-container')
+          && !firstMainChild.classList.contains('carousel-dotted-container')))
     && !body.classList.contains('bangkok-bankm-card')
   ) {
     headerSection.classList.add('is-not-overlapped');
