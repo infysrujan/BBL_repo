@@ -169,10 +169,29 @@ function initCarousel(track) {
     return -getActiveNaturalLeft(gap) + gridOffset;
   }
 
-  function getContentGridEnd() {
-    const gridStart = getContentGridOffset();
-    const headerPaddingRight = 84;
-    return Math.min(gridStart + getContentMaxWidth(), carousel.offsetWidth - headerPaddingRight);
+  function positionNavButtons(gap) {
+    if (window.innerWidth < DESKTOP_BREAKPOINT || carousel.offsetWidth === 0) return;
+
+    const carouselRect = carousel.getBoundingClientRect();
+    const trackRect = track.getBoundingClientRect();
+    const navTop = trackRect.top - carouselRect.top + trackRect.height / 2;
+    const gridOffset = getContentGridOffset();
+    const activeWidth = measureItemWidth(items[currentIndex]);
+    const buttonOffset = (button) => button.offsetWidth / 2;
+
+    prevButton.style.top = `${navTop}px`;
+    nextButton.style.top = `${navTop}px`;
+    prevButton.style.right = 'auto';
+    nextButton.style.right = 'auto';
+
+    if (currentIndex > 0) {
+      prevButton.style.left = `${gridOffset - gap / 2 - buttonOffset(prevButton)}px`;
+    }
+
+    if (currentIndex < totalItems - 1) {
+      const nextWidth = measureItemWidth(items[currentIndex + 1]);
+      nextButton.style.left = `${gridOffset + activeWidth + gap + nextWidth + gap / 2 - buttonOffset(nextButton)}px`;
+    }
   }
 
   function updateCarousel(animate = true) {
@@ -201,16 +220,7 @@ function initCarousel(track) {
       prevButton.disabled = currentIndex === 0;
       nextButton.disabled = currentIndex >= totalItems - 1;
 
-      if (window.innerWidth >= DESKTOP_BREAKPOINT && carousel.offsetWidth > 0) {
-        const activeLeft = getContentGridOffset();
-        const containerEnd = getContentGridEnd();
-
-        prevButton.style.left = `${activeLeft - prevButton.offsetWidth / 2}px`;
-        prevButton.style.right = 'auto';
-
-        nextButton.style.left = `${containerEnd - nextButton.offsetWidth / 2}px`;
-        nextButton.style.right = 'auto';
-      }
+      positionNavButtons(gap);
     };
 
     if (animate) {
