@@ -94,7 +94,11 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
   funds.forEach((fund) => {
     const name = fund.FundName || '';
     // eslint-disable-next-line no-underscore-dangle
-    const readMoreUrl = fund._path || '#';
+    let readMoreUrl = fund.mfPageUrl?._path || '#';
+    // Remove "/content/bangkokbank" from the start of readMoreUrl, if present
+    if (readMoreUrl.startsWith('/content/bangkokbank')) {
+      readMoreUrl = readMoreUrl.replace(/^\/content\/bangkokbank/, '');
+    }
     const productId = fund.ProductID || name;
     const compareEnabled = fund.CompareButton === 'true';
 
@@ -168,6 +172,7 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
     buttonWrapper.className = 'cards-list-button';
     const link = doc.createElement('a');
     link.href = readMoreUrl;
+    link.className = 'button-m primary';
     link.textContent = readMoreLabel;
     buttonWrapper.appendChild(link);
     inner.appendChild(buttonWrapper);
@@ -276,7 +281,7 @@ export default async function buildMfFundCardsSlide(row, index) {
       if (h3?.dataset?.compareEnabled === 'false') return;
       const btn = doc.createElement('button');
       btn.type = 'button';
-      btn.className = 'mfr-compare-btn';
+      btn.className = 'button-m secondary mfr-compare-btn';
       btn.textContent = compareLabel;
       btn.dataset.cardName = h3?.textContent?.trim() ?? '';
       btn.dataset.cardId = h3?.dataset?.cardId ?? '';

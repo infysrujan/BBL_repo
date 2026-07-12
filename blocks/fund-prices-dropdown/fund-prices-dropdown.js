@@ -45,6 +45,14 @@ function isRangeExceedsLimit(fromDate, toDate) {
   return fromDate < limitedFrom;
 }
 
+function isWeekendOrAfterYesterday(date) {
+  const day = date.getDay();
+  if (day === 0 || day === 6) return true;
+  const now = new Date();
+  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+  return date > yesterday;
+}
+
 async function fetchFundDetailStats(fundId, fromDate, toDate) {
   const configs = await fetchConfigs();
   const apiBase = configs.fundPricesApiUrl || '';
@@ -60,6 +68,8 @@ async function fetchFundDetailHistory(fundId, fromDate, toDate) {
 }
 
 function fmtNav(v) {
+  const num = Number(v);
+  if (!Number.isNaN(num) && num === 0) return 'N/A';
   return typeof v === 'number' ? v.toFixed(4) : (v ?? 'N/A');
 }
 
@@ -187,9 +197,8 @@ function renderChart(svgEl, history, period) {
   const lastIdx = history.length - 1;
   let labelSet;
   if (!useRotation) {
-    // 1W: always show first, middle, last
-    const midIdx = Math.round(lastIdx / 2);
-    labelSet = new Set([0, midIdx, lastIdx]);
+    // 1W: show every data point
+    labelSet = new Set(history.map((_, i) => i));
   } else {
     const labelSpacing = isMobileView ? 38 : 50;
     const maxXLabels = Math.min(history.length, Math.floor(innerW / labelSpacing));
@@ -489,6 +498,8 @@ export default async function decorate(block) {
   let latestMdate = null;
   let drFrom = new Date();
   let drTo = new Date();
+  let currentFromDate = null;
+  let currentToDate = null;
 
   function periodDateRange(periodCode) {
     const end = latestMdate ? (parseLocalDateFromYmd(latestMdate) ?? new Date()) : new Date();
@@ -511,8 +522,14 @@ export default async function decorate(block) {
     return `"${currentFund?.name}" Open-end Fund : ${period} : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
   }
 
+  function buildPrintSubtitle(fromDate, toDate) {
+    return `"${currentFund?.name}" Open-end Fund : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
+  }
+
   async function renderDetail(fromDate, toDate) {
     const subtitle = buildSubtitle(fromDate, toDate);
+    currentFromDate = fromDate;
+    currentToDate = toDate;
     fundLabel.textContent = subtitle;
     printFrom.textContent = formatCalendarDate(fromDate, getCalendarLang());
     printTo.textContent = formatCalendarDate(toDate, getCalendarLang());
@@ -533,7 +550,7 @@ export default async function decorate(block) {
     chartBeginNav.textContent = fmtNav(stats.Begin_mfr_fNav);
     chartEndNav.textContent = fmtNav(stats.End_mfr_fNav);
     renderChart(chartSvg, sorted, currentPeriod);
-    renderHistTable(histTbody, [...sorted].reverse());
+    renderHistTable(histTbody, sorted);
 
     if (chartSvg.chartResizeObserver) chartSvg.chartResizeObserver.disconnect();
     if (window.innerWidth < 768) {
@@ -564,13 +581,13 @@ export default async function decorate(block) {
   attachCalendarPicker({
     input: drFromInput,
     value: drFrom,
-    allDaysEnabled: true,
+    isDateDisabled: isWeekendOrAfterYesterday,
     onChange: (d) => { drFrom = d; validateAndRenderDetail(); },
   });
   attachCalendarPicker({
     input: drToInput,
     value: drTo,
-    allDaysEnabled: true,
+    isDateDisabled: isWeekendOrAfterYesterday,
     onChange: (d) => { drTo = d; validateAndRenderDetail(); },
   });
 
@@ -593,13 +610,14 @@ export default async function decorate(block) {
     periodSelectBtn.classList.toggle('active', period === 'DR');
     if (period === 'DR') {
       const end = latestMdate ? (parseLocalDateFromYmd(latestMdate) ?? new Date()) : new Date();
-      const start = new Date(end.getFullYear(), end.getMonth() - 1, end.getDate());
+      const start = new Date(end.getFullYear(), end.getMonth(), 1);
       drFrom = start;
       drTo = end;
       const lang = getCalendarLang();
       drFromInput.value = formatCalendarDate(start, lang);
       drToInput.value = formatCalendarDate(end, lang);
       periodDateRangeEl.classList.remove('hidden');
+      validateAndRenderDetail();
     } else {
       periodDateRangeEl.classList.add('hidden');
       validateAndRenderDetail();
@@ -645,8 +663,14 @@ export default async function decorate(block) {
     const printFooter = block.ownerDocument.createElement('div');
     printRoot.id = 'fdd-print-root';
     printRoot.classList.remove('hidden');
+    printRoot.classList.toggle('fdd-print-custom-range', currentPeriod === 'DR');
     printRoot.hidden = false;
     printRoot.querySelectorAll('.fund-prices-print-label, .fdd-back-btn').forEach((el) => el.remove());
+    if (currentFromDate && currentToDate) {
+      const printSubtitle = buildPrintSubtitle(currentFromDate, currentToDate);
+      printRoot.querySelectorAll('.fdd-fund-label, .chart-subtitle')
+        .forEach((el) => { el.textContent = printSubtitle; });
+    }
     if (disclaimer) printRoot.appendChild(disclaimer);
     printFooter.className = 'fdd-print-footer';
     printFooter.innerHTML = '<span>https://www.bangkokbank.com/en/Personal/Save-And-Invest/Mutual-Funds/Fund-Prices</span><span>1/2</span>';

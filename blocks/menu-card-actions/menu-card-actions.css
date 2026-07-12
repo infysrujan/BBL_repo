@@ -13,9 +13,6 @@
 }
 
 .menu-card-actions-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-  font-size: 1.4rem;
-  font-weight: var(--bbl-font-family-regular);
-  line-height: 1.375rem;
   letter-spacing: -0.0125rem;
 }
 
@@ -102,11 +99,6 @@
 .menu-card-action-item-link .menu-card-action-inner {
   flex: 1;
   transition: border 0.3s ease, box-shadow 0.3s ease;
-}
-
-.menu-card-action-item-link:hover .menu-card-action-inner {
-  border-color: var(--bbl-color-active-blue);
-  box-shadow: 0.173rem 0.173rem 0 var(--bbl-color-black-alpha-17);
 }
 
 .menu-card-action-inner img {
@@ -308,11 +300,6 @@
 @media (width > 64rem) {
   .menu-card-action.scrollable .global-dropdown-panel li a {
     white-space: nowrap;
-  }
-
-  .menu-card-actions-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 3rem;
-    line-height: 2.875rem;
   }
 
   :lang(th) {
