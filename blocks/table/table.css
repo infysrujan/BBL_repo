@@ -215,18 +215,6 @@
 }
 
 /* --------------------------------------------------------------------------
-   header-light-blue tables: alignment detected by column count, since
-   "right aligned" is not an authorable variant option — 4-column tables
-   (e.g. No / Label / Amount / Percent) get numeric columns right-aligned
-   and the first column centered; 8-column tables (e.g. merged Interim/
-   Final date columns) get every column centered.
-   -------------------------------------------------------------------------- */
-.table table.header-light-blue:has(tr td:nth-child(8)) tr td {
-  text-align: center;
-  vertical-align: middle;
-}
-
-/* --------------------------------------------------------------------------
    CELL VARIANTS — center aligned except first (specificity 0,4,3)
    -------------------------------------------------------------------------- */
 
@@ -234,15 +222,6 @@
 .table table.cells-center-aligned-except-first tr:not(.header-row) td:not(:first-child) {
   text-align: center;
   vertical-align: middle;
-}
-
-.table table.header-light-blue:not(:has(tr td:nth-child(5))) tr td:nth-child(n+3) {
-  text-align: right;
-  vertical-align: middle;
-}
-
-.table table.header-light-blue:not(:has(tr td:nth-child(5))) tr td:first-child {
-  text-align: center;
 }
 
 /* --------------------------------------------------------------------------
