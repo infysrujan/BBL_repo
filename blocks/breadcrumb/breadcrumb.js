@@ -209,9 +209,9 @@ export default async function decorate(block) {
     const textContent = isLast ? getCurrentPageLabel(page, shortTitle) : getParentPageLabel(page);
 
     if (!textContent) return;
-    li.textContent = textContent;
     if (isLast) {
       li.setAttribute('aria-current', 'page');
+      li.textContent = textContent;
     } else {
       const link = document.createElement('a');
       link.href = pagePathToUrl(page.pagePath);
