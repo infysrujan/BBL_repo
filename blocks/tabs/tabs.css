@@ -401,7 +401,7 @@
   .tabs.media-tab .tabs-nav {
     display: flex;
     justify-content: center;
-    max-width: 80%;
+    max-width: 100%;
   }
 
   .tabs.simple-tab .tabs-nav button,
@@ -412,6 +412,8 @@
     height: unset;
     max-height: max-content;
     text-wrap: wrap;
+    white-space: normal;
+    min-width: 0;
   }
 
   .tabs-nav-wrapper .tabs-nav li:last-child {
