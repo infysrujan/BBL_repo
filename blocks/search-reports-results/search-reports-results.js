@@ -48,14 +48,14 @@ function buildCard(asset, apiBase, placeholders, googleViewerUrl) {
     iconGroup.append(previewBtn);
   }
 
-  const downloadBtn = createTaggedElement('a', {
+  const downloadAnchor = createTaggedElement('a', {
     className: 'srr-icon-btn srr-download-btn',
     attrs: {
       href: fetchPath, download: asset.name, 'aria-label': `Download ${asset.name}`, target: '_blank',
     },
   });
-  downloadBtn.append(createTaggedElement('span', { className: 'icon icon-download', attrs: { 'aria-hidden': 'true' } }));
-  iconGroup.append(downloadBtn);
+  downloadAnchor.append(createTaggedElement('span', { className: 'icon icon-download', attrs: { 'aria-hidden': 'true' } }));
+  iconGroup.append(downloadAnchor);
 
   downloadWrapper.append(label, iconGroup);
   fileRow.append(downloadWrapper);
