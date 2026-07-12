@@ -206,14 +206,16 @@ export default async function decorate(block) {
   breadcrumbPages.forEach((page, index) => {
     const li = document.createElement('li');
     const isLast = index === breadcrumbPages.length - 1;
+    const textContent = isLast ? getCurrentPageLabel(page, shortTitle) : getParentPageLabel(page);
 
+    if (!textContent) return;
+    li.textContent = textContent;
     if (isLast) {
-      li.textContent = getCurrentPageLabel(page, shortTitle);
       li.setAttribute('aria-current', 'page');
     } else {
       const link = document.createElement('a');
       link.href = pagePathToUrl(page.pagePath);
-      link.textContent = getParentPageLabel(page);
+      link.textContent = textContent;
       li.appendChild(link);
     }
 
