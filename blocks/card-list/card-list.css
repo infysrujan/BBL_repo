@@ -306,9 +306,12 @@
 
 .cards-list-content {
   display: flex;
-  flex: 1;
   flex-direction: column;
   padding: var(--bbl-space-250);
+}
+
+.cards-list-inner:not(:has(.cards-list-date)) .cards-list-content {
+  flex: 1;
 }
 
 .cards-list-promo-tag {
@@ -472,11 +475,7 @@
   font-weight: var(--bbl-font-family-regular);
 }
 
-.cards-list-inner:has(.cards-list-downloads) {
-  flex: none;
-}
-
-.cards-list-inner:has(.cards-list-downloads) .cards-list-button {
+.cards-list-inner:has(.cards-list-downloads, .cards-list-date) .cards-list-button {
   margin-top: 0;
 }
 
@@ -555,7 +554,7 @@
     flex: 0 13.51rem;
   }
 
-  .cards-list:is(.scrollablel).cards-3 .cards-list-item,
+  .cards-list:is(.scrollable).cards-3 .cards-list-item,
   .cards-list:is(.scrollable).cards-4 .cards-list-item,
   .cards-list:is(.scrollable).cards-1 .cards-list-item {
     flex: 0 0 16.875rem;
