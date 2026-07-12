@@ -127,6 +127,16 @@
   box-sizing: border-box;
 }
 
+.cards-list-button .cards-list-remark {
+    padding-bottom: 15px;
+ 
+    p {
+        font-size: 0.8rem;
+        line-height: 1.3;
+        font-weight: var(--bbl-font-weight-regular);
+    }
+}
+
 .cards-list:is(.scrollable, .carousel) {
   flex-direction: row;
   align-items: stretch;
