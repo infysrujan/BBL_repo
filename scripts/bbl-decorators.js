@@ -167,6 +167,11 @@ function handleGlobalLinkClicks() {
     try {
       const urlObj = new URL(href, window.location.href);
 
+      // Only intercept real web navigations — let mailto:, tel:, sms:, etc. behave natively
+      if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+        return;
+      }
+
       // Skip if same origin
       if (urlObj.hostname === window.location.hostname) {
         return;

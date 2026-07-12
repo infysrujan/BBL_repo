@@ -58,7 +58,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05rem;
   position: relative;
-} 
+}
 
 .menu-banner .sub-title-medium.line::after {
   content: "";
@@ -105,11 +105,11 @@
   height: 100%;
 }
 
-.menu-banner .title-1 a:active, 
+.menu-banner .title-1 a:active,
 .menu-banner .title-1 a:hover {
     text-decoration: none;
     color: var(--bbl-color-active-blue);
-}   
+}
 
 .menu-banner .title-1 > * {
   margin: 0;
@@ -123,11 +123,11 @@
 .menu-banner .title-1 em.text-blue {
   font-style: normal;
   text-decoration: none;
-  color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-blue-130);
 }
 
 .menu-banner .desktop-tools .title-1 em.text-blue {
-  color: var(--bbl-color-active-blue);
+  color: var(--bbl-color-blue-130);
 }
 
 /* Card list */
@@ -143,7 +143,7 @@
   text-decoration: none;
   color: var(--bbl-color-black);
   transition: all 0.2s ease;
-  gap: 0.9375rem;
+  gap: 0.5375rem;
   flex-direction: column;
 }
 
@@ -227,7 +227,7 @@
   .menu-banner .visual-img {
     width: 3.75rem;
     height: 3.75rem;
-    margin-top: 0.7125rem;
+    margin-top: 0.5125rem;
   }
 }
 
@@ -261,5 +261,12 @@
   .menu-banner .list-thumb-square li {
     flex: 1 1 calc(25% - var(--bbl-space-225));
     max-width: calc(25% - var(--bbl-space-225));
+  }
+}
+
+.search-page-container~.menu-banner-container {
+  .inner{
+    max-width: 60rem;
+    margin: 0 auto;
   }
 }
