@@ -70,6 +70,18 @@
   font-size: inherit;
 }
 
+.cards-list-description ul{
+  margin: 0;
+  padding: 0.625rem 0 0;
+  line-height: 1.4613rem;
+  color: var(--bbl-color-grey-85);
+}
+
+.cards-list-description ul li {
+  padding: 0.2rem;
+  margin: 0 0 0.625rem 0.875rem;
+}
+
 .cards-list-description :is(p, li) a[class]::after {
   display: none;
 }
@@ -647,6 +659,10 @@
   .cards-list-remark p,
   .cards-list-subtitle p{
     line-height: 1.375rem;
+  }
+
+  .cards-list-description ul{
+    line-height: 1.67rem;
   }
 
   .card-list-container .default-content-wrapper p {
