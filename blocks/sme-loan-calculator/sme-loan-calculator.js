@@ -450,6 +450,21 @@ export default async function decorate(block) {
     lastResult = null;
   };
 
+  function clearFormAndResult() {
+    fields.forEach((f) => {
+      const inp = block.querySelector(`#${f.id}`);
+      if (!inp) return;
+      inp.value = f.valueType === 'decimal' ? '0.00' : '0';
+      inp.classList.remove('input-error');
+    });
+    touchedDecimalFields.clear();
+    lastResult = null;
+    resultLabel.textContent = `${resultValue}`;
+    resultLabel.style.whiteSpace = '';
+    tbody.innerHTML = '';
+    tableSection.hidden = true;
+  }
+
   calcBtn.addEventListener('click', () => {
     const { valid, showMessage } = validateAndMarkErrors();
     if (!valid) {
@@ -526,12 +541,32 @@ export default async function decorate(block) {
   addBtn.addEventListener('click', () => {
     if (lastResult === null) return;
     tableSection.hidden = false;
-    const tr = document.createElement('tr');
-    appendTd(tr, rc.integer ? Math.floor(lastResult).toLocaleString('en-US') : fmt(lastResult));
-    fields.forEach((f) => {
+    const resultCell = rc.integer ? Math.floor(lastResult).toLocaleString('en-US') : fmt(lastResult);
+    const fieldValues = fields.map((f) => {
       const inp = block.querySelector(`#${f.id}`);
-      appendTd(tr, inp ? inp.value : '');
+      return inp ? inp.value : '';
     });
+    const newRowValues = [resultCell, ...fieldValues];
+    const existingRows = [...tbody.querySelectorAll('tr')].map((row) => [...row.children].map((td) => td.textContent.trim()));
+    const isDuplicate = existingRows.some((rowValues) => rowValues.length === newRowValues.length
+      && rowValues.every((val, idx) => val === newRowValues[idx]));
+    if (isDuplicate) return;
+
+    const tr = document.createElement('tr');
+    appendTd(tr, resultCell);
+    fieldValues.forEach((value) => appendTd(tr, value));
     tbody.appendChild(tr);
   });
+
+  // Reset form, result, and comparison table when switching simple tabs.
+  document.addEventListener('click', (e) => {
+    const simpleTab = e.target.closest('[data-tab-variant="simple-tab"]');
+    if (!simpleTab) return;
+
+    const tabPanel = block.closest('.tab-panel');
+    const tabRoot = tabPanel?.parentElement?.parentElement;
+    if (!tabRoot?.contains(simpleTab)) return;
+
+    clearFormAndResult();
+  }, true);
 }

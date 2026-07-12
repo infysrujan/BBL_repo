@@ -55,14 +55,16 @@
 
 .central-aligned.carousel-dotted-container .carousel-arrow-prev {
     position: absolute;
-    top: 40%;
+    top: 50%;
+    transform: translateY(-50%);
     left: -3.4375rem;
 }
 
 .central-aligned.carousel-dotted-container .carousel-arrow-next {
     position: absolute;
     right: -3.4375rem;
-    top: 40%;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .carousel-dotted .carousel-dotted-item.simple-carousel {
