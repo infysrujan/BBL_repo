@@ -246,6 +246,32 @@
   transform: translateY(0.1875rem);
 }
 
+/* Neutralize the global .download-files block styling so the download icon
+   centers the same way the preview icon does, instead of using the
+   absolute-positioned layout meant for the site's block-style download buttons. */
+.search-reports-results .srr-download-btn.download-files {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  line-height: normal;
+  background: none;
+  box-shadow: none;
+  margin-bottom: 0;
+  padding: 0.25rem;
+}
+
+.search-reports-results .srr-download-btn.icon-download::before {
+  position: static;
+  right: auto;
+  margin-top: 0;
+  font-size: 2rem;
+}
+
+.search-reports-results .srr-download-btn:hover.icon-download::before {
+  transform: translateY(0.1875rem);
+}
+
 /* States */
 
 .search-reports-results .srr-empty,
