@@ -156,7 +156,12 @@ function formatBodyCellText(normalizedKey, row, columnKey, selectedDate) {
   }
   if (columnKey && row[columnKey] !== undefined) {
     const value = String(row[columnKey]);
-    return value === 'null' ? 'N/A' : value;
+    if (value === 'null') return 'N/A';
+    const num = parseFloat(value);
+    if (!Number.isNaN(num) && Math.abs(num) >= 1000) {
+      return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+    }
+    return value;
   }
   return '';
 }
