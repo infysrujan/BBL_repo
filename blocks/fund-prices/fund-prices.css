@@ -655,7 +655,7 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
   }
 
   #fund-prices-print-root .fund-prices-print-title {
-    margin: 0 0 0.4375rem;
+    margin: 4rem 0 0.4375rem;
     font-family: var(--bbl-font-family-primary);
     font-weight: 700;
     font-size: 1.875rem;
