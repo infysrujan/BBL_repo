@@ -58,7 +58,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05rem;
   position: relative;
-} 
+}
 
 .menu-banner .sub-title-medium.line::after {
   content: "";
@@ -105,11 +105,11 @@
   height: 100%;
 }
 
-.menu-banner .title-1 a:active, 
+.menu-banner .title-1 a:active,
 .menu-banner .title-1 a:hover {
     text-decoration: none;
     color: var(--bbl-color-active-blue);
-}   
+}
 
 .menu-banner .title-1 > * {
   margin: 0;
@@ -261,5 +261,12 @@
   .menu-banner .list-thumb-square li {
     flex: 1 1 calc(25% - var(--bbl-space-225));
     max-width: calc(25% - var(--bbl-space-225));
+  }
+}
+
+.search-page-container~.menu-banner-container {
+  .inner{
+    max-width: 60rem;
+    margin: 0 auto;
   }
 }
