@@ -85,7 +85,7 @@ async function fetchAndRender(block, type, year) {
   });
   resultsHeader.append(backBtn);
   wrapper.append(resultsHeader);
-  wrapper.append(createTaggedElement('h1', { className: 'srr-page-title', text: 'Search Results' }));
+  wrapper.append(createTaggedElement('h1', { className: 'srr-page-title', text: placeholders.reportsResultsTitle }));
   wrapper.append(createTaggedElement('div', { className: 'srr-title-divider' }));
   const loading = createTaggedElement('div', { className: 'srr-loading', text: 'Loading...' });
   wrapper.append(loading);
