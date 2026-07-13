@@ -184,10 +184,11 @@ export default async function decorate(block) {
     inp.type = 'text';
     inp.id = f.id;
     inp.autocomplete = 'off';
-    inp.inputMode = f.valueType === 'decimal' ? 'decimal' : 'numeric';
-    inp.value = f.valueType === 'decimal' ? '0.00' : '0';
+    const isDecimal = f.valueType === 'decimal' && !['H', 'C', 'F'].includes(f.id);
+    inp.inputMode = isDecimal ? 'decimal' : 'numeric';
+    inp.value = isDecimal ? '0.00' : '0';
     // Consistent placeholder for every field (integer + decimal), so all tabs look alike.
-    inp.placeholder = f.valueType === 'decimal' ? '0.00' : '0';
+    inp.placeholder = isDecimal ? '0.00' : '0';
     inpCol.appendChild(inp);
 
     box.appendChild(lblCol);
@@ -454,7 +455,8 @@ export default async function decorate(block) {
     fields.forEach((f) => {
       const inp = block.querySelector(`#${f.id}`);
       if (!inp) return;
-      inp.value = f.valueType === 'decimal' ? '0.00' : '0';
+      const isDecimal = f.valueType === 'decimal' && !['H', 'C', 'F'].includes(f.id);
+      inp.value = isDecimal ? '0.00' : '0';
       inp.classList.remove('input-error');
     });
     touchedDecimalFields.clear();
@@ -493,18 +495,23 @@ export default async function decorate(block) {
   // ── Input behaviour ──
   block.querySelectorAll('.textbox-cal').forEach((inp) => {
     const f = fields.find((x) => x.id === inp.id);
-    const decimal = f?.valueType === 'decimal';
+    const decimal = f?.valueType === 'decimal' && !['H', 'C', 'F'].includes(f?.id);
+    const isRateField = ['i', 'D', 'G'].includes(f?.id);
 
     inp.addEventListener('focus', () => {
-      if (inp.value === '0' || inp.value === '0.00') inp.select();
+      if (inp.value === '0' || inp.value === '0.00' || inp.value === '0.000') inp.select();
     });
 
     inp.addEventListener('blur', () => {
       const v = parseFloat(inp.value.replace(/,/g, ''));
       if (!Number.isFinite(v)) {
-        inp.value = decimal ? '0.00' : '0';
+        if (isRateField) inp.value = '0.000';
+        else inp.value = decimal ? '0.00' : '0';
       } else {
-        inp.value = decimal ? v.toFixed(2) : Math.round(v).toLocaleString('en-US');
+        const decPlaces = isRateField ? 3 : 2;
+        inp.value = decimal
+          ? v.toLocaleString('en-US', { minimumFractionDigits: decPlaces, maximumFractionDigits: decPlaces })
+          : Math.round(v).toLocaleString('en-US');
       }
     });
 
@@ -512,15 +519,48 @@ export default async function decorate(block) {
       inp.classList.remove('input-error');
       if (decimal) {
         touchedDecimalFields.add(f.id);
+
+        let maxBefore = 9;
+        let maxAfter = 2;
+        if (isRateField) {
+          maxBefore = 2;
+          maxAfter = 3;
+        } else if (f.id === 'H' || f.id === 'C' || f.id === 'F') {
+          maxBefore = 6;
+        } else if (f.id === 'A') {
+          maxBefore = 8;
+        } else if (f.id === 'n') {
+          maxBefore = 3;
+        }
+
+        const parts = inp.value.replace(/,/g, '').split('.');
+        if (parts[0].length > maxBefore) parts[0] = parts[0].slice(0, maxBefore);
+        if (parts[1] && parts[1].length > maxAfter) parts[1] = parts[1].slice(0, maxAfter);
+        const newValue = parts.join('.');
+
+        if (inp.value !== newValue) {
+          const pos = inp.selectionStart;
+          inp.value = newValue;
+          inp.setSelectionRange(pos, pos);
+        }
       } else {
         const pos = inp.selectionStart;
-        const raw = inp.value.replace(/,/g, '');
+        let raw = inp.value.replace(/,/g, '');
+
+        let limit = 9;
+        if (f.id === 'n') limit = 3;
+        else if (f.id === 'A') limit = 8;
+        else if (f.id === 'H' || f.id === 'C' || f.id === 'F') limit = 6;
+
+        if (raw.length > limit) raw = raw.slice(0, limit);
         const num = parseInt(raw, 10);
         if (!Number.isNaN(num)) {
           const formatted = num.toLocaleString('en-US');
           const delta = formatted.length - inp.value.length;
           inp.value = formatted;
           inp.setSelectionRange(pos + delta, pos + delta);
+        } else {
+          inp.value = '';
         }
       }
     });
