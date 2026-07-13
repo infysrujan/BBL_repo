@@ -113,6 +113,13 @@ body.mobile-app-view main > div:first-child {
   font-weight: inherit;
   font-family: inherit;
   font-size: inherit;
+  background: none;
+  color: inherit;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  min-width: unset;
+  text-decoration: underline;
 }
 
 .promotional-details .promo-detail-description :is(p, li) a[class]::after {
