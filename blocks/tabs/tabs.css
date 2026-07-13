@@ -260,12 +260,6 @@
   scroll-snap-type: x mandatory;
 }
 
-/* Reserve a gutter on each side (>= the 2.5rem arrow) and drop the arrows into it,
-   so the scroll area lives BETWEEN the arrows instead of underneath them. */
-.tabs.icon-tab-carousel .tabs-nav-wrapper {
-  padding-inline: var(--bbl-space-600);
-}
-
 .tabs.icon-tab-carousel .tabs-nav-prev {
   left: 0;
 }
