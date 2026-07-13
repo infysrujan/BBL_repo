@@ -169,7 +169,7 @@
   z-index: 10;
   max-height: 16.25rem;
   overflow-y: auto;
-  box-shadow: 0 var(--bbl-space-050) var(--bbl-space-200) rgb(0 0 0 / 12%);
+  box-shadow: 0 var(--bbl-space-050) var(--bbl-space-200) var(--bbl-color-black-alpha-12);
 }
 
 .search-reports-overlay .sr-dropdown-open .sr-dropdown-list {
