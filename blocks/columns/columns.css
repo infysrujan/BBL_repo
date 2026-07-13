@@ -18,22 +18,18 @@
 .columns > div > .columns-img-col img {
   display: block;
 }
-
-.center-image .columns > div {
-  flex-flow: row wrap;
-  justify-content: center;
-  align-items: center;
-  gap: var(--bbl-space-200);
-}
-
-.center-image .columns.columns-3-cols > div {
-  gap: var(--bbl-space-100);
-}
-
-.center-image .columns > div > .columns-img-col {
+ 
+.section.center-image .columns-2-cols .columns-img-col,
+.section.center-image .columns-3-cols > div > div:has(> p > picture) {
   display: flex;
+  align-items:center;
+  justify-content:center;
+  flex: 0 0 auto;
+}
+
+.section.center-image .columns-3-cols > div:has(> div:nth-child(3) > p > picture),
+.section.center-image .columns-2-cols > div:has(> .columns-img-col + .columns-img-col) {
   justify-content: center;
-  align-items: center;
 }
 
 @media (width >= 1025px) {
@@ -46,18 +42,5 @@
   .columns > div > div {
     flex: 1;
     order: unset;
-  }
-
-  .center-image .columns > div {
-    justify-content: center;
-    gap: var(--bbl-space-200);
-  }
-
-  .center-image .columns > div > div {
-    flex: 0 0 auto;
-  }
-
-  .center-image .columns.columns-3-cols > div {
-    gap: var(--bbl-space-100);
   }
 }
