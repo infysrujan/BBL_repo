@@ -459,7 +459,6 @@
     display: flex;
     justify-content: center;
     max-width: 100%;
-    max-width: 100%;
   }
 
   .tabs.simple-tab .tabs-nav button,
