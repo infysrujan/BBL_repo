@@ -352,6 +352,9 @@ function buildAccordionPrintDocument(block) {
     .download-section .default-content-wrapper { text-align:center;}
     .download-section .default-content-wrapper h4 { font-size: 1.125rem;}
     .download-button-wrapper .download-files { background: none; box-shadow: none; padding: 0; margin: 0; }
+    .table.scroll table {min-width: unset;}
+    .download-button-wrapper .download-files {padding-right: 2.125rem;}
+    .download-files.icon-download::before, .download-files .icon-download::before {right: -0.27rem;}
   `;
 
   return `
@@ -365,6 +368,7 @@ function buildAccordionPrintDocument(block) {
       <link rel="stylesheet" href="/blocks/header/header.css">
       <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
       <link rel="stylesheet" href="/blocks/accordion-block/accordion-block.css">
+      <link rel="stylesheet" href="/blocks/table/table.css">
       <style>${printCss}</style>
     </head>
     <body class="appear">
