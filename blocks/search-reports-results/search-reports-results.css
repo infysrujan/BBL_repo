@@ -108,11 +108,11 @@
 
 .search-reports-results .srr-card-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: var(--bbl-text-card-title-weight);
   line-height: 1.25;
   margin: 0;
-  padding: 0;
+  padding: 0.9375rem 0;
   color: var(--bbl-color-gray-121);
   white-space: normal;
   overflow-wrap: break-word;
