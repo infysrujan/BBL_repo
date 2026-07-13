@@ -24,10 +24,14 @@ picture.rte-inline-image img {
 }
 
 .default-content-wrapper .has-inline-icon {
-  display: inline-flex;
+  display: inline;
   align-items: center;
   gap: 0.5rem;
   vertical-align: middle;
+}
+
+.default-content-wrapper .has-inline-icon p {
+    display: initial;
 }
 
 .default-content-wrapper .has-inline-icon > p {
