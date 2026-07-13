@@ -6,7 +6,7 @@
 }
 
 .search-reports-results .srr-results-wrapper {
-  background: var(--bbl-color-white);
+  background: var(--bbl-color-gray-144);
   min-height: 100vh;
   padding-bottom: 3.75rem;
   overflow-x: hidden;
