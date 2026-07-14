@@ -141,7 +141,7 @@
   font-size: var(--bbl-text-footer-size);
   line-height: var(--bbl-text-footer-line-height);
   font-weight: var(--bbl-text-footer-weight);
-  font-family: var(--bbl-font-family-looped);
+  font-family: var(--bbl-font-family-primary);
 }
 
 .footer-links ul li .icon-logo-footer-2 {
