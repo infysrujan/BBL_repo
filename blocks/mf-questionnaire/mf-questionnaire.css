@@ -77,23 +77,6 @@
 
 .mfq-btn {
   min-width: 12.25rem;
-  height: 2.75rem;
-  padding: 0 var(--bbl-space-250);
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  border-radius: var(--bbl-radius-button);
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
-  font-size: var(--bbl-font-size-b2, 0.875rem);
-  line-height: 1.375;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.mfq-btn:hover,
-.mfq-btn:focus-visible {
-  background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  outline: none;
 }
 
 /* ── Disclaimer ───────────────────────────────────────────────────────────── */
