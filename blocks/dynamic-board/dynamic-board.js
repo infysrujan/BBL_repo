@@ -34,6 +34,24 @@ function fmtPct(val) {
   return Number.isNaN(n) ? val : `${n.toFixed(2)}%`;
 }
 
+// Tolerates minor authoring variations like {{ SYMBOL }} or {{symbol}}, and
+// warns instead of silently 404ing when the template is missing the token.
+const SYMBOL_PLACEHOLDER = /\{\{\s*SYMBOL\s*\}\}/i;
+
+function buildDownloadHref(downloadUrl, symbol) {
+  if (!downloadUrl) return '';
+  if (!SYMBOL_PLACEHOLDER.test(downloadUrl)) {
+    // eslint-disable-next-line no-console
+    console.warn('dynamic-board: download URL is missing a {{SYMBOL}} placeholder:', downloadUrl);
+    return downloadUrl;
+  }
+  const resolved = downloadUrl.replace(SYMBOL_PLACEHOLDER, symbol.toLowerCase());
+  // A path missing its leading slash resolves relative to the current page's
+  // directory (e.g. /en/...) instead of the site root, so force it root-relative
+  // here rather than relying on every config value being typed exactly right.
+  return /^(https?:)?\//.test(resolved) ? resolved : `/${resolved}`;
+}
+
 // ─── sort helper ──────────────────────────────────────────────────────────────
 function sortValue(rate, key) {
   if (key === 'REMAIN_TERM') return remainTermToMonths(rate.REMAIN_TERM || '00.00.00');
@@ -154,7 +172,7 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
       <td class="db-td-num db-td-maturity">
         ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}
-        <a class="db-td-dl" href="${state.downloadUrl.replace('{{SYMBOL}}', sym.toLowerCase())}" download aria-label="Download ${sym} factsheet">
+        <a class="db-td-dl" href="${buildDownloadHref(state.downloadUrl, sym)}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
         </a>
       </td>
@@ -503,6 +521,7 @@ function printElement(block) {
     '.db-go-btn',
     '.db-sort-icon',
     '.db-td-check',
+    '.db-th-download',
     '.db-td-dl',
   ].join(', ')).forEach((el) => el.remove());
 
@@ -561,10 +580,6 @@ function printElement(block) {
       position: static;
     }
 
-    .brand-logo.block {
-      background-color: var(--bbl-color-truthful-blue);
-    }
-
     .brand-logo-container {
       width: 12.5rem;
       height: 3.125rem;
@@ -596,7 +611,7 @@ function printElement(block) {
       transform: translateX(-50%);
       width: 2.25rem;
       height: 0.125rem;
-      background-color: #9E9E9E;
+      background-color: black;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
@@ -613,8 +628,12 @@ function printElement(block) {
       flex: 0 1 auto;
     }
 
+    .dynamic-board .db-time-label {
+      color: var(--bbl-color-black) !important;
+    }
+
     .dynamic-board .db-table {
-      width: 75%;
+      width: 90%;
       /* table-layout: fixed was tried here, but it only measures the FIRST
          header row's cells to size columns — this table's first row has
          colspan="2" group headers (Bidding/Offering Price) whose real
@@ -624,10 +643,10 @@ function printElement(block) {
          overflow-wrap/word-break below and min-width:0 (already reset by
          dynamic-board.css's own @media print block) it still shrinks to
          fit the page instead of overflowing. */
-      border: 2px solid #EBEBEB;
+      border: 2px solid #c8c8cc;
       /* Outline as a fallback outer border — it can't be partially
          overridden by any single cell's border like border-collapse can. */
-      outline: 2px solid #EBEBEB;
+      outline: 2px solid #c8c8cc;
       outline-offset: -0.0625rem;
       border-collapse: collapse;
       font-size: 0.6875rem;
@@ -654,25 +673,21 @@ function printElement(block) {
          setting it directly on each th is what actually survives printing.
          Hard-coded hex (not var()) so it doesn't depend on the popup having
          fully resolved the site's CSS custom properties before printing. */
-      background-color: #F1F3F9;
+      background-color: white;
       font-size: 0.6875rem;
       font-weight: 700 !important;
       height: auto;
       padding: 0.1875rem 0.25rem;
-      border: 0.125rem solid var(--bbl-color-grey-20) !important;
+      border: 0.125rem solid var(--bbl-color-grey-10) !important;
     }
 
     .dynamic-board .db-table tbody td {
-      border: 0.125rem solid var(--bbl-color-grey-20) !important;
+      border: 0.125rem solid var(--bbl-color-grey-30) !important;
       border-right-color: var(--bbl-color-white) !important;
       color: black !important;
       padding: 0.1875rem 0.25rem;
       vertical-align: middle;
       font-size: 0.6875rem;
-    }
-
-    .dynamic-board .db-td-symbol {
-      color: #0064FF !important;
     }
 
     /* Same as the thead case above: set row-striping/selection backgrounds
@@ -687,7 +702,7 @@ function printElement(block) {
 
     /* The live table strips the last header cell's border-right; restore it. */
     .dynamic-board .db-table thead th:last-child {
-      border-right: 0.125rem solid var(--bbl-color-grey-20) !important;
+      border-right: 0.125rem solid var(--bbl-color-grey-10) !important;
     }
 
     .dynamic-board .db-table tbody tr:nth-child(even),
@@ -767,20 +782,10 @@ function printElement(block) {
   printWindow.document.write(printHtml);
   printWindow.document.close();
 
-  // window.open('') leaves the popup's location at about:blank, which is what
-  // Chrome's print header/footer shows — replace it with the real page URL
-  // (same-origin, so this doesn't trigger a navigation).
-  try {
-    printWindow.history.replaceState(null, '', window.location.href);
-  } catch {
-    // ignore — footer just falls back to about:blank
-  }
-
-  // Wait on the popup's own <link> stylesheets and web fonts to actually
-  // finish loading before printing, capped by a generous safety timeout so a
-  // genuinely stuck resource can't hang the print forever. A too-short cap
-  // here is what causes intermittent broken print layouts (unstyled table,
-  // visible remarks-shadow overlay) on a cold cache/slow network.
+  // readyState/rAF/a flat 100ms timer used to race against the popup's own
+  // <link> stylesheets and web fonts, printing with default UA styles
+  // whenever the CSS hadn't finished loading yet (e.g. on a cold cache).
+  // Wait on the actual load signals instead, capped by a safety timeout.
   const waitForStylesheets = () => Promise.all(
     [...printWindow.document.querySelectorAll('link[rel="stylesheet"]')].map((link) => (
       link.sheet
@@ -796,18 +801,12 @@ function printElement(block) {
 
   Promise.race([
     Promise.all([waitForStylesheets(), waitForFonts()]),
-    timeout(8000),
+    timeout(3000),
   ]).then(() => {
     printWindow.focus();
-    // Double rAF: the first callback fires before the browser has applied
-    // the styles/fonts that just resolved above, so the table's auto column
-    // widths and the remarks-shadow removal can still reflect a stale layout
-    // — waiting a second frame lets that layout pass complete before print.
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        printWindow.print();
-        printWindow.close();
-      });
+      printWindow.print();
+      printWindow.close();
     });
   });
 }
@@ -823,9 +822,13 @@ export default async function decorate(block) {
   const isGov = authoring.boardType.toLowerCase().includes('government');
   state.api = createApiService(configs, authoring.boardType);
   state.placeholders = placeholders;
-  state.downloadUrl = isGov
+  // Relative /content/dam paths resolve directly on this domain (same as the
+  // download-file block's authored links), so no base URL needs prepending.
+  state.downloadUrl = (isGov
     ? configs?.dynamicBoardCorpBondDownloadUrl
-    : configs?.dynamicBoardBondRatesDownloadUrl;
+    : configs?.dynamicBoardBondRatesDownloadUrl) || '';
+  // eslint-disable-next-line no-console
+  console.log('Config Download URL:', state.downloadUrl);
   state.isGov = isGov;
   state.isThai = language === 'th';
   state.columns = parseTableHeading(authoring.tableHeadingEl, isGov);
