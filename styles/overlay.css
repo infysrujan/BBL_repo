@@ -51,8 +51,8 @@ body.modal-open {
 }
 
 .modal-body .accordion-toolbar-icon{
-    height: 12px;
-    width: 18px;
+    height: 0.75rem;
+    width: 1.125rem;
 }
 
 .modal-close {
