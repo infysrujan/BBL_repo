@@ -80,13 +80,9 @@
   padding-bottom: 0.9375rem;
 }
 
-.latest-news-wrapper .button-container {
-  padding-bottom: 0;
-}
-
-.latest-news-container .button-container .button-m {
-  min-width: 13.125rem;
-  display: inline-flex;
+.news-media-tabs .tabs-nav-wrapper .tabs-nav button {
+  bottom: unset;
+  top: calc(100% + 1rem);
 }
 
 @media (width > 47.5rem) {
@@ -94,7 +90,7 @@
     height: unset;
     min-height: unset;
     padding: 0;
-    margin: 0 0.5rem;
+    margin: 0 1rem;
   }
 
   .news-media-tabs.simple-tab .tabs-nav {
@@ -129,7 +125,4 @@
     margin-inline: 0.625rem;
   }
 
-  .latest-news-container .button-container .button-m {
-    min-width: 15rem;
-  }
 }

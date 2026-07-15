@@ -1,7 +1,4 @@
 /* Base styles (mobile-first) */
-.menu-cards {
-  /* padding: 0 var(--bbl-space-container-xs); */
-}
 
 .menu-cards .tips-insight-quick-access {
   display: flex;
@@ -63,10 +60,6 @@
 
 /* Tablet: width > 760px */
 @media (width > 47.5rem) {
-  .menu-cards {
-    /* padding: var(--bbl-space-600); */
-  }
-
   .menu-cards .tips-insight-quick-access {
     gap: var(--bbl-space-200);
   }
@@ -93,7 +86,7 @@
 @media (width > 64rem) {
   .menu-cards .tips-insight-quick-access {
     gap: var(--bbl-space-300);
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
 
   .menu-cards .tips-insight-quick-access-item {

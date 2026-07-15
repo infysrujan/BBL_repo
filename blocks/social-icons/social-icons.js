@@ -9,9 +9,7 @@ export default function decorate(block) {
   const validRows = [...block.children].filter((row) => {
     const cells = [...row.children];
     if (cells.length < 2) return false;
-    const platform = cells[0].textContent.trim();
-    const icon = cells[1].querySelector('picture, img');
-    return platform && icon;
+    return !!cells[0].querySelector('picture, img');
   });
 
   // Hide original content (keep in DOM for Universal Editor)
@@ -38,11 +36,10 @@ export default function decorate(block) {
     const cells = [...row.children];
     if (cells.length < 2) return;
 
-    const platform = cells[0].textContent.trim().toLowerCase();
-    const icon = cells[1].querySelector('picture, img');
-
-    // Skip if no icon
+    const icon = cells[0].querySelector('picture, img');
     if (!icon) return;
+
+    const platform = cells[1]?.textContent.trim().toLowerCase() || '';
 
     // URL is optional — read from cell[2] if present
     let url = null;
@@ -59,8 +56,13 @@ export default function decorate(block) {
     moveInstrumentation(row, li);
     const a = document.createElement('a');
 
-    a.href = '#';
-    if (url) a.dataset.shareHref = url;
+    if (url) {
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    } else {
+      a.href = '#';
+    }
     a.className = `platform-${platform}`;
     a.setAttribute('aria-label', `Share on ${platform}`);
 
