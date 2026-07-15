@@ -12,31 +12,18 @@ export default function decorate(block) {
     if (!anchor) return;
 
     const allCells = [...row.children];
-    const boolCells = allCells.filter((cell) => {
-      const t = cell.textContent.trim().toLowerCase();
-      return t === 'true' || t === 'false';
-    });
 
-    // UE writes empty string for false booleans; Word/SharePoint writes explicit "false".
-    // When no explicit "false" is found, use positional reading (UE format):
-    //   cell[1]=targetLink, cell[2]=enableModal, cell[3]=enableCookieModal
-    // Otherwise fall back to the boolCells filter approach (Word format).
-    const hasExplicitFalse = boolCells.some((c) => c.textContent.trim().toLowerCase() === 'false');
-    let targetLink;
-    let enableModal;
-    let enableCookieModal;
-    if (hasExplicitFalse) {
-      targetLink = boolCells.length >= 2 ? parseBool(boolCells[0]) : anchor.target === '_blank';
-      enableModal = boolCells.length >= 2 ? parseBool(boolCells[1]) : parseBool(boolCells[0]);
-      enableCookieModal = boolCells.length >= 3 ? parseBool(boolCells[2]) : false;
-    } else {
-      targetLink = parseBool(allCells[1]);
-      enableModal = parseBool(allCells[2]);
-      enableCookieModal = parseBool(allCells[3]);
-    }
+    // "Open link in new tab" (targetLink) is NOT authored as a cell: UE bakes it
+    // straight into the anchor as target="_blank" and omits the targetLink cell
+    // entirely (so a new-tab row has one fewer cell). Read it from the anchor.
+    // The two modal booleans are always the last two cells of the row, regardless
+    // of whether the targetLink cell was emitted.
+    const targetLink = anchor.getAttribute('target') === '_blank';
+    const enableModal = parseBool(allCells[allCells.length - 2]);
+    const enableCookieModal = parseBool(allCells[allCells.length - 1]);
 
-    const cellsToHide = hasExplicitFalse ? boolCells : allCells.slice(1);
-    cellsToHide.forEach((cell) => { cell.hidden = true; });
+    // Hide every cell after the anchor cell (the raw boolean values).
+    allCells.slice(1).forEach((cell) => { cell.hidden = true; });
 
     if (enableCookieModal) {
       const href = anchor.getAttribute('href');
