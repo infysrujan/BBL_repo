@@ -170,6 +170,10 @@
   font-weight: var(--bbl-font-weight-regular);
 }
 
+.saving-plan-field-error .saving-plan-field-input {
+  color: var(--bbl-color-red-130);
+}
+
 .saving-plan-field-error-message {
   display: block;
   margin-top: 0.25rem;
