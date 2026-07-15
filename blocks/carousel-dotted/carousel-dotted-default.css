@@ -528,9 +528,9 @@
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-subtitle p{
-  font-size: var(--bbl-text-default-size);
-  line-height: var(--bbl-text-default-line-height);
-  font-weight: var(--bbl-text-default-weight);
+  font-size: var(--bbl-heading-h3-reg-size);
+  line-height: var(--bbl-heading-h3-reg-line-height);
+  font-weight: var(--bbl-heading-h3-reg-weight);
   font-family: var(--bbl-font-family-primary);
   overflow: hidden;
   margin: 0;
