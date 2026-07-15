@@ -349,7 +349,6 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     align-items: unset;
-    max-width: 110rem;
   }
 
   /* Reset flex-specific width/flex overrides from styles.css */
