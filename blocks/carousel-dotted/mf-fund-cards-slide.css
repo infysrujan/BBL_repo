@@ -187,13 +187,17 @@
 .card-list.mf-card-list .cards-list.single-card .cards-list-item {
   flex: 0 0 100%;
   width: 100%;
-  max-width: 16.875rem;
-  margin: 0 auto var(--bbl-space-250) auto;
+}
+
+.carousel-dotted-container:has(.all-mf-fund-cards) .carousel-dotted-wrapper {
+  overflow: hidden;
+  margin-inline: -0.625rem;
 }
 
 .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-track-viewport {
   overflow: hidden;
-  width: 100%;
+  width: calc(100% + (2 * var(--bbl-space-section-xs)));
+  margin-inline: calc(-1 * var(--bbl-space-section-xs));
 }
 
 .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-track-wrapper {
@@ -230,11 +234,18 @@
     margin-bottom: var(--bbl-space-250);
   }
 
+  .carousel-dotted-container:has(.all-mf-fund-cards) .carousel-dotted-wrapper {
+    overflow: unset;
+    margin-inline: 0;
+  }
+
   .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow {
     display: none;
   }
 
   .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-track-viewport {
+    width: 100%;
+    margin-inline: 0;
     grid-column: 1 / 4;
     grid-row: 1;
   }
