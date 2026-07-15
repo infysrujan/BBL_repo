@@ -24,6 +24,16 @@
   scrollbar-color: var(--bbl-color-grey-40) transparent;
 }
 
+/*
+ * .section.full-bleed-bg .content (main.css) has higher specificity
+ * (3 classes vs. 2) and sets `margin: 0 auto`, silently overriding
+ * margin-inline here. Matching that ancestor chain wins reliably
+ * without relying on source order or !important.
+ */
+.section.full-bleed-bg .card-list-wealth .content {
+  margin-inline: -0.625rem;
+}
+
 .card-list-wealth .content::-webkit-scrollbar {
   height: 0.25rem;
 }
@@ -62,6 +72,7 @@
   border-bottom-right-radius: 0.4375rem;
   background: var(--bbl-color-white);
 }
+
 
 /* ── Logo area ─────────────────────────────────────────── */
 .card-logo {
@@ -107,7 +118,7 @@
 
 .card-description {
   font-size: var(--bbl-font-size-b1-mobile);
-  line-height: var(--clw-description-line-height-mobile);
+  line-height: 1.285rem;
   margin: 0;
   color: var(--bbl-color-grey-70);
 }
@@ -152,9 +163,9 @@
 .card-list-wealth .button-m.secondary {
   width: 100%;
   max-width: 100%;
-  padding: 5px 0;
+  padding: 0.3125rem 0;
   text-align: center;
-  border: 1px solid var(--bbl-color-active-blue);
+  border: 0.0625rem solid var(--bbl-color-active-blue);
   font-family: var(--bbl-font-family-primary);
 }
 
@@ -195,12 +206,15 @@
 
   .card-title {
     font-size: var(--bbl-font-size-h3-desktop);
-    line-height: var(--clw-title-line-height-desktop);
   }
 
   .card-description {
     font-size: var(--bbl-font-size-b1-desktop);
-    line-height: var(--bbl-line-height-b1-desktop);
+    line-height: 1.285rem;
+  }
+
+  .section.full-bleed-bg .card-list-wealth .content {
+    margin-inline: -1.25rem;
   }
 
   .card-eyebrow {
