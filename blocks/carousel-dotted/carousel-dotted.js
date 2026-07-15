@@ -396,6 +396,8 @@ export default async function decorate(block) {
     && slidesTextAnimation === 0
   ) {
     block.classList.add('all-mf-card-list-carousel');
+  } else if (isMfFundCardsCarousel) {
+    block.classList.add('all-mf-fund-cards');
   } else {
     block.classList.add('mixed-image-slides');
   }
@@ -425,9 +427,10 @@ export default async function decorate(block) {
     && slidesWithoutImage === 0
     && slidesHeroBanner === 0
     && slidesTextAnimation === 0;
-  const arrowTrackVariant = circularOrDefaultImage || allFragmentTrack;
+  const arrowTrackVariant = circularOrDefaultImage || allFragmentTrack || isMfFundCardsCarousel;
   const isSimpleCarousel = slideEls.some((s) => s.classList.contains('simple-carousel'));
-  const shouldCloneFragmentSlide = allFragmentTrack && slideEls.length > 1 && !isAuthoring;
+  const shouldCloneTrack = (allFragmentTrack || isMfFundCardsCarousel)
+    && slideEls.length > 1 && !isAuthoring;
 
   function triggerBgZoom(slideEl) {
     const bg = slideEl.querySelector('.carousel-bg');
@@ -495,7 +498,7 @@ export default async function decorate(block) {
     } else if (showArrows && isSimpleCarousel) {
       prevArrow.disabled = false;
       nextArrow.disabled = false;
-    } else if (isMfCardListCarousel || isMfFundCardsCarousel) {
+    } else if (isMfCardListCarousel) {
       prevArrow.disabled = false;
       nextArrow.disabled = false;
     } else {
@@ -503,10 +506,10 @@ export default async function decorate(block) {
       nextArrow.disabled = index === slideEls.length - 1;
     }
 
-    if (allHeroBanner || allWithoutImageTrack || allFragmentTrack) {
+    if (allHeroBanner || allWithoutImageTrack || allFragmentTrack || isMfFundCardsCarousel) {
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       if (trackWrapper) {
-        if (allFragmentTrack) {
+        if (allFragmentTrack || isMfFundCardsCarousel) {
           updateFragmentTrack(
             block,
             trackWrapper,
@@ -514,7 +517,7 @@ export default async function decorate(block) {
             index,
             prevIndex,
             direction,
-            shouldCloneFragmentSlide,
+            shouldCloneTrack,
           );
         } else {
           const slideWidth = trackWrapper.offsetWidth;
@@ -548,7 +551,7 @@ export default async function decorate(block) {
       // Enable circular navigation for showArrowsDots variant
       const prevIndex = currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1;
       setActive(prevIndex, 'backward');
-    } else if ((showArrows && isSimpleCarousel) || isMfCardListCarousel || isMfFundCardsCarousel) {
+    } else if ((showArrows && isSimpleCarousel) || isMfCardListCarousel) {
       setActive(currentIndex > 0 ? currentIndex - 1 : slideEls.length - 1);
     } else if (currentIndex > 0) {
       setActive(currentIndex - 1, 'backward');
@@ -561,7 +564,7 @@ export default async function decorate(block) {
       // Enable circular navigation for showArrowsDots variant
       const nextSlideIndex = currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0;
       setActive(nextSlideIndex, 'forward');
-    } else if ((showArrows && isSimpleCarousel) || isMfCardListCarousel || isMfFundCardsCarousel) {
+    } else if ((showArrows && isSimpleCarousel) || isMfCardListCarousel) {
       setActive(currentIndex < slideEls.length - 1 ? currentIndex + 1 : 0);
     } else if (currentIndex < slideEls.length - 1) {
       setActive(currentIndex + 1, 'forward');
@@ -606,7 +609,7 @@ export default async function decorate(block) {
   } else if (arrowTrackVariant) {
     const trackWrapper = document.createElement('div');
     trackWrapper.className = 'carousel-track-wrapper';
-    if (shouldCloneFragmentSlide) {
+    if (shouldCloneTrack) {
       const cloneLast = slideEls[slideEls.length - 1].cloneNode(true);
       cloneLast.setAttribute('aria-hidden', 'true');
       const cloneFirst = slideEls[0].cloneNode(true);
@@ -618,10 +621,10 @@ export default async function decorate(block) {
     } else {
       trackWrapper.replaceChildren(...slideEls);
     }
-    if (allFragmentTrack) {
+    if (allFragmentTrack || isMfFundCardsCarousel) {
       const trackViewport = document.createElement('div');
       trackViewport.className = 'carousel-track-viewport';
-      if (shouldCloneFragmentSlide) {
+      if (shouldCloneTrack) {
         trackViewport.style.visibility = 'hidden';
       }
       trackViewport.append(trackWrapper);
@@ -637,7 +640,7 @@ export default async function decorate(block) {
 
   if (showArrows || isMfCardListCarousel) {
     if (showArrows && arrowTrackVariant) {
-      const trackContainer = allFragmentTrack
+      const trackContainer = (allFragmentTrack || isMfFundCardsCarousel)
         ? block.querySelector('.carousel-track-viewport')
         : block.querySelector('.carousel-track-wrapper');
       if (!noNav) {
@@ -650,8 +653,6 @@ export default async function decorate(block) {
     if (!noNav) {
       renderHost.append(dots);
     }
-  } else if (slidesMfFundCards > 0 && slideEls.length > 1) {
-    renderHost.append(dots);
   }
 
   if (seeMoreLink) {
@@ -673,7 +674,7 @@ export default async function decorate(block) {
 
   if (slideEls.length) {
     setActive(0);
-    if (allFragmentTrack && shouldCloneFragmentSlide) {
+    if ((allFragmentTrack || isMfFundCardsCarousel) && shouldCloneTrack) {
       requestAnimationFrame(() => {
         const trackWrapper = block.querySelector('.carousel-track-wrapper');
         const trackViewport = block.querySelector('.carousel-track-viewport');
@@ -708,7 +709,8 @@ export default async function decorate(block) {
     || slidesCircularImage > 0
     || slidesDefaultImage > 0
     || slidesFragment > 0
-    || (isMfCardListCarousel && slideEls.length > 1);
+    || (isMfCardListCarousel && slideEls.length > 1)
+    || (isMfFundCardsCarousel && slideEls.length > 1);
   initializeDragSwipe(block, slideEls, setActive, 50, enableLooping);
 
   if (allFragmentTrack) {

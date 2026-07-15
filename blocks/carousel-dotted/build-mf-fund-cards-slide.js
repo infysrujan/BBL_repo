@@ -80,7 +80,7 @@ async function loadFundsData() {
  * Build the fund card list HTML directly, producing the same class structure
  * as card-list.js so that card-list.css applies without running card-list.js.
  */
-function buildFundCardsBlock(funds, doc, readMoreLabel) {
+function buildFundCardsBlock(funds, doc, readMoreLabel, cardsPerSlide = 3) {
   const block = doc.createElement('div');
   block.className = 'card-list mf-card-list block';
   block.dataset.blockName = 'card-list';
@@ -89,7 +89,7 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
   const getImgUrl = (val) => val?._publishUrl || (typeof val === 'string' ? val : '');
 
   const list = doc.createElement('div');
-  list.className = `cards-list scrollable center cards-3${funds.length === 1 ? ' single-card' : ''}`;
+  list.className = `cards-list scrollable center cards-${cardsPerSlide}${funds.length === 1 ? ' single-card' : ''}`;
 
   funds.forEach((fund) => {
     const name = fund.FundName || '';
@@ -193,8 +193,6 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
  *
  * Used by carousel-dotted.js when slideType === 'mfCardListCarousel'.
  */
-const CARDS_PER_SLIDE = 3;
-
 export default async function buildMfFundCardsSlide(row, index) {
   const doc = row.ownerDocument;
 
@@ -251,15 +249,16 @@ export default async function buildMfFundCardsSlide(row, index) {
     return slide;
   }
 
-  // ── Split funds into pages — sliding-window for incomplete last chunk ─────────
-  // Mirrors card-list-carousel.js: if the last chunk is smaller than CARDS_PER_SLIDE,
-  // backfill from the end so every slide shows exactly CARDS_PER_SLIDE cards.
-  // e.g. 4 funds → slide 1: [0,1,2]  slide 2: [1,2,3]
+  const tabletMinBp = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim() || '47.5rem';
+  const isMobile = window.matchMedia(`(max-width: ${tabletMinBp})`).matches;
+  const cardsPerSlide = isMobile ? 1 : 3;
+
+  // ── Split funds into pages — 1 per slide on mobile, 3 per slide on desktop ────
   const pages = [];
-  for (let i = 0; i < filteredFunds.length; i += CARDS_PER_SLIDE) {
-    const chunk = filteredFunds.slice(i, i + CARDS_PER_SLIDE);
-    if (chunk.length < CARDS_PER_SLIDE) {
-      pages.push(filteredFunds.slice(-CARDS_PER_SLIDE));
+  for (let i = 0; i < filteredFunds.length; i += cardsPerSlide) {
+    const chunk = filteredFunds.slice(i, i + cardsPerSlide);
+    if (chunk.length < cardsPerSlide && cardsPerSlide > 1) {
+      pages.push(filteredFunds.slice(-cardsPerSlide));
       break;
     }
     pages.push(chunk);
@@ -271,7 +270,7 @@ export default async function buildMfFundCardsSlide(row, index) {
     // Only move instrumentation onto the first slide
     if (pageIndex === 0) moveInstrumentation(row, slide);
 
-    const blockEl = buildFundCardsBlock(pageFunds, doc, readMoreLabel);
+    const blockEl = buildFundCardsBlock(pageFunds, doc, readMoreLabel, cardsPerSlide);
     slide.appendChild(blockEl);
 
     // Inject compare buttons
