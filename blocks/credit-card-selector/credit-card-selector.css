@@ -63,10 +63,10 @@
    the global h2 size (32px) directly on the real element. */
 .section.credit-card-selector-container .default-content-wrapper> :is(h1, h2, h3, h4, h5, h6):first-child {
   font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-medium);
+  font-weight: var(--bbl-heading-h2-weight);
   color: var(--bbl-color-black);
-  font-size: var(--bbl-font-size-h1-desktop);
-  line-height: 1.2;
+  font-size: var(--bbl-heading-h2-size);
+  line-height: var(--bbl-heading-h2-line-height);
   width: 100%;
   max-width: 100%;
   margin: 0;
