@@ -708,7 +708,7 @@
 
 .dynamic-board .db-table tbody td {
   padding: 0.625rem 0.3125rem;
-  font-size: var(--bbl-font-size-b2-desktop);
+  font-size: var(--bbl-font-size-b1-mobile);
   color: var(--bbl-color-grey-70);
   vertical-align: middle;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
@@ -851,6 +851,10 @@
   transform: rotate(180deg);
 }
 
+.dynamic-board .db-table thead th {
+  font-size: var(--bbl-font-size-b1-mobile);
+}
+
 /* ── Tablet: 47.5rem+ (760px) ──────────────────────────────── */
 
 @media (width > 47.5rem) {
@@ -910,9 +914,6 @@
     display: none;
   }
 
-  .dynamic-board .db-table thead th {
-    font-size: var(--bbl-font-size-b2-desktop);
-  }
 
   .dynamic-board .db-table tbody td {
     font-size: var(--bbl-font-size-b2-desktop);
