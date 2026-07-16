@@ -680,12 +680,37 @@ export default async function decorate(block) {
         const trackViewport = block.querySelector('.carousel-track-viewport');
         if (trackWrapper) {
           trackWrapper.style.transition = 'none';
+        }
+        if (isMfFundCardsCarousel && slideEls[0] && trackWrapper) {
+          // Retry until mf-fund-cards-slide.css applies flex:70% (slide < 90% of vpW).
+          // loadCSS may resolve immediately if the link exists but CSS hasn't painted yet.
+          const applyMfFundCentering = (attempt) => {
+            const isMobileVp = window.matchMedia(`(max-width: ${tabletMin})`).matches;
+            const s0 = slideEls[0];
+            const vp = trackViewport || trackWrapper;
+            const vpW = vp.offsetWidth;
+            const slideW = s0.offsetWidth;
+            if (isMobileVp && (slideW === 0 || slideW > vpW * 0.9) && attempt < 8) {
+              requestAnimationFrame(() => applyMfFundCentering(attempt + 1));
+              return;
+            }
+            const gap = parseFloat(getComputedStyle(trackWrapper).columnGap) || 0;
+            const offset = (3 * slideW + 2 * gap - vpW) / 2;
+            trackWrapper.style.transform = `translate3d(-${Math.max(0, offset)}px, 0px, 0px)`;
+            trackWrapper.getBoundingClientRect();
+            trackWrapper.style.transition = '';
+            if (trackViewport) {
+              trackViewport.style.visibility = '';
+            }
+          };
+          requestAnimationFrame(() => applyMfFundCentering(0));
+        } else if (trackWrapper) {
           setCardListTrackPosition(block, trackWrapper, slideEls, 0);
           trackWrapper.getBoundingClientRect();
           trackWrapper.style.transition = '';
-        }
-        if (trackViewport) {
-          trackViewport.style.visibility = '';
+          if (trackViewport) {
+            trackViewport.style.visibility = '';
+          }
         }
       });
     }
