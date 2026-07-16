@@ -304,7 +304,7 @@ main .lead-forms .form textarea {
 main .lead-forms .form form input,
 main .lead-forms .form form textarea,
 main .lead-forms .form form select {
-  height: 44px;
+  height: 2.75rem;
   color: var(--bbl-color-black);
   border-radius: 0.4375rem;
 }
