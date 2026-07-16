@@ -77,7 +77,8 @@ function buildDataFromConfig(json, lang, placeholders) {
   const futureValueTemplate = (L['common-toHaveMoney'] || '')
     .replace('{money}', '{amount}').replace('{unit}', unit);
 
-  const minError = L['validation-minValueError'] || '';
+  const minError = L['validation-minValueError'] || 'Minimum must not exceed {min}';
+  const maxError = L['validation-maxValueError'] || 'Maximum up to {max}';
 
   const goalKeys = [...new Set(
     Object.keys(L)
@@ -157,7 +158,10 @@ function buildDataFromConfig(json, lang, placeholders) {
       validation: {
         goalAmount: fillTemplate(minError, { min: '10,000' }),
         annualReturn: fillTemplate(minError, { min: '0.1' }),
-        goalPeriod: fillTemplate(minError, { min: '1' }),
+        goalPeriod: {
+          min: fillTemplate(minError, { min: '1' }),
+          max: fillTemplate(maxError, { max: '30' }),
+        },
         crossFieldIncreaseExceedsReturn: L['validation-annualSavingIncreaseRateError'] || '',
       },
     },
@@ -170,7 +174,7 @@ function buildDataFromConfig(json, lang, placeholders) {
     },
     validation: {
       goalAmount: { min: 10000 },
-      goalPeriod: { min: 1, max: 50 },
+      goalPeriod: { min: 1, max: 30 },
       balance: { min: 0 },
       annualReturn: { min: 0.1, max: 100 },
       annualIncrease: { min: 0, max: 100 },
@@ -279,11 +283,13 @@ async function fetchCalculation(inputs, calcUrl, apimKey, inflationRate) {
 
 function getFieldMinError(field, value, rules, messages) {
   const message = messages[field] || '';
-  if (!Number.isFinite(value)) return message;
+  const minMessage = typeof message === 'object' ? (message.min || '') : message;
+  const maxMessage = typeof message === 'object' ? (message.max || '') : message;
+  if (!Number.isFinite(value)) return minMessage;
   const rule = rules[field];
   if (!rule) return '';
-  if (rule.min !== undefined && value < rule.min) return message;
-  if (rule.max !== undefined && value > rule.max) return message;
+  if (rule.min !== undefined && value < rule.min) return minMessage;
+  if (rule.max !== undefined && value > rule.max) return maxMessage;
   return '';
 }
 
