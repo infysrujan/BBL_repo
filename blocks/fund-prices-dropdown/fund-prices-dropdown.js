@@ -319,8 +319,8 @@ function renderHistTable(tbody, history) {
     const tr = tbody.ownerDocument.createElement('tr');
     tr.innerHTML = `<td>${fmtHistDate(d.mfr_dDataDate)}</td>`
       + `<td>${fmtNav(d.mfr_fNav)}</td>`
-      + `<td>${fmtNav(d.mfr_fBuy)}</td>`
-      + `<td>${fmtNav(d.mfr_fSel)}</td>`;
+      + `<td>${fmtNav(d.mfr_fSel)}</td>`
+      + `<td>${fmtNav(d.mfr_fBuy)}</td>`;
     tbody.appendChild(tr);
   });
 }
