@@ -231,6 +231,10 @@ main .lead-forms .form form .plain-text-wrapper p:last-child {
   margin-bottom: -0.125rem;
 }
 
+main .lead-forms .form form .field-other-premium + .plain-text-wrapper.field-text p > p {
+  padding-inline: var(--bbl-form-padding-10);
+}
+
 main .lead-forms .form form .plain-text-wrapper :is(a, .custom-wffm-form) {
   color: inherit;
   font-size: inherit;
@@ -957,7 +961,6 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   main .lead-forms .form form h2{
     font-size: var(--bbl-form-font-size-16);
     line-height: 1.3rem;
-    padding: 0 var(--bbl-form-padding-10);
   }
 
   main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
