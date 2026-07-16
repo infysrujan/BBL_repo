@@ -291,6 +291,7 @@ main .lead-forms .form form textarea,
 main .lead-forms .form form select {
   height: 44px;
   color: var(--bbl-color-black);
+  border-radius: 0.4375rem;
 }
 
 main .section.form-container.lead-forms .form form select {
