@@ -288,8 +288,9 @@ main .lead-forms .form textarea {
 
 main .lead-forms .form form input,
 main .lead-forms .form form textarea,
-main .lead-forms .form form select{
-    height:44px;
+main .lead-forms .form form select {
+  height: 44px;
+  color: var(--bbl-color-black);
 }
 
 main .section.form-container.lead-forms .form form select {
