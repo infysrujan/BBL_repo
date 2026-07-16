@@ -219,6 +219,17 @@ main .lead-forms .form form .field-infotext {
   margin: var(--bbl-space-500) 0 var(--bbl-space-250);
 }
 
+main .lead-forms .form form .field-form-intro.field-wrapper p {
+  text-align: center;
+}
+
+main .lead-forms .form form .field-form-intro {
+  max-width: 56.25rem;
+  width: calc(100% + 10rem);
+  margin-left: -5rem;
+  margin-right: -5rem;
+}
+
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
   color: var(--bbl-color-grey-85);
   font-size: var(--bbl-font-size-b1-mobile);
