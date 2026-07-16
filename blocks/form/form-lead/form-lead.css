@@ -228,7 +228,7 @@ main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
 }
 
 main .lead-forms .form form .plain-text-wrapper p:last-child {
-  margin-bottom: 0;
+  margin-bottom: -0.125rem;
 }
 
 main .lead-forms .form form .plain-text-wrapper :is(a, .custom-wffm-form) {
