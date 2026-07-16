@@ -77,8 +77,8 @@ function buildDataFromConfig(json, lang, placeholders) {
   const futureValueTemplate = (L['common-toHaveMoney'] || '')
     .replace('{money}', '{amount}').replace('{unit}', unit);
 
-  const minError = L['validation-minValueError'] || 'Minimum must not exceed {min}';
-  const maxError = L['validation-maxValueError'] || 'Maximum up to {max}';
+  const minError = L['validation-minValueError'] || '';
+  const maxError = L['validation-maxValueError'] || '';
 
   const goalKeys = [...new Set(
     Object.keys(L)
@@ -156,12 +156,19 @@ function buildDataFromConfig(json, lang, placeholders) {
         goalAmountTag: L['results-graph-savingGoalLabel'] || '',
       },
       validation: {
-        goalAmount: fillTemplate(minError, { min: '10,000' }),
-        annualReturn: fillTemplate(minError, { min: '0.1' }),
+        goalAmount: {
+          min: fillTemplate(minError, { min: '10,000' }),
+          max: fillTemplate(maxError, { max: '999,999,999' }),
+        },
+        annualReturn: {
+          min: fillTemplate(minError, { min: '0.1' }),
+          max: fillTemplate(maxError, { max: '40' }),
+        },
         goalPeriod: {
           min: fillTemplate(minError, { min: '1' }),
           max: fillTemplate(maxError, { max: '30' }),
         },
+        annualIncrease: { max: fillTemplate(maxError, { max: '40' }) },
         crossFieldIncreaseExceedsReturn: L['validation-annualSavingIncreaseRateError'] || '',
       },
     },
@@ -173,11 +180,11 @@ function buildDataFromConfig(json, lang, placeholders) {
       annualIncrease: Number(C['defaultFormValues-annualSavingIncreaseRate']) || 0,
     },
     validation: {
-      goalAmount: { min: 10000 },
+      goalAmount: { min: 10000, max: 999999999 },
       goalPeriod: { min: 1, max: 30 },
       balance: { min: 0 },
-      annualReturn: { min: 0.1, max: 100 },
-      annualIncrease: { min: 0, max: 100 },
+      annualReturn: { min: 0.1, max: 40 },
+      annualIncrease: { min: 0, max: 40 },
     },
     goals,
     products: parseProducts(L),
@@ -282,14 +289,12 @@ async function fetchCalculation(inputs, calcUrl, apimKey, inflationRate) {
 }
 
 function getFieldMinError(field, value, rules, messages) {
-  const message = messages[field] || '';
-  const minMessage = typeof message === 'object' ? (message.min || '') : message;
-  const maxMessage = typeof message === 'object' ? (message.max || '') : message;
-  if (!Number.isFinite(value)) return minMessage;
+  const message = messages[field] || {};
+  if (!Number.isFinite(value)) return '';
   const rule = rules[field];
   if (!rule) return '';
-  if (rule.min !== undefined && value < rule.min) return minMessage;
-  if (rule.max !== undefined && value > rule.max) return maxMessage;
+  if (rule.min !== undefined && value < rule.min) return message.min || '';
+  if (rule.max !== undefined && value > rule.max) return message.max || '';
   return '';
 }
 
@@ -791,15 +796,39 @@ function readSliders(root) {
   };
 }
 
-function formatFieldValue(input, decimal) {
+// Field-level typed-digit caps (independent of the business validation max) —
+// mirrors the live site, which lets you type beyond the valid max and shows an
+// error rather than silently clamping the value.
+const FIELD_DIGIT_CAP = {
+  goalAmount: 9,
+  goalPeriod: 2,
+  balance: 9,
+  annualReturn: 5,
+  annualIncrease: 5,
+};
+
+function clampToDigitCap(raw, digitCap) {
+  if (digitCap === undefined) return raw;
+  let digits = 0;
+  return raw
+    .split('')
+    .filter((ch) => {
+      if (!/\d/.test(ch)) return true;
+      digits += 1;
+      return digits <= digitCap;
+    })
+    .join('');
+}
+
+function formatFieldValue(input, decimal, digitCap) {
   const formatter = decimal ? formatDecimal : formatNumber;
-  const value = parseNumber(input.value);
+  const value = parseNumber(clampToDigitCap(input.value, digitCap));
   input.value = formatter(value);
 }
 
-function formatLive(input, decimal) {
-  const raw = input.value;
-  const cursor = input.selectionStart;
+function formatLive(input, decimal, digitCap) {
+  const raw = clampToDigitCap(input.value, digitCap);
+  const cursor = Math.min(input.selectionStart, raw.length);
   // Count digits (and dot for decimal) before cursor to restore position after reformatting.
   const digitsBeforeCursor = (raw.slice(0, cursor).match(/[\d.]/g) || []).length;
   const value = parseNumber(raw);
@@ -953,12 +982,13 @@ function attachHandlers(state, data) {
     const input = wrap.querySelector('input');
     if (!input) return;
     const decimal = wrap.dataset.decimal === '1';
+    const digitCap = FIELD_DIGIT_CAP[wrap.dataset.field];
     input.addEventListener('input', () => {
-      formatLive(input, decimal);
+      formatLive(input, decimal, digitCap);
       liveUpdate();
     });
     input.addEventListener('blur', () => {
-      formatFieldValue(input, decimal);
+      formatFieldValue(input, decimal, digitCap);
       liveUpdate();
     });
   });
