@@ -58,19 +58,20 @@ let breadcrumbDataCache = null;
 async function loadBreadcrumbData() {
   const configs = await fetchConfigs();
   const hasAdobeEdit = !!document.querySelector('.adobe-ue-edit');
-  const AEM_BASE_URL_FOR_BREADCRUMB = hasAdobeEdit? configs.breadcrumbAemBaseAuthorUrl : configs.breadcrumbAemBaseUrl ;
+  const AEM_BASE_URL_FOR_BREADCRUMB = hasAdobeEdit
+    ? configs.breadcrumbAemBaseAuthorUrl
+    : configs.breadcrumbAemBaseUrl;
   if (!AEM_BASE_URL_FOR_BREADCRUMB) {
     return { breadcrumbPages: [], currentPageData: null };
   }
   try {
     const { pathname } = window.location;
-    let apiUrl ;
-    
+    let apiUrl;
+
     if (hasAdobeEdit) {
       const cleanPath = pathname.replace(/\.html$/, '');
       apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}${cleanPath}.pageinfo.parent.json`;
-    }
-    else {
+    } else {
       apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}/content/bangkokbank${pathname}.pageinfo.parent.json`;
     }
     const data = await fetchGet(apiUrl);
