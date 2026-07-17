@@ -135,6 +135,10 @@
     }
   }
 
+  & .form form .radio-group-wrapper > legend.field-label {
+    padding: 0.625rem 0;
+  }
+
   & .form form .radio-group-wrapper.field-convenienttime:not(.radio-tabs, .cards) {
     display: flex;
     flex-flow: column nowrap;
