@@ -262,6 +262,7 @@ function printForexRates(block) {
     .forex-rates-table thead tr { height: auto; background: #dce6f1; }
     .forex-rates-table thead th {
       padding: var(--bbl-space-050) 0.4rem; font-size: 0.5rem; font-weight: 700;
+      font-family: var(--bbl-font-family-primary);
       white-space: normal; line-height: 1.2; color: var(--bbl-color-black);
       border-bottom: 0.0625rem solid var(--bbl-color-black); border-right: 0.0625rem solid var(--bbl-color-black); text-align: left;
     }
@@ -270,6 +271,7 @@ function printForexRates(block) {
     .forex-rates-table tbody tr { height: auto; }
     .forex-rates-table tbody td {
       padding: 0.15rem 0.4rem; font-size: 0.5rem; height: auto; vertical-align: middle;
+      font-family: var(--bbl-font-family-primary);
       border-bottom: 0.0625rem solid var(--bbl-color-black); border-right: 0.0625rem solid var(--bbl-color-black);
     }
     .forex-rates-table tbody td:last-child { border-right: none; }
