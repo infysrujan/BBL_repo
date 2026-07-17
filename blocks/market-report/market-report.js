@@ -377,7 +377,9 @@ function appendMktValuesAsHtml(container, rows) {
  * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
  */
 export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
-  const row = tableWrapper.children[0];
+  // The heading is a sibling of tableWrapper (both direct children of the tab
+  // panel), not a descendant of it — search from the shared parent instead.
+  const row = tableWrapper.parentElement?.querySelector('#fx-market-outlook---written-by');
   if (!row) return;
   const { heading, para } = appendMktValuesAsHtml(row, tableData.FXMO);
   if (heading) wrapperDiv.appendChild(heading);
@@ -390,7 +392,9 @@ export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
  * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
  */
 export function populateTbmo(tableWrapper, tableData, wrapperDiv) {
-  const row = tableWrapper.children[0];
+  // Same as populateFxmo — the heading is a sibling of tableWrapper, not a
+  // descendant, so search from the shared parent instead.
+  const row = tableWrapper.parentElement?.querySelector('#thb-bonds-market-outlook---written-by');
   if (!row) return;
   const { heading, para } = appendMktValuesAsHtml(row, tableData.TBMO);
   if (heading) wrapperDiv.appendChild(heading);
@@ -852,9 +856,49 @@ function setupOthbisGthbColumns(panel) {
   });
 }
 
-export default async function decorate() {
+/**
+ * Some content authoring produces separate default-content-wrapper/table-wrapper
+ * sibling pairs (one pair per field) instead of one continuous table-wrapper
+ * holding every heading/table in document order. The rest of this file's layout
+ * logic (applyTableWrapperPageLayout, populateFxmo/populateTbmo, and the
+ * left/right split it builds) was written for — and is proven correct against —
+ * that single flat continuous shape. Rather than rewriting that proven logic,
+ * normalize the DOM to match it: merge every such wrapper's children into one
+ * new table-wrapper, in document order, before any of the existing decoration
+ * runs.
+ * @param {HTMLElement} panel
+ */
+function flattenMarketReportContent(panel) {
+  const wrappers = [...panel.querySelectorAll(':scope > .default-content-wrapper, :scope > .table-wrapper')];
+  if (wrappers.length <= 1) return;
+
+  const target = document.createElement('div');
+  target.className = 'table-wrapper';
+  wrappers[0].before(target);
+
+  wrappers.forEach((wrapper) => {
+    while (wrapper.firstChild) {
+      target.appendChild(wrapper.firstChild);
+    }
+    wrapper.remove();
+  });
+}
+
+export default async function decorate(block) {
   const panel = getFirstTabPanel();
   if (!panel) return;
+
+  // market-report always populates the page's first tab panel rather than its
+  // own block element. If a second market-report block instance exists on the
+  // same page (e.g. a leftover duplicate in authoring), it has nothing of its
+  // own to render into and would otherwise leave an empty shell behind.
+  if (panel.dataset.marketReportDecorated === 'true') {
+    block?.remove();
+    return;
+  }
+  panel.dataset.marketReportDecorated = 'true';
+
+  flattenMarketReportContent(panel);
 
   showMarketReportLoader(panel);
   try {
