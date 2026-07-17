@@ -549,7 +549,6 @@
 
   .forex-rates .forex-rates-table thead th {
     padding: 0 var(--bbl-space-250);
-    line-height: 1rem; 
     white-space: nowrap;
   }
 
