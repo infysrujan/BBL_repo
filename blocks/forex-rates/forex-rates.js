@@ -1,16 +1,11 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
+import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
 import {
-  buildCalendarGrid,
-  buildIntlDayLabels,
-  buildIntlMonthLabels,
-  formatDateInputValue,
   getMonthKey,
   parseApiDate,
-  parseCsvConfigList,
   parseIsoDate,
-  parseTypedDate,
 } from './helpers/date-helpers.js';
 import {
   createApiEndpoints,
@@ -41,83 +36,7 @@ function isValidSelectedDay(state) {
   return enabledDays.includes(parsed.day);
 }
 
-function renderDatepicker(
-  state,
-  monthLabels,
-  dayLabels,
-  buddhistYearOffset,
-  prevMonthLabel,
-  nextMonthLabel,
-) {
-  if (!state.calendarOpen) return '';
-
-  const viewMonthKey = getMonthKey(state.viewYear, state.viewMonth);
-  const viewEnabledSet = new Set(state.enabledDaysByMonth[viewMonthKey] || []);
-  const calendarWeeks = buildCalendarGrid(state.viewYear, state.viewMonth);
-  const maxIndex = state.maxSelectableMonth
-    ? state.maxSelectableMonth.year * 12 + state.maxSelectableMonth.month
-    : null;
-  const viewIndex = state.viewYear * 12 + state.viewMonth;
-  const nextDisabled = Boolean(maxIndex && viewIndex >= maxIndex);
-  const selectedParsed = parseIsoDate(state.selectedDate);
-  const now = new Date();
-
-  const weeksMarkup = calendarWeeks.map((week) => {
-    const cells = week.map((cell, index) => {
-      if (!cell.inMonth) {
-        const weekend = index === 0 || index === 6 ? ' is-weekend' : '';
-        return `<td class="is-other-month${weekend}">&nbsp;</td>`;
-      }
-
-      const dayValue = String(cell.day).padStart(2, '0');
-      const isEnabled = viewEnabledSet.has(dayValue);
-      const isSelected = selectedParsed
-        && Number(selectedParsed.day) === cell.day
-        && Number(selectedParsed.month) === state.viewMonth
-        && Number(selectedParsed.year) === state.viewYear;
-      const isToday = now.getDate() === cell.day
-        && now.getMonth() + 1 === state.viewMonth
-        && now.getFullYear() === state.viewYear;
-
-      const classes = [
-        index === 0 || index === 6 ? 'is-weekend' : '',
-        isEnabled ? 'is-enabled' : 'is-disabled',
-        isSelected ? 'is-current' : '',
-        isToday ? 'is-today' : '',
-      ].filter(Boolean).join(' ');
-
-      if (isEnabled) {
-        return `<td class="${classes}"><button type="button" class="forex-rates-datepicker-day-btn" data-day="${cell.day}">${cell.day}</button></td>`;
-      }
-
-      return `<td class="${classes}"><span class="forex-rates-datepicker-day-text">${cell.day}</span></td>`;
-    }).join('');
-
-    return `<tr>${cells}</tr>`;
-  }).join('');
-
-  const daysHeader = dayLabels.map((dayLabel, index) => {
-    const weekend = index === 0 || index === 6 ? 'is-weekend' : '';
-    return `<th class="${weekend}">${escapeHtml(dayLabel)}</th>`;
-  }).join('');
-
-  return `<div class="forex-rates-datepicker">
-    <div class="forex-rates-datepicker-header">
-      <button type="button" class="forex-rates-datepicker-nav forex-rates-datepicker-prev" aria-label="${escapeHtml(prevMonthLabel)}"><i class="icon-arrow-left" aria-hidden="true"></i></button>
-      <div class="forex-rates-datepicker-title">
-        <span class="forex-rates-datepicker-month">${escapeHtml(monthLabels[state.viewMonth - 1] || '')}</span>
-        <span class="forex-rates-datepicker-year">${state.viewYear + buddhistYearOffset}</span>
-      </div>
-      <button type="button" class="forex-rates-datepicker-nav forex-rates-datepicker-next${nextDisabled ? ' is-disabled' : ''}" aria-label="${escapeHtml(nextMonthLabel)}"${nextDisabled ? ' disabled' : ''}><i class="icon-arrow-left" aria-hidden="true"></i></button>
-    </div>
-    <table class="forex-rates-datepicker-calendar">
-      <thead><tr>${daysHeader}</tr></thead>
-      <tbody>${weeksMarkup}</tbody>
-    </table>
-  </div>`;
-}
-
-function renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYearOffset) {
+function renderBlock(block, state, authoring) {
   const selectedUpdateObj = state.updates.find(
     (item) => trimValue(item.Update) === state.selectedUpdate,
   );
@@ -157,9 +76,8 @@ function renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYe
       <div class="forex-rates-control-row">
         <span class="forex-rates-calendar-label">${escapeHtml(authoring.calendarLabel)}</span>
         <div class="forex-rates-date-group">
-          <input id="forex-rates-date-text-input" class="forex-rates-date-text-input" type="text" inputmode="text" placeholder="DD MMM YYYY" value="${escapeHtml(state.typedDate)}" aria-label="${escapeHtml(authoring.calendarLabel)} date">
+          <input id="forex-rates-date-text-input" class="forex-rates-date-text-input" type="text" inputmode="text" placeholder="DD MMM YYYY" aria-label="${escapeHtml(authoring.calendarLabel)} date">
           <button type="button" class="forex-rates-date-trigger icon-calendar" title="${escapeHtml(authoring.openCalendarLabel)}" aria-label="${escapeHtml(authoring.openCalendarLabel)}"></button>
-          ${renderDatepicker(state, monthLabels, dayLabels, buddhistYearOffset, authoring.prevMonthLabel, authoring.nextMonthLabel)}
         </div>
         <div class="forex-rates-time-wrap">
           <div class="forex-rates-time-dropdown${timeDropdownOpen}${timeDisabled}" role="combobox" aria-expanded="${state.timeDropdownOpen}" aria-haspopup="listbox">
@@ -197,7 +115,7 @@ function printForexRates(block) {
   const cloned = content.cloneNode(true);
 
   cloned.querySelectorAll(
-    '.forex-rates-print-btn, .forex-rates-go-btn, .forex-rates-datepicker, .forex-rates-time-list, .forex-rates-time-chevron, .forex-rates-date-trigger',
+    '.forex-rates-print-btn, .forex-rates-go-btn, .forex-rates-time-list, .forex-rates-time-chevron, .forex-rates-date-trigger',
   ).forEach((el) => el.remove());
 
   const dateInput = cloned.querySelector('.forex-rates-date-text-input');
@@ -336,13 +254,8 @@ export default async function decorate(block) {
   const authoring = parseAuthoring(block);
   const [placeholders, configs] = await Promise.all([fetchPlaceholders(), fetchConfigs()]);
 
-  authoring.prevMonthLabel = placeholders?.forexRatesPrevMonth || 'Previous month';
-  authoring.nextMonthLabel = placeholders?.forexRatesNextMonth || 'Next month';
   authoring.openCalendarLabel = placeholders?.forexRatesOpenCalendar || 'Open calendar';
   const language = getLang();
-  const monthLabels = parseCsvConfigList(placeholders?.monthLabels, buildIntlMonthLabels(language));
-  const dayLabels = parseCsvConfigList(placeholders?.dayLabels, buildIntlDayLabels(language));
-  const buddhistYearOffset = getLang() === 'th' ? Number(configs?.sharedBuddhistYearOffset) || 0 : 0;
   const endpoints = createApiEndpoints(configs);
 
   const state = {
@@ -352,31 +265,21 @@ export default async function decorate(block) {
     rates: [],
     enabledDaysByMonth: {},
     loading: false,
-    typedDate: '',
-    calendarOpen: false,
     timeDropdownOpen: false,
-    viewMonth: 1,
-    viewYear: 1970,
-    maxSelectableMonth: null,
   };
 
-  let outsideClickHandler = null;
-  let calendarFocusLock = false;
+  let calendarPicker = null;
 
   const render = () => {
     try {
-      renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYearOffset);
+      renderBlock(block, state, authoring);
     } catch (e) {
       setTimeout(render, 0);
       return;
     }
 
-    const dateGroup = block.querySelector('.forex-rates-date-group');
     const dateInput = block.querySelector('.forex-rates-date-text-input');
     const dateTrigger = block.querySelector('.forex-rates-date-trigger');
-    const prevMonth = block.querySelector('.forex-rates-datepicker-prev');
-    const nextMonth = block.querySelector('.forex-rates-datepicker-next');
-    const dayButtons = block.querySelectorAll('.forex-rates-datepicker-day-btn');
     const timeDropdownEl = block.querySelector('.forex-rates-time-dropdown');
     const timeTrigger = block.querySelector('.forex-rates-time-trigger');
     const goButton = block.querySelector('.forex-rates-go-btn');
@@ -425,13 +328,6 @@ export default async function decorate(block) {
       if (monthDays.length && !monthDays.includes(parsed.day)) return false;
 
       state.selectedDate = dateIso;
-      state.typedDate = formatDateInputValue(
-        state.selectedDate,
-        monthLabels,
-        buddhistYearOffset,
-      );
-      state.viewYear = Number(parsed.year);
-      state.viewMonth = Number(parsed.month);
       render();
 
       try {
@@ -443,13 +339,7 @@ export default async function decorate(block) {
         );
         const normalizedUpdates = Array.isArray(updateOptions) ? updateOptions : [];
         state.updates = normalizedUpdates;
-
-        const stillExists = normalizedUpdates.some(
-          (item) => trimValue(item.Update) === state.selectedUpdate,
-        );
-        if (!stillExists) {
-          state.selectedUpdate = trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
-        }
+        state.selectedUpdate = trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
       } catch (e) {
         // no-op to match live-site silent behavior
       }
@@ -467,238 +357,32 @@ export default async function decorate(block) {
       return true;
     };
 
-    const submitTypedDateWithFetch = async () => {
-      const parsed = parseTypedDate(state.typedDate, buddhistYearOffset);
-      if (!parsed) {
-        state.typedDate = formatDateInputValue(
-          state.selectedDate,
-          monthLabels,
-          buddhistYearOffset,
-        );
-        render();
-        return;
-      }
-
-      const monthKey = getMonthKey(parsed.year, parsed.month);
-      if (!state.enabledDaysByMonth[monthKey]) {
-        try {
-          state.enabledDaysByMonth[monthKey] = await getEnabledDays(
-            endpoints,
-            parsed.year,
-            parsed.month,
-          );
-        } catch (e) {
-          state.enabledDaysByMonth[monthKey] = [];
-        }
-      }
-
-      const monthDays = state.enabledDaysByMonth[monthKey] || [];
-      if (monthDays.length && !monthDays.includes(parsed.day)) {
-        state.typedDate = formatDateInputValue(
-          state.selectedDate,
-          monthLabels,
-          buddhistYearOffset,
-        );
-        render();
-        return;
-      }
-
-      state.loading = true;
-      render();
-
-      try {
-        const updateOptions = await getUpdatesInDay(
-          endpoints,
-          parsed.day,
-          parsed.month,
-          parsed.year,
-        );
-        const normalizedUpdates = Array.isArray(updateOptions) ? updateOptions : [];
-        const stillExists = normalizedUpdates.some(
-          (item) => trimValue(item.Update) === state.selectedUpdate,
-        );
-
-        const nextUpdate = stillExists
-          ? state.selectedUpdate
-          : trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
-
-        if (!nextUpdate || nextUpdate === '-') {
-          state.typedDate = formatDateInputValue(
-            state.selectedDate,
-            monthLabels,
-            buddhistYearOffset,
-          );
-          return;
-        }
-
-        const fxRates = await getRates(
-          endpoints,
-          parsed.day,
-          parsed.month,
-          parsed.year,
-          nextUpdate,
-          language,
-        );
-
-        const normalizedRates = normalizeRates(fxRates);
-        if (!normalizedRates.length) {
-          state.typedDate = formatDateInputValue(
-            state.selectedDate,
-            monthLabels,
-            buddhistYearOffset,
-          );
-          return;
-        }
-
-        state.selectedDate = parsed.iso;
-        state.viewYear = Number(parsed.year);
-        state.viewMonth = Number(parsed.month);
-        state.updates = normalizedUpdates;
-        state.selectedUpdate = nextUpdate;
-        state.rates = normalizedRates;
-        state.typedDate = formatDateInputValue(
-          state.selectedDate,
-          monthLabels,
-          buddhistYearOffset,
-        );
-      } catch (e) {
-        state.typedDate = formatDateInputValue(
-          state.selectedDate,
-          monthLabels,
-          buddhistYearOffset,
-        );
-      } finally {
-        state.loading = false;
-        render();
-      }
-    };
+    if (calendarPicker) {
+      calendarPicker.destroy();
+      calendarPicker = null;
+    }
 
     if (dateInput) {
-      dateInput.addEventListener('input', (event) => {
-        state.typedDate = event.target.value;
-      });
+      const selectedParsed = parseIsoDate(state.selectedDate);
+      const selectedAsDate = selectedParsed
+        ? new Date(
+          Number(selectedParsed.year),
+          Number(selectedParsed.month) - 1,
+          Number(selectedParsed.day),
+        )
+        : null;
 
-      dateInput.addEventListener('blur', () => {
-        const parsed = parseTypedDate(state.typedDate, buddhistYearOffset);
-        if (!parsed) {
-          state.typedDate = formatDateInputValue(
-            state.selectedDate,
-            monthLabels,
-            buddhistYearOffset,
-          );
-          render();
-          return;
-        }
-
-        if (parsed.iso !== state.selectedDate) {
-          applyDateSelection(parsed.iso);
-        }
-      });
-
-      dateInput.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter') return;
-        event.preventDefault();
-        submitTypedDateWithFetch();
+      calendarPicker = attachCalendarPicker({
+        input: dateInput,
+        openTrigger: dateTrigger,
+        value: selectedAsDate,
+        fetchEnabledDays: ({ year, month }) => getEnabledDays(endpoints, year, month + 1),
+        onChange: (selectedDate) => {
+          const iso = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
+          applyDateSelection(iso);
+        },
       });
     }
-
-    const openCalendar = () => {
-      if (calendarFocusLock) return;
-      const parsed = parseIsoDate(state.selectedDate);
-      if (parsed) {
-        state.viewYear = Number(parsed.year);
-        state.viewMonth = Number(parsed.month);
-      }
-
-      state.calendarOpen = true;
-      render();
-
-      // Restore focus to the new input so the user can type
-      calendarFocusLock = true;
-      block.querySelector('.forex-rates-date-text-input')?.focus();
-      calendarFocusLock = false;
-
-      if (parsed) {
-        const monthKey = getMonthKey(parsed.year, parsed.month);
-        if (!state.enabledDaysByMonth[monthKey]) {
-          getEnabledDays(endpoints, parsed.year, parsed.month)
-            .then((days) => {
-              state.enabledDaysByMonth[monthKey] = days;
-              if (state.calendarOpen) render();
-            })
-            .catch(() => {
-              state.enabledDaysByMonth[monthKey] = [];
-            });
-        }
-      }
-    };
-
-    if (dateInput) {
-      dateInput.addEventListener('focus', openCalendar);
-    }
-
-    if (dateTrigger) {
-      dateTrigger.addEventListener('click', openCalendar);
-    }
-
-    if (prevMonth) {
-      prevMonth.addEventListener('click', async () => {
-        const month = state.viewMonth === 1 ? 12 : state.viewMonth - 1;
-        const year = state.viewMonth === 1 ? state.viewYear - 1 : state.viewYear;
-        state.viewMonth = month;
-        state.viewYear = year;
-
-        const monthKey = getMonthKey(year, month);
-        if (!state.enabledDaysByMonth[monthKey]) {
-          try {
-            state.enabledDaysByMonth[monthKey] = await getEnabledDays(endpoints, year, month);
-          } catch (e) {
-            state.enabledDaysByMonth[monthKey] = [];
-          }
-        }
-
-        render();
-      });
-    }
-
-    if (nextMonth) {
-      nextMonth.addEventListener('click', async () => {
-        const month = state.viewMonth === 12 ? 1 : state.viewMonth + 1;
-        const year = state.viewMonth === 12 ? state.viewYear + 1 : state.viewYear;
-        const nextIndex = year * 12 + month;
-        const maxIndex = state.maxSelectableMonth
-          ? state.maxSelectableMonth.year * 12 + state.maxSelectableMonth.month
-          : null;
-
-        if (maxIndex && nextIndex > maxIndex) return;
-
-        state.viewMonth = month;
-        state.viewYear = year;
-
-        const monthKey = getMonthKey(year, month);
-        if (!state.enabledDaysByMonth[monthKey]) {
-          try {
-            state.enabledDaysByMonth[monthKey] = await getEnabledDays(endpoints, year, month);
-          } catch (e) {
-            state.enabledDaysByMonth[monthKey] = [];
-          }
-        }
-
-        render();
-      });
-    }
-
-    dayButtons.forEach((dayButton) => {
-      dayButton.addEventListener('click', () => {
-        const { day } = dayButton.dataset;
-        const dateIso = `${state.viewYear}-${String(state.viewMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        applyDateSelection(dateIso).then((isApplied) => {
-          if (!isApplied) return;
-          state.calendarOpen = false;
-          render();
-        });
-      });
-    });
 
     const toggleTimeDropdown = (open) => {
       state.timeDropdownOpen = open;
@@ -756,21 +440,6 @@ export default async function decorate(block) {
         printForexRates(block);
       });
     }
-
-    if (outsideClickHandler) {
-      document.removeEventListener('mousedown', outsideClickHandler);
-      outsideClickHandler = null;
-    }
-
-    if (state.calendarOpen && dateGroup) {
-      outsideClickHandler = (event) => {
-        if (!dateGroup.contains(event.target)) {
-          state.calendarOpen = false;
-          render();
-        }
-      };
-      document.addEventListener('mousedown', outsideClickHandler);
-    }
   };
 
   const init = async () => {
@@ -785,12 +454,6 @@ export default async function decorate(block) {
       if (!latestDate) return;
 
       state.selectedDate = latestDate.iso;
-      state.viewYear = Number(latestDate.year);
-      state.viewMonth = Number(latestDate.month);
-      state.maxSelectableMonth = {
-        year: Number(latestDate.year),
-        month: Number(latestDate.month),
-      };
 
       const latestMonthKey = getMonthKey(latestDate.year, latestDate.month);
       state.enabledDaysByMonth[latestMonthKey] = await getEnabledDays(
@@ -810,11 +473,6 @@ export default async function decorate(block) {
       state.updates = normalizedUpdates;
 
       state.selectedUpdate = trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
-      state.typedDate = formatDateInputValue(
-        state.selectedDate,
-        monthLabels,
-        buddhistYearOffset,
-      );
     } finally {
       state.loading = false;
       render();
