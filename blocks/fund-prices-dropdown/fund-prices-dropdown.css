@@ -320,12 +320,7 @@
   min-height: 3.5rem;
   vertical-align: middle;
   white-space: normal;
-  word-break: break-word;
-}
-
-.fund-prices-dropdown .stat-table th:first-child,
-.fund-prices-dropdown .stat-table td:first-child {
-  width: 68%;
+  overflow-wrap: break-word;
 }
 
 .fund-prices-dropdown .stat-table th.stat-th-nav,
