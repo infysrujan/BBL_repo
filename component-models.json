@@ -204,6 +204,14 @@
             "description": "Enable this to open the button link in a modal overlay. Add the fragment path in the Link field above.",
             "valueType": "boolean",
             "value": false
+          },
+          {
+            "component": "boolean",
+            "name": "enableCookieModal",
+            "label": "Open cookie modal",
+            "description": "Enable this to open the cookie settings modal. Add the cookie-modal fragment path in the Link field above.",
+            "valueType": "boolean",
+            "value": false
           }
         ]
       }
@@ -276,28 +284,28 @@
                 "value": "bg-truthful-blue"
               },
               {
-                "name": "Truthful Dark Blue",
+                "name": "Deep Blue",
                 "value": "bg-truthful-dark-blue"
               },
               {
-                "name": "Ice Blue",
+                "name": "bgd-blue",
                 "value": "bg-ice-blue"
               },
               {
-                "name": "Grey 10",
+                "name": "Wealth Theme BG",
                 "value": "bg-grey-10"
               },
               {
-                "name": "Grey 05",
+                "name": "bgd-grey",
                 "value": "bg-grey-05"
               },
               {
-                "name": "Grey 100",
+                "name": "Elite Theme BG",
                 "value": "bg-grey-100"
               },
               {
-                "name": "Blue 01",
-                "value": "bg-blue-01"
+                "name": "Primary Blue S01",
+                "value": "bg-primary-blue-s01"
               }
             ]
           },
@@ -332,6 +340,10 @@
               {
                 "name": "Columns 2(65-35)",
                 "value": "columns-2-65"
+              },
+              {
+                "name": "Columns 2(25-75)",
+                "value": "columns-2-25"
               }
             ]
           },
@@ -3385,21 +3397,6 @@
             "value": "tertiary"
           }
         ]
-      },
-      {
-        "component": "container",
-        "name": "targetSettings",
-        "label": "Target Settings",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "targetLink",
-            "label": "Open link in new tab",
-            "description": "Enable to open the Compare button link in a new browser tab",
-            "valueType": "boolean",
-            "value": false
-          }
-        ]
       }
     ]
   },
@@ -6379,6 +6376,10 @@
           {
             "name": "123,421%",
             "value": "#,###,##0%"
+          },
+          {
+            "name": "123,421,567",
+            "value": "###,###,###"
           }
         ]
       },
@@ -9988,32 +9989,6 @@
     ]
   },
   {
-    "id": "fund-prices-table",
-    "fields": [
-      {
-        "component": "richtext",
-        "name": "tableContent",
-        "label": "Table Content",
-        "valueType": "string",
-        "value": "",
-        "rte": {
-          "toolbar": {
-            "insert": [
-              "table"
-            ],
-            "editor": [
-              "removeformat"
-            ],
-            "sections": [
-              "insert",
-              "editor"
-            ]
-          }
-        }
-      }
-    ]
-  },
-  {
     "id": "fund-prices",
     "fields": [
       {
@@ -12260,8 +12235,8 @@
       {
         "component": "text",
         "name": "linkText",
-        "label": "Text",
-        "description": "Button label text",
+        "label": "Search Button Text",
+        "description": "Search Button label text",
         "required": true
       },
       {
@@ -12279,8 +12254,8 @@
       {
         "component": "text",
         "name": "learnMoreLinkText",
-        "label": "Text",
-        "description": "Button label text",
+        "label": "Learn More Button Text",
+        "description": "Learn More Button label text",
         "required": true
       },
       {
@@ -12321,11 +12296,11 @@
         "required": true
       },
       {
-        "component": "richtext",
+        "component": "text",
         "name": "modalDescription",
         "label": "Modal Description",
         "valueType": "string",
-        "required": false
+        "required": true
       }
     ]
   },
@@ -12733,8 +12708,8 @@
                 "value": "header-light-gray"
               },
               {
-                "name": "Header Pastel Blue",
-                "value": "header-pastel-blue"
+                "name": "Header Primary Blue S01",
+                "value": "header-primary-blue-s01"
               }
             ]
           },
@@ -13043,24 +13018,28 @@
                 "value": "bg-truthful-blue"
               },
               {
-                "name": "Truthful Dark Blue",
+                "name": "Deep Blue",
                 "value": "bg-truthful-dark-blue"
               },
               {
-                "name": "Ice Blue",
+                "name": "bgd-blue",
                 "value": "bg-ice-blue"
               },
               {
-                "name": "Grey 10",
+                "name": "Wealth Theme BG",
                 "value": "bg-grey-10"
               },
               {
-                "name": "Grey 05",
+                "name": "bgd-grey",
                 "value": "bg-grey-05"
               },
               {
-                "name": "Grey 100",
+                "name": "Elite Theme BG",
                 "value": "bg-grey-100"
+              },
+              {
+                "name": "Primary Blue S01",
+                "value": "bg-primary-blue-s01"
               }
             ]
           },
@@ -13091,6 +13070,10 @@
               {
                 "name": "Columns 2(50-50)",
                 "value": "columns-2-50"
+              },
+              {
+                "name": "Columns 2(65-35)",
+                "value": "columns-2-65"
               }
             ]
           },
@@ -13104,6 +13087,14 @@
               {
                 "name": "Center Title",
                 "value": "center-title"
+              },
+              {
+                "name": "Center Image",
+                "value": "center-image"
+              },
+              {
+                "name": "Underline Image",
+                "value": "underline-image"
               },
               {
                 "name": "Center Content",

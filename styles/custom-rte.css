@@ -1,0 +1,57 @@
+picture.rte-inline-image {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+picture.rte-inline-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.default-content-wrapper :is(ol, ul):not(:where(.footer-container) *) {
+  margin: 0 0 0 var(--bbl-space-250);
+  padding: 0;
+}
+
+.default-content-wrapper :is(ol, ul):not(:where(.footer-container) *) li {
+  margin: 0 0 0.625rem var(--bbl-space-250);
+}
+
+.default-content-wrapper :is(ol, ul):not(:where(.footer-container) *) li p {
+  margin: 0;
+}
+
+.default-content-wrapper .has-inline-icon {
+  display: inline;
+  align-items: center;
+  gap: 0.5rem;
+  vertical-align: middle;
+}
+
+.default-content-wrapper .has-inline-icon p {
+    display: initial;
+}
+
+.default-content-wrapper .has-inline-icon > p {
+  margin: 0;
+}
+
+.default-content-wrapper li:has(> p:has(picture.rte-inline-image) + p:has(picture.rte-inline-image)) > p:has(picture.rte-inline-image) {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.accordion-item :is(.default-content-wrapper, .table.block) table td :is(ul, ol) {
+  margin: 0 0 0 var(--bbl-space-250);
+  padding: 0;
+}
+
+.accordion-item :is(.default-content-wrapper, .table.block) table td :is(ul, ol) li {
+  margin: 0 0 0.625rem var(--bbl-space-250);
+}
+
+.default-content-wrapper > :not(.button-container, .footer-container) a:any-link {
+  color: inherit;
+}
