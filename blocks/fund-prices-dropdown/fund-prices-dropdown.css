@@ -5,7 +5,7 @@
 
 .fund-prices-dropdown .stat-nav-val {
   font-family: var(--bbl-font-family-primary);
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: var(--bbl-color-grey-70);
   text-align: right;
 }
@@ -283,6 +283,7 @@
 
 .fund-prices-dropdown .stat-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   border: none;
   font-family: var(--bbl-font-family-primary);
@@ -311,12 +312,25 @@
   border-right: none;
   border-left: none;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-18);
-  padding: 0 0.625rem;
+  padding: 0.5rem 0.625rem;
   color: var(--bbl-color-grey-70);
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
-  height: 3.5rem;
+  height: auto;
+  min-height: 3.5rem;
   vertical-align: middle;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.fund-prices-dropdown .stat-table th:first-child,
+.fund-prices-dropdown .stat-table td:first-child {
+  width: 68%;
+}
+
+.fund-prices-dropdown .stat-table th.stat-th-nav,
+.fund-prices-dropdown .stat-table td.stat-nav-val {
+  width: 32%;
   white-space: nowrap;
 }
 
@@ -522,7 +536,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--bbl-space-500);
-    margin-left: -1rem;
   }
 
   .fund-prices-dropdown .stat-tables-print-row {
