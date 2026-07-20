@@ -31,7 +31,7 @@ body {
     display: none;
     margin: 0;
     background-color: var(--bbl-bg-primary);
-    color: var(--bbl-text-primary);
+    color: var(--bbl-color-grey-70);
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-text-default-size);
     line-height: var(--bbl-text-default-line-height);
@@ -61,6 +61,7 @@ h6 {
   margin-bottom: 0.25em;
   font-family: var(--bbl-font-family-medium);
   scroll-margin-top: var(--header-scroll-offset);
+  color: var(--bbl-color-black);
 }
 
 h1 {
