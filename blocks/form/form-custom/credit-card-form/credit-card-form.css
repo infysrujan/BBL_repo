@@ -44,7 +44,6 @@
 .credit-card-form main .section.form-container.custom-forms .form form .field-summary p:first-of-type {
   margin-top: 2rem;
   text-align: left;
-  line-height: 1.5;
 }
 
 .credit-card-form main .section.form-container.custom-forms .form form .plain-text-wrapper:is(.field-notetext) > p > p:last-of-type {
