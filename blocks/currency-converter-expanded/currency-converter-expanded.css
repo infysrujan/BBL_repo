@@ -376,6 +376,14 @@
   margin: 0 auto;
 }
 
+/* The section's own bottom padding (e.g. pad-bot-30) leaves a strip of the
+   section background visible below the result panel, since the panel is the
+   block's last child but doesn't reach the section's true bottom edge.
+   Cancel it so the result panel's own padding is the only bottom spacing. */
+.section.currency-converter-expanded-container:has(.converter-expanded-result.visible) {
+  padding-bottom: 0;
+}
+
 /* Disclaimer text */
 .currency-converter-expanded .converter-expanded-disclaimer {
   color: var(--bbl-color-white-alpha-50);
