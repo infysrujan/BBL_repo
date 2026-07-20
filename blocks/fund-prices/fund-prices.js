@@ -301,10 +301,11 @@ function printContent(containerEl, pageTitle, searchLabelText) {
       <div class="fund-prices-print-datetime">${formatPrintDate(now)}, ${formatPrintTime(now)}</div>
       <div class="fund-prices-print-page-title">${pageTitle}</div>
       <div></div>
-      <div class="fund-prices-print-logo brand-logo-container">${brandLogo}</div>
-      <div></div>
-      <div class="fund-prices-print-search">${searchLabelText}</div>
     </div>
+    <div class="fund-prices-print-brandbar">
+      <div class="fund-prices-print-logo brand-logo-container">${brandLogo}</div>
+    </div>
+    <div class="fund-prices-print-search">${searchLabelText}</div>
     <h1 class="fund-prices-print-title">${pageTitle}</h1>
     <div class="fund-prices-print-rule"></div>
     <div class="fund-prices-print-date">
