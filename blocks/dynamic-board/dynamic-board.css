@@ -627,7 +627,7 @@
 
 .dynamic-board .db-table thead th {
   padding: 0 1.875rem 0 0.625rem;
-  font-size: var(--bbl-font-size-b2);
+  font-size: var(--bbl-font-size-b1-mobile);
   font-weight: 700;
   color: var(--bbl-color-black);
   text-align: center;
