@@ -337,13 +337,7 @@ export default async function decorate(block) {
         );
         const normalizedUpdates = Array.isArray(updateOptions) ? updateOptions : [];
         state.updates = normalizedUpdates;
-
-        const stillExists = normalizedUpdates.some(
-          (item) => trimValue(item.Update) === state.selectedUpdate,
-        );
-        if (!stillExists) {
-          state.selectedUpdate = trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
-        }
+        state.selectedUpdate = trimValue(normalizedUpdates[normalizedUpdates.length - 1]?.Update);
       } catch (e) {
         // no-op to match live-site silent behavior
       }
