@@ -24,10 +24,46 @@
   font-family: var(--bbl-font-family-medium);
 }
 
-main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper:not([class*="field-form-fragment"], .field-button-panel, [class*="field-form-width"], [class*="field-css-"]) {
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper:not([class*="field-form-fragment"], .field-button-panel, [class*="field-form-width"], [class*="field-css-"], :has([class*="field-form-width"])) {
   padding-inline: var(--bbl-space-200);
   margin-top: var(--bbl-space-250);
   line-height: 18.2px;
+  max-width: 50rem;
+  margin-inline: auto;
+}
+
+main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-740"] {
+  max-width: 46.25rem;
+  margin-inline: auto;
+  padding-inline: var(--bbl-space-200);
+}
+
+main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1):where(:not(.custom-fieldset-approval, .custom-fieldset-approval *)) {
+  width: 100%;
+}
+
+main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-900"] {
+  max-width: 56.25rem;
+  margin-inline: auto;
+  padding-inline: var(--bbl-space-200);
+}
+
+main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-900"]:has(.field-veiwplanstext) {
+  padding-bottom: 1.875rem;
+}
+
+main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-1240"] {
+  max-width: 77.5rem;
+  margin-inline: auto;
+  padding-inline: var(--bbl-space-200);
+}
+
+main .section.form-container.wizard-forms .form form > fieldset.panel-wrapper.field-wrapper:has([class*="field-form-width-1240"]) {
+  max-width: 77.5rem;
+}
+
+main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-1240"]:has(.field-cards-health) {
+  padding-bottom: var(--bbl-space-250);
 }
 
 main .section.form-container.wizard-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
@@ -74,6 +110,11 @@ main .section.wizard-forms .form form .field-wrapper {
 
 main .section.form-container.wizard-forms .form form .plain-text-wrapper p {
   text-align: left;
+}
+
+main .section.form-container.wizard-forms .form form .field-button-panel .button-wrapper {
+  display: flex;
+  justify-content: center;
 }
 
 main .section.form-container.wizard-forms .form form .plain-text-wrapper ul {
@@ -290,7 +331,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 }
 
 main .section.form-container.wizard-forms .form form {
-  max-width: 50rem;
+  max-width: 77.5rem;
 }
 
 main .section.form-container.custom-forms .form form .plain-text-wrapper p:last-child p {
@@ -298,12 +339,34 @@ main .section.form-container.custom-forms .form form .plain-text-wrapper p:last-
   line-height: 18px;
 }
 
+main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper:is(.field-veiwplanstext, .field-infotext2) :is(h1, h2, h3, h4, h5, h6, p),
+main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-infotext2 p p {
+  text-align: center;
+}
+
+main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6) {
+  position: relative;
+  padding-bottom: var(--bbl-space-250);
+  margin-block: 30px;
+}
+
+main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--bbl-space-1000);
+  height: 0.0625rem;
+  background-color: var(--bbl-color-grey-150);
+}
+
 @media (width >= 47.5rem) {
   main .form-container.wizard-forms {
     padding-inline: var(--bbl-space-600);
   }
 
-  main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper:not([class*="field-form-fragment"], .field-button-panel) {
+  main .section.form-container.wizard-forms .form form fieldset.field-insurancerecommendationformpanel.panel-wrapper.field-wrapper {
     margin-top: var(--bbl-space-400);
   }
 
@@ -324,6 +387,14 @@ main .section.form-container.custom-forms .form form .plain-text-wrapper p:last-
 
   .bbl-wizard-step-title {
     min-width: 8.75rem;
+  }
+
+  main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: 1.875rem;
+  }
+
+  main .section.form-container.wizard-forms .form form :is(fieldset[class*="field-form-width-740"], fieldset[class*="field-form-width-900"], fieldset[class*="field-form-width-1240"]) {
+    padding-inline: var(--bbl-space-600);
   }
 }
 
@@ -382,5 +453,13 @@ main .section.form-container.custom-forms .form form .plain-text-wrapper p:last-
   main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) input {
     font-size: 16px;
     line-height: 20.8px;
+  }
+
+  main .section.form-container.wizard-forms .form form :is(fieldset[class*="field-form-width-740"], fieldset[class*="field-form-width-900"], fieldset[class*="field-form-width-1240"]) {
+    padding-inline: 0;
+  }
+
+  main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-1240"]:has(.field-cards-health) {
+    padding-bottom: var(--bbl-space-500);
   }
 }
