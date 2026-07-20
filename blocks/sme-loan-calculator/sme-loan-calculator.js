@@ -187,8 +187,6 @@ export default async function decorate(block) {
     const isDecimal = f.valueType === 'decimal' && !['H', 'C', 'F'].includes(f.id);
     inp.inputMode = isDecimal ? 'decimal' : 'numeric';
     inp.value = isDecimal ? '0.00' : '0';
-    // Consistent placeholder for every field (integer + decimal), so all tabs look alike.
-    inp.placeholder = isDecimal ? '0.00' : '0';
     inpCol.appendChild(inp);
 
     box.appendChild(lblCol);
@@ -499,7 +497,7 @@ export default async function decorate(block) {
     const isRateField = ['i', 'D', 'G'].includes(f?.id);
 
     inp.addEventListener('focus', () => {
-      if (inp.value === '0' || inp.value === '0.00' || inp.value === '0.000') inp.select();
+      if (inp.value === '0' || inp.value === '0.00' || inp.value === '0.000') inp.value = '';
     });
 
     inp.addEventListener('blur', () => {
@@ -596,6 +594,9 @@ export default async function decorate(block) {
     appendTd(tr, resultCell);
     fieldValues.forEach((value) => appendTd(tr, value));
     tbody.appendChild(tr);
+
+    const maxRows = 5;
+    while (tbody.children.length > maxRows) tbody.removeChild(tbody.firstElementChild);
   });
 
   // Reset form, result, and comparison table when switching simple tabs.
