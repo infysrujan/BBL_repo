@@ -72,7 +72,7 @@
 /* ── Image area — contain the full credit card art ───────────────────────── */
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small {
-  height: 8.375rem;
+  height: 10.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -327,17 +327,25 @@
     display: none;
   }
 
+  /* display: grid guarantees exactly 3 columns regardless of container width
+     (flex just fits as many fixed-width items as the space allows, which let
+     a 4th card sneak onto the row on wider viewports) — justify-content
+     centers the 3-column track with leftover space on either side. */
   .card-list.credit-card .cards-list.scrollable.cards-3 {
-    flex-flow: row wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 15.5rem);
+    justify-content: center;
+    gap: var(--bbl-space-250);
     overflow: visible;
     scroll-snap-type: none;
-    gap: 0 var(--bbl-space-250);
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
-    flex: 0 0 calc((100% - 3 * var(--bbl-space-250)) / 3);
-    margin-bottom: var(--bbl-space-250);
     scroll-snap-align: none;
+  }
+
+  .card-list.credit-card .cards-list-inner {
+    min-height: 27rem;
   }
 }
 
@@ -352,13 +360,11 @@
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 {
-    gap: 0 var(--bbl-space-500);
-    margin-right: calc(-1 * var(--bbl-space-250));
-    margin-left: calc(-1 * var(--bbl-space-250));
+    grid-template-columns: repeat(3, 16.5rem);
+    gap: var(--bbl-space-500);
   }
 
-  .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
-    flex: 0 0 calc((100% - 3 * var(--bbl-space-500)) / 3);
-    margin-bottom: var(--bbl-space-500);
+  .card-list.credit-card .cards-list-inner {
+    min-height: 28rem;
   }
 }
