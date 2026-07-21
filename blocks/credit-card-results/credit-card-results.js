@@ -442,7 +442,8 @@ function removePeek(container) {
  * EDS decorate entry point.
  *
  * Block row mapping (matches _credit-card-results.json model):
- *   Row 0  disclaimerText — richtext
+ *   Row 0  resultsTitle   — text
+ *   Row 1  disclaimerText — richtext
  *
  * Renders independently of the Credit Card Selector block — the two only
  * communicate via document-level custom events (credit-card-filter-applied /
@@ -457,10 +458,12 @@ export default async function decorate(block) {
   block.classList.remove('ccs-results');
 
   const rows = [...block.children];
+  const readRowText = (row) => row?.querySelector('p')?.textContent?.trim() ?? '';
   const readRowHtml = (row) => row?.children[1]?.innerHTML?.trim()
     ?? row?.querySelector('p')?.outerHTML
     ?? '';
-  const disclaimerHtml = readRowHtml(rows[0]);
+  const authoredTitle = readRowText(rows[0]);
+  const disclaimerHtml = readRowHtml(rows[1]);
 
   // Hide the authored source row via CSS class instead of removing it, so
   // Universal Editor instrumentation on it survives re-decoration.
@@ -475,7 +478,7 @@ export default async function decorate(block) {
 
   const isTH = lang === 'th';
   const labels = {
-    resultsTitle: ph.cardResultsTitle || (isTH ? 'บัตรหลากหลายเหมาะกับทุกไลฟ์สไตล์' : 'A range of cards to suit all lifestyles'),
+    resultsTitle: authoredTitle || ph.cardResultsTitle || (isTH ? 'บัตรหลากหลายเหมาะกับทุกไลฟ์สไตล์' : 'A range of cards to suit all lifestyles'),
     noResultsFound: ph.cardNoResultsFound || (isTH ? 'ไม่พบผลลัพธ์' : 'No Results Found'),
     seeLess: ph.cardSeeLess || (isTH ? 'ดูน้อยลง' : 'See less'),
     seeMore: ph.cardSeeMore || (isTH ? 'ดูเพิ่มเติม' : 'See more'),

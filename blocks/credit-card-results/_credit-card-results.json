@@ -21,6 +21,14 @@
       "id": "credit-card-results",
       "fields": [
         {
+          "component": "text",
+          "name": "resultsTitle",
+          "value": "A range of cards to suit all lifestyles",
+          "label": "Results Title",
+          "description": "Heading shown above the card results list",
+          "valueType": "string"
+        },
+        {
           "component": "richtext",
           "name": "disclaimerText",
           "value": "",
