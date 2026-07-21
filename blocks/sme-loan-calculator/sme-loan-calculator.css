@@ -399,11 +399,28 @@ main {
   padding: 0 0.3125rem;
   text-align: center;
   line-height: 1.63;
+  vertical-align: top;
   border-bottom: 0.125rem solid var(--bbl-color-grey-125);
 }
 
 .tablelong.fontcomparetable thead tr:first-child .lineth[colspan] {
   border-bottom: 0.125rem solid var(--bbl-color-gray-122);
+}
+
+.tablelong.fontcomparetable .lineth-inner {
+  display: block;
+}
+
+.tablelong.fontcomparetable th.lineth[rowspan] .lineth-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tablelong.fontcomparetable th.lineth[rowspan] .lineth-inner::after {
+  content: '';
+  flex: 1 0 auto;
+  border-top: 0.125rem solid var(--bbl-color-gray-122);
 }
 
 .tablelong.fontcomparetable thead tr:last-child .lineth {

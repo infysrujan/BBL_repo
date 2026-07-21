@@ -33,7 +33,10 @@ export default async function decorate(block) {
     th.className = 'lineth';
     if (opts.rowSpan) th.rowSpan = opts.rowSpan;
     if (opts.colSpan) th.colSpan = opts.colSpan;
-    th.textContent = text;
+    const inner = document.createElement('span');
+    inner.className = 'lineth-inner';
+    inner.textContent = text;
+    th.appendChild(inner);
     row.appendChild(th);
     return th;
   }
