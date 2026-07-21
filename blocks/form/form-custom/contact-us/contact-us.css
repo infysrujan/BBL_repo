@@ -75,9 +75,8 @@
     }
 
     /* Inputs & Selects in Date & Time Panel */
-    & fieldset.panel-wrapper:has(.date-wrapper) :is(input, select),
-    & fieldset.panel-wrapper.field-transdatetimepanel :is(input, select) {
-        font-family: var(--bbl-font-family-medium);
+    & fieldset.panel-wrapper:has(.date-wrapper) :is(input, select, textarea),
+    & fieldset.panel-wrapper.field-transdatetimepanel :is(input, select, textarea) {
         font-size: var(--bbl-form-font-size-16);
         font-weight: 400;
         color: var(--bbl-color-black);
@@ -99,7 +98,7 @@
     }
 
     /* Multiline Textarea (Description field) */
-    & .multiline-wrapper textarea {
+    & fieldset.panel-wrapper.field-wrapper .field-wrapper.multiline-wrapper textarea {
         box-sizing: border-box;
         width: 100%;
         max-width: 100%;
@@ -107,6 +106,7 @@
         resize: none;
         margin-left: 0;
         margin-right: 0;
+        min-height: 12.8rem;
     }
 
     /* Generic Dropdown Select Styling */
@@ -173,15 +173,16 @@
         margin: 0;
     }
 
-    /* Dropdown Validation Messages */
-    & fieldset.panel-wrapper .drop-down-wrapper :is(.field-validation-error, .field-description) {
-        position: absolute;
-        top: var(--bbl-form-top-45);
-        left: 0;
-        z-index: 3;
-        margin: 0;
-        padding: 0;
+    /* Dropdown & Date/Time Validation Messages: in-flow to avoid overlapping section headers */
+    & fieldset.panel-wrapper .drop-down-wrapper :is(.field-validation-error, .field-description),
+    & fieldset.panel-wrapper:has(.date-wrapper) :is(.field-validation-error, .field-description),
+    & fieldset.panel-wrapper.field-transdatetimepanel :is(.field-validation-error, .field-description) {
+        position: static;
+        display: block;
+        width: 100%;
+        margin-top: var(--bbl-form-margin-5);
         text-align: left;
+        z-index: auto;
     }
 
     /* Text Fields & Field Controls */
