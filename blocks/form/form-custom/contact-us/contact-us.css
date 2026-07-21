@@ -222,8 +222,10 @@
         margin-bottom: var(--bbl-form-margin-32);
     }
 
-    /* Placeholder Color */
+    /* Placeholder Styling */
     & input::placeholder {
+        font-family: var(--bbl-font-family-primary);
+        font-weight: var(--bbl-font-weight-regular);
         color: var(--bbl-color-grey-40);
     }
 
