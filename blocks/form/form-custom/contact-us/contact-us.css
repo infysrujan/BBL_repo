@@ -11,8 +11,10 @@
     }
 
     /* All Section Legends / Panel Headers: Grey Background Header Styling */
-    & :is(fieldset.panel-wrapper, fieldset.radio-group-wrapper)>legend:not([data-visible="false"]) {
+    & :is(fieldset.panel-wrapper, fieldset.radio-group-wrapper)>legend:not([data-visible="false"]),
+    & .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel)>legend.field-label {
         display: block;
+        grid-column: span 12;
         width: 100%;
         margin: var(--bbl-form-margin-10) 0;
         padding: var(--bbl-form-margin-5) 0 var(--bbl-form-margin-5) var(--bbl-form-padding-16);
@@ -23,6 +25,7 @@
         background-color: var(--bbl-color-grey-10);
         text-decoration: none;
         text-align: left;
+        border: none;
         border-radius: 0;
         position: static;
         transform: none;
@@ -40,7 +43,8 @@
     }
 
     /* Panel Wrappers: Strip nested borders, curvature, and container padding */
-    & fieldset.panel-wrapper {
+    & fieldset.panel-wrapper,
+    & .field-compliantnonfin-complimentpanel {
         border: none;
         border-radius: 0;
         padding: 0;
