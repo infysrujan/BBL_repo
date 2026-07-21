@@ -61,7 +61,6 @@
   font-size: var(--bbl-font-size-b2);
   line-height: 1.203rem;
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-grey-85);
   margin-bottom: var(--bbl-space-250);
   flex-grow: 1;
   max-width: 100%;

@@ -221,6 +221,17 @@ main .lead-forms .form form .field-infotext {
   margin: var(--bbl-space-500) 0 var(--bbl-space-250);
 }
 
+main .lead-forms .form form .field-form-intro.field-wrapper p {
+  text-align: center;
+}
+
+main .lead-forms .form form .field-form-intro {
+  max-width: 56.25rem;
+  width: calc(100% + 10rem);
+  margin-left: -5rem;
+  margin-right: -5rem;
+}
+
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
   color: var(--bbl-color-grey-85);
   font-size: var(--bbl-font-size-b1-mobile);
@@ -230,7 +241,11 @@ main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
 }
 
 main .lead-forms .form form .plain-text-wrapper p:last-child {
-  margin-bottom: 0;
+  margin-bottom: -0.125rem;
+}
+
+main .lead-forms .form form .field-other-premium + .plain-text-wrapper.field-text p > p {
+  padding-inline: var(--bbl-form-padding-10);
 }
 
 main .lead-forms .form form .plain-text-wrapper :is(a, .custom-wffm-form) {
@@ -290,8 +305,10 @@ main .lead-forms .form textarea {
 
 main .lead-forms .form form input,
 main .lead-forms .form form textarea,
-main .lead-forms .form form select{
-    height:44px;
+main .lead-forms .form form select {
+  height: 2.75rem;
+  color: var(--bbl-color-black);
+  border-radius: 0.4375rem;
 }
 
 main .section.form-container.lead-forms .form form select {
@@ -957,7 +974,6 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   main .lead-forms .form form h2{
     font-size: var(--bbl-form-font-size-16);
     line-height: 1.3rem;
-    padding: 0 var(--bbl-form-padding-10);
   }
 
   main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
