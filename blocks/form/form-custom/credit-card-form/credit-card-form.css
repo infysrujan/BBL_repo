@@ -62,6 +62,10 @@
   grid-column: span 12;
 }
 
+.credit-card-form main .section.form-container.custom-forms .form form ul {
+  padding: 0;
+}
+
 @media (width > 47.5rem) {
   .credit-card-form main .section.form-container.custom-forms .form form :is(.field-name, .field-surname) {
     grid-column: span 6;
