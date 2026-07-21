@@ -35,6 +35,35 @@
   line-height: 1.2;
 }
 
+/* This title is built by JS deep inside the block's own markup, not as a
+   direct child of .default-content-wrapper, so the global
+   .section.underline-title rule (styles/main.css) never reaches it —
+   mirror that same underline treatment here, scoped to this title. It's
+   always centered (.ccs-results-header is text-align: center), so this
+   always uses the centered underline positioning. */
+.section.underline-title .ccs-results-title {
+  position: relative;
+  display: inline-block;
+  padding-bottom: var(--bbl-space-250);
+}
+
+.section.underline-title .ccs-results-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--bbl-space-1000);
+  height: 0.0625rem;
+  background-color: var(--bbl-color-grey-150);
+}
+
+@media (width > 47.5rem) {
+  .section.underline-title .ccs-results-title {
+    padding-bottom: 1.875rem;
+  }
+}
+
 /* ==========================================================================
    card-list credit-card variation
    Scoped so no other card-list instances are affected.
