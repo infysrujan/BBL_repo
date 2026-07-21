@@ -183,7 +183,7 @@ function buildCardBlock(cards, doc, lang, labels) {
   const list = doc.createElement('div');
   list.className = 'cards-list scrollable center cards-3';
 
-  cards.forEach((card, idx) => {
+  cards.forEach((card) => {
     const nameEN = getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName');
     const nameTH = getCardField(card, 'nameTH', 'Product Name (TH)', 'cardNameTH');
     const description = getCardField(card, 'cardDescription', 'description');
@@ -198,11 +198,6 @@ function buildCardBlock(cards, doc, lang, labels) {
     const isTH = lang === 'th';
     const primaryName = isTH && nameTH ? nameTH : nameEN;
     const secondaryName = isTH && nameTH ? nameEN : nameTH;
-
-    if (idx === 0) {
-      // eslint-disable-next-line no-console
-      console.log('[credit-card-results] buildCardBlock | lang:', lang, '| isTH:', isTH, '| card keys:', Object.keys(card), '| nameEN:', nameEN, '| nameTH:', nameTH, '| primaryName:', primaryName);
-    }
 
     const cardEl = doc.createElement('div');
     cardEl.className = 'cards-list-item';
@@ -288,40 +283,38 @@ function addCompareButtons(blockEl, doc, labels) {
   });
 }
 
-// ── Results section DOM ────────────────────────────────────────────────────────
+// ── Results block DOM ──────────────────────────────────────────────────────────
 
-function buildResultsSection(doc, disclaimerHtml, labels) {
-  const section = doc.createElement('div');
-  section.className = 'ccs-results';
+/** Build the results markup directly into this block's own root element. */
+function populateResultsBlock(block, disclaimerHtml, labels) {
+  block.classList.add('ccs-results');
 
-  const header = doc.createElement('div');
+  const header = document.createElement('div');
   header.className = 'ccs-results-header';
-  const title = doc.createElement('h2');
+  const title = document.createElement('h2');
   title.className = 'ccs-results-title';
   title.textContent = labels.resultsTitle;
   header.appendChild(title);
-  section.appendChild(header);
+  block.appendChild(header);
 
-  const cardListContainer = doc.createElement('div');
+  const cardListContainer = document.createElement('div');
   cardListContainer.className = 'ccs-card-list-container';
-  section.appendChild(cardListContainer);
+  block.appendChild(cardListContainer);
 
-  const toggleWrap = doc.createElement('div');
+  const toggleWrap = document.createElement('div');
   toggleWrap.className = 'ccs-results-toggle';
-  const toggleBtn = doc.createElement('button');
+  const toggleBtn = document.createElement('button');
   toggleBtn.type = 'button';
   toggleBtn.className = 'ccs-results-toggle-btn';
   toggleWrap.appendChild(toggleBtn);
-  section.appendChild(toggleWrap);
+  block.appendChild(toggleWrap);
 
-  const disclaimer = doc.createElement('div');
+  const disclaimer = document.createElement('div');
   disclaimer.className = 'ccs-results-disclaimer';
   disclaimer.innerHTML = disclaimerHtml;
-  section.appendChild(disclaimer);
+  block.appendChild(disclaimer);
 
-  return {
-    section, cardListContainer, toggleWrap, toggleBtn,
-  };
+  return { cardListContainer, toggleWrap, toggleBtn };
 }
 
 // ── Mobile carousel: dots + seamless loop ─────────────────────────────────────
@@ -417,13 +410,6 @@ function initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels) 
   return buildDots;
 }
 
-// ── Main export ────────────────────────────────────────────────────────────────
-
-/**
- * Build and inject the card-results section immediately after selectorBlock.
- * @param {Element} selectorBlock
- * @param {{ disclaimerHtml?: string }} options
- */
 // ── Row-peek helpers ───────────────────────────────────────────────────────────
 
 // Clip the container so row 2 (cards 4–6) shows at 50% height on desktop.
@@ -452,12 +438,35 @@ function removePeek(container) {
   el.classList.remove('ccs-peek');
 }
 
-export default async function initCardResults(selectorBlock, { disclaimerHtml = '' } = {}) {
-  // Remove any stale results sections left over from a previously decorated instance.
-  // This handles the case where UE replaced the block element but the old .ccs-results remains.
-  selectorBlock.ownerDocument.querySelectorAll('.ccs-results').forEach((el) => el.remove());
+/**
+ * EDS decorate entry point.
+ *
+ * Block row mapping (matches _credit-card-results.json model):
+ *   Row 0  disclaimerText — richtext
+ *
+ * Renders independently of the Credit Card Selector block — the two only
+ * communicate via document-level custom events (credit-card-filter-applied /
+ * credit-card-filter-reset / credit-card-compare-updated), so this block can be
+ * placed anywhere on the page relative to the selector.
+ */
+export default async function decorate(block) {
+  // UE re-calls decorate when the block is edited — remove any previously built
+  // results markup so re-decoration doesn't duplicate content.
+  const existing = [...block.children].filter((child) => !child.classList.contains('ccs-source-row'));
+  existing.forEach((el) => el.remove());
+  block.classList.remove('ccs-results');
 
-  const doc = selectorBlock.ownerDocument;
+  const rows = [...block.children];
+  const readRowHtml = (row) => row?.children[1]?.innerHTML?.trim()
+    ?? row?.querySelector('p')?.outerHTML
+    ?? '';
+  const disclaimerHtml = readRowHtml(rows[0]);
+
+  // Hide the authored source row via CSS class instead of removing it, so
+  // Universal Editor instrumentation on it survives re-decoration.
+  rows.forEach((row) => { row.classList.add('ccs-source-row'); });
+
+  const doc = block.ownerDocument;
   const lang = getLang();
 
   await loadCSS(`${window.hlx.codeBasePath}/blocks/card-list/card-list.css`);
@@ -481,9 +490,8 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
   const allCards = sortBySourcing(rawCards); // used for initial (unfiltered) display
 
   const {
-    section, cardListContainer, toggleWrap, toggleBtn,
-  } = buildResultsSection(doc, disclaimerHtml, labels);
-  selectorBlock.insertAdjacentElement('afterend', section);
+    cardListContainer, toggleWrap, toggleBtn,
+  } = populateResultsBlock(block, disclaimerHtml, labels);
 
   // ── State ──────────────────────────────────────────────────────────────────
   let isExpanded = false;
@@ -575,7 +583,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
     activeCards = await resolveFilteredCards(sheetCards, e.detail || {});
     isExpanded = false;
     render();
-    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    block.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   // ── Filter reset ───────────────────────────────────────────────────────────
@@ -586,7 +594,7 @@ export default async function initCardResults(selectorBlock, { disclaimerHtml = 
   });
 
   // ── Compare toggle ─────────────────────────────────────────────────────────
-  section.addEventListener('click', (e) => {
+  block.addEventListener('click', (e) => {
     const btn = e.target.closest('.ccs-compare-btn');
     if (!btn) return;
 
