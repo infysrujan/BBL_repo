@@ -88,13 +88,13 @@ function buildYesNoContent({
 
   const yesBtn = document.createElement('button');
   yesBtn.type = 'button';
-  yesBtn.className = 'mfq-btn mfq-btn-yes';
+  yesBtn.className = 'mfq-btn mfq-btn-yes button-m secondary';
   yesBtn.textContent = yesLabel || 'Yes';
   yesBtn.addEventListener('click', (e) => { e.stopPropagation(); onYes(); });
 
   const noBtn = document.createElement('button');
   noBtn.type = 'button';
-  noBtn.className = 'mfq-btn mfq-btn-no';
+  noBtn.className = 'mfq-btn mfq-btn-no button-m secondary';
   noBtn.textContent = noLabel || 'No';
   noBtn.addEventListener('click', (e) => { e.stopPropagation(); onNo(); });
 
