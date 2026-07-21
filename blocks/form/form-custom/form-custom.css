@@ -23,9 +23,9 @@ main .section.form-container.custom-forms .form form :is(input:not([type='radio'
   border-radius: 0.4375rem;
 }
 
-main .section.form-container.custom-forms .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea)::placeholder{
-    opacity: 1;
-    color: var(--bbl-color-grey-150);
+main .section.form-container.custom-forms .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea)::placeholder {
+  opacity: 1;
+  color: var(--bbl-color-grey-150);
 }
 
 main .section.form-container.custom-forms .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper):not(:has(label:is([class*=' icon-'], [class^='icon-'])))::before {
@@ -51,12 +51,12 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 }
 
 /* Override lead-form.css 1-column layouts to restore standard 12-column grids */
-main .section.form-container.custom-forms .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) {
+main .section.form-container.custom-forms .form form>fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) {
   grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
   width: auto;
 }
 
-main .section.form-container.custom-forms .form form > fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
+main .section.form-container.custom-forms .form form>fieldset.panel-wrapper.field-wrapper:not(.custom-fieldset-approval, .field-button-panel) :is(.field-wrapper.col-12, .field-wrapper.col-11, .field-wrapper.col-1) {
   grid-column: span 12;
 }
 
@@ -83,14 +83,14 @@ main .section.form-container.custom-forms .form form .radio-group-wrapper:not(.h
 }
 
 /* Legend label font styles */
-main .section.form-container.custom-forms .panel-wrapper > legend.field-label {
+main .section.form-container.custom-forms .panel-wrapper>legend.field-label {
   color: var(--bbl-color-grey-85);
   font-size: var(--bbl-font-size-b3-mobile);
   font-weight: 600;
   cursor: default;
 }
 
-main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
+main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-group-wrapper)>legend.field-label {
   color: var(--bbl-color-grey-85);
   font-size: 1.25rem;
   font-weight: var(--bbl-font-weight-regular);
@@ -153,19 +153,18 @@ main .section.form-container.custom-forms .form :is(.field-submitcta form button
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel {
   column-gap: var(--bbl-space-250);
   margin-bottom: var(--bbl-space-200);
-  padding: 0;
-  border: none;
-  border-radius: 0;
+  padding: var(--bbl-space-250) var(--bbl-space-200);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
+  border-radius: var(--bbl-radius-md);
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>legend.field-label {
-  display: block;
-  width: 100%;
-  margin: var(--bbl-space-250) 0 0.625rem;
-  padding: 0.1875rem 0 0.1875rem var(--bbl-space-200);
-  text-align: left;
-  background-color: var(--bbl-color-grey-10);
-  color: var(--bbl-color-grey-85);
+  padding: var(--bbl-space-025) var(--bbl-space-100);
+  color: var(--bbl-color-white);
+  background-color: var(--bbl-color-grey-150);
+  border-radius: var(--bbl-radius-md);
+  font-size: var(--bbl-body-b3-size);
+  line-height: 1;
 }
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel .field-cnf-date-exclude {
@@ -174,8 +173,8 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   padding: 0;
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper),
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper:not(.field-transdatetimepanel) .drop-down-wrapper {
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel> :is(.field-cnf-date-exclude, .field-hours-exclude, .field-minutes-exclude),
+main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch) {
   position: relative;
   grid-column: span 12;
   width: 100%;
@@ -183,15 +182,15 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper:not(
   margin: 0;
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper) :is(input, select),
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper:not(.field-transdatetimepanel) .drop-down-wrapper :is(input, select) {
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel> :is(.field-cnf-date-exclude, .field-hours-exclude, .field-minutes-exclude) :is(input, select),
+main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch) :is(input, select) {
   box-sizing: border-box;
   width: 100%;
   height: 2.6389rem;
   margin: 0;
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel > .drop-down-wrapper:first-of-type::after {
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>.field-hours-exclude::after {
   content: none;
   position: absolute;
   top: 50%;
@@ -203,8 +202,8 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   transform: translate(50%, -50%);
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper) :is(.field-validation-error, .field-description),
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper:not(.field-transdatetimepanel) .drop-down-wrapper :is(.field-validation-error, .field-description) {
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel> :is(.field-cnf-date-exclude, .field-hours-exclude, .field-minutes-exclude) :is(.field-validation-error, .field-description),
+main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch) :is(.field-validation-error, .field-description) {
   width: 100%;
   font-size: var(--bbl-body-b2-size);
   font-weight: var(--bbl-font-weight-regular);
@@ -218,23 +217,34 @@ main .section.form-container.custom-forms .form form .field-invalid+fieldset.pan
 
 /* Service Branch Panel Layout (Grid-based Layout) */
 main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 0.9375rem var(--bbl-space-250);
   margin-top: 0;
   margin-bottom: var(--bbl-space-250);
-  padding: 0;
-  border: none;
-  border-radius: 0;
+  padding: var(--bbl-space-250) var(--bbl-space-200);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
+  border-radius: var(--bbl-radius-md);
 }
 
 main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel)>legend.field-label {
+  position: absolute;
+  top: 0;
+  left: var(--bbl-space-200);
+  z-index: 2;
   display: block;
-  margin: var(--bbl-space-250) 0 0.625rem;
-  padding: 0.1875rem 0 0.1875rem var(--bbl-space-200);
-  text-align: left;
-  background-color: var(--bbl-color-grey-10);
-  color: var(--bbl-color-grey-85);
+  max-width: calc(100% - var(--bbl-space-400));
+  margin: 0;
+  padding: var(--bbl-space-025) var(--bbl-space-100);
+  color: var(--bbl-color-white);
+  background-color: var(--bbl-color-grey-150);
+  border-radius: var(--bbl-radius-md);
+  font-size: var(--bbl-body-b3-size);
+  font-weight: var(--bbl-font-weight-medium);
+  line-height: 1;
+  white-space: normal;
+  transform: translateY(-50%);
 }
 
 main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch) :is(.field-validation-error, .field-description) {
@@ -336,24 +346,39 @@ main .section.form-container.custom-forms .form .form-message.success-message::f
     margin-left: 25%;
   }
 
+  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel,
+  main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) {
+    padding: var(--bbl-space-250);
+  }
 
+  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>legend.field-label,
+  main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel)>legend.field-label {
+    left: var(--bbl-space-250);
+    width: max-content;
+    max-width: none;
+    white-space: nowrap;
+  }
 
-  main .section.form-container.custom-forms .form form fieldset.panel-wrapper:not(.field-transdatetimepanel) .drop-down-wrapper {
+  main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch).field-wrapper {
     grid-column: span 6;
   }
 
-  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper) :is(.field-validation-error, .field-description),
-  main .section.form-container.custom-forms .form form fieldset.panel-wrapper:not(.field-transdatetimepanel) .drop-down-wrapper :is(.field-validation-error, .field-description) {
+  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel> :is(.field-cnf-date-exclude, .field-hours-exclude, .field-minutes-exclude) :is(.field-validation-error, .field-description),
+  main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch) :is(.field-validation-error, .field-description) {
     width: max-content;
     white-space: nowrap;
   }
 
-  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, [class*='-date-']) {
+  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel .field-cnf-date-exclude {
     grid-column: span 6;
   }
 
-  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel > .drop-down-wrapper {
+  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel> :is(.field-hours-exclude, .field-minutes-exclude) {
     grid-column: span 3;
+  }
+
+  main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>.field-hours-exclude::after {
+    content: ':';
   }
 
   main .section.form-container.custom-forms .form form fieldset.radio-group-wrapper.field-subject {
