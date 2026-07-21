@@ -81,8 +81,8 @@
 }
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small img {
-  width: 75%;
-  height: auto;
+  width: 14.4156rem;
+  height: 9.6875rem;
   min-width: unset;
   object-fit: contain;
 }
