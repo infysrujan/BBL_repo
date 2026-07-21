@@ -149,7 +149,7 @@ function renderBlock(block, state, authoring, monthLabels, dayLabels, buddhistYe
     <td class="is-right">${escapeHtml(rate.billDdTt)}</td>
   </tr>`).join('');
 
-  const columnWidths = ['15%', '40%', '9%', '9%', '9%', '9%', '9%'];
+  const columnWidths = ['10%', '11%', '12%', '12%', '19%', '19%', '19%'];
   const headings = authoring.columns.map((heading, i) => `<th width="${columnWidths[i] || 'auto'}">${heading}</th>`).join('');
 
   block.innerHTML = `<section class="forex-rates-content">
@@ -256,7 +256,7 @@ function printForexRates(block) {
     /* Table */
     .forex-rates-table-wrap { overflow: visible; margin-top: var(--bbl-space-050); }
     .forex-rates-table {
-      min-width: 0; width: 100%; border-collapse: collapse;
+      min-width: 0; width: 100%; table-layout: fixed; border-collapse: collapse;
       border: 0.0625rem solid var(--bbl-color-black); font-size: 0.5rem; color: #555;
     }
     .forex-rates-table thead tr { height: auto; background: #dce6f1; }
@@ -266,7 +266,9 @@ function printForexRates(block) {
       border-bottom: 0.0625rem solid var(--bbl-color-black); border-right: 0.0625rem solid var(--bbl-color-black); text-align: left;
     }
     .forex-rates-table thead th:last-child { border-right: none; }
-    .forex-rates-table thead th:nth-child(n+3) { text-align: center; }
+    .forex-rates-table thead th:nth-child(n+3) { text-align: center; width: 9%; }
+    .forex-rates-table thead th:nth-child(1) { width: 15%; }
+    .forex-rates-table thead th:nth-child(2) { width: 40%; }
     .forex-rates-table tbody tr { height: auto; }
     .forex-rates-table tbody td {
       padding: 0.15rem 0.4rem; font-size: 0.5rem; height: auto; vertical-align: middle;
