@@ -251,7 +251,7 @@ main {
   font-size: var(--bbl-font-size-15);
   font-weight: var(--bbl-font-weight-regular);
   text-align: right;
-  width: 5rem;
+  width: 6rem;
   outline: none;
   padding: 0;
   caret-color: var(--bbl-color-sme-caret);
@@ -468,7 +468,7 @@ main {
 
   /* Fields remain stacked (column) at tablet — 3-column moves to desktop */
   .textbox-cal {
-    width: 4.5rem;
+    width: 5.5rem;
     font-size: var(--bbl-font-size-15);
   }
 

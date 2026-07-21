@@ -13,8 +13,6 @@
 
 /* ── Title ────────────────────────────────────────────────────────────────── */
 .mfq-title {
-  font-size: 1.4rem;
-  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
 }
 
@@ -32,8 +30,8 @@
   text-align: left;
   max-width: 50rem;
   width: 100%;
-  font-size: var(--bbl-font-size-b2, 0.875rem);
-  line-height: 1.375;
+  font-size: var(--bbl-body-b1-size);
+  line-height: var(--bbl-body-b1-line-height);
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
 }
@@ -72,39 +70,18 @@
   flex-direction: column;
   align-items: center;
   gap: var(--bbl-space-150);
-  padding: 4.375rem 0 0;
+  padding: 4.375rem 0;
 }
 
 .mfq-btn {
   min-width: 12.25rem;
-  height: 2.75rem;
-  padding: 0 var(--bbl-space-250);
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  border-radius: var(--bbl-radius-button);
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
-  font-size: var(--bbl-font-size-b2, 0.875rem);
-  line-height: 1.375;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.mfq-btn:hover,
-.mfq-btn:focus-visible {
-  background: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  outline: none;
 }
 
 /* ── Disclaimer ───────────────────────────────────────────────────────────── */
 .mfq-disclaimer {
-  font-size: var(--bbl-font-size-b2, 0.875rem);
   color: var(--bbl-color-grey-85);
-  max-width: 50rem;
+  max-width: 56.25rem;
   text-align: left;
-  line-height: 1.375;
-  font-family: var(--bbl-font-family-primary);
-  margin: 1.875rem auto 0;
 }
 
 /* ── Risk option cards (reuses list-thumb-square / thumb-square) ──────────── */
@@ -209,7 +186,6 @@
 
 /* ── Modal full-screen layout for questionnaire ───────────────────────────── */
 .modal-body .mfq-title {
-  font-size: 1.4rem;
   text-align: center;
   margin: 1.875rem 0 0;
   padding-bottom: var(--bbl-space-250);
@@ -260,8 +236,6 @@
   
   .modal-body .mfq-title {
     text-align: center;
-    font-size: 3rem;        
-    line-height: 2.875rem;  
     margin: 1.875rem 0 0;     
     padding-bottom: 1.875rem; 
   }
