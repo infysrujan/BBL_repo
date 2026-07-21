@@ -682,20 +682,23 @@ export default async function decorate(block) {
           trackWrapper.style.transition = 'none';
         }
         if (isMfFundCardsCarousel && slideEls[0] && trackWrapper) {
-          // Retry until mf-fund-cards-slide.css applies flex:70% (slide < 90% of vpW).
-          // loadCSS may resolve immediately if the link exists but CSS hasn't painted yet.
           const applyMfFundCentering = (attempt) => {
             const isMobileVp = window.matchMedia(`(max-width: ${tabletMin})`).matches;
             const s0 = slideEls[0];
-            const vp = trackViewport || trackWrapper;
-            const vpW = vp.offsetWidth;
+            const vpEl = trackViewport || trackWrapper;
+            const vpW = vpEl.offsetWidth;
             const slideW = s0.offsetWidth;
-            if (isMobileVp && (slideW === 0 || slideW > vpW * 0.9) && attempt < 8) {
+            const needsRetry = vpW === 0
+              || slideW === 0
+              || (isMobileVp && s0.offsetLeft === 0)
+              || (isMobileVp && slideW > vpW * 0.9);
+            if (needsRetry && attempt < 20) {
               requestAnimationFrame(() => applyMfFundCentering(attempt + 1));
               return;
             }
-            const gap = parseFloat(getComputedStyle(trackWrapper).columnGap) || 0;
-            const offset = (3 * slideW + 2 * gap - vpW) / 2;
+            const offset = isMobileVp
+              ? s0.offsetLeft + slideW / 2 - vpW / 2
+              : s0.offsetLeft;
             trackWrapper.style.transform = `translate3d(-${Math.max(0, offset)}px, 0px, 0px)`;
             trackWrapper.getBoundingClientRect();
             trackWrapper.style.transition = '';
