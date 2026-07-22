@@ -434,12 +434,12 @@
    button hangs downward, aligned to the divider line. */
 .credit-card-selector .collapse-toggle-button {
   position: absolute;
-  top: 25px;
+  top: 10px;
   bottom: 0;
-  left: 1500px;
+  right: 0;
   width: 48px;
   height: 48px;
-  padding-bottom: 35px;
+  padding: 15px 20px 0;
   background: var(--bbl-color-grey-10);
   cursor: pointer;
   display: flex;
@@ -493,6 +493,13 @@
     padding: var(--bbl-space-400) var(--bbl-space-600) var(--bbl-space-600);
   }
 
+  /* Restore the original hang-down offset/padding on tablet+ — mobile alone
+     needs the tighter top and the 15/20/0 padding box. */
+  .credit-card-selector .collapse-toggle-button {
+    top: 25px;
+    padding: 0 0 35px;
+  }
+
   .section.full-bleed-bg.credit-card-selector-container{
     padding-inline: var(--bbl-space-600);
   }
@@ -543,6 +550,15 @@
     transform: rotate(0deg);
   }
 
+}
+
+/* Tablet only — narrower hang-down than desktop, taller than mobile */
+@media (width > 47.5rem) and (width < 64rem) {
+  .credit-card-selector .collapse-toggle-button {
+    top: 15px;
+    height: 35px;
+    padding-bottom: 15px;
+  }
 }
 
 @media (width > 64rem) {
