@@ -268,6 +268,7 @@
   --tabs-per-view: 3;
 
   gap: unset;
+  align-items: flex-start;
   scroll-snap-type: x mandatory;
 }
 
@@ -284,6 +285,10 @@
    icon-tab-carousel.js) instead of stretching the column or running behind the
    carousel arrows. */
 .tabs.icon-tab-carousel .tabs-nav button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   white-space: normal;
   text-align: center;
   flex: 0 0 calc(100% / var(--tabs-per-view));
@@ -297,10 +302,20 @@
 }
 
 .tabs.icon-tab-carousel .tabs-nav button .tabs-nav-label {
-  display: block;
+  display: inline-block;
   max-width: 100%;
   margin-inline: auto;
   overflow-wrap: break-word;
+  border-bottom: 0.1875rem solid transparent;
+  padding-bottom: 0.25rem;
+}
+
+.tabs.icon-tab-carousel .tabs-nav button.active {
+  text-decoration: none;
+}
+
+.tabs.icon-tab-carousel .tabs-nav button.active .tabs-nav-label {
+  border-bottom-color: var(--bbl-color-active-blue);
 }
 
 /* Columns per view by breakpoint (mobile shows fewer, desktop more). */
@@ -320,9 +335,11 @@
   width: 3.75rem;
   box-sizing: border-box;
   height: 3.75rem;
+  object-fit: contain;
   padding: var(--bbl-space-050);
   margin: 0 auto var(--bbl-space-050);
   display: block;
+  flex-shrink: 0;
 }
 
 /* Tiled Tab Variant (with Icons) - Mobile First */
@@ -363,7 +380,7 @@
   color: var(--bbl-color-black);
   text-decoration: none;
   box-sizing: border-box;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
   width: 100%;
   background: transparent;
@@ -590,8 +607,9 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  flex-flow: column wrap;
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   min-width: max-content;
 }
@@ -652,6 +670,7 @@
   box-sizing: border-box;
   height: 3.75rem;
   padding: var(--bbl-space-050);
-  margin: 0;
+  margin: 0 auto var(--bbl-space-050);
   display: block;
+  flex-shrink: 0;
 }
