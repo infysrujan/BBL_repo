@@ -404,8 +404,9 @@
   height: 1.1875rem;
   object-fit: contain;
   flex-shrink: 0;
-  margin-right: 10px;
-  margin-bottom: -4px;
+  margin-right: 0.375rem;
+  margin-bottom: -0.1875rem;
+  margin-left: -0.875rem;
 }
 
 /* ── Unit label ────────────────────────────────────────────── */
