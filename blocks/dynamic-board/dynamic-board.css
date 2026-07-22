@@ -540,7 +540,7 @@
 }
 
 .dynamic-board .db-radio:hover:not(:checked) {
-  background: var(--bbl-color-grey-70);
+  border: 0.0625rem solid var(--bbl-color-blue-90);
 }
 
 .dynamic-board .db-filter-radio-row input:disabled,
