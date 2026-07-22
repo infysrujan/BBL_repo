@@ -386,6 +386,7 @@
   font-size: 0.938rem;
   color: var(--bbl-color-gray-142);
   vertical-align: middle;
+  text-align: center;
 }
 
 .forward-points-sme .fpsme-td-right {
@@ -393,9 +394,6 @@
 }
 
 .forward-points-sme .fpsme-currency-cell {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   white-space: nowrap;
 }
 
@@ -404,6 +402,8 @@
   height: 1.1875rem;
   object-fit: contain;
   flex-shrink: 0;
+  margin-right: 10px;
+  margin-bottom: -4px;
 }
 
 /* ── Unit label ────────────────────────────────────────────── */
