@@ -353,16 +353,33 @@ export default async function decorate(block) {
 
   const fieldHeaderLabel = (f) => (f.id === 'n' ? (placeholders.smeResultColTerm || f.label) : f.label);
 
+  // Comparison-table-only column order: under the Account Receivable / Account Payable
+  // groups, "Credit Term" swaps with the 3rd column so it renders last. The input form
+  // above (built from fieldGroups directly) keeps the authored order.
+  const TABLE_COLUMN_SWAP_GROUPS = ['account receivable', 'account payable'];
+  const tableGroupFields = (group) => {
+    const isSwapGroup = TABLE_COLUMN_SWAP_GROUPS.includes(group.header.trim().toLowerCase());
+    if (!isSwapGroup || group.fields.length < 3) return group.fields;
+    const reordered = [...group.fields];
+    [reordered[1], reordered[2]] = [reordered[2], reordered[1]];
+    return reordered;
+  };
+  const tableFieldGroups = fieldGroups.map((group) => ({
+    ...group,
+    fields: tableGroupFields(group),
+  }));
+  const tableFields = tableFieldGroups.flatMap((group) => group.fields);
+
   const resulttbl = el('div', 'resulttbl');
   const table = el('table', 'tablelong fontcomparetable');
   const thead = document.createElement('thead');
-  const hasGroups = fieldGroups.some((g) => g.header && g.fields.length > 1);
+  const hasGroups = tableFieldGroups.some((g) => g.header && g.fields.length > 1);
 
   if (hasGroups) {
     const row1 = document.createElement('tr');
     const row2 = document.createElement('tr');
     appendTh(row1, resultColHeader[calcType], { rowSpan: 2 });
-    fieldGroups.forEach((group) => {
+    tableFieldGroups.forEach((group) => {
       if (group.header && group.fields.length > 1) {
         appendTh(row1, group.header, { colSpan: group.fields.length });
         group.fields.forEach((f) => appendTh(row2, fieldHeaderLabel(f)));
@@ -375,7 +392,7 @@ export default async function decorate(block) {
   } else {
     const headerRow = document.createElement('tr');
     appendTh(headerRow, resultColHeader[calcType]);
-    fields.forEach((f) => appendTh(headerRow, fieldHeaderLabel(f)));
+    tableFields.forEach((f) => appendTh(headerRow, fieldHeaderLabel(f)));
     thead.appendChild(headerRow);
   }
 
@@ -585,7 +602,7 @@ export default async function decorate(block) {
     if (lastResult === null) return;
     tableSection.hidden = false;
     const resultCell = rc.integer ? Math.floor(lastResult).toLocaleString('en-US') : fmt(lastResult);
-    const fieldValues = fields.map((f) => {
+    const fieldValues = tableFields.map((f) => {
       const inp = block.querySelector(`#${f.id}`);
       return inp ? inp.value : '';
     });

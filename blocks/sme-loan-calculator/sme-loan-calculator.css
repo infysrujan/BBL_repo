@@ -417,9 +417,12 @@ main {
   height: 100%;
 }
 
+/* Bleed into the cell's own horizontal padding so this fake divider lines
+   up flush with the real border-bottom on neighbouring header cells. */
 .tablelong.fontcomparetable th.lineth[rowspan] .lineth-inner::after {
   content: '';
   flex: 1 0 auto;
+  margin: 0 -0.3125rem;
   border-top: 0.125rem solid var(--bbl-color-gray-122);
 }
 
