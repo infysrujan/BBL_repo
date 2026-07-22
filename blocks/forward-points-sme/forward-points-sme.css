@@ -8,7 +8,6 @@
   align-items: center;
   gap: 0.625rem;
   row-gap: 0.625rem;
-  padding-inline: 0.625rem;
 }
 
 .forward-points-sme .fpsme-update-label {
@@ -341,7 +340,6 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding-inline: 0.625rem;
 }
 
 .forward-points-sme .fpsme-table-wrap::-webkit-scrollbar {
@@ -609,10 +607,6 @@
     padding: 1.2rem;
   }
 
-  .forward-points-sme .fpsme-table-wrap,
-  .forward-points-sme .fpsme-controls {
-    padding-inline: 0.625rem;
-  }
 
   .forward-points-sme .fpsme-update-label {
     width: auto;
@@ -660,11 +654,6 @@
 }
 
 @media (width > 64rem) {
-  .forward-points-sme .fpsme-table-wrap,
-  .forward-points-sme .fpsme-controls {
-    padding-inline: var(--bbl-space-250);
-  }
-
   /* Forward tables remain stacked on desktop */
   .forward-points-sme .fpsme-fwd-tables {
     flex-direction: row;
