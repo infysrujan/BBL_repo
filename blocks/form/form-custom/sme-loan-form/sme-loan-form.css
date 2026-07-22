@@ -8,6 +8,7 @@
       padding: 0;
       color: var(--bbl-color-black);
       font-family: var(--bbl-font-family-medium);
+      font-weight: var(--bbl-font-weight-regular);
       text-align: center;
     }
   }

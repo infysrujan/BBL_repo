@@ -137,8 +137,8 @@
 }
 
 .card-list.mf-card-list .cards-list-remark img.mfr-logo {
-  max-width: 8.875rem;
-  margin-bottom: 1.4375rem;
+  width: auto;
+  height: auto;
 }
 
 /* ── Card title h3 ────────────────────────────────────────────────────────── */
