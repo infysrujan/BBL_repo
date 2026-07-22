@@ -425,7 +425,6 @@ main {
 
 .tablelong.fontcomparetable thead tr:last-child .lineth {
   font-size: 0.8125rem;
-  color: var(--bbl-color-grey-140);
   border-bottom: 0.125rem solid var(--bbl-color-grey-125);
 }
 
