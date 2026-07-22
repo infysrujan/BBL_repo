@@ -291,11 +291,11 @@ function populateResultsBlock(block, disclaimerHtml) {
   block.classList.add('ccs-results');
 
   const cardListContainer = document.createElement('div');
-  cardListContainer.className = 'ccs-card-list-container';
+  cardListContainer.className = 'ccs-card-list-container ccs-built';
   block.appendChild(cardListContainer);
 
   const toggleWrap = document.createElement('div');
-  toggleWrap.className = 'ccs-results-toggle';
+  toggleWrap.className = 'ccs-results-toggle ccs-built';
   const toggleBtn = document.createElement('button');
   toggleBtn.type = 'button';
   toggleBtn.className = 'ccs-results-toggle-btn';
@@ -304,7 +304,7 @@ function populateResultsBlock(block, disclaimerHtml) {
 
   if (disclaimerHtml) {
     const disclaimer = document.createElement('div');
-    disclaimer.className = 'ccs-results-disclaimer';
+    disclaimer.className = 'ccs-results-disclaimer ccs-built';
     disclaimer.innerHTML = disclaimerHtml;
     block.appendChild(disclaimer);
   }
@@ -446,9 +446,13 @@ function removePeek(container) {
  */
 export default async function decorate(block) {
   // UE re-calls decorate when the block is edited — remove any previously built
-  // results markup so re-decoration doesn't duplicate content.
-  const existing = [...block.children].filter((child) => !child.classList.contains('ccs-source-row'));
-  existing.forEach((el) => el.remove());
+  // results markup (marked ccs-built) so re-decoration doesn't duplicate content.
+  // Matching on ccs-built rather than "not yet a source row" is required: on the
+  // very first decorate() call the authored row hasn't been marked as a source
+  // row yet, so the inverse check would delete it before its content is read.
+  [...block.children].forEach((el) => {
+    if (el.classList.contains('ccs-built')) el.remove();
+  });
   block.classList.remove('ccs-results');
 
   const rows = [...block.children];
