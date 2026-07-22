@@ -333,6 +333,11 @@
   text-align: right;
 }
 
+.fund-prices-dropdown .stat-table td.stat-no-data {
+  text-align: center;
+  color: var(--bbl-color-grey-70);
+}
+
 .fund-prices-dropdown .fdd-table-panel {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
