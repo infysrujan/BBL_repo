@@ -59,7 +59,7 @@
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-radius: 0.4375rem;
   overflow: hidden;
-  flex: 0 0 18.75rem;
+  flex: 0 0 17.46rem;
   scroll-snap-align: start;
   box-sizing: border-box;
 }
@@ -269,7 +269,7 @@
   }
 
   .mf-comparator-results .mfcr-card {
-    flex: 0 0 14.5625rem;
+    flex-basis: calc((34.7% - 20px));
     scroll-snap-align: none;
   }
 
@@ -279,7 +279,7 @@
   }
 
   .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
-    flex-basis: calc((34.4% - 20px));
+    flex-basis: calc((34.6% - 20px));
   }
 
   .mf-comparator-results .mfcr-scroll-dots {
@@ -300,7 +300,7 @@
   }
 
   .mf-comparator-results .mfcr-card {
-    flex: 0 0 18.875rem;
+    flex-basis: calc((38.57% - 20px));
   }
 
   .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
