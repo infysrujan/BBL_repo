@@ -524,7 +524,7 @@
 }
 
 .dynamic-board .db-radio:checked {
-  background: var(--bbl-color-active-blue);
+  background: var(--bbl-color-blue-105);
 }
 
 .dynamic-board .db-radio:checked::before {
