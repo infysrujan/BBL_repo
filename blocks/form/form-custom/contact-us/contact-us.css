@@ -247,11 +247,6 @@
 /* Tablet & Desktop Viewport Styling */
 @media (width > 47.5rem) {
     .contact-us main .section.form-container.custom-forms .form form {
-        & .field-title h2,
-        & :is(.field-wrapper, .plain-text-wrapper):has(h2) h2 {
-            font-size: var(--bbl-form-font-size-48);
-        }
-
         /* Desktop Date & Time alignment: Date (span 6), Hours (span 3), Minutes (span 3) */
         & fieldset.panel-wrapper:has(.date-wrapper) > :is(.date-wrapper, [class*='-date-']),
         & fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, [class*='-date-']) {
