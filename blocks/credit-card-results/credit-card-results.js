@@ -287,16 +287,8 @@ function addCompareButtons(blockEl, doc, labels) {
 // ── Results block DOM ──────────────────────────────────────────────────────────
 
 /** Build the results markup directly into this block's own root element. */
-function populateResultsBlock(block, disclaimerHtml, labels) {
+function populateResultsBlock(block) {
   block.classList.add('ccs-results');
-
-  const header = document.createElement('div');
-  header.className = 'ccs-results-header';
-  const title = document.createElement('h2');
-  title.className = 'ccs-results-title';
-  title.textContent = labels.resultsTitle;
-  header.appendChild(title);
-  block.appendChild(header);
 
   const cardListContainer = document.createElement('div');
   cardListContainer.className = 'ccs-card-list-container';
@@ -309,11 +301,6 @@ function populateResultsBlock(block, disclaimerHtml, labels) {
   toggleBtn.className = 'ccs-results-toggle-btn';
   toggleWrap.appendChild(toggleBtn);
   block.appendChild(toggleWrap);
-
-  const disclaimer = document.createElement('div');
-  disclaimer.className = 'ccs-results-disclaimer';
-  disclaimer.innerHTML = disclaimerHtml;
-  block.appendChild(disclaimer);
 
   return { cardListContainer, toggleWrap, toggleBtn };
 }
@@ -442,33 +429,17 @@ function removePeek(container) {
 /**
  * EDS decorate entry point.
  *
- * Block row mapping (matches _credit-card-results.json model):
- *   Row 0  resultsTitle   — text
- *   Row 1  disclaimerText — richtext
- *
- * Renders independently of the Credit Card Selector block — the two only
- * communicate via document-level custom events (credit-card-filter-applied /
- * credit-card-filter-reset / credit-card-compare-updated), so this block can be
- * placed anywhere on the page relative to the selector.
+ * This block has no authorable fields — it renders independently of the
+ * Credit Card Selector block, the two only communicate via document-level
+ * custom events (credit-card-filter-applied / credit-card-filter-reset /
+ * credit-card-compare-updated), so this block can be placed anywhere on the
+ * page relative to the selector.
  */
 export default async function decorate(block) {
   // UE re-calls decorate when the block is edited — remove any previously built
   // results markup so re-decoration doesn't duplicate content.
-  const existing = [...block.children].filter((child) => !child.classList.contains('ccs-source-row'));
-  existing.forEach((el) => el.remove());
+  [...block.children].forEach((el) => el.remove());
   block.classList.remove('ccs-results');
-
-  const rows = [...block.children];
-  const readRowText = (row) => row?.querySelector('p')?.textContent?.trim() ?? '';
-  const readRowHtml = (row) => row?.children[1]?.innerHTML?.trim()
-    ?? row?.querySelector('p')?.outerHTML
-    ?? '';
-  const authoredTitle = readRowText(rows[0]);
-  const disclaimerHtml = readRowHtml(rows[1]);
-
-  // Hide the authored source row via CSS class instead of removing it, so
-  // Universal Editor instrumentation on it survives re-decoration.
-  rows.forEach((row) => { row.classList.add('ccs-source-row'); });
 
   const doc = block.ownerDocument;
   const lang = getLang();
@@ -479,7 +450,6 @@ export default async function decorate(block) {
 
   const isTH = lang === 'th';
   const labels = {
-    resultsTitle: authoredTitle || ph.cardResultsTitle || (isTH ? 'บัตรหลากหลายเหมาะกับทุกไลฟ์สไตล์' : 'A range of cards to suit all lifestyles'),
     noResultsFound: ph.cardNoResultsFound || (isTH ? 'ไม่พบผลลัพธ์' : 'No Results Found'),
     seeLess: ph.cardSeeLess || (isTH ? 'ดูน้อยลง' : 'See less'),
     seeMore: ph.cardSeeMore || (isTH ? 'ดูเพิ่มเติม' : 'See more'),
@@ -495,7 +465,7 @@ export default async function decorate(block) {
 
   const {
     cardListContainer, toggleWrap, toggleBtn,
-  } = populateResultsBlock(block, disclaimerHtml, labels);
+  } = populateResultsBlock(block);
 
   // ── State ──────────────────────────────────────────────────────────────────
   let isExpanded = false;

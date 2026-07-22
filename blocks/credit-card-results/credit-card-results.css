@@ -7,61 +7,12 @@
    overrides and result-specific elements are styled here.
    ========================================================================== */
 
-.credit-card-results .ccs-source-row {
-  display: none;
-}
-
 /* ── Block wrapper ──────────────────────────────────────────────────────────── */
 
 .ccs-results {
   font-family: var(--bbl-font-family-primary);
   padding: var(--bbl-space-400) var(--bbl-space-200);
   background: var(--bbl-color-white);
-}
-
-/* ── Section header ────────────────────────────────────────────────────────── */
-
-.ccs-results-header {
-  margin-bottom: var(--bbl-space-350);
-  text-align: center;
-}
-
-.ccs-results-title {
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-h3-mobile);
-  font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-black);
-  margin: 0;
-  line-height: 1.2;
-}
-
-/* This title is built by JS deep inside the block's own markup, not as a
-   direct child of .default-content-wrapper, so the global
-   .section.underline-title rule (styles/main.css) never reaches it —
-   mirror that same underline treatment here, scoped to this title. It's
-   always centered (.ccs-results-header is text-align: center), so this
-   always uses the centered underline positioning. */
-.section.underline-title .ccs-results-title {
-  position: relative;
-  display: inline-block;
-  padding-bottom: var(--bbl-space-250);
-}
-
-.section.underline-title .ccs-results-title::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: var(--bbl-space-1000);
-  height: 0.0625rem;
-  background-color: var(--bbl-color-grey-150);
-}
-
-@media (width > 47.5rem) {
-  .section.underline-title .ccs-results-title {
-    padding-bottom: 1.875rem;
-  }
 }
 
 /* ==========================================================================
@@ -252,25 +203,9 @@
   transform: rotate(180deg);
 }
 
-/* ── Disclaimer ────────────────────────────────────────────────────────────── */
-
-.ccs-results-disclaimer {
-  margin-top: var(--bbl-space-300);
-  padding-top: var(--bbl-space-300);
-  border-top: 0.0625rem solid var(--bbl-color-grey-30);
-  font-size: var(--bbl-font-size-b1);
-  color: var(--bbl-color-grey-85);
-  line-height: 1.6;
-}
-
 @media (width > 47.5rem) {
   .ccs-results {
     padding: var(--bbl-space-600);
-  }
-
-  .ccs-results-title {
-    font-size: var(--bbl-font-size-h1-desktop);
-    line-height: var(--bbl-line-height-heading-tight);
   }
 
   .ccs-scroll-dots {
@@ -302,11 +237,6 @@
 @media (width > 64rem) {
   .ccs-results {
     padding: var(--bbl-space-600) var(--bbl-space-200);
-  }
-
-  .ccs-results-title {
-    font-size: var(--bbl-font-size-h1-desktop);
-    line-height: var(--bbl-line-height-heading-tight);
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 {
