@@ -304,7 +304,7 @@
   }
 
   .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
-    flex-basis: calc((34.4% - 40px));
+    flex-basis: calc((41.3% - 40px));
     max-width: 22.5rem;
   }
 }
