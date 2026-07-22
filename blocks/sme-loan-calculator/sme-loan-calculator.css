@@ -369,16 +369,18 @@ main {
   font-weight: 400;
   color: var(--bbl-color-grey-100);
   margin: 0 0 2rem;
-  padding-bottom: 0;
+  padding-top: 1.5625rem;
+  padding-bottom: 1.5625rem;
 }
 
+/* Margin-top acts as the heading text's bottom padding without adding space below the rule itself. */
 .sme-calc-table-heading::after {
   content: '';
   display: block;
   width: 5rem;
   height: 0.0625rem;
   background: var(--bbl-color-grey-60);
-  margin: 1rem auto 0;
+  margin: 1.5625rem auto 0;
 }
 
 .resulttbl {
