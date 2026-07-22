@@ -64,11 +64,6 @@
   grid-column: span 12;
 }
 
-.credit-card-form .section .default-content-wrapper :is(h1, h2, h3, h4, h5, h6):not(.footer-wrapper :is(h1, h2, h3, h4, h5, h6)) {
-  color: var(--bbl-color-black);
-  font-size: var(--bbl-form-font-size-22);
-}
-
 @media (width > 47.5rem) {
   .credit-card-form main .section.form-container.custom-forms .form form :is(.field-name, .field-surname) {
     grid-column: span 6;
@@ -76,9 +71,5 @@
 
   .credit-card-form main .section.form-container.custom-forms .form form .field-callback select {
     font-size: 0.95rem;
-  }
-
-  .credit-card-form .section .default-content-wrapper :is(h1, h2, h3, h4, h5, h6):not(.footer-wrapper :is(h1, h2, h3, h4, h5, h6)) {
-    font-size: var(--bbl-form-font-size-48);
   }
 }
