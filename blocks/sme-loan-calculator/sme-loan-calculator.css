@@ -407,6 +407,10 @@ main {
   border-bottom: 0.125rem solid var(--bbl-color-gray-122);
 }
 
+.tablelong.fontcomparetable thead tr:first-child .lineth {
+  white-space: nowrap;
+}
+
 .tablelong.fontcomparetable .lineth-inner {
   display: block;
 }
@@ -424,8 +428,8 @@ main {
 }
 
 .tablelong.fontcomparetable thead tr:last-child .lineth {
-  font-size: 0.8125rem;
-  color: var(--bbl-color-grey-140);
+  font-size: var(--bbl-body-b1-size);
+  color: var(--bbl-color-black);
   border-bottom: 0.125rem solid var(--bbl-color-grey-125);
 }
 
