@@ -94,6 +94,7 @@
   font-size: 0.875rem;
   text-align: right;
   width: 25%;
+  white-space: nowrap;
 }
 
 .market-report-page .table table tr td:first-child {

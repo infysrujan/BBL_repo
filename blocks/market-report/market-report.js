@@ -245,6 +245,18 @@ function tableUsesHeaderRowClass(table) {
 }
 
 /**
+ * Prefix a positive numeric value with "+" (negative values already carry
+ * their own "-" from the API; non-numeric/zero values pass through unchanged).
+ * @param {string} value
+ * @returns {string}
+ */
+function withSign(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return value;
+  return `+${value}`;
+}
+
+/**
  * @param {HTMLTableElement} table
  * @param {string} tableId
  * @param {Array<{ mktvalue: string }> | undefined} tableData
@@ -260,7 +272,7 @@ function populateHeaderClassTable(table, tableId, tableData) {
       for (let j = 1; j < tds.length - 1; j += 1) {
         const dataIndex = i * (tds.length - 2) + (j - 1);
         if (tableData[dataIndex]) {
-          tds[j].textContent = tableData[dataIndex].mktvalue;
+          tds[j].textContent = withSign(tableData[dataIndex].mktvalue);
         }
       }
     });
@@ -274,6 +286,8 @@ function populateHeaderClassTable(table, tableId, tableData) {
       if (tableData[dataIndex]) {
         if (tableId === 'GTHB' || tableId === 'USTS' || tableId === 'TSB') {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
+        } else if (tableId === 'WI' && j === 2) {
+          tds[j].textContent = withSign(tableData[dataIndex].mktvalue);
         } else {
           tds[j].textContent = tableData[dataIndex].mktvalue;
         }
@@ -324,6 +338,8 @@ function populateStandardLayoutTable(table, tableId, tableData) {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
         } else if (tableId === 'RR') {
           tds[j].textContent = `${tableData[dataIndex].mktvalue} Baht`;
+        } else if (tableId === 'WI' && j === 2) {
+          tds[j].textContent = withSign(tableData[dataIndex].mktvalue);
         } else {
           tds[j].textContent = tableData[dataIndex].mktvalue;
         }
