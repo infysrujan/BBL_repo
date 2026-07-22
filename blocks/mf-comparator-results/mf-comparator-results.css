@@ -44,7 +44,6 @@
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  padding: var(--bbl-space-100) var(--bbl-space-container-xs);
 }
 
 .mf-comparator-results .mfcr-grid::-webkit-scrollbar {
@@ -267,7 +266,6 @@
     scroll-snap-type: none;
     justify-content: center;
     gap: 0 var(--bbl-space-250);
-    padding: 0 var(--bbl-space-container-md);
   }
 
   .mf-comparator-results .mfcr-card {
@@ -281,8 +279,7 @@
   }
 
   .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
-    flex: 0 0 14.5625rem;
-    max-width: 22.5rem;
+    flex-basis: calc((34.4% - 20px));
   }
 
   .mf-comparator-results .mfcr-scroll-dots {
@@ -307,7 +304,7 @@
   }
 
   .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
-    flex: 0 0 18.875rem;
+    flex-basis: calc((34.4% - 40px));
     max-width: 22.5rem;
   }
 }
