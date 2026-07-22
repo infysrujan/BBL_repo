@@ -340,7 +340,6 @@ function setupPanel(
   });
 
   const isDesktop = () => window.matchMedia('(width > 64rem)').matches;
-
   function makeSingleSelect(filterAttr, stateKey, defaultLabel) {
     panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`).forEach((opt) => {
       opt.addEventListener('click', () => {
@@ -350,7 +349,8 @@ function setupPanel(
         const labelEl = panel.querySelector(
           `[data-filter="${filterAttr}"] .promo-selector-filter-label`,
         );
-        if (isActive) {
+        const isDefaultVal = opt.dataset.value === '';
+        if (isActive || isDefaultVal) {
           state[stateKey] = '';
           labelEl.textContent = defaultLabel;
         } else {
@@ -364,7 +364,6 @@ function setupPanel(
       });
     });
   }
-
   makeSingleSelect('subcategory', 'subcategory', labelCategory);
   makeSingleSelect('cardType', 'cardType', labelCardType);
   makeSingleSelect('area', 'area', labelArea);

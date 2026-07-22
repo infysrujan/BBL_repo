@@ -34,6 +34,24 @@ function fmtPct(val) {
   return Number.isNaN(n) ? val : `${n.toFixed(2)}%`;
 }
 
+// Tolerates minor authoring variations like {{ SYMBOL }} or {{symbol}}, and
+// warns instead of silently 404ing when the template is missing the token.
+const SYMBOL_PLACEHOLDER = /\{\{\s*SYMBOL\s*\}\}/i;
+
+function buildDownloadHref(downloadUrl, symbol) {
+  if (!downloadUrl) return '';
+  if (!SYMBOL_PLACEHOLDER.test(downloadUrl)) {
+    // eslint-disable-next-line no-console
+    console.warn('dynamic-board: download URL is missing a {{SYMBOL}} placeholder:', downloadUrl);
+    return downloadUrl;
+  }
+  const resolved = downloadUrl.replace(SYMBOL_PLACEHOLDER, symbol.toLowerCase());
+  // A path missing its leading slash resolves relative to the current page's
+  // directory (e.g. /en/...) instead of the site root, so force it root-relative
+  // here rather than relying on every config value being typed exactly right.
+  return /^(https?:)?\//.test(resolved) ? resolved : `/${resolved}`;
+}
+
 // ─── sort helper ──────────────────────────────────────────────────────────────
 function sortValue(rate, key) {
   if (key === 'REMAIN_TERM') return remainTermToMonths(rate.REMAIN_TERM || '00.00.00');
@@ -154,7 +172,7 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
       <td class="db-td-num db-td-maturity">
         ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}
-        <a class="db-td-dl" href="${state.downloadUrl.replace('{{SYMBOL}}', sym.toLowerCase())}" download aria-label="Download ${sym} factsheet">
+        <a class="db-td-dl" href="${buildDownloadHref(state.downloadUrl, sym)}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
         </a>
       </td>
@@ -503,6 +521,7 @@ function printElement(block) {
     '.db-go-btn',
     '.db-sort-icon',
     '.db-td-check',
+    '.db-th-download',
     '.db-td-dl',
   ].join(', ')).forEach((el) => el.remove());
 
@@ -823,9 +842,13 @@ export default async function decorate(block) {
   const isGov = authoring.boardType.toLowerCase().includes('government');
   state.api = createApiService(configs, authoring.boardType);
   state.placeholders = placeholders;
-  state.downloadUrl = isGov
+  // Relative /content/dam paths resolve directly on this domain (same as the
+  // download-file block's authored links), so no base URL needs prepending.
+  state.downloadUrl = (isGov
     ? configs?.dynamicBoardCorpBondDownloadUrl
-    : configs?.dynamicBoardBondRatesDownloadUrl;
+    : configs?.dynamicBoardBondRatesDownloadUrl) || '';
+  // eslint-disable-next-line no-console
+  console.log('Config Download URL:', state.downloadUrl);
   state.isGov = isGov;
   state.isThai = language === 'th';
   state.columns = parseTableHeading(authoring.tableHeadingEl, isGov);
