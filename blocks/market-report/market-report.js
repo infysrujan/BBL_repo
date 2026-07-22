@@ -401,9 +401,7 @@ function appendMktValuesAsHtml(container, rows) {
  * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
  */
 export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
-  // The heading is a sibling of tableWrapper (both direct children of the tab
-  // panel), not a descendant of it — search from the shared parent instead.
-  const row = tableWrapper.parentElement?.querySelector('#fx-market-outlook---written-by');
+  const row = tableWrapper.children[0]
   if (!row) return;
   const { heading, para } = appendMktValuesAsHtml(row, tableData.FXMO);
   if (heading) wrapperDiv.appendChild(heading);
@@ -416,9 +414,7 @@ export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
  * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
  */
 export function populateTbmo(tableWrapper, tableData, wrapperDiv) {
-  // Same as populateFxmo — the heading is a sibling of tableWrapper, not a
-  // descendant, so search from the shared parent instead.
-  const row = tableWrapper.parentElement?.querySelector('#thb-bonds-market-outlook---written-by');
+  const row = tableWrapper.children[0]
   if (!row) return;
   const { heading, para } = appendMktValuesAsHtml(row, tableData.TBMO);
   if (heading) wrapperDiv.appendChild(heading);
