@@ -316,6 +316,7 @@ function buildCardBlock(funds, doc, labels) {
     buttonWrapper.className = 'cards-list-button';
     const link = doc.createElement('a');
     link.href = readMoreUrl || '#';
+    link.className = 'button-m primary';
     link.textContent = labels.readMore;
     buttonWrapper.appendChild(link);
     inner.appendChild(buttonWrapper);
@@ -339,7 +340,7 @@ function addCompareButtons(blockEl, doc, labels) {
     if (h3?.dataset?.compareEnabled === 'false') return;
     const btn = doc.createElement('button');
     btn.type = 'button';
-    btn.className = 'mfr-compare-btn';
+    btn.className = 'mfr-compare-btn button-m secondary';
     btn.textContent = labels.compare;
     btn.dataset.cardName = h3?.textContent?.trim() ?? '';
     btn.dataset.cardId = h3?.dataset?.cardId ?? '';
