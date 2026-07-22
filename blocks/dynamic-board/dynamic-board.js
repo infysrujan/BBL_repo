@@ -554,6 +554,8 @@ function printElement(block) {
   const logoSrc = logoImg.currentSrc || logoImg.src;
   const brandLogo = `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoImg.alt || 'Bangkok Bank')}">`;
 
+  const pageTitle = document.querySelector('h1')?.textContent?.trim() || 'Print';
+
   const printWindow = window.open('', '', 'height=500,width=800');
 
   const printCss = `
@@ -753,7 +755,7 @@ function printElement(block) {
   <html lang="en">
     <head>
       <meta charset="utf-8"/>
-      <title>Print</title>
+      <title>${escapeHtml(pageTitle)}</title>
       <link rel="stylesheet" href="/styles/styles.css">
       <link rel="stylesheet" href="/styles/fonts.css">
       <link rel="stylesheet" href="/blocks/header/header.css">
