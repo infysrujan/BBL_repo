@@ -7,6 +7,10 @@
    overrides and result-specific elements are styled here.
    ========================================================================== */
 
+.credit-card-results .ccs-source-row {
+  display: none;
+}
+
 /* ── Block wrapper ──────────────────────────────────────────────────────────── */
 
 .ccs-results {
@@ -201,6 +205,17 @@
 
 .ccs-results-toggle-btn[aria-expanded="true"] .icon-dropdown {
   transform: rotate(180deg);
+}
+
+/* ── Disclaimer ────────────────────────────────────────────────────────────── */
+
+.ccs-results-disclaimer {
+  margin-top: var(--bbl-space-300);
+  padding-top: var(--bbl-space-300);
+  border-top: 0.0625rem solid var(--bbl-color-grey-30);
+  font-size: var(--bbl-font-size-b1);
+  color: var(--bbl-color-grey-85);
+  line-height: 1.6;
 }
 
 @media (width > 47.5rem) {

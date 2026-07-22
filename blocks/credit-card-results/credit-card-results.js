@@ -287,7 +287,7 @@ function addCompareButtons(blockEl, doc, labels) {
 // ── Results block DOM ──────────────────────────────────────────────────────────
 
 /** Build the results markup directly into this block's own root element. */
-function populateResultsBlock(block) {
+function populateResultsBlock(block, disclaimerHtml) {
   block.classList.add('ccs-results');
 
   const cardListContainer = document.createElement('div');
@@ -301,6 +301,13 @@ function populateResultsBlock(block) {
   toggleBtn.className = 'ccs-results-toggle-btn';
   toggleWrap.appendChild(toggleBtn);
   block.appendChild(toggleWrap);
+
+  if (disclaimerHtml) {
+    const disclaimer = document.createElement('div');
+    disclaimer.className = 'ccs-results-disclaimer';
+    disclaimer.innerHTML = disclaimerHtml;
+    block.appendChild(disclaimer);
+  }
 
   return { cardListContainer, toggleWrap, toggleBtn };
 }
@@ -429,17 +436,30 @@ function removePeek(container) {
 /**
  * EDS decorate entry point.
  *
- * This block has no authorable fields — it renders independently of the
- * Credit Card Selector block, the two only communicate via document-level
- * custom events (credit-card-filter-applied / credit-card-filter-reset /
- * credit-card-compare-updated), so this block can be placed anywhere on the
- * page relative to the selector.
+ * Block row mapping (matches _credit-card-results.json model):
+ *   Row 0  disclaimerText — richtext
+ *
+ * Renders independently of the Credit Card Selector block — the two only
+ * communicate via document-level custom events (credit-card-filter-applied /
+ * credit-card-filter-reset / credit-card-compare-updated), so this block can be
+ * placed anywhere on the page relative to the selector.
  */
 export default async function decorate(block) {
   // UE re-calls decorate when the block is edited — remove any previously built
   // results markup so re-decoration doesn't duplicate content.
-  [...block.children].forEach((el) => el.remove());
+  const existing = [...block.children].filter((child) => !child.classList.contains('ccs-source-row'));
+  existing.forEach((el) => el.remove());
   block.classList.remove('ccs-results');
+
+  const rows = [...block.children];
+  const readRowHtml = (row) => row?.children[1]?.innerHTML?.trim()
+    ?? row?.querySelector('p')?.outerHTML
+    ?? '';
+  const disclaimerHtml = readRowHtml(rows[0]);
+
+  // Hide the authored source row via CSS class instead of removing it, so
+  // Universal Editor instrumentation on it survives re-decoration.
+  rows.forEach((row) => { row.classList.add('ccs-source-row'); });
 
   const doc = block.ownerDocument;
   const lang = getLang();
@@ -465,7 +485,7 @@ export default async function decorate(block) {
 
   const {
     cardListContainer, toggleWrap, toggleBtn,
-  } = populateResultsBlock(block);
+  } = populateResultsBlock(block, disclaimerHtml);
 
   // ── State ──────────────────────────────────────────────────────────────────
   let isExpanded = false;

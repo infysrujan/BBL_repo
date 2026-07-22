@@ -19,7 +19,15 @@
   "models": [
     {
       "id": "credit-card-results",
-      "fields": []
+      "fields": [
+        {
+          "component": "richtext",
+          "name": "disclaimerText",
+          "value": "",
+          "label": "Disclaimer Text",
+          "valueType": "string"
+        }
+      ]
     }
   ],
   "filters": []
