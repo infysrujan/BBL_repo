@@ -351,6 +351,8 @@ export default async function decorate(block) {
     wc: placeholders.smeResultColWc || 'Working Capital',
   };
 
+  const fieldHeaderLabel = (f) => (f.id === 'n' ? (placeholders.smeResultColTerm || f.label) : f.label);
+
   const resulttbl = el('div', 'resulttbl');
   const table = el('table', 'tablelong fontcomparetable');
   const thead = document.createElement('thead');
@@ -363,9 +365,9 @@ export default async function decorate(block) {
     fieldGroups.forEach((group) => {
       if (group.header && group.fields.length > 1) {
         appendTh(row1, group.header, { colSpan: group.fields.length });
-        group.fields.forEach((f) => appendTh(row2, f.label));
+        group.fields.forEach((f) => appendTh(row2, fieldHeaderLabel(f)));
       } else {
-        group.fields.forEach((f) => appendTh(row1, f.label, { rowSpan: 2 }));
+        group.fields.forEach((f) => appendTh(row1, fieldHeaderLabel(f), { rowSpan: 2 }));
       }
     });
     thead.appendChild(row1);
@@ -373,7 +375,7 @@ export default async function decorate(block) {
   } else {
     const headerRow = document.createElement('tr');
     appendTh(headerRow, resultColHeader[calcType]);
-    fields.forEach((f) => appendTh(headerRow, f.label));
+    fields.forEach((f) => appendTh(headerRow, fieldHeaderLabel(f)));
     thead.appendChild(headerRow);
   }
 
