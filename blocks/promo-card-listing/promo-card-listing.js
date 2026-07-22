@@ -340,7 +340,6 @@ function setupPanel(
   });
 
   const isDesktop = () => window.matchMedia('(width > 64rem)').matches;
-
   function makeSingleSelect(filterAttr, stateKey, defaultLabel) {
     panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`).forEach((opt) => {
       opt.addEventListener('click', () => {
@@ -361,7 +360,6 @@ function setupPanel(
       });
     });
   }
-
   makeSingleSelect('subcategory', 'subcategory', labelCategory);
   makeSingleSelect('cardType', 'cardType', labelCardType);
   makeSingleSelect('area', 'area', labelArea);
