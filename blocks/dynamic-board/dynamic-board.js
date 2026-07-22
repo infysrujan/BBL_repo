@@ -554,7 +554,8 @@ function printElement(block) {
   const logoSrc = logoImg.currentSrc || logoImg.src;
   const brandLogo = `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoImg.alt || 'Bangkok Bank')}">`;
 
-  const pageTitle = document.querySelector('h1')?.textContent?.trim() || 'Print';
+  const pageTitle = section.querySelector('.default-content-wrapper > :is(h1, h2, h3, h4, h5, h6)')
+    ?.textContent?.trim() || document.querySelector('h1')?.textContent?.trim() || 'Print';
 
   const printWindow = window.open('', '', 'height=500,width=800');
 
