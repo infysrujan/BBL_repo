@@ -351,7 +351,15 @@ export default async function decorate(block) {
     wc: placeholders.smeResultColWc || 'Working Capital',
   };
 
-  const fieldHeaderLabel = (f) => (f.id === 'n' ? (placeholders.smeResultColTerm || f.label) : f.label);
+  // Some table column headers come from placeholders instead of the authored field label.
+  const FIELD_HEADER_PLACEHOLDERS = {
+    n: 'smeResultColTerm',
+    H: 'smeResultColInventory',
+  };
+  const fieldHeaderLabel = (f) => {
+    const key = FIELD_HEADER_PLACEHOLDERS[f.id];
+    return key ? (placeholders[key] || f.label) : f.label;
+  };
 
   // Comparison-table-only column order: under the Account Receivable / Account Payable
   // groups, "Credit Term" swaps with the 3rd column so it renders last. The input form

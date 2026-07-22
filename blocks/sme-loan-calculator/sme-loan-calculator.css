@@ -359,7 +359,8 @@ main {
 .sme-calc-table-section {
   margin-top: 0;
   background: var(--bbl-color-white);
-  padding: 2.5rem 3rem 3rem;
+  padding-block: 2.5rem 3rem;
+  padding-inline: 1rem;
 }
 
 .sme-calc-table-heading {
@@ -409,6 +410,7 @@ main {
 
 .tablelong.fontcomparetable .lineth-inner {
   display: block;
+  white-space: nowrap;
 }
 
 .tablelong.fontcomparetable th.lineth[rowspan] .lineth-inner {
@@ -499,6 +501,10 @@ main {
     align-items: flex-start;
   }
 
+  .sme-calc-table-section {
+    padding-inline: 3rem;
+  }
+
 }
 
 /* ── Desktop: 3-column field layout ──────────────────────── */
@@ -527,5 +533,9 @@ main {
     max-width: calc((100% - 2rem) / 3);
     min-width: 12.5rem;
     width: auto;
+  }
+
+  .sme-calc-table-section {
+    padding-inline: 5.25rem;
   }
 }
