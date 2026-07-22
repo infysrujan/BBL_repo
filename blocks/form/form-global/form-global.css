@@ -146,7 +146,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > legend
   font-size: var(--form-fieldset-legend-font-size);
   font-weight: var(--form-fieldset-legend-font-weight);
   line-height: var(--bbl-heading-h4-line-height);
-  color: var(--form-fieldset-legend-color);
+  color: var(--bbl-color-black);
   text-align: left;
   background: none;
   cursor: default;
@@ -208,7 +208,7 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio
   height: 100%;
   margin: 0;
   padding: 0 var(--bbl-space-100);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-70);
   font-size: var(--bbl-font-size-h4-mobile);
   font-weight: var(--form-label-font-weight);
   line-height: var(--bbl-line-height-h4-mobile);
@@ -359,7 +359,7 @@ main .section.form-container .form form fieldset.panel-wrapper.field-wrapper :is
 /* Reset margin-bottom on paragraphs inside plain-text wrappers to prevent double spacing */
 main .section.form-container .form form .plain-text-wrapper p {
   margin-bottom: 0;
-  text-align: left;
+  text-align: center;
 }
 
 main .section.form-container .form form .tnc-text-decoration p{
