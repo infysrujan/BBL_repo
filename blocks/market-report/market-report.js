@@ -336,14 +336,16 @@ function populateStandardLayoutTable(table, tableId, tableData) {
       if (tableData[dataIndex]) {
         if (tableId === 'MMR' || tableId === 'USIR') {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
-        } else if (tableId === 'RR') {
-          tds[j].textContent = `${tableData[dataIndex].mktvalue}${dataIndex === 0 ? '' : ' Baht'}`;
+        } else if ((tableId === 'RR') && (dataIndex == 0)) {
+          tds[j].textContent = tableData[dataIndex].mktvalue};
+        } else if ((tableId === 'RR') && (dataIndex != 0)) {
+          tds[j].textContent = `${tableData[dataIndex].mktvalue}${' Baht'}`;
         } else {
           tds[j].textContent = tableData[dataIndex].mktvalue;
         }
       }
     }
-  });
+  );
 }
 
 /**
