@@ -53,6 +53,21 @@ export function decorateIconInContainer(container) {
   processIconMarkers([...container.querySelectorAll('p')]);
 }
 
+export function decoratePictureLinks(container) {
+  container.querySelectorAll('picture').forEach((pic) => {
+    const cell = pic.closest('div');
+    if (!cell) return;
+    const anchor = cell.querySelector('a');
+    if (!anchor || anchor.contains(pic)) return;
+    const wrapper = anchor.cloneNode(false);
+    wrapper.removeAttribute('class');
+    pic.parentNode.replaceChild(wrapper, pic);
+    wrapper.appendChild(pic);
+    anchor.remove();
+    cell.querySelectorAll('p:empty').forEach((p) => p.remove());
+  });
+}
+
 export function decorateRteInlineImages(main) {
   main.querySelectorAll(`${DCW} p, ${DCW} li, ${DCW} td`).forEach((el) => {
     if (!el.innerHTML.includes('&amp;nbsp;')) return;
