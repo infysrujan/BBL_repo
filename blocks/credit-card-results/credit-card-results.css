@@ -231,7 +231,6 @@
 .ccs-results-disclaimer {
   margin-top: var(--bbl-space-300);
   padding-top: var(--bbl-space-300);
-  border-top: 0.0625rem solid var(--bbl-color-grey-30);
   font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-85);
   line-height: 1.6;
