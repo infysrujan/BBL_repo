@@ -613,7 +613,7 @@ function styleHeadingsBeforeButtonContainers(panel) {
 function applyTextSmallToTableFollowParagraphs(panel) {
   const followingPTags = panel.querySelectorAll('.table + p');
   followingPTags.forEach((pTag, idx) => {
-    if (idx < followingPTags.length - 1) {
+    if (idx < followingPTags.length) {
       pTag.classList.add('text-small');
     }
   });
