@@ -151,7 +151,7 @@
 @media (width > 64rem) {
   .market-report-col {
     flex-direction: row;
-    gap: 2rem;
+    gap: 20px;
   }
 
   .market-report-col-left .market-report-col > div {
