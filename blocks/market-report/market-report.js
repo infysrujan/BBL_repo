@@ -286,6 +286,8 @@ function populateHeaderClassTable(table, tableId, tableData) {
       if (tableData[dataIndex]) {
         if (tableId === 'GTHB' || tableId === 'USTS' || tableId === 'TSB') {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
+        } else if (tableId === 'WI' && j === 2) {
+          tds[j].textContent = withSign(tableData[dataIndex].mktvalue);
         } else {
           tds[j].textContent = tableData[dataIndex].mktvalue;
         }
@@ -336,8 +338,6 @@ function populateStandardLayoutTable(table, tableId, tableData) {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
         } else if (tableId === 'RR') {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}${dataIndex === 0 ? '' : ' Baht'}`;
-        } else if (tableId === 'WI' && j === 2) {
-          tds[j].textContent = withSign(tableData[dataIndex].mktvalue);
         } else {
           tds[j].textContent = tableData[dataIndex].mktvalue;
         }
