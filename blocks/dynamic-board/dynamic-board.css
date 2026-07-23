@@ -443,7 +443,7 @@
   border-radius: var(--bbl-rounded-full);
   color: var(--bbl-color-gray-142);
   cursor: pointer;
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.2875rem;
   line-height: 1;
 }
 
