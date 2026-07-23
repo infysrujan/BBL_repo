@@ -330,22 +330,26 @@ function populateStandardLayoutTable(table, tableId, tableData) {
   }
 
   rows.forEach((row, i) => {
-    const tds = row.querySelectorAll('td');
+    const tds = row.querySelectorAll("td");
+
     for (let j = 1; j < tds.length; j += 1) {
       const dataIndex = i * (tds.length - 1) + (j - 1);
+
       if (tableData[dataIndex]) {
-        if (tableId === 'MMR' || tableId === 'USIR') {
+        if (tableId === "MMR" || tableId === "USIR") {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
-        } else if ((tableId === 'RR') && (dataIndex == 0)) {
-          tds[j].textContent = tableData[dataIndex].mktvalue};
-        } else if ((tableId === 'RR') && (dataIndex != 0)) {
-          tds[j].textContent = `${tableData[dataIndex].mktvalue}${' Baht'}`;
+        } else if (tableId === "RR" && dataIndex == 0) {
+          tds[j].textContent = tableData[dataIndex].mktvalue;
+        } else if (tableId === "RR" && dataIndex != 0) {
+          tds[j].textContent =
+            `${withSign(tableData[dataIndex].mktvalue)} Baht`;
         } else {
           tds[j].textContent = tableData[dataIndex].mktvalue;
         }
       }
     }
-  );
+  });
+ 
 }
 
 /**

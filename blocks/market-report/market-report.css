@@ -73,6 +73,7 @@
   font-weight: var(--bbl-font-weight-regular);
   line-height: var(--bbl-body-b1-line-height);
   color: var(--bbl-color-black);
+margin-bottom: 0;
 }
 
 .market-report-page a.print-button.icon-print {
