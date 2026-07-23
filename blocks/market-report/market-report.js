@@ -771,7 +771,7 @@ function createMarketReportTopRow(formattedDate) {
   const topRow = document.createElement('div');
   topRow.className = 'market-report-top-row';
 
-  const dateDiv = document.createElement('div');
+  const dateDiv = document.createElement('h3');
   dateDiv.className = 'market-report-date';
   dateDiv.textContent = formattedDate;
 
