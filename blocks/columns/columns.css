@@ -3,6 +3,10 @@
   flex-direction: column;
 }
 
+.columns.block:has(a) a {
+  color: #000;
+}
+
 .columns img {
   width: 100%;
 }
@@ -19,6 +23,7 @@
   display: block;
 }
  
+/* stylelint-disable no-descending-specificity */
 .section.center-image .columns-2-cols .columns-img-col,
 .section.center-image .columns-3-cols .columns-img-col,
 .section.center-image .columns-3-cols > div > div:has(> p > picture) {
@@ -44,6 +49,30 @@
   justify-content: center;
   flex-direction: row;
   gap: var(--bbl-space-050);
+}
+
+.columns.columns-2-cols:has(.columns-img-col):has(p) {
+  display: flex;
+  flex-direction: row;
+}
+
+.columns.columns-2-cols:has(.columns-img-col):has(p) .columns-img-col,
+.columns.columns-2-cols:has(.columns-img-col):has(p) .columns-img-col + div {
+  padding-top: 0.3125rem;
+  padding-bottom: 0.3125rem;
+}
+
+.columns.columns-2-cols:has(.columns-img-col):has(p) .columns-img-col {
+  padding-right: 0.625rem;
+}
+
+.columns.columns-2-cols:has(.columns-img-col):has(p) .columns-img-col + div {
+  padding-left: 1.25rem;
+}
+
+.columns.columns-2-cols:has(.columns-img-col):has(p) .columns-img-col + div p {
+  margin: 0;
+  line-height: 1.4612rem;
 }
 
 @media (width >= 1025px) {
