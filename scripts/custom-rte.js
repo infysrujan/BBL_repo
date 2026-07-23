@@ -54,17 +54,21 @@ export function decorateIconInContainer(container) {
 }
 
 export function decoratePictureLinks(container) {
-  container.querySelectorAll('picture').forEach((pic) => {
-    const cell = pic.closest('div');
-    if (!cell) return;
-    const anchor = cell.querySelector('a');
-    if (!anchor || anchor.contains(pic)) return;
-    const wrapper = anchor.cloneNode(false);
-    wrapper.removeAttribute('class');
-    pic.parentNode.replaceChild(wrapper, pic);
-    wrapper.appendChild(pic);
-    anchor.remove();
-    cell.querySelectorAll('p:empty').forEach((p) => p.remove());
+  container.querySelectorAll('p').forEach((markerP) => {
+    if (!/#imagelink/i.test(markerP.textContent.trim())) return;
+    const picture = markerP.previousElementSibling?.querySelector('picture')
+      ?? markerP.nextElementSibling?.querySelector('picture');
+    if (!picture) return;
+    markerP.remove();
+    const picP = picture.closest('p');
+    const linkP = picP.nextElementSibling ?? picP.closest('.has-inline-icon')?.nextElementSibling;
+    const anchor = linkP?.querySelector('a');
+    if (!anchor) return;
+    const link = anchor.cloneNode(false);
+    link.removeAttribute('class');
+    picture.replaceWith(link);
+    link.append(picture);
+    linkP.remove();
   });
 }
 

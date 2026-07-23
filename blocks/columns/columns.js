@@ -18,6 +18,6 @@ export default function decorate(block) {
     });
   });
 
-  decoratePictureLinks(block);
   decorateIconInContainer(block);
+  decoratePictureLinks(block);
 }
