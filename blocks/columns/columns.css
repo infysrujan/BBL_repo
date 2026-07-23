@@ -59,7 +59,7 @@
 }
 
 .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) p.button-container {
-  margin: 20px 0 0;
+  margin: var(--bbl-space-250) 0 0;
 }
 
 @media (width >= 47.5rem) {
@@ -82,7 +82,7 @@
   }
 
   .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) {
-    gap: 20px;
+    gap: var(--bbl-space-250);
   }
 
   .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) > div {
