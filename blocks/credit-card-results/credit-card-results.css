@@ -238,8 +238,12 @@
 }
 
 @media (width > 47.5rem) {
+  /* Horizontal padding dropped here — the ambient .section wrapper (main.css)
+     already applies 48px of padding-inline at this breakpoint, so adding more
+     here was double-padding the content and starving the 3-card grid of the
+     width it needs. Vertical padding is kept for spacing above/below cards. */
   .ccs-results {
-    padding: var(--bbl-space-600) var(--bbl-space-200);
+    padding: var(--bbl-space-600) 0;
   }
 
   .ccs-scroll-dots {
@@ -248,12 +252,13 @@
 
   /* display: grid guarantees exactly 3 columns regardless of container width
      (flex just fits as many fixed-width items as the space allows, which let
-     a 4th card sneak onto the row on wider viewports). Cards are slightly
-     narrower than their desktop size (14.5rem vs 15.5rem) so all 3 fit inside
-     a 768px tablet viewport with normal padding/gap, no cropping or scroll. */
+     a 4th card sneak onto the row on wider viewports). Cards are narrower
+     than their desktop size (13.5rem vs 15.5rem) so all 3 fit inside a 768px
+     tablet viewport once the .section wrapper's own padding is accounted
+     for, with no cropping or scroll. */
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     display: grid;
-    grid-template-columns: repeat(3, 14.5rem);
+    grid-template-columns: repeat(3, 13.5rem);
     justify-content: center;
     gap: var(--bbl-space-150);
     overflow: visible;
