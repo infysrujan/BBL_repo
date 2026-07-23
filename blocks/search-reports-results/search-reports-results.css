@@ -29,8 +29,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: var(--bbl-space-500);
-  height: var(--bbl-space-500);
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: var(--bbl-radius-full);
   border: 0.0938rem solid var(--bbl-color-white-alpha-60);
   background: transparent;
@@ -58,7 +58,7 @@
 }
 
 .search-reports-results .srr-title-divider {
-  width: var(--bbl-space-600);
+  width: 3rem;
   height: 0.0625rem;
   background: var(--bbl-color-grey-40);
   margin: 0 auto var(--bbl-space-400);
@@ -123,7 +123,7 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: var(--bbl-space-350);
+  width: 1.75rem;
   height: 0.0625rem;
   background: var(--bbl-color-black);
 }
@@ -193,8 +193,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--bbl-space-400);
-  height: var(--bbl-space-400);
+  width: 2rem;
+  height: 2rem;
   flex-shrink: 0;
   flex-grow: 0;
   padding-bottom: 1.5rem;
@@ -209,7 +209,7 @@
   justify-content: center;
   box-shadow: none;
   max-height: none;
-  height: var(--bbl-space-400);
+  height: 2rem;
   line-height: normal;
   padding: var(--bbl-space-050);
 }
@@ -297,7 +297,7 @@
 
 .srr-preview-overlay .srr-preview-logo img {
   display: block;
-  height: var(--bbl-space-500);
+  height: 2.5rem;
   width: auto;
 }
 
@@ -305,8 +305,8 @@
   background: transparent;
   border: 0.0938rem solid var(--bbl-color-white-alpha-60);
   cursor: pointer;
-  width: var(--bbl-space-500);
-  height: var(--bbl-space-500);
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: var(--bbl-radius-full);
   display: flex;
   align-items: center;
