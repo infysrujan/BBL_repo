@@ -272,9 +272,9 @@ function buildCardBlock(cards, doc, lang, labels) {
 function addCompareButtons(blockEl, doc, labels) {
   blockEl.querySelectorAll('.cards-list-button').forEach((wrapper) => {
     const item = wrapper.closest('.cards-list-item');
-    const btn = doc.createElement('button');
-    btn.type = 'button';
-    btn.className = 'ccs-compare-btn button-m secondary';
+    const btn = doc.createElement('a');
+    btn.href = '#';
+    btn.className = 'ccs-compare-btn';
     btn.textContent = labels.compare;
     const h3 = item?.querySelector('h3');
     btn.dataset.cardName = h3?.textContent?.trim() ?? '';
@@ -595,6 +595,7 @@ export default async function decorate(block) {
   block.addEventListener('click', (e) => {
     const btn = e.target.closest('.ccs-compare-btn');
     if (!btn) return;
+    e.preventDefault();
 
     window.ccsSelectedCards = window.ccsSelectedCards || [];
     const { cardName, cardImage, cardId } = btn.dataset;

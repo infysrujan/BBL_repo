@@ -36,7 +36,8 @@
 }
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small img {
-  width: 14.4156rem;
+  width: 100%;
+  max-width: 14.4156rem;
   height: 9.6875rem;
   min-width: unset;
   object-fit: contain;
@@ -75,8 +76,26 @@
   display: none;
 }
 
+.card-list.credit-card .cards-list-button .button-m {
+  height: 2.75rem;
+}
+
 .card-list.credit-card .ccs-compare-btn {
-  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 2.75rem;
+  margin: 0.625rem 0 0;
+  padding: 0.3125rem 0;
+  background: var(--bbl-color-white);
+  color: var(--bbl-color-active-blue);
+  border: 0.125rem solid var(--bbl-color-active-blue);
+  border-radius: var(--bbl-rounded-100);
+  font-family: var(--bbl-font-family-primary);
+  font-size: var(--bbl-body-b1-size);
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .card-list.credit-card .ccs-compare-btn.is-comparing {
@@ -220,7 +239,7 @@
 
 @media (width > 47.5rem) {
   .ccs-results {
-    padding: var(--bbl-space-600);
+    padding: var(--bbl-space-600) var(--bbl-space-200);
   }
 
   .ccs-scroll-dots {
@@ -229,13 +248,14 @@
 
   /* display: grid guarantees exactly 3 columns regardless of container width
      (flex just fits as many fixed-width items as the space allows, which let
-     a 4th card sneak onto the row on wider viewports) — justify-content
-     centers the 3-column track with leftover space on either side. */
+     a 4th card sneak onto the row on wider viewports). Cards are slightly
+     narrower than their desktop size (14.5rem vs 15.5rem) so all 3 fit inside
+     a 768px tablet viewport with normal padding/gap, no cropping or scroll. */
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     display: grid;
-    grid-template-columns: repeat(3, 15.5rem);
+    grid-template-columns: repeat(3, 14.5rem);
     justify-content: center;
-    gap: var(--bbl-space-250);
+    gap: var(--bbl-space-150);
     overflow: visible;
     scroll-snap-type: none;
   }
