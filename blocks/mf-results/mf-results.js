@@ -342,6 +342,7 @@ function addCompareButtons(blockEl, doc, labels) {
     btn.type = 'button';
     btn.className = 'mfr-compare-btn button-m secondary';
     btn.textContent = labels.compare;
+    btn.title = labels.compare;
     btn.dataset.cardName = h3?.textContent?.trim() ?? '';
     btn.dataset.cardId = h3?.dataset?.cardId ?? '';
     btn.dataset.cardImage = item?.querySelector('img')?.src ?? '';
