@@ -138,7 +138,9 @@ function renderStatTables(stats, highTbody, lowTbody, rowLabels, noDataLabel) {
       if (skip) return;
       const tr = tbody.ownerDocument.createElement('tr');
       const dateStr = date ? ` "${fmtHistDate(date)}"` : '';
-      tr.innerHTML = `<td>${label}${dateStr}</td><td class="stat-nav-val">${fmtNav(val)}</td>`;
+      const navStr = fmtNav(val);
+      const navDisplay = navStr === 'N/A' ? noDataLabel : navStr;
+      tr.innerHTML = `<td>${label}${dateStr}</td><td class="stat-nav-val">${navDisplay}</td>`;
       tbody.appendChild(tr);
     });
   });
