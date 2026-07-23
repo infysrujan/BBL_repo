@@ -401,7 +401,7 @@ function appendMktValuesAsHtml(container, rows) {
  * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
  */
 export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
-  const row = tableWrapper.children[0]
+  const row = tableWrapper.children[0];
   if (!row) return;
   const { heading, para } = appendMktValuesAsHtml(row, tableData.FXMO);
   if (heading) wrapperDiv.appendChild(heading);
@@ -414,7 +414,7 @@ export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
  * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
  */
 export function populateTbmo(tableWrapper, tableData, wrapperDiv) {
-  const row = tableWrapper.children[0]
+  const row = tableWrapper.children[0];
   if (!row) return;
   const { heading, para } = appendMktValuesAsHtml(row, tableData.TBMO);
   if (heading) wrapperDiv.appendChild(heading);
