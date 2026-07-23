@@ -46,6 +46,29 @@
   gap: var(--bbl-space-050);
 }
 
+/* Two buttons in a 2-col row: full-width stacked on mobile/tablet, auto-width side-by-side on desktop */
+/* stylelint-disable-next-line no-descending-specificity -- unrelated selector scopes (.columns-2-cols button layout vs .section.center-image image layout) */
+.columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) > div {
+  width: 100%;
+}
+
+.columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) .button-m {
+  box-sizing: border-box;
+  width: auto;
+  max-width: 100%;
+}
+
+.columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) p.button-container {
+  margin: 20px 0 0;
+}
+
+@media (width >= 47.5rem) {
+  .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
 @media (width >= 1025px) {
   .columns > div {
     align-items: center;
@@ -56,5 +79,20 @@
   .columns > div > div {
     flex: 1;
     order: unset;
+  }
+
+  .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) {
+    gap: 20px;
+  }
+
+  .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) > div {
+    flex: 1;
+    width: auto;
+  }
+
+  .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) .button-m {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
   }
 }
