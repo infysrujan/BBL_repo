@@ -45,6 +45,10 @@ function isRangeExceedsLimit(fromDate, toDate) {
   return fromDate < limitedFrom;
 }
 
+function isToBeforeFrom(fromDate, toDate) {
+  return toDate < fromDate;
+}
+
 function isWeekendOrAfterYesterday(date) {
   const day = date.getDay();
   if (day === 0 || day === 6) return true;
@@ -370,6 +374,7 @@ export default async function decorate(block) {
     fromLabel: txt('fundPricesDropdownFrom'),
     toLabel: txt('fundPricesDropdownTo'),
     rangeError: txt('fundPricesDropdownRangeError'),
+    toBeforeFromError: txt('fundPricesDropdownToBeforeFromError'),
     period1w: txt('fundPricesDropdownPeriod1w'),
     period1m: txt('fundPricesDropdownPeriod1m'),
     period3m: txt('fundPricesDropdownPeriod3m'),
@@ -583,6 +588,11 @@ export default async function decorate(block) {
 
   function validateAndRenderDetail() {
     if (currentPeriod === 'DR') {
+      if (drFrom && drTo && isToBeforeFrom(drFrom, drTo)) {
+        rangeError.textContent = labels.toBeforeFromError;
+        rangeError.classList.remove('hidden');
+        return;
+      }
       if (drFrom && drTo && isRangeExceedsLimit(drFrom, drTo)) {
         rangeError.textContent = labels.rangeError;
         rangeError.classList.remove('hidden');
