@@ -14,6 +14,7 @@
         display: block;
         grid-column: span 12;
         width: 100%;
+        max-width: 100%;
         margin: var(--bbl-form-margin-10) 0;
         padding: var(--bbl-form-margin-5) 0 var(--bbl-form-margin-5) var(--bbl-form-padding-16);
         font-family: var(--bbl-font-family-primary);
@@ -49,32 +50,26 @@
         margin: 0 0 var(--bbl-form-margin-10);
     }
 
-    /* Date & Time Panel Clean Reset (Robust :has(.date-wrapper) selector) */
-    & fieldset.panel-wrapper:has(.date-wrapper),
+    /* Date & Time Panel: Row gap for consistent internal spacing */
     & fieldset.panel-wrapper.field-transdatetimepanel {
-        border: none;
-        border-radius: 0;
-        padding: 0;
         row-gap: var(--bbl-form-gap-8);
     }
 
     /* Compliment / General Panel Fieldset Reset */
-    & fieldset.panel-wrapper:not(:has(.date-wrapper)),
-    & .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) {
+    & fieldset.panel-wrapper:not(:has(.date-wrapper)) {
         margin-bottom: 0;
     }
 
-    & fieldset.panel-wrapper:has(.date-wrapper) > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper),
-    & fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper) {
+    & fieldset.panel-wrapper:has(.date-wrapper)> :is(.date-wrapper, .drop-down-wrapper, .field-wrapper) {
         position: relative;
         width: 100%;
         margin: 0;
         padding: 0;
+        border: none;
     }
 
     /* Inputs & Selects in Date & Time Panel */
-    & fieldset.panel-wrapper:has(.date-wrapper) :is(input, select, textarea),
-    & fieldset.panel-wrapper.field-transdatetimepanel :is(input, select, textarea) {
+    & fieldset.panel-wrapper:has(.date-wrapper) :is(input, select, textarea) {
         font-size: var(--bbl-form-font-size-16);
         font-weight: 400;
         color: var(--bbl-color-black);
@@ -100,7 +95,9 @@
         box-sizing: border-box;
         width: 100%;
         max-width: 100%;
-        padding: var(--bbl-form-padding-10) var(--bbl-form-padding-20); /* top/bottom 10px (0.625rem), left/right 20px (1.25rem) */
+        padding: var(--bbl-form-padding-10) var(--bbl-form-padding-20);
+
+        /* top/bottom 10px (0.625rem), left/right 20px (1.25rem) */
         resize: none;
         margin-left: 0;
         margin-right: 0;
@@ -128,7 +125,7 @@
         margin: 0 0 var(--bbl-form-margin-10);
     }
 
-    & .radio-group-wrapper.radio-tabs > .radio-wrapper {
+    & .radio-group-wrapper.radio-tabs>.radio-wrapper {
         position: relative;
         display: flex;
         flex: 1 1 0;
@@ -140,7 +137,7 @@
         justify-content: center;
     }
 
-    & .radio-group-wrapper.radio-tabs > .radio-wrapper input[type='radio'] {
+    & .radio-group-wrapper.radio-tabs>.radio-wrapper input[type='radio'] {
         position: absolute;
         inset: 0;
         width: 100%;
@@ -148,7 +145,7 @@
         margin: 0;
     }
 
-    & .radio-group-wrapper.radio-tabs > .radio-wrapper label.field-label {
+    & .radio-group-wrapper.radio-tabs>.radio-wrapper label.field-label {
         position: relative;
         z-index: 1;
         display: flex;
@@ -189,7 +186,7 @@
     }
 
     & .field-wrapper:not(.field-invalid, .button-wrapper, .submit-wrapper, .reset-wrapper) select {
-        margin-bottom: var(--bbl-form-margin-5); 
+        margin-bottom: var(--bbl-form-margin-5);
     }
 
     & .field-wrapper.field-invalid:not(.button-wrapper, .submit-wrapper, .reset-wrapper) :is(input:not([type='radio'], [type='checkbox'], [type='submit'], [type='button'], [type='reset']), select, textarea) {
@@ -205,14 +202,14 @@
     }
 
     /* Form Subtitle (plain-text-wrapper immediately following title h2): Centered */
-    & .field-title + .plain-text-wrapper p,
-    & :is(.field-wrapper, .plain-text-wrapper):has(h2) + .plain-text-wrapper p {
+    & .field-title+.plain-text-wrapper p,
+    & :is(.field-wrapper, .plain-text-wrapper):has(h2)+.plain-text-wrapper p {
         color: var(--bbl-color-grey-85);
         text-align: center;
     }
 
     /* Paragraph Spacing */
-    & :is(.plain-text-wrapper, .tnc-text-decoration) > p > p:last-child {
+    & :is(.plain-text-wrapper, .tnc-text-decoration)>p>p:last-child {
         margin-top: var(--bbl-form-margin-32);
     }
 
@@ -242,24 +239,36 @@
     & fieldset.field-button-panel :is(.button-wrapper, .submit-wrapper, .reset-wrapper) {
         width: auto;
     }
+
+    /* Mobile: Province & Branch — full width, stacked one below another */
+    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) > .drop-down-wrapper {
+        grid-column: span 12;
+    }
+
+    /* Mobile: Transaction Date — full width in both Financial & Non-Financial forms.
+       form-custom.css only targets .field-cnf-date-exclude (Financial) by name,
+       missing .field-cnf-date-exclude1 (Non-Financial). This targets by element type. */
+    & fieldset.panel-wrapper.field-transdatetimepanel > .date-wrapper {
+        grid-column: span 12;
+    }
 }
 
 /* Tablet & Desktop Viewport Styling */
 @media (width > 47.5rem) {
     .contact-us main .section.form-container.custom-forms .form form {
         /* Desktop Date & Time alignment: Date (span 6), Hours (span 3), Minutes (span 3) */
-        & fieldset.panel-wrapper:has(.date-wrapper) > :is(.date-wrapper, [class*='-date-']),
-        & fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, [class*='-date-']) {
+        & fieldset.panel-wrapper:has(.date-wrapper)> :is(.date-wrapper, [class*='-date-']),
+        & fieldset.panel-wrapper.field-transdatetimepanel> :is(.date-wrapper, [class*='-date-']) {
             grid-column: span 6;
         }
 
-        & fieldset.panel-wrapper:has(.date-wrapper) > .drop-down-wrapper,
-        & fieldset.panel-wrapper.field-transdatetimepanel > .drop-down-wrapper {
+        & fieldset.panel-wrapper:has(.date-wrapper)>.drop-down-wrapper,
+        & fieldset.panel-wrapper.field-transdatetimepanel>.drop-down-wrapper {
             grid-column: span 3;
         }
 
-        /* Desktop Service Branch / General Panels alignment: Province (span 6), Branch (span 6) */
-        & fieldset.panel-wrapper:not(:has(.date-wrapper)) > .drop-down-wrapper {
+        /* Desktop Service Branch: Province (span 6), Branch (span 6) side by side */
+        & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) > .drop-down-wrapper {
             grid-column: span 6;
         }
     }
