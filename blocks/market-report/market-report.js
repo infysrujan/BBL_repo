@@ -272,7 +272,7 @@ function populateHeaderClassTable(table, tableId, tableData) {
       for (let j = 1; j < tds.length - 1; j += 1) {
         const dataIndex = i * (tds.length - 2) + (j - 1);
         if (tableData[dataIndex]) {
-          tds[j].textContent = withSign(tableData[dataIndex].mktvalue);
+          tds[j].textContent = tableData[dataIndex].mktvalue;
         }
       }
     });
