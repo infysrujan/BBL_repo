@@ -286,13 +286,6 @@ function populateHeaderClassTable(table, tableId, tableData) {
       if (tableData[dataIndex]) {
         if (tableId === 'GTHB' || tableId === 'USTS' || tableId === 'TSB') {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
-        } else if (tableId === 'RR' && i === 1) {
-          // Row 0 is the raw THB/USD rate — never signed. Row 1 is "Change".
-          tds[j].textContent = `${withSign(tableData[dataIndex].mktvalue)} Baht`;
-        } else if (tableId === 'RR') {
-          tds[j].textContent = `${tableData[dataIndex].mktvalue} Baht`;
-        } else if (tableId === 'WI' && j === 2) {
-          tds[j].textContent = withSign(tableData[dataIndex].mktvalue);
         } else {
           tds[j].textContent = tableData[dataIndex].mktvalue;
         }
@@ -341,9 +334,6 @@ function populateStandardLayoutTable(table, tableId, tableData) {
       if (tableData[dataIndex]) {
         if (tableId === 'MMR' || tableId === 'USIR') {
           tds[j].textContent = `${tableData[dataIndex].mktvalue}%`;
-        } else if (tableId === 'RR' && i === 1) {
-          // Row 0 is the raw THB/USD rate — never signed. Row 1 is "Change".
-          tds[j].textContent = `${withSign(tableData[dataIndex].mktvalue)} Baht`;
         } else if (tableId === 'RR') {
           tds[j].textContent = `${tableData[dataIndex].mktvalue} Baht`;
         } else if (tableId === 'WI' && j === 2) {
