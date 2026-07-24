@@ -140,24 +140,18 @@ export function getPromotionDataUrl(baseUrl, lang) {
 
 export function handleMobileAppView(searchParams) {
   const hasCardRef = searchParams.has('card_ref');
+  const hasSclang = searchParams.has('sc_lang');
+  const isMobileView = hasCardRef || hasSclang;
+
   ['header', 'footer'].forEach((selector) => {
     const el = document.querySelector(selector);
     if (el) {
-      if (hasCardRef) {
-        el.style.display = 'none';
-        el.classList.add('is-hidden');
-      } else {
-        el.style.display = '';
-        el.classList.remove('is-hidden');
-      }
+      el.style.display = isMobileView ? 'none' : '';
+      el.classList.toggle('is-hidden', isMobileView);
     }
   });
 
-  if (hasCardRef) {
-    document.body.classList.add(MOBILE_APP_VIEW_CLASS);
-  } else {
-    document.body.classList.remove(MOBILE_APP_VIEW_CLASS);
-  }
+  document.body.classList.toggle(MOBILE_APP_VIEW_CLASS, isMobileView);
 }
 
 function formatDate(dateStr, locale = 'en-GB') {
@@ -222,7 +216,7 @@ export async function fetchJson(url) {
   return fetchCache[url];
 }
 
-export function buildCardHtml(card, tag, placeholders = {}, options = {}) {
+export function buildCardHtml(card, tag = {}, options = {}) {
   const { dateLine = '', logoHtml = '', footerExtra = '' } = options;
   const target = card.targetLink === 'true' ? '_blank' : '_self';
 
@@ -243,7 +237,7 @@ export function buildCardHtml(card, tag, placeholders = {}, options = {}) {
       ${dateLine ? `<p class="listing-card-date">${dateLine}</p>` : ''}
     </div>
     <div class="listing-card-footer">
-      <a href="${card.ctaLink || ''}" target="${target}" class="listing-card-cta button-m primary">${card.ctaLabel || placeholders.promoLearnMore || 'Learn More'}</a>
+      <a href="${card.ctaLink || ''}" target="${target}" class="listing-card-cta button-m primary" title="${card.ctaLabel}">${card.ctaLabel || 'Learn More'}</a>
       ${footerExtra}
     </div>
   </div>

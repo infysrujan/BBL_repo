@@ -16,7 +16,6 @@
     font-size: var(--bbl-text-section-title-size);
     line-height: var(--bbl-text-section-title-line-height);
     font-weight: var(--bbl-text-section-title-weight);
-    color: var(--bbl-color-black);
 }
 
 :lang(th) {
@@ -184,7 +183,6 @@
 }
 
 .carousel-title {
-    color: var(--bbl-color-black);
     font-size: var(--bbl-text-article-card-title-size);
     line-height: var(--bbl-text-article-card-title-line-height);
     margin: 0 0 var(--bbl-space-100);

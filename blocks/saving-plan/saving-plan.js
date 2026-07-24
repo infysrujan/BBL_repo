@@ -6,8 +6,6 @@ import { fetchJson } from '../../scripts/utils/card-helpers.js';
 import { fetchPost } from '../../scripts/utils/fetchApi.js';
 import { loadChartJs, renderChart, buildChartLegend } from './saving-plan-chart.js';
 
-const INFLATION_RATE = 1.5;
-
 const ICON_BASE = '/icons/saving-plan';
 const ICONS_CACHE = {};
 
@@ -31,6 +29,13 @@ function formatNumber(value) {
 }
 
 function formatDecimal(value) {
+  if (!Number.isFinite(value)) return '0.00';
+  return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// Shows whole numbers as whole numbers and only keeps decimals the user actually entered
+// (up to 2), rather than always padding to 2 decimal places.
+function formatDecimalSmart(value) {
   if (!Number.isFinite(value)) return '0';
   return Number(value.toFixed(2)).toLocaleString('en-US', { maximumFractionDigits: 2 });
 }
@@ -80,6 +85,8 @@ function buildDataFromConfig(json, lang, placeholders) {
     .replace('{money}', '{amount}').replace('{unit}', unit);
 
   const minError = L['validation-minValueError'] || '';
+  const maxError = L['validation-maxValueError'] || '';
+  const maxError = L['validation-maxValueError'] || '';
 
   const goalKeys = [...new Set(
     Object.keys(L)
@@ -157,9 +164,32 @@ function buildDataFromConfig(json, lang, placeholders) {
         goalAmountTag: L['results-graph-savingGoalLabel'] || '',
       },
       validation: {
-        goalAmount: fillTemplate(minError, { min: '10,000' }),
-        annualReturn: fillTemplate(minError, { min: '0.1' }),
-        goalPeriod: fillTemplate(minError, { min: '1' }),
+        goalAmount: {
+          min: fillTemplate(minError, { min: '10,000' }),
+          max: fillTemplate(maxError, { max: '999,999,999' }),
+        },
+        annualReturn: {
+          min: fillTemplate(minError, { min: '0.1' }),
+          max: fillTemplate(maxError, { max: '40' }),
+        },
+        goalPeriod: {
+          min: fillTemplate(minError, { min: '1' }),
+          max: fillTemplate(maxError, { max: '30' }),
+        },
+        annualIncrease: { max: fillTemplate(maxError, { max: '40' }) },
+        goalAmount: {
+          min: fillTemplate(minError, { min: '10,000' }),
+          max: fillTemplate(maxError, { max: '999,999,999' }),
+        },
+        annualReturn: {
+          min: fillTemplate(minError, { min: '0.1' }),
+          max: fillTemplate(maxError, { max: '40' }),
+        },
+        goalPeriod: {
+          min: fillTemplate(minError, { min: '1' }),
+          max: fillTemplate(maxError, { max: '30' }),
+        },
+        annualIncrease: { max: fillTemplate(maxError, { max: '40' }) },
         crossFieldIncreaseExceedsReturn: L['validation-annualSavingIncreaseRateError'] || '',
       },
     },
@@ -171,11 +201,15 @@ function buildDataFromConfig(json, lang, placeholders) {
       annualIncrease: Number(C['defaultFormValues-annualSavingIncreaseRate']) || 0,
     },
     validation: {
-      goalAmount: { min: 10000 },
-      goalPeriod: { min: 1, max: 50 },
+      goalAmount: { min: 10000, max: 999999999 },
+      goalPeriod: { min: 1, max: 30 },
+      goalAmount: { min: 10000, max: 999999999 },
+      goalPeriod: { min: 1, max: 30 },
       balance: { min: 0 },
-      annualReturn: { min: 0.1, max: 100 },
-      annualIncrease: { min: 0, max: 100 },
+      annualReturn: { min: 0.1, max: 40 },
+      annualIncrease: { min: 0, max: 40 },
+      annualReturn: { min: 0.1, max: 40 },
+      annualIncrease: { min: 0, max: 40 },
     },
     goals,
     products: parseProducts(L),
@@ -214,8 +248,8 @@ function solveMonthly({
   return coefficient === 0 ? 0 : needed / coefficient;
 }
 
-function getFallbackCalculation(inputs) {
-  const futureValue = inputs.goalAmount * (1 + INFLATION_RATE / 100) ** inputs.goalPeriod;
+function getFallbackCalculation(inputs, inflationRate) {
+  const futureValue = inputs.goalAmount * (1 + inflationRate / 100) ** inputs.goalPeriod;
   return {
     FutureValue: futureValue,
     SavingMonth: solveMonthly({
@@ -242,22 +276,22 @@ function normalizeCalculationResponse(payload, fallback) {
   };
 }
 
-function buildCalculationPayload(inputs) {
+function buildCalculationPayload(inputs, inflationRate) {
   return {
     FutureSavingAmount: inputs.goalAmount,
     NYear: inputs.goalPeriod,
     FirstSavingAmount: inputs.balance,
     CompensationRate: inputs.annualReturn / 100,
     SavingIncRate: inputs.annualIncrease / 100,
-    inflationrate: INFLATION_RATE,
+    inflationrate: inflationRate,
   };
 }
 
-async function fetchCalculation(inputs, calcUrl, apimKey) {
-  const fallback = getFallbackCalculation(inputs);
+async function fetchCalculation(inputs, calcUrl, apimKey, inflationRate) {
+  const fallback = getFallbackCalculation(inputs, inflationRate);
   if (!calcUrl) return fallback;
   try {
-    const payload = buildCalculationPayload(inputs);
+    const payload = buildCalculationPayload(inputs, inflationRate);
     // eslint-disable-next-line no-console
     console.log('[saving-plan] API request payload:', payload);
     const json = await fetchPost(calcUrl, payload, {
@@ -280,12 +314,16 @@ async function fetchCalculation(inputs, calcUrl, apimKey) {
 }
 
 function getFieldMinError(field, value, rules, messages) {
-  const message = messages[field] || '';
-  if (!Number.isFinite(value)) return message;
+  const message = messages[field] || {};
+  if (!Number.isFinite(value)) return '';
+  const message = messages[field] || {};
+  if (!Number.isFinite(value)) return '';
   const rule = rules[field];
   if (!rule) return '';
-  if (rule.min !== undefined && value < rule.min) return message;
-  if (rule.max !== undefined && value > rule.max) return message;
+  if (rule.min !== undefined && value < rule.min) return message.min || '';
+  if (rule.max !== undefined && value > rule.max) return message.max || '';
+  if (rule.min !== undefined && value < rule.min) return message.min || '';
+  if (rule.max !== undefined && value > rule.max) return message.max || '';
   return '';
 }
 
@@ -456,7 +494,7 @@ function buildShellMarkup(data) {
     name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount || 10000, min: 10000, max: 1000000, step: 10000,
   })}
             ${buildSlider({
-    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || 0.5, min: 0.5, max: 40, step: 0.1,
+    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || 0.5, min: 0.5, max: 40, step: 0.25,
   })}
             ${buildSlider({
     name: 'annualIncrease', label: labels.fields.annualIncrease, value: defaults.annualIncrease, min: 0, max: 40, step: 0.1,
@@ -598,7 +636,7 @@ function renderResult(state, data, calculation) {
       data.labels.result.footnoteReturnTemplate,
       { return: formatDecimal(annualReturn) },
     )
-    : `*Including inflation rate of ${INFLATION_RATE}% p.a. and expected annual return ${formatDecimal(annualReturn)}%`;
+    : `*Including inflation rate of ${state.config.inflationRate}% p.a. and expected annual return ${formatDecimal(annualReturn)}%`;
   setText(root, '[data-result="footnote-return"]', returnLabel);
 }
 
@@ -645,21 +683,25 @@ function syncSliderDisplays(root) {
     const min = parseFloat(input.min) || 0;
     const max = parseFloat(input.max) || 100;
     const val = parseFloat(input.value) || 0;
-    const pct = ((val - min) / (max - min)) * 100;
-    input.style.background = `linear-gradient(to right, var(--sp-blue) ${pct}%, var(--sp-slider-track) ${pct}%)`;
+    const pct = max > min ? ((val - min) / (max - min)) * 100 : 0;
+    input.style.setProperty('--saving-plan-slider-progress', `${pct}%`);
   });
 }
 
 function renderNewPlanPlaceholder(state, data, inputs) {
   const { root } = state;
-  const goalMin = inputs.goalAmount;
+  const goalMin = 10000;
   const goalMax = inputs.goalAmount * 2;
   setSliderBounds(root, 'goalAmount', {
     min: goalMin, max: goalMax, value: inputs.goalAmount, step: goalAmountStep(inputs.goalAmount),
   });
+  const goalMinEl = root.querySelector('[data-slider="goalAmount"] .saving-plan-slider-min');
+  if (goalMinEl) goalMinEl.textContent = formatNumber(inputs.goalAmount);
   setSliderBounds(root, 'annualReturn', {
-    min: 0.5, max: 40, value: inputs.annualReturn, step: 0.1,
+    min: 0.5, max: 40, value: inputs.annualReturn, step: 0.25,
   });
+  const returnMinEl = root.querySelector('[data-slider="annualReturn"] .saving-plan-slider-min');
+  if (returnMinEl) returnMinEl.textContent = formatDecimalSmart(inputs.annualReturn);
   const returnSliderEl = root.querySelector('[data-slider="annualReturn"] input');
   if (returnSliderEl) returnSliderEl.dataset.prev = inputs.annualReturn;
   setSliderBounds(root, 'annualIncrease', {
@@ -696,7 +738,12 @@ async function renderNewPlan(state, data, tweakInputs) {
     annualIncrease: tweakInputs.annualIncrease,
   };
   // eslint-disable-next-line max-len
-  const calculation = await fetchCalculation(tweakApiInputs, state.config.calcUrl, state.config.apimKey);
+  const calculation = await fetchCalculation(
+    tweakApiInputs,
+    state.config.calcUrl,
+    state.config.apimKey,
+    state.config.inflationRate,
+  );
   const futureText = fillTemplate(data.labels.newPlan.futureValueTemplate, {
     amount: `<strong>${escapeHtml(formatNumber(calculation.FutureValue))}</strong>`,
     years: `<strong>${escapeHtml(String(baseInputs.goalPeriod))}</strong>`,
@@ -782,15 +829,72 @@ function readSliders(root) {
   };
 }
 
-function formatFieldValue(input, decimal) {
-  const formatter = decimal ? formatDecimal : formatNumber;
-  const value = parseNumber(input.value);
+// Field-level typed-digit caps (independent of the business validation max) —
+// mirrors the live site, which lets you type beyond the valid max and shows an
+// error rather than silently clamping the value.
+const FIELD_DIGIT_CAP = {
+  goalAmount: 9,
+  goalPeriod: 2,
+  balance: 9,
+  annualReturn: 5,
+  annualIncrease: 5,
+};
+
+function clampToDigitCap(raw, digitCap) {
+  if (digitCap === undefined) return raw;
+  let digits = 0;
+  return raw
+    .split('')
+    .filter((ch) => {
+      if (!/\d/.test(ch)) return true;
+      digits += 1;
+      return digits <= digitCap;
+    })
+    .join('');
+}
+
+function formatFieldValue(input, decimal, digitCap, smart) {
+  let formatter = formatNumber;
+  if (decimal) formatter = smart ? formatDecimalSmart : formatDecimal;
+  const value = parseNumber(clampToDigitCap(input.value, digitCap));
   input.value = formatter(value);
 }
 
-function formatLive(input, decimal) {
-  const raw = input.value;
-  const cursor = input.selectionStart;
+function sanitizeDecimalInput(raw) {
+  let seenDot = false;
+  return raw
+    .split('')
+    .filter((ch) => {
+      if (ch === '.') {
+        if (seenDot) return false;
+        seenDot = true;
+        return true;
+      }
+      return /\d/.test(ch);
+    })
+    .join('');
+}
+
+function formatLive(input, decimal, digitCap) {
+  if (decimal) {
+    // Let the user freely type whole numbers and decimals (e.g. "6", "6.", "6.5")
+    // without forcing a fixed 2-decimal format on every keystroke. Full
+    // normalization to 2 decimals happens on blur via formatFieldValue.
+    const cursor = input.selectionStart;
+    const digitsBeforeCursor = (input.value.slice(0, cursor).match(/[\d.]/g) || []).length;
+    const raw = clampToDigitCap(sanitizeDecimalInput(input.value), digitCap);
+    input.value = raw;
+    let count = 0;
+    let newCursor = raw.length;
+    for (let i = 0; i < raw.length; i += 1) {
+      if (/[\d.]/.test(raw[i])) count += 1;
+      if (count === digitsBeforeCursor) { newCursor = i + 1; break; }
+    }
+    input.setSelectionRange(newCursor, newCursor);
+    return;
+  }
+  const raw = clampToDigitCap(input.value, digitCap);
+  const cursor = Math.min(input.selectionStart, raw.length);
   // Count digits (and dot for decimal) before cursor to restore position after reformatting.
   const digitsBeforeCursor = (raw.slice(0, cursor).match(/[\d.]/g) || []).length;
   const value = parseNumber(raw);
@@ -828,7 +932,7 @@ function resetCalculator(state, data) {
   setVal('[data-field="goalAmount"] input', formatNumber(defaults.goalAmount));
   setVal('[data-field="goalPeriod"] input', formatNumber(defaults.goalPeriod));
   setVal('[data-field="balance"] input', formatNumber(defaults.balance));
-  setVal('[data-field="annualReturn"] input', defaults.annualReturn ? formatDecimal(defaults.annualReturn) : '');
+  setVal('[data-field="annualReturn"] input', defaults.annualReturn ? formatDecimalSmart(defaults.annualReturn) : '');
   setVal('[data-field="annualIncrease"] input', formatDecimal(defaults.annualIncrease));
   root.querySelectorAll('.saving-plan-field-error').forEach((el) => el.classList.remove('saving-plan-field-error'));
   root.querySelectorAll('.saving-plan-field-error-message').forEach((el) => el.remove());
@@ -930,7 +1034,7 @@ function attachHandlers(state, data) {
     const chartShown = !root.querySelector('.saving-plan-chart-row')?.hasAttribute('hidden');
     if (!chartShown) return;
 
-    const calculation = getFallbackCalculation(inputs);
+    const calculation = getFallbackCalculation(inputs, state.config.inflationRate);
     state.calculatedInputs = inputs;
     state.calculatedCalculation = calculation;
     renderResult(state, data, calculation);
@@ -944,12 +1048,15 @@ function attachHandlers(state, data) {
     const input = wrap.querySelector('input');
     if (!input) return;
     const decimal = wrap.dataset.decimal === '1';
+    const digitCap = FIELD_DIGIT_CAP[wrap.dataset.field];
+    const smart = wrap.dataset.field === 'annualReturn';
     input.addEventListener('input', () => {
-      formatLive(input, decimal);
+      formatLive(input, decimal, digitCap);
+      formatLive(input, decimal, digitCap);
       liveUpdate();
     });
     input.addEventListener('blur', () => {
-      formatFieldValue(input, decimal);
+      formatFieldValue(input, decimal, digitCap, smart);
       liveUpdate();
     });
   });
@@ -965,7 +1072,12 @@ function attachHandlers(state, data) {
     const inputs = readInputs(root);
     if (!applyValidation(root, inputs, data)) return;
     // Fetch from API and store result; falls back to local calculation if API unavailable
-    const calculation = await fetchCalculation(inputs, state.config.calcUrl, state.config.apimKey);
+    const calculation = await fetchCalculation(
+      inputs,
+      state.config.calcUrl,
+      state.config.apimKey,
+      state.config.inflationRate,
+    );
     state.calculatedInputs = inputs;
     state.calculatedCalculation = calculation;
     state.tweakActive = false;
@@ -1053,6 +1165,7 @@ export default async function decorate(block) {
 
   const calcUrl = cfg.savingPlanCalculatorUrl || '';
   const apimKey = cfg.savingPlanApimKey || '';
+  const inflationRate = parseFloat(cfg.savingPlanInflationRate) || 1.5;
 
   const lang = getLang();
   const data = buildDataFromConfig(json, lang, placeholders);
@@ -1063,7 +1176,9 @@ export default async function decorate(block) {
 
   const state = {
     root: block,
-    config: { calcUrl, apimKey, fragmentPath },
+    config: {
+      calcUrl, apimKey, fragmentPath, inflationRate,
+    },
     calculatedInputs: null,
     calculatedCalculation: null,
     tweakActive: false,
