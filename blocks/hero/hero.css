@@ -465,10 +465,6 @@
   margin-bottom: 1.875rem;
 }
 
-.hero-banner-simple {
-  padding-bottom: 1.875rem;
-}
-
 .hero-banner-simple::after {
   display: none;
 }
