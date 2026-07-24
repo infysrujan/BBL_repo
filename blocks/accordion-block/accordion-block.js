@@ -294,7 +294,7 @@ function buildAccordionPrintDocument(block) {
     [...container.children].forEach((child) => {
       if (child === wrapper) {
         shell.appendChild(clone);
-      } else {
+      } else if (child.classList.contains('default-content-wrapper')) {
         shell.appendChild(child.cloneNode(true));
       }
     });
