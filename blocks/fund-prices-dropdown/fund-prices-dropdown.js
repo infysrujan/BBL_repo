@@ -170,7 +170,7 @@ function renderChart(svgEl, history, period) {
   }
 
   const isMobileView = typeof window !== 'undefined' && window.innerWidth < 768;
-  const useRotation = period !== '1W';
+  const useRotation = period !== '1W' && history.length > 1;
   const padB = useRotation ? 70 : 40;
   const H = useRotation ? 360 : 300;
   const padL = 58;
