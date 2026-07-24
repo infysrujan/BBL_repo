@@ -25,29 +25,13 @@
 .columns-2-cols > div:has(.columns-img-col):has(p) {
   display: flex;
   flex-direction: row;
-}
-
-.columns-2-cols > div:has(.columns-img-col):has(p) .columns-img-col {
-  flex: 0 0 auto;
-  max-width: 40%;
-  min-width: 0;
-  padding-top: 0.3125rem;
-  padding-bottom: 0.3125rem;
-  padding-right: 0.625rem;
+  align-items: flex-start;
 }
 
 .columns-2-cols > div:has(.columns-img-col):has(p) .columns-img-col img {
-  max-width: 100%;
-  height: auto;
   display: block;
-}
-
-.columns-2-cols > div:has(.columns-img-col):has(p) .columns-img-col + div {
-  flex: 1 1 auto;
-  min-width: 0;
-  padding-top: 0.3125rem;
-  padding-bottom: 0.3125rem;
-  padding-left: 1.25rem;
+  width: 100%;
+  height: auto;
 }
 
 .columns-2-cols > div:has(.columns-img-col):has(p) .columns-img-col + div p {
@@ -64,6 +48,14 @@
   flex: 0 0 auto;
 }
 
+.accordion-block .columns.columns-2-cols > div:has(.columns-img-col):has(> div > p) {
+  gap: 1.875rem;
+}
+
+.accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col + div {
+  padding: 0.3125rem 0;
+}
+
 .section.center-image .columns-3-cols > div:has(> div:nth-child(3) > p > picture) {
   justify-content: center;
   flex-direction: row;
@@ -76,14 +68,6 @@
   flex-flow: row wrap;
 }
 
-.section.center-image .columns-3-cols > div:has(> .columns-img-col + .columns-img-col + .columns-img-col) {
-  justify-content: center;
-  flex-flow: row wrap;
-  gap: var(--bbl-space-050);
-}
-
-/* Two buttons in a 2-col row: full-width stacked on mobile/tablet, auto-width side-by-side on desktop */
-/* stylelint-disable-next-line no-descending-specificity -- unrelated selector scopes (.columns-2-cols button layout vs .section.center-image image layout) */
 .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) > div {
   width: 100%;
 }
@@ -96,6 +80,12 @@
 
 .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) p.button-container {
   margin: var(--bbl-space-250) 0 0;
+}
+
+.section.center-image .columns-3-cols > div:has(> .columns-img-col + .columns-img-col + .columns-img-col) {
+  justify-content: center;
+  flex-flow: row wrap;
+  gap: var(--bbl-space-050);
 }
 
 @media (width > 47.5rem) {
