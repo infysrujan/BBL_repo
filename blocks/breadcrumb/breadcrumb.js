@@ -3,6 +3,16 @@ import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
+function isBreadcrumbAuthoringInstance() {
+  const hasAdobeEdit = !!document.querySelector('.adobe-ue-edit');
+  const main = document.querySelector('main');
+  const hasAueAttrs = [main]
+    .filter(Boolean)
+    .some((el) => [...el.attributes].some(({ name }) => name.startsWith('data-aue-')));
+
+  return hasAdobeEdit || hasAueAttrs;
+}
+
 /**
  * Converts an AEM content page path to a site URL path.
  * e.g. /content/text/en/personal/my-family-and-me -> /en/personal/my-family-and-me
@@ -57,13 +67,23 @@ let breadcrumbDataCache = null;
 
 async function loadBreadcrumbData() {
   const configs = await fetchConfigs();
-  const AEM_BASE_URL_FOR_BREADCRUMB = configs.breadcrumbAemBaseUrl;
+  const isAuthoring = isBreadcrumbAuthoringInstance();
+  const AEM_BASE_URL_FOR_BREADCRUMB = isAuthoring
+    ? configs.breadcrumbAemBaseAuthorUrl
+    : configs.breadcrumbAemBaseUrl;
   if (!AEM_BASE_URL_FOR_BREADCRUMB) {
     return { breadcrumbPages: [], currentPageData: null };
   }
   try {
     const { pathname } = window.location;
-    const apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}/content/bangkokbank${pathname}.pageinfo.parent.json`;
+    let apiUrl;
+
+    if (isAuthoring) {
+      const cleanPath = pathname.replace(/\.html$/, '');
+      apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}${cleanPath}.pageinfo.parent.json`;
+    } else {
+      apiUrl = `${AEM_BASE_URL_FOR_BREADCRUMB}/content/bangkokbank${pathname}.pageinfo.parent.json`;
+    }
     const data = await fetchGet(apiUrl);
 
     const currentPageData = data.currentPage || null;
@@ -142,8 +162,8 @@ async function loadSocialIcons(block) {
  * @param {string} shortTitle
  * @returns {string}
  */
-function getCurrentPageLabel(page, shortTitle) {
-  return shortTitle || page.pageTitle || page.jcrTitle || '';
+function getCurrentPageLabel(page) {
+  return page.shortTitle || page.pageTitle || page.jcrTitle || '';
 }
 
 /**
@@ -152,7 +172,7 @@ function getCurrentPageLabel(page, shortTitle) {
  * @returns {string}
  */
 function getParentPageLabel(page) {
-  return page.pageTitle || page.jcrTitle || '';
+  return page.shortTitle || page.pageTitle || page.jcrTitle || '';
 }
 
 /**
@@ -174,8 +194,6 @@ export default async function decorate(block) {
     return;
   }
 
-  const shortTitle = getMetadata('short-title');
-
   const { breadcrumbPages, currentPageData } = await fetchBreadcrumbData();
 
   const innerContainer = document.createElement('div');
@@ -194,7 +212,7 @@ export default async function decorate(block) {
     block.classList.add('is-homepage');
 
     const li = document.createElement('li');
-    const homepageTitle = getCurrentPageLabel(currentPageData, shortTitle) || 'Homepage - Bangkok Bank';
+    const homepageTitle = getCurrentPageLabel(currentPageData) || 'Homepage - Bangkok Bank';
     li.textContent = homepageTitle;
     li.setAttribute('aria-current', 'page');
     ol.appendChild(li);
@@ -206,7 +224,7 @@ export default async function decorate(block) {
   breadcrumbPages.forEach((page, index) => {
     const li = document.createElement('li');
     const isLast = index === breadcrumbPages.length - 1;
-    const textContent = isLast ? getCurrentPageLabel(page, shortTitle) : getParentPageLabel(page);
+    const textContent = isLast ? getCurrentPageLabel(page) : getParentPageLabel(page);
 
     if (!textContent) return;
     if (isLast) {

@@ -34,6 +34,24 @@ function fmtPct(val) {
   return Number.isNaN(n) ? val : `${n.toFixed(2)}%`;
 }
 
+// Tolerates minor authoring variations like {{ SYMBOL }} or {{symbol}}, and
+// warns instead of silently 404ing when the template is missing the token.
+const SYMBOL_PLACEHOLDER = /\{\{\s*SYMBOL\s*\}\}/i;
+
+function buildDownloadHref(downloadUrl, symbol) {
+  if (!downloadUrl) return '';
+  if (!SYMBOL_PLACEHOLDER.test(downloadUrl)) {
+    // eslint-disable-next-line no-console
+    console.warn('dynamic-board: download URL is missing a {{SYMBOL}} placeholder:', downloadUrl);
+    return downloadUrl;
+  }
+  const resolved = downloadUrl.replace(SYMBOL_PLACEHOLDER, symbol.toLowerCase());
+  // A path missing its leading slash resolves relative to the current page's
+  // directory (e.g. /en/...) instead of the site root, so force it root-relative
+  // here rather than relying on every config value being typed exactly right.
+  return /^(https?:)?\//.test(resolved) ? resolved : `/${resolved}`;
+}
+
 // ─── sort helper ──────────────────────────────────────────────────────────────
 function sortValue(rate, key) {
   if (key === 'REMAIN_TERM') return remainTermToMonths(rate.REMAIN_TERM || '00.00.00');
@@ -154,7 +172,7 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
       <td class="db-td-num db-td-maturity">
         ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}
-        <a class="db-td-dl" href="${state.downloadUrl.replace('{{SYMBOL}}', sym.toLowerCase())}" download aria-label="Download ${sym} factsheet">
+        <a class="db-td-dl" href="${buildDownloadHref(state.downloadUrl, sym)}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
         </a>
       </td>
@@ -239,7 +257,7 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
           <input type="text" class="db-mp-input" id="db-mp-from" readonly placeholder="${placeholders?.dynamicBoardMonthYearPlaceholder || 'MM/YYYY'}"
             value="${state.filterFrom ? formatMonthYearDisplay(state.filterFrom.month, state.filterFrom.year, state.buddhistYearOffset) : ''}"
             ${matSet ? 'disabled' : ''}>
-          <button type="button" class="db-mp-cal-btn" data-which="from" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''} icon-calendar"></button>
+          <button type="button" class="db-mp-cal-btn icon-calendar" data-which="from" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''}></button>
           <div class="db-mp-popup" id="db-mp-popup-from" hidden></div>
         </div>
       </div>
@@ -249,7 +267,7 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
           <input type="text" class="db-mp-input" id="db-mp-to" readonly placeholder="${placeholders?.dynamicBoardMonthYearPlaceholder || 'MM/YYYY'}"
             value="${state.filterTo ? formatMonthYearDisplay(state.filterTo.month, state.filterTo.year, state.buddhistYearOffset) : ''}"
             ${matSet ? 'disabled' : ''}>
-          <button type="button" class="db-mp-cal-btn" data-which="to" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''} icon-calendar"></button>
+          <button type="button" class="db-mp-cal-btn icon-calendar" data-which="to" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''}></button>
           <div class="db-mp-popup" id="db-mp-popup-to" hidden></div>
         </div>
       </div>
@@ -503,6 +521,7 @@ function printElement(block) {
     '.db-go-btn',
     '.db-sort-icon',
     '.db-td-check',
+    '.db-th-download',
     '.db-td-dl',
   ].join(', ')).forEach((el) => el.remove());
 
@@ -534,6 +553,9 @@ function printElement(block) {
   if (!logoImg) return;
   const logoSrc = logoImg.currentSrc || logoImg.src;
   const brandLogo = `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoImg.alt || 'Bangkok Bank')}">`;
+
+  const pageTitle = section.querySelector('.default-content-wrapper > :is(h1, h2, h3, h4, h5, h6)')
+    ?.textContent?.trim() || document.querySelector('h1')?.textContent?.trim() || 'Print';
 
   const printWindow = window.open('', '', 'height=500,width=800');
 
@@ -734,7 +756,7 @@ function printElement(block) {
   <html lang="en">
     <head>
       <meta charset="utf-8"/>
-      <title>Print</title>
+      <title>${escapeHtml(pageTitle)}</title>
       <link rel="stylesheet" href="/styles/styles.css">
       <link rel="stylesheet" href="/styles/fonts.css">
       <link rel="stylesheet" href="/blocks/header/header.css">
@@ -823,9 +845,13 @@ export default async function decorate(block) {
   const isGov = authoring.boardType.toLowerCase().includes('government');
   state.api = createApiService(configs, authoring.boardType);
   state.placeholders = placeholders;
-  state.downloadUrl = isGov
+  // Relative /content/dam paths resolve directly on this domain (same as the
+  // download-file block's authored links), so no base URL needs prepending.
+  state.downloadUrl = (isGov
     ? configs?.dynamicBoardCorpBondDownloadUrl
-    : configs?.dynamicBoardBondRatesDownloadUrl;
+    : configs?.dynamicBoardBondRatesDownloadUrl) || '';
+  // eslint-disable-next-line no-console
+  console.log('Config Download URL:', state.downloadUrl);
   state.isGov = isGov;
   state.isThai = language === 'th';
   state.columns = parseTableHeading(authoring.tableHeadingEl, isGov);

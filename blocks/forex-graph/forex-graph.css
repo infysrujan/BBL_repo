@@ -270,7 +270,7 @@
 
 .forex-graph .forex-graph-chart-title {
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
   margin: 0;
   line-height: 1.4;
