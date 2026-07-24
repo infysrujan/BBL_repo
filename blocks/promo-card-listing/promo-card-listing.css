@@ -1,5 +1,9 @@
 @import url("../../styles/components/listing-card.css");
 
+.bangkok-bankm-card :has(.section.tabs-container .tab-panel>.promo-selector-content) {
+  background-color: var(--bbl-color-white);
+}
+
 .promo-selector-grid .listing-card-desc p {
   display: block;
   -webkit-line-clamp: none;
