@@ -158,7 +158,7 @@ function renderChart(svgEl, history, period) {
     return e;
   }
 
-  if (!history || history.length < 2) {
+  if (!history || history.length < 1) {
     el('text', {
       x: '50%',
       y: '50%',
@@ -194,7 +194,9 @@ function renderChart(svgEl, history, period) {
   const yMax = Math.ceil(rawMax);
   const yMin = Math.floor(rawMin / tickStep) * tickStep - tickStep;
 
-  const xPos = (i) => padL + (i / (history.length - 1)) * innerW;
+  const xPos = (i) => (history.length > 1
+    ? padL + (i / (history.length - 1)) * innerW
+    : padL + innerW / 2);
   const yPos = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * innerH;
 
   const ticks = [];
