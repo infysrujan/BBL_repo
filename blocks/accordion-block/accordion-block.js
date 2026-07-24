@@ -291,6 +291,12 @@ function buildAccordionPrintDocument(block) {
   let bodyHtml;
   if (wrapperIsDirectChild) {
     const shell = document.createElement('div');
+    const promoBlock = document.querySelector('.promotional-details');
+    if (promoBlock) {
+      const promoClone = promoBlock.cloneNode(true);
+      promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
+      shell.appendChild(promoClone);
+    }
     [...container.children].forEach((child) => {
       if (child === wrapper) {
         shell.appendChild(clone);
@@ -302,7 +308,14 @@ function buildAccordionPrintDocument(block) {
   } else if (prependHtml) {
     bodyHtml = `${prependHtml}${clone.outerHTML}`;
   } else {
-    bodyHtml = clone.outerHTML;
+    const promoBlock = document.querySelector('.promotional-details');
+    if (promoBlock) {
+      const promoClone = promoBlock.cloneNode(true);
+      promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
+      bodyHtml = `${promoClone.outerHTML}${clone.outerHTML}`;
+    } else {
+      bodyHtml = clone.outerHTML;
+    }
   }
 
   items.forEach((item, i) => {
@@ -355,6 +368,8 @@ function buildAccordionPrintDocument(block) {
     .table.scroll table {min-width: unset;}
     .download-button-wrapper .download-files {padding-right: 2.125rem;}
     .download-files.icon-download::before, .download-files .icon-download::before {right: -0.27rem;}
+
+    .promo-detail-image { display: none !important; }
   `;
 
   return `
@@ -367,6 +382,7 @@ function buildAccordionPrintDocument(block) {
       <link rel="stylesheet" href="/styles/fonts.css">
       <link rel="stylesheet" href="/blocks/header/header.css">
       <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
+      <link rel="stylesheet" href="/blocks/promotional-details/promotional-details.css">
       <link rel="stylesheet" href="/blocks/accordion-block/accordion-block.css">
       <link rel="stylesheet" href="/blocks/table/table.css">
       <style>${printCss}</style>
