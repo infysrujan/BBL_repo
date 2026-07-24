@@ -257,7 +257,7 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
           <input type="text" class="db-mp-input" id="db-mp-from" readonly placeholder="${placeholders?.dynamicBoardMonthYearPlaceholder || 'MM/YYYY'}"
             value="${state.filterFrom ? formatMonthYearDisplay(state.filterFrom.month, state.filterFrom.year, state.buddhistYearOffset) : ''}"
             ${matSet ? 'disabled' : ''}>
-          <button type="button" class="db-mp-cal-btn" data-which="from" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''} icon-calendar"></button>
+          <button type="button" class="db-mp-cal-btn icon-calendar" data-which="from" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''}></button>
           <div class="db-mp-popup" id="db-mp-popup-from" hidden></div>
         </div>
       </div>
@@ -267,7 +267,7 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
           <input type="text" class="db-mp-input" id="db-mp-to" readonly placeholder="${placeholders?.dynamicBoardMonthYearPlaceholder || 'MM/YYYY'}"
             value="${state.filterTo ? formatMonthYearDisplay(state.filterTo.month, state.filterTo.year, state.buddhistYearOffset) : ''}"
             ${matSet ? 'disabled' : ''}>
-          <button type="button" class="db-mp-cal-btn" data-which="to" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''} icon-calendar"></button>
+          <button type="button" class="db-mp-cal-btn icon-calendar" data-which="to" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''}></button>
           <div class="db-mp-popup" id="db-mp-popup-to" hidden></div>
         </div>
       </div>
