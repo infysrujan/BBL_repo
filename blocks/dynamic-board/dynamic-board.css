@@ -89,6 +89,26 @@
   color: var(--bbl-color-active-blue);
 }
 
+.bbl-calendar-picker-nav:hover {
+  color: var(--bbl-color-white);
+  background: var(--bbl-color-blue-80);
+}
+
+.bbl-calendar-picker-day:not(:disabled):hover {
+  background: var(--bbl-color-blue-80);
+  color: var(--bbl-color-white);
+}
+
+.bbl-calendar-picker-popover {
+  padding-inline: 3.125rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+.bbl-calendar-picker-weekdays span {
+  font-size: 0.875rem;
+}
+
 /* ── Time dropdown ─────────────────────────────────────────── */
 
 .dynamic-board .db-time-wrap {
@@ -911,6 +931,10 @@
 /* ── Desktop: 64rem+ (1024px) ──────────────────────────────── */
 
 @media (width > 64rem) {
+  .bbl-calendar-picker-weekdays span {
+    font-size: 1rem;
+  }
+
   .dynamic-board .db-controls-right {
     flex-flow: row wrap;
     align-items: center;
