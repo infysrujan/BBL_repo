@@ -178,7 +178,7 @@
   display: block;
   margin-top: 0.25rem;
   padding-left: 0.25rem;
-  font-size: var(--bbl-text-caption-size);
+  font-size: var(--bbl-body-b2-size);
   color: var(--bbl-color-red-130);
   line-height: 1.4;
 }
@@ -273,7 +273,7 @@
 .saving-plan-dropdown-option {
   padding: 0.625rem 0.875rem;
   cursor: pointer;
-  font-size: var(--bbl-text-default-size);
+  font-size: var(--bbl-body-b2-size);
   color: var(--bbl-text-primary);
   transition: background-color 120ms ease;
 }
@@ -413,7 +413,7 @@
 
 .saving-plan-result-footnote {
   margin: 0.5rem 0 0;
-  font-size: var(--bbl-font-size-b1-mobile);
+  font-size: var(--bbl-body-b3-size);
   color: var(--bbl-color-gray-143);
   line-height: 1.45;
 }
@@ -832,7 +832,7 @@
 
 .saving-plan-newplan-footnote {
   margin: 0.5rem 0 0;
-  font-size: var(--bbl-text-caption-size);
+  font-size: var(--bbl-body-b3-size);
   color: var(--bbl-color-gray-143);
   line-height: 1.5;
 }

@@ -86,6 +86,7 @@ function buildDataFromConfig(json, lang, placeholders) {
 
   const minError = L['validation-minValueError'] || '';
   const maxError = L['validation-maxValueError'] || '';
+  const maxError = L['validation-maxValueError'] || '';
 
   const goalKeys = [...new Set(
     Object.keys(L)
@@ -176,6 +177,19 @@ function buildDataFromConfig(json, lang, placeholders) {
           max: fillTemplate(maxError, { max: '30' }),
         },
         annualIncrease: { max: fillTemplate(maxError, { max: '40' }) },
+        goalAmount: {
+          min: fillTemplate(minError, { min: '10,000' }),
+          max: fillTemplate(maxError, { max: '999,999,999' }),
+        },
+        annualReturn: {
+          min: fillTemplate(minError, { min: '0.1' }),
+          max: fillTemplate(maxError, { max: '40' }),
+        },
+        goalPeriod: {
+          min: fillTemplate(minError, { min: '1' }),
+          max: fillTemplate(maxError, { max: '30' }),
+        },
+        annualIncrease: { max: fillTemplate(maxError, { max: '40' }) },
         crossFieldIncreaseExceedsReturn: L['validation-annualSavingIncreaseRateError'] || '',
       },
     },
@@ -189,7 +203,11 @@ function buildDataFromConfig(json, lang, placeholders) {
     validation: {
       goalAmount: { min: 10000, max: 999999999 },
       goalPeriod: { min: 1, max: 30 },
+      goalAmount: { min: 10000, max: 999999999 },
+      goalPeriod: { min: 1, max: 30 },
       balance: { min: 0 },
+      annualReturn: { min: 0.1, max: 40 },
+      annualIncrease: { min: 0, max: 40 },
       annualReturn: { min: 0.1, max: 40 },
       annualIncrease: { min: 0, max: 40 },
     },
@@ -298,8 +316,12 @@ async function fetchCalculation(inputs, calcUrl, apimKey, inflationRate) {
 function getFieldMinError(field, value, rules, messages) {
   const message = messages[field] || {};
   if (!Number.isFinite(value)) return '';
+  const message = messages[field] || {};
+  if (!Number.isFinite(value)) return '';
   const rule = rules[field];
   if (!rule) return '';
+  if (rule.min !== undefined && value < rule.min) return message.min || '';
+  if (rule.max !== undefined && value > rule.max) return message.max || '';
   if (rule.min !== undefined && value < rule.min) return message.min || '';
   if (rule.max !== undefined && value > rule.max) return message.max || '';
   return '';
@@ -1029,6 +1051,7 @@ function attachHandlers(state, data) {
     const digitCap = FIELD_DIGIT_CAP[wrap.dataset.field];
     const smart = wrap.dataset.field === 'annualReturn';
     input.addEventListener('input', () => {
+      formatLive(input, decimal, digitCap);
       formatLive(input, decimal, digitCap);
       liveUpdate();
     });

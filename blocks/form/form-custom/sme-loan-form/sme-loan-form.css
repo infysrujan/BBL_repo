@@ -8,9 +8,7 @@
       padding: 0;
       color: var(--bbl-color-black);
       font-family: var(--bbl-font-family-medium);
-      font-size: var(--bbl-font-size-h3-mobile);
       font-weight: var(--bbl-font-weight-regular);
-      line-height: var(--bbl-line-height-h3-mobile);
       text-align: center;
     }
   }
@@ -47,17 +45,33 @@
 
   & .form form fieldset.panel-wrapper.field-wrapper > legend:not([data-visible='false']) {
     width: 100%;
-    margin: 20px 0 10px;
+    margin: 1.25rem 0 0.625rem;
     padding: var(--bbl-space-075);
     text-align: left;
-    font-size: var(--bbl-font-size-b2-desktop);
+    font-size: 1rem;
     line-height: var(--bbl-space-250);
-    color: var(--bbl-color-grey-160);
-    background-color: var(--bbl-color-gray-122);
+    color: var(--bbl-color-grey-156);
+    background-color: var(--bbl-color-gray-299);
     border-bottom: 0.0625rem solid var(--bbl-color-white);
     border-right: 0.0625rem solid var(--bbl-color-white);
-    font-weight: var(--bbl-font-weight-medium);
+    font-weight: 600;
     font-family: var(--bbl-font-family-primary);
+  }
+
+  & .form form input:disabled {
+    background-color: var(--bbl-color-gray-151);
+  }
+
+  & .form form select {
+    font-family: var(--bbl-font-family-medium);
+    font-size: 0.95rem;
+    font-weight: 400;
+  }
+
+  & .form form .field-description p {
+    text-align: right;
+    font-size: 0.875rem;
+    color: var(--bbl-color-gray-800);
   }
 
   & .form form .form-review-2col fieldset.panel-wrapper.field-wrapper > legend {
@@ -122,6 +136,10 @@
     }
   }
 
+  & .form form .radio-group-wrapper > legend.field-label {
+    padding: 0.625rem 0;
+  }
+
   & .form form .radio-group-wrapper.field-convenienttime:not(.radio-tabs, .cards) {
     display: flex;
     flex-flow: column nowrap;
@@ -162,7 +180,7 @@
     padding-left: var(--bbl-space-250);
     box-sizing: border-box;
     max-width: 100%;
-    text-align: left;
+    text-align: center;
     font-family: var(--bbl-font-family-bold);
     background: none;
     border: none;
@@ -340,8 +358,6 @@
     &.central-aligned > .default-content-wrapper {
       & h2 {
         margin: var(--bbl-space-500) 0 var(--bbl-space-300);
-        font-size: var(--bbl-font-size-h3-desktop);
-        line-height: var(--bbl-line-height-h3-desktop);
       }
     }
 
