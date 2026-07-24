@@ -70,7 +70,7 @@ function closeModalsAndScrollTo(element) {
         ? (header.getBoundingClientRect().height || header.offsetHeight)
         : 0;
       const elementTop = element.getBoundingClientRect().top + window.scrollY;
-      const top = Math.max(0, elementTop - headerHeight - 50);
+      const top = Math.max(0, elementTop - headerHeight - 150);
       window.scrollTo({ top, behavior: 'smooth' });
     }, 100);
   }
