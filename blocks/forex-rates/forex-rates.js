@@ -2,6 +2,7 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getLang } from '../../scripts/scripts.js';
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
+import { MONTHS_EN, MONTHS_TH, BE_OFFSET } from '../../scripts/utils/datelang.js';
 import {
   getMonthKey,
   parseApiDate,
@@ -25,6 +26,25 @@ function escapeHtml(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function isNextMonthDisabled(titleText, rawLang) {
+  const text = String(titleText || '').trim();
+  const lastSpace = text.lastIndexOf(' ');
+  if (lastSpace < 0) return false;
+
+  const lang = String(rawLang || '').toLowerCase().trim().startsWith('th') ? 'th' : 'en';
+  const monthName = text.slice(0, lastSpace);
+  const yearRaw = text.slice(lastSpace + 1);
+  const months = lang === 'th' ? MONTHS_TH : MONTHS_EN;
+  const monthIndex = months.indexOf(monthName);
+  let year = Number.parseInt(yearRaw, 10);
+  if (lang === 'th') year -= BE_OFFSET;
+  if (monthIndex < 0 || Number.isNaN(year)) return false;
+
+  const now = new Date();
+  return year > now.getFullYear()
+    || (year === now.getFullYear() && monthIndex >= now.getMonth());
 }
 
 function isValidSelectedDay(state) {
@@ -267,6 +287,7 @@ export default async function decorate(block) {
   };
 
   let datePicker = null;
+  let navObserver = null;
 
   const render = () => {
     try {
@@ -360,6 +381,11 @@ export default async function decorate(block) {
       return true;
     };
 
+    if (navObserver) {
+      navObserver.disconnect();
+      navObserver = null;
+    }
+
     if (datePicker) {
       datePicker.destroy();
       datePicker = null;
@@ -374,6 +400,8 @@ export default async function decorate(block) {
           Number(selectedParsed.day),
         )
         : null;
+
+      const existingPopovers = new Set(document.querySelectorAll('.bbl-calendar-picker-popover'));
 
       datePicker = attachCalendarPicker({
         input: dateInput,
@@ -390,6 +418,20 @@ export default async function decorate(block) {
           applyDateSelection(iso);
         },
       });
+
+      const popoverEl = [...document.querySelectorAll('.bbl-calendar-picker-popover')]
+        .find((el) => !existingPopovers.has(el));
+      const titleEl = popoverEl?.querySelector('.bbl-calendar-picker-title');
+      const nextBtn = popoverEl?.querySelector('.bbl-calendar-picker-nav[aria-label="Next month"]');
+
+      if (titleEl && nextBtn) {
+        const syncNextNavState = () => {
+          nextBtn.disabled = isNextMonthDisabled(titleEl.textContent, language);
+        };
+        navObserver = new MutationObserver(syncNextNavState);
+        navObserver.observe(titleEl, { childList: true, characterData: true, subtree: true });
+        syncNextNavState();
+      }
 
       if (dateTrigger) {
         dateTrigger.addEventListener('click', (e) => {
