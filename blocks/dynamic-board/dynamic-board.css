@@ -752,6 +752,13 @@
   line-height: 1.4;
 }
 
+.dynamic-board .db-td-name-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
 .dynamic-board .db-td-num {
   text-align: right;
   white-space: nowrap;

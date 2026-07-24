@@ -160,7 +160,7 @@ function renderRow(rate, isSelected, state) {
         <input type="checkbox" class="db-row-cb" data-id="${id}" ${checked} ${disabled} aria-label="Select ${sym}">
       </td>
       <td class="db-td-symbol">${sym}</td>
-      <td class="db-td-name">${escapeHtml(state.isThai ? rate.NAME_THAI : rate.NAME_ENG)}</td>
+      <td class="db-td-name"><span class="db-td-name-text">${escapeHtml(state.isThai ? rate.NAME_THAI : rate.NAME_ENG)}</span></td>
       ${state.isGov
     ? `<td class="db-td-num">${escapeHtml(rate.ISSUE_RATING || '-')}</td>
       <td class="db-td-num">${escapeHtml(rate.ISSUER_RATING || '-')}</td>`
