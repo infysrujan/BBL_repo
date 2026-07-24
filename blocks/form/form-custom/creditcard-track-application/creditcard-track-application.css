@@ -294,10 +294,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     line-height: var(--bbl-text-default-line-height);
     color: var(--bbl-color-grey-85);
 
-    & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-']),
-    & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-']),
+     & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
+    & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
     & .field-wrapper.col-6:not(.button-wrapper, .cc-panel-item-form-title, .cc-panel-item-form-input, .cc-panel-item-form-cover),
-    & .field-wrapper.col-12:not(:is(.field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-'])) {
+    & .field-wrapper.col-12:not(:is(.field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-'])) {
       display: block;
       width: 100%;
       max-width: 100%;
