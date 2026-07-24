@@ -86,7 +86,6 @@ function buildDataFromConfig(json, lang, placeholders) {
 
   const minError = L['validation-minValueError'] || '';
   const maxError = L['validation-maxValueError'] || '';
-  const maxError = L['validation-maxValueError'] || '';
 
   const goalKeys = [...new Set(
     Object.keys(L)
