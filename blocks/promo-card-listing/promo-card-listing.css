@@ -4,6 +4,10 @@
   background-color: var(--bbl-color-white);
 }
 
+body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector-content) .tabs-nav-wrapper .tabs-nav button {
+  color: var(--bbl-color-grey-85);
+}
+
 .promo-selector-grid .listing-card-desc p {
   display: block;
   -webkit-line-clamp: none;
