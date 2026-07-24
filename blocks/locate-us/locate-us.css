@@ -78,6 +78,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-family: var(--bbl-font-family-medium);
   text-align: left;
 }
 
@@ -166,7 +167,6 @@
   min-width: 0;
   height: 2.75rem;
   padding: 0 1.875rem 0 var(--bbl-space-250);
-  max-width: 96.4%;
   border: 0.0625rem solid var(--bbl-color-gray-300);
   border-radius: var(--bbl-radius-md);
   background-color: var(--bbl-color-gray-144);
@@ -777,7 +777,7 @@
 /* ── Overseas layout ─────────────────────────────────────────────────────────── */
 
 .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
-  padding: 0 var(--bbl-space-200);
+  padding: 0 21px;
   display: flex;
   justify-content: center;
   overflow: visible;
@@ -1000,7 +1000,7 @@
   }
 
   .locate-us .locate-us-keyword-form {
-    height: 2.75rem;
+    height: 2.93rem;
     padding-right: var(--bbl-space-500);
     max-width: 100%;
   }
@@ -1273,11 +1273,11 @@
 
 }
 
-@media (47.5rem < width <=64rem) {
+/* @media (47.5rem < width <=64rem) {
   .locate-us .locate-us-card-detail {
     padding-right: 0;
   }
-}
+} */
 
 @media (width > 64rem) {
   .locate-us .locate-us-keyword-search-btn {
