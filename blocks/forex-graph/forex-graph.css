@@ -344,6 +344,14 @@
   box-sizing: border-box;
 }
 
+/* "To" field sits in the row's right-hand column, so anchoring its popup
+   from the left (like "From") pushes it past the viewport's right edge.
+   Anchor from the right instead so it opens within the visible viewport. */
+.forex-graph .forex-graph-to-group .forex-graph-datepicker {
+  left: auto;
+  right: 0;
+}
+
 .forex-graph .forex-graph-datepicker-header {
   display: flex;
   align-items: center;
