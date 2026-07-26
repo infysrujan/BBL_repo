@@ -756,9 +756,8 @@
 .dynamic-board .db-td-name[data-tooltip]:hover::after {
   content: attr(data-tooltip);
   position: absolute;
-  top: 100%;
+  top: 0;
   left: 0;
-  margin-top: 0.25rem;
   background: var(--bbl-color-truthful-blue, #1a2744);
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-primary);
