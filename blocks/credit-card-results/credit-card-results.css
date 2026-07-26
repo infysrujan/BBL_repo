@@ -213,7 +213,7 @@
 }
 
 .ccs-results-toggle-btn .icon-dropdown {
-  font-size: var(--bbl-font-size-b3);
+  font-size: var(--bbl-font-size-b3, 0.8125rem);
   color: var(--bbl-color-active-blue);
   transition: transform 0.2s ease;
   flex-shrink: 0;
