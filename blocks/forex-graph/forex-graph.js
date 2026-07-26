@@ -563,7 +563,7 @@ export default async function decorate(block) {
               maxRotation: 45,
               minRotation: 45,
               autoSkip: true,
-              maxTicksLimit: 6,
+              autoSkipPadding: 10,
               font: { size: 13, weight: '700' },
               color: '#000',
             },
