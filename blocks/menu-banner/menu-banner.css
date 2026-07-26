@@ -43,7 +43,7 @@
   display: block;
   max-width: 75rem;
   margin: 0 auto;
-  padding: 0 var(--bbl-space-container-xs) var(--bbl-space-400);
+  padding: 0 var(--bbl-space-container-xs) 0;
 }
 
 /* Eyebrow text */
