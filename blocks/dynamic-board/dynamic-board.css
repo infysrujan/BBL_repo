@@ -917,7 +917,7 @@
   }
 
   .dynamic-board .db-filter-actions {
-    flex-direction: row;
+    flex-direction: row-reverse;
   }
 
   .dynamic-board .db-filter-apply,
