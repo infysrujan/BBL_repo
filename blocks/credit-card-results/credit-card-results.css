@@ -271,6 +271,14 @@
   .card-list.credit-card .cards-list-inner {
     min-height: 27rem;
   }
+
+  /* Matches the card grid's rendered width (3 × 13.5rem cards + 2 × gap) so
+     the disclaimer's left edge lines up with the first card's left edge,
+     instead of spanning the full (wider) container. */
+  .ccs-results-disclaimer {
+    max-width: 42rem;
+    margin-inline: auto;
+  }
 }
 
 @media (width > 64rem) {
@@ -285,5 +293,10 @@
 
   .card-list.credit-card .cards-list-inner {
     min-height: 28rem;
+  }
+
+  /* Matches the desktop grid's wider rendered width (3 × 16.5rem + 2 × gap). */
+  .ccs-results-disclaimer {
+    max-width: 54.5rem;
   }
 }
