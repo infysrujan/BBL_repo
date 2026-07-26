@@ -346,73 +346,8 @@
   padding-top: var(--bbl-space-250);
 }
 
-/* ==========================================================================
-   Selector buttons — scoped overrides of any global button styles
-   ========================================================================== */
-
-.credit-card-selector .selector-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 2.75rem;
-  width: auto;
-  min-width: 9rem;
-  padding: 0 var(--bbl-space-400);
-  border-radius: 0.4375rem;
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1);
-  font-weight: var(--bbl-font-weight-regular);
-  cursor: pointer;
-  white-space: nowrap;
-  box-sizing: border-box;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
-}
-
-
-/* Primary — solid blue fill (Apply) */
-.credit-card-selector .selector-button-primary {
-  background-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-  border: none;
-}
-
-.credit-card-selector .selector-button-primary:disabled {
-  background-color: var(--bbl-color-gray-300);
-  color: var(--bbl-color-grey-60);
-  cursor: not-allowed;
-  border: 0.0039rem solid var(--bbl-color-gray-300);
-}
-
-.credit-card-selector .selector-button-primary:hover:not(:disabled) {
-  background-color: var(--bbl-color-blue-90);
-}
-
-
-/* Secondary — outlined (Start Over) */
-.credit-card-selector .selector-button-secondary {
-  background-color: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
-  border: 0.0625rem solid var(--bbl-color-active-blue);
-  min-width: 7rem;
-}
-
-.credit-card-selector .selector-button-secondary:hover {
-  background-color: var(--bbl-color-active-blue);
-  color: var(--bbl-color-white);
-}
-
-
-/* Tertiary — text only */
-.credit-card-selector .selector-button-tertiary {
-  background-color: transparent;
-  color: var(--bbl-color-active-blue);
-  border: none;
-  padding: 0;
-  min-width: auto;
-  height: auto;
+.credit-card-selector .selector-actions .button-m.primary {
+  cursor: default;
 }
 
 /* ==========================================================================

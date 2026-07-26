@@ -399,7 +399,9 @@ export default function decorate(block) {
 
   const startOverButton = document.createElement('button');
   startOverButton.type = 'button';
-  startOverButton.className = 'selector-button selector-button-secondary';
+  // startOverButton.className = 'selector-button selector-button-secondary';
+  startOverButton.classList.add('button-m');
+  startOverButton.classList.add('secondary');
   startOverButton.textContent = startOverButtonConfig.label;
   if (startOverButtonConfig.titleAttr) startOverButton.title = startOverButtonConfig.titleAttr;
   startOverButton.style.display = 'none';
@@ -409,7 +411,9 @@ export default function decorate(block) {
   const applyVariant = ALLOWED_VARIANTS.has(applyButtonConfig.variant)
     ? applyButtonConfig.variant
     : 'primary';
-  applyButton.className = `selector-button selector-button-${applyVariant}`;
+  // applyButton.className = `selector-button selector-button-${applyVariant}`;
+  applyButton.classList.add('button-m');
+  applyButton.classList.add(`${applyVariant}`);
   applyButton.textContent = applyButtonConfig.label;
   if (applyButtonConfig.titleAttr) applyButton.title = applyButtonConfig.titleAttr;
   applyButton.disabled = true;
