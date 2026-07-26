@@ -58,7 +58,7 @@
 }
 
 .breadcrumb+.social-icons-wrapper {
-  padding: 0 var(--bbl-space-container-xs) var(--bbl-space-inline-md) 0;
+  padding: 0 var(--bbl-space-container-xs) 1.1875rem 0;
   margin: 0 auto;
   max-width: 77.5rem;
   box-sizing: border-box;
