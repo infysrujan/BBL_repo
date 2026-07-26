@@ -181,7 +181,7 @@
   font-family: var(--bbl-font-family-looped);
   font-weight: var(--bbl-font-weight-regular);
   font-size: 0.7rem;
-  line-height: normal;
+  line-height: 1.2;
   color: var(--bbl-color-black);
   flex: 1;
   text-align: center;
