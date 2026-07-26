@@ -96,6 +96,7 @@
   font-size: var(--bbl-body-b1-size);
   text-decoration: none;
   cursor: pointer;
+  width: 100%;
 }
 
 .card-list.credit-card .ccs-compare-btn.is-comparing {
