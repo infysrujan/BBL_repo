@@ -197,9 +197,9 @@
 /* ── Logo in remark area ─────────────────────────────────────────────────── */
 
 .card-list.mf-results .cards-list-remark img.mfr-logo {
-  width: auto;
+  height: 2.5rem;
+  width: 8.875rem;
   max-width: 8.875rem;
-  height: auto;
   object-fit: contain;
   display: block;
   margin-bottom: 1.4375rem;
