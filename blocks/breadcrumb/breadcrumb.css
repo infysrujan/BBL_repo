@@ -12,9 +12,7 @@
 
 .breadcrumb ol {
   list-style: none;
-  margin: 0 0 var(--bbl-space-250);
   padding: var(--bbl-space-150) 0;
-  height: 3.125rem;
 }
 
 .breadcrumb ol>li {
@@ -59,7 +57,7 @@
 }
 
 .breadcrumb+.social-icons-wrapper {
-  padding: 0 var(--bbl-space-container-xs) var(--bbl-space-inline-md);
+  padding: 0 var(--bbl-space-container-xs) var(--bbl-space-inline-md) 0;
   margin: 0 auto;
   max-width: 77.5rem;
   box-sizing: border-box;
@@ -129,8 +127,7 @@ body.mobile-app-view .breadcrumb {
 
   .breadcrumb ol {
     float: inline-start;
-    margin-bottom: 0;
-    height: auto;
+    margin: 0 auto;
     display: block;
   }
 
@@ -155,6 +152,6 @@ body.mobile-app-view .breadcrumb {
 
 @media (width > 64rem) {
   .breadcrumb {
-    padding: 21px 0 19px;
+    padding: 1.3125rem 0 1.1875rem;
   }
 }
