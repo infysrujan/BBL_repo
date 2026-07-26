@@ -78,7 +78,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: var(--bbl-font-family-medium);
   text-align: left;
 }
 
@@ -213,7 +212,7 @@
 }
 
 .locate-us .locate-us-keyword-search-icon {
-  font-size: var(--bbl-font-size-b2);
+  font-size: 0.875rem;
   color: var(--bbl-color-gray-142);
   line-height: 1;
 }
