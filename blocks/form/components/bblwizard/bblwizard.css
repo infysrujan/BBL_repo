@@ -18,8 +18,6 @@
   box-sizing: border-box;
   margin: 0 auto;
   max-width: 31.25rem;
-  font-size: 14px;
-  font-weight: 400;
   line-height: 18.2px;
   font-family: var(--bbl-font-family-medium);
 }
@@ -285,6 +283,7 @@ main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.fiel
 
 main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards, .horizontal) .radio-wrapper label {
   line-height: 32.2px;
+  font-size: var(--bbl-text-default-size);
   text-align: left;
 }
 
@@ -332,11 +331,6 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 
 main .section.form-container.wizard-forms .form form {
   max-width: 77.5rem;
-}
-
-main .section.form-container.custom-forms .form form .plain-text-wrapper p:last-child p {
-  font-size: 14px;
-  line-height: 18px;
 }
 
 main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper:is(.field-veiwplanstext, .field-infotext2) :is(h1, h2, h3, h4, h5, h6, p),
