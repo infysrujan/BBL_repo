@@ -179,6 +179,17 @@ function renderRow(rate, isSelected, state) {
     </tr>`;
 }
 
+function updateTooltips(tbodySel, tbodyAll) {
+  [tbodySel, tbodyAll].forEach((tbody) => {
+    tbody.querySelectorAll('.db-td-name[data-tooltip]').forEach((td) => {
+      const span = td.querySelector('.db-td-name-text');
+      if (!span || span.scrollHeight <= span.clientHeight) {
+        td.removeAttribute('data-tooltip');
+      }
+    });
+  });
+}
+
 function renderTable(tbodySel, tbodyAll, state) {
   if (!state.rates?.length) {
     tbodySel.innerHTML = '';
@@ -205,6 +216,7 @@ function renderTable(tbodySel, tbodyAll, state) {
       offset += tr.getBoundingClientRect().height;
     });
   }
+  requestAnimationFrame(() => updateTooltips(tbodySel, tbodyAll));
 }
 
 // ─── month picker ─────────────────────────────────────────────────────────────

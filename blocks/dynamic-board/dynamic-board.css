@@ -756,18 +756,20 @@
 .dynamic-board .db-td-name[data-tooltip]:hover::after {
   content: attr(data-tooltip);
   position: absolute;
-  top: 0;
+  top: 100%;
   left: 0;
-  background: #1d1d1d;
+  margin-top: 0.25rem;
+  background: var(--bbl-color-truthful-blue, #1a2744);
   color: var(--bbl-color-white);
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b2);
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.25rem;
+  font-weight: 700;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.5rem;
   white-space: normal;
   max-width: 18rem;
   z-index: 200;
-  line-height: 1.4;
+  line-height: 1.5;
   box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.3);
   pointer-events: none;
 }
