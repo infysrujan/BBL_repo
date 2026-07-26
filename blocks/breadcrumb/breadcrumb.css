@@ -1,6 +1,6 @@
 .breadcrumb {
   overflow: hidden;
-  padding: 1.3125rem 1rem 1.1875rem;
+  padding: 1.3125rem 1rem 1.1875rem 0;
   margin: 0 auto;
   box-sizing: border-box;
   background-color: var(--bbl-bg-primary);
@@ -128,7 +128,7 @@ body.mobile-app-view .breadcrumb {
   }
 
   .breadcrumb ol {
-    float: none;
+    float: inline-start;
     margin-bottom: 0;
     height: auto;
     display: block;
@@ -155,6 +155,6 @@ body.mobile-app-view .breadcrumb {
 
 @media (width > 64rem) {
   .breadcrumb {
-    padding: var(--bbl-space-250) 0;
+    padding: 21px 0 19px;
   }
 }
