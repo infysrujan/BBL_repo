@@ -211,10 +211,6 @@
   transition: background-color 0.2s ease;
 }
 
-.ccs-results-toggle-btn:hover {
-  background-color: var(--bbl-color-blue-10);
-}
-
 .ccs-results-toggle-btn .icon-dropdown {
   font-size: var(--bbl-font-size-b3);
   color: var(--bbl-color-active-blue);
