@@ -508,16 +508,31 @@ function wireFilterEvents(
 // can't guarantee this — numeric/date cells have no wrap point, so their
 // intrinsic minimum content width can exceed the page no matter what CSS is
 // applied, which is what caused columns to be clipped off the printed page.
-// Order matches renderRow's cell order once print strips the checkbox
-// column: Symbol, Name, [2 middle cols], Offer Price, Offer Yield,
-// Remain Term, Coupon, Maturity Date.
-function buildPrintColgroup(isGov) {
-  const widths = isGov
-    // Issue/Issuer Rating are short strings (e.g. "AA+") — narrower is fine.
-    ? [9, 22, 8, 8, 11, 10, 10, 8, 14]
-    // Bid Price/Bid Yield need more room for full decimal values.
-    : [9, 20, 10, 10, 10, 9, 10, 8, 14];
-  return `<colgroup>${widths.map((w) => `<col style="width:${w}%">`).join('')}</colgroup>`;
+//
+// Widths are derived from the CLONED table's actual body row rather than a
+// hardcoded column count/array. A fixed assumption (e.g. "always 9 columns")
+// can silently drift out of sync with the real column count — whether from
+// gov vs. bond board differences, future authoring changes, or the colspan
+// cleanup below — and that mismatch is what causes table-layout: fixed to
+// render overlapping/garbled cells instead of cleanly bounded ones.
+function buildPrintColgroup(table) {
+  const bodyRow = table.querySelector('tbody tr');
+  const count = bodyRow ? bodyRow.children.length : 0;
+  if (!count) return '';
+  // Relative weights, not fixed %, so this still sums to 100 correctly
+  // whatever the real column count turns out to be: Symbol narrow, Name
+  // wide (it holds the longest running text), the last column (Maturity
+  // Date) slightly wider to fit the date text, everything else (prices,
+  // yields, term, coupon) equal.
+  const weights = Array.from({ length: count }, (_, i) => {
+    if (i === 0) return 1.2; // Symbol
+    if (i === 1) return 2.6; // Name
+    if (i === count - 1) return 1.6; // Maturity Date
+    return 1;
+  });
+  const total = weights.reduce((sum, w) => sum + w, 0);
+  const widths = weights.map((w) => (w / total) * 100);
+  return `<colgroup>${widths.map((w) => `<col style="width:${w.toFixed(2)}%">`).join('')}</colgroup>`;
 }
 
 /** Same approach as blocks/bcap/bcap.js: print an isolated document instead of
@@ -543,17 +558,27 @@ function printElement(block, state) {
     '.db-td-dl',
   ].join(', ')).forEach((el) => el.remove());
 
-  // The live header's first column has colspan=2 for layout reasons the body
-  // doesn't match (only one Symbol cell), which shifts every later column
-  // out of alignment — drop it only where it's paired with rowspan=2.
-  content.querySelectorAll('.db-table thead th[rowspan="2"][colspan="2"]')
-    .forEach((th) => th.removeAttribute('colspan'));
+  // The live header's Symbol column has colspan=2 for layout reasons the
+  // body doesn't match (only one Symbol cell, since the checkbox column is
+  // stripped above) — fixed by position (first header cell only), not by
+  // matching rowspan/colspan shape generally. Matching by shape alone could
+  // also strip a legitimate colspan from a different column further down
+  // the row if it happened to have the same rowspan="2" colspan="2" shape,
+  // which would desync the header's column count from the body's and cause
+  // table-layout: fixed to render overlapping/garbled cells.
+  const symbolHeaderCell = content.querySelector(
+    '.db-table thead tr:first-child th:first-child[rowspan="2"][colspan="2"]',
+  );
+  if (symbolHeaderCell) symbolHeaderCell.removeAttribute('colspan');
 
   // Inject fixed column widths so table-layout: fixed in printCss below has
   // something deterministic to size columns from, instead of relying on
-  // each cell's content to determine its own minimum width.
+  // each cell's content to determine its own minimum width. Derived from
+  // the cloned table's own body row (see buildPrintColgroup) so it can
+  // never drift out of sync with however many columns this board actually
+  // renders.
   const printTable = content.querySelector('.db-table');
-  if (printTable) printTable.insertAdjacentHTML('afterbegin', buildPrintColgroup(state.isGov));
+  if (printTable) printTable.insertAdjacentHTML('afterbegin', buildPrintColgroup(printTable));
 
   content.querySelectorAll('.db-time-chevron, .db-time-list').forEach((el) => el.remove());
 
