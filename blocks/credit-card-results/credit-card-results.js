@@ -513,7 +513,12 @@ export default async function decorate(block) {
     addCompareButtons(blockEl, doc, labels);
     restoreCompareState(cardListContainer);
 
-    if (activeCards === null && !isExpanded) {
+    const cardsList = blockEl.querySelector('.cards-list.scrollable');
+    // On mobile, the carousel already exposes every card via swipe, so the
+    // initial-visible cap (and the "See more" toggle it drives) is redundant.
+    const isMobileCarousel = !!cardsList && window.matchMedia(MOBILE_BREAKPOINT).matches;
+
+    if (activeCards === null && !isExpanded && !isMobileCarousel) {
       [...blockEl.querySelectorAll('.cards-list-item')].forEach((item, i) => {
         if (i >= INITIAL_VISIBLE) item.classList.add('ccs-hidden');
       });
@@ -523,14 +528,17 @@ export default async function decorate(block) {
       removePeek(cardListContainer);
     }
 
-    const cardsList = blockEl.querySelector('.cards-list.scrollable');
     if (cardsList) {
       currentBuildDots = initMobileCarousel(cardsList, blockEl, cardListContainer, doc, labels);
     }
   }
 
   function refreshToggle() {
-    const canToggle = activeCards === null && allCards.length > INITIAL_VISIBLE;
+    const isMobileCarousel = window.matchMedia(MOBILE_BREAKPOINT).matches
+      && !!cardListContainer.querySelector('.cards-list.scrollable');
+    const canToggle = activeCards === null
+      && allCards.length > INITIAL_VISIBLE
+      && !isMobileCarousel;
     toggleWrap.style.display = canToggle ? 'flex' : 'none';
 
     toggleBtn.innerHTML = '';
@@ -550,6 +558,9 @@ export default async function decorate(block) {
   }
 
   render();
+
+  // ── Re-render on breakpoint crossing (mobile carousel vs. grid) ─────────────
+  window.matchMedia(MOBILE_BREAKPOINT).addEventListener('change', () => render());
 
   // ── See more / See less ────────────────────────────────────────────────────
   toggleBtn.addEventListener('click', () => {

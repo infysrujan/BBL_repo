@@ -183,6 +183,12 @@
   scroll-snap-align: start;
 }
 
+@media (width <= 47.5rem) {
+  .cards-list:is(.scrollable, .carousel).center .cards-list-item {
+    scroll-snap-align: center;
+  }
+}
+
 .cards-list:is(.carousel) .cards-list-item {
   flex: 0 0 17.5rem;
   scroll-snap-align: start;
