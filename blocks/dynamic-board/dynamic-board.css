@@ -1020,7 +1020,26 @@
 
   .dynamic-board .db-table {
     min-width: 0;
+    /* fixed layout + the colgroup injected by buildPrintColgroup() in
+       dynamic-board.js guarantee every column's width is a fixed percentage
+       that always sums to 100%, so nothing can be pushed past the page edge
+       — auto layout couldn't guarantee this because numeric/date cells have
+       no wrap point, so their intrinsic minimum width could exceed the
+       printable page regardless of any CSS applied to them. */
+    table-layout: fixed;
     font-size: var(--bbl-font-size-b3);
+  }
+
+  /* Was hard-floored at 12rem with no print-time override — that alone was
+     enough to blow past a page's usable width before any other column was
+     even counted. Reset so the colgroup's percentage width actually wins. */
+  .dynamic-board .db-td-name {
+    min-width: 0;
+  }
+
+  .dynamic-board .db-td-symbol,
+  .dynamic-board .db-td-num {
+    white-space: normal;
   }
 
   .dynamic-board .db-mp-popup,

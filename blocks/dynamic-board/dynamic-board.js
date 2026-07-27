@@ -502,10 +502,28 @@ function wireFilterEvents(
 }
 
 // ─── print ────────────────────────────────────────────────────────────────────
+// Explicit per-column print widths (%, always summing to 100) so the table
+// can never exceed the printable page width regardless of how long a
+// price/yield/date string is. table-layout: auto (used everywhere else)
+// can't guarantee this — numeric/date cells have no wrap point, so their
+// intrinsic minimum content width can exceed the page no matter what CSS is
+// applied, which is what caused columns to be clipped off the printed page.
+// Order matches renderRow's cell order once print strips the checkbox
+// column: Symbol, Name, [2 middle cols], Offer Price, Offer Yield,
+// Remain Term, Coupon, Maturity Date.
+function buildPrintColgroup(isGov) {
+  const widths = isGov
+    // Issue/Issuer Rating are short strings (e.g. "AA+") — narrower is fine.
+    ? [9, 22, 8, 8, 11, 10, 10, 8, 14]
+    // Bid Price/Bid Yield need more room for full decimal values.
+    : [9, 20, 10, 10, 10, 9, 10, 8, 14];
+  return `<colgroup>${widths.map((w) => `<col style="width:${w}%">`).join('')}</colgroup>`;
+}
+
 /** Same approach as blocks/bcap/bcap.js: print an isolated document instead of
  * the live page, so the fixed header/nav and the site's max-width layout
  * don't shrink the table or swallow the logo. */
-function printElement(block) {
+function printElement(block, state) {
   const section = block.closest('.section') || block;
   const content = section.cloneNode(true);
 
@@ -530,6 +548,12 @@ function printElement(block) {
   // out of alignment — drop it only where it's paired with rowspan=2.
   content.querySelectorAll('.db-table thead th[rowspan="2"][colspan="2"]')
     .forEach((th) => th.removeAttribute('colspan'));
+
+  // Inject fixed column widths so table-layout: fixed in printCss below has
+  // something deterministic to size columns from, instead of relying on
+  // each cell's content to determine its own minimum width.
+  const printTable = content.querySelector('.db-table');
+  if (printTable) printTable.insertAdjacentHTML('afterbegin', buildPrintColgroup(state.isGov));
 
   content.querySelectorAll('.db-time-chevron, .db-time-list').forEach((el) => el.remove());
 
@@ -561,7 +585,7 @@ function printElement(block) {
 
   const printCss = `
     @page {
-      size: A4 portrait;
+      size: A4 landscape;
       margin: 10mm;
     }
 
@@ -637,15 +661,20 @@ function printElement(block) {
 
     .dynamic-board .db-table {
       width: 100%;
-      /* table-layout: fixed was tried here, but it only measures the FIRST
-         header row's cells to size columns — this table's first row has
-         colspan="2" group headers (Bidding/Offering Price) whose real
-         sub-column split only exists in the second row, so fixed layout
-         can't place that split and the sub-headers overlap. table-layout:
-         auto (the default) measures every row correctly; combined with
-         overflow-wrap/word-break below and min-width:0 (already reset by
-         dynamic-board.css's own @media print block) it still shrinks to
-         fit the page instead of overflowing. */
+      /* table-layout: fixed, driven by the <colgroup> injected via
+         buildPrintColgroup() above — gives every column a guaranteed
+         percentage width that always sums to 100%, so nothing can be
+         pushed off the page no matter how long a price/yield/date string
+         is. table-layout: auto was tried previously but couldn't guarantee
+         this: it measures each cell's content to determine column widths,
+         and numeric/date cells have no wrap point, so their minimum content
+         width could still exceed the page regardless of any wrapping CSS.
+         Note table-layout: fixed also needs the colgroup (not just the
+         first row) to size columns correctly when the header has a grouped
+         first row (colspan) and a flat sub-header second row — reading only
+         the first row, as fixed layout normally does without a colgroup,
+         can't resolve that split correctly. */
+      table-layout: fixed;
       border: 2px solid #EBEBEB;
       /* Outline as a fallback outer border — it can't be partially
          overridden by any single cell's border like border-collapse can. */
@@ -660,6 +689,18 @@ function printElement(block) {
     .dynamic-board .db-table td {
       overflow-wrap: break-word;
       word-break: break-word;
+      white-space: normal;
+    }
+
+    /* Base stylesheet floors Name at 12rem and keeps Symbol/numeric cells
+       at white-space: nowrap with no print-time override — either alone is
+       enough to blow past the fixed column width from the colgroup above. */
+    .dynamic-board .db-td-name {
+      min-width: 0;
+    }
+
+    .dynamic-board .db-td-symbol,
+    .dynamic-board .db-td-num {
       white-space: normal;
     }
 
@@ -1117,7 +1158,7 @@ export default async function decorate(block) {
   });
 
   // ── print ──
-  printBtn.addEventListener('click', () => printElement(block));
+  printBtn.addEventListener('click', () => printElement(block, state));
 
   // ── remarks ──
   initRemarks(block.querySelector('#db-remarks'), placeholders);
