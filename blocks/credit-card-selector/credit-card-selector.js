@@ -321,10 +321,10 @@ export default function decorate(block) {
   selectorContent.className = 'card-selector-content';
 
   const primaryFilterColumn = document.createElement('div');
-  primaryFilterColumn.className = 'filter-column filter-column--primary';
+  primaryFilterColumn.className = 'filter-column filter-column-primary';
 
   const lifestyleFilterColumn = document.createElement('div');
-  lifestyleFilterColumn.className = 'filter-column filter-column--lifestyle';
+  lifestyleFilterColumn.className = 'filter-column filter-column-lifestyle';
 
   filterGroups.forEach((group, index) => {
     const groupElement = buildFilterGroup(group, index);

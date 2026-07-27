@@ -41,7 +41,7 @@ function escapeHtml(str) {
  * @param {number} [maxLength] - Character threshold; defaults to 80.
  * @returns {string} HTML string for the table cell.
  */
-export function truncateNameCell(
+export default function truncateNameCell(
   name,
   tdClass = '',
   spanClass = 'db-td-name-text',

@@ -754,12 +754,6 @@
   line-height: 1.4;
 }
 
-.dynamic-board .db-td-name[data-title]:hover::after {
-  opacity: 1;
-  transition: all 0.1s ease 0.5s;
-  visibility: visible;
-}
-
 .dynamic-board .db-td-name[data-title]::after {
   content: attr(data-title);
   position: absolute;
@@ -777,6 +771,12 @@
   z-index: 11;
   visibility: hidden;
   pointer-events: none;
+}
+
+.dynamic-board .db-td-name[data-title]:hover::after {
+  opacity: 1;
+  transition: all 0.1s ease 0.5s;
+  visibility: visible;
 }
 
 .dynamic-board .db-td-name-text {

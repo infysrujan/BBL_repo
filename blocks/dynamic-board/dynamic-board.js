@@ -9,7 +9,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
-import { truncateNameCell } from '../../scripts/utils/truncate-tooltip.js';
+import truncateNameCell from '../../scripts/utils/truncate-tooltip.js';
 
 const MAX_SELECTED = 5;
 

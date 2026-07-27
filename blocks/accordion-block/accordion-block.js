@@ -307,14 +307,12 @@ function buildAccordionPrintDocument(block) {
     bodyHtml = shell.innerHTML;
   } else if (prependHtml) {
     bodyHtml = `${prependHtml}${clone.outerHTML}`;
+  } else if (promoBlock) {
+    const promoClone = promoBlock.cloneNode(true);
+    promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
+    bodyHtml = `${promoClone.outerHTML}${clone.outerHTML}`;
   } else {
-    if (promoBlock) {
-      const promoClone = promoBlock.cloneNode(true);
-      promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
-      bodyHtml = `${promoClone.outerHTML}${clone.outerHTML}`;
-    } else {
-      bodyHtml = clone.outerHTML;
-    }
+    bodyHtml = clone.outerHTML;
   }
 
   items.forEach((item, i) => {
@@ -381,7 +379,7 @@ function buildAccordionPrintDocument(block) {
       <link rel="stylesheet" href="/styles/fonts.css">
       <link rel="stylesheet" href="/blocks/header/header.css">
       <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
-     ${promoBlock ? `<link rel="stylesheet" href="/blocks/promotional-details/promotional-details.css">` : ''}
+     ${promoBlock ? '<link rel="stylesheet" href="/blocks/promotional-details/promotional-details.css">' : ''}
       <link rel="stylesheet" href="/blocks/accordion-block/accordion-block.css">
       <link rel="stylesheet" href="/blocks/table/table.css">
       <style>${printCss}</style>
