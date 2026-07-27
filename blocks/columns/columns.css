@@ -25,7 +25,7 @@
 }
 
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) {
-    min-width: 499px;
+    min-width: 31.1875rem;
   flex-direction: row;
   align-items: flex-start;
   gap: 1.875rem;
@@ -46,7 +46,7 @@
 }
 
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col {
-  width: 200px;
+  width: 12.5rem;
 }
 
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col,
@@ -115,7 +115,7 @@
   .columns > div {
     align-items: center;
     flex-direction: unset;
-    gap: 24px;
+    gap: 1.5rem;
   }
 
   .columns > div > div {
