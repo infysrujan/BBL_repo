@@ -636,7 +636,7 @@ function printElement(block) {
     }
 
     .dynamic-board .db-table {
-      width: 75%;
+      width: 100%;
       /* table-layout: fixed was tried here, but it only measures the FIRST
          header row's cells to size columns — this table's first row has
          colspan="2" group headers (Bidding/Offering Price) whose real
