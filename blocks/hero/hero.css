@@ -100,7 +100,6 @@
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-item {
   height: 21.875rem;
   max-height: none;
-  overflow: hidden;
 }
 
 .hero-banner-private-wealth-banking .hero-banner-img {
@@ -821,6 +820,7 @@
 
   :is(.hero-banner-simple) .hero-banner-content-group .button-container a {
     min-width: 11.25rem;
+    margin: 0;
   }
 
   .hero-banner-item.no-mobile-app-cta .hero-app-ctas {
