@@ -9,6 +9,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
+import { truncateNameCell } from '../../scripts/utils/truncate-tooltip.js';
 
 const MAX_SELECTED = 5;
 
@@ -160,7 +161,7 @@ function renderRow(rate, isSelected, state) {
         <input type="checkbox" class="db-row-cb" data-id="${id}" ${checked} ${disabled} aria-label="Select ${sym}">
       </td>
       <td class="db-td-symbol">${sym}</td>
-      <td class="db-td-name" data-tooltip="${escapeHtml(state.isThai ? rate.NAME_THAI : rate.NAME_ENG)}"><span class="db-td-name-text">${escapeHtml(state.isThai ? rate.NAME_THAI : rate.NAME_ENG)}</span></td>
+      ${truncateNameCell(state.isThai ? rate.NAME_THAI : rate.NAME_ENG, 'db-td-name')}
       ${state.isGov
     ? `<td class="db-td-num">${escapeHtml(rate.ISSUE_RATING || '-')}</td>
       <td class="db-td-num">${escapeHtml(rate.ISSUER_RATING || '-')}</td>`
@@ -177,17 +178,6 @@ function renderRow(rate, isSelected, state) {
         </a>
       </td>
     </tr>`;
-}
-
-function updateTooltips(tbodySel, tbodyAll) {
-  [tbodySel, tbodyAll].forEach((tbody) => {
-    tbody.querySelectorAll('.db-td-name[data-tooltip]').forEach((td) => {
-      const span = td.querySelector('.db-td-name-text');
-      if (!span || span.scrollHeight <= span.clientHeight) {
-        td.removeAttribute('data-tooltip');
-      }
-    });
-  });
 }
 
 function renderTable(tbodySel, tbodyAll, state) {
@@ -216,7 +206,6 @@ function renderTable(tbodySel, tbodyAll, state) {
       offset += tr.getBoundingClientRect().height;
     });
   }
-  requestAnimationFrame(() => updateTooltips(tbodySel, tbodyAll));
 }
 
 // ─── month picker ─────────────────────────────────────────────────────────────

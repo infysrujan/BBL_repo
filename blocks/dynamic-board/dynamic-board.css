@@ -753,23 +753,28 @@
   line-height: 1.4;
 }
 
-.dynamic-board .db-td-name[data-tooltip]:hover::after {
-  content: attr(data-tooltip);
+.dynamic-board .db-td-name[data-title]:hover::after {
+  opacity: 1;
+  transition: all 0.1s ease 0.5s;
+  visibility: visible;
+}
+
+.dynamic-board .db-td-name[data-title]::after {
+  content: attr(data-title);
   position: absolute;
-  top: 0;
+  bottom: 0.1%;
   left: 0;
-  background: var(--bbl-color-truthful-blue, #1a2744);
+  width: 18.75rem;
+  padding: 0.3125rem 0.9375rem 0.5rem;
   color: var(--bbl-color-white);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-font-size-b2);
-  font-weight: 700;
-  padding: 0.625rem 0.875rem;
-  border-radius: 0.5rem;
-  white-space: normal;
-  max-width: 18rem;
-  z-index: 200;
   line-height: 1.5;
-  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.3);
+  white-space: pre-line;
+  border-radius: 0.625rem;
+  font-weight: 100;
+  background-color: #233a58;
+  opacity: 0;
+  z-index: 11;
+  visibility: hidden;
   pointer-events: none;
 }
 
