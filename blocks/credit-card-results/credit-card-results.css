@@ -127,6 +127,7 @@
   margin-top: var(--bbl-space-150);
   width: auto;
   height: auto;
+  flex-wrap: wrap;
 }
 
 .ccs-scroll-dot {
