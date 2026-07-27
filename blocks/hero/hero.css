@@ -526,7 +526,7 @@
   background: var(--bbl-color-black);
 }
 
-:is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text p {
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content-inner-text, .hero-banner-content-inner-text p) {
   color: var(--bbl-color-black);
   margin: 0;
   overflow: hidden;
@@ -730,7 +730,7 @@
     margin-bottom: 4.0625rem;
   }
 
-  :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner-text p {
+  :is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content-inner-text, .hero-banner-content-inner-text p) {
     color: var(--bbl-color-white);
   }
 
@@ -1082,7 +1082,7 @@
     pointer-events: auto;
   }
 
-  .hero-banner-simple .hero-banner-content-inner-text p {
+  .hero-banner-simple .hero-banner-content-inner-text, .hero-banner-simple .hero-banner-content-inner-text p {
     color: var(--bbl-color-white);
   }
 
