@@ -216,9 +216,9 @@ button.secondary:hover,
 .button-secondary:active,
 button.secondary:active,
 .button-m.secondary:active {
-  background: var(--bbl-color-active-blue);
-  border-color: var(--bbl-color-blue-70);
-  color: var(--bbl-color-white);
+  background: var(--bbl-color-white);
+  border-color: var(--bbl-color-blue-90);
+  color: var(--bbl-color-blue-90);
 }
 
 /* Disabled */
