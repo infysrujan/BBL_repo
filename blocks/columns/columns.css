@@ -76,6 +76,7 @@
   flex-flow: row wrap;
 }
 
+/* Two buttons in a 2-col row: full-width stacked on mobile/tablet, auto-width side-by-side on desktop */
 .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) > div {
   width: 100%;
 }
