@@ -660,6 +660,7 @@ function printElement(block) {
     .dynamic-board .db-table td {
       overflow-wrap: break-word;
       word-break: break-word;
+      white-space: normal;
     }
 
     .dynamic-board .db-table thead,
@@ -691,10 +692,6 @@ function printElement(block) {
       padding: 0.1875rem 0.25rem;
       vertical-align: middle;
       font-size: 0.6875rem;
-    }
-
-    .dynamic-board .db-table tbody td:last-child {
-      border-right-color: var(--bbl-color-grey-20) !important;
     }
 
     .dynamic-board .db-td-symbol {
