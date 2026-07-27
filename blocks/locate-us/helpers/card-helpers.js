@@ -34,12 +34,12 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
       <div class="locate-us-card-body" hidden>
         <hr class="locate-us-card-hr">
         <div class="locate-us-card-detail">
-          ${isNearest ? '<div class="locate-us-card-nearest-tag"></div>' : ''}
           ${branchStatus ? `
             <div class="locate-us-card-row">
               <span class="locate-us-card-label"></span>
               <div class="locate-us-card-status-col">
                 <span class="locate-us-card-status"></span>
+                ${isNearest ? '<span class="locate-us-card-nearest-tag"></span>' : ''}
                 ${isOpen ? '<span class="locate-us-card-hours"></span>' : ''}
               </div>
             </div>` : ''}

@@ -456,8 +456,6 @@
 .locate-us .locate-us-card-nearest-tag {
   position: absolute;
   right: 0;
-  top: 5.9375rem;
-  transform: translateY(-50%);
   background-color: var(--bbl-color-blue-222);
   border-radius: var(--bbl-rounded-050) 0 0 var(--bbl-rounded-050);
   color: var(--bbl-color-blue-105);
@@ -494,6 +492,7 @@
   gap: var(--bbl-space-025);
   min-width: 0;
   overflow: hidden;
+  position: relative;
 }
 
 .locate-us .locate-us-card-status {
@@ -1142,8 +1141,6 @@
   .locate-us .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron {
     background-image: url('../../icons/icon_pin.svg');
     transform: none;
-    margin-right: 0.625rem;
-
   }
 
   .locate-us .locate-us-card[data-no-location="true"] .locate-us-card-chevron {
