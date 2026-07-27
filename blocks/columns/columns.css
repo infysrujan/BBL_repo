@@ -3,13 +3,12 @@
   flex-direction: column;
 }
 
-.columns > div > div {
-  order: 1;
-  min-width: 0;
-}
-
 .columns img {
   width: 100%;
+}
+
+.columns > div > div {
+  order: 1;
 }
 
 .columns > div > .columns-img-col {
@@ -18,25 +17,23 @@
 
 .columns > div > .columns-img-col img {
   display: block;
-  width: 100%;
-  height: auto;
 }
 
-.columns-2-cols > div:has(.columns-img-col):has(p) {
-  display: flex;
+.accordion-block .columns-2-cols > div > div {
+  order: 1;
+  min-width: 0;
+}
+
+.accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) {
+    min-width: 499px;
   flex-direction: row;
   align-items: flex-start;
+  gap: 1.875rem;
 }
 
-.columns-2-cols > div:has(.columns-img-col):has(p) .columns-img-col img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.columns-2-cols > div:has(.columns-img-col):has(p) .columns-img-col + div p {
+.accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col + div p {
   margin: 0;
-  line-height: 1.4612rem;
+  line-height: 1.67;
 }
 
 .section.center-image .columns-2-cols .columns-img-col,
@@ -48,12 +45,23 @@
   flex: 0 0 auto;
 }
 
-.accordion-block .columns.columns-2-cols > div:has(.columns-img-col):has(> div > p) {
-  gap: 1.875rem;
+.accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col {
+  width: 200px;
 }
 
+.accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col,
 .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col + div {
   padding: 0.3125rem 0;
+}
+
+.accordion-block .columns-2-cols > div > .columns-img-col img {
+  width: 100%;
+  height: auto;
+}
+
+.accordion-block .columns-2-cols:has(> div):has(.columns-img-col + div > p) {
+    overflow: auto hidden;
+    width: 100%;
 }
 
 .section.center-image .columns-3-cols > div:has(> div:nth-child(3) > p > picture) {
@@ -89,9 +97,17 @@
 }
 
 @media (width > 47.5rem) {
+  .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) {
+    min-width: auto;
+  }
+
   .columns-2-cols > div:has(> div:nth-child(1) > p.button-container):has(> div:nth-child(2) > p.button-container) {
     max-width: 37.5rem;
     margin: 0 auto;
+  }
+
+  .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) .columns-img-col {
+    width: auto;
   }
 }
 
