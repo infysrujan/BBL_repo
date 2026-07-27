@@ -436,7 +436,7 @@ export default async function decorate(block) {
         state.selectedFamily,
         language,
       );
-      state.chartData = normalizeChartData(raw);
+      state.chartData = normalizeChartData(raw, language);
     } finally {
       state.loading = false;
     }
@@ -453,11 +453,7 @@ export default async function decorate(block) {
       state.chartInstance = null;
     }
 
-    // API returns MM/DD/YYYY — reformat to DD/MM/YYYY for display
-    const labels = state.chartData.map((d) => {
-      const parts = d.date.split('/');
-      return parts.length === 3 ? `${parts[1]}/${parts[0]}/${parts[2]}` : d.date;
-    });
+    const labels = state.chartData.map((d) => d.date);
     const buyingData = state.chartData.map((d) => d.buyingRate);
     const sellingData = state.chartData.map((d) => d.sellingRate);
 
