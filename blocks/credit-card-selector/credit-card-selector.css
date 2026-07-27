@@ -119,7 +119,7 @@
 .credit-card-selector .filter-group {
   margin-bottom: var(--bbl-space-200);
 
-  @media (min-width: 992px) {
+  @media (width > 64rem) {
     margin-bottom: 31px;
   }
 }
