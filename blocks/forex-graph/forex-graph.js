@@ -31,15 +31,6 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-function isDateRangeOver3Years(fromIso, toIso) {
-  if (!fromIso || !toIso) return false;
-  const from = new Date(fromIso);
-  const to = new Date(toIso);
-  const diffMs = to.getTime() - from.getTime();
-  const diffDays = diffMs / (1000 * 60 * 60 * 24);
-  return diffDays >= 365.25 * 3;
-}
-
 function buildGraphTitle(template, currName, currFamily, fromIso, toIso) {
   const fromParsed = parseIsoDate(fromIso);
   const toParsed = parseIsoDate(toIso);
@@ -414,12 +405,6 @@ export default async function decorate(block) {
     const fromParsed = parseIsoDate(state.from.selectedDate);
     const toParsed = parseIsoDate(state.to.selectedDate);
     if (!fromParsed || !toParsed) return;
-
-    if (isDateRangeOver3Years(state.from.selectedDate, state.to.selectedDate)) {
-      state.error = placeholders.datepickerYearValidation || 'Date range should be between 3 years';
-      state.chartData = [];
-      return;
-    }
 
     state.error = '';
     state.loading = true;
