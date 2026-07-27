@@ -72,6 +72,20 @@ export function decoratePictureLinks(container) {
   });
 }
 
+export function decorateNewTabLinks(container) {
+  container.querySelectorAll('a').forEach((a) => {
+    const href = a.getAttribute('href') || '';
+    const prev = a.previousSibling;
+    const inHref = href.toLowerCase().endsWith('#newtab');
+    const inText = prev?.nodeType === Node.TEXT_NODE && /#newtab/i.test(prev.nodeValue);
+    if (!inHref && !inText) return;
+    if (inHref) a.setAttribute('href', href.slice(0, -'#newtab'.length));
+    if (inText) prev.nodeValue = prev.nodeValue.replace(/#newtab\s*/i, '');
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+  });
+}
+
 export function decorateRteInlineImages(main) {
   main.querySelectorAll(`${DCW} p, ${DCW} li, ${DCW} td`).forEach((el) => {
     if (!el.innerHTML.includes('&amp;nbsp;')) return;
@@ -121,6 +135,7 @@ function scrollToHash(id, doc) {
  */
 export default function initRteAnchors(main, doc) {
   addHintPageAnchors(main);
+  decorateNewTabLinks(main);
 
   const { hash } = window.location;
   if (hash) scrollToHash(hash.substring(1), doc);

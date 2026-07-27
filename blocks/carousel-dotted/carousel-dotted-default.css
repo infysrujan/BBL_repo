@@ -662,7 +662,6 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
-  font-size: 1rem;
   line-height: 1.285rem;
   margin: unset;
   color: var(--bbl-color-grey-85);
@@ -689,8 +688,7 @@
 .carousel-dotted-item.with-default-image
 .caption.editor
 p.text-large.text-light {
-  font-family: Muli-Light, sans-serif;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   line-height: 1.571rem;
   margin: 0;
 }
@@ -906,31 +904,15 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default {
-    font-size: 1rem;
     line-height: 1.625rem;
     font-family: var(--bbl-font-family-primary);
     font-weight: var(--bbl-font-weight-regular);
   }
 
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
-    font-size: 1rem;
     line-height: 1.625rem;
   }
 
-  /* Step numbers desktop: Muli-Light + exact live sizes */
-  .carousel-dotted
-  .carousel-dotted-item.with-default-image
-  .caption.editor
-  .text-large.text-light p,
-  .carousel-dotted
-  .carousel-dotted-item.with-default-image
-  .caption.editor
-  p.text-large.text-light {
-    font-family: Muli-Light, sans-serif;
-    font-size: 3rem;
-    line-height: 2.875rem;
-    color: var(--bbl-color-grey-85);
-  }
 }
 
 @media (width > 64rem) {
@@ -963,6 +945,18 @@ p.text-large.text-light {
     box-shadow: inset 0 -6.875rem 2.5rem -3.125rem var(--bbl-color-white);
     pointer-events: none;
     z-index: 2;
+  }
+
+  .carousel-dotted
+  .carousel-dotted-item.with-default-image
+  .caption.editor
+  .text-large.text-light p,
+  .carousel-dotted
+  .carousel-dotted-item.with-default-image
+  .caption.editor
+  p.text-large.text-light {
+    font-size: 3rem;
+    line-height: 2.875rem;
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image .circle-image {
