@@ -722,7 +722,12 @@ function printElement(block, state) {
       font-size: 0.6875rem;
       font-weight: 700 !important;
       height: auto;
-      padding: 0.1875rem 0.25rem;
+      /* Wrapped multi-word headers (e.g. "Indicative Yield* (%)",
+         "Remaining Maturity") need line-height + more vertical padding or
+         the wrapped lines sit almost touching each other and look cramped
+         instead of cleanly stacked. */
+      line-height: 1.3;
+      padding: 0.375rem 0.3125rem;
       border: 0.125rem solid var(--bbl-color-grey-20) !important;
     }
 
