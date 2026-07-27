@@ -213,7 +213,6 @@ function buildCompareCard(card, doc, labels) {
   fields.forEach(({
     key, label, value, isHtml,
   }) => {
-    if (!value) return;
     const dl = doc.createElement('dl');
     dl.dataset.field = key;
     const dt = doc.createElement('dt');
@@ -221,10 +220,12 @@ function buildCompareCard(card, doc, labels) {
     dt.textContent = label;
     const dd = doc.createElement('dd');
     dd.className = 'mfcr-value';
-    if (isHtml) {
-      dd.innerHTML = value;
-    } else {
-      dd.textContent = value;
+    if (value) {
+      if (isHtml) {
+        dd.innerHTML = value;
+      } else {
+        dd.textContent = value;
+      }
     }
     dl.appendChild(dt);
     dl.appendChild(dd);
