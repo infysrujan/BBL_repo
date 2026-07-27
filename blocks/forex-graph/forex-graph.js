@@ -912,7 +912,9 @@ export default async function decorate(block) {
         getEnabledDays(endpoints, year, month).catch(() => []),
       ]);
 
-      state.families = Array.isArray(families) ? families : [];
+      const EXCLUDED_FAMILIES = ['MMK', 'INR', 'LAK'];
+      state.families = (Array.isArray(families) ? families : [])
+        .filter((f) => !EXCLUDED_FAMILIES.includes(f.Family));
       state.selectedFamily = state.families[0]?.Family || 'USD1';
 
       // Cache enabled days for current month in both pickers
