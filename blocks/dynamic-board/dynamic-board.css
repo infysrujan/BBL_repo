@@ -641,7 +641,6 @@
 
 .dynamic-board .db-table thead {
   background: var(--bbl-color-blue-9);
-  position: sticky;
 }
 
 .dynamic-board .db-table thead th {
@@ -675,9 +674,8 @@
 }
 
 .dynamic-board .db-table thead tr:first-child th {
-top: 0;
+  top: 0;
 }
-
 
 .dynamic-board .db-table thead tr:last-child th {
   top: 3.125rem;
