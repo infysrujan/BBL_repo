@@ -150,13 +150,11 @@ function renderThead(thead, state) {
   thead.innerHTML = row1 + row2;
 
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const firstRow = thead.querySelector('tr:first-child');
-      const secondRow = thead.querySelector('tr:last-child');
-      if (firstRow && secondRow && firstRow !== secondRow) {
-        secondRow.style.top = `${firstRow.getBoundingClientRect().height}px`;
-      }
-    });
+    const firstRow = thead.querySelector('tr:first-child');
+    const secondRow = thead.querySelector('tr:last-child');
+    if (firstRow && secondRow && firstRow !== secondRow) {
+      secondRow.style.top = `${firstRow.getBoundingClientRect().height}px`;
+    }
   });
 }
 
