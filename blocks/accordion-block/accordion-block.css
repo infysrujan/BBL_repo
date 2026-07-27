@@ -123,6 +123,10 @@
   opacity: 0.5;
 }
 
+.accordion-panel .default-content-wrapper {
+  margin-bottom: var(--bbl-space-250);
+}
+
 .accordion-panel-loaded {
   opacity: 1;
 }
