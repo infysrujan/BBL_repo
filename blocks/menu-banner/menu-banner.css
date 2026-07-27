@@ -43,7 +43,7 @@
   display: block;
   max-width: 75rem;
   margin: 0 auto;
-  padding: 0 var(--bbl-space-container-xs) var(--bbl-space-400);
+  padding: 0 var(--bbl-space-container-xs) 0;
 }
 
 /* Eyebrow text */
@@ -55,7 +55,6 @@
   margin-top: 1.875rem;
   padding-bottom: 0.9375rem;
   margin-bottom: 0.9375rem;
-  text-transform: uppercase;
   letter-spacing: 0.05rem;
   position: relative;
 }
@@ -181,7 +180,7 @@
   font-family: var(--bbl-font-family-looped);
   font-weight: var(--bbl-font-weight-regular);
   font-size: 0.7rem;
-  line-height: normal;
+  line-height: 1.2;
   color: var(--bbl-color-black);
   flex: 1;
   text-align: center;

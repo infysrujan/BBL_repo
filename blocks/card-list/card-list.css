@@ -128,7 +128,6 @@
 }
 
 .cards-list-button .cards-list-remark {
-    padding-bottom: 15px;
  
     p {
         font-size: 0.8rem;
@@ -181,6 +180,12 @@
 .cards-list:is(.scrollable, .carousel) .cards-list-item {
   flex: 0 0 16.875rem;
   scroll-snap-align: start;
+}
+
+@media (width <= 47.5rem) {
+  .cards-list:is(.scrollable, .carousel).center .cards-list-item {
+    scroll-snap-align: center;
+  }
 }
 
 .cards-list:is(.carousel) .cards-list-item {

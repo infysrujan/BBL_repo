@@ -296,7 +296,13 @@ function buildCardBlock(funds, doc, labels) {
       content.appendChild(descEl);
     }
 
-    // Remark (logo)
+    inner.appendChild(content);
+
+    // Button
+    const buttonWrapper = doc.createElement('div');
+    buttonWrapper.className = 'cards-list-button';
+
+    // Logo prepended inside button wrapper, before the link
     if (logoSrc) {
       const remarkEl = doc.createElement('div');
       remarkEl.className = 'cards-list-remark';
@@ -306,16 +312,12 @@ function buildCardBlock(funds, doc, labels) {
       logoImg.loading = 'lazy';
       logoImg.className = 'mfr-logo';
       remarkEl.appendChild(logoImg);
-      content.appendChild(remarkEl);
+      buttonWrapper.appendChild(remarkEl);
     }
 
-    inner.appendChild(content);
-
-    // Button
-    const buttonWrapper = doc.createElement('div');
-    buttonWrapper.className = 'cards-list-button';
     const link = doc.createElement('a');
     link.href = readMoreUrl || '#';
+    link.className = 'button-m primary';
     link.textContent = labels.readMore;
     buttonWrapper.appendChild(link);
     inner.appendChild(buttonWrapper);
@@ -339,8 +341,9 @@ function addCompareButtons(blockEl, doc, labels) {
     if (h3?.dataset?.compareEnabled === 'false') return;
     const btn = doc.createElement('button');
     btn.type = 'button';
-    btn.className = 'mfr-compare-btn';
+    btn.className = 'mfr-compare-btn button-m secondary';
     btn.textContent = labels.compare;
+    btn.title = labels.compare;
     btn.dataset.cardName = h3?.textContent?.trim() ?? '';
     btn.dataset.cardId = h3?.dataset?.cardId ?? '';
     btn.dataset.cardImage = item?.querySelector('img')?.src ?? '';

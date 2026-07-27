@@ -78,7 +78,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: var(--bbl-font-family-medium);
   text-align: left;
 }
 
@@ -213,7 +212,7 @@
 }
 
 .locate-us .locate-us-keyword-search-icon {
-  font-size: var(--bbl-font-size-b2);
+  font-size: 0.875rem;
   color: var(--bbl-color-gray-142);
   line-height: 1;
 }
@@ -961,7 +960,7 @@
   .locate-us .locate-us-filter-bar {
     flex-direction: row;
     align-items: center;
-    padding: var(--bbl-space-000);
+    padding: 0 var(--bbl-space-600);
     gap: 0.625rem;
     margin: 0 auto;
     max-width: 46.875rem;
@@ -1324,7 +1323,7 @@
 
   .locate-us .locate-us-filter-bar {
     margin: auto;
-    max-width: 38.75rem;
+    max-width: 51rem;
   }
 
   .locate-us .locate-us-filter-bar:has(.locate-us-keyword-wrapper[hidden]) .locate-us-service-select-wrapper {

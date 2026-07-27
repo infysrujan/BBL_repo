@@ -3401,6 +3401,18 @@
     ]
   },
   {
+    "id": "credit-card-results",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "disclaimerText",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "credit-card-selector",
     "fields": [
       {
@@ -3472,13 +3484,6 @@
             "value": "tertiary"
           }
         ]
-      },
-      {
-        "component": "richtext",
-        "name": "disclaimerText",
-        "value": "",
-        "label": "Disclaimer Text",
-        "valueType": "string"
       }
     ]
   },
@@ -4023,14 +4028,14 @@
         "name": "ctaLabel",
         "label": "CTA Label",
         "valueType": "string",
-        "required": true
+        "required": false
       },
       {
         "component": "text",
         "name": "printCtaLabel",
         "label": "Print CTA Label",
         "valueType": "string",
-        "required": true
+        "required": false
       },
       {
         "component": "richtext",

@@ -327,7 +327,10 @@ async function loadBreadcrumb(doc) {
 
 function decorateButtonsV1(element) {
   element.querySelectorAll('a').forEach((a) => {
-    a.title = a.title || a.textContent;
+    // Skip adding title for menu-banner links to prevent unwanted tooltips
+    if (!a.closest('.menu-banner')) {
+      a.title = a.title || a.textContent;
+    }
     if (a.href !== a.textContent) {
       const up = a.parentElement;
       const twoup = a.parentElement.parentElement;

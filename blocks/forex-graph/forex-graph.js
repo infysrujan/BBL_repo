@@ -436,7 +436,7 @@ export default async function decorate(block) {
         state.selectedFamily,
         language,
       );
-      state.chartData = normalizeChartData(raw);
+      state.chartData = normalizeChartData(raw, language);
     } finally {
       state.loading = false;
     }
@@ -453,11 +453,7 @@ export default async function decorate(block) {
       state.chartInstance = null;
     }
 
-    // API returns MM/DD/YYYY — reformat to DD/MM/YYYY for display
-    const labels = state.chartData.map((d) => {
-      const parts = d.date.split('/');
-      return parts.length === 3 ? `${parts[1]}/${parts[0]}/${parts[2]}` : d.date;
-    });
+    const labels = state.chartData.map((d) => d.date);
     const buyingData = state.chartData.map((d) => d.buyingRate);
     const sellingData = state.chartData.map((d) => d.sellingRate);
 
@@ -561,9 +557,9 @@ export default async function decorate(block) {
             },
             ticks: {
               maxRotation: 45,
-              minRotation: 45,
+              minRotation: 0,
               autoSkip: true,
-              maxTicksLimit: 6,
+              autoSkipPadding: 10,
               font: { size: 13, weight: '700' },
               color: '#000',
             },
@@ -836,10 +832,19 @@ export default async function decorate(block) {
           if (!data) return;
           const rows = Array.isArray(data) ? data : [];
           if (!rows.length) return;
-          // Build CSV from all keys in the first row
-          const keys = Object.keys(rows[0]);
+          // Map raw API keys to standard CSV column names
+          const formattedRows = rows.map((r) => ({
+            Currency: r.Currency || r.Family || '',
+            Date: r.Date || [r.Ddate, r.DTime || r.Dtime].filter(Boolean).join(' '),
+            'Bank Note: Buying Rates': r['Bank Note: Buying Rates'] || r.BuyingRates || '',
+            'Bank Note: Selling Rates': r['Bank Note: Selling Rates'] || r.SellingRates || '',
+            'Buying Rates: SightBill': r['Buying Rates: SightBill'] || r.SightBill || '',
+            'Buying Rates: TT': r['Buying Rates: TT'] || r.TT || '',
+            'Selling Rates: Bill-DD-TT': r['Selling Rates: Bill-DD-TT'] || r.Bill_DD_TT || '',
+          }));
+          const keys = Object.keys(formattedRows[0]);
           const header = keys.join(',');
-          const lines = rows.map((row) => keys.map((k) => {
+          const lines = formattedRows.map((row) => keys.map((k) => {
             const val = row[k] ?? '';
             return String(val).includes(',') ? `"${val}"` : val;
           }).join(','));
@@ -903,7 +908,9 @@ export default async function decorate(block) {
         getEnabledDays(endpoints, year, month).catch(() => []),
       ]);
 
-      state.families = Array.isArray(families) ? families : [];
+      const EXCLUDED_FAMILIES = ['MMK', 'INR', 'LAK'];
+      state.families = (Array.isArray(families) ? families : [])
+        .filter((f) => !EXCLUDED_FAMILIES.includes(f.Family));
       state.selectedFamily = state.families[0]?.Family || 'USD1';
 
       // Cache enabled days for current month in both pickers

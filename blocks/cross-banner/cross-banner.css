@@ -12,7 +12,7 @@
 }
 
 .cross-banner-image {
-  height: 23.7187rem;
+  height: calc(100vw * .5);
   overflow: hidden;
 }
 
