@@ -596,6 +596,20 @@ a.link-inverted[aria-disabled="true"] {
     text-decoration: none;
 }
 
+#discover-survey-results-btn {
+  justify-content: center;
+}
+ 
+#discover-survey-results-btn .default-content-wrapper {
+  display: flex;
+  gap: var(--bbl-space-100);
+  justify-content: center;
+ 
+  .button-container {
+    margin: 0;
+  }
+}
+
 @media (width > 47.5rem) {
      .global-dropdown-panel {
         width: max-content;
