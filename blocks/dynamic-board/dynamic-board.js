@@ -148,6 +148,14 @@ function renderThead(thead, state) {
   row1 += '</tr>';
   row2 += '</tr>';
   thead.innerHTML = row1 + row2;
+
+  requestAnimationFrame(() => {
+    const firstRow = thead.querySelector('tr:first-child');
+    const secondRow = thead.querySelector('tr:last-child');
+    if (firstRow && secondRow && firstRow !== secondRow) {
+      secondRow.style.top = `${firstRow.getBoundingClientRect().height}px`;
+    }
+  });
 }
 
 function renderRow(rate, isSelected, state) {
