@@ -12,7 +12,7 @@
 
   /* creates stacking context so ::after z-index: -1 stays behind content */
   overflow-x: clip;
-  
+
   /* prevent ::after full-bleed strip from causing horizontal scroll */
 }
 
@@ -68,7 +68,8 @@
   box-sizing: border-box;
   max-width: none;
   width: 100%;
-  padding-left: 4.375rem;
+  padding: 0;
+  margin: 0;
 }
 
 /* Remove the decorative underline below the title for this section */
@@ -80,15 +81,12 @@
    .card-selector-title (that class never matches this plain <h2>) — override
    the global h2 size (32px) directly on the real element. */
 .section.credit-card-selector-container .default-content-wrapper> :is(h1, h2, h3, h4, h5, h6):first-child {
-  font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-medium);
-  color: #1e1e21;
-  font-size: var(--bbl-font-size-h1-desktop);
-  line-height: 1.2;
-  width: 100%;
-  max-width: 100%;
   margin: 0;
   text-align: left;
+
+  @media (min-width: 762px) {
+    text-align: center;
+  }
 }
 
 /* ==========================================================================
@@ -102,7 +100,6 @@
   max-height: 75rem;
   opacity: 1;
   overflow: hidden;
-  padding-bottom: 1.875rem;
   transition:
     max-height 0.5s ease,
     opacity 0.5s ease,
@@ -120,7 +117,11 @@
    ========================================================================== */
 
 .credit-card-selector .filter-group {
-  margin-bottom: var(--bbl-space-350);
+  margin-bottom: var(--bbl-space-200);
+}
+
+.credit-card-selector .filter-column--lifestyle .filter-group {
+  margin-bottom: 0;
 }
 
 .credit-card-selector .filter-group-header {
@@ -370,10 +371,10 @@
   padding-bottom: 0;
 }
 
-/* Toggle bar: zero-height positioning container.
-   The chevron button is absolutely positioned and uses translateY(50%)
-   to float on the boundary between sections. */
-.credit-card-selector .collapse-toggle-bar {
+/* Toggle bar: zero-height positioning container, appended to the full-width
+   section wrapper (not the centered block) so the chevron's positioning
+   context spans the section edge. */
+.credit-card-selector-wrapper .collapse-toggle-bar {
   position: relative;
   height: 0;
   background: transparent;
@@ -385,10 +386,10 @@
    edge exactly at the wrapper's bottom edge — the section boundary — at
    every breakpoint, regardless of how tall the collapsible content above it
    is, so no per-breakpoint tuning is needed. */
-.credit-card-selector .collapse-toggle-button {
+.credit-card-selector-wrapper .collapse-toggle-button {
   position: absolute;
   top: 0.625rem;
-  right: 0;
+  right: 1rem;
   width: 3rem;
   height: 3rem;
   background: #f5f5f5;
@@ -398,30 +399,35 @@
   align-items: center;
   justify-content: center;
   z-index: 2;
+
+  @media (min-width: 762px) {
+    right: 3.875rem;
+  }
 }
 
 /* No grey box behind the chevron — production has none */
-.credit-card-selector .collapse-toggle-button::before {
+.credit-card-selector-wrapper .collapse-toggle-button::before {
   display: none;
 }
 
 /* Chevron icon — icomoon icon-dropdown (\e902), same as filter-options-mobile */
-.credit-card-selector .collapse-toggle-button::after {
-  content: "\e902";
+.credit-card-selector-wrapper .collapse-toggle-button::after {
+  content: url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 8C0 3.58172 3.58172 0 8 0H40C44.4183 0 48 3.58172 48 8V40C48 44.4183 44.4183 48 40 48H8C3.58172 48 0 44.4183 0 40V8Z' fill='%23F5F5F5'/%3E%3Cpath d='M33.6001 28.7997L24.0001 19.1997L14.4001 28.7997' stroke='%230064FF' stroke-width='2.5' stroke-miterlimit='10'/%3E%3C/svg%3E%0A");
   font-family: icomoon, sans-serif;
   font-size: 0.8rem;
   color: var(--bbl-color-active-blue);
   display: block;
+  height: 100%;
   position: relative;
   z-index: 1;
   line-height: 1;
-  transform: rotate(180deg);
+  transform: rotate(0deg);
   transition: transform 0.3s ease;
 }
 
 /* Rotate chevron to point down when collapsed */
-.credit-card-selector .card-selector-collapsible.is-collapsed .collapse-toggle-button::after {
-  transform: rotate(0deg);
+.credit-card-selector-wrapper .collapse-toggle-bar.is-collapsed .collapse-toggle-button::after {
+  transform: rotate(180deg);
 }
 
 /* ==========================================================================
@@ -504,9 +510,6 @@
   }
 
   /* Rotate chevron to point down when collapsed */
-  .credit-card-selector .card-selector-collapsible.is-collapsed .collapse-toggle-button::after {
-    transform: rotate(0deg);
-  }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     flex-flow: row wrap;
