@@ -356,21 +356,23 @@ export default async function buildMfFundCardsSlide(row, index) {
   }
 
   async function equalizeCardHeights() {
+    let activeSlides = [];
     function measureAndApply() {
       let max = 0;
-      slides.forEach((sl) => { sl.style.display = 'flex'; });
+      activeSlides = Array.from(document.querySelectorAll('.mf-fund-cards-item'));
+      activeSlides.forEach((sl) => { sl.style.display = 'flex'; });
       try {
-        slides.forEach((sl) => {
+        activeSlides.forEach((sl) => {
           sl.querySelectorAll('.cards-list-item').forEach((item) => {
             item.style.removeProperty('min-height');
             max = Math.max(max, item.getBoundingClientRect().height);
           });
         });
       } finally {
-        slides.forEach((sl) => { sl.style.removeProperty('display'); });
+        activeSlides.forEach((sl) => { sl.style.removeProperty('display'); });
       }
       if (max > 0) {
-        slides.forEach((sl) => {
+        activeSlides.forEach((sl) => {
           sl.querySelectorAll('.cards-list-item').forEach((item) => {
             item.style.minHeight = `${max}px`;
           });
@@ -379,13 +381,13 @@ export default async function buildMfFundCardsSlide(row, index) {
     }
 
     measureAndApply();
-    slides.forEach((sl) => { sl.style.display = 'flex'; });
-    const imgs = slides.flatMap((sl) => [...sl.querySelectorAll('img')]);
+    activeSlides.forEach((sl) => { sl.style.display = 'flex'; });
+    const imgs = activeSlides.flatMap((sl) => [...sl.querySelectorAll('img')]);
     try {
       await Promise.all(imgs.map(waitForImage));
       measureAndApply();
     } finally {
-      slides.forEach((sl) => { sl.style.removeProperty('display'); });
+      activeSlides.forEach((sl) => { sl.style.removeProperty('display'); });
     }
   }
 
