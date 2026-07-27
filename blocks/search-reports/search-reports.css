@@ -45,7 +45,7 @@
 
 .search-reports-overlay .sr-close-btn {
   background: transparent;
-  border: 0.3125rem solid var(--bbl-color-white);
+  border: 0.0313rem solid var(--bbl-color-white);
   cursor: pointer;
   width: var(--bbl-space-500);
   height: var(--bbl-space-500);
