@@ -37,7 +37,7 @@
 }
 
 .mf-fund-cards-description p {
-  margin: 0 0 10px;
+  margin: 0 0 0.625rem;
   font-family: var(--bbl-font-family-primary);
   font-size: 1rem;
   line-height: 1.375;
@@ -47,16 +47,16 @@
 .mf-fund-cards-description ul {
   list-style: disc;
   padding-left: 0;
-  margin-bottom: 15px;
+  margin-bottom: 0.9375rem;
 }
 
 .mf-fund-cards-description li {
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
   font-family: var(--bbl-font-family-primary);
   font-size: 1rem;
   line-height: 1.375;
   color: var(--bbl-color-grey-85);
-  margin-left: 20px;
+  margin-left: var(--bbl-space-250);
 }
 
 .mf-fund-cards-item .cards-list.scrollable {
