@@ -348,6 +348,7 @@
   font-size: var(--bbl-text-hero-title-size);
   line-height:var(--bbl-text-hero-title-line-height);
   margin-inline: auto;
+  color: var(--bbl-color-white);
 }
 
 .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
