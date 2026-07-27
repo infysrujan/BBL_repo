@@ -913,19 +913,6 @@ p.text-large.text-light {
     line-height: 1.625rem;
   }
 
-  /* Step numbers desktop: Muli-Light + exact live sizes */
-  .carousel-dotted
-  .carousel-dotted-item.with-default-image
-  .caption.editor
-  .text-large.text-light p,
-  .carousel-dotted
-  .carousel-dotted-item.with-default-image
-  .caption.editor
-  p.text-large.text-light {
-    font-size: 3rem;
-    line-height: 2.875rem;
-    color: var(--bbl-color-grey-85);
-  }
 }
 
 @media (width > 64rem) {
