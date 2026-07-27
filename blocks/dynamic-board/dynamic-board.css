@@ -674,6 +674,9 @@
   border-right: none;
 }
 
+.dynamic-board .db-table thead tr:first-child th {
+top: 0;
+}
 
 
 .dynamic-board .db-table thead tr:last-child th {
