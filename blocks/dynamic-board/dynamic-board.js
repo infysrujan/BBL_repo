@@ -747,6 +747,14 @@ function printElement(block, state) {
       font-size: 0.6875rem;
       font-weight: 700 !important;
       height: auto;
+      /* dynamic-board.css's own ".dynamic-board .db-table thead th" rule
+         sets white-space: nowrap with HIGHER specificity (2 classes + 2
+         elements) than the earlier ".dynamic-board .db-table th" reset
+         (2 classes + 1 element) — so that reset was silently losing
+         regardless of cascade order, nowrap stayed in effect, and long
+         header text overflowed sideways into neighboring columns instead
+         of wrapping. !important here is what actually forces it to wrap. */
+      white-space: normal !important;
       /* Wrapped multi-word headers (e.g. "Indicative Yield* (%)",
          "Remaining Maturity") need line-height + more vertical padding or
          the wrapped lines sit almost touching each other and look cramped
