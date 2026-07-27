@@ -429,9 +429,19 @@
   margin-bottom: var(--bbl-space-300);
 }
 
+.retirement-calculator .rc-savings-card-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.retirement-calculator .rc-savings-card-col .rc-j1-summary-note {
+  margin-bottom: 0;
+}
+
 .retirement-calculator .rc-savings-card-recommended,
 .retirement-calculator .rc-savings-card-alt {
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -439,6 +449,7 @@
   padding: var(--bbl-space-200);
   box-sizing: border-box;
   overflow: hidden;
+  width: 100%;
 }
 
 .retirement-calculator .rc-savings-card-recommended {
@@ -498,7 +509,7 @@
   text-align: right;
   margin: var(--bbl-space-050) 0 0;
   color: var(--bbl-color-white);
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .retirement-calculator .rc-savings-card-note-alt {
@@ -833,7 +844,7 @@
     margin-top: var(--bbl-space-050);
   }
 
-  .retirement-calculator .rc-step-3 .rc-j1-summary-note {
+  .retirement-calculator .rc-step-3 .rc-j1-summary .rc-j1-summary-note {
     margin-bottom: var(--bbl-space-300);
   }
 
