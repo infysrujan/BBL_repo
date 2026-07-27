@@ -1,6 +1,6 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
-import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
+import { applyLinkTarget, decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
 
 const DESKTOP_BREAKPOINT = 1025;
 
@@ -85,25 +85,31 @@ function createCarouselCard(cardElement, doc) {
   const eyebrowText = eyebrowDiv?.textContent.trim();
   const titleText = cardTitleDiv?.textContent.trim();
   const descriptionHTML = cardDescriptionDiv?.innerHTML || '';
+  if (buttonContainerDiv) decorateButtonsV1(buttonContainerDiv);
+  const buttonLink = buttonContainerDiv?.querySelector('a');
+
   const contentHTML = `
     <div class="carousel-content">
       ${eyebrowText ? `<div class="carousel-eyebrow">${eyebrowText}</div>` : ''}
       ${titleText ? `<h3 class="carousel-title">${titleText}</h3>` : ''}
       ${descriptionHTML ? `<div class="carousel-description">${descriptionHTML}</div>` : ''}
+      ${buttonLink ? `<span class="${buttonLink.className} carousel-cta">${buttonLink.textContent}</span>` : ''}
     </div>
   `;
 
   const contentWrapper = createElementFromHTML(contentHTML, doc);
 
-  if (buttonContainerDiv?.querySelector('a')) {
-    while (buttonContainerDiv.firstChild) {
-      contentWrapper.appendChild(buttonContainerDiv.firstChild);
-    }
-  }
-
   // Add image container to card first
   card.appendChild(imageContainer);
-  card.appendChild(contentWrapper);
+
+  // If button link exists, wrap the entire content in a single link (no nested anchors)
+  if (buttonLink) {
+    const cardLink = createElementFromHTML(`<a href="${buttonLink.href}" target="${buttonLink.target || '_self'}" class="carousel-item-link"${buttonLink.title ? ` title="${buttonLink.title}"` : ''}></a>`, doc);
+    cardLink.appendChild(contentWrapper);
+    card.appendChild(cardLink);
+  } else {
+    card.appendChild(contentWrapper);
+  }
 
   return card;
 }

@@ -217,9 +217,8 @@
     line-clamp: 4;
 }
 
-.carousel-content .button-container {
-    display: none;
-    margin-inline: 0;
+.carousel-cta {
+   display: none;
 }
 
 @media (width > 47.5rem) {
@@ -433,7 +432,7 @@
         -webkit-line-clamp: 7;
     }
 
-    .carousel-content .button-container {
+    .carousel-cta {
         display: flex;
         bottom: var(--bbl-space-200);
     }
