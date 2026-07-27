@@ -104,6 +104,12 @@
   background: transparent;
 }
 
+.table table tr.header-row td :is(strong, b) {
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-black);
+}
+
 /* --------------------------------------------------------------------------
    BODY CELLS — all rows not in header (specificity 0,2,3)
    -------------------------------------------------------------------------- */
