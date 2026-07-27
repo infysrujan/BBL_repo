@@ -204,6 +204,7 @@ button.secondary,
 
 /* Hover */
 .button-secondary:hover,
+button.secondary:hover,
 .button-m.secondary:hover {
   background: var(--bbl-color-active-blue);
   border-color: var(--bbl-color-blue-70);
@@ -213,10 +214,11 @@ button.secondary,
 
 /* Active/Pressed */
 .button-secondary:active,
+button.secondary:active,
 .button-m.secondary:active {
-  background: var(--bbl-color-blue-20);
-  border-color: var(--bbl-color-blue-90);
-  color: var(--bbl-color-blue-90);
+  background: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-blue-70);
+  color: var(--bbl-color-white);
 }
 
 /* Disabled */
@@ -592,6 +594,20 @@ a.link-inverted[aria-disabled="true"] {
 .global-dropdown-panel li a:hover {
     color: var(--bbl-color-blue-90);
     text-decoration: none;
+}
+
+#discover-survey-results-btn {
+  justify-content: center;
+}
+ 
+#discover-survey-results-btn .default-content-wrapper {
+  display: flex;
+  gap: var(--bbl-space-100);
+  justify-content: center;
+ 
+  .button-container {
+    margin: 0;
+  }
 }
 
 @media (width > 47.5rem) {

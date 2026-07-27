@@ -27,7 +27,9 @@
 /* ── Image area — contain the full credit card art ───────────────────────── */
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small {
-  height: 10.5rem;
+  min-height: 8.9375rem;
+  max-height: 10.9375rem; 
+  height: calc(100vw * .12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,7 +42,7 @@
   max-width: 14.4156rem;
   height: 9.6875rem;
   min-width: unset;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 /* ── Thai card name above the EN heading ─────────────────────────────────── */
@@ -96,11 +98,12 @@
   font-size: var(--bbl-body-b1-size);
   text-decoration: none;
   cursor: pointer;
+  width: 100%;
 }
 
 .card-list.credit-card .ccs-compare-btn.is-comparing {
-  background-color: var(--bbl-color-grey-10);
-  border-color: var(--bbl-color-grey-60);
+  background-color: var(--bbl-color-white);
+  border-color: var(--bbl-color-grey-40);
   color: var(--bbl-color-grey-60);
   cursor: default;
   pointer-events: none;
@@ -126,6 +129,7 @@
   margin-top: var(--bbl-space-150);
   width: auto;
   height: auto;
+  flex-wrap: wrap;
 }
 
 .ccs-scroll-dot {
@@ -211,10 +215,6 @@
   transition: background-color 0.2s ease;
 }
 
-.ccs-results-toggle-btn:hover {
-  background-color: var(--bbl-color-blue-10);
-}
-
 .ccs-results-toggle-btn .icon-dropdown {
   font-size: var(--bbl-font-size-b3);
   color: var(--bbl-color-active-blue);
@@ -271,6 +271,14 @@
   .card-list.credit-card .cards-list-inner {
     min-height: 27rem;
   }
+
+  /* Matches the card grid's rendered width (3 × 13.5rem cards + 2 × gap) so
+     the disclaimer's left edge lines up with the first card's left edge,
+     instead of spanning the full (wider) container. */
+  .ccs-results-disclaimer {
+    max-width: 42rem;
+    margin-inline: auto;
+  }
 }
 
 @media (width > 64rem) {
@@ -285,5 +293,10 @@
 
   .card-list.credit-card .cards-list-inner {
     min-height: 28rem;
+  }
+
+  /* Matches the desktop grid's wider rendered width (3 × 16.5rem + 2 × gap). */
+  .ccs-results-disclaimer {
+    max-width: 54.5rem;
   }
 }
