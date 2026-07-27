@@ -641,7 +641,6 @@
 
 .dynamic-board .db-table thead {
   background: var(--bbl-color-blue-9);
-  position: sticky;
 }
 
 .dynamic-board .db-table thead th {
@@ -674,7 +673,9 @@
   border-right: none;
 }
 
-
+.dynamic-board .db-table thead tr:first-child th {
+  top: 0;
+}
 
 .dynamic-board .db-table thead tr:last-child th {
   top: 3.125rem;
@@ -748,8 +749,38 @@
 }
 
 .dynamic-board .db-td-name {
+  position: relative;
   min-width: 12rem;
   line-height: 1.4;
+}
+
+.dynamic-board .db-td-name[data-title]:hover::after {
+  opacity: 1;
+  transition: all 0.1s ease 0.5s;
+  visibility: visible;
+}
+
+.dynamic-board .db-td-name[data-title]::after {
+  content: attr(data-title);
+  position: absolute;
+  bottom: 0.1%;
+  left: 0;
+  width: 18.75rem;
+  padding: 0.3125rem 0.9375rem 0.5rem;
+  color: var(--bbl-color-white);
+  line-height: 1.5;
+  white-space: pre-line;
+  border-radius: 0.625rem;
+  font-weight: 100;
+  background-color: #233a58;
+  opacity: 0;
+  z-index: 11;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.dynamic-board .db-td-name-text {
+  display: block;
 }
 
 .dynamic-board .db-td-num {

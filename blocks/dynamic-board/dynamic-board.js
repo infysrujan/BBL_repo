@@ -9,6 +9,7 @@ import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
+import { truncateNameCell } from '../../scripts/utils/truncate-tooltip.js';
 
 const MAX_SELECTED = 5;
 
@@ -160,7 +161,7 @@ function renderRow(rate, isSelected, state) {
         <input type="checkbox" class="db-row-cb" data-id="${id}" ${checked} ${disabled} aria-label="Select ${sym}">
       </td>
       <td class="db-td-symbol">${sym}</td>
-      <td class="db-td-name">${escapeHtml(state.isThai ? rate.NAME_THAI : rate.NAME_ENG)}</td>
+      ${truncateNameCell(state.isThai ? rate.NAME_THAI : rate.NAME_ENG, 'db-td-name')}
       ${state.isGov
     ? `<td class="db-td-num">${escapeHtml(rate.ISSUE_RATING || '-')}</td>
       <td class="db-td-num">${escapeHtml(rate.ISSUER_RATING || '-')}</td>`
