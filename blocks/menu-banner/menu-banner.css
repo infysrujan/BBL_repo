@@ -81,7 +81,8 @@
 }
 
 .bangkok-bankm-card .menu-banner .sub-title-medium,
-.bangkok-bankm-card .menu-banner .title-1 {
+.bangkok-bankm-card .menu-banner .title-1,
+.bangkok-bankm-card .menu-banner .title-1 :is(h1, h2, h3, h4, h5, h6) {
   color: var(--bbl-color-white);
 }
 
