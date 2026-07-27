@@ -72,6 +72,12 @@
         margin: 0;
     }
   }
+  
+  & .form form input::-webkit-contacts-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+  }
 
   & .form form select {
     font-family: var(--bbl-font-family-medium);
