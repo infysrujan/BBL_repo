@@ -289,9 +289,9 @@ function buildAccordionPrintDocument(block) {
   }
 
   let bodyHtml;
+  const promoBlock = document.querySelector('.promotional-details');
   if (wrapperIsDirectChild) {
     const shell = document.createElement('div');
-    const promoBlock = document.querySelector('.promotional-details');
     if (promoBlock) {
       const promoClone = promoBlock.cloneNode(true);
       promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
@@ -308,7 +308,6 @@ function buildAccordionPrintDocument(block) {
   } else if (prependHtml) {
     bodyHtml = `${prependHtml}${clone.outerHTML}`;
   } else {
-    const promoBlock = document.querySelector('.promotional-details');
     if (promoBlock) {
       const promoClone = promoBlock.cloneNode(true);
       promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
