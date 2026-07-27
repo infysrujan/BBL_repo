@@ -73,7 +73,7 @@ function buildCtaButton(linkText, linkType) {
 
 function buildComparatorDOM(block, warningText, linkText, linkType) {
   const innerContainer = document.createElement('div');
-  innerContainer.className = 'inner-container';
+  innerContainer.className = 'inner-container content';
 
   const errorDiv = buildErrorDiv(warningText);
   const compareGroup = document.createElement('div');
