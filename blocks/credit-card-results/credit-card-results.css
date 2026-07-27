@@ -42,7 +42,7 @@
   max-width: 14.4156rem;
   height: 9.6875rem;
   min-width: unset;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 /* ── Thai card name above the EN heading ─────────────────────────────────── */
