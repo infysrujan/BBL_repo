@@ -912,8 +912,6 @@ export default async function decorate(block) {
         getEnabledDays(endpoints, year, month).catch(() => []),
       ]);
 
-      // Myanmar Kyat, Indian Rupee, and Lao Kip are returned by the family API
-      // but should not be selectable in this chart's currency dropdown.
       const EXCLUDED_FAMILIES = ['MMK', 'INR', 'LAK'];
       state.families = (Array.isArray(families) ? families : [])
         .filter((f) => !EXCLUDED_FAMILIES.includes(f.Family));
