@@ -289,9 +289,9 @@ function buildAccordionPrintDocument(block) {
   }
 
   let bodyHtml;
+  const promoBlock = document.querySelector('.promotional-details');
   if (wrapperIsDirectChild) {
     const shell = document.createElement('div');
-    const promoBlock = document.querySelector('.promotional-details');
     if (promoBlock) {
       const promoClone = promoBlock.cloneNode(true);
       promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
@@ -308,7 +308,6 @@ function buildAccordionPrintDocument(block) {
   } else if (prependHtml) {
     bodyHtml = `${prependHtml}${clone.outerHTML}`;
   } else {
-    const promoBlock = document.querySelector('.promotional-details');
     if (promoBlock) {
       const promoClone = promoBlock.cloneNode(true);
       promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
@@ -382,7 +381,7 @@ function buildAccordionPrintDocument(block) {
       <link rel="stylesheet" href="/styles/fonts.css">
       <link rel="stylesheet" href="/blocks/header/header.css">
       <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
-      <link rel="stylesheet" href="/blocks/promotional-details/promotional-details.css">
+     ${promoBlock ? `<link rel="stylesheet" href="/blocks/promotional-details/promotional-details.css">` : ''}
       <link rel="stylesheet" href="/blocks/accordion-block/accordion-block.css">
       <link rel="stylesheet" href="/blocks/table/table.css">
       <style>${printCss}</style>
