@@ -118,6 +118,10 @@
 
 .credit-card-selector .filter-group {
   margin-bottom: var(--bbl-space-200);
+
+  @media (width > 64rem) {
+    margin-bottom: 1.9375rem;
+  }
 }
 
 .credit-card-selector .filter-column--lifestyle .filter-group {
