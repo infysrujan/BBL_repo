@@ -27,7 +27,9 @@
 /* ── Image area — contain the full credit card art ───────────────────────── */
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small {
-  height: 10.5rem;
+  min-height: 8.9375rem;
+  max-height: 10.9375rem; 
+  height: calc(100vw * .12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,7 +42,7 @@
   max-width: 14.4156rem;
   height: 9.6875rem;
   min-width: unset;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 /* ── Thai card name above the EN heading ─────────────────────────────────── */
