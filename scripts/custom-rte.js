@@ -72,6 +72,16 @@ export function decoratePictureLinks(container) {
   });
 }
 
+export function decorateNewTabLinks(container) {
+  container.querySelectorAll('a').forEach((a) => {
+    const href = a.getAttribute('href') || '';
+    if (!href.toLowerCase().endsWith('#newtab')) return;
+    a.setAttribute('href', href.slice(0, -'#newtab'.length));
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+  });
+}
+
 export function decorateRteInlineImages(main) {
   main.querySelectorAll(`${DCW} p, ${DCW} li, ${DCW} td`).forEach((el) => {
     if (!el.innerHTML.includes('&amp;nbsp;')) return;
@@ -121,6 +131,7 @@ function scrollToHash(id, doc) {
  */
 export default function initRteAnchors(main, doc) {
   addHintPageAnchors(main);
+  decorateNewTabLinks(main);
 
   const { hash } = window.location;
   if (hash) scrollToHash(hash.substring(1), doc);
