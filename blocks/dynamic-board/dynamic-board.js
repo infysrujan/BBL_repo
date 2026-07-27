@@ -515,19 +515,20 @@ function wireFilterEvents(
 // gov vs. bond board differences, future authoring changes, or the colspan
 // cleanup below — and that mismatch is what causes table-layout: fixed to
 // render overlapping/garbled cells instead of cleanly bounded ones.
+//
+// Weights below are tuned for PORTRAIT (see printCss @page rule). Portrait
+// A4 has noticeably less usable width than landscape, so Name no longer
+// gets an oversized weight (it would starve the numeric columns), and the
+// Maturity Date column keeps a bit of extra room since it also carries the
+// download icon.
 function buildPrintColgroup(table) {
   const bodyRow = table.querySelector('tbody tr');
   const count = bodyRow ? bodyRow.children.length : 0;
   if (!count) return '';
-  // Relative weights, not fixed %, so this still sums to 100 correctly
-  // whatever the real column count turns out to be: Symbol narrow, Name
-  // wide (it holds the longest running text), the last column (Maturity
-  // Date) slightly wider to fit the date text, everything else (prices,
-  // yields, term, coupon) equal.
   const weights = Array.from({ length: count }, (_, i) => {
-    if (i === 0) return 1.2; // Symbol
-    if (i === 1) return 2.6; // Name
-    if (i === count - 1) return 1.6; // Maturity Date
+    if (i === 0) return 1; // Symbol
+    if (i === 1) return 1.8; // Name
+    if (i === count - 1) return 1.5; // Maturity Date (+ download icon)
     return 1;
   });
   const total = weights.reduce((sum, w) => sum + w, 0);
@@ -610,8 +611,8 @@ function printElement(block, state) {
 
   const printCss = `
     @page {
-      size: A4 landscape;
-      margin: 10mm;
+      size: A4 portrait;
+      margin: 8mm;
     }
 
     /* Chrome's "Background graphics" print toggle is off by default and
@@ -706,7 +707,12 @@ function printElement(block, state) {
       outline: 2px solid #EBEBEB;
       outline-offset: -0.0625rem;
       border-collapse: collapse;
-      font-size: 0.6875rem;
+      /* Portrait A4 has ~85mm less usable width than landscape at these
+         margins, so the base font size is a notch smaller than the
+         landscape version to keep 9-10 columns of financial data from
+         needing 3-4 line wraps per cell. */
+      font-size: 0.625rem;
+      line-height: 1.25;
       color: #78787D;
     }
 
@@ -744,7 +750,7 @@ function printElement(block, state) {
          Hard-coded hex (not var()) so it doesn't depend on the popup having
          fully resolved the site's CSS custom properties before printing. */
       background-color: #F1F3F9;
-      font-size: 0.6875rem;
+      font-size: 0.625rem;
       font-weight: 700 !important;
       height: auto;
       /* dynamic-board.css's own ".dynamic-board .db-table thead th" rule
@@ -755,12 +761,12 @@ function printElement(block, state) {
          header text overflowed sideways into neighboring columns instead
          of wrapping. !important here is what actually forces it to wrap. */
       white-space: normal !important;
-      /* Wrapped multi-word headers (e.g. "Indicative Yield* (%)",
-         "Remaining Maturity") need line-height + more vertical padding or
-         the wrapped lines sit almost touching each other and look cramped
-         instead of cleanly stacked. */
-      line-height: 1.3;
-      padding: 0.375rem 0.3125rem;
+      /* Tighter than the landscape version — portrait's narrower columns
+         wrap more headers onto 2 lines, so a smaller line-height keeps the
+         header row from growing tall enough to visibly unbalance the page. */
+      line-height: 1.15;
+      padding: 0.25rem 0.1875rem;
+      vertical-align: middle;
       border: 0.125rem solid var(--bbl-color-grey-20) !important;
     }
 
@@ -768,9 +774,10 @@ function printElement(block, state) {
       border: 0.125rem solid var(--bbl-color-grey-20) !important;
       border-right-color: var(--bbl-color-white) !important;
       color: black !important;
-      padding: 0.1875rem 0.25rem;
+      padding: 0.125rem 0.1875rem;
       vertical-align: middle;
-      font-size: 0.6875rem;
+      font-size: 0.625rem;
+      line-height: 1.2;
     }
 
     .dynamic-board .db-td-symbol {
@@ -795,6 +802,25 @@ function printElement(block, state) {
     .dynamic-board .db-table tbody tr:nth-child(even),
     .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr {
       position: static;
+    }
+
+    /* Maturity date cell holds a date string + a download icon side by
+       side. Under portrait's tighter fixed column width these could wrap
+       onto separate lines (date, then an orphaned icon below it) — flex
+       plus a fixed small icon size keeps them on one line instead. */
+    .dynamic-board .db-td-maturity {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.1875rem;
+      white-space: nowrap;
+    }
+
+    .dynamic-board .db-td-dl img {
+      width: 0.875rem;
+      height: 0.875rem;
+      min-width: 0.875rem;
+      min-height: 0.875rem;
     }
 
     .dynamic-board .db-remarks-content {
