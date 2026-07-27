@@ -779,10 +779,7 @@
 }
 
 .dynamic-board .db-td-name-text {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
+  display: block;
 }
 
 .dynamic-board .db-td-num {
