@@ -75,8 +75,12 @@ export function decoratePictureLinks(container) {
 export function decorateNewTabLinks(container) {
   container.querySelectorAll('a').forEach((a) => {
     const href = a.getAttribute('href') || '';
-    if (!href.toLowerCase().endsWith('#newtab')) return;
-    a.setAttribute('href', href.slice(0, -'#newtab'.length));
+    const prev = a.previousSibling;
+    const inHref = href.toLowerCase().endsWith('#newtab');
+    const inText = prev?.nodeType === Node.TEXT_NODE && /#newtab/i.test(prev.nodeValue);
+    if (!inHref && !inText) return;
+    if (inHref) a.setAttribute('href', href.slice(0, -'#newtab'.length));
+    if (inText) prev.nodeValue = prev.nodeValue.replace(/#newtab\s*/i, '');
     a.target = '_blank';
     a.rel = 'noopener noreferrer';
   });
