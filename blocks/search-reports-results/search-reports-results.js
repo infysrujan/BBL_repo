@@ -13,6 +13,13 @@ function getDownloadLabel(mimeType, placeholders = {}) {
   return placeholders.reportsDownloadFile || 'Download File';
 }
 
+function getPreviousPagePath() {
+  const segments = window.location.pathname.split('/').filter(Boolean);
+  if (segments.length <= 1) return '/';
+  segments.pop();
+  return `/${segments.join('/')}`;
+}
+
 function sortAssets(assets, type) {
   return [...assets].sort((a, b) => {
     if (type === 'summary-statement') {
@@ -80,8 +87,7 @@ async function fetchAndRender(block, type, year) {
     text: '‹',
   });
   backBtn.addEventListener('click', () => {
-    window.history.pushState({}, '', window.location.pathname);
-    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.location.href = getPreviousPagePath();
   });
   resultsHeader.append(backBtn);
   wrapper.append(resultsHeader);
@@ -136,9 +142,5 @@ export default function decorate(block) {
   window.addEventListener('popstate', () => {
     const p = new URLSearchParams(window.location.search);
     if (!p.get('type') && !p.get('year')) block.innerHTML = '';
-  });
-
-  window.addEventListener('search-reports:submit', (e) => {
-    fetchAndRender(block, e.detail.type, e.detail.year);
   });
 }
