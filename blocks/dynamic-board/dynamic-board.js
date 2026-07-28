@@ -502,23 +502,92 @@ function wireFilterEvents(
 }
 
 // ─── print ────────────────────────────────────────────────────────────────────
+// Explicit per-column print widths (%, always summing to 100) so the table
+// can never exceed the printable page width regardless of how long a
+// price/yield/date string is. table-layout: auto (used everywhere else)
+// can't guarantee this — numeric/date cells have no wrap point, so their
+// intrinsic minimum content width can exceed the page no matter what CSS is
+// applied, which is what caused columns to be clipped off the printed page.
+//
+// Widths are measured from the LIVE table's own rendered pixel widths (MAX
+// per column across ALL loaded rows), then two floors are enforced:
+//   - Symbol: enough to keep the LONGEST code (e.g. SBST326B) on one line.
+//   - Name: kept WIDE (like the reference PDF) so long names wrap to ~2
+//     lines, not 4-5.
+// The width needed to satisfy those floors is taken ONLY from the numeric
+// columns (Bidding/Offering price+yield, Remaining Maturity, Current Coupon),
+// which have slack — NOT proportionally from every column (that was stealing
+// width from Name and making names wrap onto many lines).
+const SYMBOL_MIN_PCT = 12;
+const NAME_MIN_PCT = 24;
+
+function buildPrintColgroup(liveTable, printTable) {
+  const bodyRow = printTable.querySelector('tbody tr');
+  const count = bodyRow ? bodyRow.children.length : 0;
+  if (!count) return '';
+
+  const applyFloorFromDonors = (widths, idx, min, donorIdx) => {
+    if (widths[idx] >= min) return widths;
+    const deficit = min - widths[idx];
+    const donorTotal = donorIdx.reduce((s, i) => s + widths[i], 0);
+    if (donorTotal <= 0) return widths;
+    return widths.map((w, i) => {
+      if (i === idx) return min;
+      if (donorIdx.includes(i)) return w - (deficit * (w / donorTotal));
+      return w;
+    });
+  };
+
+  const liveRows = liveTable ? [...liveTable.querySelectorAll('tbody tr')] : [];
+  if (liveRows.length) {
+    const maxWidths = new Array(count).fill(0);
+    let matchedAnyRow = false;
+    liveRows.forEach((row) => {
+      const cells = [...row.children].filter((td) => !td.classList.contains('db-td-check'));
+      if (cells.length !== count) return;
+      matchedAnyRow = true;
+      cells.forEach((td, i) => {
+        const w = td.getBoundingClientRect().width;
+        if (w > maxWidths[i]) maxWidths[i] = w;
+      });
+    });
+    const total = maxWidths.reduce((sum, w) => sum + w, 0);
+    if (matchedAnyRow && total > 0) {
+      let widths = maxWidths.map((w) => (w / total) * 100);
+      // Donor columns = the numeric middle columns (everything between Name
+      // at index 1 and Maturity Date at index count-1). These carry the
+      // slack, so shrinking them to fund the Symbol/Name floors doesn't
+      // cause wrapping (numbers are short) the way shrinking Name would.
+      const donorIdx = [];
+      for (let i = 2; i < count - 1; i += 1) donorIdx.push(i);
+      if (donorIdx.length) {
+        widths = applyFloorFromDonors(widths, 0, SYMBOL_MIN_PCT, donorIdx);
+        widths = applyFloorFromDonors(widths, 1, NAME_MIN_PCT, donorIdx);
+      }
+      return `<colgroup>${widths.map((w) => `<col style="width:${w.toFixed(2)}%">`).join('')}</colgroup>`;
+    }
+  }
+
+  // Fallback weights, used only when nothing could be measured live.
+  // Proportions derived from the live table's rendered column widths:
+  // Symbol ~12%, Name ~24%, Price/Unit cols ~10%, Yield cols ~8%,
+  // Remaining Maturity ~10%, Current Coupon ~9%, Maturity Date ~10%.
+  const weights = Array.from({ length: count }, (_, i) => {
+    if (i === 0) return 1.3; // Symbol
+    if (i === 1) return 2.6; // Name (widest)
+    if (i === count - 1) return 1.0; // Maturity Date
+    if (i === 2 || i === 4) return 1.0; // Price per Unit (Baht)
+    if (i === 3 || i === 5) return 0.8; // Indicative Yield (%)
+    return 0.9; // Remaining Maturity, Current Coupon
+  });
+  const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+  const widths = weights.map((w) => (w / totalWeight) * 100);
+  return `<colgroup>${widths.map((w) => `<col style="width:${w.toFixed(2)}%">`).join('')}</colgroup>`;
+}
+
 /** Same approach as blocks/bcap/bcap.js: print an isolated document instead of
  * the live page, so the fixed header/nav and the site's max-width layout
- * don't shrink the table or swallow the logo.
- *
- * COLUMN SIZING STRATEGY (print):
- * The rule is simple and browser-enforced — ONLY the Name column may wrap;
- * every other column stays on a single line, sized end-to-end to its content.
- * This is achieved with table-layout: auto + white-space: nowrap on every
- * column except Name (which is white-space: normal). Name is given a target
- * WIDTH (not a max-width) so auto layout gives it a controlled, reference-like
- * width and lets long names wrap within it — WITHOUT shrinking the overall
- * table (a max-width freed space that auto layout reclaimed by squeezing the
- * other columns, which regressed Symbol back to wrapping). No JS width
- * measurement / colgroup is needed. Tradeoff (accepted): if the combined
- * natural width of all non-Name columns ever exceeds the page, the table
- * could overflow; with this board's short numeric/date values that doesn't
- * happen at the chosen print font-size. */
+ * don't shrink the table or swallow the logo. */
 function printElement(block, state) {
   // Capture real computed styles from the LIVE (un-cloned) elements before
   // any cloning/stripping happens below. Baking these actual resolved
@@ -532,6 +601,7 @@ function printElement(block, state) {
   const liveTimeTrigger = block.querySelector('.db-time-trigger');
   const liveCalLabel = block.querySelector('.db-cal-label');
   const liveHeaderTh = block.querySelector('.db-table thead th');
+  const liveTable = block.querySelector('.db-table');
 
   const cs = (el) => (el ? getComputedStyle(el) : null);
   const headerCs = cs(liveHeaderTh);
@@ -588,11 +658,21 @@ function printElement(block, state) {
   // matching rowspan/colspan shape generally. Matching by shape alone could
   // also strip a legitimate colspan from a different column further down
   // the row if it happened to have the same rowspan="2" colspan="2" shape,
-  // which would desync the header's column count from the body's.
+  // which would desync the header's column count from the body's and cause
+  // table-layout: fixed to render overlapping/garbled cells.
   const symbolHeaderCell = content.querySelector(
     '.db-table thead tr:first-child th:first-child[rowspan="2"][colspan="2"]',
   );
   if (symbolHeaderCell) symbolHeaderCell.removeAttribute('colspan');
+
+  // Inject fixed column widths so table-layout: fixed in printCss below has
+  // something deterministic to size columns from, instead of relying on
+  // each cell's content to determine its own minimum width. Measured from
+  // the LIVE table's own rendered widths (see buildPrintColgroup) so print
+  // columns are proportioned the same way this board actually renders
+  // on-screen, then Symbol/Name floors are applied.
+  const printTable = content.querySelector('.db-table');
+  if (printTable) printTable.insertAdjacentHTML('afterbegin', buildPrintColgroup(liveTable, printTable));
 
   content.querySelectorAll('.db-time-chevron, .db-time-list').forEach((el) => el.remove());
 
@@ -693,12 +773,12 @@ function printElement(block, state) {
       margin-top: 0.5rem;
     }
 
-    /* Date/time controls sit side by side and size to their content (like
-       the live board), NOT stretched full-width. */
+    /* A4's print width falls under the 47.5rem breakpoint where these are
+       each width:100% (stacked), so shrink them to sit side by side. */
     .dynamic-board .db-date-wrap,
     .dynamic-board .db-time-wrap {
       width: auto;
-      flex: 0 0 auto;
+      flex: 0 1 auto;
     }
 
     /* "Updated as of" label — real weight/size/color captured from the live
@@ -711,8 +791,8 @@ function printElement(block, state) {
     }
 
     /* Date/time boxes — real border/radius/font captured from the live
-       .db-date-display and .db-time-trigger. width:auto so each box hugs its
-       content like the live version. */
+       .db-date-display and .db-time-trigger, so the bordered box shape
+       that was missing in print now actually renders. */
     .dynamic-board .db-date-display,
     .dynamic-board .db-time-trigger {
       border: ${dateBorder};
@@ -720,15 +800,7 @@ function printElement(block, state) {
       font-size: ${dateFontSize};
       color: ${dateColor};
       height: 2rem;
-      width: auto;
       box-sizing: border-box;
-    }
-
-    /* The calendar icon is stripped in print, so the date input's large
-       right padding (which reserved space for it) leaves an empty gap —
-       trim it so the box hugs the date text like the live version. */
-    .dynamic-board .db-date-display {
-      padding-right: 0.5rem;
     }
 
     .dynamic-board .db-time-trigger {
@@ -737,46 +809,62 @@ function printElement(block, state) {
 
     .dynamic-board .db-table {
       width: 100%;
-      /* table-layout: AUTO (not fixed). Combined with white-space: nowrap on
-         every column except Name below, the browser sizes each non-Name
-         column to exactly fit its longest single-line value (end-to-end, no
-         wrapping) and lets Name — the only wrapping column — take the width
-         given to it below. Enforces "only Name wraps". */
-      table-layout: auto;
-      /* Thin 1px outer border to match the reference PDF. Single border only,
-         no outline layered on top. */
+      /* table-layout: fixed, driven by the <colgroup> injected via
+         buildPrintColgroup() above — gives every column a guaranteed
+         percentage width that always sums to 100%, so nothing can be
+         pushed off the page no matter how long a price/yield/date string
+         is, while still matching the live table's proportions since those
+         widths are measured from the live table (plus Symbol/Name floors).
+         table-layout: auto was tried previously but couldn't guarantee
+         boundedness: it measures each cell's content to determine column
+         widths, and numeric/date cells have no wrap point, so their
+         minimum content width could still exceed the page regardless of
+         any wrapping CSS. Note table-layout: fixed also needs the colgroup
+         (not just the first row) to size columns correctly when the header
+         has a grouped first row (colspan) and a flat sub-header second
+         row — reading only the first row, as fixed layout normally does
+         without a colgroup, can't resolve that split correctly. */
+      table-layout: fixed;
+      /* Thin 1px outer border to match the reference PDF (was 2px, which
+         printed visibly heavier than the live/reference table). Single
+         border only — no outline layered on top (that plus the last-child
+         header border-right previously produced a doubled right edge). */
       border: 1px solid #EBEBEB;
       border-collapse: collapse;
+      /* Portrait A4 has ~85mm less usable width than landscape at these
+         margins, so the base font size is a notch smaller than the
+         landscape version to keep 9-10 columns of financial data from
+         needing 3-4 line wraps per cell. */
       font-size: 0.625rem;
       line-height: 1.2;
       color: #78787D;
     }
 
-    /* Default: every cell stays on ONE line (end-to-end). Name is the sole
-       exception, overridden below. */
     .dynamic-board .db-table th,
     .dynamic-board .db-table td {
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    /* Base stylesheet floors Name at 12rem with no print-time override —
+       enough on its own to blow past the fixed column width from the
+       colgroup above. Reset so the colgroup's Name width wins. */
+    .dynamic-board .db-td-name {
+      min-width: 0;
+    }
+
+    /* Symbols are short codes (e.g. SBST326B) — keep them on one line so a
+       narrow column allocation can't break them mid-word ("SBST26N B"). The
+       colgroup enforces a Symbol-column width floor (SYMBOL_MIN_PCT, see
+       buildPrintColgroup) sized for the longest code. Numeric cells wrap
+       normally. */
+    .dynamic-board .db-td-symbol {
       white-space: nowrap;
     }
 
-    /* Name is the ONLY column allowed to wrap. It's given a target WIDTH
-       (not max-width): with table-layout: auto this asks the browser to make
-       Name ~this wide and wrap long names within it, while the other columns
-       keep their content widths. A max-width was tried and regressed the
-       layout — it freed space that auto layout reclaimed by shrinking the
-       other columns, making Symbol wrap again. Setting width on the Name cells
-       targets column 2 directly without that side effect. Adjust the 14rem
-       value to make Name wider/narrower. */
-    .dynamic-board .db-td-name {
+    .dynamic-board .db-td-num {
       white-space: normal;
-      overflow-wrap: break-word;
-      word-break: break-word;
-      min-width: 0;
-      width: 14rem;
-    }
-    /* The Name header cell should also be allowed to wrap if needed. */
-    .dynamic-board .db-table thead th.db-th-name {
-      white-space: normal !important;
     }
 
     .dynamic-board .db-table thead,
@@ -798,25 +886,33 @@ function printElement(block, state) {
       font-size: 0.625rem;
       font-weight: ${headerFontWeight} !important;
       height: auto;
-      /* Headers may wrap onto 2 lines (e.g. "Indicative Yield* (%)") — that's
-         fine and matches the reference. Tight line-height keeps the header
-         row from growing too tall. */
+      /* dynamic-board.css's own ".dynamic-board .db-table thead th" rule
+         sets white-space: nowrap with HIGHER specificity (2 classes + 2
+         elements) than the earlier ".dynamic-board .db-table th" reset
+         (2 classes + 1 element) — so that reset was silently losing
+         regardless of cascade order, nowrap stayed in effect, and long
+         header text overflowed sideways into neighboring columns instead
+         of wrapping. !important here is what actually forces it to wrap. */
       white-space: normal !important;
+      /* Tighter than the landscape version — portrait's narrower columns
+         wrap more headers onto 2 lines, so a smaller line-height keeps the
+         header row from growing tall enough to visibly unbalance the page. */
       line-height: 1.15;
-      padding: 0.2rem 0.3rem;
+      padding: 0.2rem 0.1875rem;
       vertical-align: middle;
-      /* Thin 1px borders to match the reference. */
+      /* Thin 1px borders to match the reference (was 2px / 0.125rem). */
       border: 0.0625rem solid var(--bbl-color-grey-20) !important;
     }
 
     .dynamic-board .db-table tbody td {
-      /* Thin 1px borders to match the reference. */
+      /* Thin 1px borders to match the reference (was 2px / 0.125rem). */
       border: 0.0625rem solid var(--bbl-color-grey-20) !important;
       border-right-color: var(--bbl-color-white) !important;
       color: black !important;
-      /* Compact rows: kill the live table's min-height: 4.6875rem floor and
-         keep padding tight so rows are only as tall as their content needs. */
-      padding: 0.15rem 0.3rem;
+      /* Compact rows to match the reference PDF: kill the live table's
+         min-height: 4.6875rem floor and keep padding tight so rows are only
+         as tall as their content needs. */
+      padding: 0.15rem 0.1875rem;
       vertical-align: middle;
       font-size: 0.625rem;
       line-height: 1.2;
@@ -843,29 +939,14 @@ function printElement(block, state) {
       position: static;
     }
 
-    /* Maturity date cell (last column): the download icon and its leftover
-       whitespace are stripped in JS (cell collapsed to date-only text). Its
-       LEFT border is hidden (white) so the column reads borderless on the
-       inside like the middle columns, but its RIGHT border is kept visible
-       to mark the end/edge of the table. */
+    /* Maturity date cell: the download icon and its leftover whitespace are
+       stripped in JS (the cell is collapsed to date-only text), so this is
+       just a one-line date string. Plain right-aligned numeric-style cell,
+       vertically centered like every other cell. */
     .dynamic-board .db-td-maturity {
       white-space: nowrap;
       text-align: right;
       vertical-align: middle;
-      border-left-color: var(--bbl-color-white) !important;
-      border-right-color: var(--bbl-color-grey-20) !important;
-    }
-
-    /* Header cell of the last column: same treatment — borderless left,
-       visible right edge — to match the body. */
-    .dynamic-board .db-table thead th:last-child {
-      border-left-color: var(--bbl-color-white) !important;
-      border-right-color: var(--bbl-color-grey-20) !important;
-    }
-
-    /* Numeric cells right-align in the live sheet; keep that in print too. */
-    .dynamic-board .db-td-num {
-      text-align: right;
     }
 
     .dynamic-board .db-remarks-content {
@@ -974,7 +1055,7 @@ function printElement(block, state) {
   ]).then(() => {
     printWindow.focus();
     // Double rAF: the first callback fires before the browser has applied
-    // the styles/fonts that just resolved above, so the table's column
+    // the styles/fonts that just resolved above, so the table's auto column
     // widths and the remarks-shadow removal can still reflect a stale layout
     // — waiting a second frame lets that layout pass complete before print.
     requestAnimationFrame(() => {
