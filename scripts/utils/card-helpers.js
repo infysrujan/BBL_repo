@@ -160,7 +160,7 @@ function formatDate(dateStr, locale = 'en-GB') {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
-  });
+  }).replace(/\bSept\b/, 'Sep');
 }
 
 function buildDateLine(card, locale) {
