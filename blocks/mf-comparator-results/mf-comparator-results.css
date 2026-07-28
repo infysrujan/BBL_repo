@@ -44,7 +44,6 @@
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  padding: var(--bbl-space-100) var(--bbl-space-container-xs);
 }
 
 .mf-comparator-results .mfcr-grid::-webkit-scrollbar {
@@ -60,7 +59,7 @@
   border: 0.0625rem solid var(--bbl-color-black-alpha-10);
   border-radius: 0.4375rem;
   overflow: hidden;
-  flex: 0 0 16.875rem;
+  flex: 0 0 17.46rem;
   scroll-snap-align: start;
   box-sizing: border-box;
 }
@@ -267,11 +266,10 @@
     scroll-snap-type: none;
     justify-content: center;
     gap: 0 var(--bbl-space-250);
-    padding: 0 var(--bbl-space-container-md);
   }
 
   .mf-comparator-results .mfcr-card {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-250)) / 3);
+    flex-basis: calc((34.7% - 20px));
     scroll-snap-align: none;
   }
 
@@ -281,8 +279,7 @@
   }
 
   .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-250)) / 3);
-    max-width: 22.5rem;
+    flex-basis: calc((34.6% - 20px));
   }
 
   .mf-comparator-results .mfcr-scroll-dots {
@@ -303,11 +300,11 @@
   }
 
   .mf-comparator-results .mfcr-card {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
+    flex-basis: calc((38.57% - 20px));
   }
 
   .mf-comparator-results .mfcr-grid.two-cards .mfcr-card {
-    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
+    flex-basis: calc((41.3% - 40px));
     max-width: 22.5rem;
   }
 }
