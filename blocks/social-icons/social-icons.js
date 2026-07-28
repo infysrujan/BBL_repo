@@ -57,7 +57,7 @@ export default function decorate(block) {
     const a = document.createElement('a');
 
     if (url) {
-      a.href = url;
+      a.href = url.replace('<page-url>', encodeURIComponent(window.location.href));
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
     } else {
@@ -65,6 +65,7 @@ export default function decorate(block) {
     }
     a.className = `platform-${platform}`;
     a.setAttribute('aria-label', `Share on ${platform}`);
+    a.setAttribute('title', platform);
 
     const clonedIcon = icon.cloneNode(true);
     clonedIcon.querySelectorAll('img').forEach((img) => {
