@@ -512,10 +512,13 @@ function wireFilterEvents(
 // Widths are measured from the LIVE table's own rendered pixel widths, taking
 // the MAX width seen per column across ALL loaded rows (not just row one).
 // Measuring only the first row could under-allocate a column whose first
-// value happens to be short (e.g. a short Symbol), and combined with the
-// forced wrapping in printCss that produced mid-word breaks like "Symb ol".
-// Falls back to rough weights only if there's no live row to measure
-// (e.g. print triggered before any data has loaded, or a no-results state).
+// value happens to be short, and combined with forced wrapping that produced
+// mid-word breaks like "Symb ol". A minimum floor is then enforced on the
+// Symbol column so a short-but-unbreakable code (e.g. SBST26NB) can never be
+// squeezed narrow enough to wrap. Falls back to rough weights only if there's
+// no live row to measure (e.g. print before data loads, or no-results state).
+const SYMBOL_MIN_PCT = 9;
+
 function buildPrintColgroup(liveTable, printTable) {
   const bodyRow = printTable.querySelector('tbody tr');
   const count = bodyRow ? bodyRow.children.length : 0;
@@ -536,17 +539,29 @@ function buildPrintColgroup(liveTable, printTable) {
     });
     const total = maxWidths.reduce((sum, w) => sum + w, 0);
     if (matchedAnyRow && total > 0) {
-      const widths = maxWidths.map((w) => (w / total) * 100);
+      let widths = maxWidths.map((w) => (w / total) * 100);
+      // Enforce a floor on the Symbol column (index 0). On the live page the
+      // Symbol column is narrow, so a pure live measurement reproduces that
+      // narrowness in print and a code like SBST26NB wraps to 2-3 lines,
+      // which is what made rows tall. Redistribute the deficit proportionally
+      // from the remaining columns so the total still sums to ~100.
+      if (widths[0] < SYMBOL_MIN_PCT && count > 1) {
+        const deficit = SYMBOL_MIN_PCT - widths[0];
+        const rest = widths.slice(1).reduce((s, w) => s + w, 0);
+        if (rest > 0) {
+          widths = widths.map((w, i) => (i === 0 ? SYMBOL_MIN_PCT : w - (deficit * (w / rest))));
+        }
+      }
       return `<colgroup>${widths.map((w) => `<col style="width:${w.toFixed(2)}%">`).join('')}</colgroup>`;
     }
   }
 
   // Fallback weights, used only when nothing could be measured live.
   // Proportions derived from the live table's rendered column widths:
-  // Symbol ~8%, Name ~22%, Price/Unit cols ~10%, Yield cols ~8%,
+  // Symbol ~9%, Name ~22%, Price/Unit cols ~10%, Yield cols ~8%,
   // Remaining Maturity ~10%, Current Coupon ~9%, Maturity Date ~10%.
   const weights = Array.from({ length: count }, (_, i) => {
-    if (i === 0) return 0.8; // Symbol
+    if (i === 0) return 1.0; // Symbol
     if (i === 1) return 2.2; // Name (widest)
     if (i === count - 1) return 1.0; // Maturity Date (+ download icon)
     if (i === 2 || i === 4) return 1.0; // Price per Unit (Baht)
@@ -789,18 +804,18 @@ function printElement(block, state) {
          row — reading only the first row, as fixed layout normally does
          without a colgroup, can't resolve that split correctly. */
       table-layout: fixed;
+      /* Single outer table border only. Previously an additional outline
+         (2px) was layered on top of this border and, combined with the
+         restored last-child header border-right, produced a doubled line
+         on the table's right edge that isn't in the reference PDF. */
       border: 2px solid #EBEBEB;
-      /* Outline as a fallback outer border — it can't be partially
-         overridden by any single cell's border like border-collapse can. */
-      outline: 2px solid #EBEBEB;
-      outline-offset: -0.0625rem;
       border-collapse: collapse;
       /* Portrait A4 has ~85mm less usable width than landscape at these
          margins, so the base font size is a notch smaller than the
          landscape version to keep 9-10 columns of financial data from
          needing 3-4 line wraps per cell. */
       font-size: 0.625rem;
-      line-height: 1.25;
+      line-height: 1.2;
       color: #78787D;
     }
 
@@ -820,8 +835,9 @@ function printElement(block, state) {
 
     /* Symbols are short codes (e.g. SBST26NB) — keep them on one line so a
        narrow column allocation can't break them mid-word ("Symb ol"). The
-       colgroup widths (measured live, max-per-column) give Symbol enough
-       room for its longest value. Numeric cells wrap normally. */
+       colgroup enforces a Symbol-column width floor (see buildPrintColgroup)
+       so there's room for the longest code on one line. Numeric cells wrap
+       normally. */
     .dynamic-board .db-td-symbol {
       white-space: nowrap;
     }
@@ -861,7 +877,7 @@ function printElement(block, state) {
          wrap more headers onto 2 lines, so a smaller line-height keeps the
          header row from growing tall enough to visibly unbalance the page. */
       line-height: 1.15;
-      padding: 0.25rem 0.1875rem;
+      padding: 0.2rem 0.1875rem;
       vertical-align: middle;
       border: 0.125rem solid var(--bbl-color-grey-20) !important;
     }
@@ -870,10 +886,15 @@ function printElement(block, state) {
       border: 0.125rem solid var(--bbl-color-grey-20) !important;
       border-right-color: var(--bbl-color-white) !important;
       color: black !important;
-      padding: 0.125rem 0.1875rem;
+      /* Compact rows to match the reference PDF: kill the live table's
+         min-height: 4.6875rem floor and keep padding tight so rows are only
+         as tall as their content needs. */
+      padding: 0.15rem 0.1875rem;
       vertical-align: middle;
       font-size: 0.625rem;
       line-height: 1.2;
+      min-height: 0;
+      height: auto;
     }
 
     .dynamic-board .db-td-symbol {
@@ -888,11 +909,6 @@ function printElement(block, state) {
 
     .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr td {
       background-color: #e5edf4;
-    }
-
-    /* The live table strips the last header cell's border-right; restore it. */
-    .dynamic-board .db-table thead th:last-child {
-      border-right: 0.125rem solid var(--bbl-color-grey-20) !important;
     }
 
     .dynamic-board .db-table tbody tr:nth-child(even),
