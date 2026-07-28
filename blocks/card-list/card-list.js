@@ -172,6 +172,7 @@ function createCardListItem(cardElement, doc) {
       );
     }
     const buttonLink = buttonWrapper.querySelector('a');
+    buttonLink.classList.add('button-m');
     if (buttonLink) {
       buttonLink.removeAttribute('data-modal');
       if (enableOverlayModal && overlayHref) {
