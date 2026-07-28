@@ -1,5 +1,5 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
-import { addAutoBlockingExclusion } from '../../scripts/aem.js';
+import { addAutoBlockingExclusion } from '../../scripts/utils/dom.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import createGlobalDropdown, { attachScrollableDropdownPanel } from '../../scripts/utils/dropdown-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
@@ -172,15 +172,14 @@ function createCardListItem(cardElement, doc) {
       );
     }
     const buttonLink = buttonWrapper.querySelector('a');
-    buttonLink.classList.add('button-m');
     if (buttonLink) {
       buttonLink.removeAttribute('data-modal');
       if (enableOverlayModal && overlayHref) {
         buttonLink.setAttribute('href', '#');
         buttonLink.setAttribute('data-modal', overlayHref);
+        buttonLink.removeAttribute('title'); // modal trigger, not a real link — drop the tooltip
         // Stop later decoration passes from re-adding title on this modal trigger
         addAutoBlockingExclusion(buttonLink, 'title');
-        buttonLink.removeAttribute('title'); // modal trigger, not a real link — drop the tooltip
       }
     }
     applyLinkTarget(buttonWrapper, 'a.button-m', openInNewTab);
@@ -247,6 +246,7 @@ function createCardListItem(cardElement, doc) {
     if (willUseModal) {
       wrapper.setAttribute('data-modal', overlayHref);
       wrapper.setAttribute('href', '#');
+      wrapper.removeAttribute('title');
       addAutoBlockingExclusion(wrapper, 'title'); // stop later decoration passes from re-adding title
     } else {
       wrapper.setAttribute('href', cardLinkHref);

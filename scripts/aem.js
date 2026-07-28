@@ -425,47 +425,12 @@ function wrapTextNodes(block) {
 }
 
 /**
- * Checks whether auto-blocking/decoration should skip managing a given attribute
- * on an element. Elements opt out by listing attribute names in
- * `data-skip-attr-auto-blocking` (comma-separated), e.g. "title" or "title,href".
- * @param {Element} el element to check
- * @param {string} attr attribute name auto-blocking is about to set
- * @returns {boolean}
- */
-export function isAutoBlockingAttrSkipped(el, attr) {
-  const skipList = el.getAttribute('data-skip-attr-auto-blocking');
-  if (!skipList) return false;
-  // Values are comma-separated (e.g. "title,href"); trim whitespace so
-  // authors/decorators can write "title, href" or "title,href" interchangeably.
-  return skipList.split(',').map((a) => a.trim()).includes(attr);
-}
-
-/**
- * Adds an attribute name to an element's `data-skip-attr-auto-blocking` list,
- * merging with any existing entries instead of overwriting them.
- * @param {Element} el element to update
- * @param {string} attr attribute name to skip during auto-blocking
- */
-export function addAutoBlockingExclusion(el, attr) {
-  const existing = el.getAttribute('data-skip-attr-auto-blocking');
-  const list = existing ? existing.split(',').map((a) => a.trim()).filter(Boolean) : [];
-  if (!list.includes(attr)) list.push(attr);
-  el.setAttribute('data-skip-attr-auto-blocking', list.join(','));
-}
-
-/**
  * Decorates paragraphs containing a single link as buttons.
  * @param {Element} element container element
  */
 function decorateButtons(element) {
   element.querySelectorAll('a').forEach((a) => {
-    // Only auto-generate a title tooltip from the link text when the anchor
-    // hasn't explicitly opted 'title' out via data-skip-attr-auto-blocking
-    // (e.g. links that trigger a modal instead of navigating, where a
-    // redundant tooltip echoing the visible text isn't wanted).
-    if (!isAutoBlockingAttrSkipped(a, 'title')) {
-      a.title = a.title || a.textContent;
-    }
+    a.title = a.title || a.textContent;
     if (a.href !== a.textContent) {
       const up = a.parentElement;
       const twoup = a.parentElement.parentElement;

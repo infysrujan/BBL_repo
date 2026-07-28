@@ -1,11 +1,11 @@
 import { fetchConfigs } from './config.js';
+import { isAutoBlockingAttrSkipped } from './utils/dom.js';
 
 import {
   getMetadata,
   buildBlock,
   decorateBlock,
   loadBlock,
-  isAutoBlockingAttrSkipped,
 } from './aem.js';
 
 /**
