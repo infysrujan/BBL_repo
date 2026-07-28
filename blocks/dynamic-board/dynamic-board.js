@@ -511,15 +511,14 @@ function wireFilterEvents(
 //
 // Widths are measured from the LIVE table's own rendered pixel widths (MAX
 // per column across ALL loaded rows), then two floors are enforced:
-//   - Symbol: enough to keep its code on one line (no "Symb ol" wrap).
+//   - Symbol: enough to keep the LONGEST code (e.g. SBST326B) on one line.
 //   - Name: kept WIDE (like the reference PDF) so long names wrap to ~2
 //     lines, not 4-5.
-// Crucially, the width needed to satisfy those floors is taken ONLY from the
-// numeric columns (Bidding/Offering price+yield, Remaining Maturity, Current
-// Coupon), which have slack — NOT proportionally from every column. Pulling
-// proportionally (the previous approach) was stealing width from Name and is
-// what made names wrap onto many lines.
-const SYMBOL_MIN_PCT = 8;
+// The width needed to satisfy those floors is taken ONLY from the numeric
+// columns (Bidding/Offering price+yield, Remaining Maturity, Current Coupon),
+// which have slack — NOT proportionally from every column (that was stealing
+// width from Name and making names wrap onto many lines).
+const SYMBOL_MIN_PCT = 12;
 const NAME_MIN_PCT = 24;
 
 function buildPrintColgroup(liveTable, printTable) {
@@ -571,10 +570,10 @@ function buildPrintColgroup(liveTable, printTable) {
 
   // Fallback weights, used only when nothing could be measured live.
   // Proportions derived from the live table's rendered column widths:
-  // Symbol ~8%, Name ~24%, Price/Unit cols ~10%, Yield cols ~8%,
+  // Symbol ~12%, Name ~24%, Price/Unit cols ~10%, Yield cols ~8%,
   // Remaining Maturity ~10%, Current Coupon ~9%, Maturity Date ~10%.
   const weights = Array.from({ length: count }, (_, i) => {
-    if (i === 0) return 0.9; // Symbol
+    if (i === 0) return 1.3; // Symbol
     if (i === 1) return 2.6; // Name (widest)
     if (i === count - 1) return 1.0; // Maturity Date
     if (i === 2 || i === 4) return 1.0; // Price per Unit (Baht)
@@ -643,6 +642,15 @@ function printElement(block, state) {
     '.db-th-download',
     '.db-td-dl',
   ].join(', ')).forEach((el) => el.remove());
+
+  // After the download link (.db-td-dl) is stripped above, the Maturity Date
+  // cell still contains the leftover whitespace/text nodes that surrounded
+  // it, which render as an empty second line — that's what pushed the date
+  // to the TOP of a too-tall cell. Collapse each maturity cell down to just
+  // its trimmed date text so the cell is exactly one line tall.
+  content.querySelectorAll('.db-td-maturity').forEach((td) => {
+    td.textContent = td.textContent.trim();
+  });
 
   // The live header's Symbol column has colspan=2 for layout reasons the
   // body doesn't match (only one Symbol cell, since the checkbox column is
@@ -817,11 +825,11 @@ function printElement(block, state) {
          row — reading only the first row, as fixed layout normally does
          without a colgroup, can't resolve that split correctly. */
       table-layout: fixed;
-      /* Single outer table border only. Previously an additional outline
-         (2px) was layered on top of this border and, combined with the
-         restored last-child header border-right, produced a doubled line
-         on the table's right edge that isn't in the reference PDF. */
-      border: 2px solid #EBEBEB;
+      /* Thin 1px outer border to match the reference PDF (was 2px, which
+         printed visibly heavier than the live/reference table). Single
+         border only — no outline layered on top (that plus the last-child
+         header border-right previously produced a doubled right edge). */
+      border: 1px solid #EBEBEB;
       border-collapse: collapse;
       /* Portrait A4 has ~85mm less usable width than landscape at these
          margins, so the base font size is a notch smaller than the
@@ -846,10 +854,10 @@ function printElement(block, state) {
       min-width: 0;
     }
 
-    /* Symbols are short codes (e.g. SBST26NB) — keep them on one line so a
-       narrow column allocation can't break them mid-word ("Symb ol"). The
-       colgroup enforces a Symbol-column width floor (see buildPrintColgroup)
-       so there's room for the longest code on one line. Numeric cells wrap
+    /* Symbols are short codes (e.g. SBST326B) — keep them on one line so a
+       narrow column allocation can't break them mid-word ("SBST26N B"). The
+       colgroup enforces a Symbol-column width floor (SYMBOL_MIN_PCT, see
+       buildPrintColgroup) sized for the longest code. Numeric cells wrap
        normally. */
     .dynamic-board .db-td-symbol {
       white-space: nowrap;
@@ -892,11 +900,13 @@ function printElement(block, state) {
       line-height: 1.15;
       padding: 0.2rem 0.1875rem;
       vertical-align: middle;
-      border: 0.125rem solid var(--bbl-color-grey-20) !important;
+      /* Thin 1px borders to match the reference (was 2px / 0.125rem). */
+      border: 0.0625rem solid var(--bbl-color-grey-20) !important;
     }
 
     .dynamic-board .db-table tbody td {
-      border: 0.125rem solid var(--bbl-color-grey-20) !important;
+      /* Thin 1px borders to match the reference (was 2px / 0.125rem). */
+      border: 0.0625rem solid var(--bbl-color-grey-20) !important;
       border-right-color: var(--bbl-color-white) !important;
       color: black !important;
       /* Compact rows to match the reference PDF: kill the live table's
@@ -929,13 +939,14 @@ function printElement(block, state) {
       position: static;
     }
 
-    /* Maturity date cell: in print the download icon is stripped, so this is
-       just a date string. Keep it a plain right-aligned numeric-style cell
-       (NOT flex) — the earlier flex layout left over from the icon was what
-       top-aligned the date and made the last column look odd. */
+    /* Maturity date cell: the download icon and its leftover whitespace are
+       stripped in JS (the cell is collapsed to date-only text), so this is
+       just a one-line date string. Plain right-aligned numeric-style cell,
+       vertically centered like every other cell. */
     .dynamic-board .db-td-maturity {
       white-space: nowrap;
       text-align: right;
+      vertical-align: middle;
     }
 
     .dynamic-board .db-remarks-content {
