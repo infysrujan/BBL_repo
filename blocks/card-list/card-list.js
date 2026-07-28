@@ -172,6 +172,7 @@ function createCardListItem(cardElement, doc) {
       );
     }
     const buttonLink = buttonWrapper.querySelector('a');
+    buttonLink.classList.add('button-m');
     if (buttonLink) {
       buttonLink.removeAttribute('data-modal');
       if (enableOverlayModal && overlayHref) {
@@ -236,7 +237,7 @@ function createCardListItem(cardElement, doc) {
     // true when the card opens a modal instead of navigating
     const willUseModal = enableOverlayModal && !!overlayHref;
 
-    if (cardLinkTitle && !willUseModal) wrapper.setAttribute('title', cardLinkTitle); // skip title for modal triggers
+    if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle); // skip title for modal triggers
     if (cardLinkTarget) wrapper.setAttribute('target', cardLinkTarget);
     if (cardLinkTarget === '_blank') wrapper.setAttribute('rel', 'noopener noreferrer');
 
