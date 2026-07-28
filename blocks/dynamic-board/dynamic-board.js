@@ -511,12 +511,12 @@ function wireFilterEvents(
  * every other column stays on a single line, sized end-to-end to its content.
  * This is achieved with table-layout: auto + white-space: nowrap on every
  * column except Name (which is white-space: normal and absorbs the leftover
- * width). No JS width measurement / colgroup is needed: the browser sizes each
- * nowrap column to exactly fit its longest single-line value, and Name takes
- * whatever remains. Tradeoff (accepted): if the combined natural width of all
- * non-Name columns ever exceeds the page, the table could overflow, since only
- * Name can relieve width pressure. With this board's short numeric/date values
- * that doesn't happen at the chosen print font-size. */
+ * width). Name is additionally capped with a max-width so it wraps at roughly
+ * the reference width instead of running the full leftover width edge-to-edge.
+ * No JS width measurement / colgroup is needed. Tradeoff (accepted): if the
+ * combined natural width of all non-Name columns ever exceeds the page, the
+ * table could overflow; with this board's short numeric/date values that
+ * doesn't happen at the chosen print font-size. */
 function printElement(block, state) {
   // Capture real computed styles from the LIVE (un-cloned) elements before
   // any cloning/stripping happens below. Baking these actual resolved
@@ -691,12 +691,13 @@ function printElement(block, state) {
       margin-top: 0.5rem;
     }
 
-    /* A4's print width falls under the 47.5rem breakpoint where these are
-       each width:100% (stacked), so shrink them to sit side by side. */
+    /* Date/time controls sit side by side and size to their content (like
+       the live board), NOT stretched full-width. flex: 0 0 auto stops them
+       from growing to fill the row. */
     .dynamic-board .db-date-wrap,
     .dynamic-board .db-time-wrap {
       width: auto;
-      flex: 0 1 auto;
+      flex: 0 0 auto;
     }
 
     /* "Updated as of" label — real weight/size/color captured from the live
@@ -709,8 +710,9 @@ function printElement(block, state) {
     }
 
     /* Date/time boxes — real border/radius/font captured from the live
-       .db-date-display and .db-time-trigger, so the bordered box shape
-       that was missing in print now actually renders. */
+       .db-date-display and .db-time-trigger. width:auto so each box hugs its
+       content (the live boxes are compact; in print they were stretching
+       wider than needed). */
     .dynamic-board .db-date-display,
     .dynamic-board .db-time-trigger {
       border: ${dateBorder};
@@ -718,7 +720,15 @@ function printElement(block, state) {
       font-size: ${dateFontSize};
       color: ${dateColor};
       height: 2rem;
+      width: auto;
       box-sizing: border-box;
+    }
+
+    /* The calendar icon is stripped in print, so the date input's large
+       right padding (which reserved space for it) leaves an empty gap —
+       trim it so the box hugs the date text like the live version. */
+    .dynamic-board .db-date-display {
+      padding-right: 0.5rem;
     }
 
     .dynamic-board .db-time-trigger {
@@ -731,8 +741,7 @@ function printElement(block, state) {
          every column except Name below, the browser sizes each non-Name
          column to exactly fit its longest single-line value (end-to-end, no
          wrapping) and lets Name — the only wrapping column — absorb the
-         remaining width. This directly enforces the rule "only Name wraps".
-         No colgroup / JS width measurement is used. */
+         remaining width (capped by max-width). Enforces "only Name wraps". */
       table-layout: auto;
       /* Thin 1px outer border to match the reference PDF. Single border only,
          no outline layered on top. */
@@ -750,14 +759,15 @@ function printElement(block, state) {
       white-space: nowrap;
     }
 
-    /* Name is the ONLY column allowed to wrap — it takes the leftover width
-       and breaks long names onto multiple lines. min-width:0 clears the base
-       stylesheet's 12rem floor so auto layout can size it freely. */
+    /* Name is the ONLY column allowed to wrap. max-width caps how wide it can
+       grow so it wraps to ~2 lines at roughly the reference width, instead of
+       running the full leftover width edge-to-edge before wrapping. */
     .dynamic-board .db-td-name {
       white-space: normal;
       overflow-wrap: break-word;
       word-break: break-word;
       min-width: 0;
+      max-width: 16rem;
     }
     /* The Name header cell should also be allowed to wrap if needed. */
     .dynamic-board .db-table thead th.db-th-name {
@@ -800,9 +810,7 @@ function printElement(block, state) {
       border-right-color: var(--bbl-color-white) !important;
       color: black !important;
       /* Compact rows: kill the live table's min-height: 4.6875rem floor and
-         keep padding tight so rows are only as tall as their content needs.
-         Slightly wider horizontal padding so single-line columns aren't
-         cramped edge-to-edge. */
+         keep padding tight so rows are only as tall as their content needs. */
       padding: 0.15rem 0.3rem;
       vertical-align: middle;
       font-size: 0.625rem;
@@ -830,13 +838,24 @@ function printElement(block, state) {
       position: static;
     }
 
-    /* Maturity date cell: the download icon and its leftover whitespace are
-       stripped in JS (cell collapsed to date-only text). Plain right-aligned,
-       single line, vertically centered like every other cell. */
+    /* Maturity date cell (last column): the download icon and its leftover
+       whitespace are stripped in JS (cell collapsed to date-only text). Its
+       LEFT border is hidden (white) so the column reads borderless on the
+       inside like the middle columns, but its RIGHT border is kept visible
+       to mark the end/edge of the table. */
     .dynamic-board .db-td-maturity {
       white-space: nowrap;
       text-align: right;
       vertical-align: middle;
+      border-left-color: var(--bbl-color-white) !important;
+      border-right-color: var(--bbl-color-grey-20) !important;
+    }
+
+    /* Header cell of the last column: same treatment — borderless left,
+       visible right edge — to match the body. */
+    .dynamic-board .db-table thead th:last-child {
+      border-left-color: var(--bbl-color-white) !important;
+      border-right-color: var(--bbl-color-grey-20) !important;
     }
 
     /* Numeric cells right-align in the live sheet; keep that in print too. */
