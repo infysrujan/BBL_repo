@@ -1,4 +1,5 @@
 import { moveInstrumentation, createElementFromHTML } from '../../scripts/scripts.js';
+import { addAutoBlockingExclusion } from '../../scripts/utils/dom.js';
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 import createGlobalDropdown, { attachScrollableDropdownPanel } from '../../scripts/utils/dropdown-helpers.js';
 import { openModal } from '../../scripts/utils/modal.js';
@@ -175,8 +176,11 @@ function createCardListItem(cardElement, doc) {
     if (buttonLink) {
       buttonLink.removeAttribute('data-modal');
       if (enableOverlayModal && overlayHref) {
-        buttonLink.removeAttribute('href');
+        buttonLink.setAttribute('href', '#');
         buttonLink.setAttribute('data-modal', overlayHref);
+        buttonLink.removeAttribute('title'); // modal trigger, not a real link — drop the tooltip
+        // Stop later decoration passes from re-adding title on this modal trigger
+        addAutoBlockingExclusion(buttonLink, 'title');
       }
     }
     applyLinkTarget(buttonWrapper, 'a.button-m', openInNewTab);
@@ -230,16 +234,21 @@ function createCardListItem(cardElement, doc) {
 
   if (isCardClickable && cardLinkHref) {
     const wrapper = createElementFromHTML('<a class="cards-list-item-link"></a>', doc);
+    // true when the card opens a modal instead of navigating
+    const willUseModal = enableOverlayModal && !!overlayHref;
 
-    if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle);
+    if (cardLinkTitle) wrapper.setAttribute('title', cardLinkTitle); // skip title for modal triggers
     if (cardLinkTarget) wrapper.setAttribute('target', cardLinkTarget);
     if (cardLinkTarget === '_blank') wrapper.setAttribute('rel', 'noopener noreferrer');
 
     wrapper.target = openInNewTab ? '_blank' : '_self';
     if (openInNewTab) wrapper.setAttribute('rel', 'noopener noreferrer');
 
-    if (enableOverlayModal && overlayHref) {
+    if (willUseModal) {
       wrapper.setAttribute('data-modal', overlayHref);
+      wrapper.setAttribute('href', '#');
+      wrapper.removeAttribute('title');
+      addAutoBlockingExclusion(wrapper, 'title'); // stop later decoration passes from re-adding title
     } else {
       wrapper.setAttribute('href', cardLinkHref);
     }
