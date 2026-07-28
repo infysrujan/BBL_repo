@@ -964,7 +964,7 @@ function printElement(block, state) {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         printWindow.print();
-        //printWindow.close();
+        printWindow.close();
       });
     });
   });
