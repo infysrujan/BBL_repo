@@ -83,9 +83,9 @@ async function fetchAndRender(block, type, year) {
   const resultsHeader = createTaggedElement('div', { className: 'srr-header' });
   const backBtn = createTaggedElement('button', {
     className: 'srr-back-btn',
-    attrs: { type: 'button', 'aria-label': 'Go back' },
-    text: '‹',
+    attrs: { type: 'button', 'aria-label': 'Go back to previous page' },
   });
+  backBtn.append(createTaggedElement('span', { className: 'srr-back-btn-circle icon-arrow-left' }));
   backBtn.addEventListener('click', () => {
     window.location.href = getPreviousPagePath();
   });
