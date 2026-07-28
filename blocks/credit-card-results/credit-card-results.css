@@ -221,8 +221,8 @@
 
 .ccs-results-toggle-btn .icon-dropdown {
   display: inline-block;
-  width: 0.75rem;
-  height: 0.4375rem;
+  width: 1.5rem;
+  height: 0.875rem;
   background-image: url('/icons/chevron-up-thin.svg');
   background-size: contain;
   background-repeat: no-repeat;
