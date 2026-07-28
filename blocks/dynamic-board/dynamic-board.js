@@ -509,28 +509,34 @@ function wireFilterEvents(
 // intrinsic minimum content width can exceed the page no matter what CSS is
 // applied, which is what caused columns to be clipped off the printed page.
 //
-// Widths are measured from the LIVE table's own rendered pixel widths
-// (auto layout, on-screen) rather than a hand-tuned weight guess. Hand-tuned
-// weights (tried previously) don't track this specific board's actual
-// content proportions and drift visibly from the live table's appearance —
-// which is exactly the "widths don't match live" symptom being fixed here.
-// Falls back to a rough weight split only if there's no live row to measure
-// (e.g. print triggered before any data has loaded).
+// Widths are measured from the LIVE table's own rendered pixel widths, taking
+// the MAX width seen per column across ALL loaded rows (not just row one).
+// Measuring only the first row could under-allocate a column whose first
+// value happens to be short (e.g. a short Symbol), and combined with the
+// forced wrapping in printCss that produced mid-word breaks like "Symb ol".
+// Falls back to rough weights only if there's no live row to measure
+// (e.g. print triggered before any data has loaded, or a no-results state).
 function buildPrintColgroup(liveTable, printTable) {
   const bodyRow = printTable.querySelector('tbody tr');
   const count = bodyRow ? bodyRow.children.length : 0;
   if (!count) return '';
 
-  const liveRow = liveTable?.querySelector('tbody tr');
-  const liveCells = liveRow
-    ? [...liveRow.children].filter((td) => !td.classList.contains('db-td-check'))
-    : null;
-
-  if (liveCells && liveCells.length === count) {
-    const pixelWidths = liveCells.map((td) => td.getBoundingClientRect().width);
-    const total = pixelWidths.reduce((sum, w) => sum + w, 0);
-    if (total > 0) {
-      const widths = pixelWidths.map((w) => (w / total) * 100);
+  const liveRows = liveTable ? [...liveTable.querySelectorAll('tbody tr')] : [];
+  if (liveRows.length) {
+    const maxWidths = new Array(count).fill(0);
+    let matchedAnyRow = false;
+    liveRows.forEach((row) => {
+      const cells = [...row.children].filter((td) => !td.classList.contains('db-td-check'));
+      if (cells.length !== count) return;
+      matchedAnyRow = true;
+      cells.forEach((td, i) => {
+        const w = td.getBoundingClientRect().width;
+        if (w > maxWidths[i]) maxWidths[i] = w;
+      });
+    });
+    const total = maxWidths.reduce((sum, w) => sum + w, 0);
+    if (matchedAnyRow && total > 0) {
+      const widths = maxWidths.map((w) => (w / total) * 100);
       return `<colgroup>${widths.map((w) => `<col style="width:${w.toFixed(2)}%">`).join('')}</colgroup>`;
     }
   }
@@ -558,14 +564,16 @@ function buildPrintColgroup(liveTable, printTable) {
 function printElement(block, state) {
   // Capture real computed styles from the LIVE (un-cloned) elements before
   // any cloning/stripping happens below. Baking these actual resolved
-  // values into printCss — instead of hardcoded hex/rem guesses — is what
-  // makes the print header color, column widths, and date/time box match
-  // the live board, since it now reads whatever this site's real --bbl-*
-  // tokens resolve to rather than a value that was only ever a guess.
-  const liveHeaderTh = block.querySelector('.db-table thead th');
+  // values into printCss — instead of hardcoded rem guesses — is what makes
+  // the print date/time box and the "Updated as of" label match the live
+  // board, since it reads whatever this site's real --bbl-* tokens resolve
+  // to. NOTE: the table header background is intentionally NOT read from the
+  // live header — the client PDF wants a plain WHITE header (not the live
+  // blue tint), so that's forced to white in printCss below.
   const liveDateInput = block.querySelector('.db-date-display');
   const liveTimeTrigger = block.querySelector('.db-time-trigger');
   const liveCalLabel = block.querySelector('.db-cal-label');
+  const liveHeaderTh = block.querySelector('.db-table thead th');
   const liveTable = block.querySelector('.db-table');
 
   const cs = (el) => (el ? getComputedStyle(el) : null);
@@ -574,7 +582,8 @@ function printElement(block, state) {
   const timeCs = cs(liveTimeTrigger);
   const calLabelCs = cs(liveCalLabel);
 
-  const headerBg = headerCs?.backgroundColor || '#F1F3F9';
+  // Header text color/weight still come from live (only the *background* is
+  // forced white); black is a safe fallback matching the client PDF.
   const headerColor = headerCs?.color || '#000000';
   const headerFontWeight = headerCs?.fontWeight || '700';
   const dateBorder = dateCs
@@ -699,12 +708,15 @@ function printElement(block, state) {
     }
 
     /* Scoped to the always-present .table-container rather than
-       center-title/underline-title, so it centers regardless of authoring. */
+       center-title/underline-title, so it centers regardless of authoring.
+       line-height set explicitly (1.2) — without it the two title lines
+       inherited a too-tight leading in the print popup and looked cramped. */
     .table-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
       position: relative;
       margin: 0;
       padding: 0 0 0.75rem;
       font-size: 2rem;
+      line-height: 1.2;
       text-align: center;
     }
 
@@ -722,7 +734,7 @@ function printElement(block, state) {
     }
 
     .dynamic-board {
-      margin-top: 2rem;
+      margin-top: 0.5rem;
     }
 
     /* A4's print width falls under the 47.5rem breakpoint where these are
@@ -799,14 +811,21 @@ function printElement(block, state) {
       white-space: normal;
     }
 
-    /* Base stylesheet floors Name at 12rem and keeps Symbol/numeric cells
-       at white-space: nowrap with no print-time override — either alone is
-       enough to blow past the fixed column width from the colgroup above. */
+    /* Base stylesheet floors Name at 12rem with no print-time override —
+       enough on its own to blow past the fixed column width from the
+       colgroup above. */
     .dynamic-board .db-td-name {
       min-width: 0;
     }
 
-    .dynamic-board .db-td-symbol,
+    /* Symbols are short codes (e.g. SBST26NB) — keep them on one line so a
+       narrow column allocation can't break them mid-word ("Symb ol"). The
+       colgroup widths (measured live, max-per-column) give Symbol enough
+       room for its longest value. Numeric cells wrap normally. */
+    .dynamic-board .db-td-symbol {
+      white-space: nowrap;
+    }
+
     .dynamic-board .db-td-num {
       white-space: normal;
     }
@@ -820,13 +839,12 @@ function printElement(block, state) {
     .dynamic-board .db-table thead th,
     .dynamic-board .db-table thead tr:first-child th,
     .dynamic-board .db-table thead tr:last-child th {
-      /* Real background/color captured from the live thead th above —
-         previously a hardcoded #F1F3F9 guess that didn't match this site's
-         actual --bbl-color-blue-6/9 header tint. Chrome's print engine
-         frequently drops a background painted at the thead/tr level even
-         with print-color-adjust: exact set globally — setting it directly
-         on each th is what actually survives printing. */
-      background-color: var(--bbl-color-blue-6, ${headerBg});
+      /* Client PDF wants a plain WHITE header (not the live blue tint), so
+         force white here rather than reading the live header background.
+         Chrome's print engine frequently drops a background painted at the
+         thead/tr level even with print-color-adjust: exact set globally —
+         setting it directly on each th is what actually survives printing. */
+      background-color: #FFFFFF;
       color: ${headerColor};
       font-size: 0.625rem;
       font-weight: ${headerFontWeight} !important;
