@@ -225,7 +225,6 @@
 
   .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow {
     display: flex;
-    position: relative;
     grid-row: 1;
     grid-column: 1;
     align-self: center;
@@ -234,12 +233,12 @@
 
   .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev {
     justify-self: start;
-    margin-left: -1.25rem;
+    margin-left: -0.75rem;
   }
 
   .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next {
     justify-self: end;
-    margin-right: -1.25rem;
+    margin-right: -0.75rem;
   }
 
   .carousel-dotted.show-arrows-dots:has(.simple-carousel) .slick-dots {
@@ -291,11 +290,9 @@
 
     .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev {
     justify-self: start;
-    margin-left: -3.45rem;
   }
 
   .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next {
     justify-self: end;
-    margin-right: -3.45rem;
   }
 } 
