@@ -2131,21 +2131,6 @@
           }
         },
         {
-          "title": "Social Icon",
-          "id": "social-icon",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Social Icon",
-                  "model": "social-icon"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "Sub Nav",
           "id": "sub-nav",
           "plugins": {
