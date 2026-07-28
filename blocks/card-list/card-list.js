@@ -154,6 +154,12 @@ function createCardListItem(cardElement, doc) {
     content.querySelector('.cards-list-title')?.classList.add('has-description');
   }
 
+  if (remark) {
+    content.appendChild(
+      createElementFromHTML(`<div class="cards-list-remark">${remark}</div>`, doc),
+    );
+  }
+
   if (content.children.length) {
     inner.appendChild(content);
   }
@@ -161,17 +167,7 @@ function createCardListItem(cardElement, doc) {
   if (actionTypeText === 'default' && defaultButton) {
     const buttonWrapper = createElementFromHTML('<div class="cards-list-button"></div>', doc);
     buttonWrapper.innerHTML = defaultButtonDiv.innerHTML;
-    if (remark) {
-      buttonWrapper.insertBefore(
-        createElementFromHTML(
-          `<div class="cards-list-remark">${remark}</div>`,
-          doc,
-        ),
-        buttonWrapper.firstChild,
-      );
-    }
     const buttonLink = buttonWrapper.querySelector('a');
-    buttonLink.classList.add('button-m');
     if (buttonLink) {
       buttonLink.removeAttribute('data-modal');
       if (enableOverlayModal && overlayHref) {
@@ -211,15 +207,6 @@ function createCardListItem(cardElement, doc) {
     if (buttonWrapper.children.length) {
       inner.appendChild(buttonWrapper);
     }
-  }
-
-  if (!inner.querySelector('.cards-list-remark') && remark) {
-    content.appendChild(
-      createElementFromHTML(
-        `<div class="cards-list-remark">${remark}</div>`,
-        doc,
-      ),
-    );
   }
 
   if (financialDate) {
