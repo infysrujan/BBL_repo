@@ -116,6 +116,10 @@ blockquote {
     margin-bottom: 0.25em;
 }
 
+:is(dir, menu, ol, ul) ul {
+    list-style-type: disc;
+}
+
 code,
 pre {
     font-size: var(--bbl-text-body-small-size);
