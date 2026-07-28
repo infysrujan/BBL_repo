@@ -149,6 +149,14 @@
   margin-bottom: 1.25rem;
 }
 
+#test-bangkok-bank-scholarships-for-master-degrees{
+  text-align: left;  
+  font-family: Muli-Light, sans-serif;
+  font-size: 3rem;
+  line-height: 2.875rem;
+  padding-bottom: 30px;
+}
+
 @media (width > 47.5rem) {
   .accordion-panel {
     padding: 1.25rem 1.875rem;
