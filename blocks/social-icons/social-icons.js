@@ -66,7 +66,7 @@ export default function decorate(block) {
     }
     a.className = `platform-${platform}`;
     a.setAttribute('aria-label', `Share on ${platform}`);
-    a.setAttribute('title', platform);
+    a.setAttribute('title', platformName);
 
     const clonedIcon = icon.cloneNode(true);
     clonedIcon.querySelectorAll('img').forEach((img) => {
