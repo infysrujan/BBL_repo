@@ -130,9 +130,9 @@
   display: block;
 }
 
-/* ── Logo in remark area ─────────────────────────────────────────────────── */
+/* ── Logo in button area ─────────────────────────────────────────────────── */
 
-.card-list.mf-results .cards-list-remark img.mfr-logo {
+.card-list.mf-results .cards-list-logo img.mfr-logo {
   height: 2.5rem;
   width: 8.875rem;
   max-width: 8.875rem;

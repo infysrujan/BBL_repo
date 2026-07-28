@@ -286,7 +286,7 @@ function buildCardBlock(funds, doc, labels) {
     // Logo prepended inside button wrapper, before the link
     if (logoSrc) {
       const remarkEl = doc.createElement('div');
-      remarkEl.className = 'cards-list-remark';
+      remarkEl.className = 'cards-list-logo';
       const logoImg = doc.createElement('img');
       logoImg.src = logoSrc;
       logoImg.alt = name;
