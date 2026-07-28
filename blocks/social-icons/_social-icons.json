@@ -46,7 +46,8 @@
 					"component": "text",
 					"name": "alt",
 					"label": "Platform",
-					"valueType": "string"
+					"valueType": "string",
+          "required": true
 				},
 				{
 					"component": "text",
