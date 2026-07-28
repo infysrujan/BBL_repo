@@ -695,7 +695,7 @@ function printElement(block, state) {
        each width:100% (stacked), so shrink them to sit side by side. */
     .dynamic-board .db-date-wrap,
     .dynamic-board .db-time-wrap {
-      width: auto;
+      //width: auto;
       flex: 0 1 auto;
     }
 
@@ -745,10 +745,10 @@ function printElement(block, state) {
 
     /* Default: every cell stays on ONE line (end-to-end). Name is the sole
        exception, overridden below. */
-    .dynamic-board .db-table th,
-    .dynamic-board .db-table td {
-      white-space: nowrap;
-    }
+    // .dynamic-board .db-table th,
+    // .dynamic-board .db-table td {
+    //   white-space: nowrap;
+    // }
 
     /* Name is the ONLY column allowed to wrap — it takes the leftover width
        and breaks long names onto multiple lines. min-width:0 clears the base
@@ -758,6 +758,7 @@ function printElement(block, state) {
       overflow-wrap: break-word;
       word-break: break-word;
       min-width: 0;
+      width: 176px;
     }
     /* The Name header cell should also be allowed to wrap if needed. */
     .dynamic-board .db-table thead th.db-th-name {
