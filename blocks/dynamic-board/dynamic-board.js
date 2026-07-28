@@ -695,8 +695,15 @@ function printElement(block, state) {
        each width:100% (stacked), so shrink them to sit side by side. */
     .dynamic-board .db-date-wrap,
     .dynamic-board .db-time-wrap {
-      //width: auto;
       flex: 0 1 auto;
+    }
+
+    .dynamic-board .db-date-wrap {
+      width: 160px;
+    }
+
+    .dynamic-board .db-time-wrap {
+      width: 100px;
     }
 
     /* "Updated as of" label — real weight/size/color captured from the live
@@ -915,7 +922,7 @@ function printElement(block, state) {
   </html>
   `;
   printWindow.document.write(printHtml);
-  printWindow.document.close();
+  //printWindow.document.close();
 
   // window.open('') leaves the popup's location at about:blank, which is what
   // Chrome's print header/footer shows — replace it with the real page URL
@@ -957,7 +964,7 @@ function printElement(block, state) {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         printWindow.print();
-        printWindow.close();
+        //printWindow.close();
       });
     });
   });
