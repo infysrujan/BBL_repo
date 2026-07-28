@@ -380,9 +380,27 @@ function setupPanel(
 
   if (disableFilters) return;
 
+  const isDesktop = () => window.matchMedia('(width > 64rem)').matches;
+  // After an option is chosen the dropdown closes; a double-click's 2nd click can
+  // land on Reset/Search (or another filter) underneath and wipe the selection.
+  let suppressClickThroughUntil = 0;
+  const shouldSuppressClickThrough = () => Date.now() < suppressClickThroughUntil;
+  const armClickThroughGuard = () => {
+    suppressClickThroughUntil = Date.now() + 500;
+  };
+
+  // Capture-phase: block stray clicks that land under the closing dropdown.
+  panel.addEventListener('click', (e) => {
+    if (!shouldSuppressClickThrough()) return;
+    if (e.target.closest('.promo-selector-option')) return;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+
   panel.querySelectorAll('.promo-selector-filter-btn').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (shouldSuppressClickThrough()) return;
       const filter = btn.closest('.promo-selector-filter');
       const isOpen = filter.classList.contains('is-open');
       panel.querySelectorAll('.promo-selector-filter').forEach((f) => {
@@ -396,26 +414,35 @@ function setupPanel(
     });
   });
 
-  const isDesktop = () => window.matchMedia('(width > 64rem)').matches;
-
   function makeSingleSelect(filterAttr, stateKey, defaultLabel) {
-    panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`).forEach((opt) => {
-      opt.addEventListener('click', () => {
-        const isActive = opt.classList.contains('is-active');
-        panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`)
-          .forEach((o) => o.classList.remove('is-active'));
-        const labelEl = panel.querySelector(
-          `[data-filter="${filterAttr}"] .promo-selector-filter-label`,
-        );
-        if (isActive) {
-          state[stateKey] = '';
-          labelEl.textContent = defaultLabel;
-        } else {
+    const filterEl = panel.querySelector(`[data-filter="${filterAttr}"]`);
+    const labelEl = filterEl?.querySelector('.promo-selector-filter-label');
+    filterEl?.querySelectorAll('.promo-selector-option').forEach((opt) => {
+      opt.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.detail > 1 || shouldSuppressClickThrough()) return;
+
+        const val = opt.dataset.value || '';
+        // Placeholder row clears the filter; re-clicking the active value only closes.
+        if (!val) {
+          filterEl.querySelectorAll('.promo-selector-option')
+            .forEach((o) => o.classList.remove('is-active'));
           opt.classList.add('is-active');
-          state[stateKey] = opt.dataset.value;
-          labelEl.textContent = opt.dataset.value;
+          state[stateKey] = '';
+          if (labelEl) labelEl.textContent = defaultLabel;
+        } else if (opt.classList.contains('is-active')) {
+          // Keep current selection — do not toggle off on double / re-click.
+        } else {
+          filterEl.querySelectorAll('.promo-selector-option')
+            .forEach((o) => o.classList.remove('is-active'));
+          opt.classList.add('is-active');
+          state[stateKey] = val;
+          if (labelEl) labelEl.textContent = val;
         }
-        panel.querySelector(`[data-filter="${filterAttr}"]`).classList.remove('is-open');
+        filterEl.classList.remove('is-open');
+        filterEl.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
+        armClickThroughGuard();
         state.page = 1;
         if (isDesktop()) render();
       });
@@ -438,8 +465,20 @@ function setupPanel(
     render();
   }
 
-  panel.querySelector('.promo-selector-btn-reset')?.addEventListener('click', resetFilters);
-  panel.querySelector('.promo-selector-btn-search')?.addEventListener('click', () => {
+  panel.querySelector('.promo-selector-btn-reset')?.addEventListener('click', (e) => {
+    if (shouldSuppressClickThrough()) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    resetFilters();
+  });
+  panel.querySelector('.promo-selector-btn-search')?.addEventListener('click', (e) => {
+    if (shouldSuppressClickThrough()) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
     state.page = 1;
     render();
   });
@@ -631,3 +670,4 @@ export default async function decorate(block) {
 
   block.hidden = true;
 }
+ 
