@@ -39,7 +39,8 @@ export default function decorate(block) {
     const icon = cells[0].querySelector('picture, img');
     if (!icon) return;
 
-    const platform = cells[1]?.textContent.trim().toLowerCase() || '';
+    const platformName = cells[1]?.textContent.trim();
+    const platform = platformName.toLowerCase() || '';
 
     // URL is optional — read from cell[2] if present
     let url = null;
