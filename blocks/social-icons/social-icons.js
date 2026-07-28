@@ -57,7 +57,7 @@ export default function decorate(block) {
     const a = document.createElement('a');
 
     if (url) {
-      a.href = url.replace('<page-url>', encodeURIComponent(window.location.href));
+      a.href = url.replace('page-url', encodeURIComponent(window.location.href));
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
     } else {
