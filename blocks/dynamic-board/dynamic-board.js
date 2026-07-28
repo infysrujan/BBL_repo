@@ -509,20 +509,35 @@ function wireFilterEvents(
 // intrinsic minimum content width can exceed the page no matter what CSS is
 // applied, which is what caused columns to be clipped off the printed page.
 //
-// Widths are measured from the LIVE table's own rendered pixel widths, taking
-// the MAX width seen per column across ALL loaded rows (not just row one).
-// Measuring only the first row could under-allocate a column whose first
-// value happens to be short, and combined with forced wrapping that produced
-// mid-word breaks like "Symb ol". A minimum floor is then enforced on the
-// Symbol column so a short-but-unbreakable code (e.g. SBST26NB) can never be
-// squeezed narrow enough to wrap. Falls back to rough weights only if there's
-// no live row to measure (e.g. print before data loads, or no-results state).
-const SYMBOL_MIN_PCT = 9;
+// Widths are measured from the LIVE table's own rendered pixel widths (MAX
+// per column across ALL loaded rows), then two floors are enforced:
+//   - Symbol: enough to keep its code on one line (no "Symb ol" wrap).
+//   - Name: kept WIDE (like the reference PDF) so long names wrap to ~2
+//     lines, not 4-5.
+// Crucially, the width needed to satisfy those floors is taken ONLY from the
+// numeric columns (Bidding/Offering price+yield, Remaining Maturity, Current
+// Coupon), which have slack — NOT proportionally from every column. Pulling
+// proportionally (the previous approach) was stealing width from Name and is
+// what made names wrap onto many lines.
+const SYMBOL_MIN_PCT = 8;
+const NAME_MIN_PCT = 24;
 
 function buildPrintColgroup(liveTable, printTable) {
   const bodyRow = printTable.querySelector('tbody tr');
   const count = bodyRow ? bodyRow.children.length : 0;
   if (!count) return '';
+
+  const applyFloorFromDonors = (widths, idx, min, donorIdx) => {
+    if (widths[idx] >= min) return widths;
+    const deficit = min - widths[idx];
+    const donorTotal = donorIdx.reduce((s, i) => s + widths[i], 0);
+    if (donorTotal <= 0) return widths;
+    return widths.map((w, i) => {
+      if (i === idx) return min;
+      if (donorIdx.includes(i)) return w - (deficit * (w / donorTotal));
+      return w;
+    });
+  };
 
   const liveRows = liveTable ? [...liveTable.querySelectorAll('tbody tr')] : [];
   if (liveRows.length) {
@@ -540,17 +555,15 @@ function buildPrintColgroup(liveTable, printTable) {
     const total = maxWidths.reduce((sum, w) => sum + w, 0);
     if (matchedAnyRow && total > 0) {
       let widths = maxWidths.map((w) => (w / total) * 100);
-      // Enforce a floor on the Symbol column (index 0). On the live page the
-      // Symbol column is narrow, so a pure live measurement reproduces that
-      // narrowness in print and a code like SBST26NB wraps to 2-3 lines,
-      // which is what made rows tall. Redistribute the deficit proportionally
-      // from the remaining columns so the total still sums to ~100.
-      if (widths[0] < SYMBOL_MIN_PCT && count > 1) {
-        const deficit = SYMBOL_MIN_PCT - widths[0];
-        const rest = widths.slice(1).reduce((s, w) => s + w, 0);
-        if (rest > 0) {
-          widths = widths.map((w, i) => (i === 0 ? SYMBOL_MIN_PCT : w - (deficit * (w / rest))));
-        }
+      // Donor columns = the numeric middle columns (everything between Name
+      // at index 1 and Maturity Date at index count-1). These carry the
+      // slack, so shrinking them to fund the Symbol/Name floors doesn't
+      // cause wrapping (numbers are short) the way shrinking Name would.
+      const donorIdx = [];
+      for (let i = 2; i < count - 1; i += 1) donorIdx.push(i);
+      if (donorIdx.length) {
+        widths = applyFloorFromDonors(widths, 0, SYMBOL_MIN_PCT, donorIdx);
+        widths = applyFloorFromDonors(widths, 1, NAME_MIN_PCT, donorIdx);
       }
       return `<colgroup>${widths.map((w) => `<col style="width:${w.toFixed(2)}%">`).join('')}</colgroup>`;
     }
@@ -558,12 +571,12 @@ function buildPrintColgroup(liveTable, printTable) {
 
   // Fallback weights, used only when nothing could be measured live.
   // Proportions derived from the live table's rendered column widths:
-  // Symbol ~9%, Name ~22%, Price/Unit cols ~10%, Yield cols ~8%,
+  // Symbol ~8%, Name ~24%, Price/Unit cols ~10%, Yield cols ~8%,
   // Remaining Maturity ~10%, Current Coupon ~9%, Maturity Date ~10%.
   const weights = Array.from({ length: count }, (_, i) => {
-    if (i === 0) return 1.0; // Symbol
-    if (i === 1) return 2.2; // Name (widest)
-    if (i === count - 1) return 1.0; // Maturity Date (+ download icon)
+    if (i === 0) return 0.9; // Symbol
+    if (i === 1) return 2.6; // Name (widest)
+    if (i === count - 1) return 1.0; // Maturity Date
     if (i === 2 || i === 4) return 1.0; // Price per Unit (Baht)
     if (i === 3 || i === 5) return 0.8; // Indicative Yield (%)
     return 0.9; // Remaining Maturity, Current Coupon
@@ -649,7 +662,7 @@ function printElement(block, state) {
   // each cell's content to determine its own minimum width. Measured from
   // the LIVE table's own rendered widths (see buildPrintColgroup) so print
   // columns are proportioned the same way this board actually renders
-  // on-screen, not an arbitrary hand-tuned guess.
+  // on-screen, then Symbol/Name floors are applied.
   const printTable = content.querySelector('.db-table');
   if (printTable) printTable.insertAdjacentHTML('afterbegin', buildPrintColgroup(liveTable, printTable));
 
@@ -793,7 +806,7 @@ function printElement(block, state) {
          percentage width that always sums to 100%, so nothing can be
          pushed off the page no matter how long a price/yield/date string
          is, while still matching the live table's proportions since those
-         widths are now measured from the live table rather than guessed.
+         widths are measured from the live table (plus Symbol/Name floors).
          table-layout: auto was tried previously but couldn't guarantee
          boundedness: it measures each cell's content to determine column
          widths, and numeric/date cells have no wrap point, so their
@@ -828,7 +841,7 @@ function printElement(block, state) {
 
     /* Base stylesheet floors Name at 12rem with no print-time override —
        enough on its own to blow past the fixed column width from the
-       colgroup above. */
+       colgroup above. Reset so the colgroup's Name width wins. */
     .dynamic-board .db-td-name {
       min-width: 0;
     }
@@ -916,23 +929,13 @@ function printElement(block, state) {
       position: static;
     }
 
-    /* Maturity date cell holds a date string + a download icon side by
-       side. Under portrait's tighter fixed column width these could wrap
-       onto separate lines (date, then an orphaned icon below it) — flex
-       plus a fixed small icon size keeps them on one line instead. */
+    /* Maturity date cell: in print the download icon is stripped, so this is
+       just a date string. Keep it a plain right-aligned numeric-style cell
+       (NOT flex) — the earlier flex layout left over from the icon was what
+       top-aligned the date and made the last column look odd. */
     .dynamic-board .db-td-maturity {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 0.1875rem;
       white-space: nowrap;
-    }
-
-    .dynamic-board .db-td-dl img {
-      width: 0.875rem;
-      height: 0.875rem;
-      min-width: 0.875rem;
-      min-height: 0.875rem;
+      text-align: right;
     }
 
     .dynamic-board .db-remarks-content {
