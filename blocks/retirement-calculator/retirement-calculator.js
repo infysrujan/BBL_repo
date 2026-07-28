@@ -27,6 +27,12 @@ function getString(labels, key, fallback = '') {
   return labels[key] || fallback;
 }
 
+function getInflationText(labels, data){
+    return getString(labels, 'stepsStep2InflationNote', 'Including an inflation rate of {inflationRate}% p.a., the return on investment after retirement is assumed to be {afterRetirementRate}% p.a.')
+    .replace('{inflationRate}%', `${data.inflationRate}%`)
+    .replace('{afterRetirementRate}%', `${data.afterRetirementRate}%`);
+}
+
 // ─── Data ────────────────────────────────────────────────────────────────────────
 
 async function loadData() {
@@ -474,6 +480,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
   const totalNeeded = formatNumber(Math.round(j1Result.TotalChargesValue || 0));
   const monthlyAvail = formatNumber(Math.round(j1Result.FvMonthlyGoals || 0));
   const bahtUnit = getString(labels, 'commonBahtUnit', 'baht');
+  const inflationNoteText = getInflationText(labels, data);
   const summaryCard = parseHTML(`
     <div class="rc-j1-summary">
       <div class="rc-j1-summary-card">
@@ -487,7 +494,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
           <p class="rc-j1-summary-value">${monthlyAvail} <span class="rc-j1-summary-unit">${bahtUnit}</span></p>
         </div>
       </div>
-      <p class="rc-j1-summary-note">${getString(labels, 'stepsStep2InflationNote', 'Including an inflation rate of 1.5% p.a., the return on investment after retirement is assumed to be 3% p.a.')}</p>
+      <p class="rc-j1-summary-note">${inflationNoteText}</p>
     </div>
   `);
   content.appendChild(summaryCard);
@@ -673,6 +680,7 @@ function renderJourney3(block, data, state, onBack) {
   const content = parseHTML('<div class="rc-content"></div>');
 
   // ── Summary card (same as J2) ──
+  const inflationNoteText = getInflationText(labels, data);
   const summaryCard = parseHTML(`
     <div class="rc-j1-summary">
       <div class="rc-j1-summary-card">
@@ -695,7 +703,7 @@ function renderJourney3(block, data, state, onBack) {
         </div>
       </div>
       <p class="rc-j1-summary-note">
-        ${getString(labels, 'stepsStep2InflationNote', 'Including an inflation rate of 1.5% p.a., the return on investment after retirement is assumed to be 3% p.a.')}
+        ${inflationNoteText}
       </p>
     </div>
   `);
