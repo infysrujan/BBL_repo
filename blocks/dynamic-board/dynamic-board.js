@@ -536,11 +536,16 @@ function buildPrintColgroup(liveTable, printTable) {
   }
 
   // Fallback weights, used only when nothing could be measured live.
+  // Proportions derived from the live table's rendered column widths:
+  // Symbol ~8%, Name ~22%, Price/Unit cols ~10%, Yield cols ~8%,
+  // Remaining Maturity ~10%, Current Coupon ~9%, Maturity Date ~10%.
   const weights = Array.from({ length: count }, (_, i) => {
-    if (i === 0) return 1; // Symbol
-    if (i === 1) return 1.8; // Name
-    if (i === count - 1) return 1.5; // Maturity Date (+ download icon)
-    return 1;
+    if (i === 0) return 0.8; // Symbol
+    if (i === 1) return 2.2; // Name (widest)
+    if (i === count - 1) return 1.0; // Maturity Date (+ download icon)
+    if (i === 2 || i === 4) return 1.0; // Price per Unit (Baht)
+    if (i === 3 || i === 5) return 0.8; // Indicative Yield (%)
+    return 0.9; // Remaining Maturity, Current Coupon
   });
   const totalWeight = weights.reduce((sum, w) => sum + w, 0);
   const widths = weights.map((w) => (w / totalWeight) * 100);
@@ -698,7 +703,7 @@ function printElement(block, state) {
     .table-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
       position: relative;
       margin: 0;
-      padding: 0 0 1.875rem;
+      padding: 0 0 0.75rem;
       font-size: 2rem;
       text-align: center;
     }
@@ -821,7 +826,7 @@ function printElement(block, state) {
          frequently drops a background painted at the thead/tr level even
          with print-color-adjust: exact set globally — setting it directly
          on each th is what actually survives printing. */
-      background-color: ${headerBg};
+      background-color: var(--bbl-color-blue-6, ${headerBg});
       color: ${headerColor};
       font-size: 0.625rem;
       font-weight: ${headerFontWeight} !important;
