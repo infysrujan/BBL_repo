@@ -335,7 +335,7 @@
   padding: var(--bbl-space-250);
 }
 
-.cards-list-inner:not(:has(.cards-list-date)) .cards-list-content {
+.cards-list-inner:not(:has(.cards-list-date, .cards-list-downloads)) .cards-list-content {
   flex: 1;
 }
 
