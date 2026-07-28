@@ -509,30 +509,41 @@ function wireFilterEvents(
 // intrinsic minimum content width can exceed the page no matter what CSS is
 // applied, which is what caused columns to be clipped off the printed page.
 //
-// Widths are derived from the CLONED table's actual body row rather than a
-// hardcoded column count/array. A fixed assumption (e.g. "always 9 columns")
-// can silently drift out of sync with the real column count — whether from
-// gov vs. bond board differences, future authoring changes, or the colspan
-// cleanup below — and that mismatch is what causes table-layout: fixed to
-// render overlapping/garbled cells instead of cleanly bounded ones.
-//
-// Weights below are tuned for PORTRAIT (see printCss @page rule). Portrait
-// A4 has noticeably less usable width than landscape, so Name no longer
-// gets an oversized weight (it would starve the numeric columns), and the
-// Maturity Date column keeps a bit of extra room since it also carries the
-// download icon.
-function buildPrintColgroup(table) {
-  const bodyRow = table.querySelector('tbody tr');
+// Widths are measured from the LIVE table's own rendered pixel widths
+// (auto layout, on-screen) rather than a hand-tuned weight guess. Hand-tuned
+// weights (tried previously) don't track this specific board's actual
+// content proportions and drift visibly from the live table's appearance —
+// which is exactly the "widths don't match live" symptom being fixed here.
+// Falls back to a rough weight split only if there's no live row to measure
+// (e.g. print triggered before any data has loaded).
+function buildPrintColgroup(liveTable, printTable) {
+  const bodyRow = printTable.querySelector('tbody tr');
   const count = bodyRow ? bodyRow.children.length : 0;
   if (!count) return '';
+
+  const liveRow = liveTable?.querySelector('tbody tr');
+  const liveCells = liveRow
+    ? [...liveRow.children].filter((td) => !td.classList.contains('db-td-check'))
+    : null;
+
+  if (liveCells && liveCells.length === count) {
+    const pixelWidths = liveCells.map((td) => td.getBoundingClientRect().width);
+    const total = pixelWidths.reduce((sum, w) => sum + w, 0);
+    if (total > 0) {
+      const widths = pixelWidths.map((w) => (w / total) * 100);
+      return `<colgroup>${widths.map((w) => `<col style="width:${w.toFixed(2)}%">`).join('')}</colgroup>`;
+    }
+  }
+
+  // Fallback weights, used only when nothing could be measured live.
   const weights = Array.from({ length: count }, (_, i) => {
     if (i === 0) return 1; // Symbol
     if (i === 1) return 1.8; // Name
     if (i === count - 1) return 1.5; // Maturity Date (+ download icon)
     return 1;
   });
-  const total = weights.reduce((sum, w) => sum + w, 0);
-  const widths = weights.map((w) => (w / total) * 100);
+  const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+  const widths = weights.map((w) => (w / totalWeight) * 100);
   return `<colgroup>${widths.map((w) => `<col style="width:${w.toFixed(2)}%">`).join('')}</colgroup>`;
 }
 
@@ -540,6 +551,38 @@ function buildPrintColgroup(table) {
  * the live page, so the fixed header/nav and the site's max-width layout
  * don't shrink the table or swallow the logo. */
 function printElement(block, state) {
+  // Capture real computed styles from the LIVE (un-cloned) elements before
+  // any cloning/stripping happens below. Baking these actual resolved
+  // values into printCss — instead of hardcoded hex/rem guesses — is what
+  // makes the print header color, column widths, and date/time box match
+  // the live board, since it now reads whatever this site's real --bbl-*
+  // tokens resolve to rather than a value that was only ever a guess.
+  const liveHeaderTh = block.querySelector('.db-table thead th');
+  const liveDateInput = block.querySelector('.db-date-display');
+  const liveTimeTrigger = block.querySelector('.db-time-trigger');
+  const liveCalLabel = block.querySelector('.db-cal-label');
+  const liveTable = block.querySelector('.db-table');
+
+  const cs = (el) => (el ? getComputedStyle(el) : null);
+  const headerCs = cs(liveHeaderTh);
+  const dateCs = cs(liveDateInput);
+  const timeCs = cs(liveTimeTrigger);
+  const calLabelCs = cs(liveCalLabel);
+
+  const headerBg = headerCs?.backgroundColor || '#F1F3F9';
+  const headerColor = headerCs?.color || '#000000';
+  const headerFontWeight = headerCs?.fontWeight || '700';
+  const dateBorder = dateCs
+    ? `${dateCs.borderTopWidth} solid ${dateCs.borderTopColor}`
+    : '0.0625rem solid #C7C7CC';
+  const dateRadius = dateCs?.borderRadius || '0.25rem';
+  const dateFontSize = dateCs?.fontSize || '0.75rem';
+  const dateColor = dateCs?.color || '#565660';
+  const timeFontWeight = timeCs?.fontWeight || '700';
+  const calLabelWeight = calLabelCs?.fontWeight || '700';
+  const calLabelSize = calLabelCs?.fontSize || '0.75rem';
+  const calLabelColor = calLabelCs?.color || '#565660';
+
   const section = block.closest('.section') || block;
   const content = section.cloneNode(true);
 
@@ -574,12 +617,12 @@ function printElement(block, state) {
 
   // Inject fixed column widths so table-layout: fixed in printCss below has
   // something deterministic to size columns from, instead of relying on
-  // each cell's content to determine its own minimum width. Derived from
-  // the cloned table's own body row (see buildPrintColgroup) so it can
-  // never drift out of sync with however many columns this board actually
-  // renders.
+  // each cell's content to determine its own minimum width. Measured from
+  // the LIVE table's own rendered widths (see buildPrintColgroup) so print
+  // columns are proportioned the same way this board actually renders
+  // on-screen, not an arbitrary hand-tuned guess.
   const printTable = content.querySelector('.db-table');
-  if (printTable) printTable.insertAdjacentHTML('afterbegin', buildPrintColgroup(printTable));
+  if (printTable) printTable.insertAdjacentHTML('afterbegin', buildPrintColgroup(liveTable, printTable));
 
   content.querySelectorAll('.db-time-chevron, .db-time-list').forEach((el) => el.remove());
 
@@ -685,21 +728,49 @@ function printElement(block, state) {
       flex: 0 1 auto;
     }
 
+    /* "Updated as of" label — real weight/size/color captured from the live
+       .db-cal-label, so it matches instead of being missing/unstyled. */
+    .dynamic-board .db-cal-label {
+      font-weight: ${calLabelWeight};
+      font-size: ${calLabelSize};
+      color: ${calLabelColor};
+      margin-bottom: 0.375rem;
+    }
+
+    /* Date/time boxes — real border/radius/font captured from the live
+       .db-date-display and .db-time-trigger, so the bordered box shape
+       that was missing in print now actually renders. */
+    .dynamic-board .db-date-display,
+    .dynamic-board .db-time-trigger {
+      border: ${dateBorder};
+      border-radius: ${dateRadius};
+      font-size: ${dateFontSize};
+      color: ${dateColor};
+      height: 2rem;
+      box-sizing: border-box;
+    }
+
+    .dynamic-board .db-time-trigger {
+      font-weight: ${timeFontWeight};
+    }
+
     .dynamic-board .db-table {
       width: 100%;
       /* table-layout: fixed, driven by the <colgroup> injected via
          buildPrintColgroup() above — gives every column a guaranteed
          percentage width that always sums to 100%, so nothing can be
          pushed off the page no matter how long a price/yield/date string
-         is. table-layout: auto was tried previously but couldn't guarantee
-         this: it measures each cell's content to determine column widths,
-         and numeric/date cells have no wrap point, so their minimum content
-         width could still exceed the page regardless of any wrapping CSS.
-         Note table-layout: fixed also needs the colgroup (not just the
-         first row) to size columns correctly when the header has a grouped
-         first row (colspan) and a flat sub-header second row — reading only
-         the first row, as fixed layout normally does without a colgroup,
-         can't resolve that split correctly. */
+         is, while still matching the live table's proportions since those
+         widths are now measured from the live table rather than guessed.
+         table-layout: auto was tried previously but couldn't guarantee
+         boundedness: it measures each cell's content to determine column
+         widths, and numeric/date cells have no wrap point, so their
+         minimum content width could still exceed the page regardless of
+         any wrapping CSS. Note table-layout: fixed also needs the colgroup
+         (not just the first row) to size columns correctly when the header
+         has a grouped first row (colspan) and a flat sub-header second
+         row — reading only the first row, as fixed layout normally does
+         without a colgroup, can't resolve that split correctly. */
       table-layout: fixed;
       border: 2px solid #EBEBEB;
       /* Outline as a fallback outer border — it can't be partially
@@ -744,14 +815,16 @@ function printElement(block, state) {
     .dynamic-board .db-table thead th,
     .dynamic-board .db-table thead tr:first-child th,
     .dynamic-board .db-table thead tr:last-child th {
-      /* Chrome's print engine frequently drops a background painted at the
-         thead/tr level even with print-color-adjust: exact set globally —
-         setting it directly on each th is what actually survives printing.
-         Hard-coded hex (not var()) so it doesn't depend on the popup having
-         fully resolved the site's CSS custom properties before printing. */
-      background-color: #F1F3F9;
+      /* Real background/color captured from the live thead th above —
+         previously a hardcoded #F1F3F9 guess that didn't match this site's
+         actual --bbl-color-blue-6/9 header tint. Chrome's print engine
+         frequently drops a background painted at the thead/tr level even
+         with print-color-adjust: exact set globally — setting it directly
+         on each th is what actually survives printing. */
+      background-color: ${headerBg};
+      color: ${headerColor};
       font-size: 0.625rem;
-      font-weight: 700 !important;
+      font-weight: ${headerFontWeight} !important;
       height: auto;
       /* dynamic-board.css's own ".dynamic-board .db-table thead th" rule
          sets white-space: nowrap with HIGHER specificity (2 classes + 2
@@ -910,14 +983,15 @@ function printElement(block, state) {
   // here is what causes intermittent broken print layouts (unstyled table,
   // visible remarks-shadow overlay) on a cold cache/slow network.
   const waitForStylesheets = () => Promise.all(
-    [...printWindow.document.querySelectorAll('link[rel="stylesheet"]')].map((link) => (
-      link.sheet
-        ? Promise.resolve()
-        : new Promise((resolve) => {
-          link.addEventListener('load', resolve, { once: true });
-          link.addEventListener('error', resolve, { once: true });
-        })
-    )),
+    [...printWindow.document.querySelectorAll('link[rel="stylesheet"]')].map((link) => new Promise((resolve) => {
+      if (link.sheet) { resolve(); return; }
+      link.addEventListener('load', resolve, { once: true });
+      link.addEventListener('error', () => {
+        // eslint-disable-next-line no-console
+        console.warn('dynamic-board print: stylesheet failed to load:', link.href);
+        resolve();
+      }, { once: true });
+    })),
   );
   const waitForFonts = () => printWindow.document.fonts?.ready ?? Promise.resolve();
   const timeout = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
