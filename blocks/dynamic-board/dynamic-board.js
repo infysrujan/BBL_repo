@@ -150,10 +150,10 @@ function renderThead(thead, state) {
   thead.innerHTML = row1 + row2;
 
   requestAnimationFrame(() => {
-    const firstRow = thead.querySelector('tr:first-child');
+    const groupHeader = thead.querySelector('.db-th-group');
     const secondRow = thead.querySelector('tr:last-child');
-    if (firstRow && secondRow && firstRow !== secondRow) {
-      secondRow.style.top = `${firstRow.getBoundingClientRect().height}px`;
+    if (groupHeader && secondRow) {
+      secondRow.style.top = `${groupHeader.getBoundingClientRect().height}px`;
     }
   });
 }
