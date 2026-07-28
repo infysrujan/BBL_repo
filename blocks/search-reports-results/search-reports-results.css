@@ -6,9 +6,9 @@
 }
 
 .search-reports-results .srr-results-wrapper {
-  background: var(--bbl-color-white);
+  background: var(--bbl-color-gray-144);
   min-height: 100vh;
-  padding-bottom: var(--bbl-space-600);
+  padding-bottom: 1.875rem;
   overflow-x: hidden;
 }
 
@@ -48,20 +48,19 @@
 /* Page title */
 
 .search-reports-results .srr-page-title {
-  font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-h3-desktop);
-  font-weight: var(--bbl-text-page-title-weight);
-  line-height: var(--bbl-text-page-title-line-height);
+  margin: 3.75rem auto var(--bbl-space-250);
   text-align: center;
-  margin: var(--bbl-space-400) 0 var(--bbl-space-200);
-  color: var(--bbl-color-gray-121);
+
+  @media (width > 47.5rem) {
+    margin: 3.75rem auto 1.875rem;
+  }
 }
 
 .search-reports-results .srr-title-divider {
-  width: 3rem;
+  width: var(--bbl-space-1000);
   height: 0.0625rem;
-  background: var(--bbl-color-grey-40);
-  margin: 0 auto var(--bbl-space-400);
+  background: var(--bbl-color-grey-150);
+  margin: 0 auto 1.875rem;
 }
 
 /* List */
@@ -84,7 +83,7 @@
 
 @media (width > 64rem) {
   .search-reports-results .srr-list {
-    padding: 0 var(--bbl-space-1000);
+    padding: 0 var(--bbl-space-1050);
   }
 }
 

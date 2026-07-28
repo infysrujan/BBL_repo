@@ -134,10 +134,7 @@ export default function decorate(block) {
   const params = new URLSearchParams(window.location.search);
   const type = params.get('type') || '';
   const year = params.get('year') || '';
-
-  if (type && year) {
-    fetchAndRender(block, type, year);
-  }
+  fetchAndRender(block, type, year);
 
   window.addEventListener('popstate', () => {
     const p = new URLSearchParams(window.location.search);
