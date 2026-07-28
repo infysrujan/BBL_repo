@@ -510,13 +510,15 @@ function wireFilterEvents(
  * The rule is simple and browser-enforced — ONLY the Name column may wrap;
  * every other column stays on a single line, sized end-to-end to its content.
  * This is achieved with table-layout: auto + white-space: nowrap on every
- * column except Name (which is white-space: normal and absorbs the leftover
- * width). Name is additionally capped with a max-width so it wraps at roughly
- * the reference width instead of running the full leftover width edge-to-edge.
- * No JS width measurement / colgroup is needed. Tradeoff (accepted): if the
- * combined natural width of all non-Name columns ever exceeds the page, the
- * table could overflow; with this board's short numeric/date values that
- * doesn't happen at the chosen print font-size. */
+ * column except Name (which is white-space: normal). Name is given a target
+ * WIDTH (not a max-width) so auto layout gives it a controlled, reference-like
+ * width and lets long names wrap within it — WITHOUT shrinking the overall
+ * table (a max-width freed space that auto layout reclaimed by squeezing the
+ * other columns, which regressed Symbol back to wrapping). No JS width
+ * measurement / colgroup is needed. Tradeoff (accepted): if the combined
+ * natural width of all non-Name columns ever exceeds the page, the table
+ * could overflow; with this board's short numeric/date values that doesn't
+ * happen at the chosen print font-size. */
 function printElement(block, state) {
   // Capture real computed styles from the LIVE (un-cloned) elements before
   // any cloning/stripping happens below. Baking these actual resolved
@@ -692,8 +694,7 @@ function printElement(block, state) {
     }
 
     /* Date/time controls sit side by side and size to their content (like
-       the live board), NOT stretched full-width. flex: 0 0 auto stops them
-       from growing to fill the row. */
+       the live board), NOT stretched full-width. */
     .dynamic-board .db-date-wrap,
     .dynamic-board .db-time-wrap {
       width: auto;
@@ -711,8 +712,7 @@ function printElement(block, state) {
 
     /* Date/time boxes — real border/radius/font captured from the live
        .db-date-display and .db-time-trigger. width:auto so each box hugs its
-       content (the live boxes are compact; in print they were stretching
-       wider than needed). */
+       content like the live version. */
     .dynamic-board .db-date-display,
     .dynamic-board .db-time-trigger {
       border: ${dateBorder};
@@ -740,8 +740,8 @@ function printElement(block, state) {
       /* table-layout: AUTO (not fixed). Combined with white-space: nowrap on
          every column except Name below, the browser sizes each non-Name
          column to exactly fit its longest single-line value (end-to-end, no
-         wrapping) and lets Name — the only wrapping column — absorb the
-         remaining width (capped by max-width). Enforces "only Name wraps". */
+         wrapping) and lets Name — the only wrapping column — take the width
+         given to it below. Enforces "only Name wraps". */
       table-layout: auto;
       /* Thin 1px outer border to match the reference PDF. Single border only,
          no outline layered on top. */
@@ -759,15 +759,20 @@ function printElement(block, state) {
       white-space: nowrap;
     }
 
-    /* Name is the ONLY column allowed to wrap. max-width caps how wide it can
-       grow so it wraps to ~2 lines at roughly the reference width, instead of
-       running the full leftover width edge-to-edge before wrapping. */
+    /* Name is the ONLY column allowed to wrap. It's given a target WIDTH
+       (not max-width): with table-layout: auto this asks the browser to make
+       Name ~this wide and wrap long names within it, while the other columns
+       keep their content widths. A max-width was tried and regressed the
+       layout — it freed space that auto layout reclaimed by shrinking the
+       other columns, making Symbol wrap again. Setting width on the Name cells
+       targets column 2 directly without that side effect. Adjust the 14rem
+       value to make Name wider/narrower. */
     .dynamic-board .db-td-name {
       white-space: normal;
       overflow-wrap: break-word;
       word-break: break-word;
       min-width: 0;
-      max-width: 16rem;
+      width: 14rem;
     }
     /* The Name header cell should also be allowed to wrap if needed. */
     .dynamic-board .db-table thead th.db-th-name {
