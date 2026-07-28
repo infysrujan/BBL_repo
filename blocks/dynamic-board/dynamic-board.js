@@ -150,10 +150,14 @@ function renderThead(thead, state) {
   thead.innerHTML = row1 + row2;
 
   requestAnimationFrame(() => {
-    const firstRow = thead.querySelector('tr:first-child');
+    // Measure a row1-only cell (colspan, not rowspan) for the true row1
+    // height — tr:first-child's own bounding rect also encloses the
+    // rowspan="2" cells (Symbol, Name, …), which visually extend into row2,
+    // so it overstates row1's actual height and throws off row2's offset.
+    const groupHeader = thead.querySelector('.db-th-group');
     const secondRow = thead.querySelector('tr:last-child');
-    if (firstRow && secondRow && firstRow !== secondRow) {
-      secondRow.style.top = `${firstRow.getBoundingClientRect().height}px`;
+    if (groupHeader && secondRow) {
+      secondRow.style.top = `${groupHeader.getBoundingClientRect().height}px`;
     }
   });
 }
