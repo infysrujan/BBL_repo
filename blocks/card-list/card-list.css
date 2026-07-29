@@ -108,11 +108,6 @@
   padding-bottom: 1.875rem;
 }
 
-.cards-list-description p:last-child:not(:only-child) {
-  font-size: var(--bbl-body-b3-size);
-  line-height: 1.3;
-}
-
 .cards-list {
   display: flex;
   flex-direction: column;
