@@ -37,6 +37,14 @@
   line-height: normal;
 }
 
+.locate-us-fragment .cards-list-image.cards-list-image-x-small img {
+  height: 100%;
+}
+
+.locate-us-fragment .cards-list-image.cards-list-image-x-small {
+  height: 100px;
+}
+
 .locate-us .cards-list-content {
   padding: 0;
   margin-block: 0 1.5625rem;
