@@ -17,6 +17,7 @@
   font-family: var(--bbl-font-family-primary);
   padding: var(--bbl-space-400) var(--bbl-space-200);
   background: var(--bbl-color-white);
+  scroll-margin-top: var(--header-scroll-offset);
 }
 
 /* ==========================================================================
@@ -215,9 +216,21 @@
   transition: background-color 0.2s ease;
 }
 
+/* Use the actual chevron SVG instead of the icomoon glyph — suppress the
+   shared icomoon ::before content ("icon-dropdown" is reused sitewide, so
+   this override is scoped to just this button). */
+.ccs-results-toggle-btn .icon-dropdown::before {
+  content: none;
+}
+
 .ccs-results-toggle-btn .icon-dropdown {
-  font-size: var(--bbl-font-size-b3);
-  color: var(--bbl-color-active-blue);
+  display: inline-block;
+  width: var(--bbl-space-300);
+  height: 0.875rem;
+  background-image: url('/icons/chevron-up-thin.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   transition: transform 0.2s ease;
   flex-shrink: 0;
 }

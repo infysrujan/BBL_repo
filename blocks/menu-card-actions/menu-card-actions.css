@@ -145,7 +145,7 @@
   white-space: nowrap;
   text-align: center;
   line-height: 2.75rem;
-  margin-top: calc(var(--bbl-space-250) - 0.9375rem);
+  margin-top: var(--bbl-space-250);
 }
 
 .menu-card-action-inner .global-dropdown {

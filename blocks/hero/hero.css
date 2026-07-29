@@ -332,9 +332,15 @@
   right: 0;
   box-sizing: border-box;
   margin: auto;
-  color: var(--bbl-color-white);
   text-align: center;
 }
+
+@media (width > 47.5rem) {
+  .hero-banner-content.content {
+    color: var(--bbl-color-white);
+  }
+}
+
 
 :is(.hero-banner-simple, .hero-banner-private-wealth-banking, .hero-banner-simple-logo-banner) .hero-banner-content.content {
   position: static;
@@ -857,7 +863,7 @@
   .hero-banner-hero-with-thumbnail-images .hero-banner-content-group .button-container .button-m {
     min-width: 9.6875rem;
   }
-  
+
   .hero-banner-video-controls {
     margin-bottom: 0;
   }

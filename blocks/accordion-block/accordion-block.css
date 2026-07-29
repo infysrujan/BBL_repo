@@ -149,6 +149,19 @@
   margin-bottom: 1.25rem;
 }
 
+.appear .accordion-block-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+  text-align: left;  
+  font-family: Muli-Light, sans-serif;
+  font-size: 3rem;
+  line-height: 2.875rem;
+  padding-bottom: 30px;
+}
+
+p:has(picture.rte-inline-image) {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 @media (width > 47.5rem) {
   .accordion-panel {
     padding: 1.25rem 1.875rem;

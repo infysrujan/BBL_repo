@@ -427,7 +427,7 @@ export default function decorate(block) {
 
   // ── Event listeners ───────────────────────────────────────────────────────
 
-  startOverButton.addEventListener('click', () => {
+  function resetFilterSelections() {
     block.querySelectorAll('input').forEach((input) => { input.checked = false; });
     block.querySelectorAll('.option-card.is-selected').forEach((card) => {
       card.classList.remove('is-selected');
@@ -440,6 +440,13 @@ export default function decorate(block) {
     // Notify the results block that filters have been cleared
     document.dispatchEvent(new CustomEvent('credit-card-filter-reset'));
     syncActionButtonState(block, filterGroups, startOverButton, applyButton);
+  }
+
+  startOverButton.addEventListener('click', resetFilterSelections);
+
+  // Bfcache restore (e.g. browser Back) reinstates the exact pre-navigation DOM,
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) resetFilterSelections();
   });
 
   applyButton.addEventListener('click', () => {
