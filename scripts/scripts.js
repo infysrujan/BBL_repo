@@ -140,7 +140,9 @@ export function createElementFromHTML(html, doc) {
 async function loadFonts() {
   await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`);
   try {
-    if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
+    if (!window.location.hostname.includes('localhost')) {
+      sessionStorage.setItem('fonts-loaded', 'true');
+    }
   } catch (e) {
     // do nothing
   }
@@ -273,7 +275,9 @@ function decorateOgImage() {
   const ogImagePath = getMetadata('ogImage') || getMetadata('ogimage');
   if (!ogImagePath) return;
 
-  const url = ogImagePath.startsWith('http') ? ogImagePath : `${window.location.origin}${ogImagePath}`;
+  const url = ogImagePath.startsWith('http')
+    ? ogImagePath
+    : `${window.location.origin}${ogImagePath}`;
 
   let meta = document.head.querySelector('meta[property="og:image"]');
   if (!meta) {
@@ -302,11 +306,14 @@ function stripImageOptimizationParams(url) {
  */
 function stripSrcsetOptimizationParams(srcset) {
   if (typeof srcset !== 'string') return srcset;
-  return srcset.split(',').map((entry) => {
-    const parts = entry.trim().split(/\s+/);
-    parts[0] = stripImageOptimizationParams(parts[0]);
-    return parts.join(' ');
-  }).join(', ');
+  return srcset
+    .split(',')
+    .map((entry) => {
+      const parts = entry.trim().split(/\s+/);
+      parts[0] = stripImageOptimizationParams(parts[0]);
+      return parts.join(' ');
+    })
+    .join(', ');
 }
 
 /**
@@ -389,6 +396,16 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  const disabledSections = new Set(
+    getMetadata('disable-sections', doc)
+      .split(',')
+      .map((section) => section.trim().toLowerCase())
+      .filter(Boolean),
+  );
+
+  if (!disabledSections.has('header')) {
+    loadHeader(doc.querySelector('header'));
+  }
   const main = doc.querySelector('main');
   await loadSections(main);
 
@@ -404,16 +421,6 @@ async function loadLazy(doc) {
   decorateRteInlineImages(main);
   decoratePictureLinks(main);
 
-  const disabledSections = new Set(
-    getMetadata('disable-sections', doc)
-      .split(',')
-      .map((section) => section.trim().toLowerCase())
-      .filter(Boolean),
-  );
-
-  if (!disabledSections.has('header')) {
-    loadHeader(doc.querySelector('header'));
-  }
   if (!disabledSections.has('footer')) {
     loadFooter(doc.querySelector('footer'));
   }
