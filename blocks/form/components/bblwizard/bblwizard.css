@@ -3,6 +3,12 @@
   --bbl-margin-block-14px: 0.875rem;
   --bbl-margin-block-15px: 0.9375rem;
   --bbl-margin-block-10px: 0.625rem;
+  --bbl-wizard-line-height-base-mobile: 1.1375rem;
+  --bbl-wizard-line-height-error: 1.125rem;
+  --bbl-wizard-line-height-radio-mobile: 2.0125rem;
+  --bbl-wizard-line-height-base-desktop: 1.3rem;
+  --bbl-wizard-line-height-radio-desktop: 2.3rem;
+  --bbl-wizard-line-height-plain-text-desktop: 1.375rem;
 }
 
 .field-bbl-wizard {
@@ -18,14 +24,14 @@
   box-sizing: border-box;
   margin: 0 auto;
   max-width: 31.25rem;
-  line-height: 18.2px;
+  line-height: var(--bbl-wizard-line-height-base-mobile);
   font-family: var(--bbl-font-family-medium);
 }
 
 main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper:not([class*="field-form-fragment"], .field-button-panel, [class*="field-form-width"], [class*="field-css-"], :has([class*="field-form-width"])) {
   padding-inline: var(--bbl-space-200);
   margin-top: var(--bbl-space-250);
-  line-height: 18.2px;
+  line-height: var(--bbl-wizard-line-height-base-mobile);
   max-width: 50rem;
   margin-inline: auto;
 }
@@ -66,8 +72,8 @@ main .section.form-container.wizard-forms .form form fieldset[class*="field-form
 
 main .section.form-container.wizard-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
   text-align: left;
-  font-size: 14px;
-  line-height: 18.2px;
+  font-size: var(--bbl-font-size-b1-mobile);
+  line-height: var(--bbl-wizard-line-height-base-mobile);
 }
 
 main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards, .horizontal) {
@@ -130,15 +136,15 @@ main .section.form-container.wizard-forms .form form .radio-group-wrapper.horizo
 
 main .section.form-container.wizard-forms .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
   gap: 0 var(--bbl-space-500);
-  line-height: 32.2px;
+  line-height: var(--bbl-wizard-line-height-radio-mobile);
   margin-bottom: var(--bbl-margin-block-15px);
   justify-content: unset;
 }
 
 main .section.form-container.wizard-forms .form form .field-invalid :is(.field-validation-error, .field-description) {
   margin: 0 0 0 var(--bbl-margin-block-14px);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: var(--bbl-font-size-b2-mobile);
+  line-height: var(--bbl-wizard-line-height-error);
   color: var(--bbl-color-error-red, #f00);
   align-self: flex-start;
 }
@@ -256,8 +262,8 @@ main .section.form-container.wizard-forms .form form :is(input:not([type='radio'
 
 main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) input {
   text-align: right;
-  font-size: 14px;
-  line-height: 18.2px;
+  font-size: var(--bbl-font-size-b1-mobile);
+  line-height: var(--bbl-wizard-line-height-base-mobile);
 }
 
 main .section.form-container.wizard-forms .form form :is(input:not([type='radio'], [type='checkbox']), textarea)::placeholder {
@@ -282,7 +288,7 @@ main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.fiel
 }
 
 main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards, .horizontal) .radio-wrapper label {
-  line-height: 32.2px;
+  line-height: var(--bbl-wizard-line-height-radio-mobile);
   font-size: var(--bbl-text-default-size);
   text-align: left;
 }
@@ -341,7 +347,7 @@ main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-w
 main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6) {
   position: relative;
   padding-bottom: var(--bbl-space-250);
-  margin-block: 30px;
+  margin-block: 1.875rem;
 }
 
 main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6)::after {
@@ -394,8 +400,8 @@ main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-w
 
 @media (width >= 64rem) {
   .bbl-wizard-steps {
-    font-size: 16px;
-    line-height: 20.8px;
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
   main .wizard-forms .form input {
@@ -416,20 +422,20 @@ main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-w
   }
 
   main .section.form-container.wizard-forms :is(.checkbox-group-wrapper, .radio-group-wrapper) > legend.field-label {
-    font-size: 16px;
-    line-height: 20.8px;
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
   main .section.form-container.wizard-forms .form form .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
-    line-height: 36.8px;
+    line-height: var(--bbl-wizard-line-height-radio-desktop);
   }
 
   main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards, .horizontal) .radio-wrapper label {
-    line-height: 36.8px;
+    line-height: var(--bbl-wizard-line-height-radio-desktop);
   }
 
   main .section.form-container.custom-forms .form form .plain-text-wrapper p:last-child p {
-    line-height: 22px;
+    line-height: var(--bbl-wizard-line-height-plain-text-desktop);
   }
 
   main .form-container.wizard-forms {
@@ -437,16 +443,16 @@ main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-w
   }
 
   main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper:not([class*="field-form-fragment"], .field-button-panel) {
-    line-height: 20.8px;
+    line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
   .bbl-wizard-step-title {
-    font-size: 16px;
+    font-size: var(--bbl-font-size-b1-desktop);
   }
 
   main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) input {
-    font-size: 16px;
-    line-height: 20.8px;
+    font-size: var(--bbl-font-size-b1-desktop);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
   main .section.form-container.wizard-forms .form form :is(fieldset[class*="field-form-width-740"], fieldset[class*="field-form-width-900"], fieldset[class*="field-form-width-1240"]) {
