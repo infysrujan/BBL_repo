@@ -17,6 +17,7 @@
   font-family: var(--bbl-font-family-primary);
   padding: var(--bbl-space-400) var(--bbl-space-200);
   background: var(--bbl-color-white);
+  scroll-margin-top: var(--header-scroll-offset);
 }
 
 /* ==========================================================================

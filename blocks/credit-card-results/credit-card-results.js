@@ -461,10 +461,10 @@ export default async function decorate(block) {
   await loadCSS(`${window.hlx.codeBasePath}/blocks/card-list/card-list.css`);
 
   const ph = await fetchPlaceholders();
-
   const isTH = lang === 'th';
   const labels = {
     noResultsFound: ph.cardNoResultsFound || (isTH ? 'ไม่พบผลลัพธ์' : 'No Results Found'),
+    cardResultTitle: ph.cardResultTitle || 'These cards might suit your needs',
     seeLess: ph.cardSeeLess || (isTH ? 'ดูน้อยลง' : 'See less'),
     seeMore: ph.cardSeeMore || (isTH ? 'ดูเพิ่มเติม' : 'See more'),
     learnMore: ph.cardLearnMore || (isTH ? 'เรียนรู้เพิ่มเติม' : 'Learn more'),
@@ -485,6 +485,22 @@ export default async function decorate(block) {
   let isExpanded = false;
   let activeCards = null; // null = full unfiltered list; Array = filtered result
   let currentBuildDots = null;
+
+  // ── Results title: default (authored) copy vs. filtered copy ────────────────
+  const resultsContainer = block.closest('.credit-card-results-container');
+  const titleEl = resultsContainer?.querySelector('h2');
+  const defaultTitleHtml = titleEl ? titleEl.textContent : '';
+
+  function updateTitle() {
+    if (!titleEl) return;
+    if (activeCards !== null) {
+      // A filter is applied — swap in the "suggested cards" title
+      titleEl.textContent = labels.cardResultTitle;
+    } else {
+      // No filter — restore the original authored heading
+      titleEl.textContent = defaultTitleHtml;
+    }
+  }
 
   // ── Restore compare button states after re-render ──────────────────────────
   function restoreCompareState(container) {
@@ -555,6 +571,7 @@ export default async function decorate(block) {
   function render() {
     renderCards(activeCards !== null ? activeCards : allCards);
     refreshToggle();
+    updateTitle();
   }
 
   render();
