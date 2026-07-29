@@ -186,6 +186,10 @@
   scroll-snap-align: start;
 }
 
+.cards-list:is(.scrollable, .carousel).center:not(:has(.cards-list-item + .cards-list-item)) {
+  justify-content: center;
+}
+
 @media (width <= 47.5rem) {
   .cards-list:is(.scrollable, .carousel).center .cards-list-item {
     scroll-snap-align: center;
@@ -515,6 +519,7 @@
 
 .cards-list-button + .cards-list-date {
   padding-top: 0.625rem;
+  color: var(--bbl-color-grey-85);
 }
 
 .cards-list-button .global-dropdown {
