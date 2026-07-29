@@ -301,9 +301,9 @@ function isTopPromotion(value) {
 
 export function sortCards(cards) {
   return [...cards].sort((a, b) => {
-    const aTop = isTopPromotion(a.topPromotion) ? 1 : 0;
-    const bTop = isTopPromotion(b.topPromotion) ? 1 : 0;
-    if (bTop !== aTop) return bTop - aTop;
+    const aCat = isTopPromotion(a.topCategory) ? 1 : 0;
+    const bCat = isTopPromotion(b.topCategory) ? 1 : 0;
+    if (bCat !== aCat) return bCat - aCat;
     const aStart = a.promotionStartDate ? new Date(a.promotionStartDate).getTime() : 0;
     const bStart = b.promotionStartDate ? new Date(b.promotionStartDate).getTime() : 0;
     if (bStart !== aStart) return bStart - aStart;
