@@ -1,5 +1,6 @@
 /* ── Wrapper ─────────────────────────────────────────────────────────────── */
 .carousel-video-wrapper {
+  box-sizing: border-box;
   max-width: 56.25rem;
   width: 100%;
   margin: auto;
@@ -13,8 +14,8 @@
 /* ── Main player ─────────────────────────────────────────────────────────── */
 .carousel-video .cv-main-player {
   position: relative;
-  width: 24.625rem;
-  height: 12.6875rem;
+  width: 100%;
+  height: calc((100vw - 40px) / 1.8);
   background: var(--bbl-color-black);
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
