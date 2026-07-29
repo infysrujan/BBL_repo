@@ -922,7 +922,7 @@ function printElement(block, state) {
   </html>
   `;
   printWindow.document.write(printHtml);
-  //printWindow.document.close();
+  printWindow.document.close();
 
   // window.open('') leaves the popup's location at about:blank, which is what
   // Chrome's print header/footer shows — replace it with the real page URL
