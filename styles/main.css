@@ -251,10 +251,6 @@ main img {
     margin: 1.875rem 0;
 }
 
-.section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
-    margin: 1.875rem 0 0;
-}
-
 .section.underline-image .default-content-wrapper > p > picture,
 .section.underline-image .default-content-wrapper > p > img {
     position: relative;
