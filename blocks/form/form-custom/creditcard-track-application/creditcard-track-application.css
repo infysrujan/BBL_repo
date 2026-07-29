@@ -183,7 +183,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     & .plain-text-wrapper p {
       color: var(--bbl-color-blue-90);
       font-weight: 700;
-      font-size: 1.125rem;
+      font-size: var(--bbl-font-size-h2-mobile);
       line-height: 1.5625rem;
       text-align: center;
     }
@@ -771,6 +771,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       & > .field-wrapper.cc-panel-item-form-cover {
         margin-top: var(--bbl-space-150);
       }
+    }
+    
+    & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper .plain-text-wrapper p {
+        font-size: var(--bbl-font-size-h4-mobile);
     }
   }
 
