@@ -380,19 +380,6 @@ function buildAccordionPrintDocument(block) {
       <style>${printCss}</style>
     </head>
     <body class="appear">
-      <header class="header-wrapper">
-        <div class="header block" data-block-status="loaded">
-          <div class="header-content">
-            <div class="main-nav-desktop">
-              <div class="brand-logo block">
-                <div class="brand-logo-container">
-                  ${brandLogo}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
       <main>
         <div class="section accordion-block-container">
           ${bodyHtml}
