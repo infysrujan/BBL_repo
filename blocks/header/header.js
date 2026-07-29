@@ -333,9 +333,10 @@ function setupDesktopMegamenuBehavior(
     });
 
     navTrigger.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        navTrigger.setAttribute('aria-expanded', 'false');
-        megamenu.setAttribute('aria-hidden', 'true');
+      if (e.key === 'Escape' && navBlock.classList.contains('is-active')) {
+        closeMegamenu();
+        slideUp(megamenu);
+        window.scrollTo({ top: 0 });
         navTrigger.focus();
       }
     });
