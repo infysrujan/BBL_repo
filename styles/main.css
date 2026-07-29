@@ -116,6 +116,10 @@ blockquote {
     margin-bottom: 0.25em;
 }
 
+:is(dir, menu, ol, ul) ul {
+    list-style-type: disc;
+}
+
 code,
 pre {
     font-size: var(--bbl-text-body-small-size);
@@ -362,6 +366,11 @@ main img {
     padding-inline: var(--bbl-space-section-xs);
     margin: 0 auto;
     box-sizing: border-box;
+}
+
+.section[class*="bg-"] + .section[class*="bg-"] {
+    margin-top: -1px;
+    padding-top: 1px; /* keep visual spacing the same */
 }
 
 @media (width > 47.5rem) {

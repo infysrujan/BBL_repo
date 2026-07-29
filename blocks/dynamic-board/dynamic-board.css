@@ -572,7 +572,7 @@
 
 .dynamic-board .db-filter-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   gap: var(--bbl-space-150);
   margin-top: auto;
   padding-top: var(--bbl-space-100);
@@ -630,7 +630,7 @@
 }
 
 .dynamic-board .db-table {
-  min-width: 56rem;
+  min-width: 77.5rem;
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -641,18 +641,17 @@
 
 .dynamic-board .db-table thead {
   background: var(--bbl-color-blue-9);
-  position: sticky;
 }
 
 .dynamic-board .db-table thead th {
-  padding: 0 1.875rem 0 0.625rem;
+  padding: 0.375rem 0.625rem;
   font-size: var(--bbl-font-size-b1-mobile);
   font-weight: 700;
   color: var(--bbl-color-black);
   text-align: center;
   border-bottom: var(--bbl-space-025) solid var(--bbl-color-grey-20);
   border-right: 0.0625rem solid var(--bbl-color-grey-20);
-  white-space: nowrap;
+  white-space: normal;
   line-height: 1.4;
   vertical-align: middle;
   position: sticky;
@@ -674,7 +673,9 @@
   border-right: none;
 }
 
-
+.dynamic-board .db-table thead tr:first-child th {
+  top: 0;
+}
 
 .dynamic-board .db-table thead tr:last-child th {
   top: 3.125rem;
@@ -748,8 +749,38 @@
 }
 
 .dynamic-board .db-td-name {
+  position: relative;
   min-width: 12rem;
   line-height: 1.4;
+}
+
+.dynamic-board .db-td-name[data-title]::after {
+  content: attr(data-title);
+  position: absolute;
+  bottom: 0.1%;
+  left: 0;
+  width: 18.75rem;
+  padding: 0.3125rem 0.9375rem 0.5rem;
+  color: var(--bbl-color-white);
+  line-height: 1.5;
+  white-space: pre-line;
+  border-radius: 0.625rem;
+  font-weight: 100;
+  background-color: #233a58;
+  opacity: 0;
+  z-index: 11;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.dynamic-board .db-td-name[data-title]:hover::after {
+  opacity: 1;
+  transition: all 0.1s ease 0.5s;
+  visibility: visible;
+}
+
+.dynamic-board .db-td-name-text {
+  display: block;
 }
 
 .dynamic-board .db-td-num {
@@ -914,6 +945,16 @@
 
   .dynamic-board .db-controls-right button {
     max-height: fit-content;
+  }
+
+  .dynamic-board .db-filter-actions {
+    flex-direction: row-reverse;
+  }
+
+  .dynamic-board .db-filter-apply,
+  .dynamic-board .db-filter-reset {
+    flex: 1;
+    width: auto;
   }
 
   .dynamic-board .db-remarks-content {

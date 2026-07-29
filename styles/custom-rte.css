@@ -38,6 +38,11 @@ picture.rte-inline-image img {
   margin: 0;
 }
 
+.default-content-wrapper li > .has-inline-icon + p {
+  display: inline;
+  margin: 0;
+}
+
 .default-content-wrapper li:has(> p:has(picture.rte-inline-image) + p:has(picture.rte-inline-image)) > p:has(picture.rte-inline-image) {
   display: inline-block;
   vertical-align: middle;

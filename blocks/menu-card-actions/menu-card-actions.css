@@ -145,7 +145,7 @@
   white-space: nowrap;
   text-align: center;
   line-height: 2.75rem;
-  margin-top: calc(var(--bbl-space-250) - 0.9375rem);
+  margin-top: var(--bbl-space-250);
 }
 
 .menu-card-action-inner .global-dropdown {
@@ -179,6 +179,10 @@
   font: var(--bbl-font-weight-regular) var(--bbl-font-size-b2)/1.1244rem var(--bbl-font-family-regular);
   flex-grow: 1;
   margin: 0;
+}
+
+.menu-card-actions-container.center-title p {
+  text-align: center;
 }
 
 .menu-card-action-title.has-description {
