@@ -157,6 +157,11 @@
   padding-bottom: 30px;
 }
 
+p:has(picture.rte-inline-image) {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 @media (width > 47.5rem) {
   .accordion-panel {
     padding: 1.25rem 1.875rem;
