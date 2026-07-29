@@ -368,6 +368,11 @@ main img {
     box-sizing: border-box;
 }
 
+.section[class*="bg-"] + .section[class*="bg-"] {
+    margin-top: -1px;
+    padding-top: 1px; /* keep visual spacing the same */
+}
+
 @media (width > 47.5rem) {
     .section.full-bleed-special {
         padding-inline: var(--bbl-space-section-sm);

@@ -186,7 +186,7 @@ body.private
 
   :is(.wealth, .private) :is(.cross-banner-title, .cross-banner-description) {
     flex: 0 0 38.86%;
-    max-width: 38.86%;
+    max-width: 30.86%;
   }
 }
 
