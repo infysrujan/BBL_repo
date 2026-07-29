@@ -152,7 +152,9 @@ function parseAuthoredMeta(rows, placeholders) {
   const modalDescRow = rows[2];
   const modalDesc = modalDescRow?.firstElementChild?.textContent?.trim() || '';
   const resultsPageUrl = rows[3]?.querySelector('a')?.href || window.location.pathname;
-  return { ctaLabel, modalTitle, modalDesc, resultsPageUrl };
+  return {
+    ctaLabel, modalTitle, modalDesc, resultsPageUrl,
+  };
 }
 
 // Remove orphan AEM UE node for modalDescription that appears outside the block in the DOM
@@ -268,7 +270,9 @@ export default async function decorate(block) {
   const [configs, placeholders] = await Promise.all([fetchConfigs(), fetchPlaceholders()]);
   const searchParamsUrl = configs.reportsSearchParamsUrl || '';
 
-  const { ctaLabel, modalTitle, modalDesc, resultsPageUrl } = parseAuthoredMeta(rows, placeholders);
+  const {
+    ctaLabel, modalTitle, modalDesc, resultsPageUrl,
+  } = parseAuthoredMeta(rows, placeholders);
   removeOrphanUeNode();
   const { typeOptions, yearOptions } = parseAuthoredOptions(rows);
 

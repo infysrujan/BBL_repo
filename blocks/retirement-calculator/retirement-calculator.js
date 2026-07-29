@@ -27,8 +27,8 @@ function getString(labels, key, fallback = '') {
   return labels[key] || fallback;
 }
 
-function getInflationText(labels, data){
-    return getString(labels, 'stepsStep2InflationNote', 'Including an inflation rate of {inflationRate}% p.a., the return on investment after retirement is assumed to be {afterRetirementRate}% p.a.')
+function getInflationText(labels, data) {
+  return getString(labels, 'stepsStep2InflationNote', 'Including an inflation rate of {inflationRate}% p.a., the return on investment after retirement is assumed to be {afterRetirementRate}% p.a.')
     .replace('{inflationRate}%', `${data.inflationRate}%`)
     .replace('{afterRetirementRate}%', `${data.afterRetirementRate}%`);
 }
