@@ -51,6 +51,7 @@
   font-weight: var(--bbl-text-sub-title-weight);
   font-size: var(--bbl-text-sub-title-size);
   line-height: var(--bbl-text-sub-title-line-height);
+
   /* color: var(--bbl-color-white); */
   color: var(--bbl-color-black);
   margin-top: 1.875rem;
