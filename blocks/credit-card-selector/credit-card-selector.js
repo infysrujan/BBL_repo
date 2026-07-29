@@ -260,6 +260,7 @@ export default function decorate(block) {
     });
     existingUI.remove();
   }
+  block.parentElement?.querySelector(':scope > .collapse-toggle-bar')?.remove();
 
   // Un-hide authored rows that were hidden by a previous decoration pass.
   [...block.children].forEach((row) => { row.classList.remove('ccs-source-row'); });
@@ -320,10 +321,10 @@ export default function decorate(block) {
   selectorContent.className = 'card-selector-content';
 
   const primaryFilterColumn = document.createElement('div');
-  primaryFilterColumn.className = 'filter-column filter-column--primary';
+  primaryFilterColumn.className = 'filter-column filter-column-primary';
 
   const lifestyleFilterColumn = document.createElement('div');
-  lifestyleFilterColumn.className = 'filter-column filter-column--lifestyle';
+  lifestyleFilterColumn.className = 'filter-column filter-column-lifestyle';
 
   filterGroups.forEach((group, index) => {
     const groupElement = buildFilterGroup(group, index);
@@ -372,12 +373,16 @@ export default function decorate(block) {
   selectorContent.appendChild(primaryFilterColumn);
   selectorContent.appendChild(lifestyleFilterColumn);
 
-  // ── Collapsible wrapper — encloses the content grid and the toggle bar ─────
+  // ── Collapsible wrapper — encloses the content grid ─────────────────────
   const collapsibleWrapper = document.createElement('div');
   collapsibleWrapper.className = 'card-selector-collapsible';
   collapsibleWrapper.appendChild(selectorContent);
 
-  // Toggle bar: always visible, sits directly below the content grid
+  block.appendChild(collapsibleWrapper);
+
+  // Toggle bar: appended to the full-width section wrapper (not the centered
+  // block) so the floating chevron's positioning context spans the section
+  // edge, matching production, rather than the narrower centered filter box.
   const toggleBar = document.createElement('div');
   toggleBar.className = 'collapse-toggle-bar';
 
@@ -387,9 +392,7 @@ export default function decorate(block) {
   collapseToggleButton.setAttribute('aria-expanded', 'true');
   collapseToggleButton.setAttribute('aria-label', 'Toggle card selector');
   toggleBar.appendChild(collapseToggleButton);
-  collapsibleWrapper.appendChild(toggleBar);
-
-  block.appendChild(collapsibleWrapper);
+  block.parentElement.appendChild(toggleBar);
 
   // ── Action buttons (inside lifestyle column, pushed to bottom) ────────────
   const selectorActions = document.createElement('div');
@@ -496,6 +499,7 @@ export default function decorate(block) {
   // Collapse / expand the content grid
   collapseToggleButton.addEventListener('click', () => {
     const isNowCollapsed = collapsibleWrapper.classList.toggle('is-collapsed');
+    toggleBar.classList.toggle('is-collapsed', isNowCollapsed);
     collapseToggleButton.setAttribute('aria-expanded', String(!isNowCollapsed));
   });
 }

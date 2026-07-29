@@ -1,4 +1,5 @@
 import { fetchConfigs } from './config.js';
+import { isAutoBlockingAttrSkipped } from './utils/dom.js';
 
 import {
   getMetadata,
@@ -327,8 +328,10 @@ async function loadBreadcrumb(doc) {
 
 function decorateButtonsV1(element) {
   element.querySelectorAll('a').forEach((a) => {
-    // Skip adding title for menu-banner links to prevent unwanted tooltips
-    if (!a.closest('.menu-banner')) {
+    // Skip adding title for menu-banner links
+    // or if title is explicitly excluded via data-skip-attr-auto-blocking
+    const shouldSkipTitle = a.closest('.menu-banner') || isAutoBlockingAttrSkipped(a, 'title');
+    if (!shouldSkipTitle) {
       a.title = a.title || a.textContent;
     }
     if (a.href !== a.textContent) {

@@ -229,7 +229,7 @@ export default async function decorate(block) {
             </div>
           </div>
           <div class="search-modal-load-more" style="display:none;">
-            <button class="search-modal-load-more-button secondary">${escapeHtml(config.loadMoreLabel)}</button>
+            <button class="search-modal-load-more-button button-m secondary">${escapeHtml(config.loadMoreLabel)}</button>
           </div>
         </div>
         <div class="search-modal-container search-modal-message"></div>

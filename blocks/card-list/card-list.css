@@ -59,6 +59,22 @@
   font-weight: var(--bbl-text-default-weight);
 }
 
+.cards-list-date p {
+  font-size: var(--bbl-body-b1-size);
+  line-height: 1.203rem;
+  color: var(--bbl-color-grey-85);
+  margin: 0;
+}
+
+.cards-list-promo-tag p {
+  margin: 0;
+}
+
+.cards-list-description p:last-child {
+  font-size: var(--bbl-body-b3-size);
+  line-height: 1.3;
+}
+
 .cards-list-description :is(p, li) a {
   color: inherit;
 }
@@ -84,17 +100,6 @@
 
 .cards-list-description :is(p, li) a[class]::after {
   display: none;
-}
-
-.cards-list-promo-tag p {
-  margin: 0;
-}
-
-.cards-list-date p {
-  font-size: var(--bbl-body-b1-size);
-  line-height: 1.203rem;
-  color: var(--bbl-color-grey-85);
-  margin: 0;
 }
 
 .card-list-container .default-content-wrapper p {
@@ -128,13 +133,11 @@
 }
 
 .cards-list-button .cards-list-remark {
-    padding-bottom: 15px;
- 
-    p {
-        font-size: 0.8rem;
-        line-height: 1.3;
-        font-weight: var(--bbl-font-weight-regular);
-    }
+  p {
+    font-size: 0.8rem;
+    line-height: 1.3;
+    font-weight: var(--bbl-font-weight-regular);
+  }
 }
 
 .cards-list:is(.scrollable, .carousel) {
@@ -181,6 +184,12 @@
 .cards-list:is(.scrollable, .carousel) .cards-list-item {
   flex: 0 0 16.875rem;
   scroll-snap-align: start;
+}
+
+@media (width <= 47.5rem) {
+  .cards-list:is(.scrollable, .carousel).center .cards-list-item {
+    scroll-snap-align: center;
+  }
 }
 
 .cards-list:is(.carousel) .cards-list-item {
@@ -230,6 +239,8 @@
   height: 5rem;
   max-height: 100%;
   margin: 0.9375rem;
+  display: flex;
+  justify-content: center;
 }
 
 .card-list-modal-media img {
@@ -295,6 +306,10 @@
   max-height: 25.625rem;
 }
 
+.cards-list-image.cards-list-image-full img {
+  object-fit: contain;
+}
+
 .cards-list-image.cards-list-image-default {
   max-height: 100%;
   height: calc(100vw);
@@ -320,7 +335,7 @@
   padding: var(--bbl-space-250);
 }
 
-.cards-list-inner:not(:has(.cards-list-date)) .cards-list-content {
+.cards-list-inner:not(:has(.cards-list-date, .cards-list-downloads)) .cards-list-content {
   flex: 1;
 }
 

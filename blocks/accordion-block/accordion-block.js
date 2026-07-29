@@ -263,35 +263,31 @@ function buildAccordionPrintDocument(block) {
   });
 
   const wrapper = block.closest('.accordion-block-wrapper');
-  const container = wrapper?.parentElement?.classList.contains('accordion-block-container')
+  const parentSection = wrapper?.parentElement?.classList.contains('section')
     ? wrapper.parentElement
     : null;
-  let wrapperIsDirectChild = false;
+  const hasOwnSiblings = Boolean(
+    parentSection && [...parentSection.children].some((child) => child !== wrapper),
+  );
+
   /** @type {string|null} */
   let prependHtml = null;
-  if (container) {
-    // includes title / text within the same section of the accordion block
-    wrapperIsDirectChild = Boolean(
-      container && [...container.children].includes(wrapper),
-    );
-  } else {
-    // includes title, text from the previous section if the accordion block is within tab section
-    const section = block.closest('.section');
-    if (section?.classList.contains('tabs-container')) {
-      const prevSection = section.previousElementSibling;
-      if (prevSection?.classList.contains('section')) {
-        const contentWrapper = prevSection.querySelector(':scope > .default-content-wrapper:first-child');
-        if (contentWrapper) {
-          prependHtml = contentWrapper.cloneNode(true).outerHTML;
-        }
+  if (parentSection && !hasOwnSiblings) {
+    // title / text lives in the section immediately before the accordion's own section
+    const prevSection = parentSection.previousElementSibling;
+    if (prevSection?.classList.contains('section')) {
+      const contentWrapper = prevSection.querySelector(':scope > .default-content-wrapper:first-child');
+      if (contentWrapper) {
+        prependHtml = contentWrapper.cloneNode(true).outerHTML;
       }
     }
   }
 
   let bodyHtml;
-  if (wrapperIsDirectChild) {
+  if (parentSection && hasOwnSiblings) {
+    // title / text sits alongside the accordion block in the same section
     const shell = document.createElement('div');
-    [...container.children].forEach((child) => {
+    [...parentSection.children].forEach((child) => {
       if (child === wrapper) {
         shell.appendChild(clone);
       } else {
@@ -347,7 +343,19 @@ function buildAccordionPrintDocument(block) {
     .accordion-header { display: none; }
     .accordion-heading { display: none; }
     .accordion-block-toolbar { display: none; }
-    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: center; margin: 0 auto; }
+    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+      text-align: center;
+      margin: 0 auto;
+      font-family: 'Muli-Light', sans-serif;
+      font-size: 3rem;
+      line-height: 2.875rem;
+      padding-bottom: 30px;
+    }
+    .accordion-block-container > .default-content-wrapper p {
+      font-family: 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif;
+      font-size: 1rem;
+      line-height: 1.375rem;
+    }
     .accordion-block-container > .default-content-wrapper { margin-bottom: 1.875rem; }
     .download-section .default-content-wrapper { text-align:center;}
     .download-section .default-content-wrapper h4 { font-size: 1.125rem;}
@@ -372,19 +380,6 @@ function buildAccordionPrintDocument(block) {
       <style>${printCss}</style>
     </head>
     <body class="appear">
-      <header class="header-wrapper">
-        <div class="header block" data-block-status="loaded">
-          <div class="header-content">
-            <div class="main-nav-desktop">
-              <div class="brand-logo block">
-                <div class="brand-logo-container">
-                  ${brandLogo}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
       <main>
         <div class="section accordion-block-container">
           ${bodyHtml}

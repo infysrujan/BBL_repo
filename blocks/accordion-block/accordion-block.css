@@ -123,6 +123,10 @@
   opacity: 0.5;
 }
 
+.accordion-panel .default-content-wrapper {
+  /* margin-bottom: var(--bbl-space-250); */
+}
+
 .accordion-panel-loaded {
   opacity: 1;
 }
@@ -143,6 +147,14 @@
 
 .accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper) {
   margin-bottom: 1.25rem;
+}
+
+.appear .accordion-block-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+  text-align: left;  
+  font-family: Muli-Light, sans-serif;
+  font-size: 3rem;
+  line-height: 2.875rem;
+  padding-bottom: 30px;
 }
 
 @media (width > 47.5rem) {

@@ -51,11 +51,12 @@
   font-weight: var(--bbl-text-sub-title-weight);
   font-size: var(--bbl-text-sub-title-size);
   line-height: var(--bbl-text-sub-title-line-height);
+
+  /* color: var(--bbl-color-white); */
   color: var(--bbl-color-black);
   margin-top: 1.875rem;
   padding-bottom: 0.9375rem;
   margin-bottom: 0.9375rem;
-  text-transform: uppercase;
   letter-spacing: 0.05rem;
   position: relative;
 }
@@ -81,9 +82,14 @@
 }
 
 .bangkok-bankm-card .menu-banner .sub-title-medium,
-.bangkok-bankm-card .menu-banner .title-1 {
+.bangkok-bankm-card .menu-banner .title-1,
+.bangkok-bankm-card .menu-banner .title-1 :is(h1, h2, h3, h4, h5, h6) {
   color: var(--bbl-color-white);
 }
+
+/* .menu-banner :is(.title-1) :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--bbl-color-white);
+} */
 
 .menu-banner .list-thumb-square {
   list-style: none;

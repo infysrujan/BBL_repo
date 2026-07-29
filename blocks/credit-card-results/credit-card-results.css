@@ -17,6 +17,7 @@
   font-family: var(--bbl-font-family-primary);
   padding: var(--bbl-space-400) var(--bbl-space-200);
   background: var(--bbl-color-white);
+  scroll-margin-top: var(--header-scroll-offset);
 }
 
 /* ==========================================================================
@@ -27,7 +28,9 @@
 /* ── Image area — contain the full credit card art ───────────────────────── */
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small {
-  height: 10.5rem;
+  min-height: 8.9375rem;
+  max-height: 10.9375rem; 
+  height: calc(100vw * .12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,7 +43,7 @@
   max-width: 14.4156rem;
   height: 9.6875rem;
   min-width: unset;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 /* ── Thai card name above the EN heading ─────────────────────────────────── */
@@ -127,6 +130,7 @@
   margin-top: var(--bbl-space-150);
   width: auto;
   height: auto;
+  flex-wrap: wrap;
 }
 
 .ccs-scroll-dot {
@@ -212,9 +216,21 @@
   transition: background-color 0.2s ease;
 }
 
+/* Use the actual chevron SVG instead of the icomoon glyph — suppress the
+   shared icomoon ::before content ("icon-dropdown" is reused sitewide, so
+   this override is scoped to just this button). */
+.ccs-results-toggle-btn .icon-dropdown::before {
+  content: none;
+}
+
 .ccs-results-toggle-btn .icon-dropdown {
-  font-size: var(--bbl-font-size-b3);
-  color: var(--bbl-color-active-blue);
+  display: inline-block;
+  width: var(--bbl-space-300);
+  height: 0.875rem;
+  background-image: url('/icons/chevron-up-thin.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   transition: transform 0.2s ease;
   flex-shrink: 0;
 }
