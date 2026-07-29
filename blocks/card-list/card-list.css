@@ -277,8 +277,12 @@
 .cards-list-image:is(.cards-list-image-card, .cards-list-image-full, .cards-list-image-default) img {
   height: 100%;
   width: 100%;
-  object-fit: cover;
+  object-fit: initial;
   display: block;
+}
+
+.cards-list-image.cards-list-image-default img {
+  object-fit: cover;
 }
 
 .cards-list-image.cards-list-image-card {
@@ -318,10 +322,6 @@
 
 .cards-list-image.cards-list-image-x-small img:hover {
   transform: translate3d(0, 0, 0);
-}
-
-.cards-list:is(.scrollable, .stacked) .cards-list-image.cards-list-image-full img {
-  min-height: 8.4375rem;
 }
 
 .cards-list-content {
