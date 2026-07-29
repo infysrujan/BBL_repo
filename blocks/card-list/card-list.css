@@ -289,16 +289,16 @@
 
 .cards-list-image.cards-list-image-full {
   max-height: 25.625rem;
-  min-height: 150px;
+  min-height: 9.375rem;
 }
 
 .cards-list:is(.scrollable, .carousel) .cards-list-image.cards-list-image-full {
   max-height: 10.3125rem;
-  min-height: 150px;
+  min-height: 9.375rem;
 }
 
 .cards-list-image.cards-list-image-full img {
-  object-fit: contain;
+  object-fit: initial;
 }
 
 .cards-list-image.cards-list-image-default {
