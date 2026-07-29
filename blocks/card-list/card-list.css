@@ -289,10 +289,12 @@
 
 .cards-list-image.cards-list-image-full {
   max-height: 25.625rem;
+  min-height: 150px;
 }
 
 .cards-list:is(.scrollable, .carousel) .cards-list-image.cards-list-image-full {
   max-height: 10.3125rem;
+  min-height: 150px;
 }
 
 .cards-list-image.cards-list-image-full img {
@@ -316,6 +318,10 @@
 
 .cards-list-image.cards-list-image-x-small img:hover {
   transform: translate3d(0, 0, 0);
+}
+
+.cards-list:is(.scrollable, .stacked) .cards-list-image.cards-list-image-full img {
+  min-height: 8.4375rem;
 }
 
 .cards-list-content {
@@ -576,6 +582,7 @@
 
   .cards-list-image.cards-list-image-card {
     height: calc(100vw / 5);
+    min-height: 8.4375rem;
   }
 
   .cards-list-image.cards-list-image-full {
@@ -634,6 +641,7 @@
 
   .cards-list:is(.scrollable, .carousel) .cards-list-image.cards-list-image-full {
     max-height: 9.5625rem;
+    min-height: 110px;
   }
 }
 
@@ -781,12 +789,14 @@
   }
 
   .cards-list-image.cards-list-image-card {
+    min-height: calc(50px + 30 * ((100vw - 320px) / 1600));
     max-height: calc(8.75rem + 25 * ((100vw - 20rem) / 1600));
     height: calc(15.625rem + 60 * ((100vw - 20rem) / 1600));
   }
 
   .cards-list-image.cards-list-image-full {
     height: calc(5.625rem + 75 * ((100vw - 20rem) / 1600));
+    min-height: calc(100px + 50 * ((100vw - 320px) / 1600));
   }
 
   .cards-list-image.cards-list-image-default {
@@ -827,5 +837,9 @@
   .card-list-modal-last-title+.card-list-modal-text {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.3rem;
+  }
+
+  .cards-list:is(.scrollable, .carousel) .cards-list-image.cards-list-image-full {
+    min-height: calc(100px + 50 * ((100vw - 320px) / 1600));
   }
 }
