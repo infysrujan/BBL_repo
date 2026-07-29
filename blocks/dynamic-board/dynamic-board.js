@@ -710,7 +710,7 @@ function printElement(block, state) {
        .db-cal-label, so it matches instead of being missing/unstyled. */
     .dynamic-board .db-cal-label {
       font-weight: ${calLabelWeight};
-      font-size: ${calLabelSize};
+      font-size: 12px;
       color: ${calLabelColor};
       margin-bottom: 0.375rem;
     }
@@ -722,7 +722,7 @@ function printElement(block, state) {
     .dynamic-board .db-time-trigger {
       border: ${dateBorder};
       border-radius: ${dateRadius};
-      font-size: ${dateFontSize};
+      font-size: 12px;
       color: ${dateColor};
       height: 2rem;
       box-sizing: border-box;
