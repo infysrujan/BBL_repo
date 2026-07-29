@@ -221,6 +221,7 @@
 
   .carousel-dotted.show-arrows-dots .with-default-image.carousel-dotted-item.is-active,
   .carousel-dotted.show-arrows-dots.mixed-image-slides .with-default-image.carousel-dotted-item {
+    box-sizing: border-box;
     border: 0.063rem solid var(--bbl-color-black-alpha-10);
     box-shadow: 0 0 0.625rem transparent;
     border-radius: var(--bbl-rounded-100);
