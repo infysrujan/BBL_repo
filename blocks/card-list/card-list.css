@@ -70,7 +70,7 @@
   margin: 0;
 }
 
-.cards-list-description p:last-child {
+.cards-list-description p:last-child:not(:only-child) {
   font-size: var(--bbl-body-b3-size);
   line-height: 1.3;
 }
