@@ -263,40 +263,54 @@ function buildAccordionPrintDocument(block) {
   });
 
   const wrapper = block.closest('.accordion-block-wrapper');
-  const parentSection = wrapper?.parentElement?.classList.contains('section')
+  const container = wrapper?.parentElement?.classList.contains('accordion-block-container')
     ? wrapper.parentElement
     : null;
-  const hasOwnSiblings = Boolean(
-    parentSection && [...parentSection.children].some((child) => child !== wrapper),
-  );
-
+  let wrapperIsDirectChild = false;
   /** @type {string|null} */
   let prependHtml = null;
-  if (parentSection && !hasOwnSiblings) {
-    // title / text lives in the section immediately before the accordion's own section
-    const prevSection = parentSection.previousElementSibling;
-    if (prevSection?.classList.contains('section')) {
-      const contentWrapper = prevSection.querySelector(':scope > .default-content-wrapper:first-child');
-      if (contentWrapper) {
-        prependHtml = contentWrapper.cloneNode(true).outerHTML;
+  if (container) {
+    // includes title / text within the same section of the accordion block
+    wrapperIsDirectChild = Boolean(
+      container && [...container.children].includes(wrapper),
+    );
+  } else {
+    // includes title, text from the previous section if the accordion block is within tab section
+    const section = block.closest('.section');
+    if (section?.classList.contains('tabs-container')) {
+      const prevSection = section.previousElementSibling;
+      if (prevSection?.classList.contains('section')) {
+        const contentWrapper = prevSection.querySelector(':scope > .default-content-wrapper:first-child');
+        if (contentWrapper) {
+          prependHtml = contentWrapper.cloneNode(true).outerHTML;
+        }
       }
     }
   }
 
   let bodyHtml;
-  if (parentSection && hasOwnSiblings) {
-    // title / text sits alongside the accordion block in the same section
+  const promoBlock = document.querySelector('.promotional-details');
+  if (wrapperIsDirectChild) {
     const shell = document.createElement('div');
-    [...parentSection.children].forEach((child) => {
+    if (promoBlock) {
+      const promoClone = promoBlock.cloneNode(true);
+      promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
+      shell.appendChild(promoClone);
+    }
+    [...container.children].forEach((child) => {
       if (child === wrapper) {
         shell.appendChild(clone);
-      } else {
+      } else if (child.classList.contains('default-content-wrapper')) {
         shell.appendChild(child.cloneNode(true));
       }
     });
     bodyHtml = shell.innerHTML;
   } else if (prependHtml) {
     bodyHtml = `${prependHtml}${clone.outerHTML}`;
+  } else if (promoBlock) {
+    const promoClone = promoBlock.cloneNode(true);
+    promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
+    bodyHtml = `${promoClone.outerHTML}${clone.outerHTML}`;
   } else {
     bodyHtml = clone.outerHTML;
   }
@@ -343,19 +357,7 @@ function buildAccordionPrintDocument(block) {
     .accordion-header { display: none; }
     .accordion-heading { display: none; }
     .accordion-block-toolbar { display: none; }
-    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-      text-align: center;
-      margin: 0 auto;
-      font-family: 'Muli-Light', sans-serif;
-      font-size: 3rem;
-      line-height: 2.875rem;
-      padding-bottom: 30px;
-    }
-    .accordion-block-container > .default-content-wrapper p {
-      font-family: 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif;
-      font-size: 1rem;
-      line-height: 1.375rem;
-    }
+    .accordion-block-container > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) { text-align: center; margin: 0 auto; }
     .accordion-block-container > .default-content-wrapper { margin-bottom: 1.875rem; }
     .download-section .default-content-wrapper { text-align:center;}
     .download-section .default-content-wrapper h4 { font-size: 1.125rem;}
@@ -363,6 +365,8 @@ function buildAccordionPrintDocument(block) {
     .table.scroll table {min-width: unset;}
     .download-button-wrapper .download-files {padding-right: 2.125rem;}
     .download-files.icon-download::before, .download-files .icon-download::before {right: -0.27rem;}
+
+    .promo-detail-image { display: none !important; }
   `;
 
   return `
@@ -375,6 +379,7 @@ function buildAccordionPrintDocument(block) {
       <link rel="stylesheet" href="/styles/fonts.css">
       <link rel="stylesheet" href="/blocks/header/header.css">
       <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
+     ${promoBlock ? '<link rel="stylesheet" href="/blocks/promotional-details/promotional-details.css">' : ''}
       <link rel="stylesheet" href="/blocks/accordion-block/accordion-block.css">
       <link rel="stylesheet" href="/blocks/table/table.css">
       <style>${printCss}</style>
