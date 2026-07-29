@@ -752,15 +752,15 @@ function printElement(block, state) {
 
     /* Default: every cell stays on ONE line (end-to-end). Name is the sole
        exception, overridden below. */
-    // .dynamic-board .db-table th,
-    // .dynamic-board .db-table td {
-    //   white-space: nowrap;
-    // }
+    .dynamic-board .db-table th,
+    .dynamic-board .db-table td {
+      white-space: nowrap;
+    }
 
     /* Name is the ONLY column allowed to wrap — it takes the leftover width
        and breaks long names onto multiple lines. min-width:0 clears the base
        stylesheet's 12rem floor so auto layout can size it freely. */
-    .dynamic-board .db-td-name {
+    .dynamic-board .db-table td.db-td-name {
       white-space: normal;
       overflow-wrap: break-word;
       word-break: break-word;
