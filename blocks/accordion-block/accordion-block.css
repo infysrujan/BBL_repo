@@ -158,8 +158,27 @@ p:has(picture.rte-inline-image) {
   .accordion-panel {
     padding: 1.25rem 1.875rem;
   }
-  
+
   .accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper) {
     margin-bottom: 2.5rem;
+  }
+}
+
+@media print {
+  .accordion-panel[hidden] {
+    display: block;
+  }
+
+  .accordion-toolbar-icon,
+  .accordion-toolbar-print{
+    display: none;
+  }
+
+  .accordion-block-wrapper {
+    padding: 0 1rem;
+  }
+
+  .accordion-header::after {
+    content: '–';
   }
 }
