@@ -347,7 +347,7 @@ export default async function decorate(block) {
       renderResults(allResults, normalized);
       searchResult.style.display = 'block';
       divLoadMore.style.display = data.showLoadMore ? 'block' : 'none';
-      showMessage(!allResults.length ? (data.noResultsMessage || config.noResultsText) : '');
+      showMessage(!allResults.length ? (config.noResultsText || data.noResultsMessage) : '');
 
       if (allResults.length) {
         saveRecentSearch(normalized, allResults);
