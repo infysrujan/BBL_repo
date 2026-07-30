@@ -126,6 +126,17 @@
   margin-top: 0;
 }
 
+/* SPACING INSIDE TAB PANEL between different blocks except download block */
+.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+  padding-bottom: 1.5rem;
+}
+
+@media (width > 64rem) {
+  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+    padding-bottom: 2rem;
+  }
+}
+
 /* Simple Tab Variant - Default */
 .tabs.simple-tab .tabs-nav {
   padding-bottom: var(--bbl-space-800);
@@ -469,20 +480,20 @@
   .tabs.media-tab .tabs-nav {
     display: flex;
     justify-content: center;
+    align-items: flex-end;
     max-width: 100%;
   }
 
   .tabs.simple-tab .tabs-nav button,
   .tabs.media-tab .tabs-nav button {
     padding: 0;
-    margin: 0 0.9375rem;
+    margin: 0 1.1rem;
     min-height: var(--bbl-space-200);
     height: unset;
     max-height: max-content;
     text-wrap: wrap;
     white-space: normal;
-    min-width: 0;
-
+    line-height: var(--bbl-line-height-b3-desktop);
   }
 
   .tabs-nav-wrapper .tabs-nav li:last-child {
@@ -662,15 +673,4 @@
   margin: 0 auto var(--bbl-space-050);
   display: block;
   flex-shrink: 0;
-}
-
-/* SPACING inside TAB PANEL between different blocks except download block */
-.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
-  padding-bottom: 1.5rem;
-}
-
-@media (width > 64rem) {
-  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
-    padding-bottom: 2rem;
-  }
 }

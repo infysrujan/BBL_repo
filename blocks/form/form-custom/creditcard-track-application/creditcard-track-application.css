@@ -53,6 +53,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     border: 0;
     text-align: left;
     letter-spacing: normal;
+    color: var(--bbl-color-grey-85);
     font-family: var(--bbl-font-family-medium);
     font-weight: 400;
 
@@ -169,6 +170,25 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     }
   }
 
+  & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper {
+    margin: 1.875rem 0 2.1875rem;
+
+    & .button-wrapper:not(:is(.field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-'])) {
+      display: flex;
+      align-items: center;
+      margin-top: 2.5rem;
+      justify-content: center;
+    }
+
+    & .plain-text-wrapper p {
+      color: var(--bbl-color-blue-90);
+      font-weight: 700;
+      font-size: var(--bbl-font-size-h2-mobile);
+      line-height: 1.5625rem;
+      text-align: center;
+    }
+  }
+
   /* Field labels (titles use form-fieldset-legend tokens above) */
   & .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label):not(:is(.field-title *, .cc-panel-item-form-title *)),
   & .form form :is(.drop-down-wrapper, .field-wrapper:has(select)) > .field-label {
@@ -231,7 +251,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     border-radius: 0.4375rem;
     gap: var(--bbl-space-100);
     font-size: var(--bbl-font-size-h4-mobile);
-    font-weight: var(--form-title-font-weight);
     line-height: var(--bbl-line-height-h4-mobile);
     cursor: pointer;
     appearance: none;
@@ -294,10 +313,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     line-height: var(--bbl-text-default-line-height);
     color: var(--bbl-color-grey-85);
 
-    & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-']),
-    & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-']),
+     & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
+    & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
     & .field-wrapper.col-6:not(.button-wrapper, .cc-panel-item-form-title, .cc-panel-item-form-input, .cc-panel-item-form-cover),
-    & .field-wrapper.col-12:not(:is(.field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, [class*='cc-app-'])) {
+    & .field-wrapper.col-12:not(:is(.field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-'])) {
       display: block;
       width: 100%;
       max-width: 100%;
@@ -753,6 +772,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         margin-top: var(--bbl-space-150);
       }
     }
+    
+    & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper .plain-text-wrapper p {
+        font-size: var(--bbl-font-size-h4-mobile);
+    }
   }
 
   @media (width >= 64rem) {
@@ -776,7 +799,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
     & .form form :is(.field-wrapper label, .field-wrapper .field-label, fieldset legend.field-label):not(:is(.field-title *, .cc-panel-item-form-title *)),
     & .form form :is(.drop-down-wrapper, .field-wrapper:has(select)) > .field-label {
-      font-size: var(--form-font-size-xs);
+      font-size: var(--bbl-form-font-size-15);
       line-height: var(--bbl-line-height-b1-desktop);
     }
 
