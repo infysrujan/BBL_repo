@@ -156,7 +156,7 @@ export default async function decorate(block) {
           // Settings button
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = 'cookie-alert-btn cookie-alert-btn-secondary';
+          btn.className = 'cookie-alert-btn button-m secondary cookie-alert-btn-secondary';
           btn.textContent = anchor.textContent?.trim();
           btn.setAttribute('aria-haspopup', 'dialog');
           copyAnchorAttributes(anchor, btn);
@@ -175,7 +175,7 @@ export default async function decorate(block) {
           // Accept button
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = 'cookie-alert-btn cookie-alert-btn-primary';
+          btn.className = 'cookie-alert-btn button-m primary cookie-alert-btn-primary';
           btn.textContent = anchor.textContent?.trim();
           copyAnchorAttributes(anchor, btn);
           moveInstrumentation(anchor, btn);

@@ -11,7 +11,7 @@
 }
 
 .section.central-aligned.center-title.carousel-dotted-container {
-  padding: var(--bbl-space-section-lg) var(--bbl-space-250) 1.875rem;
+  padding: 2.5rem 0 1.875rem;
 }
 
 .card-list-modal-title {
@@ -49,20 +49,21 @@
 
 .central-aligned.carousel-dotted-container .carousel-dotted-wrapper .carousel-dotted {
     position: relative;
-    margin-bottom: 5rem;
     display: block;
 }
 
 .central-aligned.carousel-dotted-container .carousel-arrow-prev {
     position: absolute;
-    top: 40%;
+    top: 50%;
+    transform: translateY(-50%);
     left: -3.4375rem;
 }
 
 .central-aligned.carousel-dotted-container .carousel-arrow-next {
     position: absolute;
     right: -3.4375rem;
-    top: 40%;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .carousel-dotted .carousel-dotted-item.simple-carousel {

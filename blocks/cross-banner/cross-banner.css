@@ -12,7 +12,7 @@
 }
 
 .cross-banner-image {
-  height: 23.7187rem;
+  height: calc(100vw * .5);
   overflow: hidden;
 }
 
@@ -53,16 +53,14 @@
   margin-bottom: 0.9375rem;
   font-family: var(--bbl-font-family-medium);
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .cross-banner-description {
   font-size: var(--bbl-font-size-b2);
   line-height: 1.203rem;
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-grey-85);
   margin-bottom: var(--bbl-space-250);
   flex-grow: 1;
   max-width: 100%;
@@ -178,13 +176,17 @@ body.private
 
   .cross-banner-title,
   .cross-banner-description {
-    flex: 0 0 33.25%;
-    max-width: 33.25%;
+    max-width: 21.875rem;
+    width: 100%;
+  }
+
+  .cross-banner-button {
+   margin-left: auto;
   }
 
   :is(.wealth, .private) :is(.cross-banner-title, .cross-banner-description) {
     flex: 0 0 38.86%;
-    max-width: 38.86%;
+    max-width: 30.86%;
   }
 }
 

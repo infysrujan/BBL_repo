@@ -80,7 +80,7 @@ async function loadFundsData() {
  * Build the fund card list HTML directly, producing the same class structure
  * as card-list.js so that card-list.css applies without running card-list.js.
  */
-function buildFundCardsBlock(funds, doc, readMoreLabel) {
+function buildFundCardsBlock(funds, doc, readMoreLabel, cardsPerSlide = 3) {
   const block = doc.createElement('div');
   block.className = 'card-list mf-card-list block';
   block.dataset.blockName = 'card-list';
@@ -89,12 +89,16 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
   const getImgUrl = (val) => val?._publishUrl || (typeof val === 'string' ? val : '');
 
   const list = doc.createElement('div');
-  list.className = `cards-list scrollable center cards-3${funds.length === 1 ? ' single-card' : ''}`;
+  list.className = `cards-list scrollable center cards-${cardsPerSlide}${funds.length === 1 ? ' single-card' : ''}`;
 
   funds.forEach((fund) => {
     const name = fund.FundName || '';
     // eslint-disable-next-line no-underscore-dangle
-    const readMoreUrl = fund._path || '#';
+    let readMoreUrl = fund.mfPageUrl?._path || '#';
+    // Remove "/content/bangkokbank" from the start of readMoreUrl, if present
+    if (readMoreUrl.startsWith('/content/bangkokbank')) {
+      readMoreUrl = readMoreUrl.replace(/^\/content\/bangkokbank/, '');
+    }
     const productId = fund.ProductID || name;
     const compareEnabled = fund.CompareButton === 'true';
 
@@ -168,6 +172,7 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
     buttonWrapper.className = 'cards-list-button';
     const link = doc.createElement('a');
     link.href = readMoreUrl;
+    link.className = 'button-m primary';
     link.textContent = readMoreLabel;
     buttonWrapper.appendChild(link);
     inner.appendChild(buttonWrapper);
@@ -188,8 +193,6 @@ function buildFundCardsBlock(funds, doc, readMoreLabel) {
  *
  * Used by carousel-dotted.js when slideType === 'mfCardListCarousel'.
  */
-const CARDS_PER_SLIDE = 3;
-
 export default async function buildMfFundCardsSlide(row, index) {
   const doc = row.ownerDocument;
 
@@ -246,15 +249,16 @@ export default async function buildMfFundCardsSlide(row, index) {
     return slide;
   }
 
-  // ── Split funds into pages — sliding-window for incomplete last chunk ─────────
-  // Mirrors card-list-carousel.js: if the last chunk is smaller than CARDS_PER_SLIDE,
-  // backfill from the end so every slide shows exactly CARDS_PER_SLIDE cards.
-  // e.g. 4 funds → slide 1: [0,1,2]  slide 2: [1,2,3]
+  const tabletMinBp = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim() || '47.5rem';
+  const isMobile = window.matchMedia(`(max-width: ${tabletMinBp})`).matches;
+  const cardsPerSlide = isMobile ? 1 : 3;
+
+  // ── Split funds into pages — 1 per slide on mobile, 3 per slide on desktop ────
   const pages = [];
-  for (let i = 0; i < filteredFunds.length; i += CARDS_PER_SLIDE) {
-    const chunk = filteredFunds.slice(i, i + CARDS_PER_SLIDE);
-    if (chunk.length < CARDS_PER_SLIDE) {
-      pages.push(filteredFunds.slice(-CARDS_PER_SLIDE));
+  for (let i = 0; i < filteredFunds.length; i += cardsPerSlide) {
+    const chunk = filteredFunds.slice(i, i + cardsPerSlide);
+    if (chunk.length < cardsPerSlide && cardsPerSlide > 1) {
+      pages.push(filteredFunds.slice(-cardsPerSlide));
       break;
     }
     pages.push(chunk);
@@ -266,7 +270,7 @@ export default async function buildMfFundCardsSlide(row, index) {
     // Only move instrumentation onto the first slide
     if (pageIndex === 0) moveInstrumentation(row, slide);
 
-    const blockEl = buildFundCardsBlock(pageFunds, doc, readMoreLabel);
+    const blockEl = buildFundCardsBlock(pageFunds, doc, readMoreLabel, cardsPerSlide);
     slide.appendChild(blockEl);
 
     // Inject compare buttons
@@ -276,7 +280,7 @@ export default async function buildMfFundCardsSlide(row, index) {
       if (h3?.dataset?.compareEnabled === 'false') return;
       const btn = doc.createElement('button');
       btn.type = 'button';
-      btn.className = 'mfr-compare-btn';
+      btn.className = 'button-m secondary mfr-compare-btn';
       btn.textContent = compareLabel;
       btn.dataset.cardName = h3?.textContent?.trim() ?? '';
       btn.dataset.cardId = h3?.dataset?.cardId ?? '';
@@ -332,6 +336,91 @@ export default async function buildMfFundCardsSlide(row, index) {
       descEl.innerHTML = descriptionHTML;
       carouselBlock.insertAdjacentElement('afterend', descEl);
     }
+  }
+
+  // ── Equalize card height across all pages ────────────────────────────────
+  // align-items: stretch (mf-fund-cards-slide.css) only equalizes the 3 cards
+  // within a single page — different pages can still have very different
+  // natural heights (varying description lengths), so the carousel visibly
+  // resized when switching dots. This measures every page's cards (forcing
+  // hidden pages visible just long enough to lay them out) and pins every
+  // card on every page to the single tallest height found, so switching
+  // dots never changes the carousel's height even when a page's content
+  // is shorter.
+  function waitForImage(img) {
+    if (img.complete) return Promise.resolve();
+    return new Promise((resolve) => {
+      img.addEventListener('load', resolve, { once: true });
+      img.addEventListener('error', resolve, { once: true });
+    });
+  }
+
+  async function equalizeCardHeights() {
+    let activeSlides = [];
+    function measureAndApply() {
+      let max = 0;
+      activeSlides = Array.from(document.querySelectorAll('.mf-fund-cards-item'));
+      activeSlides.forEach((sl) => { sl.style.display = 'flex'; });
+      try {
+        activeSlides.forEach((sl) => {
+          sl.querySelectorAll('.cards-list-item').forEach((item) => {
+            item.style.removeProperty('min-height');
+            max = Math.max(max, item.getBoundingClientRect().height);
+          });
+        });
+      } finally {
+        activeSlides.forEach((sl) => { sl.style.removeProperty('display'); });
+      }
+      if (max > 0) {
+        activeSlides.forEach((sl) => {
+          sl.querySelectorAll('.cards-list-item').forEach((item) => {
+            item.style.minHeight = `${max}px`;
+          });
+        });
+      }
+    }
+
+    measureAndApply();
+    activeSlides.forEach((sl) => { sl.style.display = 'flex'; });
+    const imgs = activeSlides.flatMap((sl) => [...sl.querySelectorAll('img')]);
+    try {
+      await Promise.all(imgs.map(waitForImage));
+      measureAndApply();
+    } finally {
+      activeSlides.forEach((sl) => { sl.style.removeProperty('display'); });
+    }
+  }
+
+  // Measuring too early can freeze cards at a height based on fallback-font
+  // metrics (smaller than the real web font), leaving some cards visibly
+  // short once the real font swaps in. Wait for fonts to finish loading —
+  // this doesn't block returning `slides` below, since the carousel should
+  // still appear immediately; the height pass just runs slightly later.
+  // A second pass on window 'load' catches any other late layout shifts.
+  (document.fonts?.ready ?? Promise.resolve()).then(() => {
+    requestAnimationFrame(() => equalizeCardHeights());
+  });
+  window.addEventListener('load', () => requestAnimationFrame(() => equalizeCardHeights()));
+
+  // Keep the tallest-card rule true going forward, not just at load: watch
+  // each card's actual content (title/description/logo) — not the card box
+  // itself, which would create a feedback loop since that's the element we
+  // set min-height on — and re-run the equalization whenever any of it
+  // changes size, for any reason (longer text, more pages, a window resize
+  // that reflows text to more/fewer lines, etc.). Debounced so a burst of
+  // resize events (e.g. dragging the window) only triggers one re-run.
+  if (typeof ResizeObserver !== 'undefined') {
+    let debounceTimer = null;
+    const scheduleReequalize = () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => equalizeCardHeights(), 100);
+    };
+
+    const contentObserver = new ResizeObserver(scheduleReequalize);
+    slides.forEach((slideEl) => {
+      slideEl.querySelectorAll('.cards-list-title, .cards-list-description, .cards-list-remark')
+        .forEach((el) => contentObserver.observe(el));
+    });
   }
 
   // Return array — carousel-dotted.js uses .flat() so multiple slides are handled correctly

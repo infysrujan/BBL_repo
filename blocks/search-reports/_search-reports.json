@@ -35,11 +35,17 @@
           "required": true
         },
         {
-          "component": "richtext",
+          "component": "text",
           "name": "modalDescription",
           "label": "Modal Description",
           "valueType": "string",
-          "required": false
+          "required": true
+        },
+        {
+          "component": "aem-content",
+          "name": "resultsPageUrl",
+          "label": "Results Page URL",
+          "description": "Page the user is redirected to after searching, with type/year query params appended"
         }
       ]
     }

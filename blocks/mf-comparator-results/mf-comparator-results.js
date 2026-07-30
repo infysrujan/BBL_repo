@@ -33,11 +33,7 @@ function resolveImageUrl(card) {
 
 function resolveCardPageUrl(card) {
   // eslint-disable-next-line no-underscore-dangle
-  const raw = card._path || card.readMoreUrl || card.cardPageUrl || card.detailUrl || card.pageUrl || '';
-  if (!raw) return '';
-  if (typeof raw === 'string') return raw;
-  // eslint-disable-next-line no-underscore-dangle
-  return raw._publishUrl || raw._authorUrl || raw._path || '';
+  return card.mfPageUrl?._path || '#';
 }
 
 // ── Data fetching ──────────────────────────────────────────────────────────────
@@ -96,19 +92,16 @@ function getCardName(card) {
   return card.name || card.title || card.FundName || card.fundName || '';
 }
 
-function filterAndSortCards(allCards, selectedNames, sourcingMap) {
+function filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap) {
   const normalizedNames = selectedNames.map(norm);
-
-  const matched = allCards.filter((card) => {
-    const cardName = norm(getCardName(card));
-    return normalizedNames.some((n) => cardName.includes(n) || n.includes(cardName));
-  });
+  const matched = allCards.filter((card) => selectedIDs.includes(card.ProductID));
 
   if (!sourcingMap || Object.keys(sourcingMap).length === 0) {
     return normalizedNames
       .map((n) => matched.find((c) => {
         const cardName = norm(getCardName(c));
-        return cardName.includes(n) || n.includes(cardName);
+        const found = cardName === n;
+        return found;
       }))
       .filter(Boolean);
   }
@@ -131,7 +124,11 @@ function filterAndSortCards(allCards, selectedNames, sourcingMap) {
 function buildCompareCard(card, doc, labels) {
   const name = card.name || card.title || card.FundName || card.fundName || '';
   const imgSrc = resolveImageUrl(card);
-  const readMoreHref = resolveCardPageUrl(card);
+  let readMoreHref = resolveCardPageUrl(card);
+  // Remove "/content/bangkokbank" from the start of readMoreHref, if present
+  if (readMoreHref.startsWith('/content/bangkokbank')) {
+    readMoreHref = readMoreHref.replace(/^\/content\/bangkokbank/, '');
+  }
 
   const getField = (...keys) => {
     for (let i = 0; i < keys.length; i += 1) {
@@ -213,7 +210,6 @@ function buildCompareCard(card, doc, labels) {
   fields.forEach(({
     key, label, value, isHtml,
   }) => {
-    if (!value) return;
     const dl = doc.createElement('dl');
     dl.dataset.field = key;
     const dt = doc.createElement('dt');
@@ -221,10 +217,12 @@ function buildCompareCard(card, doc, labels) {
     dt.textContent = label;
     const dd = doc.createElement('dd');
     dd.className = 'mfcr-value';
-    if (isHtml) {
-      dd.innerHTML = value;
-    } else {
-      dd.textContent = value;
+    if (value) {
+      if (isHtml) {
+        dd.innerHTML = value;
+      } else {
+        dd.textContent = value;
+      }
     }
     dl.appendChild(dt);
     dl.appendChild(dd);
@@ -369,7 +367,8 @@ function renderComparison(container, cards, allCards, sourcingMap, labels, doc) 
   }
 
   const selectedNames = cards.map((c) => c.name);
-  const sorted = filterAndSortCards(allCards, selectedNames, sourcingMap);
+  const selectedIDs = cards.map((c) => c.id);
+  const sorted = filterAndSortCards(allCards, selectedIDs, selectedNames, sourcingMap);
 
   const displayCards = sorted.length > 0
     ? sorted

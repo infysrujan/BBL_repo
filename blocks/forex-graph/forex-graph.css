@@ -270,7 +270,7 @@
 
 .forex-graph .forex-graph-chart-title {
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
   margin: 0;
   line-height: 1.4;
@@ -342,6 +342,12 @@
   z-index: 300;
   padding: 1rem;
   box-sizing: border-box;
+}
+
+/* "Anchor from the right instead so it opens within the visible viewport. */
+.forex-graph .forex-graph-to-group .forex-graph-datepicker {
+  left: auto;
+  right: 0;
 }
 
 .forex-graph .forex-graph-datepicker-header {

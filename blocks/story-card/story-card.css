@@ -103,6 +103,11 @@
   margin: 0;
 }
 
+.story-card .text-default a {
+  color: inherit;
+  text-decoration: none;
+}
+
 .story-card .button-container {
   display: inline-block;
   margin: 0.3125rem 0.9375rem 0.3125rem 0;
@@ -136,12 +141,16 @@
   }
 
   .story-card .outer {
+    flex: 1 1 50%;
+    min-width: 0;
+    width: auto;
     padding: 0 3rem 0 1.25rem;
   }
 
   .story-card .thumb {
     margin: 0;
-    min-width: 50%;
+    flex: 0 0 50%;
+    min-width: 0;
   }
 
   .story-card .thumb picture,
@@ -158,13 +167,19 @@
     align-items: center;
     height: 100%;
     padding: 0;
+    padding-left: 2.25rem;
   }
 }
 
 /* Desktop */
 @media (width > 64rem) {
   .story-card .outer {
-    max-width: 100%;
+    max-width: 59.375rem;
+    box-sizing: border-box;
+  }
+
+  .story-card .inner {
+    padding: 0 0 0 2.25rem;
   }
 
   .story-card .sub-title-medium.line {

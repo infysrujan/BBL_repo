@@ -1,3 +1,5 @@
+import { decorateIconInContainer, decoratePictureLinks, decorateNewTabLinks } from '../../scripts/custom-rte.js';
+
 export default function decorate(block) {
   const cols = [...block.firstElementChild.children];
   block.classList.add(`columns-${cols.length}-cols`);
@@ -15,4 +17,8 @@ export default function decorate(block) {
       }
     });
   });
+
+  decorateIconInContainer(block);
+  decoratePictureLinks(block);
+  decorateNewTabLinks(block);
 }

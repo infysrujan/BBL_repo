@@ -8,7 +8,7 @@
   width: 100%;
   color: var(--bbl-text-primary);
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   line-height: var(--bbl-line-height-body);
   background: var(--bbl-color-white);
 }
@@ -154,7 +154,7 @@
   background: transparent;
   text-align: right;
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-text-primary);
   width: 5rem;
@@ -170,11 +170,15 @@
   font-weight: var(--bbl-font-weight-regular);
 }
 
+.saving-plan-field-error .saving-plan-field-input {
+  color: var(--bbl-color-red-130);
+}
+
 .saving-plan-field-error-message {
   display: block;
   margin-top: 0.25rem;
   padding-left: 0.25rem;
-  font-size: var(--bbl-text-caption-size);
+  font-size: var(--bbl-body-b2-size);
   color: var(--bbl-color-red-130);
   line-height: 1.4;
 }
@@ -206,7 +210,7 @@
   min-height: 3.375rem;
   cursor: pointer;
   font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-text-primary);
   text-align: left;
   transition: border-color 150ms ease;
@@ -269,7 +273,7 @@
 .saving-plan-dropdown-option {
   padding: 0.625rem 0.875rem;
   cursor: pointer;
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-body-b2-size);
   color: var(--bbl-text-primary);
   transition: background-color 120ms ease;
 }
@@ -409,7 +413,7 @@
 
 .saving-plan-result-footnote {
   margin: 0.5rem 0 0;
-  font-size: var(--bbl-font-size-b1-mobile);
+  font-size: var(--bbl-body-b3-size);
   color: var(--bbl-color-gray-143);
   line-height: 1.45;
 }
@@ -527,6 +531,14 @@
   border-radius: 50%;
   display: inline-block;
   flex-shrink: 0;
+}
+
+.saving-plan-chart-legend-dot-result {
+  background: var(--sp-chart-result, #1e6ffb);
+}
+
+.saving-plan-chart-legend-dot-newplan {
+  background: var(--sp-chart-new-plan, #0f2a44);
 }
 
 .saving-plan-chart-legend-icon {
@@ -675,7 +687,14 @@
   outline: none;
   height: 0.375rem;
   border-radius: 6.1875rem;
-  background: var(--bbl-color-grey-27);
+
+  --saving-plan-slider-progress: 0%;
+
+  background: linear-gradient(
+    to right,
+    var(--bbl-color-active-blue) var(--saving-plan-slider-progress),
+    var(--bbl-color-grey-27) var(--saving-plan-slider-progress)
+  );
 }
 
 .saving-plan-slider-input::-webkit-slider-container {
@@ -813,7 +832,7 @@
 
 .saving-plan-newplan-footnote {
   margin: 0.5rem 0 0;
-  font-size: var(--bbl-text-caption-size);
+  font-size: var(--bbl-body-b3-size);
   color: var(--bbl-color-gray-143);
   line-height: 1.5;
 }
@@ -829,7 +848,7 @@
 
 .saving-plan-additional-list li {
   margin: 0;
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
 }
 
 .saving-plan-additional-link {
@@ -847,13 +866,13 @@
 
 .saving-plan-disclaimer-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   font-weight: var(--bbl-font-weight-medium);
   margin: 0 0 1.25rem;
 }
 
 .saving-plan-disclaimer-text {
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-text-primary);
   line-height: 1.65;
 }
@@ -925,7 +944,7 @@
 }
 
 .saving-plan-product-description {
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-color-gray-143);
   margin: 0;
   flex-grow: 1;
@@ -954,19 +973,19 @@
 /* ── default-content-wrapper (Additional Information + Disclaimer) ── */
 .saving-plan-container .default-content-wrapper {
   margin-top: 2.5rem;
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-color-black);
   line-height: 1.65rem;
 }
 
 .saving-plan-container .default-content-wrapper p {
   margin: 0 0 0.375rem;
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
 }
 
 .saving-plan-container .default-content-wrapper p > strong {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-body-size);
+  font-size: var(--bbl-text-default-size);
   font-weight: var(--bbl-font-weight-medium);
 }
 
@@ -1135,7 +1154,7 @@
 
   .saving-plan-slider-min,
   .saving-plan-slider-value {
-    font-size: var(--bbl-text-body-size);
+    font-size: var(--bbl-text-default-size);
   }
 
   .saving-plan-products {

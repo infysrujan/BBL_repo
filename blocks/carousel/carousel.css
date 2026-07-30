@@ -16,7 +16,6 @@
     font-size: var(--bbl-text-section-title-size);
     line-height: var(--bbl-text-section-title-line-height);
     font-weight: var(--bbl-text-section-title-weight);
-    color: var(--bbl-color-black);
 }
 
 :lang(th) {
@@ -43,6 +42,7 @@
 .carousel-header a::after {
     content: "\e901";
     position: absolute;
+    font-family: icomoon, sans-serif;
     font-size: 0.625rem;
     top: 50%;
     transform: translateY(-50%);
@@ -76,6 +76,9 @@
     color: var(--bbl-color-white);
 }
 
+.bangkok-bankm-card .carousel-header a:hover {
+    color: var(--bbl-color-blue-90);
+}
 
 .carousel-nav {
     display: none;
@@ -180,7 +183,6 @@
 }
 
 .carousel-title {
-    color: var(--bbl-color-black);
     font-size: var(--bbl-text-article-card-title-size);
     line-height: var(--bbl-text-article-card-title-line-height);
     margin: 0 0 var(--bbl-space-100);
@@ -195,7 +197,7 @@
 
 .carousel-description {
     color: var(--bbl-color-grey-70);
-    margin: 0 0 var(--bbl-space-200);
+    margin: 0 0 var(--bbl-space-300);
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -223,7 +225,7 @@
     .carousel {
         padding-left: 3rem;
     }
-
+    
     .carousel-header {
         padding-right: 3rem;
     }
@@ -431,8 +433,7 @@
     }
 
     .carousel-cta {
-        display: inline-block;
-        position: absolute;
+        display: flex;
         bottom: var(--bbl-space-200);
     }
 
@@ -449,9 +450,5 @@
         padding: var(--bbl-space-400);
         color: var(--bbl-color-white);
         max-width: 360px;
-    }
-
-    .carousel-item:not(.active) .carousel-content .carousel-cta {
-        top: 55%;
     }
 }

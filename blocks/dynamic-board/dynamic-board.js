@@ -1,13 +1,15 @@
 import parseAuthoring, { parseTableHeading, parseMaturityTypes } from './helpers/authoring-helpers.js';
 import {
-  parseCsvConfigList, buildIntlMonthLabels, buildIntlDayLabels,
-  formatDisplayDate, formatMaturityDate, formatRemainTerm, remainTermToMonths,
-  buildCalendarGrid, formatMonthYear, formatMonthYearDisplay,
+  parseCsvConfigList, buildIntlMonthLabels,
+  formatMaturityDate, formatRemainTerm, remainTermToMonths,
+  formatMonthYear, formatMonthYearDisplay,
 } from './helpers/date-helpers.js';
 import createApiService from './helpers/api-helpers.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { moveInstrumentation, getLang } from '../../scripts/scripts.js';
+import { attachCalendarPicker } from '../../scripts/utils/calendar-picker.js';
+import truncateNameCell from '../../scripts/utils/truncate-tooltip.js';
 
 const MAX_SELECTED = 5;
 
@@ -31,6 +33,24 @@ function fmtPct(val) {
   if (!val || val === '-') return '-';
   const n = parseFloat(val);
   return Number.isNaN(n) ? val : `${n.toFixed(2)}%`;
+}
+
+// Tolerates minor authoring variations like {{ SYMBOL }} or {{symbol}}, and
+// warns instead of silently 404ing when the template is missing the token.
+const SYMBOL_PLACEHOLDER = /\{\{\s*SYMBOL\s*\}\}/i;
+
+function buildDownloadHref(downloadUrl, symbol) {
+  if (!downloadUrl) return '';
+  if (!SYMBOL_PLACEHOLDER.test(downloadUrl)) {
+    // eslint-disable-next-line no-console
+    console.warn('dynamic-board: download URL is missing a {{SYMBOL}} placeholder:', downloadUrl);
+    return downloadUrl;
+  }
+  const resolved = downloadUrl.replace(SYMBOL_PLACEHOLDER, symbol.toLowerCase());
+  // A path missing its leading slash resolves relative to the current page's
+  // directory (e.g. /en/...) instead of the site root, so force it root-relative
+  // here rather than relying on every config value being typed exactly right.
+  return /^(https?:)?\//.test(resolved) ? resolved : `/${resolved}`;
 }
 
 // ─── sort helper ──────────────────────────────────────────────────────────────
@@ -61,14 +81,10 @@ function createState(defaultSortKey = 'REMAIN_TERM') {
     updates: [],
     timeDropdownOpen: false,
     rates: [],
-    enabledDays: new Set(),
     selectedIds: [],
     sortKey: defaultSortKey,
     sortAsc: true,
     sortUserSet: false,
-    calOpen: false,
-    calYear: null,
-    calMonth: null,
     filterOpen: false,
     filterMaturity: null,
     filterFrom: { month: curMonth, year: curYear },
@@ -81,45 +97,6 @@ function createState(defaultSortKey = 'REMAIN_TERM') {
     columns: [],
     maturityTypes: [],
   };
-}
-
-// ─── calendar ─────────────────────────────────────────────────────────────────
-function renderCalendar(calEl, state, placeholders) {
-  const {
-    calYear: y, calMonth: m, enabledDays, date: sel,
-  } = state;
-  const cells = buildCalendarGrid(y, m);
-  const today = new Date();
-  const isCurMonth = today.getFullYear() === y && today.getMonth() === m;
-  const selDay = sel && sel.getFullYear() === y && sel.getMonth() === m ? sel.getDate() : null;
-
-  const rows = Array.from({ length: 6 }, (_, r) => {
-    const dayCells = cells.slice(r * 7, r * 7 + 7).map(({ day, otherMonth }) => {
-      if (otherMonth) return '<td class="db-cal-other">&nbsp;</td>';
-      const enabled = enabledDays.has(day);
-      const cls = [
-        'db-cal-day',
-        enabled ? 'db-cal-enabled' : 'db-cal-disabled',
-        day === selDay ? 'db-cal-selected' : '',
-        isCurMonth && day === today.getDate() ? 'db-cal-today' : '',
-      ].filter(Boolean).join(' ');
-      return enabled
-        ? `<td class="${cls}"><button type="button" class="db-cal-day-btn" data-day="${day}">${day}</button></td>`
-        : `<td class="${cls}"><span>${day}</span></td>`;
-    }).join('');
-    return `<tr>${dayCells}</tr>`;
-  }).join('');
-
-  calEl.innerHTML = `
-    <div class="db-cal-header">
-      <button type="button" class="db-cal-nav db-cal-prev" aria-label="${placeholders?.dynamicBoardPrevMonthAria || 'Previous month'}"><i class="icon-arrow-left" aria-hidden="true"></i></button>
-      <span class="db-cal-title">${state.monthLabels[m]} ${y + state.buddhistYearOffset}</span>
-      <button type="button" class="db-cal-nav db-cal-next" aria-label="${placeholders?.dynamicBoardNextMonthAria || 'Next month'}"><i class="icon-arrow-left" aria-hidden="true"></i></button>
-    </div>
-    <table class="db-cal-table">
-      <thead><tr>${state.dayLabels.map((d) => `<th>${d}</th>`).join('')}</tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
 }
 
 // ─── time dropdown ────────────────────────────────────────────────────────────
@@ -168,9 +145,17 @@ function renderThead(thead, state) {
       row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}">${escapeHtml(col.label)}${sortIcon(col.sortKey, state)}</th>`;
     }
   });
-  row1 += '<th rowspan="2" class="db-th-download"></th></tr>';
+  row1 += '</tr>';
   row2 += '</tr>';
   thead.innerHTML = row1 + row2;
+
+  requestAnimationFrame(() => {
+    const groupHeader = thead.querySelector('.db-th-group');
+    const secondRow = thead.querySelector('tr:last-child');
+    if (groupHeader && secondRow) {
+      secondRow.style.top = `${groupHeader.getBoundingClientRect().height}px`;
+    }
+  });
 }
 
 function renderRow(rate, isSelected, state) {
@@ -184,7 +169,7 @@ function renderRow(rate, isSelected, state) {
         <input type="checkbox" class="db-row-cb" data-id="${id}" ${checked} ${disabled} aria-label="Select ${sym}">
       </td>
       <td class="db-td-symbol">${sym}</td>
-      <td class="db-td-name">${escapeHtml(state.isThai ? rate.NAME_THAI : rate.NAME_ENG)}</td>
+      ${truncateNameCell(state.isThai ? rate.NAME_THAI : rate.NAME_ENG, 'db-td-name')}
       ${state.isGov
     ? `<td class="db-td-num">${escapeHtml(rate.ISSUE_RATING || '-')}</td>
       <td class="db-td-num">${escapeHtml(rate.ISSUER_RATING || '-')}</td>`
@@ -194,9 +179,9 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(fmtPct(rate.OFFER_YIELD))}</td>
       <td class="db-td-num">${escapeHtml(formatRemainTerm(rate.REMAIN_TERM || '00.00.00'))}</td>
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
-      <td class="db-td-num">${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}</td>
-      <td class="db-td-dl">
-        <a href="${state.downloadUrl.replace('{{SYMBOL}}', sym)}" download aria-label="Download ${sym} factsheet">
+      <td class="db-td-num db-td-maturity">
+        ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}
+        <a class="db-td-dl" href="${buildDownloadHref(state.downloadUrl, sym)}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
         </a>
       </td>
@@ -281,7 +266,7 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
           <input type="text" class="db-mp-input" id="db-mp-from" readonly placeholder="${placeholders?.dynamicBoardMonthYearPlaceholder || 'MM/YYYY'}"
             value="${state.filterFrom ? formatMonthYearDisplay(state.filterFrom.month, state.filterFrom.year, state.buddhistYearOffset) : ''}"
             ${matSet ? 'disabled' : ''}>
-          <button type="button" class="db-mp-cal-btn" data-which="from" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''} icon-calendar"></button>
+          <button type="button" class="db-mp-cal-btn icon-calendar" data-which="from" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''}></button>
           <div class="db-mp-popup" id="db-mp-popup-from" hidden></div>
         </div>
       </div>
@@ -291,7 +276,7 @@ function renderFilterPanel(wrapper, authoring, state, placeholders) {
           <input type="text" class="db-mp-input" id="db-mp-to" readonly placeholder="${placeholders?.dynamicBoardMonthYearPlaceholder || 'MM/YYYY'}"
             value="${state.filterTo ? formatMonthYearDisplay(state.filterTo.month, state.filterTo.year, state.buddhistYearOffset) : ''}"
             ${matSet ? 'disabled' : ''}>
-          <button type="button" class="db-mp-cal-btn" data-which="to" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''} icon-calendar"></button>
+          <button type="button" class="db-mp-cal-btn icon-calendar" data-which="to" aria-label="${placeholders?.dynamicBoardOpenMonthPickerAria || 'Open month picker'}" ${matSet ? 'disabled' : ''}></button>
           <div class="db-mp-popup" id="db-mp-popup-to" hidden></div>
         </div>
       </div>
@@ -340,16 +325,6 @@ function initRemarks(remarksEl, placeholders) {
 }
 
 // ─── data loaders ─────────────────────────────────────────────────────────────
-async function loadEnabledDays(state) {
-  try {
-    const calDate = new Date(state.calYear, state.calMonth, 1);
-    const data = await state.api.getDayInMonth(calDate);
-    state.enabledDays = new Set(data.map((d) => parseInt(d.Day, 10)));
-  } catch {
-    state.enabledDays = new Set();
-  }
-}
-
 async function loadUpdates(state) {
   try {
     const data = await state.api.getUpdatesInDay(state.date);
@@ -535,6 +510,471 @@ function wireFilterEvents(
   });
 }
 
+// ─── print ────────────────────────────────────────────────────────────────────
+/** Same approach as blocks/bcap/bcap.js: print an isolated document instead of
+ * the live page, so the fixed header/nav and the site's max-width layout
+ * don't shrink the table or swallow the logo.
+ *
+ * COLUMN SIZING STRATEGY (print):
+ * The rule is simple and browser-enforced — ONLY the Name column may wrap;
+ * every other column stays on a single line, sized end-to-end to its content.
+ * This is achieved with table-layout: auto + white-space: nowrap on every
+ * column except Name (which is white-space: normal and absorbs the leftover
+ * width). No JS width measurement / colgroup is needed: the browser sizes each
+ * nowrap column to exactly fit its longest single-line value, and Name takes
+ * whatever remains. Tradeoff (accepted): if the combined natural width of all
+ * non-Name columns ever exceeds the page, the table could overflow, since only
+ * Name can relieve width pressure. With this board's short numeric/date values
+ * that doesn't happen at the chosen print font-size. */
+function printElement(block) {
+  // Capture real computed styles from the LIVE (un-cloned) elements before
+  // any cloning/stripping happens below. Baking these actual resolved
+  // values into printCss — instead of hardcoded rem guesses — is what makes
+  // the print date/time box and the "Updated as of" label match the live
+  // board, since it reads whatever this site's real --bbl-* tokens resolve
+  // to. NOTE: the table header background is intentionally NOT read from the
+  // live header — the client PDF wants a plain WHITE header (not the live
+  // blue tint), so that's forced to white in printCss below.
+  const liveDateInput = block.querySelector('.db-date-display');
+  const liveTimeTrigger = block.querySelector('.db-time-trigger');
+  const liveCalLabel = block.querySelector('.db-cal-label');
+  const liveHeaderTh = block.querySelector('.db-table thead th');
+
+  const cs = (el) => (el ? getComputedStyle(el) : null);
+  const headerCs = cs(liveHeaderTh);
+  const dateCs = cs(liveDateInput);
+  const timeCs = cs(liveTimeTrigger);
+  const calLabelCs = cs(liveCalLabel);
+
+  // Header text color/weight still come from live (only the *background* is
+  // forced white); black is a safe fallback matching the client PDF.
+  const headerColor = headerCs?.color || '#000000';
+  const headerFontWeight = headerCs?.fontWeight || '700';
+  const dateBorder = dateCs
+    ? `${dateCs.borderTopWidth} solid ${dateCs.borderTopColor}`
+    : '0.0625rem solid #C7C7CC';
+  const dateRadius = dateCs?.borderRadius || '0.25rem';
+  const dateColor = dateCs?.color || '#565660';
+  const timeFontWeight = timeCs?.fontWeight || '700';
+  const calLabelWeight = calLabelCs?.fontWeight || '700';
+  const calLabelColor = calLabelCs?.color || '#565660';
+
+  const section = block.closest('.section') || block;
+  const content = section.cloneNode(true);
+
+  // Heading centering is handled separately below via the always-present
+  // `table-container` class rather than depending on authored classes here.
+  const sectionClasses = new Set(content.classList);
+  sectionClasses.add('table-container');
+
+  content.querySelectorAll([
+    '.db-controls-right',
+    '.db-filter-wrapper',
+    '.db-mp-popup',
+    '.db-go-btn',
+    '.db-sort-icon',
+    '.db-td-check',
+    '.db-th-download',
+    '.db-td-dl',
+  ].join(', ')).forEach((el) => el.remove());
+
+  // After the download link (.db-td-dl) is stripped above, the Maturity Date
+  // cell still contains the leftover whitespace/text nodes that surrounded
+  // it, which render as an empty second line — that's what pushed the date
+  // to the TOP of a too-tall cell. Collapse each maturity cell down to just
+  // its trimmed date text so the cell is exactly one line tall.
+  content.querySelectorAll('.db-td-maturity').forEach((td) => {
+    td.textContent = td.textContent.trim();
+  });
+
+  // The live header's Symbol column has colspan=2 for layout reasons the
+  // body doesn't match (only one Symbol cell, since the checkbox column is
+  // stripped above) — fixed by position (first header cell only), not by
+  // matching rowspan/colspan shape generally. Matching by shape alone could
+  // also strip a legitimate colspan from a different column further down
+  // the row if it happened to have the same rowspan="2" colspan="2" shape,
+  // which would desync the header's column count from the body's.
+  const symbolHeaderCell = content.querySelector(
+    '.db-table thead tr:first-child th:first-child[rowspan="2"][colspan="2"]',
+  );
+  if (symbolHeaderCell) symbolHeaderCell.removeAttribute('colspan');
+
+  content.querySelectorAll('.db-time-chevron, .db-time-list').forEach((el) => el.remove());
+
+  // Authored rich text renders the first remark paragraph's bold as an
+  // inline style; strip it here (on the print clone only) so font-weight
+  // is controlled by printCss instead.
+  content.querySelector('.db-remarks-content p:first-child')?.removeAttribute('style');
+
+  // cloneNode carries over an <input>'s live value as a DOM property, but
+  // content.innerHTML below only serializes attributes — promote it so the
+  // date survives that string round-trip into the print window.
+  const dateInput = content.querySelector('.db-date-display');
+  if (dateInput) dateInput.setAttribute('value', dateInput.value);
+
+  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  if (!logoEl) return;
+  // A cloned <picture>'s relative srcset can fail to resolve in the print
+  // window, so use the browser's already-resolved absolute image URL.
+  const logoImg = logoEl.tagName === 'IMG' ? logoEl : logoEl.querySelector('img');
+  if (!logoImg) return;
+  const logoSrc = logoImg.currentSrc || logoImg.src;
+  const brandLogo = `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoImg.alt || 'Bangkok Bank')}">`;
+
+  const pageTitle = section.querySelector('.default-content-wrapper > :is(h1, h2, h3, h4, h5, h6)')
+    ?.textContent?.trim() || document.querySelector('h1')?.textContent?.trim() || 'Print';
+
+  const printWindow = window.open('', '', 'height=500,width=800');
+
+  const printCss = `
+    @page {
+      size: A4 portrait;
+      margin: 8mm;
+    }
+
+    /* Chrome's "Background graphics" print toggle is off by default and
+       would otherwise drop background-color/-image, e.g. the underline
+       below, even though it renders fine in a normal on-screen view. */
+    html, body, * {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .header,
+    .header-wrapper,
+    .main-nav-desktop,
+    .brand-logo,
+    .brand-logo-container {
+      display: block;
+      visibility: visible;
+      position: static;
+    }
+
+    .brand-logo.block {
+      background-color: transparent;
+    }
+
+    .brand-logo-container {
+      width: 12.5rem;
+      height: 3.125rem;
+      margin-block: 3rem 1rem;
+    }
+
+    .brand-logo-container img {
+      display: block;
+      width: 12.5rem;
+      height: 3.125rem;
+      object-fit: contain;
+    }
+
+    /* Scoped to the always-present .table-container rather than
+       center-title/underline-title, so it centers regardless of authoring.
+       line-height set explicitly (1.2) — without it the two title lines
+       inherited a too-tight leading in the print popup and looked cramped. */
+    .table-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+      position: relative;
+      margin: 0;
+      padding: 0 0 0.75rem;
+      font-size: 2rem;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .table-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2.25rem;
+      height: 0.125rem;
+      background-color: #9E9E9E;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .dynamic-board {
+      margin-top: 0.5rem;
+    }
+
+    /* A4's print width falls under the 47.5rem breakpoint where these are
+       each width:100% (stacked), so shrink them to sit side by side. */
+    .dynamic-board .db-date-wrap,
+    .dynamic-board .db-time-wrap {
+      flex: 0 1 auto;
+    }
+
+    .dynamic-board .db-date-wrap {
+      width: 160px;
+    }
+
+    .dynamic-board .db-time-wrap {
+      width: 100px;
+    }
+
+    /* "Updated as of" label — real weight/size/color captured from the live
+       .db-cal-label, so it matches instead of being missing/unstyled. */
+    .dynamic-board .db-cal-label {
+      font-weight: ${calLabelWeight};
+      font-size: 12px;
+      color: ${calLabelColor};
+      margin-bottom: 0.375rem;
+    }
+
+    /* Date/time boxes — real border/radius/font captured from the live
+       .db-date-display and .db-time-trigger, so the bordered box shape
+       that was missing in print now actually renders. */
+    .dynamic-board .db-date-display,
+    .dynamic-board .db-time-trigger {
+      border: ${dateBorder};
+      border-radius: ${dateRadius};
+      font-size: 12px;
+      color: ${dateColor};
+      height: 2rem;
+      box-sizing: border-box;
+    }
+
+    .dynamic-board .db-time-trigger {
+      font-weight: ${timeFontWeight};
+    }
+
+    .dynamic-board .db-table {
+      width: 100%;
+      /* table-layout: AUTO (not fixed). Combined with white-space: nowrap on
+         every column except Name below, the browser sizes each non-Name
+         column to exactly fit its longest single-line value (end-to-end, no
+         wrapping) and lets Name — the only wrapping column — absorb the
+         remaining width. This directly enforces the rule "only Name wraps".
+         No colgroup / JS width measurement is used. */
+      table-layout: auto;
+      /* Thin 1px outer border to match the reference PDF. Single border only,
+         no outline layered on top. */
+      border: 1px solid #EBEBEB;
+      border-collapse: collapse;
+      font-size: 0.625rem;
+      line-height: 1.2;
+      color: #78787D;
+    }
+
+    /* Default: every cell stays on ONE line (end-to-end). Name is the sole
+       exception, overridden below. */
+    .dynamic-board .db-table th,
+    .dynamic-board .db-table td {
+      white-space: nowrap;
+    }
+
+    /* Name is the ONLY column allowed to wrap — it takes the leftover width
+       and breaks long names onto multiple lines. min-width:0 clears the base
+       stylesheet's 12rem floor so auto layout can size it freely. */
+    .dynamic-board .db-table td.db-td-name {
+      white-space: normal;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      min-width: 0;
+      width: 176px;
+    }
+    /* The Name header cell should also be allowed to wrap if needed. */
+    .dynamic-board .db-table thead th.db-th-name {
+      white-space: normal !important;
+    }
+
+    .dynamic-board .db-table thead,
+    .dynamic-board .db-table thead th {
+      position: static;
+      top: auto;
+    }
+
+    .dynamic-board .db-table thead th,
+    .dynamic-board .db-table thead tr:first-child th,
+    .dynamic-board .db-table thead tr:last-child th {
+      /* Client PDF wants a plain WHITE header (not the live blue tint), so
+         force white here rather than reading the live header background.
+         Chrome's print engine frequently drops a background painted at the
+         thead/tr level even with print-color-adjust: exact set globally —
+         setting it directly on each th is what actually survives printing. */
+      background-color: #FFFFFF;
+      color: ${headerColor};
+      font-size: 0.625rem;
+      font-weight: ${headerFontWeight} !important;
+      height: auto;
+      /* Headers may wrap onto 2 lines (e.g. "Indicative Yield* (%)") — that's
+         fine and matches the reference. Tight line-height keeps the header
+         row from growing too tall. */
+      white-space: normal !important;
+      line-height: 1.15;
+      padding: 0.2rem 0.3rem;
+      vertical-align: middle;
+      /* Thin 1px borders to match the reference. */
+      border: 0.0625rem solid var(--bbl-color-grey-20) !important;
+    }
+
+    .dynamic-board .db-table tbody td {
+      /* Thin 1px borders to match the reference. */
+      color: black !important;
+      /* Compact rows: kill the live table's min-height: 4.6875rem floor and
+         keep padding tight so rows are only as tall as their content needs.
+         Slightly wider horizontal padding so single-line columns aren't
+         cramped edge-to-edge. */
+      padding: 0.15rem 0.3rem;
+      vertical-align: middle;
+      font-size: 0.625rem;
+      line-height: 1.2;
+      min-height: 0;
+      height: auto;
+    }
+
+    .dynamic-board .db-td-symbol {
+      color: #0064FF !important;
+    }
+
+    /* Same as the thead case above: set row-striping/selection backgrounds
+       on the td itself, since a tr-level background can fail to print. */
+    .dynamic-board .db-table tbody tr:nth-child(even) td {
+      background-color: white;
+    }
+
+    .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr td {
+      background-color: #e5edf4;
+    }
+
+    .dynamic-board .db-table tbody tr:nth-child(even),
+    .dynamic-board .db-table-wrap .db-table .db-tbody-selected tr {
+      position: static;
+    }
+
+    /* Maturity date cell: the download icon and its leftover whitespace are
+       stripped in JS (cell collapsed to date-only text). Plain right-aligned,
+       single line, vertically centered like every other cell. */
+    .dynamic-board .db-td-maturity {
+      white-space: nowrap;
+      text-align: right;
+      vertical-align: middle;
+    }
+
+    /* Numeric cells right-align in the live sheet; keep that in print too. */
+    .dynamic-board .db-td-num {
+      text-align: right;
+    }
+
+    .dynamic-board .db-remarks-content {
+      height: auto;
+      overflow: visible;
+      font-size: 0.75rem;
+      line-height: 1.25rem !important;
+    }
+
+    .dynamic-board .db-remarks-content p {
+      color: black !important;
+    }
+
+    .dynamic-board .db-remarks-content p:first-child {
+      font-weight: 900 !important;
+    }
+
+    @media print {
+      .dynamic-board .db-table thead {
+        display: table-header-group;
+      }
+
+      .dynamic-board .db-table tbody {
+        display: table-row-group;
+      }
+
+      .dynamic-board .db-table {
+        break-inside: auto;
+      }
+
+      .dynamic-board .db-table tbody tr {
+        break-inside: avoid;
+      }
+    }
+  `;
+
+  const printHtml = `
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <title>${escapeHtml(pageTitle)}</title>
+      <link rel="stylesheet" href="/styles/styles.css">
+      <link rel="stylesheet" href="/styles/fonts.css">
+      <link rel="stylesheet" href="/blocks/header/header.css">
+      <link rel="stylesheet" href="/blocks/brand-logo/brand-logo.css">
+      <link rel="stylesheet" href="/blocks/dynamic-board/dynamic-board.css">
+      <style>${printCss}</style>
+    </head>
+    <body class="appear">
+      <header class="header-wrapper">
+        <div class="header block" data-block-status="loaded">
+          <div class="header-content">
+            <div class="main-nav-desktop">
+              <div class="brand-logo block" data-block-status="loaded">
+                <div class="brand-logo-container">
+                  ${brandLogo}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main>
+        <div class="${[...sectionClasses].join(' ')}">
+          ${content.innerHTML.trim()}
+        </div>
+      </main>
+    </body>
+  </html>
+  `;
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
+
+  // window.open('') leaves the popup's location at about:blank, which is what
+  // Chrome's print header/footer shows — replace it with the real page URL
+  // (same-origin, so this doesn't trigger a navigation).
+  try {
+    printWindow.history.replaceState(null, '', window.location.href);
+  } catch {
+    // ignore — footer just falls back to about:blank
+  }
+
+  // Wait on the popup's own <link> stylesheets and web fonts to actually
+  // finish loading before printing, capped by a generous safety timeout so a
+  // genuinely stuck resource can't hang the print forever. A too-short cap
+  // here is what causes intermittent broken print layouts (unstyled table,
+  // visible remarks-shadow overlay) on a cold cache/slow network.
+  const waitForStylesheets = () => Promise.all(
+    [...printWindow.document.querySelectorAll('link[rel="stylesheet"]')].map((link) => new Promise((resolve) => {
+      if (link.sheet) { resolve(); return; }
+      link.addEventListener('load', resolve, { once: true });
+      link.addEventListener('error', () => {
+        // eslint-disable-next-line no-console
+        console.warn('dynamic-board print: stylesheet failed to load:', link.href);
+        resolve();
+      }, { once: true });
+    })),
+  );
+  const waitForFonts = () => printWindow.document.fonts?.ready ?? Promise.resolve();
+  const timeout = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
+
+  Promise.race([
+    Promise.all([waitForStylesheets(), waitForFonts()]),
+    timeout(8000),
+  ]).then(() => {
+    printWindow.focus();
+    // Double rAF: the first callback fires before the browser has applied
+    // the styles/fonts that just resolved above, so the table's column
+    // widths and the remarks-shadow removal can still reflect a stale layout
+    // — waiting a second frame lets that layout pass complete before print.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        printWindow.print();
+        printWindow.close();
+      });
+    });
+  });
+}
+
 // ─── main decorate ────────────────────────────────────────────────────────────
 export default async function decorate(block) {
   const authoring = parseAuthoring(block);
@@ -542,14 +982,17 @@ export default async function decorate(block) {
   const state = createState(configs?.dynamicBoardDefaultSortKey);
   const language = getLang();
   state.monthLabels = parseCsvConfigList(placeholders?.monthLabels, buildIntlMonthLabels(language));
-  state.dayLabels = parseCsvConfigList(placeholders?.dayLabels, buildIntlDayLabels(language));
   state.buddhistYearOffset = language === 'th' ? Number(configs?.sharedBuddhistYearOffset) || 0 : 0;
   const isGov = authoring.boardType.toLowerCase().includes('government');
   state.api = createApiService(configs, authoring.boardType);
   state.placeholders = placeholders;
-  state.downloadUrl = isGov
+  // Relative /content/dam paths resolve directly on this domain (same as the
+  // download-file block's authored links), so no base URL needs prepending.
+  state.downloadUrl = (isGov
     ? configs?.dynamicBoardCorpBondDownloadUrl
-    : configs?.dynamicBoardBondRatesDownloadUrl;
+    : configs?.dynamicBoardBondRatesDownloadUrl) || '';
+  // eslint-disable-next-line no-console
+  console.log('Config Download URL:', state.downloadUrl);
   state.isGov = isGov;
   state.isThai = language === 'th';
   state.columns = parseTableHeading(authoring.tableHeadingEl, isGov);
@@ -562,9 +1005,8 @@ export default async function decorate(block) {
       <div class="db-controls-left">
         <span class="db-cal-label">${escapeHtml(authoring.calendarLabel)}</span>
         <div class="db-date-wrap">
-          <button type="button" class="db-date-display" id="db-date-display" aria-label="${placeholders?.dynamicBoardSelectDateAria || 'Select date'}" aria-expanded="false">--</button>
+          <input type="text" class="db-date-display" id="db-date-display" readonly aria-label="${placeholders?.dynamicBoardSelectDateAria || 'Select date'}">
           <button type="button" class="db-cal-icon icon-calendar" aria-label="${escapeHtml(authoring.calendarLabel)}" aria-expanded="false"></button>
-          <div class="db-calendar" id="db-calendar" hidden aria-label="${placeholders?.dynamicBoardDatePickerAria || 'Date picker'}"></div>
         </div>
         <div class="db-time-wrap">
           <div class="db-time-dropdown" id="db-time-dropdown" role="combobox" aria-expanded="false" aria-haspopup="listbox">
@@ -624,7 +1066,6 @@ export default async function decorate(block) {
     if (src && dst) moveInstrumentation(src, dst);
   });
 
-  const calEl = block.querySelector('#db-calendar');
   const dateDisplay = block.querySelector('#db-date-display');
   const calIcon = block.querySelector('.db-cal-icon');
   const timeDropdownEl = block.querySelector('#db-time-dropdown');
@@ -658,71 +1099,38 @@ export default async function decorate(block) {
     state.updates = lu ? [{ Day: lu.Day, Update: lu.Update, Time: lu.Time }] : [];
     state.rates = Array.isArray(latestRates) ? latestRates : [];
 
-    state.calYear = state.date.getFullYear();
-    state.calMonth = state.date.getMonth();
-
-    dateDisplay.textContent = formatDisplayDate(state.date, state.monthLabels);
     renderTimeDropdown(timeListEl, timeLabelEl, state);
     renderThead(thead, state);
     renderTable(tbodySel, tbodyAll, state);
-
-    // preload enabled days in background
-    loadEnabledDays(state);
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('Dynamic board init failed:', err);
   }
 
-  // ── calendar open/close ──
-  function setCalOpen(open) {
-    state.calOpen = open;
-    calEl.hidden = !open;
-    dateDisplay.setAttribute('aria-expanded', String(open));
-    calIcon.setAttribute('aria-expanded', String(open));
-    if (open) renderCalendar(calEl, state, placeholders);
-  }
-
-  async function toggleCal() {
-    if (!state.calOpen) {
-      if (!state.date) state.date = new Date();
-      state.calYear = state.calYear || state.date.getFullYear();
-      state.calMonth = state.calMonth ?? state.date.getMonth();
-      if (!state.enabledDays.size) await loadEnabledDays(state);
-      setCalOpen(true);
-    } else {
-      setCalOpen(false);
-    }
-  }
-
-  dateDisplay.addEventListener('click', (e) => { e.stopPropagation(); toggleCal(); });
-  calIcon.addEventListener('click', (e) => { e.stopPropagation(); toggleCal(); });
-
-  calEl.addEventListener('click', async (e) => {
-    e.stopPropagation();
-    const btn = e.target.closest('.db-cal-day-btn, .db-cal-nav');
-    if (!btn) return;
-
-    if (btn.classList.contains('db-cal-prev')) {
-      state.calMonth -= 1;
-      if (state.calMonth < 0) { state.calMonth = 11; state.calYear -= 1; }
-      await loadEnabledDays(state);
-      renderCalendar(calEl, state, placeholders);
-    } else if (btn.classList.contains('db-cal-next')) {
-      state.calMonth += 1;
-      if (state.calMonth > 11) { state.calMonth = 0; state.calYear += 1; }
-      await loadEnabledDays(state);
-      renderCalendar(calEl, state, placeholders);
-    } else if (btn.dataset.day) {
-      const day = parseInt(btn.dataset.day, 10);
-      state.date = new Date(state.calYear, state.calMonth, day);
-      dateDisplay.textContent = formatDisplayDate(state.date, state.monthLabels);
-      setCalOpen(false);
+  // ── calendar ── (same picker as blocks/bcap/bcap.js, via scripts/utils/calendar-picker.js)
+  if (!state.date) state.date = new Date();
+  const datePicker = attachCalendarPicker({
+    input: dateDisplay,
+    value: state.date,
+    fetchEnabledDays: async ({ year, month }) => {
+      try {
+        const days = await state.api.getDayInMonth(new Date(year, month, 1));
+        return days.map((d) => parseInt(d.Day, 10));
+      } catch {
+        return [];
+      }
+    },
+    onChange: async (selectedDate) => {
+      state.date = selectedDate;
       await loadUpdates(state);
       renderTimeDropdown(timeListEl, timeLabelEl, state);
-    }
+    },
   });
 
-  document.addEventListener('click', () => { if (state.calOpen) setCalOpen(false); });
+  calIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    datePicker.open();
+  });
 
   // ── time dropdown ──
   const toggleTimeDropdown = (open) => {
@@ -849,7 +1257,7 @@ export default async function decorate(block) {
   });
 
   // ── print ──
-  printBtn.addEventListener('click', () => window.print());
+  printBtn.addEventListener('click', () => printElement(block));
 
   // ── remarks ──
   initRemarks(block.querySelector('#db-remarks'), placeholders);
