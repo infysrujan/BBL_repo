@@ -181,9 +181,6 @@
   margin: 0;
 }
 
-.menu-card-actions-container.center-title p {
-  text-align: center;
-}
 
 .menu-card-action-title.has-description {
   flex-grow: 0;
