@@ -1,5 +1,8 @@
+/* ── Block ───────────────────────────────────────────────────────────────────── */
 
-
+.locate-us {
+  padding-bottom: 1.875rem;
+}
 
 /* ── Filter bar ──────────────────────────────────────────────────────────────── */
 
@@ -7,7 +10,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--bbl-space-250);
-  padding: 0 var(--bbl-space-400);
+  padding: 0 var(--bbl-space-600);
+  margin: 0 auto 1.875rem;
 }
 
 .locate-us .cards-list-item {
@@ -42,7 +46,7 @@
 }
 
 .locate-us-fragment .cards-list-image.cards-list-image-x-small {
-  height: 100px;
+  height: 6.25rem;
 }
 
 .locate-us .cards-list-content {
@@ -155,7 +159,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--bbl-space-100);
+  gap: var(--bbl-space-250);
 }
 
 .locate-us .locate-us-keyword-wrapper[hidden] {
@@ -314,7 +318,7 @@
 /* ── Results section ─────────────────────────────────────────────────────────── */
 
 .locate-us .locate-us-results {
-  margin-top: 1.875rem;
+  /* margin-top: 1.875rem; */
   padding-inline: var(--bbl-space-250);
 }
 
@@ -324,6 +328,7 @@
   font-weight: 700;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
+  line-height: 2.4375rem;
 }
 
 .locate-us .locate-us-map-row {
@@ -435,7 +440,7 @@
 }
 
 .locate-us .locate-us-card-chevron {
-  font-size: 8px;
+  font-size: 0.5rem;
   color: var(--bbl-color-gray-142);
   flex-shrink: 0;
   margin-left: var(--bbl-space-100);
@@ -448,8 +453,11 @@
 }
 
 .locate-us .locate-us-card-hr {
-  border: none;
+  /* border: none; */
   margin: 0 0 0.625rem;
+  padding-bottom: var(--bbl-space-000);
+  width: var(--bbl-space-800);
+  background: var(--bbl-color-grey-150);
 }
 
 .locate-us .locate-us-card-detail {
@@ -497,7 +505,6 @@
   flex-direction: column;
   gap: var(--bbl-space-025);
   min-width: 0;
-  overflow: hidden;
   position: relative;
 }
 
@@ -539,6 +546,8 @@
   margin-bottom: 0.625rem;
   overflow-wrap: break-word;
   padding-right: 0.3125rem;
+  margin-top: 0.625rem;
+  line-height: 1.375rem;
 }
 
 .locate-us .locate-us-card-directions {
@@ -779,7 +788,7 @@
 /* ── Overseas layout ─────────────────────────────────────────────────────────── */
 
 .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
-  padding: 0 21px;
+  padding: 0 1.3125rem;
   display: flex;
   justify-content: center;
   overflow: visible;
@@ -953,7 +962,7 @@
 
   .locate-us .locate-us-card-name {
     font-size: 1.4375rem;
-    line-height: 1.4219rem;
+    line-height: 1.625rem;
   }
 
   .locate-us .section {
@@ -965,9 +974,8 @@
     align-items: center;
     padding: 0 var(--bbl-space-600);
     gap: 0.625rem;
-    margin: 0 auto;
     max-width: 46.875rem;
-    width: 100%;
+    margin: 0 auto 1.875rem;
   }
 
   .locate-us .locate-us-service-select-wrapper {
@@ -1002,9 +1010,10 @@
   }
 
   .locate-us .locate-us-keyword-form {
-    height: 2.93rem;
+    height: 2.75rem;
     padding-right: var(--bbl-space-500);
     max-width: 100%;
+    box-sizing: border-box;
   }
 
   .locate-us .locate-us-district-btn {
@@ -1172,20 +1181,17 @@
   }
 
   .locate-us .locate-us-card-directions {
-    margin-top: auto;
     padding-top: 0;
     padding-right: 0.3125rem;
     padding-left: 0;
-
+    margin-top: 0.5rem;
   }
 
   .locate-us .locate-us-card-hr {
-    margin-top: 0;
-    margin-bottom: 0;
     padding-bottom: var(--bbl-space-000);
     width: var(--bbl-space-800);
-    height: 0.0325rem;
     background: var(--bbl-color-grey-150);
+    margin-block: 0 0.875rem;
   }
 
   .locate-us .locate-us-map-sidebar .locate-us-card-header {
@@ -1195,13 +1201,13 @@
   }
 
   .locate-us .locate-us-map-sidebar .locate-us-card-hr {
-    margin-top: 0.625rem;
+    margin-block: 0.125rem 0.9375rem;
   }
 
   /* ── Pagination ── */
 
   .locate-us .locate-us-pagination {
-    padding: var(--bbl-space-300) var(--bbl-space-500);
+    padding: var(--bbl-space-075) var(--bbl-space-500) var(--bbl-space-400);
   }
 
   .locate-us .locate-us-district-select {
@@ -1325,7 +1331,7 @@
 
   .locate-us .locate-us-filter-bar {
     margin: auto;
-    max-width: 51rem;
+    margin-bottom: 1.875rem;
   }
 
   .locate-us .locate-us-filter-bar:has(.locate-us-keyword-wrapper[hidden]) .locate-us-service-select-wrapper {

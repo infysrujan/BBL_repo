@@ -57,19 +57,22 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
         <hr class="locate-us-card-hr">
         <div class="locate-us-card-detail">
           ${branchStatus ? `
+            ${isNearest ? '<span class="locate-us-card-nearest-tag"></span>' : ''}
             <div class="locate-us-card-row">
               <span class="locate-us-card-label"></span>
               <div class="locate-us-card-status-col">
                 <span class="locate-us-card-status"></span>
-                ${isNearest ? '<span class="locate-us-card-nearest-tag"></span>' : ''}
+                
                 ${isOpen ? '<span class="locate-us-card-hours"></span>' : ''}
               </div>
             </div>` : ''}
           ${tel ? '<div class="locate-us-card-row"><span class="locate-us-card-label"></span><span class="locate-us-card-tel"></span></div>' : ''}
           ${fax ? '<div class="locate-us-card-row"><span class="locate-us-card-label"></span><span class="locate-us-card-fax"></span></div>' : ''}
           ${address ? '<p class="locate-us-card-address"></p>' : ''}
-          ${directionsUrl ? '<a class="locate-us-card-directions" target="_blank" rel="noopener noreferrer"></a>' : ''}
           ${showAppointment ? '<a class="locate-us-card-appointment" target="_blank" rel="noopener noreferrer"></a>' : ''}
+        </div>
+        <div class="locate-us-card-footer">
+          ${directionsUrl ? '<a class="locate-us-card-directions" target="_blank" rel="noopener noreferrer"></a>' : ''}
         </div>
       </div>
     </article>`);
