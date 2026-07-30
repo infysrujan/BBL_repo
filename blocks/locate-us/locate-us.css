@@ -1,5 +1,8 @@
+/* ── Block ───────────────────────────────────────────────────────────────────── */
 
-
+.locate-us.block {
+  margin-bottom: 1.875rem;
+}
 
 /* ── Filter bar ──────────────────────────────────────────────────────────────── */
 
@@ -1201,7 +1204,7 @@
   /* ── Pagination ── */
 
   .locate-us .locate-us-pagination {
-    padding: var(--bbl-space-300) var(--bbl-space-500);
+    padding: var(--bbl-space-075) var(--bbl-space-500) var(--bbl-space-400);
   }
 
   .locate-us .locate-us-district-select {
