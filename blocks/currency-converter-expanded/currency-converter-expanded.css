@@ -376,6 +376,10 @@
   margin: 0 auto;
 }
 
+.section.currency-converter-expanded-container:has(.converter-expanded-result.visible) {
+  padding-bottom: 0;
+}
+
 /* Disclaimer text */
 .currency-converter-expanded .converter-expanded-disclaimer {
   color: var(--bbl-color-white-alpha-50);
