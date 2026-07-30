@@ -167,6 +167,12 @@ export function renderPagination(paginationEl, total, page, onPageChange, placeh
   const nextPageLabel = placeholders?.locateUsAriaNextPage || 'Next page';
   const pagePrefix = placeholders?.locateUsAriaPagePrefix || 'Page';
 
+  // Reflect the current page in the URL hash (e.g. #page-2).
+  function goToPage(p) {
+    window.location.hash = `page-${p}`;
+    onPageChange(p);
+  }
+
   paginationEl.innerHTML = '';
 
   // Prev button
@@ -175,7 +181,7 @@ export function renderPagination(paginationEl, total, page, onPageChange, placeh
       ${page <= 1 ? 'disabled' : ''}>
       <span class="icon-arrow-left locate-us-page-nav-icon" aria-hidden="true"></span>
     </button>`);
-  prevBtn.addEventListener('click', () => onPageChange(page - 1));
+  prevBtn.addEventListener('click', () => goToPage(page - 1));
   paginationEl.appendChild(prevBtn);
 
   // Numbers wrapper
@@ -195,7 +201,7 @@ export function renderPagination(paginationEl, total, page, onPageChange, placeh
       function commitInput() {
         const val = parseInt(input.value, 10);
         if (val >= 1 && val <= totalPages) {
-          onPageChange(val);
+          goToPage(val);
         } else {
           input.replaceWith(ellipsis);
         }
@@ -213,7 +219,7 @@ export function renderPagination(paginationEl, total, page, onPageChange, placeh
       `<button class="locate-us-page-btn${p === page ? ' locate-us-page-btn-active' : ''}"
         aria-label="${pagePrefix} ${p}">${p}</button>`,
     );
-    btn.addEventListener('click', () => onPageChange(p));
+    btn.addEventListener('click', () => goToPage(p));
     numbersEl.appendChild(btn);
   });
 
@@ -225,7 +231,7 @@ export function renderPagination(paginationEl, total, page, onPageChange, placeh
       ${page >= totalPages ? 'disabled' : ''}>
       <span class="icon-arrow-left locate-us-page-nav-icon" aria-hidden="true"></span>
     </button>`);
-  nextBtn.addEventListener('click', () => onPageChange(page + 1));
+  nextBtn.addEventListener('click', () => goToPage(page + 1));
   paginationEl.appendChild(nextBtn);
 }
 
