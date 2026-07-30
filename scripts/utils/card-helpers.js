@@ -216,7 +216,7 @@ export async function fetchJson(url) {
   return fetchCache[url];
 }
 
-export function buildCardHtml(card, tag = {}, options = {}) {
+export function buildCardHtml(card, tag = {}, placeholders = {}, options = {}) {
   const { dateLine = '', logoHtml = '', footerExtra = '' } = options;
   const target = card.targetLink === 'true' ? '_blank' : '_self';
 
@@ -237,7 +237,7 @@ export function buildCardHtml(card, tag = {}, options = {}) {
       ${dateLine ? `<p class="listing-card-date">${dateLine}</p>` : ''}
     </div>
     <div class="listing-card-footer">
-      <a href="${card.ctaLink || ''}" target="${target}" class="listing-card-cta button-m primary" title="${card.ctaLabel}">${card.ctaLabel || 'Learn More'}</a>
+      <a href="${card.ctaLink || ''}" target="${target}" class="listing-card-cta button-m primary" title="${card.ctaLabel}">${card.ctaLabel || placeholders.promoLearnMore || 'Learn More'}</a>
       ${footerExtra}
     </div>
   </div>
@@ -292,8 +292,18 @@ export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollT
   });
 }
 
+function isTopPromotion(value) {
+  if (value === true) return true;
+  if (!value || value === false) return false;
+  const v = String(value).trim().toLowerCase();
+  return v === 'true' || v === 'yes' || v === 'y' || v === '1';
+}
+
 export function sortCards(cards) {
   return [...cards].sort((a, b) => {
+    const aCat = isTopPromotion(a.topCategory) ? 1 : 0;
+    const bCat = isTopPromotion(b.topCategory) ? 1 : 0;
+    if (bCat !== aCat) return bCat - aCat;
     const aStart = a.promotionStartDate ? new Date(a.promotionStartDate).getTime() : 0;
     const bStart = b.promotionStartDate ? new Date(b.promotionStartDate).getTime() : 0;
     if (bStart !== aStart) return bStart - aStart;
