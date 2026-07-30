@@ -156,10 +156,6 @@ a:hover {
     text-decoration: underline;
 }
 
-.default-content-wrapper > :not(.button-container) p a:any-link {
-    color: inherit;
-}
-
 main img {
     max-width: 100%;
     width: auto;
