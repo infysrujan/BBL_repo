@@ -526,7 +526,7 @@ function wireFilterEvents(
  * non-Name columns ever exceeds the page, the table could overflow, since only
  * Name can relieve width pressure. With this board's short numeric/date values
  * that doesn't happen at the chosen print font-size. */
-function printElement(block, state) {
+function printElement(block) {
   // Capture real computed styles from the LIVE (un-cloned) elements before
   // any cloning/stripping happens below. Baking these actual resolved
   // values into printCss — instead of hardcoded rem guesses — is what makes
@@ -554,11 +554,9 @@ function printElement(block, state) {
     ? `${dateCs.borderTopWidth} solid ${dateCs.borderTopColor}`
     : '0.0625rem solid #C7C7CC';
   const dateRadius = dateCs?.borderRadius || '0.25rem';
-  const dateFontSize = dateCs?.fontSize || '0.75rem';
   const dateColor = dateCs?.color || '#565660';
   const timeFontWeight = timeCs?.fontWeight || '700';
   const calLabelWeight = calLabelCs?.fontWeight || '700';
-  const calLabelSize = calLabelCs?.fontSize || '0.75rem';
   const calLabelColor = calLabelCs?.color || '#565660';
 
   const section = block.closest('.section') || block;
@@ -813,8 +811,6 @@ function printElement(block, state) {
 
     .dynamic-board .db-table tbody td {
       /* Thin 1px borders to match the reference. */
-      border: 0.0625rem solid var(--bbl-color-grey-20) !important;
-      border-right-color: var(--bbl-color-white) !important;
       color: black !important;
       /* Compact rows: kill the live table's min-height: 4.6875rem floor and
          keep padding tight so rows are only as tall as their content needs.
@@ -1261,7 +1257,7 @@ export default async function decorate(block) {
   });
 
   // ── print ──
-  printBtn.addEventListener('click', () => printElement(block, state));
+  printBtn.addEventListener('click', () => printElement(block));
 
   // ── remarks ──
   initRemarks(block.querySelector('#db-remarks'), placeholders);

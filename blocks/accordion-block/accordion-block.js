@@ -310,10 +310,6 @@ function buildAccordionPrintDocument(block) {
     panel.hidden = s.hidden;
   });
 
-  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
-    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
-  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
-
   const docTitle = block.querySelector('.accordion-block-title')?.textContent?.trim()
     || document.querySelector('title')?.textContent
     || placeholders.printLabel;
