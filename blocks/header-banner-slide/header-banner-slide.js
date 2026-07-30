@@ -151,10 +151,6 @@ export default function decorate(block) {
   const track = document.createElement('div');
   track.className = 'header-banner-slide-track';
 
-  const sourceHolder = document.createElement('div');
-  sourceHolder.className = 'header-banner-slide-source-rows';
-  sourceHolder.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;opacity:0;';
-
   slideItems.forEach((item) => {
     const [imageCell] = item.children || [];
     const picture = imageCell?.querySelector('picture');
@@ -167,12 +163,10 @@ export default function decorate(block) {
 
     moveInstrumentation(item, cardItem);
     track.appendChild(cardItem);
-    sourceHolder.appendChild(item);
   });
 
   carousel.appendChild(track);
   block.appendChild(carousel);
-  block.appendChild(sourceHolder);
 
   const ro = new ResizeObserver((entries) => {
     if (entries[0].contentRect.width > 0) {
