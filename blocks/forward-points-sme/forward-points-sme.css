@@ -644,7 +644,7 @@
 
   .forward-points-sme .fpsme-dp-header {
     width: 70%;
-    margin: 0 auto 0.75rem;
+    margin: 1rem auto 2rem;
   }
 
   .forward-points-sme .fpsme-dp-title {
@@ -712,8 +712,9 @@
   }
 
   .forward-points-sme .fpsme-datepicker {
-    max-width: 33.75rem;
-    width: 33.75rem;
+    max-width: 30rem;
+    width: 30rem;
+    padding: 20px 50px;
   }
 
   .forward-points-sme .fpsme-flag {
