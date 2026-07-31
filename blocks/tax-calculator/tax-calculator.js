@@ -42,7 +42,6 @@ function parseHTML(html) {
 }
 
 function buildNotes(title, noteLines) {
-  console.log('noteLines', noteLines);
   const div = parseHTML('<div class="tax-calc-notes"></div>');
   const titleElement = parseHTML('<p class="tax-calc-notes-title"></p>');
   titleElement.textContent = title;
@@ -1091,7 +1090,6 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
     </div>
   `));
 
-  console.log('noteLines', apiResult1.MaxESG, apiResult1);
   // ── Invest table (only when tax is payable) ──
   const rmfPensionMax = Math.round(apiResult1.MaxRMF || 0)
     + Math.round(apiResult1.MaxInsure60 || 0);
