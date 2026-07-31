@@ -14,6 +14,25 @@ function stripCommas(str) {
   return String(str ?? '').replace(/,/g, '');
 }
 
+const MAX_DECIMAL_DIGITS = 2;
+
+// Decimal-allowed fields display the raw value with no thousand separators
+function formatValue(val, allowDecimal) {
+  return allowDecimal ? String(val ?? 0) : formatNumber(val);
+}
+
+// Digits and a single decimal point (max MAX_DECIMAL_DIGITS decimal places) are allowed
+function isNumericKeyAllowed(key, input) {
+  const dotIndex = input.value.indexOf('.');
+  if (key === '.') return dotIndex === -1;
+  if (!/\d/.test(key)) return false;
+  if (dotIndex === -1) return true;
+  const hasSelection = input.selectionStart !== input.selectionEnd;
+  const afterDot = input.selectionStart > dotIndex;
+  const decimalDigits = input.value.slice(dotIndex + 1).length;
+  return hasSelection || !afterDot || decimalDigits < MAX_DECIMAL_DIGITS;
+}
+
 function getString(labels, key, fallback = '') {
   return labels[key] || fallback;
 }
@@ -102,6 +121,7 @@ function getJourney1Fields(labels, config) {
       min: 0,
       max: config.providentFundMaxPct,
       factor: 0.01,
+      allowDecimal: true,
       errorMsg: getString(labels, 'configValidationMaxValueError', 'Maximum up to {max}'),
     },
   ];
@@ -418,17 +438,20 @@ function buildStepIndicator(labels, activeStep) {
 // ─── Input Field ────────────────────────────────────────────────────────────────
 
 function buildInputField(fieldDef, savedValue) {
-  let displayVal = formatNumber(0);
+  let displayVal = formatValue(0, fieldDef.allowDecimal);
   if (savedValue !== undefined && savedValue !== null) {
-    displayVal = formatNumber(savedValue);
+    displayVal = formatValue(savedValue, fieldDef.allowDecimal);
   } else if (fieldDef.defaultValue !== null && fieldDef.defaultValue !== undefined) {
-    displayVal = formatNumber(fieldDef.defaultValue);
+    displayVal = formatValue(fieldDef.defaultValue, fieldDef.allowDecimal);
   }
 
   const isEmptyRange = fieldDef.max <= 0;
   const disabledInitially = isEmptyRange && !!fieldDef.disableWhenEmpty;
   const displayPlaceholder = isEmptyRange ? '0' : fieldDef.placeholder;
-  const maxLength = fieldDef.max > 0 ? formatNumber(Math.round(fieldDef.max)).length : 1;
+  const decimalAllowance = fieldDef.allowDecimal ? MAX_DECIMAL_DIGITS + 1 : 0;
+  const maxLength = fieldDef.max > 0
+    ? formatNumber(Math.round(fieldDef.max)).length + decimalAllowance
+    : 1;
 
   const initialHintText = disabledInitially
     ? (fieldDef.allUsedMsg || 'All tax deductions have been used.')
@@ -463,9 +486,11 @@ function buildInputField(fieldDef, savedValue) {
   const hintElement = fieldDef.hint ? field.querySelector(`#tc-hint-${fieldDef.id}`) : null;
   const errorElement = field.querySelector('.tax-calc-field-error');
 
-  // Only digits allowed + skip commas on backspace
+  // Only digits allowed (+ a decimal point when fieldDef.allowDecimal) + skip commas on backspace
   input.addEventListener('keydown', (e) => {
-    if (!/[\d]|Backspace|Delete|ArrowLeft|ArrowRight|Tab|Home|End/.test(e.key) && !e.ctrlKey && !e.metaKey) {
+    const isControlKey = /Backspace|Delete|ArrowLeft|ArrowRight|Tab|Home|End/.test(e.key);
+    const isAllowed = fieldDef.allowDecimal ? isNumericKeyAllowed(e.key, input) : /\d/.test(e.key);
+    if (!isControlKey && !e.ctrlKey && !e.metaKey && !isAllowed) {
       e.preventDefault();
     }
     if (e.key === 'Backspace' && input.selectionStart === input.selectionEnd) {
@@ -487,7 +512,7 @@ function buildInputField(fieldDef, savedValue) {
   // Empty on blur → 0, then reformat
   input.addEventListener('blur', () => {
     const val = stripCommas(input.value).trim();
-    input.value = formatNumber(val === '' ? 0 : val);
+    input.value = formatValue(val === '' ? 0 : val, fieldDef.allowDecimal);
     inputWrapper.classList.remove('tax-calc-input-wrap-focus');
   });
 
@@ -496,7 +521,7 @@ function buildInputField(fieldDef, savedValue) {
     const pos = input.selectionStart;
     const digitsBeforeCursor = input.value.substring(0, pos).replace(/,/g, '').length;
     const rawVal = stripCommas(input.value);
-    const formatted = rawVal === '' ? '' : formatNumber(rawVal);
+    const formatted = rawVal === '' ? '' : formatValue(rawVal, fieldDef.allowDecimal);
     input.value = formatted;
 
     // Restore cursor position accounting for shifted commas
@@ -543,7 +568,7 @@ function buildInputField(fieldDef, savedValue) {
       }
     } else {
       input.disabled = false;
-      input.maxLength = formatNumber(Math.round(newMax)).length;
+      input.maxLength = formatNumber(Math.round(newMax)).length + decimalAllowance;
       input.placeholder = `${formatNumber(fieldDef.min || 0)} - ${formatNumber(newMax)}`;
       if (hintElement) {
         hintElement.textContent = fieldDef.hint.replace('{max}', formatNumber(newMax));
