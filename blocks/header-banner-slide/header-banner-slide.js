@@ -130,17 +130,17 @@ function initCarousel(carousel, track) {
 export default function decorate(block) {
   const [titleRow, autoScrollRow, scrollDelayRow, infiniteLoopRow, ...slideItems] = block.children;
 
-  const title = titleRow?.children[0]?.textContent?.trim() || '';
+  const titleCell = titleRow?.children[0];
   const isAutoPlay = autoScrollRow?.children[0]?.textContent?.trim() !== 'false';
   const scrollTimeDelay = scrollDelayRow?.children[0]?.textContent?.trim() || '3000';
   const infiniteLoop = infiniteLoopRow?.children[0]?.textContent?.trim() !== 'false';
 
   block.innerHTML = '';
 
-  const titleDiv = document.createElement('div');
-  titleDiv.className = 'header-banner-slide-title';
-  if (title) titleDiv.textContent = title;
-  block.appendChild(titleDiv);
+  if (titleCell) {
+    titleCell.className = 'header-banner-slide-title';
+    block.appendChild(titleCell);
+  }
 
   const carousel = document.createElement('div');
   carousel.className = 'header-banner-slide-carousel content';
