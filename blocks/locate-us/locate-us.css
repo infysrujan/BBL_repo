@@ -111,7 +111,7 @@
   top: calc(100% + var(--bbl-space-050));
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 2;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-gray-122);
   border-radius: var(--bbl-radius-md);
@@ -194,9 +194,6 @@
   color: var(--bbl-color-grey-150);
 }
 
-.locate-us .locate-us-keyword-input:disabled {
-  cursor: not-allowed;
-}
 
 .locate-us .locate-us-keyword-search-btn {
   position: absolute;
@@ -829,7 +826,7 @@
   gap: var(--bbl-space-150);
   padding: 0.875rem var(--bbl-space-200) 0.875rem var(--bbl-space-250);
   background-color: var(--bbl-color-toast-error);
-  border-radius: 1.5rem;
+  border-radius: 3rem;
   pointer-events: all;
   min-width: 16.25rem;
   max-width: 21.25rem;
@@ -898,7 +895,7 @@
   padding: 0 var(--bbl-space-100);
   border: none;
   border-radius: 0;
-  color: rgb(255 255 255 / 65%);
+  color: var(--bbl-color-white);
   white-space: nowrap;
   font-size: var(--bbl-font-size-b2);
   letter-spacing: 0;
@@ -906,7 +903,7 @@
 
 .sub-nav .sub-nav-tab-btn.active {
   background-color: transparent;
-  color: var(--bbl-color-white);
+  color: rgb(255 255 255 / 65%);
 }
 
 /* ─── Tablet (> 47.5rem) ──────────────────────────────────────────────────────── */
