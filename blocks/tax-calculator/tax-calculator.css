@@ -467,7 +467,6 @@
   font-weight: 600;
   color: var(--bbl-color-gray-121);
   margin-bottom: 0.5rem;
-  max-width: 20rem;
 }
 
 .tax-calculator .tax-calc-parental-checks {
@@ -907,7 +906,7 @@
   .tax-calculator .tax-calc-parental {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 0.1rem;
     padding: 0.5rem 0 0;
   }
 
