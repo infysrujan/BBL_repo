@@ -97,6 +97,10 @@
   gap: var(--bbl-space-050);
 }
 
+.section.center-image .columns-3-cols > div:has(> .columns-img-col + .columns-img-col + .columns-img-col) p:has( > picture) {
+  margin: 0;
+}
+
 @media (width > 47.5rem) {
   .accordion-block .columns-2-cols > div:has(.columns-img-col + div > p) {
     min-width: auto;
