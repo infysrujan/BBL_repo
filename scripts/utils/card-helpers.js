@@ -265,9 +265,9 @@ export function buildPaginationHtml(current, total) {
   const prevAttr = current === 1 ? ' disabled' : '';
   const nextAttr = current === total ? ' disabled' : '';
   return `
-    <button class="listing-card-arrow" data-dir="prev"${prevAttr} aria-label="Previous"><i class="icon-arrow-left" aria-hidden="true"></i></button>
+    <button class="listing-card-arrow" data-dir="prev"${prevAttr} title="Previous"><i class="icon-arrow-left" aria-hidden="true"></i></button>
     <div class="listing-card-pages">${inner}</div>
-    <button class="listing-card-arrow listing-card-arrow-next" data-dir="next"${nextAttr} aria-label="Next"><i class="icon-arrow-left" aria-hidden="true"></i></button>`;
+    <button class="listing-card-arrow listing-card-arrow-next" data-dir="next"${nextAttr} title="Next"><i class="icon-arrow-left" aria-hidden="true"></i></button>`;
 }
 
 export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollTarget) {
