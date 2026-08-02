@@ -220,7 +220,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
               <span class="icon-dropdown locate-us-district-btn-icon" aria-hidden="true"></span>
             </button>
             <ul class="locate-us-district-dropdown" role="listbox" hidden>
-              <li class="locate-us-district-item locate-us-district-item-header" role="option" aria-disabled="true"></li>
+              <li class="locate-us-district-item locate-us-district-item-header" role="option"></li>
               ${districtItems}
             </ul>`;
           const districtBtn = districtWrapper.querySelector('.locate-us-district-btn');
@@ -259,6 +259,14 @@ export async function buildThailandUI(container, data, placeholders, configs) {
               const districtLocations = await fetchByProvince(...args);
               showResults(districtLocations);
             });
+          });
+
+          districtDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
+            districtBtnText.textContent = selectDistrictText;
+            districtDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+            toggleDistrictDropdown(false);
+            const districtLocations = await fetchByProvince(province, '', userLat, userLng, selectedServiceCode, configs);
+            showResults(districtLocations);
           });
 
           districtWrapper.hidden = false;
@@ -559,7 +567,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
                 <span class="icon-dropdown locate-us-district-btn-icon" aria-hidden="true"></span>
               </button>
               <ul class="locate-us-district-dropdown" role="listbox" hidden>
-                <li class="locate-us-district-item locate-us-district-item-header" role="option" aria-disabled="true"></li>
+                <li class="locate-us-district-item locate-us-district-item-header" role="option"></li>
                 ${cityItems}
               </ul>`;
 
@@ -595,6 +603,14 @@ export async function buildOverseasUI(container, placeholders, configs) {
                 const cityFiltered = await fetchByCountryCity(selectedCountry, city);
                 showOverseasResults(cityFiltered);
               });
+            });
+
+            cityDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
+              cityBtnText.textContent = selectCityText;
+              cityDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+              toggleCityDropdown(false);
+              const cityFiltered = await fetchByCountryCity(selectedCountry, '');
+              showOverseasResults(cityFiltered);
             });
 
             districtWrapper.hidden = false;

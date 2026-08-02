@@ -748,14 +748,14 @@
 
 .locate-us .locate-us-district-item-header {
   color: var(--bbl-color-blue-90);
-  cursor: default;
+  cursor: pointer;
 }
 
 .locate-us .locate-us-district-dropdown:has(.locate-us-district-item-active) .locate-us-district-item-header {
   color: var(--bbl-color-gray-121);
 }
 
-.locate-us .locate-us-district-item:not(.locate-us-district-item-header):hover {
+.locate-us .locate-us-district-item:hover {
   color: var(--bbl-color-blue-90);
 }
 
