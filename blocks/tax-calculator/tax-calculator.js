@@ -887,7 +887,26 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
     });
   }
 
-  footer.querySelector('.tax-calc-btn-outline').addEventListener('click', onBack);
+  const collectJourney2Values = () => {
+    const values = {};
+    groups.forEach((group) => {
+      group.fields.forEach((fieldDef) => {
+        if (fieldDef.type === 'checkbox') {
+          values[fieldDef.id] = [...block.querySelectorAll('.tax-calc-parental .tax-calc-checkbox')]
+            .map((c) => c.checked);
+        } else {
+          const input = block.querySelector(`#tc-${fieldDef.id}`);
+          values[fieldDef.id] = parseFloat(stripCommas(input?.value)) || 0;
+        }
+      });
+    });
+    return values;
+  };
+
+  footer.querySelector('.tax-calc-btn-outline').addEventListener('click', () => {
+    state.journey2 = collectJourney2Values();
+    onBack();
+  });
 
   footer.querySelector('.tax-calc-btn-primary').addEventListener('click', async (e) => {
     const button = e.currentTarget;
@@ -914,18 +933,7 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
 
     if (!valid) return;
 
-    const values = {};
-    groups.forEach((group) => {
-      group.fields.forEach((fieldDef) => {
-        if (fieldDef.type === 'checkbox') {
-          values[fieldDef.id] = [...block.querySelectorAll('.tax-calc-parental .tax-calc-checkbox')]
-            .map((c) => c.checked);
-        } else {
-          const input = block.querySelector(`#tc-${fieldDef.id}`);
-          values[fieldDef.id] = parseFloat(stripCommas(input.value)) || 0;
-        }
-      });
-    });
+    const values = collectJourney2Values();
 
     button.classList.add('tax-calc-btn-loading');
 
