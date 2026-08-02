@@ -1226,7 +1226,7 @@
   .locate-us .locate-us-cards>.locate-us-card:only-child {
     grid-column: 2;
     justify-self: center;
-    max-width: 15.875rem;
+    max-width: 22.5rem;
     box-shadow: 0 var(--bbl-space-025) 1.125rem rgb(0 0 0 / 8%);
     border: none;
   }
@@ -1325,6 +1325,14 @@
   .locate-us:has(.locate-us-results-overseas) .locate-us-cards .locate-us-card:nth-child(4n+1):last-child {
     grid-column-start: 2;
   }
+
+  /* Center a leftover last row of 1 or 2 cards instead of snapping it left */
+  /* stylelint-disable no-descending-specificity */
+  .locate-us .locate-us-cards .locate-us-card:nth-child(4n+1):nth-last-child(2),
+  .locate-us .locate-us-cards .locate-us-card:nth-child(4n+1):last-child {
+    grid-column-start: 2;
+  }
+  /* stylelint-enable no-descending-specificity */
 
   .locate-us .locate-us-filter-bar {
     margin: auto;
