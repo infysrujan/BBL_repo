@@ -395,7 +395,6 @@
   font-weight: var(--bbl-font-weight-regular);
   text-align: start;
   color: var(--bbl-color-grey-85);
-  cursor: pointer;
   transition: all;
 }
 
@@ -1089,7 +1088,6 @@
   .locate-us .locate-us-card {
     padding: var(--bbl-space-250);
     background-color: var(--bbl-color-white);
-    cursor: pointer;
     border: 0.0625rem solid var(--bbl-color-gray-122);
     box-shadow: 0 0 var(--bbl-space-200) 0 var(--bbl-color-black-alpha-10);
     overflow: hidden;
@@ -1266,6 +1264,7 @@
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-card-header {
     padding: 0;
+    cursor: default;
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-card-hr {
