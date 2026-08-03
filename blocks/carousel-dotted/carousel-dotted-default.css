@@ -325,6 +325,7 @@
   justify-content: flex-start;
   left: var(--bbl-space-300);
   right: auto;
+  bottom: var(--bbl-space-250);
 }
 
 .carousel-dotted.dots-center-inside-container .slick-dots {
