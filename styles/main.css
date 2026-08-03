@@ -156,10 +156,6 @@ a:hover {
     text-decoration: underline;
 }
 
-.default-content-wrapper > :not(.button-container) p a:any-link {
-    color: inherit;
-}
-
 main img {
     max-width: 100%;
     width: auto;
@@ -308,6 +304,10 @@ main img {
     .section.underline-image .default-content-wrapper > p > picture,
     .section.underline-image .default-content-wrapper > p > img {
         padding-bottom: 1.875rem;
+    }
+    
+    .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child + p {
+        max-width: 65%;
     }
 }
 
