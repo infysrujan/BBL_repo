@@ -47,10 +47,6 @@
   vertical-align: middle;
 }
 
-.default-content-wrapper > p:has(picture.rte-inline-image):has(+ p:has(picture.rte-inline-image)),
-.default-content-wrapper > p:has(picture.rte-inline-image) + p:has(picture.rte-inline-image) {
-  display: inline;
-}
 
 .default-content-wrapper li:has(> p:has(picture.rte-inline-image) + p:has(picture.rte-inline-image)) > p:has(picture.rte-inline-image) {
   display: inline-block;

@@ -165,6 +165,16 @@ function runRteMarkers(paragraphs) {
   processInlineImageMarkers(paragraphs);
   processIconMarkers(paragraphs);
   processImageLinks(paragraphs);
+  // Merge a pure-button rte-image-link paragraph into the preceding one ONLY when
+  // the preceding paragraph has text (text+button). This keeps stacked pure-button
+  // paragraphs stacked while pulling a lone 2nd button next to its text+button sibling.
+  paragraphs.forEach((p) => {
+    if (!p.isConnected || !p.classList.contains('rte-image-link') || p.textContent.trim()) return;
+    const prev = p.previousElementSibling;
+    if (!prev?.classList.contains('rte-image-link') || !prev.textContent.trim()) return;
+    [...p.childNodes].forEach((node) => prev.appendChild(node));
+    p.remove();
+  });
 }
 
 export function decorateIconInContainer(container) {
