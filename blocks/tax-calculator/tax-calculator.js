@@ -1101,13 +1101,16 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
   // ── Invest table (only when tax is payable) ──
   const rmfPensionMax = Math.round(apiResult1.MaxRMF || 0)
     + Math.round(apiResult1.MaxInsure60 || 0);
+
+  const individualMaxesThaiEsg = Number.parseInt(getString(labels, 'individualMaxesThaiEsg', '300000'), 10);
+
   const notesElement = buildNotes(
     getString(labels, 'configNotesTitle', 'Notes'),
     [
       getString(labels, 'configNotesInvestmentCalculation', 'Calculate the maximum amount that you can invest according to the conditions of the Revenue Department.'),
       getString(labels, 'configNotesRmfAndPension', `* The combined amount of RMF and pension insurance premiums must not exceed ${formatNumber(rmfPensionMax)} baht`).replace('{combinedRMFPensionMax}', formatNumber(rmfPensionMax)),
       getString(labels, 'configNotesLifeAndHealthInsurance', `** The combined amount of life insurance premiums and health insurance premiums must not exceed ${formatNumber(data.combinedInsuranceMax)} baht`).replace('{combinedLifeHealthMax}', formatNumber(data.combinedInsuranceMax)),
-      getString(labels, 'configNotesThaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${formatNumber(Math.round(apiResult1.MaxESG))} baht whichever is lower`).replace('{thaiEsgMax}', formatNumber(Math.round(apiResult1.MaxESG))),
+      getString(labels, 'configNotesThaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${formatNumber(individualMaxesThaiEsg)} baht whichever is lower`).replace('{thaiEsgMax}', formatNumber(individualMaxesThaiEsg)),
     ],
   );
 
