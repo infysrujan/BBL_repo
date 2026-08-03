@@ -17,6 +17,11 @@
   margin: 0;
 }
 
+.default-content-wrapper picture.rte-inline-image {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .default-content-wrapper p.rte-has-icon picture:not(.rte-inline-image) {
   display: inline-block;
   vertical-align: middle;
@@ -42,8 +47,9 @@
   vertical-align: middle;
 }
 
-.default-content-wrapper p:has(picture.rte-inline-image) + p:has(picture.rte-inline-image) {
-  margin-left: 0.5rem;
+.default-content-wrapper > p:has(picture.rte-inline-image):has(+ p:has(picture.rte-inline-image)),
+.default-content-wrapper > p:has(picture.rte-inline-image) + p:has(picture.rte-inline-image) {
+  display: inline;
 }
 
 .default-content-wrapper li:has(> p:has(picture.rte-inline-image) + p:has(picture.rte-inline-image)) > p:has(picture.rte-inline-image) {

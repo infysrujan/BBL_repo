@@ -1,15 +1,9 @@
-const NEWTAB_RE = /#(newtab)/i;
+const NEWTAB_RE = /#newtab/i;
 
 function walkToPicture(startNode, forward = true) {
   let n = startNode;
   while (n && n.nodeName !== 'PICTURE') n = forward ? n.nextSibling : n.previousSibling;
   return n || null;
-}
-
-function adjacentPicture(p) {
-  return p.nextElementSibling?.querySelector('picture')
-    ?? p.previousElementSibling?.querySelector('picture')
-    ?? null;
 }
 
 function setPicDimensions(pic, w, h) {
@@ -26,9 +20,30 @@ function processInlineImageMarkers(paragraphs) {
     let picFound = false;
     [...markerP.childNodes].forEach((node) => {
       if (node.nodeType !== Node.TEXT_NODE || !INLINE_IMAGE_RE.test(node.nodeValue)) return;
-      const pic = walkToPicture(node.nextSibling) ?? adjacentPicture(markerP);
-      if (pic) { pic.classList.add('rte-inline-image'); picFound = true; }
+      const inlinePic = walkToPicture(node.nextSibling);
+      const pic = inlinePic ?? markerP.nextElementSibling?.querySelector('picture') ?? null;
+      if (!pic) return;
+      pic.classList.add('rte-inline-image');
+      picFound = true;
       node.nodeValue = node.nodeValue.replace(/#inlineimage\s*/gi, '');
+      if (!inlinePic) {
+        const adjP = pic.closest('p');
+        node.after(pic);
+        if (adjP && !adjP.textContent.trim() && !adjP.querySelector('a, img')) adjP.remove();
+        let sib = markerP.nextElementSibling;
+        while (sib && INLINE_IMAGE_RE.test(sib.textContent) && !sib.textContent.replace(/#inlineimage\s*/gi, '').trim()) {
+          const sibPic = sib.nextElementSibling?.querySelector('picture') ?? null;
+          if (!sibPic) break;
+          sibPic.classList.add('rte-inline-image');
+          const sibP = sibPic.closest('p');
+          markerP.appendChild(sibPic);
+          if (sibP && !sibP.textContent.trim() && !sibP.querySelector('a, img')) sibP.remove();
+          [...sib.childNodes].forEach((n) => { if (n.nodeType === Node.TEXT_NODE) n.nodeValue = ''; });
+          const del = sib;
+          sib = del.nextElementSibling;
+          del.remove();
+        }
+      }
     });
     if (picFound && !markerP.textContent.trim() && !markerP.querySelector('picture, img')) {
       markerP.remove();
@@ -55,16 +70,11 @@ function processIconMarkers(paragraphs) {
 
       if (!pic) {
         const nextP = markerP.nextElementSibling?.tagName === 'P' ? markerP.nextElementSibling : null;
-        const prevP = markerP.previousElementSibling?.tagName === 'P' ? markerP.previousElementSibling : null;
         const nextPic = nextP?.querySelector('picture');
-        const prevPic = prevP?.querySelector('picture');
         let adjacentP = null;
         if (nextPic) {
           pic = nextPic;
           adjacentP = nextP;
-        } else if (prevPic) {
-          pic = prevPic;
-          adjacentP = prevP;
         }
 
         if (adjacentP) {
@@ -105,7 +115,8 @@ function processImageLinks(paragraphs) {
     // Search after markerNode then before it — icon processing may have already moved the picture
     const pic = walkToPicture(markerNode.nextSibling)
       ?? walkToPicture(markerNode.previousSibling, false)
-      ?? adjacentPicture(markerP);
+      ?? markerP.nextElementSibling?.querySelector('picture')
+      ?? null;
     if (!pic) return;
 
     const picP = pic.closest('p');
@@ -115,15 +126,15 @@ function processImageLinks(paragraphs) {
     if (!anchor) {
       const nextSib = picP?.nextElementSibling;
       if (nextSib && nextSib !== markerP && !IMAGE_LINK_RE.test(nextSib.textContent)) {
-        anchor = nextSib.querySelector('a');
-        if (anchor) linkP = nextSib;
+        const a = nextSib.querySelector('a');
+        if (a && !a.querySelector('picture, img')) { anchor = a; linkP = nextSib; }
       }
     }
     if (!anchor) {
       const prevSib = picP?.previousElementSibling;
       if (prevSib && prevSib !== markerP && !IMAGE_LINK_RE.test(prevSib.textContent)) {
-        anchor = prevSib.querySelector('a');
-        if (anchor) linkP = prevSib;
+        const a = prevSib.querySelector('a');
+        if (a && !a.querySelector('picture, img')) { anchor = a; linkP = prevSib; }
       }
     }
     if (!anchor) return;
