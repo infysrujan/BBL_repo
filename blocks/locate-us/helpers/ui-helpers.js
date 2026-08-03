@@ -1,6 +1,6 @@
 import { loadFragment } from '../../fragment/fragment.js';
 import {
-  buildUrl, showToast, hasValue,
+  buildUrl, showToast, getUserLocation, hasValue,
 } from './utils.js';
 import { fetchGet } from '../../../scripts/utils/fetchApi.js';
 import {
@@ -45,33 +45,19 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   const defaultLat = parseFloat(configs?.locateUsDefaultLat) || FALLBACK_LAT;
   const defaultLng = parseFloat(configs?.locateUsDefaultLng) || FALLBACK_LNG;
 
-  // Do NOT gate the first API call on geolocation. Start with the default
-  // coords so the near-me request fires immediately, then refine in the
-  // background if/when the browser returns a real fix (see bottom of fn).
-  const provincesCache = await fetchProvinces(configs);
-  let userLat = defaultLat;
-  let userLng = defaultLng;
+  const [location, provincesCache] = await Promise.all([
+    getUserLocation(defaultLat, defaultLng),
+    fetchProvinces(configs),
+  ]);
+  const userLat = location.lat;
+  const userLng = location.lng;
   const serviceParamKeys = (configs?.locateUsServiceLocationCodes || '')
     .split(',').map((s) => s.trim()).filter(Boolean);
 
   let selectedServiceCode = '';
-  let selectedProvince = '';
-  let selectedDistrict = '';
   let currentIsAtm = false;
   let currentPage = 1;
-
-  function findProvinceByKeyword(keyword) {
-    if (!keyword || !provincesCache?.length) return '';
-    const normalized = keyword.trim().toLowerCase();
-    return provincesCache.find((p) => p.trim().toLowerCase() === normalized) || '';
-  }
-
-  async function fetchThailandLocationsForSelection(province, district = '') {
-    if (province) {
-      return fetchByProvince(province, district, userLat, userLng, selectedServiceCode, configs);
-    }
-    return fetchNearMe(userLat, userLng, selectedServiceCode, configs);
-  }
+  let keywordFromSelection = false;
 
   const selectServiceText = placeholders?.selectServiceText || 'Select Service';
   const enterKeywordText = placeholders?.enterKeywordText || 'Enter Keyword';
@@ -210,14 +196,24 @@ export async function buildThailandUI(container, data, placeholders, configs) {
         ${provinces.map(() => '<li class="locate-us-province-item"></li>').join('')}
       </ul>`;
 
+    provinceDropdown.querySelector('.locate-us-province-item-header').addEventListener('click', async () => {
+      keywordInput.value = '';
+      provinceDropdown.querySelectorAll('.locate-us-province-item').forEach((item) => item.classList.remove('locate-us-province-item-active'));
+      provinceDropdown.hidden = true;
+      dropdownToggle.setAttribute('aria-expanded', 'false');
+      districtWrapper.hidden = true;
+      districtWrapper.innerHTML = '';
+      const nearMeLocations = await fetchNearMe(userLat, userLng, selectedServiceCode, configs);
+      showResults(nearMeLocations);
+    });
+
     provinceDropdown.querySelectorAll('.locate-us-province-item:not(.locate-us-province-item-header)')
       .forEach((li, i) => {
         li.textContent = provinces[i];
         li.addEventListener('click', async () => {
           const province = provinces[i];
-          selectedProvince = province;
-          selectedDistrict = '';
           keywordInput.value = province;
+          keywordFromSelection = true;
           provinceDropdown.querySelectorAll('.locate-us-province-item').forEach((item) => item.classList.remove('locate-us-province-item-active'));
           li.classList.add('locate-us-province-item-active');
           provinceDropdown.hidden = true;
@@ -237,7 +233,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
               <span class="icon-dropdown locate-us-district-btn-icon" aria-hidden="true"></span>
             </button>
             <ul class="locate-us-district-dropdown" role="listbox" hidden>
-              <li class="locate-us-district-item locate-us-district-item-header" role="option" aria-disabled="true"></li>
+              <li class="locate-us-district-item locate-us-district-item-header" role="option"></li>
               ${districtItems}
             </ul>`;
           const districtBtn = districtWrapper.querySelector('.locate-us-district-btn');
@@ -265,10 +261,17 @@ export async function buildThailandUI(container, data, placeholders, configs) {
             }
           });
 
+          districtDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
+            districtBtnText.textContent = selectDistrictText;
+            districtDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+            toggleDistrictDropdown(false);
+            const provinceLocations = await fetchByProvince(province, '', userLat, userLng, selectedServiceCode, configs);
+            showResults(provinceLocations);
+          });
+
           districtDropdown.querySelectorAll('.locate-us-district-item:not(.locate-us-district-item-header)').forEach((districtItem) => {
             districtItem.addEventListener('click', async () => {
               const district = districtItem.dataset.value;
-              selectedDistrict = district;
               districtBtnText.textContent = district;
               districtDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
               districtItem.classList.add('locate-us-district-item-active');
@@ -277,6 +280,14 @@ export async function buildThailandUI(container, data, placeholders, configs) {
               const districtLocations = await fetchByProvince(...args);
               showResults(districtLocations);
             });
+          });
+
+          districtDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
+            districtBtnText.textContent = selectDistrictText;
+            districtDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+            toggleDistrictDropdown(false);
+            const districtLocations = await fetchByProvince(province, '', userLat, userLng, selectedServiceCode, configs);
+            showResults(districtLocations);
           });
 
           districtWrapper.hidden = false;
@@ -302,7 +313,6 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     keywordInput.disabled = isSpecial;
     keywordInput.value = '';
     keywordWrapper.hidden = isSpecial;
-    selectedDistrict = '';
     districtWrapper.hidden = true;
     districtWrapper.innerHTML = '';
     locationFilterRow.hidden = true;
@@ -322,10 +332,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     }
 
     try {
-      const locations = await fetchThailandLocationsForSelection(
-        selectedProvince,
-        selectedDistrict,
-      );
+      const locations = await fetchNearMe(userLat, userLng, selectedServiceCode, configs);
       showResults(locations);
     } catch {
       // eslint-disable-next-line no-console
@@ -357,14 +364,12 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   keywordInput.addEventListener('click', () => {
     // Clicking the field clears any selected value so the placeholder shows.
     keywordInput.value = '';
-    selectedProvince = '';
-    selectedDistrict = '';
+    keywordFromSelection = false;
     toggleProvinceDropdown();
   });
 
   keywordInput.addEventListener('input', () => {
-    selectedProvince = '';
-    selectedDistrict = '';
+    keywordFromSelection = false;
     provinceDropdown.hidden = true;
     dropdownToggle.setAttribute('aria-expanded', 'false');
   });
@@ -378,6 +383,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
   keywordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (keywordFromSelection) return;
     if (!selectedServiceCode) {
       showToast(placeholders?.pleaseSelectServiceText || 'Please select service', placeholders);
       return;
@@ -386,25 +392,8 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     if (!keyword) return;
 
     try {
-      const province = findProvinceByKeyword(keyword);
-      let locations;
-      if (province) {
-        selectedProvince = province;
-        selectedDistrict = '';
-        locations = await fetchByProvince(
-          province,
-          '',
-          userLat,
-          userLng,
-          selectedServiceCode,
-          configs,
-        );
-      } else {
-        selectedProvince = '';
-        selectedDistrict = '';
-        const kwArgs = [userLat, userLng, keyword, '0', selectedServiceCode, configs];
-        locations = await fetchByKeyword(...kwArgs);
-      }
+      const kwArgs = [userLat, userLng, keyword, '0', selectedServiceCode, configs];
+      const locations = await fetchByKeyword(...kwArgs);
       districtWrapper.hidden = true;
       districtWrapper.innerHTML = '';
       showResults(locations);
@@ -451,9 +440,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
 
   let countriesCache = [];
   let selectedCountry = '';
-  // Value currently shown in the input; a second search-button click on this
-  // same value clears it instead of re-searching (toggle behaviour).
-  let committedKeyword = '';
+  let keywordFromSelection = false;
 
   async function fetchCountries() {
     if (!API_GET_COUNTRY) return [];
@@ -589,7 +576,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
         li.addEventListener('click', async () => {
           selectedCountry = countries[i];
           keywordInput.value = countries[i];
-          committedKeyword = countries[i];
+          keywordFromSelection = true;
           countryDropdown.hidden = true;
           dropdownToggle.setAttribute('aria-expanded', 'false');
           districtWrapper.hidden = true;
@@ -610,7 +597,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
                 <span class="icon-dropdown locate-us-district-btn-icon" aria-hidden="true"></span>
               </button>
               <ul class="locate-us-district-dropdown" role="listbox" hidden>
-                <li class="locate-us-district-item locate-us-district-item-header" role="option" aria-disabled="true"></li>
+                <li class="locate-us-district-item locate-us-district-item-header" role="option"></li>
                 ${cityItems}
               </ul>`;
 
@@ -636,6 +623,14 @@ export async function buildOverseasUI(container, placeholders, configs) {
               if (!districtWrapper.contains(e.target)) toggleCityDropdown(false);
             });
 
+            cityDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
+              cityBtnText.textContent = selectCityText;
+              cityDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+              toggleCityDropdown(false);
+              const countryLocations = await fetchByCountryCity(selectedCountry, '');
+              showOverseasResults(countryLocations);
+            });
+
             cityDropdown.querySelectorAll('.locate-us-district-item:not(.locate-us-district-item-header)').forEach((cityItem) => {
               cityItem.addEventListener('click', async () => {
                 const city = cityItem.dataset.value;
@@ -646,6 +641,14 @@ export async function buildOverseasUI(container, placeholders, configs) {
                 const cityFiltered = await fetchByCountryCity(selectedCountry, city);
                 showOverseasResults(cityFiltered);
               });
+            });
+
+            cityDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
+              cityBtnText.textContent = selectCityText;
+              cityDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+              toggleCityDropdown(false);
+              const cityFiltered = await fetchByCountryCity(selectedCountry, '');
+              showOverseasResults(cityFiltered);
             });
 
             districtWrapper.hidden = false;
@@ -672,7 +675,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
   keywordInput.addEventListener('click', toggleCountryDropdown);
 
   keywordInput.addEventListener('input', () => {
-    committedKeyword = '';
+    keywordFromSelection = false;
     countryDropdown.hidden = true;
     dropdownToggle.setAttribute('aria-expanded', 'false');
   });
@@ -686,18 +689,8 @@ export async function buildOverseasUI(container, placeholders, configs) {
 
   keywordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (keywordFromSelection) return;
     const keyword = keywordInput.value.trim();
-
-    // Second click on the same, already-searched value → clear the input.
-    if (keyword && keyword === committedKeyword) {
-      keywordInput.value = '';
-      committedKeyword = '';
-      selectedCountry = '';
-      districtWrapper.hidden = true;
-      districtWrapper.innerHTML = '';
-      return;
-    }
-
     if (!keyword) return;
 
     selectedCountry = '';
@@ -709,7 +702,6 @@ export async function buildOverseasUI(container, placeholders, configs) {
     try {
       const locations = await fetchByKeywordOverseas(keyword);
       showOverseasResults(locations);
-      committedKeyword = keyword;
     } catch {
       // eslint-disable-next-line no-console
       console.error('[locate-us] Overseas keyword search error');
