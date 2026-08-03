@@ -75,9 +75,16 @@
 
 .carousel-dotted.all-carousel-fragment
   .carousel-dotted-item.carousel-fragment
-  .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
+  :is(.cards-list-title :is(h1, h2, h3, h4, h5, h6), .cards-list-inner) {
   max-width: 15rem;
 }
+
+.carousel-dotted.all-carousel-fragment
+  .carousel-dotted-item.carousel-fragment
+  .cards-list-image:is(.cards-list-image-card, .cards-list-image-full) {
+  height: auto;
+}
+
 
 .carousel-dotted.all-carousel-fragment
   .carousel-dotted-item.carousel-fragment
