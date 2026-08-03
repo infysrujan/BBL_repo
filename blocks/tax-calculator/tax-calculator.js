@@ -1099,8 +1099,7 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
   `));
 
   // ── Invest table (only when tax is payable) ──
-  const rmfPensionMax = Math.round(apiResult1.MaxRMF || 0)
-    + Math.round(apiResult1.MaxInsure60 || 0);
+  const rmfPensionMax = Math.round(apiResult1.MaxRMFSSFInsure60 || 0);
 
   const individualMaxesThaiEsg = Number.parseInt(getString(labels, 'individualMaxesThaiEsg', '300000'), 10);
 
