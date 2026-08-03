@@ -354,7 +354,13 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   }
 
   dropdownToggle.addEventListener('click', toggleProvinceDropdown);
-  keywordInput.addEventListener('click', toggleProvinceDropdown);
+  keywordInput.addEventListener('click', () => {
+    // Clicking the field clears any selected value so the placeholder shows.
+    keywordInput.value = '';
+    selectedProvince = '';
+    selectedDistrict = '';
+    toggleProvinceDropdown();
+  });
 
   keywordInput.addEventListener('input', () => {
     selectedProvince = '';
@@ -445,6 +451,9 @@ export async function buildOverseasUI(container, placeholders, configs) {
 
   let countriesCache = [];
   let selectedCountry = '';
+  // Value currently shown in the input; a second search-button click on this
+  // same value clears it instead of re-searching (toggle behaviour).
+  let committedKeyword = '';
 
   async function fetchCountries() {
     if (!API_GET_COUNTRY) return [];
@@ -580,6 +589,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
         li.addEventListener('click', async () => {
           selectedCountry = countries[i];
           keywordInput.value = countries[i];
+          committedKeyword = countries[i];
           countryDropdown.hidden = true;
           dropdownToggle.setAttribute('aria-expanded', 'false');
           districtWrapper.hidden = true;
@@ -662,6 +672,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
   keywordInput.addEventListener('click', toggleCountryDropdown);
 
   keywordInput.addEventListener('input', () => {
+    committedKeyword = '';
     countryDropdown.hidden = true;
     dropdownToggle.setAttribute('aria-expanded', 'false');
   });
@@ -676,6 +687,17 @@ export async function buildOverseasUI(container, placeholders, configs) {
   keywordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const keyword = keywordInput.value.trim();
+
+    // Second click on the same, already-searched value → clear the input.
+    if (keyword && keyword === committedKeyword) {
+      keywordInput.value = '';
+      committedKeyword = '';
+      selectedCountry = '';
+      districtWrapper.hidden = true;
+      districtWrapper.innerHTML = '';
+      return;
+    }
+
     if (!keyword) return;
 
     selectedCountry = '';
@@ -687,6 +709,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
     try {
       const locations = await fetchByKeywordOverseas(keyword);
       showOverseasResults(locations);
+      committedKeyword = keyword;
     } catch {
       // eslint-disable-next-line no-console
       console.error('[locate-us] Overseas keyword search error');

@@ -261,7 +261,7 @@
 
 .locate-us .locate-us-province-item-header {
   color: var(--bbl-color-blue-90);
-  cursor: default;
+  cursor: pointer;
 }
 
 .locate-us .locate-us-province-list:has(.locate-us-province-item-active) .locate-us-province-item-header {
