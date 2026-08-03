@@ -249,14 +249,6 @@
 }
 
 @media (width > 47.5rem) {
-  /* Horizontal padding dropped here — the ambient .section wrapper (main.css)
-     already applies 48px of padding-inline at this breakpoint, so adding more
-     here was double-padding the content and starving the 3-card grid of the
-     width it needs. Vertical padding is kept for spacing above/below cards. */
-  .ccs-results {
-    padding: var(--bbl-space-600) 0;
-  }
-
   .ccs-scroll-dots {
     display: none;
   }

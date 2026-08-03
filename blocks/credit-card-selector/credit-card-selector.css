@@ -443,10 +443,6 @@
 }
 
 @media (width > 47.5rem) {
-  .ccs-results {
-    padding: var(--bbl-space-600);
-  }
-
   .ccs-results-title {
     font-size: var(--bbl-font-size-h1-desktop);
     line-height: var(--bbl-line-height-heading-tight);
