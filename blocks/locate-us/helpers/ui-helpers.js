@@ -1,6 +1,6 @@
 import { loadFragment } from '../../fragment/fragment.js';
 import {
-  buildUrl, showToast, getUserLocation, hasValue,
+  buildUrl, showToast, hasValue,
 } from './utils.js';
 import { fetchGet } from '../../../scripts/utils/fetchApi.js';
 import {
@@ -45,18 +45,33 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   const defaultLat = parseFloat(configs?.locateUsDefaultLat) || FALLBACK_LAT;
   const defaultLng = parseFloat(configs?.locateUsDefaultLng) || FALLBACK_LNG;
 
-  const [location, provincesCache] = await Promise.all([
-    getUserLocation(defaultLat, defaultLng),
-    fetchProvinces(configs),
-  ]);
-  const userLat = location.lat;
-  const userLng = location.lng;
+  // Do NOT gate the first API call on geolocation. Start with the default
+  // coords so the near-me request fires immediately, then refine in the
+  // background if/when the browser returns a real fix (see bottom of fn).
+  const provincesCache = await fetchProvinces(configs);
+  let userLat = defaultLat;
+  let userLng = defaultLng;
   const serviceParamKeys = (configs?.locateUsServiceLocationCodes || '')
     .split(',').map((s) => s.trim()).filter(Boolean);
 
   let selectedServiceCode = '';
+  let selectedProvince = '';
+  let selectedDistrict = '';
   let currentIsAtm = false;
   let currentPage = 1;
+
+  function findProvinceByKeyword(keyword) {
+    if (!keyword || !provincesCache?.length) return '';
+    const normalized = keyword.trim().toLowerCase();
+    return provincesCache.find((p) => p.trim().toLowerCase() === normalized) || '';
+  }
+
+  async function fetchThailandLocationsForSelection(province, district = '') {
+    if (province) {
+      return fetchByProvince(province, district, userLat, userLng, selectedServiceCode, configs);
+    }
+    return fetchNearMe(userLat, userLng, selectedServiceCode, configs);
+  }
 
   const selectServiceText = placeholders?.selectServiceText || 'Select Service';
   const enterKeywordText = placeholders?.enterKeywordText || 'Enter Keyword';
@@ -200,6 +215,8 @@ export async function buildThailandUI(container, data, placeholders, configs) {
         li.textContent = provinces[i];
         li.addEventListener('click', async () => {
           const province = provinces[i];
+          selectedProvince = province;
+          selectedDistrict = '';
           keywordInput.value = province;
           provinceDropdown.querySelectorAll('.locate-us-province-item').forEach((item) => item.classList.remove('locate-us-province-item-active'));
           li.classList.add('locate-us-province-item-active');
@@ -251,6 +268,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
           districtDropdown.querySelectorAll('.locate-us-district-item:not(.locate-us-district-item-header)').forEach((districtItem) => {
             districtItem.addEventListener('click', async () => {
               const district = districtItem.dataset.value;
+              selectedDistrict = district;
               districtBtnText.textContent = district;
               districtDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
               districtItem.classList.add('locate-us-district-item-active');
@@ -284,6 +302,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     keywordInput.disabled = isSpecial;
     keywordInput.value = '';
     keywordWrapper.hidden = isSpecial;
+    selectedDistrict = '';
     districtWrapper.hidden = true;
     districtWrapper.innerHTML = '';
     locationFilterRow.hidden = true;
@@ -303,7 +322,10 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     }
 
     try {
-      const locations = await fetchNearMe(userLat, userLng, selectedServiceCode, configs);
+      const locations = await fetchThailandLocationsForSelection(
+        selectedProvince,
+        selectedDistrict,
+      );
       showResults(locations);
     } catch {
       // eslint-disable-next-line no-console
@@ -335,6 +357,8 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   keywordInput.addEventListener('click', toggleProvinceDropdown);
 
   keywordInput.addEventListener('input', () => {
+    selectedProvince = '';
+    selectedDistrict = '';
     provinceDropdown.hidden = true;
     dropdownToggle.setAttribute('aria-expanded', 'false');
   });
@@ -356,8 +380,25 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     if (!keyword) return;
 
     try {
-      const kwArgs = [userLat, userLng, keyword, '0', selectedServiceCode, configs];
-      const locations = await fetchByKeyword(...kwArgs);
+      const province = findProvinceByKeyword(keyword);
+      let locations;
+      if (province) {
+        selectedProvince = province;
+        selectedDistrict = '';
+        locations = await fetchByProvince(
+          province,
+          '',
+          userLat,
+          userLng,
+          selectedServiceCode,
+          configs,
+        );
+      } else {
+        selectedProvince = '';
+        selectedDistrict = '';
+        const kwArgs = [userLat, userLng, keyword, '0', selectedServiceCode, configs];
+        locations = await fetchByKeyword(...kwArgs);
+      }
       districtWrapper.hidden = true;
       districtWrapper.innerHTML = '';
       showResults(locations);
