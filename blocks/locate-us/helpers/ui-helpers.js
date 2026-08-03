@@ -361,7 +361,12 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   }
 
   dropdownToggle.addEventListener('click', toggleProvinceDropdown);
-  keywordInput.addEventListener('click', toggleProvinceDropdown);
+  keywordInput.addEventListener('click', () => {
+    // Clicking the field clears any selected value so the placeholder shows.
+    keywordInput.value = '';
+    keywordFromSelection = false;
+    toggleProvinceDropdown();
+  });
 
   keywordInput.addEventListener('input', () => {
     keywordFromSelection = false;

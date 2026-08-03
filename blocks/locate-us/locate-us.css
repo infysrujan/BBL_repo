@@ -261,7 +261,7 @@
 
 .locate-us .locate-us-province-item-header {
   color: var(--bbl-color-blue-90);
-  cursor: default;
+  cursor: pointer;
 }
 
 .locate-us .locate-us-province-list:has(.locate-us-province-item-active) .locate-us-province-item-header {
@@ -1018,6 +1018,7 @@
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
     padding: var(--bbl-space-000);
+    max-width: 46.875rem;
     flex: 1;
     margin: 0 auto;
     justify-content: center;
@@ -1377,7 +1378,6 @@
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form {
-    max-width: 28.4%;
     flex: 1;
   }
 
