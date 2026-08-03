@@ -469,6 +469,7 @@ function buildInputField(fieldDef, savedValue) {
           name="${fieldDef.id}"
           class="tax-calc-input"
           placeholder="${displayPlaceholder}"
+          autoComplete="off"
           value="${displayVal}"
           maxlength="${maxLength}"
           ${isEmptyRange && !fieldDef.disableWhenEmpty ? 'readonly' : ''}
