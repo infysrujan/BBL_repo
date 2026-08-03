@@ -575,7 +575,7 @@
   display: flex;
   align-items: baseline;
   gap: var(--bbl-space-075);
-  line-height: var(--bbl-line-height-h1-mobile);
+  line-height: var(--bbl-heading-h1-line-height);
 }
 
 .retirement-calculator .rc-summary-value-arrow {
@@ -636,7 +636,7 @@
 
 .retirement-calculator .rc-progress-current {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-h1-mobile);
+  font-size: var(--bbl-heading-h1-size);
   font-weight: 400;
   line-height: var(--bbl-line-height-h1-mobile);
   color: var(--bbl-color-active-blue);
@@ -973,7 +973,6 @@
 
   .retirement-calculator .rc-summary-value {
     font-size: 1.5rem;
-    line-height: var(--bbl-line-height-h1-desktop);
   }
 
   .retirement-calculator .rc-savings-card-recommended,
