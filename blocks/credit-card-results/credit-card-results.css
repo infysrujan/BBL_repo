@@ -15,7 +15,6 @@
 
 .ccs-results {
   font-family: var(--bbl-font-family-primary);
-  padding: var(--bbl-space-400) var(--bbl-space-200);
   background: var(--bbl-color-white);
   scroll-margin-top: var(--header-scroll-offset);
 }
@@ -40,10 +39,10 @@
 
 .card-list.credit-card .cards-list-image.cards-list-image-x-small img {
   width: 100%;
-  max-width: 14.4156rem;
-  height: 9.6875rem;
+  max-width: unset;
+  height: 100%;
   min-width: unset;
-  object-fit: cover;
+  object-fit: initial;
 }
 
 /* ── Thai card name above the EN heading ─────────────────────────────────── */
