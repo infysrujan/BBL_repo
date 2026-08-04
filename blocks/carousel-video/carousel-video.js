@@ -12,6 +12,8 @@ function getYouTubeId(url) {
 }
 
 export default async function decorate(block) {
+  block.closest('.carousel-video-wrapper')?.classList.add('content');
+
   // Tell UE this block is a container that accepts carousel-video-item children.
   if (document.documentElement.classList.contains('adobe-ue-edit')) {
     block.setAttribute('data-aue-type', 'container');
