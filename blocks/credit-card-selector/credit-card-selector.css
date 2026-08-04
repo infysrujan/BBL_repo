@@ -48,7 +48,8 @@
 @media (width > 64rem) {
   .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
   .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
-    max-width: 82.5rem;
+    max-width: unset;
+    padding-inline: 9rem;
   }
 }
 
