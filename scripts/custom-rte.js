@@ -23,7 +23,7 @@ function processInlineImageMarkers(paragraphs) {
       const inlinePic = walkToPicture(node.nextSibling);
       const pic = inlinePic ?? markerP.nextElementSibling?.querySelector('picture') ?? null;
       if (!pic) return;
-      pic.classList.add('rte-inline-image');
+      markerP.classList.add('rte-inline-image');
       picFound = true;
       node.nodeValue = node.nodeValue.replace(/#inlineimage\s*/gi, '');
       if (!inlinePic) {
@@ -34,7 +34,6 @@ function processInlineImageMarkers(paragraphs) {
         while (sib && INLINE_IMAGE_RE.test(sib.textContent) && !sib.textContent.replace(/#inlineimage\s*/gi, '').trim()) {
           const sibPic = sib.nextElementSibling?.querySelector('picture') ?? null;
           if (!sibPic) break;
-          sibPic.classList.add('rte-inline-image');
           const sibP = sibPic.closest('p');
           markerP.appendChild(sibPic);
           if (sibP && !sibP.textContent.trim() && !sibP.querySelector('a, img')) sibP.remove();
