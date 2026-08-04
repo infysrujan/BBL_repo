@@ -111,7 +111,7 @@
   top: calc(100% + var(--bbl-space-050));
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 2;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-gray-122);
   border-radius: var(--bbl-radius-md);
@@ -194,9 +194,6 @@
   color: var(--bbl-color-grey-150);
 }
 
-.locate-us .locate-us-keyword-input:disabled {
-  cursor: not-allowed;
-}
 
 .locate-us .locate-us-keyword-search-btn {
   position: absolute;
@@ -236,7 +233,7 @@
   top: calc(100% + var(--bbl-space-050));
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 2;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-gray-122);
   border-radius: var(--bbl-radius-md);
@@ -264,7 +261,7 @@
 
 .locate-us .locate-us-province-item-header {
   color: var(--bbl-color-blue-90);
-  cursor: default;
+  cursor: pointer;
 }
 
 .locate-us .locate-us-province-list:has(.locate-us-province-item-active) .locate-us-province-item-header {
@@ -398,7 +395,6 @@
   font-weight: var(--bbl-font-weight-regular);
   text-align: start;
   color: var(--bbl-color-grey-85);
-  cursor: pointer;
   transition: all;
 }
 
@@ -726,7 +722,7 @@
   top: calc(100% + var(--bbl-space-050));
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 2;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-gray-122);
   border-radius: var(--bbl-radius-md);
@@ -751,14 +747,14 @@
 
 .locate-us .locate-us-district-item-header {
   color: var(--bbl-color-blue-90);
-  cursor: default;
+  cursor: pointer;
 }
 
 .locate-us .locate-us-district-dropdown:has(.locate-us-district-item-active) .locate-us-district-item-header {
   color: var(--bbl-color-gray-121);
 }
 
-.locate-us .locate-us-district-item:not(.locate-us-district-item-header):hover {
+.locate-us .locate-us-district-item:hover {
   color: var(--bbl-color-blue-90);
 }
 
@@ -829,7 +825,7 @@
   gap: var(--bbl-space-150);
   padding: 0.875rem var(--bbl-space-200) 0.875rem var(--bbl-space-250);
   background-color: var(--bbl-color-toast-error);
-  border-radius: 1.5rem;
+  border-radius: 3rem;
   pointer-events: all;
   min-width: 16.25rem;
   max-width: 21.25rem;
@@ -898,7 +894,7 @@
   padding: 0 var(--bbl-space-100);
   border: none;
   border-radius: 0;
-  color: rgb(255 255 255 / 65%);
+  color: var(--bbl-color-white);
   white-space: nowrap;
   font-size: var(--bbl-font-size-b2);
   letter-spacing: 0;
@@ -906,7 +902,7 @@
 
 .sub-nav .sub-nav-tab-btn.active {
   background-color: transparent;
-  color: var(--bbl-color-white);
+  color: rgb(255 255 255 / 65%);
 }
 
 /* ─── Tablet (> 47.5rem) ──────────────────────────────────────────────────────── */
@@ -1022,6 +1018,7 @@
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
     padding: var(--bbl-space-000);
+    max-width: 46.875rem;
     flex: 1;
     margin: 0 auto;
     justify-content: center;
@@ -1092,7 +1089,6 @@
   .locate-us .locate-us-card {
     padding: var(--bbl-space-250);
     background-color: var(--bbl-color-white);
-    cursor: pointer;
     border: 0.0625rem solid var(--bbl-color-gray-122);
     box-shadow: 0 0 var(--bbl-space-200) 0 var(--bbl-color-black-alpha-10);
     overflow: hidden;
@@ -1229,7 +1225,7 @@
   .locate-us .locate-us-cards>.locate-us-card:only-child {
     grid-column: 2;
     justify-self: center;
-    max-width: 15.875rem;
+    max-width: 22.5rem;
     box-shadow: 0 var(--bbl-space-025) 1.125rem rgb(0 0 0 / 8%);
     border: none;
   }
@@ -1269,6 +1265,7 @@
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-card-header {
     padding: 0;
+    cursor: default;
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-card-hr {
@@ -1329,6 +1326,14 @@
     grid-column-start: 2;
   }
 
+  /* Center a leftover last row of 1 or 2 cards instead of snapping it left */
+  /* stylelint-disable no-descending-specificity */
+  .locate-us .locate-us-cards .locate-us-card:nth-child(4n+1):nth-last-child(2),
+  .locate-us .locate-us-cards .locate-us-card:nth-child(4n+1):last-child {
+    grid-column-start: 2;
+  }
+  /* stylelint-enable no-descending-specificity */
+
   .locate-us .locate-us-filter-bar {
     margin: auto;
     margin-bottom: 1.875rem;
@@ -1373,7 +1378,6 @@
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form {
-    max-width: 28.4%;
     flex: 1;
   }
 

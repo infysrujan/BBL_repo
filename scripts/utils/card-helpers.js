@@ -248,9 +248,13 @@ export function buildPaginationHtml(current, total) {
   if (total <= 1) return '';
 
   const show = new Set();
-  for (let p = 1; p <= Math.min(2, total); p += 1) show.add(p);
-  for (let p = Math.max(1, total - 1); p <= total; p += 1) show.add(p);
-  for (let p = Math.max(1, current - 2); p <= Math.min(total, current + 2); p += 1) show.add(p);
+  if (total <= 7) {
+    for (let p = 1; p <= total; p += 1) show.add(p);
+  } else {
+    for (let p = 1; p <= Math.min(2, total); p += 1) show.add(p);
+    for (let p = Math.max(1, total - 1); p <= total; p += 1) show.add(p);
+    for (let p = Math.max(1, current - 2); p <= Math.min(total, current + 2); p += 1) show.add(p);
+  }
 
   const sorted = [...show].sort((a, b) => a - b);
   let inner = '';

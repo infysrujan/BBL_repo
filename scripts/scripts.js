@@ -24,7 +24,7 @@ import {
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
-import initRteAnchors, { decorateRteInlineImages, decoratePictureLinks } from './custom-rte.js';
+import initRteAnchors, { decorateRteInlineImages, decorateNewTabLinks } from './custom-rte.js';
 
 import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
@@ -183,6 +183,7 @@ export function decorateMain(main) {
   decorateBlocks(main);
   decorateTertiaryButtons(main);
   decorateSvgWithAltText(main);
+  decorateNewTabLinks(main);
 
   const pageVariant = getMetadata('pagevariant');
   if (pageVariant) {
@@ -419,7 +420,7 @@ async function loadLazy(doc) {
 
   initRteAnchors(main, doc);
   decorateRteInlineImages(main);
-  decoratePictureLinks(main);
+  decorateNewTabLinks(main);
 
   if (!disabledSections.has('footer')) {
     loadFooter(doc.querySelector('footer'));
