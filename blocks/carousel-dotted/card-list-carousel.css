@@ -76,7 +76,7 @@
 
 .carousel-dotted.all-carousel-fragment
   .carousel-dotted-item.carousel-fragment
-  :is(.cards-list-title :is(h1, h2, h3, h4, h5, h6), .cards-list-inner) {
+  .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
   max-width: 15rem;
 }
 
