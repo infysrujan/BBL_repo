@@ -49,7 +49,7 @@
   .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
   .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
     max-width: unset;
-    padding-inline: 144px;
+    padding-inline: 9rem;
   }
 }
 
