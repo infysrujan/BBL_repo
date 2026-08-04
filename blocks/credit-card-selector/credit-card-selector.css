@@ -135,7 +135,7 @@
 /* Mobile / tablet: ~1.286 rem matches original site's 1.286em at this viewport */
 .credit-card-selector .filter-group-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: 1.286rem;
+  font-size: 1.13rem;
   font-weight: var(--bbl-font-weight-medium);
   color: var(--bbl-color-black);
   margin: 0;
