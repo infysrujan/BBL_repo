@@ -11,6 +11,7 @@
   flex: 0 0 calc(33% - 1.5rem);
   min-height: 8.125rem;
   box-sizing: border-box;
+  min-width: 7.4rem;
   border: 1px solid rgb(0 0 0 / 10%);
   background: var(--bbl-color-white);
   border-radius: 0.4375rem;
