@@ -66,6 +66,3 @@
   color: inherit;
 }
 
-.section.center-image .default-content-wrapper:has(> p:is(.rte-image-link, .rte-has-icon, :has(picture.rte-inline-image))) {
-  text-align: center;
-}
