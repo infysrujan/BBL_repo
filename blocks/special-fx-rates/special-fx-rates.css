@@ -5,7 +5,6 @@
 .special-fx-rates-container
   .default-content-wrapper
   > :is(h1, h2, h3, h4, h5, h6):first-child {
-  font-size: 1.4rem;
   line-height: 1.3746rem;
   font-weight: var(--bbl-font-weight-regular);
   letter-spacing: -0.0125rem;
