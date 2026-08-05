@@ -1,6 +1,5 @@
 .carousel {
     margin-bottom: var(--bbl-space-300);
-    padding-left: 1rem;
 }
 
 .carousel-header {
@@ -222,10 +221,6 @@
 }
 
 @media (width > 47.5rem) {
-    .carousel {
-        padding-left: 3rem;
-    }
-    
     .carousel-header {
         padding-right: 3rem;
     }
@@ -247,10 +242,6 @@
 @media (width >  64rem) {
     .carousel {
         position: relative;
-    }
-
-    .carousel:has(.carousel-track .carousel-item:first-child.active) {
-        padding-left: 84px;
     }
 
     .carousel:not(:has(.carousel-track .carousel-item:first-child.active)) {

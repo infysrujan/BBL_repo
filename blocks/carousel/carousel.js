@@ -263,7 +263,7 @@ export default function decorate(block) {
   const title = titleElement?.textContent.trim() || '';
 
   // Create carousel wrapper
-  const carouselWrapper = createElementFromHTML('<div class="carousel-wrapper"></div>', doc);
+  const carouselWrapper = createElementFromHTML('<div class="carousel-wrapper content"></div>', doc);
 
   // Add header if title or link exists
   if (title || linkElement) {
