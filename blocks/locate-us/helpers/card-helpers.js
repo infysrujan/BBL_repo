@@ -48,7 +48,7 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
           ${address ? '<p class="locate-us-card-address"></p>' : ''}
         </div>
         <div class="locate-us-card-footer">
-          ${directionsUrl ? '<a class="locate-us-card-directions" target="_blank" rel="noopener noreferrer"></a>' : ''}
+          <a class="locate-us-card-directions" target="_blank" rel="noopener noreferrer"></a>
         </div>
       </div>
     </article>`);
@@ -77,12 +77,17 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
     card.querySelector('.locate-us-card-fax').textContent = fax;
   }
   if (address) card.querySelector('.locate-us-card-address').textContent = address;
+  const dirEl = card.querySelector('.locate-us-card-directions');
+  dirEl.textContent = getDirectionText;
   if (directionsUrl) {
-    const dirEl = card.querySelector('.locate-us-card-directions');
     dirEl.href = directionsUrl;
-    dirEl.textContent = getDirectionText;
+  } else {
+    // No coordinates → keep the button visible but disabled.
+    dirEl.classList.add('locate-us-card-directions-disabled');
+    dirEl.setAttribute('aria-disabled', 'true');
+    dirEl.removeAttribute('target');
+    dirEl.removeAttribute('rel');
   }
-  if (!hasCoords) card.dataset.noLocation = 'true';
 
   return card;
 }
@@ -189,7 +194,7 @@ export function renderPagination(paginationEl, total, page, onPageChange, placeh
   // Numbers wrapper
   const numbersEl = createEl('<div class="locate-us-page-numbers"></div>');
 
-  function addEllipsis() {
+  function addEllipsis(prefillPage) {
     const ellipsis = createEl('<span class="locate-us-page-ellipsis" role="button" tabindex="0">…</span>');
     ellipsis.addEventListener('click', () => {
       const input = document.createElement('input');
@@ -197,6 +202,7 @@ export function renderPagination(paginationEl, total, page, onPageChange, placeh
       input.min = 1;
       input.max = totalPages;
       input.className = 'locate-us-page-input';
+      input.value = prefillPage;
       ellipsis.replaceWith(input);
       input.focus();
 
@@ -215,7 +221,7 @@ export function renderPagination(paginationEl, total, page, onPageChange, placeh
   }
 
   sorted.forEach((p, idx) => {
-    if (idx > 0 && p - sorted[idx - 1] > 1) addEllipsis();
+    if (idx > 0 && p - sorted[idx - 1] > 1) addEllipsis(sorted[idx - 1] + 1);
 
     const btn = createEl(
       `<button class="locate-us-page-btn${p === page ? ' locate-us-page-btn-active' : ''}"
@@ -287,7 +293,8 @@ export function renderCards(
         if (e.target.closest('a')) return;
         collapseAll();
         header.setAttribute('aria-expanded', 'true');
-        if (hasCoords) { onSelect(loc); scrollToMap(); }
+        onSelect(loc);
+        scrollToMap();
         return;
       }
       if (!e.target.closest('.locate-us-card-header')) return;
@@ -297,7 +304,8 @@ export function renderCards(
         body.hidden = false;
         header.setAttribute('aria-expanded', 'true');
         restoreOrder(card);
-        if (hasCoords) { onSelect(loc); scrollToMap(); }
+        onSelect(loc);
+        scrollToMap();
       }
     });
 
