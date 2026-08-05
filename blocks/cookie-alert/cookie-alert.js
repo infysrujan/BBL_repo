@@ -12,7 +12,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { getCookie, setCookie } from '../../scripts/utils/cookies.js';
 
-const COOKIE_DURATION_DAYS = 30;
+const COOKIE_DURATION_DAYS = 365;
 const COOKIE_CONSENT = 'ConsentAlert';
 const COOKIE_ANALYTIC = 'AnalysisCookie';
 const COOKIE_ADVERTISING = 'AdvertisingCookie';
