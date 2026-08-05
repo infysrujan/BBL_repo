@@ -155,7 +155,7 @@ function printForexRates(block) {
 
   const printCss = `
     @page { size: A4 portrait; margin: 10mm; }
-    body { font-family: sans-serif; margin: 0; padding: 0; }
+    body { font-family: var(--bbl-font-family-primary); margin: 0; padding: 0; }
     /* Print background colors (title underline, table header shading) — off by default */
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
