@@ -142,6 +142,10 @@
   gap: var(--bbl-space-500);
 }
 
+.section.columns-2-50 > .content-insert-cards-wrapper {
+  flex: 1;
+}
+
 .content-insert-cards .content-insert-card {
   margin: 0 auto;
   position: relative;
@@ -167,6 +171,10 @@
   border-radius: var(--bbl-rounded-100);
   width: auto;
   height: 23.75rem;
+}
+
+.content-insert-cards .thumb:not(:has(picture, img)) {
+  width: 100%;
 }
 
 .content-insert-cards .intro-info {
