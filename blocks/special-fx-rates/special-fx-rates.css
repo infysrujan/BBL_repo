@@ -88,7 +88,7 @@
   .special-fx-rates-container
     .default-content-wrapper
     > :is(h1, h2, h3, h4, h5, h6):first-child {
-    font-size: var(--bbl-heading-h3-size);
+    font-size: var(--bbl-heading-h2-size);
     line-height: 2.875rem;
   }
 
