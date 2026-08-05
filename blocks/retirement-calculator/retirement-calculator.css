@@ -638,7 +638,7 @@
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-heading-h1-size);
   font-weight: 400;
-  line-height: var(--bbl-line-height-h1-mobile);
+  line-height: var(--bbl-heading-h1-line-height);
   color: var(--bbl-color-active-blue);
   margin: 0;
   white-space: nowrap;
@@ -1014,7 +1014,6 @@
 
   .retirement-calculator .rc-progress-current {
     font-size: 2.25rem;
-    line-height: var(--bbl-line-height-h1-desktop);
   }
 
   .retirement-calculator .rc-progress-total {
