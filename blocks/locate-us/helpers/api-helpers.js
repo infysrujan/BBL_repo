@@ -18,7 +18,11 @@ function buildEmbedUrl(lat, lng, configs, zoom = 15) {
 export function updateMapIframe(iframe, loc, configs) {
   const lat = parseFloat(loc.Lat);
   const lng = parseFloat(loc.Lng);
-  if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+  if (Number.isNaN(lat) || Number.isNaN(lng)) {
+    const worldSrc = buildEmbedUrl('', '', configs, 1);
+    if (worldSrc) iframe.src = worldSrc;
+    return;
+  }
   const src = buildEmbedUrl(lat, lng, configs);
   if (src) iframe.src = src;
 }
@@ -31,7 +35,9 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
     // eslint-disable-next-line no-console
     console.error('[locate-us] Missing config key: google-maps-directions-url');
   }
-  const directionsUrl = dirTemplate ? buildUrl(dirTemplate, { LAT: loc.Lat, LNG: loc.Lng }) : '';
+  const hasCoords = !!(loc.Lat && loc.Lng);
+  const directionsUrl = (dirTemplate && hasCoords)
+    ? buildUrl(dirTemplate, { LAT: loc.Lat, LNG: loc.Lng }) : '';
   const getDirectionText = placeholders?.getDirectionText || 'Get Direction';
   const branchBookingText = placeholders?.branchBookingText || 'Branch Booking';
   const nearestLabel = placeholders?.nearestLocationTag || 'nearest';
@@ -72,7 +78,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
           ${showAppointment ? '<a class="locate-us-card-appointment" target="_blank" rel="noopener noreferrer"></a>' : ''}
         </div>
         <div class="locate-us-card-footer">
-          ${directionsUrl ? '<a class="locate-us-card-directions" target="_blank" rel="noopener noreferrer"></a>' : ''}
+          <a class="locate-us-card-directions" target="_blank" rel="noopener noreferrer"></a>
         </div>
       </div>
     </article>`);
@@ -101,10 +107,16 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
     card.querySelector('.locate-us-card-fax').textContent = fax;
   }
   if (address) card.querySelector('.locate-us-card-address').textContent = address;
+  const dirEl = card.querySelector('.locate-us-card-directions');
+  dirEl.textContent = getDirectionText;
   if (directionsUrl) {
-    const dirEl = card.querySelector('.locate-us-card-directions');
     dirEl.href = directionsUrl;
-    dirEl.textContent = getDirectionText;
+  } else {
+    // No coordinates → keep the button visible but disabled.
+    dirEl.classList.add('locate-us-card-directions-disabled');
+    dirEl.setAttribute('aria-disabled', 'true');
+    dirEl.removeAttribute('target');
+    dirEl.removeAttribute('rel');
   }
   if (showAppointment) {
     const appointmentEl = card.querySelector('.locate-us-card-appointment');

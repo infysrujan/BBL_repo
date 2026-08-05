@@ -571,6 +571,13 @@
   padding-left: 0;
 }
 
+/* Disabled state — shown when the location has no coordinates */
+.locate-us .locate-us-card-directions-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: default;
+}
+
 /* ── Pagination ──────────────────────────────────────────────────────────────── */
 
 .locate-us .locate-us-pagination {
