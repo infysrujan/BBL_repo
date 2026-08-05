@@ -326,7 +326,6 @@ td .icon {
 
   .table table tr.header-row td {
     font-size: 1rem;
-    padding: 0.75rem;
   }
 
   .table table tr:not(.header-row) td {
