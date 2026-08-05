@@ -137,8 +137,8 @@
   color: var(--bbl-color-black);
   margin: 0;
   position: relative;
-  margin-bottom: var(--bbl-space-250);
-  padding-bottom: var(--bbl-space-250);
+  margin-bottom: 0.625rem;
+  padding-bottom: 0.9375rem;
 }
 
 .carousel-dotted.all-content-cards .carousel-dotted-item.content-cards .title-2::before {
