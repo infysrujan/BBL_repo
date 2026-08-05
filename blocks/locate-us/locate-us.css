@@ -396,6 +396,7 @@
   text-align: start;
   color: var(--bbl-color-grey-85);
   transition: all;
+  cursor: pointer;
 }
 
 /* Mobile: overseas cards are an accordion list — no box-shadow */
@@ -569,6 +570,13 @@
   background-position: center;
   flex-shrink: 0;
   padding-left: 0;
+}
+
+/* Disabled state — shown when the location has no coordinates */
+.locate-us .locate-us-card-directions-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: default;
 }
 
 /* ── Pagination ──────────────────────────────────────────────────────────────── */
@@ -1149,13 +1157,7 @@
     transform: none;
   }
 
-  .locate-us .locate-us-card[data-no-location="true"] .locate-us-card-chevron {
-    cursor: default;
-    pointer-events: none;
-  }
-
-  .locate-us:has(.locate-us-results-overseas) .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron,
-  .locate-us .locate-us-card[data-no-location="true"] .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron {
+  .locate-us:has(.locate-us-results-overseas) .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron {
     background-image: url('../../icons/icon_nearme_disable.svg');
   }
 
@@ -1209,15 +1211,6 @@
   .locate-us .locate-us-district-select {
     font-size: var(--bbl-font-size-b1);
     margin: 0 0 var(--bbl-space-150);
-  }
-
-  /* ── Inactive map pin when card has no coordinates ── */
-  .locate-us .locate-us-card[data-no-location="true"] .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron {
-    background-image: url('../../icons/icon_nearme_disable.svg');
-    opacity: 0.4;
-    cursor: default;
-    padding-left: 0;
-
   }
 
   /* ── Single card: center in middle column of 3-col grid ── */
