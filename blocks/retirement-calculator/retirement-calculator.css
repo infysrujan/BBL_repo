@@ -566,7 +566,7 @@
 
 .retirement-calculator .rc-summary-value {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-h1-mobile);
+  font-size: var(--bbl-heading-h1-size);
   font-weight: 400;
   color: var(--bbl-color-black);
   text-align: right;
