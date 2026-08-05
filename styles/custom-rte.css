@@ -23,10 +23,16 @@
 
 .default-content-wrapper p.rte-has-icon picture {
   display: inline-block;
+  vertical-align: middle;
 }
 
 .default-content-wrapper > p.rte-has-icon:not(.rte-image-link):has(+ p.rte-has-icon:not(.rte-image-link)),
 .default-content-wrapper > p.rte-has-icon:not(.rte-image-link) + p.rte-has-icon:not(.rte-image-link) {
+  display: inline;
+}
+
+.default-content-wrapper > p.rte-inline-image:has(picture):has(+ p.rte-inline-image:has(picture)),
+.default-content-wrapper > p.rte-inline-image:has(picture) + p.rte-inline-image:has(picture) {
   display: inline;
 }
 
@@ -38,7 +44,6 @@
 .default-content-wrapper li:has(p.rte-has-icon) p:has(picture) {
   display: inline-block;
 }
-
 
 .default-content-wrapper li:has(> p.rte-inline-image + p.rte-inline-image) > p.rte-inline-image {
   display: inline-block;

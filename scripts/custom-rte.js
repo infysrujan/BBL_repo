@@ -23,16 +23,22 @@ function processInlineImageMarkers(paragraphs) {
   const INLINE_IMAGE_RE = /#inlineimage/i;
   paragraphs.forEach((markerP) => {
     if (!INLINE_IMAGE_RE.test(markerP.textContent)) return;
-    let picFound = false;
-    [...markerP.childNodes].forEach((node) => {
-      if (node.nodeType !== Node.TEXT_NODE || !INLINE_IMAGE_RE.test(node.nodeValue)) return;
-      const pic = walkToPicture(node.nextSibling) ?? adjacentPicture(markerP);
-      if (pic) { pic.classList.add('rte-inline-image'); picFound = true; }
-      node.nodeValue = node.nodeValue.replace(/#inlineimage\s*/gi, '');
-    });
-    if (picFound && !markerP.textContent.trim() && !markerP.querySelector('picture, img')) {
-      markerP.remove();
+
+    markerP.classList.add('rte-inline-image');
+
+    if (!markerP.querySelector('picture')) {
+      const nextEl = markerP.nextElementSibling;
+      const prevEl = markerP.previousElementSibling;
+      if (nextEl?.querySelector('picture')) nextEl.classList.add('rte-inline-image');
+      else if (prevEl?.querySelector('picture')) prevEl.classList.add('rte-inline-image');
     }
+
+    const tw = document.createTreeWalker(markerP, NodeFilter.SHOW_TEXT);
+    for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+      if (INLINE_IMAGE_RE.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/#inlineimage\s*/gi, '');
+    }
+
+    if (!markerP.textContent.trim() && !markerP.querySelector('picture, img')) markerP.remove();
   });
 }
 
@@ -154,6 +160,23 @@ function runRteMarkers(paragraphs) {
   processInlineImageMarkers(paragraphs);
   processIconMarkers(paragraphs);
   processImageLinks(paragraphs);
+  paragraphs.forEach((p) => {
+    if (!p.isConnected) return;
+    if (p.classList.contains('rte-inline-image') && !p.querySelector('picture, img')) {
+      p.classList.remove('rte-inline-image');
+      return;
+    }
+    if (!p.classList.contains('rte-inline-image') || !p.querySelector('picture') || !p.textContent.trim()) return;
+    let next = p.nextElementSibling;
+    while (next?.classList.contains('rte-inline-image') && !next.textContent.trim()) {
+      const pic = next.querySelector('picture');
+      if (!pic) break;
+      p.append(pic.closest('a') ?? pic);
+      const done = next;
+      next = done.nextElementSibling;
+      done.remove();
+    }
+  });
 }
 
 export function decorateEncodedNbsp(root, selector = 'p, li, td') {
