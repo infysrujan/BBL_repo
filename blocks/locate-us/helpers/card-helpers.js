@@ -88,7 +88,6 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
     dirEl.removeAttribute('target');
     dirEl.removeAttribute('rel');
   }
-  if (!hasCoords) card.dataset.noLocation = 'true';
 
   return card;
 }
