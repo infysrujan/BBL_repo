@@ -248,6 +248,6 @@
 
 @media (width > 64rem) {
   .search-reports-overlay .sr-header {
-    padding: var(--bbl-space-200) var(--bbl-space-400);
+    padding: 1.56rem 1.87rem 1.56rem var(--bbl-space-1050);
   }
 }
