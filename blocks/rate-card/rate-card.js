@@ -307,7 +307,6 @@ function createTabContent(tabData, apiData) {
  * @param {number} index - Index of tab to activate
  */
 function activateTab(block, index) {
-  console.log('activateTab', index);
   const tabHeaders = block.querySelectorAll('.tab-header li');
   const tabContents = block.querySelectorAll('[data-tab-content] > div');
 
@@ -523,7 +522,6 @@ export default async function decorate(block) {
   // Reset tab selection when the page is restored from the bfcache
   // (back/forward navigation), where stale DOM state can persist.
   window.addEventListener('pageshow', (event) => {
-    console.log('activateTab pageshow', event.persisted);
     if (event.persisted) {
       activateTab(block, resolveActiveIndex());
     }
