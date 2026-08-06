@@ -183,6 +183,14 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
     noResults.hidden = true;
     resultsSection.hidden = false;
+    // The API returns a numeric distance in `Range` (not a 0/1 flag), so the
+    // nearest branch is the one with the smallest Range. Tag it here so the
+    // card list and sidebar can show the "nearest" badge on that one only.
+    const nearest = allLocs.reduce(
+      (min, l) => (Number(l.Range) < Number(min.Range) ? l : min),
+      allLocs[0],
+    );
+    allLocs.forEach((l) => { l.isNearest = l === nearest; });
     onLocationSelect(allLocs[0]);
     // eslint-disable-next-line max-len
     renderCards(allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs, currentIsAtm);
