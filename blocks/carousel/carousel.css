@@ -333,7 +333,7 @@
     }
 
     .carousel-prev {
-        left: 1.75rem;
+        left: 7rem;
     }
 
     .carousel-prev::before {
@@ -343,6 +343,7 @@
 
     .carousel-next {
         right: auto;
+        transform: translateX(5.25rem) translateY(-50%);
     }
 
 
