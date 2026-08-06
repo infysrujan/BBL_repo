@@ -123,6 +123,11 @@
   opacity: 0.5;
 }
 
+p:has(picture.rte-inline-image) {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .accordion-panel .columns p {
   font-weight: 400;
 }
@@ -151,11 +156,6 @@
 
 .accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper) {
   margin-bottom: 1.25rem;
-}
-
-p:has(picture.rte-inline-image) {
-  display: inline-block;
-  vertical-align: middle;
 }
 
 @media (width > 47.5rem) {
