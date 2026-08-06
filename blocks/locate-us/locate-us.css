@@ -978,7 +978,6 @@
     align-items: center;
     padding: 0 var(--bbl-space-600);
     gap: 0.625rem;
-    max-width: 46.875rem;
     margin: 0 auto 1.875rem;
   }
 
@@ -1328,6 +1327,7 @@
   /* stylelint-enable no-descending-specificity */
 
   .locate-us .locate-us-filter-bar {
+    max-width: 48%;
     margin: auto;
     margin-bottom: 1.875rem;
   }
