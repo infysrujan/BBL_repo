@@ -357,6 +357,10 @@
   color: var(--bbl-color-white);
 }
 
+.hero-banner-hero-with-thumbnail-images .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
+  margin-block: 0 var(--bbl-space-300);
+}
+
 .hero-banner-content .hero-banner-content-group .hero-banner-pre-title {
   font-size: var(--bbl-text-label-tag-size);
   margin: 0.625rem 0 0;
@@ -379,6 +383,12 @@
   line-height: 1rem;
 }
 
+/* Mobile: ignore manual line breaks in the hero heading and let it wrap
+   naturally (restored at tablet width and up). */
+.hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) br {
+  display: none;
+}
+
 .hero-banner-content-inner-text p {
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-heading-h3-reg-size);
@@ -398,6 +408,10 @@
   margin-block: 1.875rem 0;
   justify-content: flex-start;
   text-align: left;
+}
+
+.hero-banner-hero-with-thumbnail-images .hero-banner-content-inner .button-container {
+  margin: var(--bbl-space-300) 0 0;
 }
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content-inner .button-container {
@@ -705,6 +719,11 @@
 }
 
 @media (width > 47.5rem) {
+  /* Restore the hero heading line break on tablet and up. */
+  .hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) br {
+    display: inline;
+  }
+
   .hero-banner-video {
     min-height: 38rem;
   }
@@ -730,6 +749,10 @@
 
   .hero-banner-content-group .button-container a {
     margin-bottom: 4.0625rem;
+  }
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-content-group .button-container a {
+    margin-bottom: unset;
   }
 
   :is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content-inner-text, .hero-banner-content-inner-text p) {
@@ -879,7 +902,7 @@
 
   .hero-banner-content.content {
     text-align: left;
-    bottom: 4.6875rem;
+    bottom: 4.5rem;
     padding-left: var(--bbl-space-1050);
     padding-right: var(--bbl-space-1050);
     margin-bottom: 1.5625rem;

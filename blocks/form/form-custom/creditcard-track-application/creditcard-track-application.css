@@ -56,6 +56,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     color: var(--bbl-color-grey-85);
     font-family: var(--bbl-font-family-medium);
     font-weight: 400;
+    font-size: var(--bbl-heading-h3-size);
+    line-height: var(--bbl-line-height-h3-mobile);
 
     &::before {
       background: none;
@@ -142,7 +144,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   & .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper, .date-wrapper) {
     position: relative;
     clear: both;
-    margin-bottom: 2.1875rem;
+    margin-bottom: 0.625rem;
   }
 
   /* Mobile: stack half-width fields in a single column */
@@ -160,6 +162,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     gap: var(--bbl-space-200);
     width: 100%;
     clear: both;
+    margin-bottom: 2.1875rem;
 
     & > .button-wrapper {
       display: flex;
@@ -473,6 +476,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         & fieldset.field-submitbuttonpanel2 {
           width: 100%;
           margin-top: var(--bbl-space-200);
+          margin-bottom: 2.1875rem;
           flex-direction: row-reverse;
           justify-content: center;
           gap: var(--bbl-space-200);

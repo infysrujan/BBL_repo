@@ -396,6 +396,7 @@
   text-align: start;
   color: var(--bbl-color-grey-85);
   transition: all;
+  cursor: pointer;
 }
 
 /* Mobile: overseas cards are an accordion list — no box-shadow */
@@ -542,7 +543,7 @@
   margin-bottom: 0.625rem;
   overflow-wrap: break-word;
   padding-right: 0.3125rem;
-  margin-top: 0.625rem;
+  margin-top: 1rem;
   line-height: 1.375rem;
 }
 
@@ -569,6 +570,13 @@
   background-position: center;
   flex-shrink: 0;
   padding-left: 0;
+}
+
+/* Disabled state — shown when the location has no coordinates */
+.locate-us .locate-us-card-directions-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: default;
 }
 
 /* ── Pagination ──────────────────────────────────────────────────────────────── */
@@ -970,7 +978,6 @@
     align-items: center;
     padding: 0 var(--bbl-space-600);
     gap: 0.625rem;
-    max-width: 46.875rem;
     margin: 0 auto 1.875rem;
   }
 
@@ -1149,13 +1156,7 @@
     transform: none;
   }
 
-  .locate-us .locate-us-card[data-no-location="true"] .locate-us-card-chevron {
-    cursor: default;
-    pointer-events: none;
-  }
-
-  .locate-us:has(.locate-us-results-overseas) .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron,
-  .locate-us .locate-us-card[data-no-location="true"] .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron {
+  .locate-us:has(.locate-us-results-overseas) .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron {
     background-image: url('../../icons/icon_nearme_disable.svg');
   }
 
@@ -1209,15 +1210,6 @@
   .locate-us .locate-us-district-select {
     font-size: var(--bbl-font-size-b1);
     margin: 0 0 var(--bbl-space-150);
-  }
-
-  /* ── Inactive map pin when card has no coordinates ── */
-  .locate-us .locate-us-card[data-no-location="true"] .locate-us-card-header[aria-expanded="true"] .locate-us-card-chevron {
-    background-image: url('../../icons/icon_nearme_disable.svg');
-    opacity: 0.4;
-    cursor: default;
-    padding-left: 0;
-
   }
 
   /* ── Single card: center in middle column of 3-col grid ── */
@@ -1335,6 +1327,7 @@
   /* stylelint-enable no-descending-specificity */
 
   .locate-us .locate-us-filter-bar {
+    max-width: 48%;
     margin: auto;
     margin-bottom: 1.875rem;
   }
@@ -1349,7 +1342,7 @@
 
   .locate-us .cards-list.cards-3 .cards-list-item {
     flex: 1;
-    max-width: 24.25rem;
+    max-width: 25%;
   }
 
   .section.underline-title .default-content-wrapper #locate-us {

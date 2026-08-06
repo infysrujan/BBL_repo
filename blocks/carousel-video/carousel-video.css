@@ -29,11 +29,13 @@
   border: none;
   display: block;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.5s ease-in-out;
 }
 
 .carousel-video .cv-main-player iframe.active {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .carousel-video .cv-carousel-section {
