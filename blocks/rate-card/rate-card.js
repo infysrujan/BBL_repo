@@ -307,6 +307,7 @@ function createTabContent(tabData, apiData) {
  * @param {number} index - Index of tab to activate
  */
 function activateTab(block, index) {
+  console.log('activateTab', index);
   const tabHeaders = block.querySelectorAll('.tab-header li');
   const tabContents = block.querySelectorAll('[data-tab-content] > div');
 
@@ -503,14 +504,28 @@ export default async function decorate(block) {
     });
   });
 
-  // Handle hash navigation
-  const { hash } = window.location;
-  if (hash) {
-    const tabIndex = tabsData.findIndex(
-      (tab) => `#${createTabId(tab.cardName)}` === hash,
-    );
-    if (tabIndex >= 0) {
-      activateTab(block, tabIndex);
+  // Resolve which tab should be active based on the current URL hash,
+  // falling back to the first tab.
+  const resolveActiveIndex = () => {
+    const { hash } = window.location;
+    if (hash) {
+      const tabIndex = tabsData.findIndex(
+        (tab) => `#${createTabId(tab.cardName)}` === hash,
+      );
+      if (tabIndex >= 0) return tabIndex;
     }
-  }
+    return 0;
+  };
+
+  // Handle hash navigation
+  activateTab(block, resolveActiveIndex());
+
+  // Reset tab selection when the page is restored from the bfcache
+  // (back/forward navigation), where stale DOM state can persist.
+  window.addEventListener('pageshow', (event) => {
+    console.log('activateTab pageshow', event.persisted);
+    if (event.persisted) {
+      activateTab(block, resolveActiveIndex());
+    }
+  });
 }
