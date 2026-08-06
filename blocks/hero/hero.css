@@ -380,7 +380,6 @@
   float: left;
   width: 100%;
   line-height: 1rem;
-  padding-left: 2.625rem;
 }
 
 .hero-banner-content-inner-text p {
@@ -399,7 +398,7 @@
 }
 
 .hero-banner-private-wealth-banking .button-container {
-  margin-block: 24px 0;
+  margin-block: 1.5rem 0;
   justify-content: flex-start;
   text-align: left;
 }
@@ -734,6 +733,14 @@
 
   :is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content-inner-text, .hero-banner-content-inner-text p) {
     color: var(--bbl-color-white);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+   max-width: 100%;
+  }
+
+    .hero-banner-content-group .button-container a {
+    margin-bottom: 4.0625rem;
   }
 
   .hero-banner::after {
@@ -748,10 +755,6 @@
     position: absolute;
     padding-top: 0;
     bottom: 1.875rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    max-width: 100%;
   }
 
   .hero-banner-simple {
