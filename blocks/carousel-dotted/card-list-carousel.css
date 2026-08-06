@@ -77,6 +77,11 @@
   display: none;
 }
 
+.carousel-dotted.dots-center-outside-container.show-arrows-dots.auto-scroll.all-carousel-fragment
+  .slick-dots {
+  margin-bottom: var(--bbl-space-1000);
+}
+
 .carousel-dotted.all-carousel-fragment.show-arrows-dots .carousel-arrow {
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }

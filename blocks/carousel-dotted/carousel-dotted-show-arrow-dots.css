@@ -164,10 +164,12 @@
   transform: none;
   margin-top: 0.75rem;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 0.5rem;
   width: auto;
   height: auto;
+  overflow: visible;
 }
 
 @media (width > 47.5rem) {
