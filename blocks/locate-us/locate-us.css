@@ -1342,7 +1342,7 @@
 
   .locate-us .cards-list.cards-3 .cards-list-item {
     flex: 1;
-    max-width: 24.25rem;
+    max-width: 25%;
   }
 
   .section.underline-title .default-content-wrapper #locate-us {

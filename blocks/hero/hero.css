@@ -383,6 +383,12 @@
   line-height: 1rem;
 }
 
+/* Mobile: ignore manual line breaks in the hero heading and let it wrap
+   naturally (restored at tablet width and up). */
+.hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) br {
+  display: none;
+}
+
 .hero-banner-content-inner-text p {
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-heading-h3-reg-size);
@@ -713,6 +719,11 @@
 }
 
 @media (width > 47.5rem) {
+  /* Restore the hero heading line break on tablet and up. */
+  .hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) br {
+    display: inline;
+  }
+
   .hero-banner-video {
     min-height: 38rem;
   }
