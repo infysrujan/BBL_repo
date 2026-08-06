@@ -38,17 +38,16 @@
 
 .section.center-image .columns-2-cols .columns-img-col,
 .section.center-image .columns-3-cols .columns-img-col,
-.section.center-image .columns-3-cols > div > div:has(> p > picture),
-.section.center-image .columns-2-cols > div > div:has(> p.rte-has-icon),
-.section.center-image .columns-3-cols > div > div:has(> p.rte-has-icon) {
+.section.center-image .columns-2-cols > div > div:has(> p picture),
+.section.center-image .columns-3-cols > div > div:has(> p picture) {
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
 }
 
-.section.center-image .columns-2-cols > div:has(> div > p.rte-has-icon),
-.section.center-image .columns-3-cols > div:has(> div > p.rte-has-icon),
+.section.center-image .columns-2-cols > div:has(> div > p picture),
+.section.center-image .columns-3-cols > div:has(> div > p picture),
 .section.center-image .columns-3-cols > div:has(> div:nth-child(3) > p > picture) {
   justify-content: center;
   flex-flow: row wrap;
