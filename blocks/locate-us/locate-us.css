@@ -27,6 +27,12 @@
   flex: auto;
 }
 
+.locate-us .card-list .cards-list-item .cards-list-content h3 {
+  font-family: 'BangkokBank-Bold';
+  font-size: 23px;
+  font-weight: 400;
+}
+
 .locate-us .cards-list-title.has-title-underline :is(h1, h2, h3, h4, h5, h6)::before {
   width: var(--bbl-space-800);
 }
