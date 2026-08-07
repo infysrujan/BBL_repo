@@ -218,10 +218,6 @@
 }
 
 .carousel-dotted .carousel-default-text {
-  font-family: var(--bbl-font-family-primary);
-  font-weight: var(--bbl-font-weight-regular);
-  font-size: 0.875rem;
-  line-height: 0.875rem;
   color: var(--bbl-color-grey-70);
   padding: var(--bbl-space-250) 0;
 }
@@ -971,12 +967,6 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-dotted-header {
-    font-weight: var(--bbl-font-weight-regular);
-    font-size: 1rem;
-    line-height: 1rem;
-  }
-
-  .carousel-dotted .carousel-default-text {
     font-weight: var(--bbl-font-weight-regular);
     font-size: 1rem;
     line-height: 1rem;
