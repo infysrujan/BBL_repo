@@ -144,7 +144,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   & .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper, .date-wrapper) {
     position: relative;
     clear: both;
-    margin-bottom: 2.1875rem;
+    margin-bottom: 0.625rem;
   }
 
   /* Mobile: stack half-width fields in a single column */
@@ -476,6 +476,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         & fieldset.field-submitbuttonpanel2 {
           width: 100%;
           margin-top: var(--bbl-space-200);
+          margin-bottom: 2.1875rem;
           flex-direction: row-reverse;
           justify-content: center;
           gap: var(--bbl-space-200);
