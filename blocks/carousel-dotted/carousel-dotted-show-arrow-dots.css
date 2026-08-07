@@ -359,6 +359,7 @@
 @media (width > 47.5rem) {
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) {
     grid-template-columns: 1fr;
+    column-gap: 0;
   }
 
   .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-track-viewport {
