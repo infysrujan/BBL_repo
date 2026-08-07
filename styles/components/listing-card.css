@@ -7,8 +7,7 @@
 }
 
 .listing-card-grid:has(.listing-card-empty),
-.listing-card-grid:has(.top-promo-empty),
-.listing-card-grid:has(.listing-card-container:only-child) {
+.listing-card-grid:has(.top-promo-empty) {
   justify-content: center;
 }
 
@@ -273,7 +272,7 @@
   }
 
   .listing-card-container {
-    width: calc(25% - 28px);
+    width: calc(25% - 1.75rem);
   }
 
   .listing-card-tag {

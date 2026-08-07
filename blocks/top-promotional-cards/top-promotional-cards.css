@@ -51,6 +51,6 @@
   animation: top-promo-settle-down 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.tabs.nav:has(.top-promo-grid) {
-  margin-inline: -11px;
+body:has(.top-promo-grid) .tabs-nav {
+    margin-inline: -0.6875rem;
 }
