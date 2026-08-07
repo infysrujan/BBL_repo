@@ -149,7 +149,7 @@
   margin-top:0
 }
 
-.accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper):has(>p) {
+.accordion-block-container > .default-content-wrapper:has(+ .accordion-block-wrapper):has(> p) {
   margin-bottom: 1.25rem;
 }
 
