@@ -162,7 +162,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     gap: var(--bbl-space-200);
     width: 100%;
     clear: both;
-    margin-bottom: 2.1875rem;
+    margin: 1.875rem 0 2.1875rem;
+
 
     & > .button-wrapper {
       display: flex;
