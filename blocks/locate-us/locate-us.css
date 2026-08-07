@@ -222,6 +222,7 @@
 .locate-us .locate-us-keyword-search-btn:active {
   background: none;
   text-decoration: none;
+  transform: translateY(-50%);
 }
 
 .locate-us .locate-us-keyword-search-icon {
