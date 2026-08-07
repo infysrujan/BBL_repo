@@ -341,7 +341,6 @@
   }
 }
 
-
 :is(.hero-banner-simple, .hero-banner-private-wealth-banking, .hero-banner-simple-logo-banner) .hero-banner-content.content {
   position: static;
   text-align: left;
@@ -405,7 +404,7 @@
 }
 
 .hero-banner-private-wealth-banking .button-container {
-  margin-block: 1.875rem 0;
+  margin-block: 1.5rem 0;
   justify-content: flex-start;
   text-align: left;
 }
@@ -562,8 +561,8 @@
   margin: var(--bbl-space-100) 0 0;
 }
 
-.hero-banner-private-wealth-banking .hero-banner-content.content {
-  padding: 0 var(--bbl-space-200) 0;
+.hero-banner-private-wealth-banking .hero-banner-content-inner {
+  padding: 0 0 4rem;
 }
 
 .hero-banner-private-wealth-banking .hero-banner-logo {
@@ -602,10 +601,6 @@
   padding-bottom: 0.9375rem;
 }
 
-.hero-banner-private-wealth-banking .hero-banner-content-group {
-  margin-block: 0 var(--bbl-space-500);
-}
-
 .wealth .hero-banner-private-wealth-banking .hero-banner-content-group :is(h1, h2, h3, h4, h5, h6) {
   color: var(--bbl-color-grey-60);
 }
@@ -634,7 +629,7 @@
   color: var(--bbl-color-black);
 }
 
-:is(.hero-banner-simple, .hero-banner-private-wealth-banking, .hero-banner-simple-logo-banner) .hero-banner-content.content:has(.hero-banner-content-group > *) {
+:is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content.content:has(.hero-banner-content-group > *) {
   padding-top: var(--bbl-space-250);
 }
 
@@ -747,14 +742,6 @@
     margin-bottom: 0;
   }
 
-  .hero-banner-content-group .button-container a {
-    margin-bottom: 4.0625rem;
-  }
-
-  .hero-banner-hero-with-thumbnail-images .hero-banner-content-group .button-container a {
-    margin-bottom: unset;
-  }
-
   :is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content-inner-text, .hero-banner-content-inner-text p) {
     color: var(--bbl-color-white);
     display: -webkit-box;
@@ -762,10 +749,17 @@
     -webkit-box-orient: vertical;
     max-width: 100%;
   }
-  
+
+  .hero-banner-content-group .button-container a {
+    margin-bottom: 4.0625rem;
+  }
 
   .hero-banner::after {
     width: calc(100% - 3rem);
+  }
+
+  .hero-banner-hero-with-thumbnail-images .hero-banner-content-group .button-container a {
+    margin-bottom: unset;
   }
 
    :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content.content {
@@ -1149,7 +1143,7 @@
   }
 
   .hero-banner-private-wealth-banking .hero-banner-content-group {
-    margin-block: var(--bbl-space-600) var(--bbl-space-800);
+    margin-block: var(--bbl-space-600) 0;
     width: 60%;
   }
 }
@@ -1197,3 +1191,4 @@
 .hero-banner-item:fullscreen:has(iframe) .hero-banner-video-controls {
   margin-bottom: 3.0625rem;
 }
+ 
