@@ -28,9 +28,9 @@
 }
 
 .locate-us .card-list .cards-list-item .cards-list-content h3 {
-  font-family: var(--bbl-font-family-bold, 'BangkokBank-Bold');
+  font-family: var(--bbl-font-family-medium);
   font-size: 1.4375rem;
-  font-weight: var(--bbl-font-weight-regular);
+  font-weight: var(--bbl-font-weight-medium);
 }
 
 .locate-us .cards-list-title.has-title-underline :is(h1, h2, h3, h4, h5, h6)::before {
