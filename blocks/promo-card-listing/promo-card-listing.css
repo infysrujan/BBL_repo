@@ -18,14 +18,6 @@ body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector
   padding-bottom: 0;
 }
 
-.promo-selector-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: var(--bbl-space-250);
-  padding-bottom: var(--bbl-space-250);
-}
-
 .promo-selector-grid .listing-card{
   margin-bottom: 0;
 }
@@ -307,17 +299,10 @@ body.mobile-app-view main > div:first-child {
 }
 
 @media (width > 64rem) {
-  .promo-selector-grid {
-    gap: var(--bbl-space-500);
-    margin-inline: 0;
-    padding-bottom: var(--bbl-space-500);
-  }
-
   .promo-selector-grid:has(.promo-selector-empty) {
     width: unset;
     padding-inline: 0;
   }
-
 
   .promo-selector-empty {
     font-size: var(--bbl-font-size-b1);

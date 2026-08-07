@@ -13,7 +13,6 @@
 
 .listing-card-container {
   width: 100%;
-  margin: 0 -0.0625rem;
   display: flex;
   flex-direction: column;
 }
@@ -272,7 +271,7 @@
   }
 
   .listing-card-container {
-    width: calc(25% - 1.75rem);
+    width: calc(25% - 1.875rem);
   }
 
   .listing-card-tag {
