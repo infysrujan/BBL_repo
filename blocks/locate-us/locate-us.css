@@ -33,6 +33,10 @@
   font-weight: var(--bbl-font-weight-medium);
 }
 
+.locate-us .card-list .cards-list-item .cards-list-button a {
+  height: 2.75rem;
+}
+
 .locate-us .cards-list-title.has-title-underline :is(h1, h2, h3, h4, h5, h6)::before {
   width: var(--bbl-space-800);
 }
@@ -925,7 +929,7 @@
 
 .sub-nav .sub-nav-tab-btn.active {
   background-color: transparent;
-  color: rgb(129, 152, 204);
+  color: rgb(129 152 204);
 }
 
 /* ─── Tablet (> 47.5rem) ──────────────────────────────────────────────────────── */
