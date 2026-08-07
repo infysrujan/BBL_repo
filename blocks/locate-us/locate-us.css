@@ -925,7 +925,7 @@
 
 .sub-nav .sub-nav-tab-btn.active {
   background-color: transparent;
-  color: rgb(129, 152, 204);
+  color: rgb(129 152 204);
 }
 
 /* ─── Tablet (> 47.5rem) ──────────────────────────────────────────────────────── */
