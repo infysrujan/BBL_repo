@@ -123,11 +123,6 @@
   opacity: 0.5;
 }
 
-p:has(picture.rte-inline-image) {
-  display: inline-block;
-  vertical-align: middle;
-}
-
 .accordion-panel .columns p {
   font-weight: 400;
 }
