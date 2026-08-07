@@ -62,6 +62,10 @@
   box-shadow: 0 0 0.4375rem var(--bbl-color-white);
 }
 
+.search-reports-overlay .sr-close-btn:focus-visible {
+  outline: none;
+}
+
 .search-reports-overlay .sr-close-btn .icon,
 .search-reports-overlay .sr-close-btn img {
   color: var(--bbl-color-white);
