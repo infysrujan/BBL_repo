@@ -29,6 +29,7 @@
 /* Header */
 
 .search-reports-overlay .sr-header {
+  position: relative;
   background: var(--bbl-color-truthful-blue);
   display: flex;
   align-items: center;
@@ -44,6 +45,10 @@
 }
 
 .search-reports-overlay .sr-close-btn {
+  position: absolute;
+  top: 50%;
+  right: var(--bbl-space-300);
+  transform: translateY(-50%);
   background: transparent;
   border: 0.0313rem solid var(--bbl-color-white);
   cursor: pointer;
@@ -54,7 +59,6 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  flex-shrink: 0;
   color: var(--bbl-color-white);
 }
 
@@ -252,6 +256,12 @@
 
 @media (width > 64rem) {
   .search-reports-overlay .sr-header {
-    padding: 1.56rem 1.87rem 1.56rem var(--bbl-space-1050);
+    padding-block: 1.56rem;
+    padding-left: max(var(--bbl-space-1050), calc((100% - var(--bbl-layout-content-max-width-1920)) / 2));
+    padding-right: 1.87rem;
+  }
+
+  .search-reports-overlay .sr-close-btn {
+    right: 1.87rem;
   }
 }
