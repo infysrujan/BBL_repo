@@ -11,12 +11,6 @@
   transition: all 0.2s ease-in-out;
 }
 
-.top-promo-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-}
-
 .top-promo-grid:has(> .listing-card-container) {
   justify-content: flex-start;
 }
