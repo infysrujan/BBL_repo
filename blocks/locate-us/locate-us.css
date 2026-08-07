@@ -34,7 +34,7 @@
 }
 
 .locate-us .card-list .cards-list-item .cards-list-button a {
-  height: 44px;
+  height: 2.75rem;
 }
 
 .locate-us .cards-list-title.has-title-underline :is(h1, h2, h3, h4, h5, h6)::before {
