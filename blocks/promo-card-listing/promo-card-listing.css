@@ -248,10 +248,6 @@ body.mobile-app-view main > div:first-child {
 }
 
 @media (width > 47.5rem) {
-  .promo-selector-grid {
-    margin-inline: -0.625rem;
-  }
-  
   .promo-selector-grid:has(.promo-selector-empty) {
     width: 50%;
     padding-inline: 0.625rem;
