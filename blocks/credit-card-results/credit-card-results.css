@@ -87,22 +87,7 @@
 }
 
 .card-list.credit-card .ccs-compare-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  height: 2.75rem;
-  margin: 0.625rem 0 0;
-  padding: 0.3125rem 0;
-  background: var(--bbl-color-white);
-  color: var(--bbl-color-active-blue);
-  border: 0.125rem solid var(--bbl-color-active-blue);
-  border-radius: var(--bbl-rounded-100);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-body-b1-size);
-  text-decoration: none;
-  cursor: pointer;
-  width: 100%;
+    width: 100%;
 }
 
 .card-list.credit-card .ccs-compare-btn.is-comparing {
