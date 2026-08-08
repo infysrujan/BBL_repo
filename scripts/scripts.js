@@ -24,7 +24,7 @@ import {
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
-import initRteAnchors, { decorateRteInlineImages, decorateNewTabLinks } from './custom-rte.js';
+import initRteAnchors, { decorateRteInlineImages, decorateNewTabLinks, decorateEncodedNbsp } from './custom-rte.js';
 
 import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
@@ -184,6 +184,7 @@ export function decorateMain(main) {
   decorateTertiaryButtons(main);
   decorateSvgWithAltText(main);
   decorateNewTabLinks(main);
+  decorateEncodedNbsp(main);
 
   const pageVariant = getMetadata('pagevariant');
   if (pageVariant) {

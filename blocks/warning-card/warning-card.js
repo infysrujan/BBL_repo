@@ -61,6 +61,10 @@ export default function decorate(block) {
     return;
   }
 
+  // Add the `content` class to the block wrapper so it picks up the shared
+  // content-section styling (matches the markup used elsewhere).
+  block.parentElement?.classList.add('content');
+
   // Clear the block
   block.innerHTML = '';
 

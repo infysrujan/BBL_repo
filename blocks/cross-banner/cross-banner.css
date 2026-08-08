@@ -43,11 +43,10 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .cross-banner-title {
-  color: var(--bbl-text-primary);
+  color: var(--bbl-color-black);
   font-size: 1.4rem;
   font-weight: var(--bbl-font-weight-regular);
   line-height: 1.375rem;
@@ -56,6 +55,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cross-banner-description {
