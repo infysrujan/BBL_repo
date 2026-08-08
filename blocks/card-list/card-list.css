@@ -846,3 +846,59 @@
     min-height: calc(100px + 50 * ((100vw - 320px) / 1600));
   }
 }
+
+@media print {
+  .cards-list {
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 0 var(--bbl-space-250);
+    align-items: stretch;
+  }
+
+  .cards-list-item {
+    break-inside: avoid;
+  }
+
+  .cards-list:is(.cards-1, .cards-3, .cards-4) .cards-list-item {
+    margin-bottom: var(--bbl-space-250);
+    display: flex;
+  }
+
+  .cards-list.cards-4 .cards-list-item,
+  .cards-list.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 2.5rem) / 3);
+  }
+
+  .cards-list.cards-1 .cards-list-item {
+    flex: 0 0 calc((100% - 3.75rem) / 3);
+  }
+
+  .cards-list:is(.scrollable, .carousel) {
+    flex-flow: row wrap;
+    justify-content: center;
+    overflow: visible;
+    scroll-snap-type: none;
+    padding: 0;
+  }
+
+  .cards-list:is(.scrollable, .carousel) .cards-list-item {
+    flex: 0 0 16.875rem;
+    scroll-snap-align: none;
+    margin-bottom: var(--bbl-space-250);
+  }
+
+  .cards-list-image.cards-list-image-card {
+    height: calc(100vw / 5);
+    min-height: 8.4375rem;
+  }
+
+  .cards-list-image.cards-list-image-full {
+    height: calc(100vw / 5);
+    max-height: calc(100vw * 0.2);
+  }
+
+  .cards-list-image.cards-list-image-default {
+    max-height: calc(100vw * 0.4);
+    height: 100vw;
+  }
+}
