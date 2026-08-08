@@ -509,7 +509,7 @@
 
 .cards-list-item:has(.cards-list-image-logo) .download-button-wrapper .download-files {
   padding: 0 var(--bbl-space-500) 0 var(--bbl-space-250);
-} 
+}
 
 .cards-list-button + .cards-list-date {
   padding-top: 0.625rem;
@@ -553,11 +553,11 @@
     display: flex;
   }
 
+  .cards-list.cards-4 .cards-list-item,
   .cards-list.cards-3 .cards-list-item {
     flex: 0 0 calc((100% - 2.5rem) / 3);
   }
 
-  .cards-list.cards-4 .cards-list-item,
   .cards-list.cards-1 .cards-list-item {
     flex: 0 0 calc((100% - 3.75rem) / 3);
   }
