@@ -581,10 +581,10 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-article-card-title-size);
-  line-height: var(--bbl-text-article-card-title-line-height);
+  font-size: var(--bbl-text-thumbnail-card-title-size);
+  line-height: var(--bbl-text-thumbnail-card-title-line-height);
   color: var(--bbl-color-black);
-  font-weight: var(--bbl-text-article-card-title-weight);
+  font-weight: var(--bbl-text-thumbnail-card-title-weight);
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 p {
