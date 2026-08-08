@@ -252,8 +252,8 @@ button.secondary:active,
 }
 
 .button-secondary-inverted:disabled {
-  border-color: var(--bbl-color-grey-90);
-  color: var(--bbl-color-grey-90);
+  border-color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-70);
   background: transparent;
 }
 
@@ -332,7 +332,7 @@ button.tertiary {
 }
 
 .button-tertiary-inverted:disabled {
-  color: var(--bbl-color-grey-90);
+  color: var(--bbl-color-grey-70);
 }
 
 /* =========================================================================
@@ -383,7 +383,7 @@ a.link-inverted:hover {
 .link-inverted[aria-disabled="true"],
 .link-inverted:disabled,
 a.link-inverted[aria-disabled="true"] {
-  color: var(--bbl-color-grey-90);
+  color: var(--bbl-color-grey-70);
 }
 
 /* =========================================================================
