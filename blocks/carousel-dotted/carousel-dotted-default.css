@@ -603,6 +603,11 @@
   margin: 0;
 }
 
+.carousel-dotted .carousel-dotted-item.with-circular-image .text-default a:hover {
+  color: var(--bbl-color-blue-90);
+  text-decoration: none;
+}
+
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-brown,
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default {
   color: var(--bbl-color-grey-70);
