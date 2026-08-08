@@ -138,7 +138,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
   & .form form :is(p, .repeat-wrapper, .field-wrapper) {
     margin: 0;
-    gap: var(--form-field-gap) var(--form-field-vert-gap);
+    gap: 0 1.4375rem;
   }
 
   & .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper, .date-wrapper) {
