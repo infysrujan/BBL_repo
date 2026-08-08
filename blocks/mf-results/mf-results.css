@@ -105,7 +105,7 @@
 .mfr-no-results {
   text-align: center;
   font-size: var(--bbl-font-size-b1, 1rem);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin:0;
 }
 

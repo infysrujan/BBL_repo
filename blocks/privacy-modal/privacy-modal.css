@@ -286,7 +286,7 @@
 
 .privacy-modal-cta:disabled {
   background-color: var(--bbl-color-grey-30);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   cursor: not-allowed;
 }
 

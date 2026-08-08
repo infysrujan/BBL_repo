@@ -224,7 +224,7 @@
 .mf-comparator-results .mfcr-no-results {
   padding: var(--bbl-space-layout-md) var(--bbl-space-container-xs);
   text-align: center;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 /* ── Scroll dots — mobile only ────────────────────────────────────────────── */

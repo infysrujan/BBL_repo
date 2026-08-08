@@ -27,7 +27,7 @@
 .cards-list-subtitle p,
 .cards-list-description p {
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .cards-list-subtitle p {
@@ -390,11 +390,11 @@
 }
 
 .section.bg-truthful-dark-blue * .cards-list-description p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .section.bg-truthful-dark-blue * .cards-list-remark p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .section.bg-truthful-blue * .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
@@ -402,11 +402,11 @@
 }
 
 .section.bg-truthful-blue * .cards-list-description p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .section.bg-truthful-blue * .cards-list-remark p {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .cards-list-title:not(.has-title-underline) :is(h1, h2, h3, h4, h5, h6) {
