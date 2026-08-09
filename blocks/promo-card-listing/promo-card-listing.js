@@ -319,7 +319,7 @@ function setupPanel(
         </div>
       </div>
       <div class="promo-selector-content pad-top-30 pad-bot-30">
-        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
+        <div class="listing-card-grid promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
         <div class="promo-selector-pagination"></div>
       </div>`;
   }
@@ -361,9 +361,10 @@ function setupPanel(
       }).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 
+    const carouselNavBtnsLabels = { prevBtnLabel: placeholders.carouselPrevBtnLabel || 'Previous', nextBtnLabel: placeholders.carouselNextBtnLabel || 'Next' };
     paginationEl.innerHTML = hidePagination
       ? ''
-      : buildPaginationHtml(state.page, Math.ceil(total / pageSize));
+      : buildPaginationHtml(state.page, Math.ceil(total / pageSize), carouselNavBtnsLabels);
   }
 
   if (options.immediate) {
@@ -483,7 +484,8 @@ function setupPanel(
     render();
   });
 
-  bindPaginationClick(paginationEl, state, render, gridEl);
+  const scrollTarget = panel.closest('.tabs') || gridEl;
+  bindPaginationClick(paginationEl, state, render, scrollTarget);
 }
 
 export default async function decorate(block) {

@@ -244,13 +244,17 @@ export function buildCardHtml(card, tag = {}, placeholders = {}, options = {}) {
 </div>`;
 }
 
-export function buildPaginationHtml(current, total) {
+export function buildPaginationHtml(current, total, labels = {}) {
   if (total <= 1) return '';
 
   const show = new Set();
-  for (let p = 1; p <= Math.min(2, total); p += 1) show.add(p);
-  for (let p = Math.max(1, total - 1); p <= total; p += 1) show.add(p);
-  for (let p = Math.max(1, current - 2); p <= Math.min(total, current + 2); p += 1) show.add(p);
+  if (total <= 7) {
+    for (let p = 1; p <= total; p += 1) show.add(p);
+  } else {
+    for (let p = 1; p <= Math.min(2, total); p += 1) show.add(p);
+    for (let p = Math.max(1, total - 1); p <= total; p += 1) show.add(p);
+    for (let p = Math.max(1, current - 2); p <= Math.min(total, current + 2); p += 1) show.add(p);
+  }
 
   const sorted = [...show].sort((a, b) => a - b);
   let inner = '';
@@ -265,9 +269,9 @@ export function buildPaginationHtml(current, total) {
   const prevAttr = current === 1 ? ' disabled' : '';
   const nextAttr = current === total ? ' disabled' : '';
   return `
-    <button class="listing-card-arrow" data-dir="prev"${prevAttr} aria-label="Previous"><i class="icon-arrow-left" aria-hidden="true"></i></button>
+    <button class="listing-card-arrow" data-dir="prev"${prevAttr} title="${labels.prevBtnLabel}"><i class="icon-arrow-left" aria-hidden="true"></i></button>
     <div class="listing-card-pages">${inner}</div>
-    <button class="listing-card-arrow listing-card-arrow-next" data-dir="next"${nextAttr} aria-label="Next"><i class="icon-arrow-left" aria-hidden="true"></i></button>`;
+    <button class="listing-card-arrow listing-card-arrow-next" data-dir="next"${nextAttr} title="${labels.nextBtnLabel}"><i class="icon-arrow-left" aria-hidden="true"></i></button>`;
 }
 
 export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollTarget) {

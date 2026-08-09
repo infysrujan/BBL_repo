@@ -218,10 +218,6 @@
 }
 
 .carousel-dotted .carousel-default-text {
-  font-family: var(--bbl-font-family-primary);
-  font-weight: var(--bbl-font-weight-regular);
-  font-size: 0.875rem;
-  line-height: 0.875rem;
   color: var(--bbl-color-grey-70);
   padding: var(--bbl-space-250) 0;
 }
@@ -325,6 +321,7 @@
   justify-content: flex-start;
   left: var(--bbl-space-300);
   right: auto;
+  bottom: var(--bbl-space-250);
 }
 
 .carousel-dotted.dots-center-inside-container .slick-dots {
@@ -584,10 +581,10 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-article-card-title-size);
-  line-height: var(--bbl-text-article-card-title-line-height);
+  font-size: var(--bbl-text-thumbnail-card-title-size);
+  line-height: var(--bbl-text-thumbnail-card-title-line-height);
   color: var(--bbl-color-black);
-  font-weight: var(--bbl-text-article-card-title-weight);
+  font-weight: var(--bbl-text-thumbnail-card-title-weight);
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 p {
@@ -604,6 +601,11 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default p {
   margin: 0;
+}
+
+.carousel-dotted .carousel-dotted-item.with-circular-image .text-default a:hover {
+  color: var(--bbl-color-blue-90);
+  text-decoration: none;
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-brown,
@@ -632,7 +634,6 @@
 
 /* Default Image specific */
 .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb {
-  background: var(--bbl-color-grey-10);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -970,12 +971,6 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-dotted-header {
-    font-weight: var(--bbl-font-weight-regular);
-    font-size: 1rem;
-    line-height: 1rem;
-  }
-
-  .carousel-dotted .carousel-default-text {
     font-weight: var(--bbl-font-weight-regular);
     font-size: 1rem;
     line-height: 1rem;

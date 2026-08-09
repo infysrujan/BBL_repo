@@ -203,6 +203,17 @@ async function loadChartJs() {
   return Chart;
 }
 
+function getLastDataDate() {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  let daysBack = 0;
+  if (dayOfWeek === 6) daysBack = 1;
+  else if (dayOfWeek === 0) daysBack = 2;
+  const lastDataDate = new Date(now);
+  lastDataDate.setDate(now.getDate() - daysBack);
+  return lastDataDate;
+}
+
 function renderDatepicker(pick, pickerState, monthLabels, dayLabels, buddhistYearOffset) {
   if (!pickerState.calendarOpen) return '';
 
@@ -210,9 +221,12 @@ function renderDatepicker(pick, pickerState, monthLabels, dayLabels, buddhistYea
   const viewEnabledSet = new Set(pickerState.enabledDaysByMonth[viewMonthKey] || []);
   const calendarWeeks = buildCalendarGrid(pickerState.viewYear, pickerState.viewMonth);
   const selectedParsed = parseIsoDate(pickerState.selectedDate);
-  const now = new Date();
-  const nextDisabled = pickerState.viewYear === now.getFullYear()
-    && pickerState.viewMonth === now.getMonth() + 1;
+  const lastDataDate = getLastDataDate();
+  const maxYear = lastDataDate.getFullYear();
+  const maxMonth = lastDataDate.getMonth() + 1;
+  const maxDay = lastDataDate.getDate();
+  const nextDisabled = pickerState.viewYear > maxYear
+    || (pickerState.viewYear === maxYear && pickerState.viewMonth >= maxMonth);
 
   const weeksMarkup = calendarWeeks.map((week) => {
     const cells = week.map((cell, index) => {
@@ -222,14 +236,22 @@ function renderDatepicker(pick, pickerState, monthLabels, dayLabels, buddhistYea
       }
 
       const dayValue = String(cell.day).padStart(2, '0');
-      const isEnabled = viewEnabledSet.size === 0 || viewEnabledSet.has(dayValue);
+      const sameMaxMonth = pickerState.viewYear === maxYear
+        && pickerState.viewMonth === maxMonth;
+      const isPastMaxDate = pickerState.viewYear > maxYear
+        || (pickerState.viewYear === maxYear && pickerState.viewMonth > maxMonth)
+        || (sameMaxMonth && cell.day > maxDay);
+      const dow = new Date(pickerState.viewYear, pickerState.viewMonth - 1, cell.day).getDay();
+      const isEnabled = !isPastMaxDate
+        && (viewEnabledSet.size === 0 ? (dow !== 0 && dow !== 6) : viewEnabledSet.has(dayValue));
       const isSelected = selectedParsed
         && Number(selectedParsed.day) === cell.day
         && Number(selectedParsed.month) === pickerState.viewMonth
         && Number(selectedParsed.year) === pickerState.viewYear;
-      const isToday = now.getDate() === cell.day
-        && now.getMonth() + 1 === pickerState.viewMonth
-        && now.getFullYear() === pickerState.viewYear;
+      const today = new Date();
+      const isToday = today.getDate() === cell.day
+        && today.getMonth() + 1 === pickerState.viewMonth
+        && today.getFullYear() === pickerState.viewYear;
 
       const classes = [
         index === 0 || index === 6 ? 'is-weekend' : '',
@@ -442,6 +464,19 @@ export default async function decorate(block) {
     const buyingData = state.chartData.map((d) => d.buyingRate);
     const sellingData = state.chartData.map((d) => d.sellingRate);
 
+    // A single-day range (From === To) yields one category, and Chart.js pins a
+    // lone category to the axis origin instead of centering it. Pad with a blank
+    // category on each side so the real one lands in the middle, like the
+    // production site.
+    if (labels.length === 1) {
+      labels.unshift('');
+      labels.push('');
+      buyingData.unshift(null);
+      buyingData.push(null);
+      sellingData.unshift(null);
+      sellingData.push(null);
+    }
+
     const allValues = [...buyingData, ...sellingData].filter((v) => v !== null);
     const minVal = Math.floor(Math.min(...allValues)) - 1;
     const maxVal = Math.ceil(Math.max(...allValues)) + 1;
@@ -537,8 +572,7 @@ export default async function decorate(block) {
         scales: {
           x: {
             grid: {
-              display: true,
-              color: 'rgba(0,0,0,0.08)',
+              display: false,
             },
             ticks: {
               maxRotation: 45,
@@ -883,10 +917,14 @@ export default async function decorate(block) {
     render();
 
     try {
-      // Load families and enabled days in parallel
+      // On weekends no FX rates are published; show the previous complete month.
+      // On weekdays show the current month up to today.
       const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
+      const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+      const baseDate = isWeekend ? new Date(now.getFullYear(), now.getMonth(), 0) : now;
+      const year = baseDate.getFullYear();
+      const month = baseDate.getMonth() + 1;
+      const toMaxDay = baseDate.getDate();
 
       const [families, enabledDays] = await Promise.all([
         getFxFamily(endpoints).catch(() => []),
@@ -898,20 +936,21 @@ export default async function decorate(block) {
         .filter((f) => !EXCLUDED_FAMILIES.includes(f.Family));
       state.selectedFamily = state.families[0]?.Family || 'USD1';
 
-      // Cache enabled days for current month in both pickers
+      // Cache enabled days for default month in both pickers
       const monthKey = getMonthKey(year, month);
       state.from.enabledDaysByMonth[monthKey] = enabledDays;
       state.to.enabledDaysByMonth[monthKey] = enabledDays;
 
-      // Set default dates: first valid day of month → last valid day
+      // Set default dates: 1st of month → last valid day (capped by toMaxDay)
       const monthStr = String(month).padStart(2, '0');
+      state.from.selectedDate = `${year}-${monthStr}-01`;
       if (enabledDays.length) {
-        state.from.selectedDate = `${year}-${monthStr}-${enabledDays[0]}`;
-        state.to.selectedDate = `${year}-${monthStr}-${enabledDays[enabledDays.length - 1]}`;
+        const validDays = enabledDays.filter((d) => Number(d) <= toMaxDay);
+        state.to.selectedDate = validDays.length
+          ? `${year}-${monthStr}-${validDays[validDays.length - 1]}`
+          : `${year}-${monthStr}-${String(toMaxDay).padStart(2, '0')}`;
       } else {
-        state.from.selectedDate = `${year}-${monthStr}-01`;
-        const todayStr = String(now.getDate()).padStart(2, '0');
-        state.to.selectedDate = `${year}-${monthStr}-${todayStr}`;
+        state.to.selectedDate = `${year}-${monthStr}-${String(toMaxDay).padStart(2, '0')}`;
       }
 
       // Format typed date display values
@@ -926,7 +965,7 @@ export default async function decorate(block) {
         buddhistYearOffset,
       );
 
-      // Set calendar view to current month
+      // Set calendar view to last data date's month
       state.from.viewYear = year;
       state.from.viewMonth = month;
       state.to.viewYear = year;
