@@ -21,19 +21,10 @@ function initCarousel(carousel, track) {
 
   const offset = infinite ? STEP : 0;
 
-  if (infinite) {
+  if (infinite && !track.querySelector('[data-aue-resource]')) {
     const realItems = [...track.children];
-    const ghostClone = (el) => {
-      const clone = el.cloneNode(true);
-      [clone, ...clone.querySelectorAll('*')].forEach((node) => {
-        [...node.attributes]
-          .filter((a) => a.name.startsWith('data-aue-'))
-          .forEach((a) => node.removeAttribute(a.name));
-      });
-      return clone;
-    };
-    realItems.slice(-STEP).reverse().forEach((c) => track.prepend(ghostClone(c)));
-    realItems.slice(0, STEP).forEach((c) => track.appendChild(ghostClone(c)));
+    realItems.slice(-STEP).reverse().forEach((c) => track.prepend(c.cloneNode(true)));
+    realItems.slice(0, STEP).forEach((c) => track.appendChild(c.cloneNode(true)));
   }
 
   track.style.width = `${track.children.length * itemStep - GAP}px`;
