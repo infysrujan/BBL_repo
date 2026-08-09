@@ -23,8 +23,17 @@ function initCarousel(carousel, track) {
 
   if (infinite) {
     const realItems = [...track.children];
-    realItems.slice(-STEP).reverse().forEach((c) => track.prepend(c.cloneNode(true)));
-    realItems.slice(0, STEP).forEach((c) => track.appendChild(c.cloneNode(true)));
+    const ghostClone = (el) => {
+      const clone = el.cloneNode(true);
+      [clone, ...clone.querySelectorAll('*')].forEach((node) => {
+        [...node.attributes]
+          .filter((a) => a.name.startsWith('data-aue-'))
+          .forEach((a) => node.removeAttribute(a.name));
+      });
+      return clone;
+    };
+    realItems.slice(-STEP).reverse().forEach((c) => track.prepend(ghostClone(c)));
+    realItems.slice(0, STEP).forEach((c) => track.appendChild(ghostClone(c)));
   }
 
   track.style.width = `${track.children.length * itemStep - GAP}px`;
@@ -128,14 +137,19 @@ function initCarousel(carousel, track) {
 }
 
 export default function decorate(block) {
-  const [titleRow, autoScrollRow, scrollDelayRow, infiniteLoopRow, ...slideItems] = [
-    ...block.children,
-  ];
+  const [titleRow, autoScrollRow, scrollDelayRow, infiniteLoopRow, ...slideItems] = block.children;
 
   const titleCell = titleRow?.children[0];
   const isAutoPlay = autoScrollRow?.children[0]?.textContent?.trim() !== 'false';
   const scrollTimeDelay = scrollDelayRow?.children[0]?.textContent?.trim() || '3000';
   const infiniteLoop = infiniteLoopRow?.children[0]?.textContent?.trim() !== 'false';
+
+  block.innerHTML = '';
+
+  if (titleCell) {
+    titleCell.className = 'header-banner-slide-title';
+    block.appendChild(titleCell);
+  }
 
   const carousel = document.createElement('div');
   carousel.className = 'header-banner-slide-carousel content';
@@ -161,14 +175,6 @@ export default function decorate(block) {
   });
 
   carousel.appendChild(track);
-
-  block.textContent = '';
-
-  if (titleCell) {
-    titleCell.className = 'header-banner-slide-title';
-    block.appendChild(titleCell);
-  }
-
   block.appendChild(carousel);
 
   const ro = new ResizeObserver((entries) => {
