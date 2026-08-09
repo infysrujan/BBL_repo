@@ -128,19 +128,14 @@ function initCarousel(carousel, track) {
 }
 
 export default function decorate(block) {
-  const [titleRow, autoScrollRow, scrollDelayRow, infiniteLoopRow, ...slideItems] = block.children;
+  const [titleRow, autoScrollRow, scrollDelayRow, infiniteLoopRow, ...slideItems] = [
+    ...block.children,
+  ];
 
   const titleCell = titleRow?.children[0];
   const isAutoPlay = autoScrollRow?.children[0]?.textContent?.trim() !== 'false';
   const scrollTimeDelay = scrollDelayRow?.children[0]?.textContent?.trim() || '3000';
   const infiniteLoop = infiniteLoopRow?.children[0]?.textContent?.trim() !== 'false';
-
-  block.innerHTML = '';
-
-  if (titleCell) {
-    titleCell.className = 'header-banner-slide-title';
-    block.appendChild(titleCell);
-  }
 
   const carousel = document.createElement('div');
   carousel.className = 'header-banner-slide-carousel content';
@@ -166,6 +161,14 @@ export default function decorate(block) {
   });
 
   carousel.appendChild(track);
+
+  block.textContent = '';
+
+  if (titleCell) {
+    titleCell.className = 'header-banner-slide-title';
+    block.appendChild(titleCell);
+  }
+
   block.appendChild(carousel);
 
   const ro = new ResizeObserver((entries) => {
