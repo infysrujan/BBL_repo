@@ -687,6 +687,12 @@
     }
   }
 
+  :lang(th) {
+    .card-list-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+      line-height: 2.5rem;
+    }
+  }
+
   .cards-list-date p,
   .cards-list-subtitle p{
     line-height: 1.375rem;
