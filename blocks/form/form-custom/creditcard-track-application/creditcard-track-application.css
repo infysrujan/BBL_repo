@@ -87,12 +87,31 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     color: var(--bbl-color-black);
     border: var(--form-input-border-size) solid var(--bbl-color-grey-150);
     border-radius: 0.4375rem;
-    background: var(--form-input-background-color) url('../../../../icons/Chevron-down.svg') no-repeat right var(--bbl-space-150) center / var(--bbl-space-250);
+    background: var(--form-input-background-color);
     font-family: var(--bbl-font-family-medium);
     font-weight: var(--bbl-body-b1-medium-weight);
     line-height: var(--bbl-line-height-b1-desktop);
     cursor: pointer;
     appearance: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* Select can't host ::before/::after, so the icomoon chevron is rendered
+     on the wrapper (already position: relative) and aligned to the bottom
+     of its content box, which is exactly where the select sits. */
+  & .drop-down-wrapper.field-wrapper::after {
+    content: "\e902";
+    font-family: icomoon, sans-serif;
+    font-size: 0.375rem;
+    color: var(--bbl-color-grey-85);
+    position: absolute;
+    right: var(--bbl-space-150);
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    height: 3.125rem;
+    pointer-events: none;
   }
 
   & .form textarea {
@@ -470,12 +489,14 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
             flex: 0 0 auto;
             width: 100%;
             margin-bottom: 0;
+            padding-bottom: 0.625rem;
           }
 
           & .radio-wrapper {
             width: 100%;
             min-width: 0;
             flex: 0 0 auto;
+            padding: 0 0.625rem 0.3125rem;
           }
         }
 
