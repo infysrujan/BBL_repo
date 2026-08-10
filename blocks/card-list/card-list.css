@@ -443,9 +443,7 @@
 }
 
 .card-list-modal-title {
-  font-weight: var(--bbl-text-section-title-weight);
   letter-spacing: -0.0125rem;
-  line-height: var(--bbl-text-section-title-line-height);
 }
 
 .card-list-modal-subtitle {
