@@ -12,7 +12,7 @@
 }
 
 .credit-card .cards-list:is(.scrollable, .carousel) .cards-list-item {
-  flex: 0 0 17.5rem;
+  flex: 0 0 280px;
 }
 
 /* ── Block wrapper ──────────────────────────────────────────────────────────── */
@@ -22,6 +22,10 @@
   background: var(--bbl-color-white);
   scroll-margin-top: var(--header-scroll-offset);
 }
+
+.credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-400);
+  }
 
 /* ==========================================================================
    card-list credit-card variation
@@ -77,23 +81,9 @@
   gap: 0.625rem;
 }
 
-.card-list.credit-card .cards-list-button a::before,
-.card-list.credit-card .cards-list-button a::after {
-  display: none;
-}
-
-.card-list.credit-card .cards-list-button .button-m {
-  height: 2.75rem;
-}
-
-.card-list.credit-card .ccs-compare-btn {
-    width: 100%;
-}
-
+/* Locked "already comparing" state: colors come from buttons.css's
+   .button-m.secondary.disabled; only the click-through behavior lives here. */
 .card-list.credit-card .ccs-compare-btn.is-comparing {
-  background-color: var(--bbl-color-white);
-  border-color: var(--bbl-color-grey-40);
-  color: var(--bbl-color-grey-60);
   cursor: default;
   pointer-events: none;
 }
@@ -242,6 +232,10 @@
     display: none;
   }
 
+  .credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-600);
+  }
+
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -265,10 +259,10 @@
 }
 
 @media (width > 64rem) {
-  .ccs-results {
-    padding: var(--bbl-space-600) var(--bbl-space-200);
+  .credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-700);
   }
-
+ 
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     justify-content: center;
     gap: var(--bbl-space-500);

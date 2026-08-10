@@ -177,9 +177,9 @@
 
 /* Without-image variation: text-only layout */
 .carousel-dotted .carousel-dotted-item.without-image .carousel-dotted-content {
-  min-height: 12.6875rem;
-  max-height: 12.6875rem;
-  padding: var(--bbl-space-300);
+  min-height: 100%;
+  max-height: 100%;
+  padding: var(--bbl-space-300) var(--bbl-space-150) 4.1875rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -771,7 +771,7 @@ p.text-large.text-light {
     flex-direction: column;
     justify-content: flex-start;
     min-height: 100%;
-    padding: var(--bbl-space-500);
+    padding: var(--bbl-space-300);
   }
 
   .carousel-dotted .carousel-dotted-description {
