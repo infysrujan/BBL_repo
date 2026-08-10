@@ -218,15 +218,6 @@ function createCardItem(cardRow, doc) {
   return card;
 }
 
-function stripAuthoringInstrumentation(root) {
-  if (!root) return;
-  [root, ...root.querySelectorAll('*')].forEach((el) => {
-    [...el.attributes]
-      .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
-      .forEach(({ name }) => el.removeAttribute(name));
-  });
-}
-
 function removeDuplicateAuthoringBlocks(block) {
   const blockResource = block.dataset.aueResource;
   if (!blockResource) return;
@@ -278,10 +269,15 @@ function renderCardActions(target, rows, block, doc) {
 
     if (!card) return;
 
-    if (!isAuthoringInstance(block)) {
-      moveInstrumentation(row, card);
-      row.remove();
+    if (isAuthoringInstance(block)) {
+      const cellsHolder = doc.createElement('div');
+      cellsHolder.style.cssText = 'position:absolute;height:0;overflow:hidden;opacity:0;pointer-events:none;';
+      [...row.children].forEach((cell) => cellsHolder.appendChild(cell));
+      card.style.position = 'relative';
+      card.prepend(cellsHolder);
     }
+    moveInstrumentation(row, card);
+    row.remove();
     container.appendChild(card);
   });
 
@@ -312,7 +308,6 @@ export default function decorate(block) {
     block.querySelectorAll(':scope > div').forEach((row) => {
       if (!row.classList.contains('menu-card-actions-preview')) {
         row.dataset.configRow = '';
-        row.style.display = 'none';
       }
     });
 
@@ -322,7 +317,6 @@ export default function decorate(block) {
     previewContainer.innerHTML = '';
     const allRows = [...block.querySelectorAll(':scope > div[data-config-row]')];
     renderCardActions(previewContainer, allRows, block, doc);
-    stripAuthoringInstrumentation(previewContainer);
     return;
   }
 
