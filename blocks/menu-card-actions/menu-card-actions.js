@@ -153,16 +153,17 @@ function createCardItem(cardRow, doc) {
       ?? actionCells[actionCells.length - 1];
     const dlCellIndex = remaining.indexOf(dlCell);
     const prevCell = dlCellIndex > 0 ? remaining[dlCellIndex - 1] : null;
+    const dlLabelCell = remaining.find(
+      (c) => c !== dlCell && !isToggleCell(c) && !c.querySelector('a') && c.textContent?.trim(),
+    );
+    const dlLabelIdx = dlLabelCell ? remaining.indexOf(dlLabelCell) : dlCellIndex;
     const toggle = (prevCell && isToggleCell(prevCell)) ? prevCell
-      : remaining.slice(dlCellIndex + 1).find(isToggleCell);
+      : remaining.slice(dlLabelIdx + 1).find(isToggleCell);
     const openInNewTab = toggle && toggle.textContent.trim().toLowerCase() !== 'false';
     if (toggle) {
       remaining = remaining.filter((c) => c !== toggle);
     }
     const downloadAnchor = dlCell.querySelector('a');
-    const dlLabelCell = remaining.find(
-      (c) => c !== dlCell && !isToggleCell(c) && !c.querySelector('a') && c.textContent?.trim(),
-    );
     if (downloadAnchor && dlLabelCell?.textContent?.trim()) {
       downloadAnchor.textContent = dlLabelCell.textContent.trim();
     }
