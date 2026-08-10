@@ -97,9 +97,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     text-overflow: ellipsis;
   }
 
-  /* Select can't host ::before/::after, so the icomoon chevron is rendered
-     on the wrapper (already position: relative) and aligned to the bottom
-     of its content box, which is exactly where the select sits. */
   & .drop-down-wrapper.field-wrapper::after {
     content: "\e902";
     font-family: icomoon, sans-serif;
