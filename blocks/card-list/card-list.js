@@ -249,15 +249,6 @@ function createCardListItem(cardElement, doc) {
   return card;
 }
 
-function stripAuthoringInstrumentation(root) {
-  if (!root) return;
-  [root, ...root.querySelectorAll('*')].forEach((el) => {
-    [...el.attributes]
-      .filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
-      .forEach(({ name }) => el.removeAttribute(name));
-  });
-}
-
 function removeDuplicateAuthoringBlocks(block) {
   const blockResource = block.dataset.aueResource;
   if (!blockResource) return;
@@ -300,10 +291,6 @@ export default function decorate(block) {
   }
 
   const sourceRows = getSourceRows(block);
-  if (isAuthoring) {
-    sourceRows.forEach((row) => { row.style.display = 'none'; });
-  }
-
   const [LayoutRow, Alignment, cardsPerRowEl, ...cardRows] = sourceRows;
   const cardListLayout = LayoutRow?.textContent?.trim();
   const cardListAlignment = Alignment?.textContent?.trim();
@@ -319,23 +306,22 @@ export default function decorate(block) {
 
   cardRows.forEach((row) => {
     const card = createCardListItem(row, doc);
-    if (!isAuthoring) {
-      moveInstrumentation(row, card);
+    if (isAuthoring) {
+      const cellsHolder = doc.createElement('div');
+      cellsHolder.style.cssText = 'position:absolute;height:0;overflow:hidden;opacity:0;pointer-events:none;';
+      [...row.children].forEach((cell) => cellsHolder.appendChild(cell));
+      card.style.position = 'relative';
+      card.prepend(cellsHolder);
     }
+    moveInstrumentation(row, card);
+    row.remove();
     container.appendChild(card);
-    if (!isAuthoring) {
-      row.remove();
-    }
   });
 
   block.appendChild(container);
 
   const isScrollableLayout = cardListLayout === 'scrollable' || cardListLayout === 'carousel';
   if (isScrollableLayout) attachScrollableDropdownPanel(container, doc);
-
-  if (isAuthoring) {
-    stripAuthoringInstrumentation(container);
-  }
 
   bindModalHandler(block, doc);
 }
