@@ -801,7 +801,7 @@
         "valueType": "string",
         "description": "Select type of button action",
         "name": "buttonActionType",
-        "value": "default",
+        "value": "default-button",
         "label": "Button ActionType",
         "options": [
           {
