@@ -5,9 +5,17 @@
   margin: auto;
 }
 
+/* Overrides the global .section.full-bleed-bg .content padding-inline at every viewport. */
+.section .carousel-video-wrapper.content {
+  padding-inline: 0;
+}
+
 /* ── Block positioning context ───────────────────────────────────────────── */
 .carousel-video {
   position: relative;
+  width: 100%;
+  max-width: 56.25rem;
+  margin-inline: auto;
 }
 
 /* ── Main player ─────────────────────────────────────────────────────────── */
