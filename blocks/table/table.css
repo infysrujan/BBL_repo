@@ -47,6 +47,10 @@
   color: inherit;
 }
 
+.table td :is(p, ul) {
+  text-wrap: auto;
+}
+
 /* --------------------------------------------------------------------------
    BORDER TYPE VARIANTS (specificity 0,2,3)
    -------------------------------------------------------------------------- */
@@ -138,7 +142,7 @@
    equal its full unwrapped width, so it never receives any of the extra
    space distributed to wrappable columns — no explicit width needed. */
 .table table tr td:first-child {
-  white-space: nowrap;
+  /* white-space: nowrap; */
 }
 
 /* --------------------------------------------------------------------------
