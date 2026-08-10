@@ -700,8 +700,7 @@
   }
 
   .retirement-calculator .rc-container {
-    padding: var(--bbl-space-350) 2.625rem;
-    margin: 0 2.375rem;
+    margin: 0 1.75rem;
   }
 
   .retirement-calculator .rc-header {
