@@ -159,18 +159,27 @@ function createCardItem(cardRow, doc) {
     if (toggle) {
       remaining = remaining.filter((c) => c !== toggle);
     }
-    appendDownloadLink(dlCell.querySelector('a'));
+    const downloadAnchor = dlCell.querySelector('a');
+    const dlLabelCell = remaining.find(
+      (c) => c !== dlCell && !isToggleCell(c) && !c.querySelector('a') && c.textContent?.trim(),
+    );
+    if (downloadAnchor && dlLabelCell?.textContent?.trim()) {
+      downloadAnchor.textContent = dlLabelCell.textContent.trim();
+    }
+    appendDownloadLink(downloadAnchor);
     if (openInNewTab) inner.querySelector('.download-files')?.setAttribute('target', '_blank');
   } else if (actionType === 'multiple-download' && actionCells.length > 0) {
     const multipleCell = actionCells[actionCells.length - 1];
     const temp = createElementFromHTML(`<div>${multipleCell.innerHTML}</div>`, doc);
     temp.querySelectorAll('a').forEach(appendDownloadLink);
   } else if (actionType === 'select-dropdown') {
-    const labelCell = remaining.find((c) => !c.querySelector('a') && !isToggleCell(c) && c.textContent.trim());
+    const dropdownCell = remaining.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length > 1);
+    const dropdownCellIdx = remaining.indexOf(dropdownCell);
+    const labelSearch = dropdownCellIdx > 0 ? remaining.slice(0, dropdownCellIdx) : [];
+    const labelCell = [...labelSearch].reverse().find(
+      (c) => !c.querySelector('a') && !isToggleCell(c) && c.textContent?.trim(),
+    );
     const label = labelCell?.textContent.trim() || 'Select';
-    const labelIdx = remaining.indexOf(labelCell);
-    const dropdownSearch = labelIdx >= 0 ? remaining.slice(labelIdx + 1) : remaining;
-    const dropdownCell = dropdownSearch.find((c) => c.querySelector('ul') || c.querySelectorAll('a').length >= 1);
     if (dropdownCell) {
       inner.appendChild(createGlobalDropdown(label, dropdownCell.innerHTML, doc));
     }
