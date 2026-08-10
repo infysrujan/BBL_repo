@@ -277,7 +277,7 @@ export default function decorate(block) {
   const cardListAlignment = Alignment?.textContent?.trim();
   const cardsPerRow = cardsPerRowEl?.textContent?.trim();
   const container = createElementFromHTML(
-    `<div class="cards-list ${cardListLayout} ${cardListAlignment} ${cardsPerRow}"></div>`,
+    `<div class="cards-list content ${cardListLayout} ${cardListAlignment} ${cardsPerRow}"></div>`,
     doc,
   );
 
