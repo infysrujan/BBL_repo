@@ -77,23 +77,9 @@
   gap: 0.625rem;
 }
 
-.card-list.credit-card .cards-list-button a::before,
-.card-list.credit-card .cards-list-button a::after {
-  display: none;
-}
-
-.card-list.credit-card .cards-list-button .button-m {
-  height: 2.75rem;
-}
-
-.card-list.credit-card .ccs-compare-btn {
-    width: 100%;
-}
-
+/* Locked "already comparing" state: colors come from buttons.css's
+   .button-m.secondary.disabled; only the click-through behavior lives here. */
 .card-list.credit-card .ccs-compare-btn.is-comparing {
-  background-color: var(--bbl-color-white);
-  border-color: var(--bbl-color-grey-40);
-  color: var(--bbl-color-grey-60);
   cursor: default;
   pointer-events: none;
 }
