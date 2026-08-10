@@ -296,7 +296,8 @@
   }
 
   .carousel-video .cv-carousel-section {
-    max-width: 49.875rem;
+    width: 50.5rem;
+    max-width: 100%;
     margin: 1.875rem auto;
   }
 
