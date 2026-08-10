@@ -295,10 +295,8 @@
     .external-redirect-popup-title :is(h4) {
       line-height: 1.625rem;
     }
-  }
-  
-    :lang(th){
-    .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6){
+
+    .external-redirect-popup-title :is(h1, h2, h3, h4, h5, h6) {
       line-height: 2.5rem;
     }
   }
