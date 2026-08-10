@@ -73,13 +73,9 @@ function createCardItem(cardRow, doc) {
 
   const [imageDiv, titleDiv, descDiv, actionTypeDiv] = cells;
 
-  const img = imageDiv?.querySelector('img');
   const headingEl = titleDiv?.querySelector('h1, h2, h3, h4, h5, h6');
   const titleText = titleDiv?.textContent?.trim() || '';
   const titleType = headingEl?.tagName?.toLowerCase() || 'h3';
-  const title = headingEl?.outerHTML?.trim()
-    ?? (titleText ? `<${titleType}>${titleText}</${titleType}>` : '');
-  const description = descDiv?.innerHTML?.trim() || '';
   const actionType = actionTypeDiv?.textContent?.trim().toLowerCase().replace('-button', '') || 'default';
 
   let remaining = cells.slice(4);
@@ -126,19 +122,21 @@ function createCardItem(cardRow, doc) {
   const card = createElementFromHTML('<div class="menu-card-action-item"></div>', doc);
   const inner = createElementFromHTML('<div class="menu-card-action-inner"></div>', doc);
 
-  if (img) inner.appendChild(img.cloneNode(true));
+  if (imageDiv?.querySelector('img')) inner.appendChild(imageDiv);
 
-  if (title) {
-    inner.appendChild(createElementFromHTML(`<div class="menu-card-action-title">${title}</div>`, doc));
+  if (titleText) {
+    if (!headingEl) titleDiv.innerHTML = `<${titleType}>${titleText}</${titleType}>`;
+    titleDiv.className = 'menu-card-action-title';
+    inner.appendChild(titleDiv);
   }
 
-  if (description) {
-    const descriptionEl = createElementFromHTML(`<div class="menu-card-action-description">${description}</div>`, doc);
-    descriptionEl.querySelectorAll('a').forEach((a) => {
+  if (descDiv?.innerHTML?.trim()) {
+    descDiv.className = 'menu-card-action-description';
+    descDiv.querySelectorAll('a').forEach((a) => {
       a?.setAttribute('data-skip-attr-auto-blocking', 'title');
       a.removeAttribute('title');
     });
-    inner.appendChild(descriptionEl);
+    inner.appendChild(descDiv);
     inner.querySelector('.menu-card-action-title')?.classList.add('has-description');
   }
 
@@ -269,13 +267,6 @@ function renderCardActions(target, rows, block, doc) {
 
     if (!card) return;
 
-    if (isAuthoringInstance(block)) {
-      const cellsHolder = doc.createElement('div');
-      cellsHolder.style.cssText = 'position:absolute;height:0;overflow:hidden;opacity:0;pointer-events:none;';
-      [...row.children].forEach((cell) => cellsHolder.appendChild(cell));
-      card.style.position = 'relative';
-      card.prepend(cellsHolder);
-    }
     moveInstrumentation(row, card);
     row.remove();
     container.appendChild(card);
