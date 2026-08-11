@@ -471,7 +471,10 @@ export default async function decorate(block) {
     const textCell = row.children[col]; col += 1;
     const linkCell = row.children[col]; col += 1;
     const skipCell = row.children[col];
-    if (skipCell && !skipCell.textContent?.trim() && !skipCell.querySelector('picture, a[href]')) col += 1;
+    const isSkippable = skipCell
+      && !skipCell.querySelector('picture, a[href]')
+      && (!skipCell.textContent?.trim() || /^(true|false)$/i.test(skipCell.textContent.trim()));
+    if (isSkippable) col += 1;
     const appStoreImageCell = row.children[col]; col += 1;
     const appStoreLinkCell = row.children[col]; col += 1;
     const googlePlayImageCell = row.children[col]; col += 1;
