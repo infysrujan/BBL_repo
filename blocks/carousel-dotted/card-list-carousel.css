@@ -1,4 +1,4 @@
-.section.central-aligned .block.all-carousel-fragment {
+.section.carousel-dotted-container .block.all-carousel-fragment {
   margin-inline: auto;
   overflow: hidden;
 }
@@ -6,7 +6,6 @@
 .section.carousel-dotted-container:has(.all-carousel-fragment)
   .carousel-dotted-wrapper {
   overflow: hidden;
-  padding-inline: 0.625rem;
 }
 
 .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
@@ -107,7 +106,6 @@
   .section.carousel-dotted-container:has(.all-carousel-fragment)
     .carousel-dotted-wrapper {
     overflow: unset;
-    padding-inline: 0;
   }
 
   .cards-list.carousel .cards-list-image.cards-list-image-card {
@@ -116,7 +114,7 @@
     max-height: calc(100vw * .17);
   }
 
-  .section.central-aligned .block.all-carousel-fragment {
+  .section.carousel-dotted-container .block.all-carousel-fragment {
     margin-inline: 0;
   }
 
@@ -170,7 +168,7 @@
 }
 
 @media (width > 64rem) {
-  .section.central-aligned .block.all-carousel-fragment {
+  .section.carousel-dotted-container .block.all-carousel-fragment {
     margin: 0 auto;
     overflow: visible;
   }
