@@ -223,7 +223,7 @@ main img {
     text-align: center;
 }
 
-.section.right-content.default-content-wrapper >  p {
+.section.right-content .default-content-wrapper >  p {
     text-align: right;
 }
 
