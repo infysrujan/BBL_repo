@@ -274,26 +274,6 @@ export function buildPaginationHtml(current, total, labels = {}) {
     <button class="listing-card-arrow listing-card-arrow-next" data-dir="next"${nextAttr} title="${labels.nextBtnLabel}"><i class="icon-arrow-left" aria-hidden="true"></i></button>`;
 }
 
-// Breathing room (px) between the fixed header and the grid after scrolling.
-const HEADER_SCROLL_GAP = 16;
-
-/**
- * Height (px) the fixed site header occupies once pinned at the top.
- *
- * Uses the pinned bar's rendered *height* rather than its viewport-relative
- * `bottom`: height is invariant to the current scroll position, so it matches
- * the header's settled (pinned, top-nav hidden) footprint regardless of whether
- * the header happens to be mid-transition when the click fires. Returns 0 when
- * there is no header (e.g. mobile-app view), which correctly means "no offset".
- */
-function getStickyHeaderOffset() {
-  const desktop = window.matchMedia('(min-width: 1025px)').matches;
-  const bar = document.querySelector(
-    desktop ? '.header .main-nav-desktop' : '.header .mobile-top-bar',
-  );
-  return bar ? Math.max(0, Math.ceil(bar.getBoundingClientRect().height)) : 0;
-}
-
 export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollTarget) {
   paginationEl?.addEventListener('click', (e) => {
     const pageBtn = e.target.closest('.listing-card-page');
@@ -312,10 +292,10 @@ export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollT
     if (changed) {
       onPageChange();
       if (scrollTarget) {
-        // Offset the landing by the live header height so the grid appears
-        // clearly below the sticky header instead of behind it. scrollIntoView
-        // honors scroll-margin-top, so set it to the measured header height.
-        scrollTarget.style.scrollMarginTop = `${getStickyHeaderOffset() + HEADER_SCROLL_GAP}px`;
+        // Land the target below the fixed header, not behind it. scrollIntoView
+        // honors scroll-margin-top, so reuse the site's --header-scroll-offset
+        // token (same value .section uses) instead of measuring the header in JS.
+        scrollTarget.style.scrollMarginTop = 'var(--header-scroll-offset)';
         scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
