@@ -3,7 +3,7 @@
   overflow: hidden;
 }
 
-.carousel-dotted-container:has(.all-carousel-fragment)
+.section .carousel-dotted-container:has(.all-carousel-fragment)
   .carousel-dotted-wrapper {
   overflow: hidden;
   padding-inline: 0.625rem;
@@ -104,7 +104,7 @@
 }
 
 @media (width > 47.5rem) {
-  .carousel-dotted-container:has(.all-carousel-fragment)
+  .section .carousel-dotted-container:has(.all-carousel-fragment)
     .carousel-dotted-wrapper {
     overflow: unset;
     padding-inline: 0;
