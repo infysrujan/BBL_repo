@@ -1,11 +1,12 @@
 .section.central-aligned .block.all-carousel-fragment {
   margin-inline: auto;
+  overflow: hidden;
 }
 
 .carousel-dotted-container:has(.all-carousel-fragment)
   .carousel-dotted-wrapper {
   overflow: hidden;
-  margin-inline: -0.625rem;
+  padding-inline: 0.625rem;
 }
 
 .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
@@ -107,7 +108,7 @@
   .carousel-dotted-container:has(.all-carousel-fragment)
     .carousel-dotted-wrapper {
     overflow: unset;
-    margin-inline: 0;
+    padding-inline: 0;
   }
 
   .cards-list.carousel .cards-list-image.cards-list-image-card {
