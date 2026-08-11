@@ -7,6 +7,10 @@
    overrides and result-specific elements are styled here.
    ========================================================================== */
 
+   :root {
+   --header-scroll-offset: 8.9375rem; /* 143px */
+}
+
 .credit-card-results .ccs-source-row {
   display: none;
 }
