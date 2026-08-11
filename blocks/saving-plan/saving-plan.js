@@ -126,11 +126,11 @@ function buildDataFromConfig(json, lang, placeholders) {
         annualIncrease: L['inputs-annualSavingIncreaseRate'] || '',
       },
       fieldPlaceholders: {
-        balance: placeholders.savingPlanPlaceholderBalance,
-        goalAmount: placeholders.savingPlanPlaceholderGoalAmount,
-        annualReturn: placeholders.savingPlanPlaceholderAnnualReturn,
-        goalPeriod: placeholders.savingPlanPlaceholderGoalPeriod,
-        annualIncrease: placeholders.savingPlanPlaceholderAnnualIncrease,
+        balance: placeholders.savingPlanPlaceholderBalance || '0 - 999,999,999',
+        goalAmount: placeholders.savingPlanPlaceholderGoalAmount || '10,000 - 999,999,999',
+        annualReturn: placeholders.savingPlanPlaceholderAnnualReturn || '0.1 - 40',
+        goalPeriod: placeholders.savingPlanPlaceholderGoalPeriod || '1 - 30',
+        annualIncrease: placeholders.savingPlanPlaceholderAnnualIncrease || '0 - 40',
       },
       buttons: {
         clear: L['common-clearButton'] || '',
@@ -890,13 +890,27 @@ function formatLive(input, decimal, digitCap) {
   input.setSelectionRange(newCursor, newCursor);
 }
 
-function resetCalculator(state, data) {
+// Reset the numeric input fields back to their defaults and clear validation
+// state. Does NOT touch the goal dropdown (used both on Clear and when the
+// goal option is switched).
+function resetFieldInputs(root, data) {
   const { defaults } = data;
-  const { root } = state;
   const setVal = (sel, val) => {
     const el = root.querySelector(sel);
     if (el) el.value = val;
   };
+  setVal('[data-field="goalAmount"] input', formatNumber(defaults.goalAmount));
+  setVal('[data-field="goalPeriod"] input', formatNumber(defaults.goalPeriod));
+  setVal('[data-field="balance"] input', formatNumber(defaults.balance));
+  setVal('[data-field="annualReturn"] input', defaults.annualReturn ? formatDecimalSmart(defaults.annualReturn) : '');
+  setVal('[data-field="annualIncrease"] input', formatDecimal(defaults.annualIncrease));
+  root.querySelectorAll('.saving-plan-field-error').forEach((el) => el.classList.remove('saving-plan-field-error'));
+  root.querySelectorAll('.saving-plan-field-error-message').forEach((el) => el.remove());
+  root.querySelectorAll('[aria-invalid="true"]').forEach((el) => el.removeAttribute('aria-invalid'));
+}
+
+function resetCalculator(state, data) {
+  const { root } = state;
   // Reset dropdown back to unselected placeholder.
   const goalWrap = root.querySelector('[data-field="goal"]');
   if (goalWrap) {
@@ -907,14 +921,7 @@ function resetCalculator(state, data) {
       opt.classList.remove('is-selected');
     });
   }
-  setVal('[data-field="goalAmount"] input', formatNumber(defaults.goalAmount));
-  setVal('[data-field="goalPeriod"] input', formatNumber(defaults.goalPeriod));
-  setVal('[data-field="balance"] input', formatNumber(defaults.balance));
-  setVal('[data-field="annualReturn"] input', defaults.annualReturn ? formatDecimalSmart(defaults.annualReturn) : '');
-  setVal('[data-field="annualIncrease"] input', formatDecimal(defaults.annualIncrease));
-  root.querySelectorAll('.saving-plan-field-error').forEach((el) => el.classList.remove('saving-plan-field-error'));
-  root.querySelectorAll('.saving-plan-field-error-message').forEach((el) => el.remove());
-  root.querySelectorAll('[aria-invalid="true"]').forEach((el) => el.removeAttribute('aria-invalid'));
+  resetFieldInputs(root, data);
   root.querySelector('.saving-plan-chart-row')?.setAttribute('hidden', '');
   root.querySelector('.saving-plan-tweak')?.setAttribute('hidden', '');
   root.querySelector('.saving-plan-products')?.setAttribute('hidden', '');
@@ -977,6 +984,8 @@ function attachDropdownHandlers(state, data, onSelectionChange) {
       opt.classList.toggle('is-selected', opt === option);
     });
     close();
+    // Switching goal resets the other fields back to their defaults.
+    resetFieldInputs(root, data);
     renderInfoCard(state);
     state.root.querySelector('.saving-plan-chart-row')?.setAttribute('hidden', '');
     state.root.querySelector('.saving-plan-tweak')?.setAttribute('hidden', '');
@@ -1028,8 +1037,14 @@ function attachHandlers(state, data) {
     const decimal = wrap.dataset.decimal === '1';
     const digitCap = FIELD_DIGIT_CAP[wrap.dataset.field];
     const smart = wrap.dataset.field === 'annualReturn';
+    if (wrap.dataset.field === 'annualIncrease') {
+      input.addEventListener('focus', () => {
+        // Clear a zero value on focus so the placeholder shows and the user can
+        // type immediately; blur restores 0.00 if left empty.
+        if (parseNumber(input.value) === 0) input.value = '';
+      });
+    }
     input.addEventListener('input', () => {
-      formatLive(input, decimal, digitCap);
       formatLive(input, decimal, digitCap);
       liveUpdate();
     });
