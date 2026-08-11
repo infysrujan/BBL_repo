@@ -4,6 +4,11 @@
    Panel roles: creditcard-tract-application.js
    ========================================================================== */
 
+:root {
+  /* font family */
+  --bbl-form-font-family-icomoon: icomoon, sans-serif;
+}
+
 main .section.form-container.custom-forms:has(.cc-app-main-form) .form label,
 main .section.form-container.custom-forms:has(.cc-app-main-form) .form fieldset.checkbox-group-wrapper legend,
 main .section.form-container.custom-forms:has(.cc-app-main-form) .form fieldset.radio-group-wrapper legend,
