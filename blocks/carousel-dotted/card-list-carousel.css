@@ -5,6 +5,7 @@
 .carousel-dotted-container:has(.all-carousel-fragment)
   .carousel-dotted-wrapper {
   overflow: hidden;
+  margin-inline: -0.625rem;
 }
 
 .carousel-dotted.all-carousel-fragment .carousel-track-wrapper {
