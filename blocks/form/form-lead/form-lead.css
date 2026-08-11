@@ -43,6 +43,9 @@
   /* font weight */
   --bbl-form-font-weight-bold: 700;
 
+    /* font family */
+  --bbl-form-font-family-icomoon: font-family: icomoon, sans-serif;
+
   /* borders */
   --bbl-form-border-grey: 0.0625rem solid var(--bbl-color-grey-150);
   --bbl-form-border-blue: 0.0625rem solid var(--bbl-color-blue-115);

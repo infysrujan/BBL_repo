@@ -99,7 +99,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
   & .drop-down-wrapper.field-wrapper::after {
     content: "\e902";
-    font-family: icomoon, sans-serif;
+    font-family: var(--bbl-form-font-family-icomoon);
     font-size: 0.375rem;
     color: var(--bbl-color-grey-85);
     position: absolute;
