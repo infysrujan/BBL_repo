@@ -3,7 +3,7 @@
   overflow: hidden;
 }
 
-.section .carousel-dotted-container:has(.all-carousel-fragment)
+.section.carousel-dotted-container:has(.all-carousel-fragment)
   .carousel-dotted-wrapper {
   overflow: hidden;
   padding-inline: 0.625rem;
