@@ -799,7 +799,14 @@ function setButtonsEnabled(root, enabled) {
 
 function isAnyFieldEmpty(root) {
   const inputs = root.querySelectorAll('[data-field][data-decimal] input');
-  if (Array.from(inputs).some((input) => input.value.trim() === '')) return true;
+  // annualIncrease is optional (empty = 0, no step-up), so it doesn't count as
+  // a missing required field.
+  const requiredEmpty = Array.from(inputs).some((input) => {
+    const field = input.closest('[data-field]')?.dataset.field;
+    if (field === 'annualIncrease') return false;
+    return input.value.trim() === '';
+  });
+  if (requiredEmpty) return true;
   const goalWrap = root.querySelector('[data-field="goal"]');
   if (goalWrap && !goalWrap.dataset.value) return true;
   return false;
@@ -1034,23 +1041,14 @@ function attachDropdownHandlers(state, data, onSelectionChange) {
 function attachHandlers(state, data) {
   const { root } = state;
 
-  const liveUpdate = async () => {
+  const liveUpdate = () => {
     const inputs = readInputs(root);
     const valid = applyValidation(root, inputs, data);
     const filled = !isAnyFieldEmpty(root);
     setButtonsEnabled(root, valid && filled);
-    if (!valid || !filled) return;
-    const chartShown = !root.querySelector('.saving-plan-chart-row')?.hasAttribute('hidden');
-    if (!chartShown) return;
-
-    const calculation = getFallbackCalculation(inputs, state.config.inflationRate);
-    state.calculatedInputs = inputs;
-    state.calculatedCalculation = calculation;
-    renderResult(state, data, calculation);
-    if (state.tweakActive && state.tweakInputs) {
-      await renderNewPlan(state, data, state.tweakInputs);
-    }
-    await renderChart(state, data);
+    // Editing the form only updates validation and the Calculate button state.
+    // The result and chart are NOT recalculated here — they only change when the
+    // user clicks Calculate (see the [data-action="calculate"] handler below).
   };
 
   root.querySelectorAll('[data-field][data-decimal]').forEach((wrap) => {
