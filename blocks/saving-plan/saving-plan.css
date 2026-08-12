@@ -798,7 +798,7 @@
   color: var(--bbl-color-active-blue);
   font-size: var(--bbl-heading-h3-reg-size);
   line-height: var(--bbl-heading-h3-line-height);
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-weight-regular);
   font-weight: var(--bbl-heading-h3-reg-weight);
 }
 
