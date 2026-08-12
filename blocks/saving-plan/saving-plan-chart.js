@@ -289,11 +289,11 @@ function buildChartConfig(originalSeries, newSeries, labels, overlayPlugin, colo
             color: colors.axis,
             font: { size: 12, family: 'system-ui, sans-serif' },
           },
-          // Explicit ticks: 0, 250k, 500k … then the max on top, dropping any
-          // regular tick that would crowd the max (so no 750k next to 807.6k).
+          // Explicit ticks in 1.5M steps (0, 1.5M, 3M …) plus the max on top,
+          // dropping any regular tick that would crowd the max.
           afterBuildTicks: (axis) => {
             const top = axis.max;
-            const step = 250000;
+            const step = 1500000;
             const ticks = [];
             for (let v = 0; v < top - step / 2; v += step) ticks.push({ value: v });
             ticks.push({ value: top });

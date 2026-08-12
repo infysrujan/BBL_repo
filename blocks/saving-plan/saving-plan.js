@@ -916,7 +916,7 @@ function resetFieldInputs(root, data) {
   setVal('[data-field="goalPeriod"] input', formatNumber(defaults.goalPeriod));
   setVal('[data-field="balance"] input', formatNumber(defaults.balance));
   setVal('[data-field="annualReturn"] input', defaults.annualReturn ? formatDecimalSmart(defaults.annualReturn) : '');
-  setVal('[data-field="annualIncrease"] input', formatDecimal(defaults.annualIncrease));
+  setVal('[data-field="annualIncrease"] input', defaults.annualIncrease ? formatDecimalSmart(defaults.annualIncrease) : '');
   root.querySelectorAll('.saving-plan-field-error').forEach((el) => el.classList.remove('saving-plan-field-error'));
   root.querySelectorAll('.saving-plan-field-error-message').forEach((el) => el.remove());
   root.querySelectorAll('[aria-invalid="true"]').forEach((el) => el.removeAttribute('aria-invalid'));
@@ -1049,7 +1049,7 @@ function attachHandlers(state, data) {
     if (!input) return;
     const decimal = wrap.dataset.decimal === '1';
     const digitCap = FIELD_DIGIT_CAP[wrap.dataset.field];
-    const smart = wrap.dataset.field === 'annualReturn';
+    const smart = wrap.dataset.field === 'annualReturn' || wrap.dataset.field === 'annualIncrease';
     if (wrap.dataset.field === 'annualIncrease') {
       input.addEventListener('focus', () => {
         // Clear a zero value on focus so the placeholder shows and the user can
