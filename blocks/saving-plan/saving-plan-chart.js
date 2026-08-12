@@ -243,7 +243,16 @@ function buildChartConfig(originalSeries, newSeries, labels, overlayPlugin, colo
           },
           grid: { display: false },
           border: { display: true, color: colors.border },
-          ticks: { color: colors.axis, font: { size: 12, family: 'system-ui, sans-serif' } },
+          ticks: {
+            // Hide the leading "0" year label: it sits at the origin on top of the
+            // y-axis's own "0" baseline tick, which reads as a duplicate zero.
+            callback(value) {
+              const label = this.getLabelForValue(value);
+              return Number(label) === 0 ? '' : label;
+            },
+            color: colors.axis,
+            font: { size: 12, family: 'system-ui, sans-serif' },
+          },
         },
         y: {
           min: 0,
