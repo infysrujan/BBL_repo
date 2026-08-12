@@ -37,7 +37,7 @@ function formatDecimal(value) {
 // (up to 2), rather than always padding to 2 decimal places.
 function formatDecimalSmart(value) {
   if (!Number.isFinite(value)) return '0';
-  return Number(value.toFixed(2)).toLocaleString('en-US', { maximumFractionDigits: 2 });
+  return Number(value.toFixed(2)).toLocaleString('en-US', { maximumFractionDigits: 2, useGrouping: false });
 }
 
 function parseNumber(value) {
@@ -844,13 +844,6 @@ function clampToDigitCap(raw, digitCap) {
     .join('');
 }
 
-function formatFieldValue(input, decimal, digitCap, smart) {
-  let formatter = formatNumber;
-  if (decimal) formatter = smart ? formatDecimalSmart : formatDecimal;
-  const value = parseNumber(clampToDigitCap(input.value, digitCap));
-  input.value = formatter(value);
-}
-
 function sanitizeDecimalInput(raw) {
   let seenDot = false;
   return raw
@@ -864,6 +857,22 @@ function sanitizeDecimalInput(raw) {
       return /\d/.test(ch);
     })
     .join('');
+}
+
+function formatFieldValue(name, input, decimal, digitCap, smart) {
+  if (name === 'annualIncrease') {
+    // Keep exactly what the user typed (e.g. "1234", "12.1", "12.10") instead of
+    // normalizing through Number, which would strip/pad decimal places.
+    let raw = clampToDigitCap(sanitizeDecimalInput(input.value), digitCap);
+    if (raw === '' || raw === '.') raw = '0';
+    if (raw.endsWith('.')) raw = raw.slice(0, -1);
+    input.value = raw;
+    return;
+  }
+  let formatter = formatNumber;
+  if (decimal) formatter = smart ? formatDecimalSmart : formatDecimal;
+  const value = parseNumber(clampToDigitCap(input.value, digitCap));
+  input.value = formatter(value);
 }
 
 function formatLive(input, decimal, digitCap) {
@@ -1062,7 +1071,7 @@ function attachHandlers(state, data) {
       liveUpdate();
     });
     input.addEventListener('blur', () => {
-      formatFieldValue(input, decimal, digitCap, smart);
+      formatFieldValue(wrap.dataset.field, input, decimal, digitCap, smart);
       liveUpdate();
     });
   });

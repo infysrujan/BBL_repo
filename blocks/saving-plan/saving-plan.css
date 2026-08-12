@@ -418,6 +418,10 @@
   line-height: 1.45;
 }
 
+.saving-plan-result-footnote[data-result="footnote-return"] {
+  margin-top: 0;
+}
+
 .saving-plan-chart-row[hidden] {
   display: none;
 }
