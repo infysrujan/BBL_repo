@@ -116,8 +116,8 @@ function drawRoundedRect(ctx, x, y, w, h, r) {
 function drawMonthlyTag(ctx, cx, cy, line1, line2, bg) {
   const pad = 10;
   const lh = 17;
-  const boxW = 118;
-  const boxH = lh * 2 + pad * 2;
+  const boxW = 140;
+  const boxH = 47;
   const x = cx - boxW / 2;
   const y = cy - boxH / 2;
   ctx.save();
@@ -155,8 +155,8 @@ function buildChartOverlayPlugin(originalSeries, newSeries, monthly, monthlyNew,
       const lastIdx = originalSeries.length - 1;
       const lastYear = originalSeries[lastIdx].year;
       const goalX = xScale.getPixelForValue(lastYear) - 6;
-      const boxH = 57;
-      const boxW = 118;
+      const boxH = 48;
+      const boxW = 140;
       // Monthly-savings tags: anchored near the origin (just right of the
       // y-axis) and sitting just above the x-axis baseline.
       const tagX = xScale.getPixelForValue(0) + boxW / 2 + 6;
@@ -167,12 +167,13 @@ function buildChartOverlayPlugin(originalSeries, newSeries, monthly, monthlyNew,
       const origVal = formatNumber(monthly);
 
       if (newSeries) {
-        // New-plan (dark) on the bottom, Result (light blue) stacked on top,
-        // with a 2px gap so the two boxes never overlap.
+        // New-plan (dark) stacked on top, Result (light blue) on the bottom,
+        // overlapping slightly so the two boxes read as one connected pair.
         const newVal = formatNumber(monthlyNew);
-        const topTagY = bottomTagY - boxH - 2;
-        drawMonthlyTag(ctx, tagX, bottomTagY, monthlyLabel, newVal, colors.newPlan);
-        drawMonthlyTag(ctx, tagX, topTagY, monthlyLabel, origVal, colors.result);
+        const overlap = 0;
+        const topTagY = bottomTagY - (boxH - overlap);
+        drawMonthlyTag(ctx, tagX, bottomTagY, monthlyLabel, origVal, colors.result);
+        drawMonthlyTag(ctx, tagX, topTagY, monthlyLabel, newVal, colors.newPlan);
       } else {
         drawMonthlyTag(ctx, tagX, bottomTagY, monthlyLabel, origVal, colors.result);
       }
