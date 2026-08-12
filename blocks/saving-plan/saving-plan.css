@@ -778,7 +778,7 @@
   background: var(--bbl-color-white);
   border: 0.0938rem solid var(--bbl-color-active-blue);
   border-radius: 0.5rem;
-  padding: 1.125rem 1.25rem 1.25rem;
+  padding: 0.875rem;
   color: var(--bbl-color-gray-143);
 }
 
@@ -1087,7 +1087,7 @@
   }
 
   .saving-plan-chart-row {
-    grid-template-columns: minmax(0, 1fr) 12.5rem;
+    grid-template-columns: minmax(0, 1fr) 13rem;
     align-items: stretch;
   }
 
@@ -1130,11 +1130,11 @@
   }
 
   .saving-plan-tweak-header {
-    grid-template-columns: minmax(0, 1fr) 12.5rem;
+    grid-template-columns: minmax(0, 1fr) 13rem;
   }
 
   .saving-plan-tweak-grid {
-    grid-template-columns: minmax(0, 1fr) 12.5rem;
+    grid-template-columns: minmax(0, 1fr) 13rem;
   }
 
   .saving-plan-tweak-sliders {
@@ -1222,7 +1222,7 @@
   }
 
   .saving-plan-calculator {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 22.5rem;
     gap: 1rem;
   }
 
