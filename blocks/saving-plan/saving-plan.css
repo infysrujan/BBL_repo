@@ -1222,7 +1222,7 @@
   }
 
   .saving-plan-calculator {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) 22.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 32%;
     gap: 1rem;
   }
 
@@ -1254,7 +1254,7 @@
   }
 
   .saving-plan-chart-row {
-    grid-template-columns: minmax(0, 1fr) 22.5rem;
+    grid-template-columns: minmax(0, 1fr) 32%;
     align-items: stretch;
   }
 
@@ -1291,11 +1291,11 @@
   }
 
   .saving-plan-tweak-header {
-    grid-template-columns: minmax(0, 1fr) 22.5rem;
+    grid-template-columns: minmax(0, 1fr) 32%;
   }
 
   .saving-plan-tweak-grid {
-    grid-template-columns: minmax(0, 1fr) 22.5rem;
+    grid-template-columns: minmax(0, 1fr) 32%;
     gap: 1.25rem;
   }
 
