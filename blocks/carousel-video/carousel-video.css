@@ -5,9 +5,13 @@
   margin: auto;
 }
 
-/* Overrides the global .section.full-bleed-bg .content padding-inline at every viewport. */
+/* Overrides the global .section.full-bleed-bg .content padding-inline.
+   Mobile-first: 16px inline padding so the player doesn't sit flush against
+   the section edges, matching the live site. Tablet/desktop reset to
+   edge-to-edge below. */
 .section .carousel-video-wrapper.content {
-  padding-inline: 0;
+  box-sizing: border-box;
+  padding-inline: 1rem;
 }
 
 /* ── Block positioning context ───────────────────────────────────────────── */
@@ -243,6 +247,11 @@
 
 /* ── Tablet: > 760px ─────────────────────────────────────────────────────── */
 @media (width > 47.5rem) {
+  .section .carousel-video-wrapper.content {
+    box-sizing: content-box;
+    padding-inline: 0;
+  }
+
   .carousel-video .cv-main-player {
     width: 100%;
     max-width: 35.75rem;
