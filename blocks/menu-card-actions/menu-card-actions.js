@@ -152,14 +152,14 @@ function createCardItem(cardRow, doc) {
     const dlCell = actionCells.filter((c) => !c.querySelector('ul')).pop()
       ?? actionCells[actionCells.length - 1];
     const dlCellIndex = remaining.indexOf(dlCell);
-    const prevCell = dlCellIndex > 0 ? remaining[dlCellIndex - 1] : null;
     const dlLabelCell = remaining.find(
       (c) => c !== dlCell && !isToggleCell(c) && !c.querySelector('a') && c.textContent?.trim(),
     );
-    const dlLabelIdx = dlLabelCell ? remaining.indexOf(dlLabelCell) : dlCellIndex;
-    const toggle = (prevCell && isToggleCell(prevCell)) ? prevCell
-      : remaining.slice(dlLabelIdx + 1).find(isToggleCell);
-    const openInNewTab = toggle && toggle.textContent.trim().toLowerCase() !== 'false';
+    const toggle = remaining.slice(dlCellIndex + 1).find((c) => {
+      const text = c?.textContent?.trim().toLowerCase();
+      return text === 'true' || text === 'false';
+    });
+    const openInNewTab = toggle?.textContent?.trim().toLowerCase() === 'true';
     if (toggle) {
       remaining = remaining.filter((c) => c !== toggle);
     }
