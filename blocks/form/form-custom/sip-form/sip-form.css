@@ -183,3 +183,14 @@
     }
   }
 }
+
+.sip-form main .section.form-container .form form .field-msg.plain-text-wrapper > p:first-child {
+  text-align: left;
+}
+
+.sip-form main .section.form-container .form form .field-icon.panel-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--bbl-form-margin-10);
+  margin-bottom: var(--bbl-space-250);
+}
