@@ -286,7 +286,7 @@
   display: block;
 }
 
-.cards-list-image.cards-list-image-default img {
+.cards-list-image:is(.cards-list-image-card, .cards-list-image-default) img {
   object-fit: cover;
 }
 
