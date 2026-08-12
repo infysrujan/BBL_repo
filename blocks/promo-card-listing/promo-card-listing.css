@@ -121,9 +121,6 @@ body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector
   color: var(--bbl-color-grey-60);
 }
 
-.promo-selector-filter:has(.promo-selector-option.is-active:not([data-value=""])) .promo-selector-filter-label {
-  color: var(--bbl-color-blue-90);
-}
 
 .promo-selector-dropdown {
   display: none;
