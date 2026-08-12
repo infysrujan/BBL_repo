@@ -233,34 +233,51 @@ function removeDuplicateAuthoringBlocks(block) {
   block.ownerDocument.querySelectorAll('.menu-card-actions.block').forEach((other) => {
     if (other === block) return;
     if (other.dataset.aueResource !== blockResource) return;
-    if (!other.classList.contains('has-preview') && !other.querySelector('.menu-card-actions-preview')) return;
+    if (!other.querySelector(':scope > .menu-card-action')) return;
     other.remove();
   });
 }
 
-function getPreviewContainer(block, doc) {
-  const previewContainers = [...block.querySelectorAll(':scope > .menu-card-actions-preview')];
-  const previewContainer = previewContainers.shift() || doc.createElement('div');
-
-  previewContainers.forEach((container) => container.remove());
-
-  previewContainer.className = 'menu-card-actions-preview';
-  if (!previewContainer.isConnected) block.appendChild(previewContainer);
-
-  return previewContainer;
+function getSourceRows(block) {
+  return [...block.children].filter((row) => !row.classList.contains('menu-card-action'));
 }
 
-function renderCardActions(target, rows, block, doc) {
-  const firstRowText = rows[0]?.textContent?.trim().toLowerCase() || '';
-  const isFirstRowLayout = rows[0]?.children.length === 1
-    && /^[a-z-]+$/.test(firstRowText)
-    && !rows[0].querySelector('a, img, h1, h2, h3, h4, h5, h6');
+function bindModalHandler(block, doc) {
+  if (block.dataset.menuCardActionsModalBound) return;
+  block.dataset.menuCardActionsModalBound = 'true';
 
-  const layoutClass = isFirstRowLayout ? firstRowText : '';
-  const isScrollable = layoutClass === 'scrollable';
-  const customClasses = layoutClass && layoutClass !== 'stacked' ? ` ${layoutClass}` : '';
+  block.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-modal]');
+    if (!trigger || !block.contains(trigger)) return;
+    const nestedLink = event.target.closest('a, [role="link"]');
+    if (nestedLink && nestedLink !== trigger) return;
+    event.preventDefault();
+    const fragmentPath = trigger.getAttribute('data-modal');
+    if (fragmentPath) openModal(doc, { fragmentPath });
+  });
+}
+
+export default function decorate(block) {
+  const isAuthoring = isAuthoringInstance(block);
+  if (block.dataset.decorated && !isAuthoring) return;
+  block.dataset.decorated = 'true';
+
+  const doc = block.ownerDocument;
+
+  if (isAuthoring) {
+    removeDuplicateAuthoringBlocks(block);
+    block.querySelectorAll(':scope > .menu-card-action').forEach((c) => c.remove());
+  }
+
+  const sourceRows = getSourceRows(block);
+  const [layoutRow, ...cardRows] = sourceRows;
+
+  const layoutText = layoutRow?.textContent?.trim().toLowerCase() || '';
+  const isScrollable = layoutText === 'scrollable';
+  const customClasses = layoutText && layoutText !== 'stacked' ? ` ${layoutText}` : '';
   const layout = isScrollable ? 'scrollable' : `stacked${customClasses}`;
-  const cardRows = isFirstRowLayout ? rows.slice(1) : rows;
+
+  const container = createElementFromHTML(`<div class="menu-card-action ${layout}"></div>`, doc);
 
   const section = block.closest('.menu-card-actions-container');
   ['text', 'image'].forEach((type, i) => {
@@ -268,59 +285,21 @@ function renderCardActions(target, rows, block, doc) {
       ?.classList.add(`default-content-wrapper-${type}`);
   });
 
-  const container = createElementFromHTML(`<div class="menu-card-action ${layout}"></div>`, doc);
-
-  if (isFirstRowLayout) rows[0].hidden = true;
+  if (layoutRow) layoutRow.hidden = true;
 
   cardRows.forEach((row) => {
     const card = createCardItem(row, doc);
-
     if (!card) return;
-
     moveInstrumentation(row, card);
     row.remove();
     container.appendChild(card);
   });
 
-  target.appendChild(container);
+  block.appendChild(container);
+
+  getSourceRows(block).filter((row) => row !== layoutRow).forEach((row) => block.appendChild(row));
 
   if (isScrollable) attachScrollableDropdownPanel(container, doc);
 
-  if (!block.dataset.menuCardActionsDecorated) {
-    block.dataset.menuCardActionsDecorated = 'true';
-    block.addEventListener('click', (event) => {
-      const trigger = event.target.closest('[data-modal]');
-      if (!trigger || !block.contains(trigger)) return;
-      const nestedLink = event.target.closest('a, [role="link"]');
-      if (nestedLink && nestedLink !== trigger) return;
-      event.preventDefault();
-      const fragmentPath = trigger.getAttribute('data-modal');
-      if (fragmentPath) openModal(doc, { fragmentPath });
-    });
-  }
-}
-
-export default function decorate(block) {
-  const doc = block.ownerDocument;
-
-  if (isAuthoringInstance(block)) {
-    removeDuplicateAuthoringBlocks(block);
-
-    block.querySelectorAll(':scope > div').forEach((row) => {
-      if (!row.classList.contains('menu-card-actions-preview')) {
-        row.dataset.configRow = '';
-      }
-    });
-
-    block.classList.add('has-preview');
-    const previewContainer = getPreviewContainer(block, doc);
-
-    previewContainer.innerHTML = '';
-    const allRows = [...block.querySelectorAll(':scope > div[data-config-row]')];
-    renderCardActions(previewContainer, allRows, block, doc);
-    return;
-  }
-
-  const allRows = [...block.children];
-  renderCardActions(block, allRows, block, doc);
+  bindModalHandler(block, doc);
 }
