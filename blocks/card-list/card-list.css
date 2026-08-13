@@ -586,7 +586,7 @@
     flex: 0 0 16.875rem;
   }
 
-  .cards-list-image:not(.cards-list-image-logo) {
+  .cards-list:not(.scrollable, .carousel) .cards-list-image:not(.cards-list-image-logo) {
     margin-inline: -0.0625rem;
     width: calc(100% + 0.125rem);
   }
