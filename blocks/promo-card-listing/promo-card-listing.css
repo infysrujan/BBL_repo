@@ -121,6 +121,7 @@ body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector
   color: var(--bbl-color-grey-60);
 }
 
+
 .promo-selector-dropdown {
   display: none;
   position: absolute;
@@ -153,8 +154,22 @@ body.bangkok-bankm-card:has(.section.tabs-container .tab-panel > .promo-selector
   font-family: var(--bbl-font-family-medium);
 }
 
-.promo-selector-option:hover,
 .promo-selector-option.is-active {
+  color: var(--bbl-color-blue-90);
+}
+
+.promo-selector-option:hover {
+  color: var(--bbl-color-blue-90);
+}
+
+/* While hovering anywhere inside the open dropdown, only the option under
+   the cursor is blue — every other option, including the persistently
+   selected .is-active one, drops back to black until the hover moves on. */
+.promo-selector-dropdown:hover .promo-selector-option {
+  color: var(--bbl-color-black);
+}
+
+.promo-selector-dropdown:hover .promo-selector-option:hover {
   color: var(--bbl-color-blue-90);
 }
 
@@ -238,6 +253,7 @@ body.mobile-app-view main > div:first-child {
 .promo-card-listing-section .tabs-nav {
   padding-inline-end: 3rem;
 }
+
 
 @media (width > 47.5rem) {
   .promo-selector-grid:has(.promo-selector-empty) {
