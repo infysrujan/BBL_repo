@@ -448,7 +448,9 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  margin-bottom: var(--bbl-space-100);
+
+  /* 3px top matches legacy header's top margin (space above "2026"). */
+  margin: 0.1875rem 0 var(--bbl-space-100);
 }
 
 .dynamic-board .db-mp-nav {
@@ -488,25 +490,24 @@
 
 .dynamic-board .db-mp-grid {
   display: grid;
-  grid-template-columns: repeat(3, 3.875rem);
-  grid-auto-rows: 2.625rem;
+  grid-template-columns: repeat(3, 4.25rem);
+  grid-auto-rows: 2.9375rem;
   place-items: center;
-  gap: var(--bbl-space-025);
+  gap: 0;
 }
 
 .dynamic-board .db-mp-cell {
   height: auto;
   min-height: 0;
   width: fit-content;
-  min-width: 4.2em;
   padding: 0.3125rem 0.9375rem;
   font-size: var(--bbl-body-b1-size);
   line-height: var(--bbl-body-b1-line-height);
   font-weight: var(--bbl-body-b1-weight);
   color: var(--bbl-color-grey-70);
   background: none;
-  border: 0.0625rem solid transparent;
-  border-radius: var(--bbl-rounded-400);
+  border: none;
+  border-radius: 1.5625rem;
   cursor: pointer;
   text-align: center;
   transition: background 0.15s, color 0.15s;
