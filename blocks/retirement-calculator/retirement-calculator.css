@@ -123,7 +123,6 @@
   padding: 1.3125rem;
   color: var(--bbl-color-white);
   margin-bottom: var(--bbl-space-400);
-  height: 7rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -731,9 +730,7 @@
   }
 
   .retirement-calculator .rc-income-card {
-    padding: 1.3125rem;
     margin-bottom: var(--bbl-space-350);
-    height: 6rem;
   }
 
   .retirement-calculator .rc-income-input {
@@ -949,7 +946,7 @@
   }
 
   .retirement-calculator .rc-income-card {
-    height: 10.75rem;
+    padding: 1.3125rem;
   }
 
   .retirement-calculator .rc-income-title {
