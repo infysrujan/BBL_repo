@@ -7,6 +7,11 @@
    overrides and result-specific elements are styled here.
    ========================================================================== */
 
+
+.credit-card-results-wrapper {
+   --header-scroll-offset: 8.3rem; 
+}
+
 .credit-card-results .ccs-source-row {
   display: none;
 }
@@ -259,6 +264,10 @@
 }
 
 @media (width > 64rem) {
+  .credit-card-results-wrapper {
+   --header-scroll-offset: 8.9375rem; /* 143px */
+}
+
   .credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
     padding-bottom: var(--bbl-space-700);
   }

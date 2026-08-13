@@ -23,7 +23,7 @@
 @media (width > 64rem) {
     :root {
         /* matches --header-d-height in header.css */
-        --header-scroll-offset: 7.8125rem;
+        --header-scroll-offset: 5.25rem; /* 84px */
     }
 }
 
