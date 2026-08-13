@@ -678,7 +678,18 @@
 }
 
 @media print {
-  @page {
+  /*
+   * Named (not the default unnamed @page) on purpose: this block's CSS is
+   * dynamically loaded onto the fund-prices page alongside fund-prices.css,
+   * which needs the default unnamed @page (with a large bottom margin) so
+   * Chrome renders its native print footer there. If this rule were also
+   * unnamed it would load later and win the cascade, shrinking that shared
+   * page box to 5mm and suppressing the native footer on the fund-prices
+   * print. Scoping it to #fdd-print-root via a named page keeps this block's
+   * own margins without touching the default page. The fund detail print
+   * uses its own .fdd-print-footer, so it doesn't rely on the native footer.
+   */
+  @page fddprint {
     size: a4 portrait;
     margin: 5mm;
   }
@@ -702,6 +713,7 @@
     font-size: 0.6875rem;
     padding: 0;
     position: relative;
+    page: fddprint;
   }
 
   #fdd-print-root .fdd-print-masthead {
