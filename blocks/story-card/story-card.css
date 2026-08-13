@@ -196,8 +196,6 @@
   }
 
   .story-card-content .button-container .button-m {
-    min-width: 135px;
-    box-sizing: border-box;
+    min-width: 9.688rem;
   }
 }
- 
