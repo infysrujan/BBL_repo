@@ -75,7 +75,9 @@ const launchConfig = {
   stage: [
     'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-f69e7329c58a-development.min.js',
   ],
-  prod: ['https://assets.adobedtm.com/0e4712067e10/8a225ec96e9d/launch-3716ea0a1d06.min.js'],
+  prod: [
+    'https://assets.adobedtm.com/0e4712067e10/8a225ec96e9d/launch-3716ea0a1d06.min.js',
+  ],
 };
 
 const orgId = '599F1E47665EC45B0A495E73@AdobeOrg';
