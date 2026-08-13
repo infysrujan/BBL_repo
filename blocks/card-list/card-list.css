@@ -220,6 +220,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+  min-width: 0;
 }
 
 .cards-list-image.cards-list-image-x-small {
@@ -556,7 +557,7 @@
 
   .cards-list.cards-4 .cards-list-item,
   .cards-list.cards-3 .cards-list-item {
-    flex: 0 0 calc((100% - 2.5rem) / 3);
+    flex: 0 0 calc((100.001% - 2.5rem) / 3);
   }
 
   .cards-list.cards-1 .cards-list-item {
@@ -583,6 +584,11 @@
   .cards-list:is(.scrollable).cards-4 .cards-list-item,
   .cards-list:is(.scrollable).cards-1 .cards-list-item {
     flex: 0 0 16.875rem;
+  }
+
+  .cards-list-image:not(.cards-list-image-logo) {
+    margin-inline: -0.0625rem;
+    width: calc(100% + 0.125rem);
   }
 
   .cards-list-image.cards-list-image-card {
