@@ -448,6 +448,7 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+
   /* 3px top matches legacy header's top margin (space above "2026"). */
   margin: 0.1875rem 0 var(--bbl-space-100);
 }
