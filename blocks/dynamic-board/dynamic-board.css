@@ -448,7 +448,6 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-
   /* 3px top matches legacy header's top margin (space above "2026"). */
   margin: 0.1875rem 0 var(--bbl-space-100);
 }
@@ -493,7 +492,7 @@
   grid-template-columns: repeat(3, 4.25rem);
   grid-auto-rows: 2.9375rem;
   place-items: center;
-  gap: 0;
+  gap: 0.349rem;
 }
 
 .dynamic-board .db-mp-cell {
@@ -511,6 +510,7 @@
   cursor: pointer;
   text-align: center;
   transition: background 0.15s, color 0.15s;
+  margin-inline:0.175rem;
 }
 
 .dynamic-board .db-mp-cell:hover {
