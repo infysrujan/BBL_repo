@@ -1180,7 +1180,9 @@ export default async function decorate(block) {
 
   const calcUrl = cfg.savingPlanCalculatorUrl || '';
   const apimKey = cfg.savingPlanApimKey || '';
-  const inflationRate = parseFloat(cfg.savingPlanInflationRate) || 1.5;
+  const commonData = json.common?.data || [];
+  const inflationRateEntry = commonData.find(({ Key }) => Key === 'defaultFormValues-inflationRate');
+  const inflationRate = parseFloat(inflationRateEntry?.Value);
 
   const lang = getLang();
   const data = buildDataFromConfig(json, lang, placeholders, inflationRate);
