@@ -548,9 +548,10 @@ function scheduleApplyBranchDistrictGrouping(province, branchFieldName, lang = '
 * @name getBranchEnumNames
 * @param {string} province - Province name matching the selected language
 * @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @param {string} [branchFieldName]
 * @returns {string[]}
 */
-function getBranchEnumNames(province, branchFieldName, lang = 'th') {
+function getBranchEnumNames(province, lang = 'th',branchFieldName, ) {
   const data = fetchBranchesByProvince(province, lang);
   if (branchFieldName) {
     scheduleApplyBranchDistrictGrouping(province, branchFieldName, lang);
