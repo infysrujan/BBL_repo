@@ -11,7 +11,7 @@
 }
 
 .section.tax-calculator-container {
-  padding: 1.75rem 0.875rem;
+  padding: var(--bbl-space-350) 0.875rem;
   box-sizing: border-box;
 }
 
@@ -29,11 +29,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 2rem 0;
+  margin: var(--bbl-space-400) 0;
 }
 
 .tax-calculator .tax-calc-title {
-  font-weight: 500;
+  font-weight: var(--bbl-font-weight-medium);
   text-align: center;
   margin: 0 0 2.1875rem;
   color: var(--bbl-color-black);
@@ -55,7 +55,7 @@
   justify-content: center;
   width: min(100%, 78%);
   box-sizing: border-box;
-  margin-bottom: 3.5rem;
+  margin-bottom: var(--bbl-space-700);
   padding-inline: 0.875rem;
   margin-inline: auto;
 }
@@ -73,14 +73,14 @@
   z-index: 10;
   width: 1.25rem;
   height: 1.25rem;
-  border-radius: 50%;
+  border-radius: var(--bbl-rounded-full);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
   font-weight: 600;
   line-height: 1;
-  border: var(--bbl-space-025) solid var(--bbl-color-grey-20);
+  border: 0.125rem solid var(--bbl-color-grey-20);
   background: var(--bbl-color-grey-20);
   color: var(--bbl-color-grey-60);
 }
@@ -97,7 +97,7 @@
 
 .tax-calculator .tax-calc-step-active .tax-calc-step-circle {
   background: var(--bbl-color-white);
-  border: var(--bbl-space-025) solid var(--bbl-color-active-blue);
+  border: 0.125rem solid var(--bbl-color-active-blue);
   color: var(--bbl-color-active-blue);
 }
 
@@ -112,11 +112,11 @@
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  margin-top: 0.5rem;
+  margin-top: var(--bbl-space-100);
   white-space: normal;
   text-align: center;
   font-family: var(--bbl-font-family-medium);
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   font-size: 0.875rem;
   color: var(--bbl-color-black);
 }
@@ -140,7 +140,7 @@
 .tax-calculator .tax-calc-body {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--bbl-space-200);
   padding: 0 0.4375rem;
 }
 
@@ -149,7 +149,7 @@
 .tax-calculator .tax-calc-fields {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--bbl-space-250);
   padding: 0 0.4375rem;
 }
 
@@ -168,7 +168,7 @@
   width: 100%;
   height: 3.375rem;
   border: 0.0625rem solid var(--bbl-color-grey-40);
-  border-radius: var(--bbl-space-100);
+  border-radius: var(--bbl-rounded-100);
   background: var(--bbl-color-white);
   transition: all 0.2s ease;
   box-sizing: border-box;
@@ -210,7 +210,7 @@
   height: 100%;
   background: transparent;
   text-align: right;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   outline: none;
   padding: 0;
   color: var(--bbl-color-black);
@@ -220,7 +220,7 @@
 }
 
 .tax-calculator .tax-calc-invest-table .tax-calc-input:disabled {
-  color: var(--bbl-text-disabled);
+  color: var(--bbl-color-grey-40);
   cursor: not-allowed;
 }
 
@@ -231,7 +231,7 @@
 
 .tax-calculator .tax-calc-input-wrap:has(.tax-calc-input:disabled) {
   background: var(--bbl-color-grey-10);
-  border-color: var(--bbl-color-grey-30);
+  border-color: var(--bbl-color-grey-40);
 }
 
 .tax-calculator .tax-calc-label {
@@ -248,11 +248,13 @@
 /* ── Field hint (green max-allowance text) ─────────────────── */
 
 .tax-calculator .tax-calc-field-hint {
+  font-family: var(--bbl-font-family-looped);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1rem;
   color: var(--bbl-color-system-green);
-  padding-left: 1rem;
-  margin: 0.375rem 0 0;
+  padding-left: var(--bbl-space-200);
+  margin: var(--bbl-space-075) 0 0;
 }
 
 .tax-calculator .tax-calc-field-hint-error {
@@ -266,10 +268,13 @@
 /* ── Field error ───────────────────────────────────────────── */
 
 .tax-calculator .tax-calc-field-error {
-  font-size: 0.8125rem;
+  font-family: var(--bbl-font-family-looped);
+  font-size: 0.75rem;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1rem;
   color: var(--bbl-color-system-red);
-  padding-left: 1rem;
-  margin: 0.375rem 0 0;
+  padding-left: var(--bbl-space-200);
+  margin: var(--bbl-space-075) 0 0;
 }
 
 .tax-calculator .tax-calc-field-error:empty {
@@ -279,7 +284,7 @@
 /* ── Notes ─────────────────────────────────────────────────── */
 
 .tax-calculator .tax-calc-notes {
-  padding-top: 0.25rem;
+  padding-top: var(--bbl-space-050);
 }
 
 .tax-calculator .tax-calc-notes-title {
@@ -290,7 +295,7 @@
 
 .tax-calculator .tax-calc-notes-body {
   font-size: 0.875rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
   padding: 0 0.4375rem 0.4375rem;
 }
@@ -314,7 +319,7 @@
   margin: 0;
   padding: 1.3125rem 0;
   border: 0;
-  gap: 1rem;
+  gap: var(--bbl-space-200);
 }
 
 /* ── Section Header (Journey 2 groups) ────────────────────── */
@@ -323,7 +328,7 @@
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  gap: 0.5rem;
+  gap: var(--bbl-space-100);
 }
 
 .tax-calculator .tax-calc-section-title {
@@ -363,7 +368,7 @@
   top: calc(100% + 0.625rem);
   transform: translateX(-50%);
   width: min(20rem, calc(100vw - 2rem));
-  padding: 0.75rem 1rem;
+  padding: var(--bbl-space-150) var(--bbl-space-200);
   background: var(--bbl-color-truthful-blue);
   color: var(--bbl-color-white);
   font-size: 0.8125rem;
@@ -394,29 +399,30 @@
 .tax-calculator .tax-calc-parental {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: var(--bbl-space-200);
 }
 
 .tax-calculator .tax-calc-parental-title {
+  font-family: var(--bbl-font-family-medium);
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-gray-121);
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--bbl-space-100);
 }
 
 .tax-calculator .tax-calc-parental-checks {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: var(--bbl-space-200);
 }
 
 .tax-calculator .tax-calc-parental-check {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--bbl-space-100);
   font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.5;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.1875rem;
   color: var(--bbl-color-black);
   cursor: pointer;
   user-select: none;
@@ -427,7 +433,7 @@
   width: 1.5rem;
   height: 1.5rem;
   border: 0.0625rem solid var(--bbl-color-grey-60);
-  border-radius: 0.25rem;
+  border-radius: var(--bbl-rounded-050);
   background: var(--bbl-color-white);
   cursor: pointer;
   flex-shrink: 0;
@@ -466,8 +472,8 @@
   justify-content: center;
   background: var(--bbl-color-grey-10);
   border: 0.0625rem solid var(--bbl-color-grey-20);
-  border-radius: var(--bbl-space-100);
-  padding: 1.5rem;
+  border-radius: var(--bbl-rounded-100);
+  padding: var(--bbl-space-300);
 }
 
 .tax-calculator .tax-calc-no-tax-text {
@@ -483,13 +489,11 @@
 .tax-calculator .tax-calc-tax-cards {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--bbl-space-300);
 }
 
 .tax-calculator .tax-calc-tax-cards-two {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  gap: var(--bbl-space-200);
 }
 
 .tax-calculator .tax-calc-tax-cards-two>* {
@@ -503,54 +507,59 @@
 }
 
 .tax-calculator .tax-calc-tax-card {
-  padding: 1rem;
-  border-radius: var(--bbl-space-100);
+  padding: var(--bbl-space-200);
+  border-radius: var(--bbl-rounded-100);
   display: flex;
   flex-direction: column;
 }
 
 .tax-calculator .tax-calc-tax-card-original {
   background: var(--bbl-color-grey-10);
-  padding: 1rem;
-  height: 5.5rem;
+  padding: var(--bbl-space-200);
 }
 
 .tax-calculator .tax-calc-tax-card-new {
   background: var(--bbl-color-truthful-blue);
   color: var(--bbl-color-white);
-  padding: 1rem;
+  padding: var(--bbl-space-200);
 }
 
 .tax-calculator .tax-calc-tax-card-title {
+  font-family: var(--bbl-font-family-medium);
   font-size: 1.125rem;
-  font-weight: 600;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.5rem;
   text-align: left;
   margin: 0;
 }
 
 .tax-calculator .tax-calc-tax-card-original .tax-calc-tax-card-title {
   color: var(--bbl-color-black);
-  font-weight: 600;
+  font-weight: var(--bbl-font-weight-regular);
+  margin-bottom: var(--bbl-space-400);
 }
 
 .tax-calculator .tax-calc-tax-card-new .tax-calc-tax-card-title {
   color: var(--bbl-color-white);
-  margin-bottom: 1.75rem;
+  margin-bottom: var(--bbl-space-350);
 }
 
 .tax-calculator .tax-calc-tax-card-amount {
+  font-family: var(--bbl-font-family-medium);
   font-size: 1.4rem;
-  font-weight: 600;
+  font-weight: var(--bbl-font-weight-regular);
   text-align: right;
   color: var(--bbl-color-active-blue);
   margin-top: auto;
   margin-bottom: 0;
-  line-height: 1;
+  line-height: 1.875rem;
 }
 
 .tax-calculator .tax-calc-tax-card-unit {
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-family: var(--bbl-font-family-looped);
+  font-size: 0.625rem;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 0.875rem;
   color: var(--bbl-color-grey-70);
 }
 
@@ -566,10 +575,11 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: var(--bbl-space-100);
   color: var(--bbl-color-system-green);
+  font-family: var(--bbl-font-family-medium);
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: var(--bbl-font-weight-regular);
   margin-top: auto;
   margin-bottom: 0;
   flex-wrap: wrap;
@@ -589,30 +599,32 @@
 }
 
 .tax-calculator .tax-calc-tax-rate {
-  font-size: 0.875rem;
-  font-weight: 400;
+  font-family: var(--bbl-font-family-looped);
+  font-size: 0.75rem;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1rem;
   color: var(--bbl-color-grey-70);
   text-align: right;
-  margin: 0.25rem 0 0;
-  padding: 0 1rem;
+  margin: var(--bbl-space-050) 0 0;
+  padding: 0 var(--bbl-space-200);
 }
 
 /* ── Journey 3: Summary box ────────────────────────────────── */
 
 .tax-calculator .tax-calc-summary-box {
   border: 0.0625rem solid var(--bbl-color-active-blue);
-  border-radius: var(--bbl-space-100);
-  padding: 1rem;
+  border-radius: var(--bbl-rounded-100);
+  padding: var(--bbl-space-200);
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
 .tax-calculator .tax-calc-summary-row {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.5rem;
+  gap: var(--bbl-space-100);
+  margin-top: var(--bbl-space-100); /* mirrors live's space-y-2 row spacing */
 }
 
 .tax-calculator .tax-calc-summary-label {
@@ -623,8 +635,10 @@
 }
 
 .tax-calculator .tax-calc-summary-value {
+  font-family: var(--bbl-font-family-medium);
   font-size: clamp(1.1rem, 4.8vw, 1.5rem);
-  font-weight: 600;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1.5rem;
   color: var(--bbl-color-black);
   text-align: right;
   white-space: nowrap;
@@ -632,17 +646,21 @@
 }
 
 .tax-calculator .tax-calc-summary-unit {
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-family: var(--bbl-font-family-looped);
+  font-size: 0.625rem;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 0.875rem;
   color: var(--bbl-color-grey-70);
 }
 
 .tax-calculator .tax-calc-summary-subtitle {
-  font-size: 0.875rem;
-  font-weight: 400;
+  font-family: var(--bbl-font-family-looped);
+  font-size: 0.75rem;
+  font-weight: var(--bbl-font-weight-regular);
+  line-height: 1rem;
   color: var(--bbl-color-black);
   text-align: right;
-  margin: 0.25rem 0 0;
+  margin: var(--bbl-space-050) 0 0;
 }
 
 /* ── Journey 3: Invest heading ─────────────────────────────── */
@@ -655,38 +673,39 @@
 
 .tax-calculator .tax-calc-invest-title {
   font-size: 1.1rem;
-  font-weight: 500;
+  font-weight: var(--bbl-font-weight-medium);
   color: var(--bbl-color-gray-121);
 }
 
 .tax-calculator .tax-calc-invest-table {
   display: grid;
   grid-template-columns: 100%;
-  gap: 1rem;
+  gap: var(--bbl-space-200);
 }
 
 .tax-calculator .tax-calc-invest-header {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: 1rem;
-  margin-bottom: 0.5rem;
+  gap: var(--bbl-space-200);
+  margin-bottom: var(--bbl-space-100);
 }
 
 .tax-calculator .tax-calc-invest-header-cell {
+  font-family: var(--bbl-font-family-medium);
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-gray-121);
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1.2;
+  line-height: 1.1875rem;
 }
 
 .tax-calculator .tax-calc-invest-row {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: 1rem;
+  gap: var(--bbl-space-200);
   align-items: flex-start;
 }
 
@@ -708,7 +727,7 @@
 
 .tax-calculator .tax-calc-invest-total {
   font-size: 0.875rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-active-blue);
   overflow-wrap: anywhere;
   text-align: center;
@@ -719,7 +738,7 @@
 }
 
 .tax-calculator .tax-calc-invest-table .tax-calc-input-col .tax-calc-input-wrap {
-  padding: 0 0.25rem;
+  padding: 0 var(--bbl-space-050);
   width: 100%;
   box-sizing: border-box;
 }
@@ -740,96 +759,69 @@
 
 @media (width > 47.5rem) {
   .section.tax-calculator-container {
-    padding: 1rem;
+    padding: var(--bbl-space-200);
   }
 
   .tax-calculator .tax-calc {
-    padding: 2rem;
+    padding: var(--bbl-space-400);
     max-width: 100%;
-    margin: 0 auto;
-    box-sizing: border-box;
   }
 
   .tax-calculator .tax-calc-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0 0 1rem;
+    margin: 0 0 var(--bbl-space-200);
   }
 
   .tax-calculator .tax-calc-title {
-    margin: 0 0 2.5rem;
+    margin: 0 0 var(--bbl-space-500);
   }
 
   .tax-calculator .tax-calc-divider {
-    width: 6rem;
-    height: var(--bbl-space-025);
-    background-color: var(--bbl-color-grey-20);
-    margin: 0 auto 2rem;
+    margin: 0 auto var(--bbl-space-400);
   }
 
   .tax-calculator .tax-calc-body {
-    padding: 1.5rem 0;
-    gap: 1rem;
+    padding: var(--bbl-space-300) 0;
   }
 
   .tax-calculator .tax-calc-steps {
     width: min(100%, 68%);
-    margin: 0 auto 4rem;
+    margin: 0 auto var(--bbl-space-800);
   }
 
   .tax-calculator .tax-calc-step-circle {
-    width: 1.25rem;
-    height: 1.25rem;
     font-size: 0.875rem;
   }
 
   .tax-calculator .tax-calc-connector {
-    height: var(--bbl-space-025);
     margin: 0;
     flex: 1;
     max-width: 9rem;
   }
 
   .tax-calculator .tax-calc-fields {
-    padding: 0 1rem;
-    gap: 1.25rem;
+    padding: 0 var(--bbl-space-200);
   }
 
   .tax-calculator .tax-calc-input-wrap {
     height: auto;
     min-height: 3.375rem;
-    padding: 0 1rem;
+    padding: 0 var(--bbl-space-200);
     gap: 0.875rem;
   }
 
   .tax-calculator .tax-calc-parental {
-    display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    padding: 0.5rem 0 0;
-  }
-
-  .tax-calculator .tax-calc-parental-group {
-    display: block;
-    margin-top: 0;
+    padding: var(--bbl-space-100) 0 0;
   }
 
   .tax-calculator .tax-calc-tax-card {
     width: 100%;
-    padding: 1rem;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    height: 9rem;
-    border-radius: var(--bbl-space-100);
   }
 
   .tax-calculator .tax-calc-summary-box {
-    padding: 1rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--bbl-space-100);
   }
 
   .tax-calculator .tax-calc-summary-row {
@@ -837,31 +829,22 @@
     justify-content: space-between;
   }
 
-  .tax-calculator .tax-calc-tax-card-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-  }
-
   .tax-calculator .tax-calc-tax-card-amount {
     font-size: 1.6rem;
-    font-weight: 600;
   }
 
   .tax-calculator .tax-calc-tax-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    gap: var(--bbl-space-200);
   }
 
   .tax-calculator .tax-calc-tax-cards-two {
-    display: flex;
     flex-direction: row;
-    gap: 1rem;
   }
 
-  .tax-calculator .tax-calc-tax-cards-two>* {
-    flex: 1;
-    min-width: 0;
+  /* Two-card (recalculation) variation only — taller than the single-card
+     normal state; scoped so it doesn't affect the full-width single card. */
+  .tax-calculator .tax-calc-tax-cards-two .tax-calc-tax-card {
+    min-height: 10.974rem; /* content ≈143.583px + 1rem padding, border-box */
   }
 
   .tax-calculator .tax-calc-summary-label {
@@ -871,12 +854,6 @@
 
   .tax-calculator .tax-calc-summary-value {
     font-size: 1.25rem;
-    font-weight: 600;
-  }
-
-  .tax-calculator .tax-calc-invest-heading {
-    margin-top: 0;
-    text-align: center;
   }
 
   .tax-calculator .tax-calc-invest-title {
@@ -885,33 +862,22 @@
 
   .tax-calculator .tax-calc-invest-header-cell {
     font-size: 1rem;
-    font-weight: 600;
   }
 
   .tax-calculator .tax-calc-invest-header {
-    margin-bottom: 0.5rem;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
   }
 
   .tax-calculator .tax-calc-invest-table {
-    gap: 0.5rem;
-    margin-top: 0;
+    gap: var(--bbl-space-100);
   }
 
   .tax-calculator .tax-calc-invest-row {
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
-  .tax-calculator .tax-calc-invest-total-col {
-    padding-top: 0;
-    height: 3.375rem;
   }
 
   .tax-calculator .tax-calc-invest-total {
     height: 3.375rem;
-    font-size: 0.875rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -923,14 +889,13 @@
     display: flex;
     align-items: center;
     background: transparent;
-    padding: 0 1rem;
+    padding: 0 var(--bbl-space-200);
     box-sizing: border-box;
     margin: 0;
   }
 
   .tax-calculator .tax-calc-invest-table .tax-calc-label {
     white-space: nowrap;
-    flex: 0 0 auto;
   }
 
   .tax-calculator .tax-calc-invest-table .tax-calc-input {
@@ -940,20 +905,18 @@
   }
 
   .tax-calculator .tax-calc-footer {
-    justify-content: center;
-    gap: 1rem;
     padding-top: 0;
-    padding-bottom: 2rem;
+    padding-bottom: var(--bbl-space-400);
   }
 
   .tax-calculator .tax-calc-notes-title {
-    margin-bottom: 0.5rem;
-    padding: 0 1rem;
+    margin-bottom: var(--bbl-space-100);
+    padding: 0 var(--bbl-space-200);
   }
 
   .tax-calculator .tax-calc-notes-body {
     font-size: 1rem;
-    padding: 0 1rem;
+    padding: 0 var(--bbl-space-200);
   }
 }
 
@@ -964,7 +927,7 @@
 @media (width > 64rem) {
   .tax-calculator .tax-calc {
     max-width: 67.5rem;
-    padding: 2rem 4.75rem;
+    padding: var(--bbl-space-400) 4.75rem;
   }
 
   .tax-calculator .tax-calc-header {
@@ -976,11 +939,11 @@
   }
 
   .tax-calculator .tax-calc-divider {
-    margin: 0 auto 3rem;
+    margin: 0 auto var(--bbl-space-600);
   }
 
   .tax-calculator .tax-calc-body {
-    padding: 2rem 0;
+    padding: var(--bbl-space-400) 0;
   }
 
   .tax-calculator .tax-calc-steps {
@@ -988,13 +951,12 @@
   }
 
   .tax-calculator .tax-calc-step-2 .tax-calc-steps {
-    margin-bottom: 3.5rem;
+    margin-bottom: var(--bbl-space-700);
   }
 
   .tax-calculator .tax-calc-step-circle {
     width: 1.5rem;
     height: 1.5rem;
-    border-radius: 624.9375rem;
     font-size: 1rem;
     box-sizing: border-box;
   }
@@ -1009,12 +971,12 @@
 
   .tax-calculator .tax-calc-fields {
     padding: 0;
-    gap: 1.5rem;
+    gap: var(--bbl-space-300);
   }
 
   .tax-calculator .tax-calc-input-wrap {
     min-height: 3.5rem;
-    gap: 1rem;
+    gap: var(--bbl-space-200);
   }
 
   .tax-calculator .tax-calc-input-wrap:focus-within {
@@ -1033,12 +995,12 @@
 
   .tax-calculator .tax-calc-section-title {
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: var(--bbl-font-weight-medium);
   }
 
   .tax-calculator .tax-calc-parental {
-    gap: 1.5rem;
-    padding: 1rem 0 0;
+    gap: var(--bbl-space-300);
+    padding: var(--bbl-space-200) 0 0;
   }
 
   .tax-calculator .tax-calc-parental-group {
@@ -1050,24 +1012,35 @@
     white-space: nowrap;
   }
 
+  .tax-calculator .tax-calc-parental-check {
+    font-size: 1rem;
+    line-height: 1.375rem;
+  }
+
   .tax-calculator .tax-calc-tax-card {
-    height: 11rem;
+    min-height: 9.475rem;
   }
 
   .tax-calculator .tax-calc-tax-card-title {
     font-size: 1.5rem;
+    line-height: 2rem;
   }
 
   .tax-calculator .tax-calc-tax-card-amount {
     font-size: 3rem;
+    line-height: 3.4375rem;
+  }
+
+  .tax-calculator .tax-calc-tax-card-saved {
+    font-size: 1rem;
   }
 
   .tax-calculator .tax-calc-tax-cards {
-    gap: 1.5rem;
+    gap: var(--bbl-space-300);
   }
 
-  .tax-calculator .tax-calc-tax-cards-two {
-    gap: 1.5rem;
+  .tax-calculator .tax-calc-summary-box {
+    min-height: 8.787rem; 
   }
 
   .tax-calculator .tax-calc-summary-label {
@@ -1076,6 +1049,7 @@
 
   .tax-calculator .tax-calc-summary-value {
     font-size: 1.5rem;
+    line-height: 2rem;
   }
 
   .tax-calculator .tax-calc-summary-subtitle {
@@ -1090,8 +1064,12 @@
     font-size: 1.5rem;
   }
 
+  .tax-calculator .tax-calc-invest-header-cell {
+    line-height: 1.375rem;
+  }
+
   .tax-calculator .tax-calc-invest-table {
-    gap: 1rem;
+    gap: var(--bbl-space-200);
   }
 
   .tax-calculator .tax-calc-invest-total-col {
@@ -1099,13 +1077,7 @@
   }
 
   .tax-calculator .tax-calc-field-hint {
-    font-size: 0.82rem;
-    font-weight: 550;
     margin: 0.2rem 0 0;
-  }
-
-  .tax-calculator .tax-calc-field-error {
-    font-size: 0.875rem;
   }
 
   .tax-calculator .tax-calc-invest-total {
@@ -1123,11 +1095,11 @@
   }
 
   .tax-calculator .tax-calc-footer {
-    gap: 1.5rem;
+    gap: var(--bbl-space-300);
   }
 
   .tax-calculator .tax-calc-notes-title {
-    margin-bottom: 1rem;
+    margin-bottom: var(--bbl-space-200);
     padding: 0;
   }
 
