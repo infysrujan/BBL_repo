@@ -262,6 +262,13 @@
     transform: translateY(0.5625rem);
   }
 
+  .srr-preview-overlay .srr-preview-close .icon,
+  .srr-preview-overlay .srr-preview-close img {
+    color: var(--bbl-color-white);
+    filter: brightness(0) invert(1);
+    width: 0.75rem;
+  }
+
   .search-reports-results .srr-preview-btn:hover .icon {
     transform: translateY(0.5625rem) scale(1.2);
   }
@@ -359,13 +366,6 @@
 
   .srr-preview-overlay .srr-preview-close:focus-visible {
     outline: none;
-  }
-
-  .srr-preview-overlay .srr-preview-close .icon,
-  .srr-preview-overlay .srr-preview-close img {
-    color: var(--bbl-color-white);
-    filter: brightness(0) invert(1);
-    width: 0.75rem;
   }
 
   @media (width > 47.5rem) {
