@@ -154,6 +154,7 @@
   .card-list-wealth .content {
     overflow-x: visible;
     scroll-snap-type: none;
+    justify-content: center;
     gap: var(--bbl-space-500);
   }
 
