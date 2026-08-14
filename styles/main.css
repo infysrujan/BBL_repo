@@ -218,22 +218,27 @@ main img {
     text-align: center;
 }
 
-.section.center-image .section-image-item {
+.section.center-image .section-image-item,
+.accordion-panel.center-image .section-image-item {
     display: block;
     text-align: center;
 }
 
-.section.center-image .default-content-wrapper > p:has(>picture) {
+.section.center-image .default-content-wrapper > p:has(>picture),
+.accordion-panel.center-image .default-content-wrapper > p:has(>picture) {
     text-align: center;
 }
 
 .section.center-image .default-content-wrapper > p > picture,
-.section.center-image .default-content-wrapper > p > img {
+.section.center-image .default-content-wrapper > p > img,
+.accordion-panel.center-image .default-content-wrapper > p > picture,
+.accordion-panel.center-image .default-content-wrapper > p > img {
     display: inline-block;
     max-width: 100%;
 }
 
-.section.center-image .section-image-item :is(picture, img) {
+.section.center-image .section-image-item :is(picture, img),
+.accordion-panel.center-image .section-image-item :is(picture, img) {
     display: block;
     margin-inline: auto;
     max-width: 100%;
@@ -287,6 +292,11 @@ main img {
     transform: translateX(-50%);
 }
 
+.section.right-content > .default-content-wrapper:has(+ .table-wrapper) > p,
+.accordion-panel.right-content > .default-content-wrapper:has(+ .table-wrapper) > p {
+    text-align: right;
+}
+
 @media (width > 47.5rem) {
     .section.underline-title .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child,
     .section.underline-image .section-image-item {
@@ -311,7 +321,8 @@ main img {
     color: var(--bbl-color-white);
 }
 
-.section.center-content .default-content-wrapper * {
+.section.center-content .default-content-wrapper *,
+.accordion-panel.center-content .default-content-wrapper *  {
     text-align: center;
     margin: auto;
 }
@@ -398,94 +409,113 @@ main img {
 /* =========================================================================
    SECTION-COLUMNS - Global Styles
    ========================================================================= */
-.section.columns-3 {
+.section.columns-3,
+.accordion-panel.columns-3 {
     display: flex;
     gap: var(--bbl-space-layout-sm);
     flex-direction: column;
 }
 
-.section.columns-2-75 {
+.section.columns-2-75,
+.accordion-panel.columns-2-75 {
     display: flex;
     flex-direction: column;
 }
 
-.section.columns-2-50 {
+.section.columns-2-50,
+.accordion-panel.columns-2-50 {
     display: flex;
     flex-direction: column;
     gap:var(--bbl-space-300);
 }
 
-.section.columns-2-65 {
+.section.columns-2-65,
+.accordion-panel.columns-2-65 {
     display: flex;
     flex-direction: column;
 }
 
-.section.columns-2-25 {
+.section.columns-2-25,
+.accordion-panel.columns-2-25 {
     display: flex;
     flex-direction: column;
     gap: var(--bbl-space-300);
 }
 
 @media (width > 47.5rem) {
-    .section.columns-2-50 {
+    .section.columns-2-50,
+    .accordion-panel.columns-2-50 {
     flex-direction: row;
     }
 }
 
 @media (width > 64rem) {
-    .section.columns-3 {
+    .section.columns-3,
+    .accordion-panel.columns-3 {
         flex-direction: row;
     }
 
-    .section.columns-3  > * {
+    .section.columns-3  > *,
+    .accordion-panel.columns-3  > * {
         width: 33%;
         flex: 1;
     }
 
-    .section.columns-2-50 {
+    .section.columns-2-50,
+    .accordion-panel.columns-2-50 {
         flex-direction: row;
         gap:var(--bbl-space-400);
     }
 
-    .section.columns-2-50 > * {
+    .section.columns-2-50 > *,
+    .accordion-panel.columns-2-50 > * {
         flex: 1;
     }
 
-    .section.columns-2-65 {
+    .section.columns-2-65,
+    .accordion-panel.columns-2-65 {
         flex-direction: row;
     }
 
-    .section.columns-2-75 {
+    .section.columns-2-75,
+    .accordion-panel.columns-2-75 {
         flex-direction: row;
     }
 
-    .section.columns-2-25 {
+    .section.columns-2-25,
+    .accordion-panel.columns-2-25 {
         flex-direction: row;
     }
 
-    .section.columns-2-65 > * {
+    .section.columns-2-65 > *,
+    .accordion-panel.columns-2-65 > * {
         padding-inline: var(--bbl-space-250);
         flex: 1;
     }
 
-    .section.columns-2-75 > * {
+    .section.columns-2-75 > *,
+    .accordion-panel.columns-2-75 > * {
         padding-inline: var(--bbl-space-250);
         flex: 1;
     }
 
-    .section.columns-2-25 > * {
+    .section.columns-2-25 > *,
+    .accordion-panel.columns-2-25 > * {
         width: 68%;
     }
 
-    .section.columns-2-65 > *:first-child {
+    .section.columns-2-65 > *:first-child,
+    .accordion-panel.columns-2-65 > *:first-child {
         flex: 0 0 65%;
     }
 
-    .section.columns-2-75 > *:first-child {
+    .section.columns-2-75 > *:first-child,
+    .accordion-panel.columns-2-75 > *:first-child {
         flex: 0 0 75%;
     }
 
-    .section.columns-2-25 > *:first-child {
+    .section.columns-2-25 > *:first-child,
+    .accordion-panel.columns-2-25 > *:first-child {
         width: calc(33.33% - 9px);
     }
 }
