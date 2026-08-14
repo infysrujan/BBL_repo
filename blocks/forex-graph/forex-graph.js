@@ -227,15 +227,11 @@ function renderDatepicker(pick, pickerState, monthLabels, dayLabels, buddhistYea
         && Number(selectedParsed.day) === cell.day
         && Number(selectedParsed.month) === pickerState.viewMonth
         && Number(selectedParsed.year) === pickerState.viewYear;
-      const isToday = now.getDate() === cell.day
-        && now.getMonth() + 1 === pickerState.viewMonth
-        && now.getFullYear() === pickerState.viewYear;
 
       const classes = [
         index === 0 || index === 6 ? 'is-weekend' : '',
         isEnabled ? 'is-enabled' : 'is-disabled',
         isSelected ? 'is-current' : '',
-        isToday ? 'is-today' : '',
       ].filter(Boolean).join(' ');
 
       if (isEnabled) {
@@ -936,16 +932,11 @@ export default async function decorate(block) {
       state.from.enabledDaysByMonth[monthKey] = enabledDays;
       state.to.enabledDaysByMonth[monthKey] = enabledDays;
 
-      // Set default dates: first valid day of month → last valid day
+      // Set default dates: 1st of month (even if not itself an enabled day) → today
       const monthStr = String(month).padStart(2, '0');
-      if (enabledDays.length) {
-        state.from.selectedDate = `${year}-${monthStr}-${enabledDays[0]}`;
-        state.to.selectedDate = `${year}-${monthStr}-${enabledDays[enabledDays.length - 1]}`;
-      } else {
-        state.from.selectedDate = `${year}-${monthStr}-01`;
-        const todayStr = String(now.getDate()).padStart(2, '0');
-        state.to.selectedDate = `${year}-${monthStr}-${todayStr}`;
-      }
+      const todayStr = String(now.getDate()).padStart(2, '0');
+      state.from.selectedDate = `${year}-${monthStr}-01`;
+      state.to.selectedDate = `${year}-${monthStr}-${todayStr}`;
 
       // Format typed date display values
       state.from.typedDate = formatDateInputValue(

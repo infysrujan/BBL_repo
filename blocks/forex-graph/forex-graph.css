@@ -471,16 +471,6 @@
   background: var(--bbl-color-blue-90);
 }
 
-/* stylelint-disable selector-max-compound-selectors */
-.forex-graph .forex-graph-datepicker-calendar td.is-today:not(.is-current) .forex-graph-datepicker-day-btn {
-  outline: 0.125rem solid var(--bbl-color-active-blue);
-  outline-offset: -0.125rem;
-  color: var(--bbl-color-active-blue);
-  font-weight: 700;
-}
-
-/* stylelint-enable selector-max-compound-selectors */
-
 /* ── Tablet: 47.5rem+ (760px) ──────────────────────────────── */
 
 @media (width > 47.5rem) {
