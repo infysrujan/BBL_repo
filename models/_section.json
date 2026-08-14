@@ -168,6 +168,10 @@
                 {
                   "name": "Center Content",
                   "value": "center-content"
+                },
+                {
+                  "name": "Right Content",
+                  "value": "right-content"
                 }
               ]
             },

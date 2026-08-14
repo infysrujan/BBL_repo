@@ -786,7 +786,7 @@ export default async function decorate(block) {
 
   if (sections.length > 0) {
     sections.forEach((section, index) => {
-      const sectionClasses = [...section.classList];
+      const sectionClasses = [...section.classList].filter((c) => c !== 'section');
       const { titleText, contentFrag } = extractTitleAndBody(section);
       appendAccordionItem(block, baseId, titleText, contentFrag, index, sectionClasses);
     });
@@ -811,8 +811,8 @@ export default async function decorate(block) {
 
   const fragmentSection = fragment.querySelector(':scope .section');
   if (fragmentSection) {
-    // Carry the section's own classes (including `section`) onto the panel.
-    const sectionClasses = [...fragmentSection.classList];
+    // Carry the section's own style classes onto the panel.
+    const sectionClasses = [...fragmentSection.classList].filter((c) => c !== 'section');
     if (sectionClasses.length) panel.classList.add(...sectionClasses);
     const contentFrag = document.createDocumentFragment();
     contentFrag.append(...fragmentSection.childNodes);
