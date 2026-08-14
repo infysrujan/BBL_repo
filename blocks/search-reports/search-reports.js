@@ -1,5 +1,5 @@
 import { getLang, moveInstrumentation } from '../../scripts/scripts.js';
-import { decorateIcons } from '../../scripts/aem.js';
+import { decorateIcons, toCamelCase } from '../../scripts/aem.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
@@ -125,6 +125,14 @@ async function fetchSearchParams(searchParamsUrl) {
 // Rows 0-3 are ctaLabel/modalTitle/modalDescription/resultsPageUrl (read in parseAuthoredMeta);
 // row 4 is a structural row with no corresponding model field — skip to option rows.
 const OPTION_ROWS_START = 5;
+
+// The reportTypes API's `value` (e.g. "reviewed-audited") is used as the placeholder
+// key (camelCased) so authors can set the exact display text - e.g. "Reviewed/Audited
+// Financial Results" - without the API's label needing to match. Falls back to the
+// API's own label when no placeholder entry exists for that value.
+function resolveTypeLabel(placeholders, type) {
+  return placeholders[toCamelCase(type.value)] || type.label;
+}
 
 function parseAuthoredOptions(rows) {
   const typeOptions = [];
@@ -296,7 +304,11 @@ export default async function decorate(block) {
 
   // Populate dropdowns from API, fallback to authored rows on failure
   fetchSearchParams(searchParamsUrl).then((data) => {
-    populateTypes(data.reportTypes?.length ? data.reportTypes : typeOptions);
+    const apiTypes = data.reportTypes?.map((t) => ({
+      ...t,
+      label: resolveTypeLabel(placeholders, t),
+    }));
+    populateTypes(apiTypes?.length ? apiTypes : typeOptions);
     populateYears((data.years || []).map((y) => ({ label: y, value: y })));
   }).catch(() => {
     populateTypes(typeOptions);
