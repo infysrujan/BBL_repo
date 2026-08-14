@@ -240,13 +240,6 @@
   margin-inline: auto;
 }
 
-.cards-list-image.cards-list-image-profile img {
-  height: 100%;
-  width: 100%;
-  display: block;
-  object-fit: cover;
-}
-
 .cards-list-image.cards-list-image-profile {
   height: calc(100vw);
   max-height: calc(15.625rem + 40 * ((100vw - 20rem) / 1600));
@@ -280,15 +273,11 @@
   height: calc(100vw * 0.5);
 }
 
-.cards-list-image:is(.cards-list-image-card, .cards-list-image-full, .cards-list-image-default) img {
+.cards-list-image:is(.cards-list-image-card, .cards-list-image-full, .cards-list-image-default, .cards-list-image-profile) img {
   height: 100%;
   width: 100%;
-  object-fit: initial;
-  display: block;
-}
-
-.cards-list-image:is(.cards-list-image-card, .cards-list-image-default) img {
   object-fit: cover;
+  display: block;
 }
 
 .cards-list-image.cards-list-image-card {
