@@ -478,86 +478,97 @@ function getBranchEnum(province, lang = 'th') {
   const data = fetchBranchesByProvince(province, lang);
   return data.map((item) => item.BranchNo);
 }
+
 /**
- * Groups a branch <select>'s rendered <option> elements into <optgroup>
- * elements by district (Address3), preserving order. Generic across forms
- * since the field name is passed in rather than hardcoded.
- *
- * @param {string} province
- * @param {string} branchFieldName - name attribute of the branch select field
- * @param {string} [lang='th']
- */
-function applyBranchDistrictGrouping(province, branchFieldName, lang = 'th') {
-  if (!branchFieldName) return;
- 
+* Returns BranchName display labels for a given province.
+* Maps to enumNames for branch dropdown.
+* NOTE: runs inside the Rule Engine's Web Worker (no DOM access), so no
+* grouping logic happens here — see the main-thread polling below.
+*
+* @name getBranchEnumNames
+* @param {string} province - Province name matching the selected language
+* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
+* @returns {string[]}
+*/
+function getBranchEnumNames(province, lang = 'th') {
   const data = fetchBranchesByProvince(province, lang);
-  const selectEl = document.querySelector(`select[name="${branchFieldName}"]`);
-  if (!selectEl || !data.length) return;
- 
-  const districtByBranchNo = {};
+  return data.map((item) => item.BranchName);
+}
+
+// Wraps a select's <option> elements into <optgroup> by district.
+// Main-thread DOM only — never called from inside the Rule Engine worker.
+function applyBranchDistrictGroupingToSelect(selectEl, data) {
+  const districtByBranchName = {};
   data.forEach((item) => {
-    districtByBranchNo[item.BranchNo] = item.Address3 ? String(item.Address3).trim() : '';
+    districtByBranchName[item.BranchName] = item.Address3 ? String(item.Address3).trim() : '';
   });
- 
-  const options = Array.from(selectEl.querySelectorAll('option'));
+
   let currentGroup = null;
   let currentDistrict = null;
- 
-  options.forEach((opt) => {
-    const district = districtByBranchNo[opt.value] || '';
-    if (!district) return; // leave placeholder "Select Branch" option outside any group
- 
+
+  Array.from(selectEl.querySelectorAll('option')).forEach((opt) => {
+    const district = districtByBranchName[opt.value] || '';
+    if (!district) return;
+
     if (district !== currentDistrict) {
       currentGroup = document.createElement('optgroup');
       currentGroup.label = district;
+      currentGroup.style.fontWeight = 'bold';
+      
+    
       selectEl.appendChild(currentGroup);
       currentDistrict = district;
     }
-    currentGroup.appendChild(opt); // moves option into group, preserves order
+    currentGroup.appendChild(opt);
   });
 }
- 
-/**
- * Polls briefly for the branch <select>'s options to be re-rendered by the
- * AEM Forms runtime (after enum/enumNames are set on the model) before
- * applying district grouping. Needed because the DOM update is async
- * relative to the rule statement that triggers it.
- *
- * @param {string} province
- * @param {string} branchFieldName
- * @param {string} [lang='th']
- */
-function scheduleApplyBranchDistrictGrouping(province, branchFieldName, lang = 'th') {
-  if (!branchFieldName) return;
+
+// Polls briefly for a <select> whose options match this branch dataset,
+// then groups it.
+function scheduleApplyBranchDistrictGroupingAuto(data) {
+  if (!data.length) return;
+  const branchNames = new Set(data.map((item) => String(item.BranchName)));
+
   let attempts = 0;
   const tryApply = () => {
-    const selectEl = document.querySelector(`select[name="${branchFieldName}"]`);
     attempts += 1;
-    if (selectEl && selectEl.options.length > 1) {
-      applyBranchDistrictGrouping(province, branchFieldName, lang);
+    const target = Array.from(document.querySelectorAll('select')).find((sel) => {
+      const optVals = Array.from(sel.options).map((o) => o.value).filter((v) => v !== '');
+      return optVals.length > 0 && optVals.every((v) => branchNames.has(v));
+    });
+
+    if (target) {
+      applyBranchDistrictGroupingToSelect(target, data);
     } else if (attempts < 20) {
       setTimeout(tryApply, 100);
     }
   };
   setTimeout(tryApply, 0);
 }
-/**
-* Returns BranchName display labels for a given province.
-* Maps to enumNames for branch dropdown.
-*
-* @name getBranchEnumNames
-* @param {string} province - Province name matching the selected language
-* @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
-* @param {string} [branchFieldName]
-* @returns {string[]}
-*/
-function getBranchEnumNames(province, lang = 'th',branchFieldName, ) {
-  const data = fetchBranchesByProvince(province, lang);
-  if (branchFieldName) {
-    scheduleApplyBranchDistrictGrouping(province, branchFieldName, lang);
-  }
-  return data.map((item) => item.BranchName);
+
+// The Rule Engine worker can't touch the DOM, and this form's custom
+// dropdown widget may not dispatch real 'change' events — so instead of
+// listening for events, poll each <select>'s value directly for changes.
+if (typeof document !== 'undefined') {
+  const lastValues = new Map();
+
+  setInterval(() => {
+    document.querySelectorAll('select').forEach((sel) => {
+      const key = sel.name || sel.id;
+      const prev = lastValues.get(key);
+      const current = sel.value;
+
+      if (current && current !== prev) {
+        lastValues.set(key, current);
+        ['en', 'th'].forEach((lang) => {
+          const data = fetchBranchesByProvince(current, lang);
+          if (data.length) scheduleApplyBranchDistrictGroupingAuto(data);
+        });
+      }
+    });
+  }, 300);
 }
+
 
 /**
  * Validates Thai Citizen ID using the official algorithm
