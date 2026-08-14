@@ -303,6 +303,8 @@ function buildChartConfig(originalSeries, newSeries, labels, overlayPlugin, colo
             callback: (val) => formatCompact(val),
             color: colors.axis,
             font: { size: 12, family: 'system-ui, sans-serif' },
+            stepSize: yMax / 4,
+            includeBounds: true,
           },
           grid: {
             color: colors.grid,

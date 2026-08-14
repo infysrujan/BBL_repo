@@ -684,13 +684,16 @@ function groupDownloadSections(contentFrag) {
  * @param {DocumentFragment} contentFrag
  * @param {number} index
  */
-function appendAccordionItem(block, baseId, itemTitle, contentFrag, index) {
+function appendAccordionItem(block, baseId, itemTitle, contentFrag, index, panelClasses = []) {
   const { item, header, panel } = createAccordionItemElements(
     baseId,
     index,
     itemTitle,
     `Item ${index + 1}`,
   );
+  // Carry the source section's own style classes (e.g. right-content,
+  // full-bleed-special, pad-top-30, table-container) onto the panel.
+  if (panelClasses.length) panel.classList.add(...panelClasses);
   groupDownloadSections(contentFrag);
   panel.appendChild(contentFrag);
   block.appendChild(item);
@@ -783,8 +786,9 @@ export default async function decorate(block) {
 
   if (sections.length > 0) {
     sections.forEach((section, index) => {
+      const sectionClasses = [...section.classList].filter((c) => c !== 'section');
       const { titleText, contentFrag } = extractTitleAndBody(section);
-      appendAccordionItem(block, baseId, titleText, contentFrag, index);
+      appendAccordionItem(block, baseId, titleText, contentFrag, index, sectionClasses);
     });
     block.classList.add('accordion-panel-loaded');
     wireAccordionToolbarAndNavigation(block, toolbarButtons);
@@ -807,6 +811,9 @@ export default async function decorate(block) {
 
   const fragmentSection = fragment.querySelector(':scope .section');
   if (fragmentSection) {
+    // Carry the section's own style classes onto the panel.
+    const sectionClasses = [...fragmentSection.classList].filter((c) => c !== 'section');
+    if (sectionClasses.length) panel.classList.add(...sectionClasses);
     const contentFrag = document.createDocumentFragment();
     contentFrag.append(...fragmentSection.childNodes);
     groupDownloadSections(contentFrag);
