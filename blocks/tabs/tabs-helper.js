@@ -128,8 +128,25 @@ export default function decorateTabs(main) {
     });
     tabsBlockRows.push(tabButtonCells);
 
-    validTabs.forEach(({ content }) => {
+    // Per-tab section style classes, in the same order as the content rows /
+    // resulting .tab-panels, so createContentPanels can apply them by index.
+    const panelClassList = [];
+    validTabs.forEach(({ content, sectionMetadata }) => {
       const contentCell = document.createElement('div');
+      let panelClasses = '';
+      if (sectionMetadata?.style) {
+        // readBlockConfig returns a string for one Style value or an array when
+        // several are authored on separate lines — normalise both to a class list.
+        const rawStyles = Array.isArray(sectionMetadata.style)
+          ? sectionMetadata.style
+          : [sectionMetadata.style];
+        panelClasses = rawStyles
+          .flatMap((style) => String(style).split(','))
+          .map((style) => toClassName(style.trim()))
+          .filter(Boolean)
+          .join(' ');
+      }
+      panelClassList.push(panelClasses);
       content.forEach((element) => {
         contentCell.appendChild(element);
       });
@@ -137,6 +154,9 @@ export default function decorateTabs(main) {
     });
 
     const tabsBlock = buildBlock('tabs', tabsBlockRows);
+    if (panelClassList.some((classes) => classes)) {
+      tabsBlock.dataset.panelClasses = JSON.stringify(panelClassList);
+    }
 
     const buttonRowIndex = firstVariant === 'media-tab' ? 1 : 0;
     const buttonRow = tabsBlock.children[buttonRowIndex];
