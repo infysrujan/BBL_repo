@@ -69,7 +69,7 @@ function parseProducts(L) {
   }));
 }
 
-function buildDataFromConfig(json, lang, placeholders) {
+function buildDataFromConfig(json, lang, placeholders, inflationRate) {
   const langData = json[lang]?.data || [];
   const commonData = json.common?.data || [];
 
@@ -79,8 +79,10 @@ function buildDataFromConfig(json, lang, placeholders) {
   commonData.forEach(({ Key, Value }) => { if (Key) C[Key] = Value; });
 
   const unit = L['common-unit'] || '';
-  const footnoteReturnTemplate = placeholders.savingPlanFootnoteReturnTemplate || '';
-  const footnoteIncreaseTemplate = placeholders.savingPlanFootnoteIncreaseTemplate || '';
+  const noteText = (L['common-noteText'] || '').replace('{inflationRate}', String(inflationRate));
+  const noteReturn = (L['common-noterecommendSavingMonthly'] || '').replace('{expectedReturnRate}', '{return}');
+  const footnoteReturnTemplate = `${noteText} ${noteReturn}`.trim();
+  const footnoteIncreaseTemplate = (L['common-noteincreasedSavingMonthly'] || '').replace('{annualSavingIncreaseRate}', '{increase}%');
   const futureValueTemplate = (L['common-toHaveMoney'] || '')
     .replace('{money}', '{amount}').replace('{unit}', unit);
 
@@ -1181,7 +1183,7 @@ export default async function decorate(block) {
   const inflationRate = parseFloat(cfg.savingPlanInflationRate) || 1.5;
 
   const lang = getLang();
-  const data = buildDataFromConfig(json, lang, placeholders);
+  const data = buildDataFromConfig(json, lang, placeholders, inflationRate);
   const fragmentPath = cfg.savingPlanFragmentPath?.replace(/\{lang\}/g, lang) || '';
 
   block.innerHTML = buildShellMarkup(data);
