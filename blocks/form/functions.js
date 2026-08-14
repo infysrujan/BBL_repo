@@ -478,7 +478,69 @@ function getBranchEnum(province, lang = 'th') {
   const data = fetchBranchesByProvince(province, lang);
   return data.map((item) => item.BranchNo);
 }
-
+/**
+ * Groups a branch <select>'s rendered <option> elements into <optgroup>
+ * elements by district (Address3), preserving order. Generic across forms
+ * since the field name is passed in rather than hardcoded.
+ *
+ * @param {string} province
+ * @param {string} branchFieldName - name attribute of the branch select field
+ * @param {string} [lang='th']
+ */
+function applyBranchDistrictGrouping(province, branchFieldName, lang = 'th') {
+  if (!branchFieldName) return;
+ 
+  const data = fetchBranchesByProvince(province, lang);
+  const selectEl = document.querySelector(`select[name="${branchFieldName}"]`);
+  if (!selectEl || !data.length) return;
+ 
+  const districtByBranchNo = {};
+  data.forEach((item) => {
+    districtByBranchNo[item.BranchNo] = item.Address3 ? String(item.Address3).trim() : '';
+  });
+ 
+  const options = Array.from(selectEl.querySelectorAll('option'));
+  let currentGroup = null;
+  let currentDistrict = null;
+ 
+  options.forEach((opt) => {
+    const district = districtByBranchNo[opt.value] || '';
+    if (!district) return; // leave placeholder "Select Branch" option outside any group
+ 
+    if (district !== currentDistrict) {
+      currentGroup = document.createElement('optgroup');
+      currentGroup.label = district;
+      selectEl.appendChild(currentGroup);
+      currentDistrict = district;
+    }
+    currentGroup.appendChild(opt); // moves option into group, preserves order
+  });
+}
+ 
+/**
+ * Polls briefly for the branch <select>'s options to be re-rendered by the
+ * AEM Forms runtime (after enum/enumNames are set on the model) before
+ * applying district grouping. Needed because the DOM update is async
+ * relative to the rule statement that triggers it.
+ *
+ * @param {string} province
+ * @param {string} branchFieldName
+ * @param {string} [lang='th']
+ */
+function scheduleApplyBranchDistrictGrouping(province, branchFieldName, lang = 'th') {
+  if (!branchFieldName) return;
+  let attempts = 0;
+  const tryApply = () => {
+    const selectEl = document.querySelector(`select[name="${branchFieldName}"]`);
+    attempts += 1;
+    if (selectEl && selectEl.options.length > 1) {
+      applyBranchDistrictGrouping(province, branchFieldName, lang);
+    } else if (attempts < 20) {
+      setTimeout(tryApply, 100);
+    }
+  };
+  setTimeout(tryApply, 0);
+}
 /**
 * Returns BranchName display labels for a given province.
 * Maps to enumNames for branch dropdown.
@@ -488,8 +550,11 @@ function getBranchEnum(province, lang = 'th') {
 * @param {string} [lang='th'] - Language code: 'th' for Thai, 'en' for English
 * @returns {string[]}
 */
-function getBranchEnumNames(province, lang = 'th') {
+function getBranchEnumNames(province, branchFieldName, lang = 'th') {
   const data = fetchBranchesByProvince(province, lang);
+  if (branchFieldName) {
+    scheduleApplyBranchDistrictGrouping(province, branchFieldName, lang);
+  }
   return data.map((item) => item.BranchName);
 }
 
