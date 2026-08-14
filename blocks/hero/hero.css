@@ -644,7 +644,7 @@
 :is(.hero-banner-simple) .hero-banner-content-group .button-container a {
   min-width: 8.4375rem;
   box-sizing: border-box;
-  width: 48%;
+  width:48%;
 }
 
 .hero-banner-hero-with-thumbnail-images .hero-banner-content-group .button-container .button-m {
@@ -847,6 +847,7 @@
   :is(.hero-banner-simple) .hero-banner-content-group .button-container a {
     min-width: 11.25rem;
     margin: 0;
+    width:unset;
   }
 
   .hero-banner-item.no-mobile-app-cta .hero-app-ctas {
