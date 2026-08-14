@@ -1,10 +1,9 @@
 .carousel {
-    margin-bottom: var(--bbl-space-300);
     padding-left: 1rem;
 }
 
 .carousel-header {
-    margin: var(--bbl-space-300) 0 0.875rem;
+    margin-block: 0 var(--bbl-space-300);
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -217,9 +216,6 @@
         padding-left: 3rem;
     }
 
-    .carousel-header {
-        padding-right: 3rem;
-    }
 
     .carousel-track {
         gap: var(--bbl-space-200);
@@ -250,7 +246,7 @@
     }
 
     .carousel-header {
-        margin: 1.375rem 0 var(--bbl-space-500);
+        margin: 0 0 var(--bbl-space-400);
         padding-right: var(--bbl-space-1050);
     }
 

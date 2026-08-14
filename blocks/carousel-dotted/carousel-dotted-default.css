@@ -1,3 +1,7 @@
+.section:has(+ .carousel-dotted-container .carousel-dotted.all-with-image) .default-content-wrapper h2 {
+  margin-block: 0;
+}
+
 .carousel-dotted {
   position: relative;
   height: auto;
