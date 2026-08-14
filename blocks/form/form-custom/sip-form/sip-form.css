@@ -25,6 +25,10 @@
   margin: 0;
 }
 
+.sip-form main .section.form-container .form form .field-msg.plain-text-wrapper > p:first-child {
+  text-align: left;
+}
+
 .sip-form main .section.form-container.custom-forms {
   &.central-aligned > .default-content-wrapper {
     & h2 {
@@ -194,21 +198,18 @@
   }
 }
 
-.sip-form main .section.form-container .form form .field-msg.plain-text-wrapper > p:first-child {
-  text-align: left;
-}
- 
-.sip-form.contact-us main  .section.form-container.custom-forms .form form .field-icon.panel-wrapper,
-.sip-form main  .section.form-container.custom-forms .form form .field-icon.panel-wrapper {
+.sip-form main  .section.form-container.custom-forms .form form .field-icon.panel-wrapper,
+.sip-form.contact-us main  .section.form-container.custom-forms .form form .field-icon.panel-wrapper {
   display: flex;
   align-items: center;
   gap: var(--bbl-form-margin-10);
   margin-bottom: var(--bbl-space-250);
 }
 
-.sip-form main .section.form-container.custom-forms .form form .field-icon.panel-wrapper .image-wrapper.field-icon,
-.sip-form main .section.form-container.custom-forms .form form .field-icon.panel-wrapper .plain-text-wrapper {
+.sip-form main .section.form-container.custom-forms .form form .field-icon.panel-wrapper .plain-text-wrapper,
+.sip-form main .section.form-container.custom-forms .form form .field-icon.panel-wrapper .image-wrapper.field-icon {
   width: auto ;
+
   & p{
       margin: 0;
   }
