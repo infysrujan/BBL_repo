@@ -320,15 +320,7 @@
     overflow: hidden;
   }
 
-  /* Blue header band — padding/logo/close-button properties copied from
-    search-reports.css's .sr-header / .sr-logo-link / .sr-close-btn (same shared
-    modal.js markup, different block's CSS scope). Class names here stay as-is.
-    NOTE: deliberately dropped .sr-header's `margin: 0 auto` — there, .sr-header
-    sits in a plain block wrapper, so auto margins just center a full-width block.
-    Here, .srr-preview-header is a direct flex item of .srr-preview-dialog's
-    flex-direction: column, where auto margins on the cross axis make a flex item
-    shrink to its content size and center itself — collapsing this into a tiny
-    floating box instead of a full-width band. flex-shrink: 0 restored instead. */
+  /* Blue header band */
   .srr-preview-overlay .srr-preview-header {
     display: flex;
     align-items: center;
@@ -447,9 +439,7 @@
       width: 100%;
     }
   }
-
-  /* Beyond this width the page is effectively zoomed out past ~67% on a typical
-    desktop screen — freeze the card width instead of letting it keep growing. */
+  
   @media (width > 120rem) {
     .search-reports-results .srr-list {
       max-width: 120rem;
