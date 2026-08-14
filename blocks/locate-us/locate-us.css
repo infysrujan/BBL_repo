@@ -487,6 +487,7 @@
   font-size: var(--bbl-body-b3-size);
   white-space: nowrap;
   line-height: 1.375rem;
+  text-transform: lowercase;
 }
 
 /* Label + value rows — matching BBL's 60px td pattern */
@@ -556,7 +557,7 @@
   margin-bottom: 0.625rem;
   overflow-wrap: break-word;
   padding-right: 0.3125rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   line-height: 1.375rem;
 }
 
