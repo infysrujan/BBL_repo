@@ -81,9 +81,6 @@ body.modal-open {
   padding: 0 var(--bbl-form-padding-30);
   box-sizing: border-box;
   border-radius: var(--bbl-form-border-radius-7);
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-form-font-size-16);
-  font-weight: var(--bbl-font-weight-regular);
   letter-spacing: 0.8px;
   cursor: pointer;
   box-shadow: none;
