@@ -234,10 +234,12 @@
     .carousel {
         position: relative;
         padding-left: 0;
+
+        --carousel-grid-offset: var(--bbl-space-1050);
     }
 
     .carousel-header h2 {
-        padding-left: var(--bbl-space-1050);
+        padding-left: 0;
     }
 
     .carousel .carousel-wrapper {
@@ -246,8 +248,10 @@
     }
 
     .carousel-header {
+        width: calc(100% - var(--carousel-grid-offset));
         margin: 0 0 var(--bbl-space-400);
-        padding-right: var(--bbl-space-1050);
+        margin-left: auto;
+        padding-right: 0;
     }
 
     :lang(th) {
@@ -264,9 +268,16 @@
     }
 
     .carousel-track {
+        width: calc(100% - var(--carousel-grid-offset));
+        margin-left: auto;
         overflow: visible;
         scroll-snap-type: none;
         gap: var(--bbl-space-300);
+    }
+
+    .carousel-track.is-sliding {
+        width: 100%;
+        margin-left: 0;
     }
 
     .carousel-nav {
@@ -460,15 +471,15 @@
 
 @media (width > 120rem) {
     .carousel {
-        --carousel-grid-offset: calc((100vw - var(--bbl-layout-content-max-width-1920)) / 2);
+        --carousel-grid-offset: max(0px, calc((100% - var(--bbl-layout-content-max-width-1920)) / 2));
     }
 
     .carousel-header {
-        padding-right: var(--carousel-grid-offset);
+        padding-right: 0;
     }
 
     .carousel-header h2 {
-        padding-left: var(--carousel-grid-offset);
+        padding-left: 0;
     }
 
     .carousel-item.active {
