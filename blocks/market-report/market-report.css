@@ -47,7 +47,7 @@
 .market-report-top-row {
   display: flex;
   justify-content: space-between;
-  margin-top: 0.9375rem;
+  align-items: center;
 }
 
 .market-report-col-left .market-report-date {
@@ -89,7 +89,7 @@
 .market-report-page a.print-button.icon-print::before {
   position: absolute;
   right: 0;
-  top: 0.125rem;
+  top: 0.0625rem;
 }
 
 .market-report-page .table table tr td {
