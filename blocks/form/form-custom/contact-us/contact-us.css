@@ -119,13 +119,19 @@
         width: 100%;
         max-width: 100%;
         height: 2.6389rem;
-
-        /* Mobile/Tablet: 13.3px, smaller than desktop so long option text doesn't collide with the chevron */
-        font-size: 0.8313rem;
+        overflow: hidden;
         font-weight: var(--bbl-font-weight-medium);
         font-family: var(--bbl-font-family-medium);
         color: var(--bbl-color-black);
         margin: 0;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        /* The chevron background-image (form-global.css) sits from --bbl-space-150 (12px) to
+           --bbl-space-150 + --bbl-space-250 (32px) off the right edge, but the global select
+           padding-right (--bbl-space-300 / 24px) doesn't reach that far, so long text/ellipsis
+           still lands under the icon. Reserve enough padding to fully clear it, plus a small gap. */
+        padding-right: calc(var(--bbl-space-400) + var(--bbl-space-100));
     }
 
     /* Radio Group & Radio Tabs Clean Alignment Reset */
@@ -274,6 +280,13 @@
     & fieldset.field-button-panel :is(.button-wrapper, .submit-wrapper, .reset-wrapper) {
         width: auto;
     }
+
+    /* Mobile/Tablet Dropdown Font Size: 13.3px, smaller than desktop so long option text doesn't collide with the
+       chevron. :is() folds the Service Branch panel scope into a single selector (avoids a duplicate declaration)
+       while still carrying enough specificity to outrank the Date & Time panel's font-size rule above */
+    & :is(.drop-down-wrapper, .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) .drop-down-wrapper) select {
+        font-size: 0.8313rem;
+    }
 }
 
 /* Tablet & Desktop Viewport Styling */
@@ -295,8 +308,8 @@
             grid-column: span 6;
         }
 
-        /* Desktop: restore the standard dropdown font size (mobile/tablet use a smaller size, see base rule) */
-        & .drop-down-wrapper select {
+        /* Desktop: restore the standard dropdown font size (mobile/tablet use the smaller size set in the base rule) */
+        & :is(.drop-down-wrapper, .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) .drop-down-wrapper) select {
             font-size: var(--bbl-form-font-size-15-2);
         }
     }
