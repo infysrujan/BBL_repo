@@ -484,9 +484,30 @@ export default async function decorate(block) {
       },
     };
 
+    // Plugin: draw a vertical gridline at every data point, not just the
+    // (auto-skipped) labeled ticks, so the grid lines up with each point.
+    const pointGridPlugin = {
+      id: 'pointGrid',
+      beforeDatasetsDraw(chart) {
+        const { ctx, chartArea } = chart;
+        const meta = chart.getDatasetMeta(0);
+        if (!meta || !meta.data.length) return;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+        ctx.lineWidth = 1;
+        meta.data.forEach((point) => {
+          ctx.beginPath();
+          ctx.moveTo(point.x, chartArea.top);
+          ctx.lineTo(point.x, chartArea.bottom);
+          ctx.stroke();
+        });
+        ctx.restore();
+      },
+    };
+
     state.chartInstance = new Chart(canvas, {
       type: 'line',
-      plugins: [crossHighlightPlugin],
+      plugins: [crossHighlightPlugin, pointGridPlugin],
       data: {
         labels,
         datasets: [
