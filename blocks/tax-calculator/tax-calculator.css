@@ -77,8 +77,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--bbl-font-family-medium);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 1;
   border: 0.125rem solid var(--bbl-color-grey-20);
   background: var(--bbl-color-grey-20);
@@ -86,13 +87,11 @@
 }
 
 .tax-calculator .tax-calc-step-circle span {
-  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   line-height: 1;
-}
-
-.tax-calculator .tax-calc-step-done .tax-calc-step-circle span {
-  font-size: 0.75rem;
-  font-weight: 700;
 }
 
 .tax-calculator .tax-calc-step-active .tax-calc-step-circle {
@@ -1054,6 +1053,7 @@
 
   .tax-calculator .tax-calc-summary-subtitle {
     margin: 0;
+    font-size: 0.9rem;
   }
 
   .tax-calculator .tax-calc-invest-heading {
