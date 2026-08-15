@@ -74,6 +74,10 @@
 .breadcrumb a {
   color: var(--bbl-text-link);
   text-decoration: none;
+  font-size: var(--bbl-text-breadcrumb-size);
+  line-height: var(--bbl-text-breadcrumb-line-height);
+  font-weight: var(--bbl-text-breadcrumb-weight);
+  font-family: var(--bbl-font-family-looped);
 }
 
 .breadcrumb a:hover {
