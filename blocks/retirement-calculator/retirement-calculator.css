@@ -76,6 +76,14 @@
   line-height: var(--bbl-body-b1-line-height);
 }
 
+.retirement-calculator .rc-step-circle span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1;
+}
+
 .retirement-calculator .rc-step-active .rc-step-circle {
   background: var(--bbl-color-white);
   border-color: var(--bbl-color-active-blue);
