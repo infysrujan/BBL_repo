@@ -71,9 +71,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-body-b1-size);
   font-weight: var(--bbl-body-b1-weight);
   line-height: var(--bbl-body-b1-line-height);
+}
+
+.retirement-calculator .rc-step-circle span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1;
 }
 
 .retirement-calculator .rc-step-active .rc-step-circle {
