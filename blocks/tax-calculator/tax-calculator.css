@@ -77,8 +77,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--bbl-font-family-medium);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: var(--bbl-font-weight-regular);
   line-height: 1;
   border: 0.125rem solid var(--bbl-color-grey-20);
   background: var(--bbl-color-grey-20);
@@ -91,11 +92,6 @@
   left: 50%;
   transform: translate(-50%, -50%);
   line-height: 1;
-}
-
-.tax-calculator .tax-calc-step-done .tax-calc-step-circle span {
-  font-size: 0.75rem;
-  font-weight: var(--bbl-font-weight-medium);
 }
 
 .tax-calculator .tax-calc-step-active .tax-calc-step-circle {
