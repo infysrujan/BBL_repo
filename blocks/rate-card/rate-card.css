@@ -10,6 +10,10 @@
    BASE / MOBILE STYLES (default)
    -------------------------------------------------------------------------- */
 
+.section:has(+ .rate-card-container) .default-content-wrapper h2 {
+  margin-block: 0;
+}
+
 /* Block container — reset EDS defaults */
 .rate-card {
   width: 100%;
@@ -351,7 +355,7 @@
     grid-template-rows: 30.625rem;
 
     /* 490px */
-    column-gap: 1.5rem;
+    column-gap: 1.3125rem;
 
     /* 21px — gives 570px per column at design viewport */
     align-items: unset;
