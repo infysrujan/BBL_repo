@@ -369,6 +369,10 @@
               {
                 "name": "Center Content",
                 "value": "center-content"
+              },
+              {
+                "name": "Right Content",
+                "value": "right-content"
               }
             ]
           },
@@ -659,6 +663,7 @@
         "name": "cardListLayout",
         "value": "default",
         "label": "Card List Layout",
+        "description": "Select Carousel when the Card List is used as a fragment in the Card List Carousel variation of the Carousel Dotted block.",
         "valueType": "string",
         "options": [
           {
@@ -1322,6 +1327,10 @@
           {
             "name": "10 seconds",
             "value": "10000"
+          },
+          {
+            "name": "15 seconds",
+            "value": "15000"
           }
         ],
         "condition": {

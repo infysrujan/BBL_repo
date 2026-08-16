@@ -186,6 +186,7 @@ function buildCardBlock(cards, doc, lang, labels) {
   cards.forEach((card) => {
     const nameEN = getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName');
     const nameTH = getCardField(card, 'nameTH', 'Product Name (TH)', 'cardNameTH');
+    const description = getCardField(card, 'cardDescription', 'description');
     const imgSrc = resolveImageUrl(card);
     const { cardPageUrl } = card;
     // eslint-disable-next-line no-underscore-dangle
@@ -237,6 +238,17 @@ function buildCardBlock(cards, doc, lang, labels) {
     titleEl.appendChild(h3);
     content.appendChild(titleEl);
 
+    // Description
+    if (description && typeof description === 'string') {
+      titleEl.classList.add('has-description');
+      const descEl = doc.createElement('div');
+      descEl.className = 'cards-list-description';
+      const p = doc.createElement('p');
+      p.textContent = description;
+      descEl.appendChild(p);
+      content.appendChild(descEl);
+    }
+
     inner.appendChild(content);
 
     // Button — Learn more link
@@ -263,7 +275,7 @@ function addCompareButtons(blockEl, doc, labels) {
     const btn = doc.createElement('button');
     // btn.href = '#';
     btn.classList.add('ccs-compare-btn');
-    btn.classList.add('buttom-m');
+    btn.classList.add('button-m');
     btn.classList.add('secondary');
     btn.textContent = labels.compare;
     const h3 = item?.querySelector('h3');
@@ -508,6 +520,7 @@ export default async function decorate(block) {
     container.querySelectorAll('.ccs-compare-btn').forEach((btn) => {
       const isSelected = selected.some((c) => c.name === btn.dataset.cardName);
       btn.classList.toggle('is-comparing', isSelected);
+      btn.classList.toggle('disabled', isSelected);
       btn.textContent = labels.compare;
     });
   }
