@@ -955,6 +955,10 @@ export default async function decorate(block) {
       state.from.viewMonth = month;
       state.to.viewYear = year;
       state.to.viewMonth = month;
+
+      // Auto-trigger the GO action so the chart is populated on load,
+      // instead of requiring the user to click GO first.
+      await fetchAndRenderChart();
     } finally {
       state.loading = false;
       render();
