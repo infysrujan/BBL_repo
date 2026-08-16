@@ -351,6 +351,10 @@
 .srr-preview-overlay .srr-preview-body {
   flex: 1;
   overflow: hidden auto;
+
+  /* Reserve the vertical scrollbar gutter on both edges so centered content
+     (viewer + download button) stays centered relative to the visible area */
+  scrollbar-gutter: stable both-edges;
   background: var(--bbl-color-white);
 }
 
@@ -361,11 +365,13 @@
   width: 100%;
 }
 
-/* PDF embed area */
+/* PDF embed area — mobile/tablet: fill the width like the legacy viewer,
+   leaving a 20px gutter on each side */
 .srr-preview-overlay .srr-preview-embed {
-  width: 65%;
+  width: calc(100% - (2 * var(--bbl-space-250)));
   margin-inline: auto;
-  margin-top: 6rem;
+  margin-top: 3.125rem;
+  padding-top: var(--bbl-space-1000);
   height: calc(100vh - var(--bbl-space-900));
 }
 
@@ -380,7 +386,7 @@
   width: 100%;
   max-width: 56rem;
   margin-inline: auto;
-  padding: var(--bbl-space-300);
+  padding: var(--bbl-space-300) var(--bbl-space-300) var(--bbl-space-1000);
   text-align: center;
 }
 
@@ -411,6 +417,11 @@
   .search-reports-results .srr-list {
     margin-inline: auto;
     width: 100%;
+  }
+
+  .srr-preview-overlay .srr-preview-embed {
+    width: 65%;
+    margin-top: 6rem;
   }
 }
 
