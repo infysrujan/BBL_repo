@@ -56,6 +56,7 @@ export default function openPdfViewer({
   downloadLink.className = `${classPrefix}-download`;
   downloadLink.textContent = downloadLabel;
   downloadLink.href = path;
+  if (name) downloadLink.download = name;
   downloadLink.target = '_blank';
   downloadLink.rel = 'noopener';
   buttonGroup.append(downloadLink);
