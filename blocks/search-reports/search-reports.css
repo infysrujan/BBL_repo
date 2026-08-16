@@ -147,6 +147,13 @@
   color: var(--bbl-color-grey-85);
 }
 
+.search-reports-overlay .sr-dropdown-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
 .search-reports-overlay .sr-dropdown-chevron::after {
   content: '';
   display: inline-block;
