@@ -1,3 +1,5 @@
+import { trackContactFormSubmit } from '../../../../scripts/analytics.js';
+
 /**
  * @param {HTMLElement | null} form
  * @returns {boolean}
@@ -17,4 +19,5 @@ function isContactUsForm(form) {
 export default function decorateContactUsForm(form) {
   if (!isContactUsForm(form)) return;
   document.body.classList.add('contact-us');
+  form.addEventListener('submit', trackContactFormSubmit);
 }
