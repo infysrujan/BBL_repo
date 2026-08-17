@@ -123,6 +123,7 @@
   left: 0;
   min-width: 100%;
   width: max-content;
+  z-index: 2;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-gray-122);
   border-radius: var(--bbl-radius-md);
