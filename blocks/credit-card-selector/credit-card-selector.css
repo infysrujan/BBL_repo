@@ -43,7 +43,7 @@
 }
 
 .section.full-bleed-bg.credit-card-selector-container .default-content-wrapper h2 {
-  padding-bottom: 2rem;
+  padding-bottom: 1.5rem;
 }
 
 /* The global .central-aligned rule caps the wrapper/block at 900px, which
@@ -537,6 +537,10 @@
     padding: var(--bbl-space-400) var(--bbl-space-200) var(--bbl-space-700);
     text-align: center;
   }
+
+.section.full-bleed-bg.credit-card-selector-container .default-content-wrapper h2 {
+  padding-bottom: 2rem;
+}
 
   /* Desktop: large heading matches original 48px */
   .credit-card-selector .card-selector-title {
