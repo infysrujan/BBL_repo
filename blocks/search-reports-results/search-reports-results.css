@@ -257,6 +257,10 @@
   transition: transform 0.2s ease;
 }
 
+.search-reports-results .srr-preview-btn {
+  padding-bottom: 1.1875rem;
+}
+
 .search-reports-results .srr-preview-btn .icon {
   font-size: 2rem;
   transform: translateY(0.5625rem);
