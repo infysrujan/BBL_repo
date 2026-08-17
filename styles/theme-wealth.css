@@ -20,6 +20,6 @@ body.wealth main .default-content-wrapper p {
     color: var(--bbl-color-grey-85);
 }
 
-body.wealth main .full-bleed-bg .default-content-wrapper p {
+body.wealth main .bg-grey-100 .default-content-wrapper p {
     color: var(--bbl-color-white);
 }
