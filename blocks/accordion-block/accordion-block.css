@@ -104,7 +104,6 @@
 
 .accordion-header::after {
   content: '+';
-  color: var(--bbl-color-black);
   flex-shrink: 0;
   margin-left: 1rem;
   font: 2rem Muli-Light, sans-serif;
