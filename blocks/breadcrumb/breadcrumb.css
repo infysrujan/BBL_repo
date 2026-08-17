@@ -89,16 +89,6 @@
   color: var(--bbl-text-link);
 }
 
-[lang="th"] .breadcrumb ol>li {
-  font: 0.9rem/1.3 BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
-  color: var(--bbl-text-link);
-}
-
-[lang="th"] .breadcrumb ol>li,
-[lang="th"] .breadcrumb a {
-  font-family: BangkokBank-Medium, Tahoma, Helvetica, Arial, sans-serif;
-}
-
 .breadcrumb ol>li[aria-current="page"] {
   color: var(--bbl-text-link);
 }
