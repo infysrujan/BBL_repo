@@ -315,7 +315,7 @@
   }
 
   /* 4 or fewer items fit in a single view — no scrolling, so hide the arrows. */
-  .carousel-video.cv-few-items .cv-nav {
+  .carousel-video.cv-few-items .cv-nav, .carousel-video.cv-few-items .cv-dots {
     display: none;
   }
 }
