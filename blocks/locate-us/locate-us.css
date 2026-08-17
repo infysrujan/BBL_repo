@@ -122,8 +122,7 @@
   top: calc(100% + var(--bbl-space-050));
   left: 0;
   min-width: 100%;
-  width: 16.1525rem; /* matches live site's dropdown width (258.438px) so branch names fit on 1 line */
-  z-index: 2;
+  width: max-content;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-gray-122);
   border-radius: var(--bbl-radius-md);
