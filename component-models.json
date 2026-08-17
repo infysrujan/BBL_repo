@@ -522,6 +522,10 @@
     ]
   },
   {
+    "id": "bwealth-series",
+    "fields": []
+  },
+  {
     "id": "card-comparator-results",
     "fields": [
       {
