@@ -258,11 +258,6 @@
 }
 
 @media (width > 64rem) {
-  .teaser-with-bg-image-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
-    font-size: 3rem;
-    line-height: 2.875rem;
-  }
-
   :lang(th) {
     .teaser-bg-image-title :is(h1) {
       line-height: 3.75rem;
