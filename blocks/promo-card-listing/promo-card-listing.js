@@ -193,7 +193,7 @@ function normalizeList(value) {
 
 function buildSubOptions(items, defaultLabel) {
   const defaultOption = defaultLabel
-    ? `<li class="promo-selector-option" data-value="" role="option">${defaultLabel}</li>`
+    ? `<li class="promo-selector-option is-active" data-value="" role="option">${defaultLabel}</li>`
     : '';
   return defaultOption.concat(items
     .map((s) => {
@@ -460,6 +460,7 @@ function setupPanel(
     state.area = '';
     state.page = 1;
     panel.querySelectorAll('.promo-selector-option').forEach((o) => o.classList.remove('is-active'));
+    panel.querySelectorAll('.promo-selector-option[data-value=""]').forEach((o) => o.classList.add('is-active'));
     panel.querySelector('[data-filter="subcategory"] .promo-selector-filter-label').textContent = labelCategory;
     panel.querySelector('[data-filter="cardType"] .promo-selector-filter-label').textContent = labelCardType;
     panel.querySelector('[data-filter="area"] .promo-selector-filter-label').textContent = labelArea;

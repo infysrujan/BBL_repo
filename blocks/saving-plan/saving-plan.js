@@ -29,7 +29,7 @@ function formatNumber(value) {
 }
 
 function formatDecimal(value) {
-  if (!Number.isFinite(value)) return '0.00';
+  if (!Number.isFinite(value)) return '0';
   return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
@@ -37,7 +37,7 @@ function formatDecimal(value) {
 // (up to 2), rather than always padding to 2 decimal places.
 function formatDecimalSmart(value) {
   if (!Number.isFinite(value)) return '0';
-  return Number(value.toFixed(2)).toLocaleString('en-US', { maximumFractionDigits: 2 });
+  return Number(value.toFixed(2)).toLocaleString('en-US', { maximumFractionDigits: 2, useGrouping: false });
 }
 
 function parseNumber(value) {
@@ -69,7 +69,7 @@ function parseProducts(L) {
   }));
 }
 
-function buildDataFromConfig(json, lang, placeholders) {
+function buildDataFromConfig(json, lang, placeholders, inflationRate) {
   const langData = json[lang]?.data || [];
   const commonData = json.common?.data || [];
 
@@ -79,13 +79,16 @@ function buildDataFromConfig(json, lang, placeholders) {
   commonData.forEach(({ Key, Value }) => { if (Key) C[Key] = Value; });
 
   const unit = L['common-unit'] || '';
-  const footnoteReturnTemplate = placeholders.savingPlanFootnoteReturnTemplate || '';
-  const footnoteIncreaseTemplate = placeholders.savingPlanFootnoteIncreaseTemplate || '';
+  const noteText = (L['common-noteText'] || '').replace('{inflationRate}', String(inflationRate));
+  const noteReturn = (L['common-noterecommendSavingMonthly'] || '').replace('{expectedReturnRate}', '{return}');
+  const footnoteReturnTemplate = `${noteText} ${noteReturn}`.trim();
+  const footnoteIncreaseTemplate = (L['common-noteincreasedSavingMonthly'] || '').replace('{annualSavingIncreaseRate}', '{increase}%');
   const futureValueTemplate = (L['common-toHaveMoney'] || '')
     .replace('{money}', '{amount}').replace('{unit}', unit);
 
   const minError = L['validation-minValueError'] || '';
   const maxError = L['validation-maxValueError'] || '';
+  const configuredReturnRate = C['defaultFormValues-expectedReturnRate'];
 
   const goalKeys = [...new Set(
     Object.keys(L)
@@ -183,7 +186,9 @@ function buildDataFromConfig(json, lang, placeholders) {
       goalAmount: Number(C['defaultFormValues-desiredSavingAmount']) || 500000,
       goalPeriod: Number(C['defaultFormValues-yearsToSave']) || 5,
       balance: Number(C['defaultFormValues-savedAmount']) || 0,
-      annualReturn: Number(C['defaultFormValues-expectedReturnRate']) || 0.5,
+      // Explicit presence check (not `||`) so a configured 0 isn't replaced by the fallback.
+      annualReturn: configuredReturnRate !== undefined && configuredReturnRate !== ''
+        ? Number(configuredReturnRate) : 0.5,
       annualIncrease: Number(C['defaultFormValues-annualSavingIncreaseRate']) || 0,
     },
     validation: {
@@ -310,7 +315,7 @@ function buildField({
 }) {
   let formatted = '';
   if (value || value === 0) {
-    formatted = decimal ? formatDecimal(value) : formatNumber(value);
+    formatted = decimal ? formatDecimalSmart(value) : formatNumber(value);
   }
   return `
     <div class="saving-plan-field" data-field="${name}" data-decimal="${decimal ? '1' : '0'}">
@@ -421,7 +426,7 @@ function buildShellMarkup(data) {
     name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount, icon: getIcon('goal-amount'), placeholder: labels.fieldPlaceholders.goalAmount,
   })}
             ${buildField({
-    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || '', decimal: true, icon: getIcon('annual-return'), placeholder: labels.fieldPlaceholders.annualReturn,
+    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn, decimal: true, icon: getIcon('annual-return'), placeholder: labels.fieldPlaceholders.annualReturn,
   })}
             ${buildField({
     name: 'goalPeriod', label: labels.fields.goalPeriod, value: defaults.goalPeriod, icon: getIcon('goal-period'), placeholder: labels.fieldPlaceholders.goalPeriod,
@@ -472,7 +477,7 @@ function buildShellMarkup(data) {
     name: 'goalAmount', label: labels.fields.goalAmount, value: defaults.goalAmount || 10000, min: 10000, max: 1000000, step: 10000,
   })}
             ${buildSlider({
-    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn || 0.5, min: 0.5, max: 40, step: 0.25,
+    name: 'annualReturn', label: labels.fields.annualReturn, value: defaults.annualReturn, min: 0.5, max: 40, step: 0.25,
   })}
             ${buildSlider({
     name: 'annualIncrease', label: labels.fields.annualIncrease, value: defaults.annualIncrease, min: 0, max: 40, step: 0.1,
@@ -603,7 +608,7 @@ function renderResult(state, data, calculation) {
   if (annualIncrease > 0) {
     const { footnoteIncreaseTemplate } = data.labels.newPlan;
     const increaseLabel = footnoteIncreaseTemplate
-      ? fillTemplate(footnoteIncreaseTemplate, { increase: formatDecimal(annualIncrease) })
+      ? fillTemplate(footnoteIncreaseTemplate, { increase: formatDecimalSmart(annualIncrease) })
       : '';
     setText(root, '[data-result="footnote-increase"]', increaseLabel);
   } else {
@@ -612,9 +617,9 @@ function renderResult(state, data, calculation) {
   const returnLabel = data.labels.result.footnoteReturnTemplate
     ? fillTemplate(
       data.labels.result.footnoteReturnTemplate,
-      { return: formatDecimal(annualReturn) },
+      { return: formatDecimalSmart(annualReturn) },
     )
-    : `*Including inflation rate of ${state.config.inflationRate}% p.a. and expected annual return ${formatDecimal(annualReturn)}%`;
+    : `*Including inflation rate of ${state.config.inflationRate}% p.a. and expected annual return ${formatDecimalSmart(annualReturn)}%`;
   setText(root, '[data-result="footnote-return"]', returnLabel);
 }
 
@@ -639,7 +644,9 @@ function setSliderBounds(root, name, {
   const minEl = root.querySelector(`[data-slider="${name}"] .saving-plan-slider-min`);
   const maxEl = root.querySelector(`[data-slider="${name}"] .saving-plan-slider-value`);
   const formatter = step < 1 ? formatDecimal : formatNumber;
-  if (minEl) minEl.textContent = formatter(min);
+  // min label shows the exact value (no trailing .00 padding, e.g. 0 not 0.00)
+  const minFormatter = step < 1 ? formatDecimalSmart : formatNumber;
+  if (minEl) minEl.textContent = minFormatter(min);
   if (maxEl) maxEl.textContent = formatter(max);
 }
 
@@ -680,12 +687,21 @@ function renderNewPlanPlaceholder(state, data, inputs) {
   });
   const returnMinEl = root.querySelector('[data-slider="annualReturn"] .saving-plan-slider-min');
   if (returnMinEl) returnMinEl.textContent = formatDecimalSmart(inputs.annualReturn);
-  const returnSliderEl = root.querySelector('[data-slider="annualReturn"] input');
-  if (returnSliderEl) returnSliderEl.dataset.prev = inputs.annualReturn;
   setSliderBounds(root, 'annualIncrease', {
     min: 0, max: inputs.annualReturn, value: inputs.annualIncrease, step: 0.1,
   });
+  const increaseMinEl = root.querySelector('[data-slider="annualIncrease"] .saving-plan-slider-min');
+  if (increaseMinEl) increaseMinEl.textContent = formatDecimalSmart(inputs.annualIncrease);
   syncSliderDisplays(root);
+  // Show the exact entered values in the value boxes, not the step-snapped ones
+  // (e.g. 25,011 rather than 25,000, 2.51 rather than 2.50).
+  const setSliderValueText = (name, text) => {
+    const el = root.querySelector(`[data-slider="${name}"] .saving-plan-slider-value`);
+    if (el) el.textContent = text;
+  };
+  setSliderValueText('goalAmount', formatNumber(inputs.goalAmount));
+  setSliderValueText('annualReturn', formatDecimal(inputs.annualReturn));
+  setSliderValueText('annualIncrease', formatDecimalSmart(inputs.annualIncrease));
   root.querySelector('.saving-plan-newplan-card')?.classList.add('is-placeholder');
   const futureText = fillTemplate(data.labels.newPlan.futureValueTemplate, {
     amount: '<strong>0</strong>',
@@ -698,7 +714,7 @@ function renderNewPlanPlaceholder(state, data, inputs) {
   const returnLabel = data.labels.newPlan.footnoteReturnTemplate
     ? fillTemplate(
       data.labels.newPlan.footnoteReturnTemplate,
-      { return: formatDecimal(inputs.annualReturn) },
+      { return: formatDecimalSmart(inputs.annualReturn) },
     )
     : '';
   setText(root, '[data-newplan="footnote-increase"]', '');
@@ -731,16 +747,15 @@ async function renderNewPlan(state, data, tweakInputs) {
   if (futureEl) { futureEl.innerHTML = futureText; futureEl.removeAttribute('hidden'); }
   const amountEl = root.querySelector('[data-newplan="monthly"]');
   if (amountEl) { amountEl.textContent = formatNumber(calculation.SavingMonth); amountEl.removeAttribute('hidden'); }
-  const increaseLabel = data.labels.newPlan.footnoteIncreaseTemplate
-    ? fillTemplate(
-      data.labels.newPlan.footnoteIncreaseTemplate,
-      { increase: formatDecimal(tweakInputs.annualIncrease) },
-    )
+  const { footnoteIncreaseTemplate } = data.labels.newPlan;
+  const increase = formatDecimalSmart(tweakInputs.annualIncrease);
+  const increaseLabel = tweakInputs.annualIncrease > 0 && footnoteIncreaseTemplate
+    ? fillTemplate(footnoteIncreaseTemplate, { increase })
     : '';
   const returnLabel = data.labels.newPlan.footnoteReturnTemplate
     ? fillTemplate(
       data.labels.newPlan.footnoteReturnTemplate,
-      { return: formatDecimal(tweakInputs.annualReturn) },
+      { return: formatDecimalSmart(tweakInputs.annualReturn) },
     )
     : '';
   setText(root, '[data-newplan="footnote-increase"]', increaseLabel);
@@ -786,7 +801,14 @@ function setButtonsEnabled(root, enabled) {
 
 function isAnyFieldEmpty(root) {
   const inputs = root.querySelectorAll('[data-field][data-decimal] input');
-  if (Array.from(inputs).some((input) => input.value.trim() === '')) return true;
+  // annualIncrease is optional (empty = 0, no step-up), so it doesn't count as
+  // a missing required field.
+  const requiredEmpty = Array.from(inputs).some((input) => {
+    const field = input.closest('[data-field]')?.dataset.field;
+    if (field === 'annualIncrease') return false;
+    return input.value.trim() === '';
+  });
+  if (requiredEmpty) return true;
   const goalWrap = root.querySelector('[data-field="goal"]');
   if (goalWrap && !goalWrap.dataset.value) return true;
   return false;
@@ -831,13 +853,6 @@ function clampToDigitCap(raw, digitCap) {
     .join('');
 }
 
-function formatFieldValue(input, decimal, digitCap, smart) {
-  let formatter = formatNumber;
-  if (decimal) formatter = smart ? formatDecimalSmart : formatDecimal;
-  const value = parseNumber(clampToDigitCap(input.value, digitCap));
-  input.value = formatter(value);
-}
-
 function sanitizeDecimalInput(raw) {
   let seenDot = false;
   return raw
@@ -851,6 +866,22 @@ function sanitizeDecimalInput(raw) {
       return /\d/.test(ch);
     })
     .join('');
+}
+
+function formatFieldValue(name, input, decimal, digitCap, smart) {
+  if (name === 'annualIncrease') {
+    // Keep exactly what the user typed (e.g. "1234", "12.1", "12.10") instead of
+    // normalizing through Number, which would strip/pad decimal places.
+    let raw = clampToDigitCap(sanitizeDecimalInput(input.value), digitCap);
+    if (raw === '' || raw === '.') raw = '0';
+    if (raw.endsWith('.')) raw = raw.slice(0, -1);
+    input.value = raw;
+    return;
+  }
+  let formatter = formatNumber;
+  if (decimal) formatter = smart ? formatDecimalSmart : formatDecimal;
+  const value = parseNumber(clampToDigitCap(input.value, digitCap));
+  input.value = formatter(value);
 }
 
 function formatLive(input, decimal, digitCap) {
@@ -902,8 +933,8 @@ function resetFieldInputs(root, data) {
   setVal('[data-field="goalAmount"] input', formatNumber(defaults.goalAmount));
   setVal('[data-field="goalPeriod"] input', formatNumber(defaults.goalPeriod));
   setVal('[data-field="balance"] input', formatNumber(defaults.balance));
-  setVal('[data-field="annualReturn"] input', defaults.annualReturn ? formatDecimalSmart(defaults.annualReturn) : '');
-  setVal('[data-field="annualIncrease"] input', formatDecimal(defaults.annualIncrease));
+  setVal('[data-field="annualReturn"] input', formatDecimalSmart(defaults.annualReturn));
+  setVal('[data-field="annualIncrease"] input', formatDecimalSmart(defaults.annualIncrease));
   root.querySelectorAll('.saving-plan-field-error').forEach((el) => el.classList.remove('saving-plan-field-error'));
   root.querySelectorAll('.saving-plan-field-error-message').forEach((el) => el.remove());
   root.querySelectorAll('[aria-invalid="true"]').forEach((el) => el.removeAttribute('aria-invalid'));
@@ -1012,23 +1043,14 @@ function attachDropdownHandlers(state, data, onSelectionChange) {
 function attachHandlers(state, data) {
   const { root } = state;
 
-  const liveUpdate = async () => {
+  const liveUpdate = () => {
     const inputs = readInputs(root);
     const valid = applyValidation(root, inputs, data);
     const filled = !isAnyFieldEmpty(root);
     setButtonsEnabled(root, valid && filled);
-    if (!valid || !filled) return;
-    const chartShown = !root.querySelector('.saving-plan-chart-row')?.hasAttribute('hidden');
-    if (!chartShown) return;
-
-    const calculation = getFallbackCalculation(inputs, state.config.inflationRate);
-    state.calculatedInputs = inputs;
-    state.calculatedCalculation = calculation;
-    renderResult(state, data, calculation);
-    if (state.tweakActive && state.tweakInputs) {
-      await renderNewPlan(state, data, state.tweakInputs);
-    }
-    await renderChart(state, data);
+    // Editing the form only updates validation and the Calculate button state.
+    // The result and chart are NOT recalculated here — they only change when the
+    // user clicks Calculate (see the [data-action="calculate"] handler below).
   };
 
   root.querySelectorAll('[data-field][data-decimal]').forEach((wrap) => {
@@ -1036,7 +1058,7 @@ function attachHandlers(state, data) {
     if (!input) return;
     const decimal = wrap.dataset.decimal === '1';
     const digitCap = FIELD_DIGIT_CAP[wrap.dataset.field];
-    const smart = wrap.dataset.field === 'annualReturn';
+    const smart = wrap.dataset.field === 'annualReturn' || wrap.dataset.field === 'annualIncrease';
     if (wrap.dataset.field === 'annualIncrease') {
       input.addEventListener('focus', () => {
         // Clear a zero value on focus so the placeholder shows and the user can
@@ -1049,7 +1071,7 @@ function attachHandlers(state, data) {
       liveUpdate();
     });
     input.addEventListener('blur', () => {
-      formatFieldValue(input, decimal, digitCap, smart);
+      formatFieldValue(wrap.dataset.field, input, decimal, digitCap, smart);
       liveUpdate();
     });
   });
@@ -1104,16 +1126,10 @@ function attachHandlers(state, data) {
         const returnVal = parseFloat(returnSlider.value);
         const increaseVal = parseFloat(increaseSlider.value);
         if (sliderName === 'annualReturn') {
-          // annualIncrease max always equals the current annualReturn value
-          const prevReturn = parseFloat(returnSlider.dataset.prev ?? returnVal);
-          returnSlider.dataset.prev = returnVal;
-          const delta = returnVal - prevReturn;
-          // move increase in the opposite direction by the same delta, then clamp to [0, returnVal]
-          const newIncrease = Math.min(returnVal, Math.max(0, increaseVal - delta));
+          // annualIncrease max always equals the current annualReturn value;
+          // only clamp its value down if it now exceeds that max — never push it up.
           increaseSlider.max = returnVal;
-          increaseSlider.value = newIncrease.toFixed(1);
-          const maxEl = root.querySelector('[data-slider="annualIncrease"] .saving-plan-slider-value');
-          if (maxEl) maxEl.textContent = formatDecimal(returnVal);
+          increaseSlider.value = Math.min(increaseVal, returnVal).toFixed(1);
         } else if (sliderName === 'annualIncrease' && increaseVal > returnVal) {
           increaseSlider.value = returnVal;
         }
@@ -1158,10 +1174,12 @@ export default async function decorate(block) {
 
   const calcUrl = cfg.savingPlanCalculatorUrl || '';
   const apimKey = cfg.savingPlanApimKey || '';
-  const inflationRate = parseFloat(cfg.savingPlanInflationRate) || 1.5;
+  const commonData = json.common?.data || [];
+  const inflationRateEntry = commonData.find(({ Key }) => Key === 'defaultFormValues-inflationRate');
+  const inflationRate = parseFloat(inflationRateEntry?.Value);
 
   const lang = getLang();
-  const data = buildDataFromConfig(json, lang, placeholders);
+  const data = buildDataFromConfig(json, lang, placeholders, inflationRate);
   const fragmentPath = cfg.savingPlanFragmentPath?.replace(/\{lang\}/g, lang) || '';
 
   block.innerHTML = buildShellMarkup(data);
