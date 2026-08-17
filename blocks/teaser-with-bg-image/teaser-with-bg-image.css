@@ -13,14 +13,6 @@
 }
 
 :lang(th) {
-  .teaser-with-bg-image-container .default-content-wrapper :is(h1) {
-    line-height: 1.875rem;
-  }
-
-  .teaser-with-bg-image-container .default-content-wrapper :is(h2) {
-    line-height: 1.5rem;
-  }
-
   .teaser-bg-image-title :is(h1) {
     line-height: 1.875rem;
   }

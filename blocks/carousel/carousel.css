@@ -459,10 +459,6 @@
         flex-shrink: 0;
     }
 
-    :lang(th) .carousel-title {
-     line-height: 2.5rem;
-    }
-
     .carousel-item:not(.active) .carousel-title {
         max-width: 100%;
         min-height: 0;

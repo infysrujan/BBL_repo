@@ -44,10 +44,4 @@
     font-size: var(--bbl-heading-h3-size);
     line-height: var(--bbl-line-height-title-desktop);
   }
-
-  :lang(th){
-    .latest-news-container .default-content-wrapper :is(h1, h2, h3, h4, h5, h6):first-child{
-      line-height: 2.5rem;
-    }
-  }
 }
