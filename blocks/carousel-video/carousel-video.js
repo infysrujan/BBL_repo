@@ -54,7 +54,6 @@ export default async function decorate(block) {
   // no scrolling/clones needed, so thumbs are built once and centered instead.
   const isFewItems = n > 0 && n <= VISIBLE;
   block.classList.toggle('cv-few-items', isFewItems);
-  block.closest('.carousel-video-wrapper')?.classList.toggle('cv-few-items', isFewItems);
 
   block.innerHTML = '';
 
@@ -74,11 +73,6 @@ export default async function decorate(block) {
   const mainPlayer = document.createElement('div');
   mainPlayer.className = 'cv-main-player';
 
-  // On mobile the videos slide horizontally; on tablet/desktop this track is
-  // neutralized by CSS and the iframes crossfade in place instead.
-  const mainTrack = document.createElement('div');
-  mainTrack.className = 'cv-main-track';
-
   // All iframes are created upfront so they load immediately.
   // Visibility is controlled by the .active class on each iframe.
   const iframeEls = items.map(({ id }, i) => {
@@ -91,10 +85,9 @@ export default async function decorate(block) {
     iframeEl.setAttribute('allowfullscreen', '');
     iframeEl.setAttribute('loading', 'lazy');
     if (i === 0) iframeEl.classList.add('active');
-    mainTrack.appendChild(iframeEl);
+    mainPlayer.appendChild(iframeEl);
     return iframeEl;
   });
-  mainPlayer.appendChild(mainTrack);
   block.appendChild(mainPlayer);
 
   // ── Thumbnail carousel ────────────────────────────────────────────────────
@@ -201,7 +194,41 @@ export default async function decorate(block) {
     });
     thumbEls.forEach((btn, i) => btn.classList.toggle('active', i === index));
     dotEls.forEach((d, i) => d.classList.toggle('active', i === index));
-    mainTrack.style.transform = `translateX(-${index * 100}%)`;
+  }
+
+  // Nav-button slide effect is mobile-only; matches the tablet breakpoint in carousel-video.css.
+  const mobileMQ = window.matchMedia('(width <= 47.5rem)');
+
+  // Slides the main player horizontally between videos (mobile nav buttons only).
+  // Reuses setActive() for all state/pause bookkeeping and layers a transform
+  // choreography on top: the incoming iframe starts off-screen in the direction
+  // of travel, then both frames animate to their resting transform together.
+  function slideMainPlayer(newIndex, direction) {
+    const oldFrame = iframeEls[activeIndex];
+    const newFrame = iframeEls[newIndex];
+    if (oldFrame === newFrame) return;
+
+    const enterFrom = direction === 'next' ? '100%' : '-100%';
+    const exitTo = direction === 'next' ? '-100%' : '100%';
+
+    newFrame.style.transition = 'none';
+    newFrame.style.transform = `translateX(${enterFrom})`;
+    newFrame.getBoundingClientRect(); // force reflow so the jump isn't animated
+    newFrame.style.transition = '';
+
+    setActive(newIndex);
+
+    requestAnimationFrame(() => {
+      newFrame.style.transform = 'translateX(0)';
+      oldFrame.style.transform = `translateX(${exitTo})`;
+    });
+
+    newFrame.addEventListener('transitionend', function resetTransforms(e) {
+      if (e.propertyName !== 'transform') return;
+      newFrame.style.transform = '';
+      oldFrame.style.transform = '';
+      newFrame.removeEventListener('transitionend', resetTransforms);
+    });
   }
 
   // ── Initial state ─────────────────────────────────────────────────────────
@@ -209,17 +236,27 @@ export default async function decorate(block) {
   nextBtn.disabled = n <= 1;
 
   if (isFewItems) {
-    // Everything is already visible — clicking just changes which one is active.
+    // Everything is already visible — no track scrolling, just swap the active item.
     allThumbBtns.forEach((btn, i) => {
       btn.addEventListener('click', () => setActive(i));
     });
 
     prevBtn.addEventListener('click', () => {
-      setActive(activeIndex === 0 ? n - 1 : activeIndex - 1);
+      const newIndex = activeIndex === 0 ? n - 1 : activeIndex - 1;
+      if (mobileMQ.matches) {
+        slideMainPlayer(newIndex, 'prev');
+      } else {
+        setActive(newIndex);
+      }
     });
 
     nextBtn.addEventListener('click', () => {
-      setActive(activeIndex === n - 1 ? 0 : activeIndex + 1);
+      const newIndex = activeIndex === n - 1 ? 0 : activeIndex + 1;
+      if (mobileMQ.matches) {
+        slideMainPlayer(newIndex, 'next');
+      } else {
+        setActive(newIndex);
+      }
     });
 
     dotEls.forEach((dot, i) => {
@@ -307,13 +344,21 @@ export default async function decorate(block) {
 
     prevBtn.addEventListener('click', () => {
       const newIndex = activeIndex === 0 ? n - 1 : activeIndex - 1;
-      setActive(newIndex);
+      if (mobileMQ.matches) {
+        slideMainPlayer(newIndex, 'prev');
+      } else {
+        setActive(newIndex);
+      }
       scrollBackward(newIndex);
     });
 
     nextBtn.addEventListener('click', () => {
       const newIndex = activeIndex === n - 1 ? 0 : activeIndex + 1;
-      setActive(newIndex);
+      if (mobileMQ.matches) {
+        slideMainPlayer(newIndex, 'next');
+      } else {
+        setActive(newIndex);
+      }
       scrollForward(newIndex);
     });
 
