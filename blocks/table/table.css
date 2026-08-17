@@ -36,6 +36,12 @@
   color: var(--bbl-color-grey-85);
 }
 
+/* Column Width variant: authored widths (colgroup, set in JS) only take effect
+   with a fixed layout — table-layout: auto only treats them as a soft hint. */
+.table table.fixed-column-widths {
+  table-layout: fixed;
+}
+
 /* --------------------------------------------------------------------------
    BORDERS — default on all cells (specificity 0,1,3)
    -------------------------------------------------------------------------- */
