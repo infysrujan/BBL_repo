@@ -894,7 +894,7 @@
   }
 
   :is(.hero-banner-simple, .hero-banner-simple-logo-banner) .hero-banner-content.content {
-    padding: 0 var(--bbl-space-1050);
+    padding-right: var(--bbl-space-1050);
   }
 
   .hero-banner-private-wealth-banking .hero-banner-content.content {
