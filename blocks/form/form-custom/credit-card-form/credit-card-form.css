@@ -70,6 +70,7 @@
 
 .credit-card-form main .section.form-container.custom-forms .form .form-message.success-message {
   line-height: 1;
+  scroll-margin-top: var(--header-scroll-offset);
 }
 
 @media (width > 47.5rem) {
