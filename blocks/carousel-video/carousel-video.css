@@ -18,7 +18,7 @@
   margin-inline: auto;
 }
 
-/* ── Main player ─────────────────────────────────────────────────────────── */
+/* ── Main player — mobile: videos sit side by side in a track that slides on prev/next ── */
 .carousel-video .cv-main-player {
   position: relative;
   width: 24.625rem;
@@ -26,6 +26,7 @@
   margin: 0 auto;
   background: var(--bbl-color-black);
   opacity: 0;
+  overflow: hidden;
   transition: opacity 0.5s ease-in-out;
 }
 
@@ -33,26 +34,19 @@
   opacity: 1;
 }
 
+.carousel-video .cv-main-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.35s ease;
+}
+
 .carousel-video .cv-main-player iframe {
-  position: absolute;
-  inset: 0;
+  flex: 0 0 100%;
   width: 100%;
   height: 100%;
   border: none;
   display: block;
-  opacity: 0;
-
-  /* Opacity 0 is still clickable — without this, a click can land on a
-     stacked-but-invisible iframe instead of the visible .active one, which
-     plays audio for the wrong video while the visible frame stays paused. */
-  pointer-events: none;
-  transition: opacity 0.5s ease-in-out;
-}
-
-.carousel-video .cv-main-player iframe.active {
-  opacity: 1;
-  z-index: 1;
-  pointer-events: auto;
 }
 
 /* ── Thumbnail carousel — mobile: nav arrows overlay on player ───────────── */
@@ -82,6 +76,11 @@
 .carousel-video .cv-track {
   display: flex;
   transition: transform 0.35s ease;
+}
+
+/* 3 or fewer items: center them with equal spacing instead of flush left. */
+.carousel-video .cv-track.cv-track-center {
+  justify-content: center;
 }
 
 /* ── Thumbnails ──────────────────────────────────────────────────────────── */
@@ -243,6 +242,28 @@
     margin: 0 auto;
   }
 
+  /* Tablet/desktop: revert to a crossfade — the sliding track is mobile-only. */
+  .carousel-video .cv-main-track {
+    display: block;
+    transform: none;
+  }
+
+  .carousel-video .cv-main-player iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .carousel-video .cv-main-player iframe.active {
+    opacity: 1;
+    z-index: 1;
+    pointer-events: auto;
+  }
+
   .carousel-video .cv-carousel-section {
     position: relative;
     top: auto;
@@ -289,6 +310,15 @@
 
   .carousel-video .cv-next {
     right: -2.9rem;
+  }
+
+  /* 4 or fewer items fit in a single view — no scrolling, so hide the arrows and dots. */
+  .carousel-video.cv-few-items .cv-nav {
+    display: none;
+  }
+
+  .carousel-video.cv-few-items .cv-dots {
+    display: none;
   }
 }
 
