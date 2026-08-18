@@ -917,11 +917,11 @@
   }
 
   :lang(th) {
-    .hero-banner-content :is(h1 ,h2 ,h3 ,h4 ,h5 ,h6) {
+    .hero-banner-hero-with-thumbnail-images .hero-banner-content :is(h1 ,h2 ,h3 ,h4 ,h5 ,h6) {
       line-height: 7.0625rem;
     }
 
-    .hero-banner-simple .hero-banner-content :is(h1, h2, h3, h4, h5, h6){
+    .hero-banner-content :is(h1, h2, h3, h4, h5, h6){
       line-height:3.75rem;
     }
   }
