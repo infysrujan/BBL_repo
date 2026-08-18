@@ -800,7 +800,7 @@
 }
 
 /* while hovering a different item, drop the active item back to its normal color */
-.locate-us .locate-us-district-dropdown:has(.locate-us-district-item:hover):not(:has(.locate-us-district-item-active:hover)) .locate-us-district-item-active {
+.locate-us .locate-us-district-dropdown:hover .locate-us-district-item-active:not(:hover) {
   color: var(--bbl-color-gray-121);
 }
 
