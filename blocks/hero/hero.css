@@ -390,6 +390,10 @@
   margin-block: 0;
 }
 
+.hero-banner-content-inner-text p.hero-banner-desktop-break br {
+  display: none;
+}
+
 .hero-banner-content-inner .button-container {
   margin: 2.0625rem 0 0;
   text-align: center;
@@ -794,6 +798,10 @@
     }
   }
 
+  .hero-banner-content-inner-text p.hero-banner-desktop-break br {
+    display: block;
+  }
+
   .wealth .hero-banner-simple .hero-banner-content-inner-text p {
     padding-bottom: 0;
   }
@@ -847,7 +855,7 @@
     display: none;
   }
 
-    .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner > *:not(.hero-banner-content-group) {
+  .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner > *:not(.hero-banner-content-group) {
     display: none;
   }
 
