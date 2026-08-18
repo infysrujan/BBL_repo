@@ -799,6 +799,11 @@
   color: var(--bbl-color-blue-90);
 }
 
+/* while hovering a different item, drop the active item back to its normal color */
+.locate-us .locate-us-district-dropdown:has(.locate-us-district-item:hover):not(:has(.locate-us-district-item-active:hover)) .locate-us-district-item-active {
+  color: var(--bbl-color-gray-121);
+}
+
 /* ── City select (overseas) ──────────────────────────────────────────────────── */
 
 .locate-us .locate-us-district-select {
