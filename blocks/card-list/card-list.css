@@ -580,7 +580,7 @@
     min-height: 8.4375rem;
   }
 
-  .cards-list:not(.scrollable, .carousel) .cards-list-item:has(.cards-list-image:not(.cards-list-image-x-small, .cards-list-image-logo)) .cards-list-inner {
+  .cards-list:not(.scrollable, .carousel) .cards-list-inner {
     margin-inline: -0.0625rem;
     width: calc(100% + 0.125rem);
   }
