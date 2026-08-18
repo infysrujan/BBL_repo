@@ -26,16 +26,12 @@
   vertical-align: middle;
 }
 
-.default-content-wrapper li:has(p:has(picture)) p {
+.default-content-wrapper li:has(p:is(.rte-inline-image, .rte-has-icon)) p {
   display: inline;
   margin: 0;
 }
 
-.default-content-wrapper li:has(p:has(picture)) p:has(picture) {
-  display: inline;
-}
-
-.default-content-wrapper li:has(> p:has(picture) + p:has(picture)) > p:has(picture) {
+.default-content-wrapper li:has(p:is(.rte-inline-image, .rte-has-icon)) p:has(picture) {
   display: inline;
 }
 
@@ -57,6 +53,10 @@
 
 .default-content-wrapper > p.rte-has-icon:not(.rte-image-link):has(+ p.rte-has-icon:not(.rte-image-link)),
 .default-content-wrapper > p.rte-has-icon:not(.rte-image-link) + p.rte-has-icon:not(.rte-image-link) {
+  display: inline;
+}
+
+.default-content-wrapper li:has(> p:is(.rte-inline-image, .rte-has-icon) + p:is(.rte-inline-image, .rte-has-icon)) > p:is(.rte-inline-image, .rte-has-icon) {
   display: inline;
 }
 
