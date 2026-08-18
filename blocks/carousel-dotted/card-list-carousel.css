@@ -74,6 +74,12 @@
 
 .carousel-dotted.all-carousel-fragment
   .carousel-dotted-item.carousel-fragment
+  .cards-list-item {
+  flex-grow: 1;
+}
+
+.carousel-dotted.all-carousel-fragment
+  .carousel-dotted-item.carousel-fragment
   .cards-list-title :is(h1, h2, h3, h4, h5, h6) {
   max-width: 15rem;
 }
