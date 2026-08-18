@@ -50,6 +50,10 @@
                 {
                   "name": "Border Bottom",
                   "value": "border-bottom"
+                },
+                {
+                  "name": "No Border Bottom",
+                  "value": "no-border-bottom"
                 }
               ]
             },
@@ -130,6 +134,10 @@
                 {
                   "name": "Dash Cell Highlight",
                   "value": "dash-cell-highlight"
+                },
+                {
+                  "name": "Highlight Bold Cells",
+                  "value": "highlight-bold-cells"
                 }
               ]
             },

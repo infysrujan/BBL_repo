@@ -134,6 +134,15 @@
 }
 
 /* --------------------------------------------------------------------------
+   CELL VARIANTS — highlight bold cells (specificity 0,2,3)
+   -------------------------------------------------------------------------- */
+
+/* Highlight Bold Cells — background for any cell containing a <strong> */
+.table table.highlight-bold-cells td:has(strong) {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+/* --------------------------------------------------------------------------
    VARIANT: STRIPED (targets tr, not td — no specificity conflict)
    -------------------------------------------------------------------------- */
 .table table.striped tr:nth-child(even) {
@@ -217,6 +226,15 @@
 .table table.cells-center-aligned tr:not(.header-row) td {
   text-align: center;
   vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
+   BORDER TYPE VARIANTS — last row (specificity 0,3,3)
+   -------------------------------------------------------------------------- */
+
+/* No Border Bottom — remove the bottom border from the last row only */
+.table table.no-border-bottom tr:last-child td {
+  border-bottom: none;
 }
 
 /* --------------------------------------------------------------------------
