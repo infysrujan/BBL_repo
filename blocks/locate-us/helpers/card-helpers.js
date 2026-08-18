@@ -244,6 +244,42 @@ export function renderPagination(paginationEl, total, page, onPageChange, placeh
   paginationEl.appendChild(nextBtn);
 }
 
+// ─── Header height equalization (per row) ────────────────────────────────────
+
+/**
+ * Equalize the .locate-us-card-name (h3) height across each visual row so the
+ * <hr> beneath the header lines up. Flexbox can't size a nested element to match
+ * sibling cards, so we measure per row — cards sharing an offsetTop are one row —
+ * and set each row's names to the tallest name height in that row.
+ * @param {HTMLElement} cardsContainer
+ */
+function equalizeCardNames(cardsContainer) {
+  const cards = [...cardsContainer.querySelectorAll(':scope > .locate-us-card')];
+  if (!cards.length) return;
+
+  // Reset first so a re-run (e.g. on resize) measures natural heights.
+  cards.forEach((card) => {
+    const name = card.querySelector('.locate-us-card-name');
+    if (name) name.style.minHeight = '';
+  });
+
+  // Group each card's name by the card's row (same offsetTop = same row).
+  const rows = new Map();
+  cards.forEach((card) => {
+    const name = card.querySelector('.locate-us-card-name');
+    if (!name) return;
+    const top = Math.round(card.offsetTop);
+    if (!rows.has(top)) rows.set(top, []);
+    rows.get(top).push(name);
+  });
+
+  // Apply the tallest name height in each row to that row's names.
+  rows.forEach((rowNames) => {
+    const max = Math.max(...rowNames.map((n) => n.offsetHeight));
+    if (max > 0) rowNames.forEach((n) => { n.style.minHeight = `${max}px`; });
+  });
+}
+
 // ─── renderCards ─────────────────────────────────────────────────────────────
 
 export function renderCards(
@@ -331,4 +367,27 @@ export function renderCards(
     renderCards(allResults, cardsContainer, paginationEl, newPage, placeholders, onSelect, configs, isAtm, false, getSelectedLoc);
     scrollToMap();
   }, placeholders);
+
+  // Align the <hr> across a row by equalizing card-name heights per row. Wait for
+  // fonts + a layout frame so measurements are accurate.
+  (document.fonts?.ready ?? Promise.resolve()).then(() => {
+    requestAnimationFrame(() => equalizeCardNames(cardsContainer));
+  });
+
+  // Re-equalize when the container width changes (row composition shifts between
+  // 3 and 4 cards). Attached once; the width guard avoids a feedback loop from
+  // the min-heights we set (those change height, not width).
+  if (typeof ResizeObserver !== 'undefined' && !cardsContainer.dataset.headerEqualizer) {
+    cardsContainer.dataset.headerEqualizer = 'true';
+    let lastWidth = cardsContainer.offsetWidth;
+    let rafId = null;
+    const observer = new ResizeObserver(() => {
+      const width = cardsContainer.offsetWidth;
+      if (width === lastWidth) return;
+      lastWidth = width;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => equalizeCardNames(cardsContainer));
+    });
+    observer.observe(cardsContainer);
+  }
 }
