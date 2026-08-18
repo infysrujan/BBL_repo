@@ -227,10 +227,13 @@ function fixMixedPxPercentWidths(table, widths) {
 }
 
 function applyColumnWidths(table, raw) {
-  const tokens = (raw || '').split(',').map((value) => value.trim());
+  const tokens = (raw || '').split(',').map((value) => value.trim().toLowerCase());
   if (!tokens.some(Boolean)) return;
 
-  const widths = tokens.map((token) => (token && COLUMN_WIDTH_PATTERN.test(token) ? token : null));
+  const widths = tokens.map((token) => {
+    if (!token || token === 'auto') return null;
+    return COLUMN_WIDTH_PATTERN.test(token) ? token : null;
+  });
   if (!widths.some(Boolean)) return;
 
   table.classList.add('fixed-column-widths');

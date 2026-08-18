@@ -171,7 +171,7 @@
           "label": "Column Width",
           "valueType": "string",
           "required": false,
-          "description": "Comma-separated width per column, in order (e.g. 35%, 50%, 30px). Leave a column blank to size it automatically."
+          "description": "Comma-separated width per column, in order (e.g. 35%, 50%, 30px). Use \"auto\" or leave a column blank to size it automatically."
         },
         {
           "component": "text",
