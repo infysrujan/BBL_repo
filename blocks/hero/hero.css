@@ -798,6 +798,10 @@
     }
   }
 
+  .hero-banner-content-inner-text p br {
+    display: block;
+  }
+  
   .wealth .hero-banner-simple .hero-banner-content-inner-text p {
     padding-bottom: 0;
   }
@@ -851,7 +855,8 @@
     display: none;
   }
 
-    .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner > *:not(.hero-banner-content-group) {
+
+  .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner > *:not(.hero-banner-content-group) {
     display: none;
   }
 
@@ -1100,10 +1105,6 @@
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-controls {
     pointer-events: auto;
-  }
-
-  .hero-banner-content-inner-text p br {
-    display: block;
   }
 
   .hero-banner-simple .hero-banner-content-inner-text, .hero-banner-simple .hero-banner-content-inner-text p {
