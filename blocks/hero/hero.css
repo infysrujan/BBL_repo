@@ -921,10 +921,6 @@
       line-height: 7.0625rem;
     }
 
-    .hero-banner-private-wealth-banking .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
-      line-height: 3.75rem;
-    }
-
     .hero-banner-simple .hero-banner-content :is(h1, h2, h3, h4, h5, h6){
       line-height:3.75rem;
     }
