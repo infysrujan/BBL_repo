@@ -167,8 +167,6 @@ function applyMixedBlueHeader(table) {
   });
 }
 
-const COLUMN_WIDTH_PATTERN = /^\d+(\.\d+)?(px|%|rem|em)$/;
-
 function setColgroup(table, widths) {
   table.querySelector(':scope > colgroup')?.remove();
 
@@ -182,63 +180,18 @@ function setColgroup(table, widths) {
   table.prepend(colgroup);
 }
 
-// With table-layout: fixed, a px column loses its literal size whenever every
-// column is explicitly sized (no blank column left to act as the browser's
-// leftover-space column) and a sibling uses %: the px value is silently
-// discarded and that column absorbs whatever space is left over instead.
-// Rescaling the % columns to divide up the space that remains after the px
-// columns are reserved works around it. This needs the table's real rendered
-// width, which isn't available yet at decoration time (CSS may still be
-// loading), so it's deferred to the next paint.
-function fixMixedPxPercentWidths(table, widths) {
-  if (!widths.every(Boolean)) return;
-
-  const pxIndexes = [];
-  const percentIndexes = [];
-  widths.forEach((width, i) => {
-    if (width.endsWith('px')) pxIndexes.push(i);
-    else if (width.endsWith('%')) percentIndexes.push(i);
-  });
-  if (!pxIndexes.length || !percentIndexes.length) return;
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const tableWidth = table.getBoundingClientRect().width;
-      if (!tableWidth) return;
-
-      const reservedPx = pxIndexes
-        .reduce((sum, i) => sum + Number.parseFloat(widths[i]), 0);
-      const percentSum = percentIndexes
-        .reduce((sum, i) => sum + Number.parseFloat(widths[i]), 0);
-      const remainingWidth = Math.max(tableWidth - reservedPx, 0);
-
-      const resolved = widths.slice();
-      pxIndexes.forEach((i) => {
-        resolved[i] = `${((Number.parseFloat(widths[i]) / tableWidth) * 100).toFixed(2)}%`;
-      });
-      percentIndexes.forEach((i) => {
-        const share = percentSum ? Number.parseFloat(widths[i]) / percentSum : 0;
-        resolved[i] = `${(((share * remainingWidth) / tableWidth) * 100).toFixed(2)}%`;
-      });
-
-      setColgroup(table, resolved);
-    });
-  });
-}
-
 function applyColumnWidths(table, raw) {
-  const tokens = (raw || '').split(',').map((value) => value.trim().toLowerCase());
+  const tokens = (raw || '').split(',').map((value) => value.trim());
   if (!tokens.some(Boolean)) return;
 
-  const widths = tokens.map((token) => {
-    if (!token || token === 'auto') return null;
-    return COLUMN_WIDTH_PATTERN.test(token) ? token : null;
-  });
+  // Any CSS width value is passed through as-is (percentages, lengths, or
+  // keywords like fit-content/min-content); "auto" is equivalent to leaving
+  // the column blank.
+  const widths = tokens.map((token) => (token && token.toLowerCase() !== 'auto' ? token : null));
   if (!widths.some(Boolean)) return;
 
   table.classList.add('fixed-column-widths');
   setColgroup(table, widths);
-  fixMixedPxPercentWidths(table, widths);
 }
 
 function markHeaderRows(table) {
