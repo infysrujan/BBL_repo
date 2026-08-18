@@ -337,6 +337,7 @@
     width: 50.5rem;
     max-width: 100%;
     margin: 1.875rem auto;
+     margin-left: 51px;
   }
 
   .carousel-video .cv-thumb {
@@ -356,6 +357,6 @@
   }
 
   .carousel-video .cv-next {
-    right: -2.9rem;
+    right: -2.4rem;
   }
 }
