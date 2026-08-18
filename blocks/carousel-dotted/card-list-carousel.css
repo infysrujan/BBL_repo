@@ -45,8 +45,8 @@
   position: relative;
   display: block;
   opacity: 1;
-  flex: 0 0 auto;
-  width: auto;
+  flex: 0 0 17.5rem;
+  width: 17.5rem;
   min-width: 0;
   transition: none;
 }
@@ -141,6 +141,7 @@
 
   .carousel-dotted.all-carousel-fragment
     .carousel-dotted-item.carousel-fragment {
+    flex: 0 0 auto;
     width: 100%;
     min-width: 100%;
     height: auto;
