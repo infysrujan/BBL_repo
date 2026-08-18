@@ -261,6 +261,7 @@ export default function decorate(block) {
   const isAuthoring = isAuthoringInstance(block);
   if (block.dataset.decorated && !isAuthoring) return;
   block.dataset.decorated = 'true';
+  block.parentElement?.classList.add('content');
 
   const doc = block.ownerDocument;
 
