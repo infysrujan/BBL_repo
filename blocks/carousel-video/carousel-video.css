@@ -299,7 +299,6 @@
 
   .carousel-video .cv-nav {
     position: absolute;
-    top: 40%;
     transform: translateY(-50%);
     width: 2.5rem;
     height: 2.5rem;
