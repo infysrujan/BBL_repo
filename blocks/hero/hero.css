@@ -390,7 +390,7 @@
   margin-block: 0;
 }
 
-.hero-banner-content-inner-text p br {
+.hero-banner-content-inner-text p.hero-banner-desktop-break br {
   display: none;
 }
 
@@ -798,7 +798,7 @@
     }
   }
 
-  .hero-banner-content-inner-text p br {
+  .hero-banner-content-inner-text p.hero-banner-desktop-break br {
     display: block;
   }
 
