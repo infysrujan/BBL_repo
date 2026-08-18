@@ -71,9 +71,8 @@
 .tax-calculator .tax-calc-step-circle {
   position: relative;
   z-index: 10;
-  box-sizing: border-box;
-  width: 1.3125rem;
-  height: 1.3125rem;
+  width: 1.25rem;
+  height: 1.25rem;
   border-radius: var(--bbl-rounded-full);
   display: flex;
   align-items: center;
