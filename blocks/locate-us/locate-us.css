@@ -47,7 +47,7 @@
 }
 
 .locate-us-card button.locate-us-card-header {
-  height: unset;
+  height: max-content;
   line-height: normal;
 }
 
@@ -329,11 +329,6 @@
 
 /* ── Results section ─────────────────────────────────────────────────────────── */
 
-.locate-us .locate-us-results {
-  /* margin-top: 1.875rem; */
-  padding-inline: var(--bbl-space-250);
-}
-
 .locate-us .locate-us-results-title {
   margin-bottom: var(--bbl-space-200);
   font-size: 1.1375rem;
@@ -399,13 +394,16 @@
   padding: 0;
   margin: 1.875rem auto 0;
   grid-template-columns: 1fr;
+  padding: 0 1.25rem 1.25rem;
+  background-color: var(--bbl-color-white);
+  box-shadow: 0 0 1rem 0 rgb(0 0 0 / 10%);
 }
 
 .locate-us .locate-us-card {
   display: block;
   position: relative;
   border: none;
-  padding: var(--bbl-space-250);
+  padding: 1.25rem 0;
   border-bottom: 0.0625rem solid var(--bbl-color-grey-150);
   box-sizing: border-box;
   background-color: var(--bbl-color-white);
@@ -416,6 +414,10 @@
   color: var(--bbl-color-grey-85);
   transition: all;
   cursor: pointer;
+}
+
+.locate-us .locate-us-card .locate-us-card-body {
+  padding-top: 1rem;
 }
 
 .locate-us .locate-us-results-overseas .locate-us-card {
@@ -432,11 +434,10 @@
 .locate-us .locate-us-card-header {
   width: 100%;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  padding: var(--bbl-space-200) 0;
+  padding: 0;
   background: none;
-  flex-grow: 1;
   border: none;
   cursor: pointer;
   text-align: left;
@@ -450,9 +451,6 @@
 .locate-us .locate-us-card-name {
   flex: 1;
   min-width: 0;
-  font-size: 1.4375rem;
-  font-weight: var(--bbl-font-weight-regular);
-  line-height: 1.2495rem;
   color: var(--bbl-color-gray-121);
   font-family: var(--bbl-font-family-medium);
   margin: 0;
@@ -997,11 +995,6 @@
     padding: var(--bbl-space-250);
   }
 
-  .locate-us .locate-us-card-name {
-    font-size: 1.4375rem;
-    line-height: 1.625rem;
-  }
-
   .locate-us .section {
     padding: var(--bbl-space-000);
   }
@@ -1009,7 +1002,7 @@
   .locate-us .locate-us-filter-bar {
     flex-direction: row;
     align-items: center;
-    padding: 0 var(--bbl-space-600);
+    padding: 0 calc(1.25rem + 1%);
     gap: 0.625rem;
     margin: 0 auto 1.875rem;
   }
@@ -1081,7 +1074,7 @@
     flex-direction: row;
     align-items: stretch;
     height: 36.6875rem;
-    padding: 0 var(--bbl-space-600) 1.875rem;
+    padding: 0 0 1.875rem;
     background-color: unset;
   }
 
@@ -1114,12 +1107,15 @@
   /* ── Cards — 3-column grid on tablet, always expanded ── */
 
   .locate-us .locate-us-cards {
-    display: grid;
-    padding: 0 2.8125rem 1.875rem;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem 2.3125rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 0 1.875rem;
+    gap: 1.875rem 1.25rem;
     margin-top: 0;
     align-items: stretch;
+    background-color: transparent;
+    box-shadow: none;
   }
 
   .locate-us .locate-us-card {
@@ -1128,7 +1124,9 @@
     border: 0.0625rem solid var(--bbl-color-gray-122);
     box-shadow: 0 0 var(--bbl-space-200) 0 var(--bbl-color-black-alpha-10);
     overflow: hidden;
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
     grid-template-rows: subgrid;
     grid-row: span 2;
     min-width: 0;
@@ -1136,7 +1134,10 @@
     padding-left: var(--bbl-space-250);
     padding-right: 0.625rem;
     margin-right: 0;
-    margin-bottom: 0.625rem;
+  }
+
+  .locate-us .locate-us-cards .locate-us-card {
+    flex: 0 0 calc(35% - 2rem);
   }
 
   /* 3 cards per row on tablet: use subgrid so all headers in a row share the same height */
@@ -1158,6 +1159,7 @@
     padding: 0;
     cursor: pointer;
     pointer-events: all;
+    align-items: flex-start;
     align-self: stretch;
     min-width: 0;
     overflow: hidden;
@@ -1196,6 +1198,7 @@
     flex-direction: column;
     min-width: 0;
     padding-top: 0;
+    flex-grow: 1;
   }
 
   .locate-us .locate-us-card-detail {
@@ -1233,7 +1236,7 @@
   /* ── Pagination ── */
 
   .locate-us .locate-us-pagination {
-    padding: var(--bbl-space-075) var(--bbl-space-500) var(--bbl-space-400);
+    padding: var(--bbl-space-075) var(--bbl-space-075) var(--bbl-space-400);
   }
 
   .locate-us .locate-us-district-select {
@@ -1307,13 +1310,15 @@
   }
 
   .locate-us .locate-us-map-row {
-    padding: 0 var(--bbl-space-1050) 1.875rem;
+    padding: 0 0 1.875rem;
   }
 
   .locate-us .locate-us-cards {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.125rem 2.3125rem;
-    padding-inline: var(--bbl-space-1050);
+    gap: 1.875rem 2.5rem;
+  }
+
+  .locate-us .locate-us-cards .locate-us-card {
+    flex: 0 0 calc(25% - 2rem);
   }
 
   .locate-us .locate-us-map {
@@ -1356,7 +1361,7 @@
   /* stylelint-enable no-descending-specificity */
 
   .locate-us .locate-us-filter-bar {
-    max-width: 48%;
+    max-width: 54%;
     margin: auto;
     margin-bottom: 1.875rem;
   }
