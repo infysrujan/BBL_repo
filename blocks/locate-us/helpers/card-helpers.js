@@ -256,6 +256,7 @@ export function renderCards(
   configs,
   isAtm = false,
   autoSelect = true,
+  getSelectedLoc = null,
 ) {
   cardsContainer.innerHTML = '';
   const start = (page - 1) * CARDS_PER_PAGE;
@@ -310,18 +311,24 @@ export function renderCards(
       }
     });
 
-    if (idx === 0 && autoSelect) {
+    // Keep the currently-selected location's card active/expanded on every render
+    // (incl. pagination back to its page). `allResults` is a stable array, so the
+    // selected loc is the same object reference we can match here. Falls back to
+    // the first card only on the initial auto-select render.
+    const selectedLoc = getSelectedLoc ? getSelectedLoc() : null;
+    const isActive = selectedLoc ? loc === selectedLoc : (idx === 0 && autoSelect);
+    if (isActive) {
       body.hidden = false;
       header.setAttribute('aria-expanded', 'true');
-      if (hasCoords) onSelect(loc);
     }
+    if (idx === 0 && autoSelect && hasCoords && !selectedLoc) onSelect(loc);
 
     cardsContainer.appendChild(card);
   });
 
   renderPagination(paginationEl, allResults.length, page, (newPage) => {
     // eslint-disable-next-line max-len
-    renderCards(allResults, cardsContainer, paginationEl, newPage, placeholders, onSelect, configs, isAtm, false);
+    renderCards(allResults, cardsContainer, paginationEl, newPage, placeholders, onSelect, configs, isAtm, false, getSelectedLoc);
     scrollToMap();
   }, placeholders);
 }

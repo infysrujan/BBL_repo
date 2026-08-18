@@ -416,6 +416,10 @@
   cursor: pointer;
 }
 
+.locate-us .locate-us-results-overseas .locate-us-card {
+  cursor: default;
+}
+
 /* Mobile: overseas cards are an accordion list — no box-shadow */
 .locate-us:has(.locate-us-results-overseas) .locate-us-card {
   box-shadow: none;
@@ -1021,10 +1025,6 @@
     flex: 1;
     min-width: 0;
     gap: 0;
-  }
-
-  .locate-us .locate-us-district-wrapper {
-    min-width: calc(50% - 0.625rem);
   }
 
   .locate-us .locate-us-district-dropdown {
