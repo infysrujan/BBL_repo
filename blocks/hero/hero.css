@@ -504,28 +504,6 @@
   letter-spacing: -0.0125rem;
 }
 
-:lang(th) {
-  .hero-banner-simple .hero-banner-content :is(h1) {
-    line-height: 1.875rem;
-  }
-
-  .hero-banner-simple .hero-banner-content :is(h2) {
-    line-height: 1.5rem;
-  }
-
-  .hero-banner-private-wealth-banking .hero-banner-content :is(h1) {
-    line-height: 1.875rem;
-  }
-
-  .hero-banner-private-wealth-banking .hero-banner-content :is(h2) {
-    line-height: 1.5rem;
-  }
-
-  .hero-banner-content :is(h1,h2,h3,h4,h5,h6) {
-      line-height: 3.625rem;
-  }
-}
-
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner) :is(.hero-banner-content :is(h1, h2, h3, h4, h5, h6), .hero-banner-logo-wrapper) {
   position: relative;
   display: inline-block;
@@ -939,67 +917,14 @@
   }
 
   :lang(th) {
-    .hero-banner-content :is(h1) {
-      line-height: 3.75rem;
-    }
-
-    .hero-banner-content :is(h2) {
-      line-height: 2.5rem;
-    }
-
-    .hero-banner-content :is(h3) {
-      line-height: 2rem;
-    }
-
-    .hero-banner-content :is(h4) {
-      line-height: 1.375rem;
-    }
-
-    .hero-banner-content :is(h1,h2,h3,h4,h5,h6) {
+    .hero-banner-content :is(h1 ,h2 ,h3 ,h4 ,h5 ,h6) {
       line-height: 7.0625rem;
     }
 
-    .hero-banner-simple .hero-banner-content :is(h1) {
-      line-height: 3.75rem;
-    }
-
-    .hero-banner-simple .hero-banner-content :is(h2) {
-      line-height: 2.5rem;
-    }
-
-    .hero-banner-simple .hero-banner-content :is(h3) {
-      line-height: 2rem;
-    }
-
-    .hero-banner-simple .hero-banner-content :is(h4) {
-      line-height: 1.375rem;
-    }
-
-    .hero-banner-private-wealth-banking .hero-banner-content :is(h1) {
-      line-height: 3.75rem;
-    }
-
-    .hero-banner-private-wealth-banking .hero-banner-content :is(h2) {
-      line-height: 2.5rem;
-    }
-
-    .hero-banner-private-wealth-banking .hero-banner-content :is(h3) {
-      line-height: 2rem;
-    }
-
-    .hero-banner-private-wealth-banking .hero-banner-content :is(h4) {
-      line-height: 1.375rem;
-    }
-
-    .hero-banner-simple .hero-banner-content :is(h1,h2,h3,h4,h5,h6) {
-      line-height: 3.75rem;
-    }
-
-    .hero-banner-private-wealth-banking .hero-banner-content :is(h1,h2,h3,h4,h5,h6) {
+    .hero-banner-private-wealth-banking .hero-banner-content :is(h1, h2, h3, h4, h5, h6) {
       line-height: 3.75rem;
     }
   }
-
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-content-group {
     width: 66.6667%;
