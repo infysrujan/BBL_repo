@@ -390,6 +390,10 @@
   margin-block: 0;
 }
 
+.hero-banner-content-inner-text p br {
+  display: none;
+}
+
 .hero-banner-content-inner .button-container {
   margin: 2.0625rem 0 0;
   text-align: center;
@@ -1096,6 +1100,10 @@
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-controls {
     pointer-events: auto;
+  }
+
+  .hero-banner-content-inner-text p br {
+    display: block;
   }
 
   .hero-banner-simple .hero-banner-content-inner-text, .hero-banner-simple .hero-banner-content-inner-text p {
