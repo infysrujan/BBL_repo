@@ -121,7 +121,8 @@
   position: absolute;
   top: calc(100% + var(--bbl-space-050));
   left: 0;
-  right: 0;
+  min-width: 100%;
+  width: max-content;
   z-index: 2;
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-gray-122);
@@ -143,6 +144,7 @@
   font-weight: var(--bbl-body-b1-weight);
   line-height: var(--bbl-body-b1-line-height);
   text-transform: capitalize;
+  white-space: nowrap;
 }
 
 .locate-us .locate-us-service-item-placeholder {
