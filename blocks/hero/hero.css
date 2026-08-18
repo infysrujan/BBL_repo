@@ -801,7 +801,7 @@
   .hero-banner-content-inner-text p br {
     display: block;
   }
-  
+
   .wealth .hero-banner-simple .hero-banner-content-inner-text p {
     padding-bottom: 0;
   }
@@ -854,7 +854,6 @@
   .hero-banner-item.no-mobile-app-cta .hero-app-cta-mobile-fallback {
     display: none;
   }
-
 
   .hero-banner-item:has(.hero-banner-video-wrapper) .hero-banner-content-inner > *:not(.hero-banner-content-group) {
     display: none;
