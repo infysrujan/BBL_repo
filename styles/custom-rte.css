@@ -12,7 +12,7 @@
 }
 
 .default-content-wrapper p.rte-inline-image {
-  display: inline-block;
+  display: inline;
   margin: 0;
 }
 
