@@ -196,7 +196,7 @@
   line-height: var(--bbl-text-label-tag-line-height);
   background: var(--bbl-color-blue-140);
   color: var(--bbl-color-white);
-  padding: var(--bbl-space-050) 0.4375rem;
+  padding: var(--bbl-space-025) var(--bbl-space-100);
   border-radius: var(--bbl-rounded-200);
   margin-bottom: 0.875rem;
   font-family: var(--bbl-font-family-looped);
@@ -966,6 +966,10 @@ p.text-large.text-light {
     max-width: 12.5rem;
     max-height: 12.5rem;
     margin-right: 1.875rem;
+  }
+
+  .carousel-dotted .carousel-badge{
+    padding:var(--bbl-space-050) var(--bbl-space-200);
   }
 
   .carousel-dotted .carousel-dotted-description {
