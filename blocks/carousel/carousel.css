@@ -261,8 +261,6 @@
     }
 
     .carousel-header a {
-        font-size: 0.8rem;
-        line-height: 1.12rem;
         margin-right: 0.9375rem;
         font-family: var(--bbl-font-family-looped);
     }
