@@ -787,7 +787,7 @@
   color: var(--bbl-color-gray-121);
 }
 
-.locate-us .locate-us-district-dropdown:has(.locate-us-district-item-active) .locate-us-district-item-header:hover {
+.locate-us .locate-us-district-dropdown .locate-us-district-item-header:hover {
   color: var(--bbl-color-blue-90);
 }
 
