@@ -6,5 +6,4 @@ export default function decorate(block) {
   const button = createDownloadLink(row);
   block.textContent = '';
   if (button) block.appendChild(button);
-  block.parentElement?.classList.add('content');
 }

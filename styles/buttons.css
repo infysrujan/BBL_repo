@@ -465,7 +465,7 @@ a.link-inverted[aria-disabled="true"] {
 }
 
 .download-button-wrapper{
-  width: 100%;
+  /* width: 100%; */
 }
 
 .download-button-wrapper .download-files {
