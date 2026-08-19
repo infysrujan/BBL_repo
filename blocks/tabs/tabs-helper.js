@@ -175,8 +175,11 @@ export default function decorateTabs(main) {
     const tabsSection = document.createElement('div');
     tabsSection.className = 'section';
 
-    if (firstSectionMeta['parent-container-style']) {
-      const styles = firstSectionMeta['parent-container-style'].split(',')
+    // Use first section's parent-container-style if present; otherwise, use
+    // first section's style for the tabs section.
+    const parentContainerStyle = firstSectionMeta['parent-container-style'] || firstSectionMeta.style;
+    if (parentContainerStyle) {
+      const styles = parentContainerStyle.split(',')
         .filter((style) => style)
         .map((style) => toClassName(style.trim()));
       styles.forEach((style) => tabsSection.classList.add(style));
