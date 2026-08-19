@@ -271,7 +271,6 @@ export default function decorate(block) {
   const isAuthoring = isAuthoringInstance(block);
   if (block.dataset.decorated && !isAuthoring) return;
   block.dataset.decorated = 'true';
-  block.parentElement?.classList.add('content');
 
   const doc = block.ownerDocument;
 
@@ -288,7 +287,7 @@ export default function decorate(block) {
   const customClasses = layoutText && layoutText !== 'stacked' ? ` ${layoutText}` : '';
   const layout = isScrollable ? 'scrollable' : `stacked${customClasses}`;
 
-  const container = createElementFromHTML(`<div class="menu-card-action ${layout}"></div>`, doc);
+  const container = createElementFromHTML(`<div class="menu-card-action content ${layout}"></div>`, doc);
 
   const section = block.closest('.menu-card-actions-container');
   ['text', 'image'].forEach((type, i) => {
