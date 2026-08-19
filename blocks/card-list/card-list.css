@@ -585,7 +585,6 @@
     width: calc(100% + 0.125rem);
   }
 
-
   .cards-list-image.cards-list-image-full {
     height: calc(100vw / 5);
     max-height: calc(100vw * 0.2);
@@ -721,6 +720,11 @@
 
   .cards-list:is(.carousel) .cards-list-item {
     flex: 0 0 16.25rem;
+  }
+
+  .cards-list:not(.scrollable, .carousel) .cards-list-inner {
+    margin-inline: unset;
+    width: unset;
   }
 
   .cards-list:is(.scrollable, .carousel).center {
