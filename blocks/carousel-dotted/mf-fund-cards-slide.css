@@ -202,6 +202,10 @@
   flex: 0 0 70%;
 }
 
+.card-list.mf-card-list .cards-list.scrollable.cards-3 .cards-list-item {
+  margin-bottom: 0;
+}
+
 @media (width > 47.5rem) {
   .card-list.mf-card-list .cards-list.scrollable.cards-3 {
     flex-flow: row wrap;
@@ -212,7 +216,7 @@
 
   .card-list.mf-card-list .cards-list.scrollable.cards-3 .cards-list-item {
     flex: 0 0 calc((100.001% - 2.5rem) / 3);
-    margin-bottom: var(--bbl-space-250);
+    margin-bottom: 0;
     scroll-snap-align: none;
   }
 
@@ -260,7 +264,6 @@
 
   .card-list.mf-card-list .cards-list.scrollable.cards-3 .cards-list-item {
     flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
-    margin-bottom: var(--bbl-space-500);
   }
 
   .card-list.mf-card-list .cards-list.scrollable.cards-3.single-card .cards-list-item {
