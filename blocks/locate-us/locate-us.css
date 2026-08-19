@@ -391,7 +391,6 @@
 .locate-us .locate-us-cards {
   display: grid;
   align-items: stretch;
-  padding: 0;
   margin: 1.875rem auto 0;
   grid-template-columns: 1fr;
   padding: 0 1.25rem 1.25rem;
@@ -789,7 +788,7 @@
   color: var(--bbl-color-gray-121);
 }
 
-.locate-us .locate-us-district-dropdown:has(.locate-us-district-item-active) .locate-us-district-item-header:hover {
+.locate-us .locate-us-district-dropdown .locate-us-district-item-header:hover {
   color: var(--bbl-color-blue-90);
 }
 
@@ -799,6 +798,11 @@
 
 .locate-us .locate-us-district-item-active {
   color: var(--bbl-color-blue-90);
+}
+
+/* while hovering a different item, drop the active item back to its normal color */
+.locate-us .locate-us-district-dropdown:hover .locate-us-district-item-active:not(:hover) {
+  color: var(--bbl-color-gray-121);
 }
 
 /* ── City select (overseas) ──────────────────────────────────────────────────── */
