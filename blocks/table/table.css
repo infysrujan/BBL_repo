@@ -134,15 +134,6 @@
 }
 
 /* --------------------------------------------------------------------------
-   CELL VARIANTS — highlight bold cells (specificity 0,2,3)
-   -------------------------------------------------------------------------- */
-
-/* Highlight Bold Cells — background for any cell containing a <strong> */
-.table table.highlight-bold-cells td:has(strong) {
-  background: var(--bbl-color-blue-steel-light);
-}
-
-/* --------------------------------------------------------------------------
    VARIANT: STRIPED (targets tr, not td — no specificity conflict)
    -------------------------------------------------------------------------- */
 .table table.striped tr:nth-child(even) {
@@ -216,6 +207,25 @@
 /* Header Pastel Blue — #A1C6FF background */
 .table table.header-primary-blue-s01 .header-row {
   background-color: var(--bbl-color-blue-40);
+}
+
+/* Highlight Bold Cells — background for any cell containing a <strong>,
+   matching whichever Header variant is also applied to the table. No
+   background is applied when no matching Header variant is set. */
+.table table.highlight-bold-cells.header-blue td:has(strong) {
+  background: var(--bbl-color-blue-steel-dark);
+}
+
+.table table.highlight-bold-cells.header-light-blue td:has(strong) {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.table table.highlight-bold-cells.header-light-gray td:has(strong) {
+  background: var(--bbl-color-grey-19);
+}
+
+.table table.highlight-bold-cells.header-primary-blue-s01 td:has(strong) {
+  background: var(--bbl-color-blue-40);
 }
 
 /* --------------------------------------------------------------------------
