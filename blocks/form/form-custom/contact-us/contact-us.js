@@ -7,8 +7,10 @@ function isContactUsForm(form) {
 
   // createForm() runs before the form is mounted in the section wrapper.
   // The outer fragment panel's class differs across environments
-  // (field-contact in dev, field-contactfragment in prod).
-  return form.querySelector('.field-contact, .field-contactfragment, .field-main-panel') !== null;
+  // (field-contact in dev, field-contactfragment in prod), but the
+  // main panel must always be nested inside it — matching either class
+  // alone is too broad and matches unrelated forms.
+  return form.querySelector('.field-contact .field-main-panel, .field-contactfragment .field-main-panel') !== null;
 }
 
 /**
