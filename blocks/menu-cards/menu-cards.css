@@ -30,8 +30,8 @@
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
-  font-size: 1.1375rem;
-  line-height: 1.2495rem;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
   overflow: hidden;
   display: -webkit-box;
 }
@@ -94,7 +94,7 @@
   }
 
   .menu-cards .tips-insight-quick-access-title {
-    font-size: 1.3rem;
-    line-height: 2.0423rem;
+    font-size: 1.5rem;
+    line-height: 2rem;
   }
 }
