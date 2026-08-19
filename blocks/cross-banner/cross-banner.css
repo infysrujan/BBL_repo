@@ -47,9 +47,9 @@
 
 .cross-banner-title {
   color: var(--bbl-color-black);
-  font-size: 1.125rem;
+  font-size: var(--bbl-font-size-h3-mobile);
   font-weight: var(--bbl-font-weight-regular);
-  line-height: 1.5rem;
+  line-height: var(--bbl-line-height-h3-mobile);
   margin-bottom: 0.9375rem;
   font-family: var(--bbl-font-family-medium);
   display: -webkit-box;
@@ -163,8 +163,8 @@ body.private
   }
 
   .cross-banner-title {
-    font-size: 2rem;
-    line-height: 37px;
+    font-size: var(--bbl-font-size-h2-desktop);
+    line-height: var(--bbl-line-height-h2-desktop);
     margin-bottom: 0;
   }
 
