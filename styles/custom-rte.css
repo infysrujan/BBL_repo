@@ -12,7 +12,7 @@
 }
 
 .default-content-wrapper p.rte-inline-image {
-  display: inline-block;
+  display: inline;
   margin: 0;
 }
 
@@ -34,8 +34,12 @@
   display: flex;
 }
 
-.default-content-wrapper > p.rte-has-icon:not(.rte-image-link):has(+ p.rte-has-icon:not(.rte-image-link)),
-.default-content-wrapper > p.rte-has-icon:not(.rte-image-link) + p.rte-has-icon:not(.rte-image-link) {
+.default-content-wrapper li:has(p:is(.rte-inline-image, .rte-has-icon)) p {
+  display: inline;
+  margin: 0;
+}
+
+.default-content-wrapper li:has(p:is(.rte-inline-image, .rte-has-icon)) p:has(picture) {
   display: inline;
 }
 
@@ -44,17 +48,24 @@
   display: inline;
 }
 
-.default-content-wrapper li:has(p.rte-has-icon) p {
+.default-content-wrapper > p.rte-inline-image:not(.rte-image-link):has(+ p:not(.rte-inline-image)) {
+  display: inline-block;
+  vertical-align: middle;
+  margin-block: 0;
+}
+
+.default-content-wrapper > p.rte-inline-image:not(.rte-image-link) + p:not(.rte-inline-image) {
   display: inline;
-  margin: 0;
+  vertical-align: middle;
 }
 
-.default-content-wrapper li:has(p.rte-has-icon) p:has(picture) {
-  display: inline-block;
+.default-content-wrapper > p.rte-has-icon:not(.rte-image-link):has(+ p.rte-has-icon:not(.rte-image-link)),
+.default-content-wrapper > p.rte-has-icon:not(.rte-image-link) + p.rte-has-icon:not(.rte-image-link) {
+  display: inline;
 }
 
-.default-content-wrapper li:has(> p.rte-inline-image + p.rte-inline-image) > p.rte-inline-image {
-  display: inline-block;
+.default-content-wrapper li:has(> p:is(.rte-inline-image, .rte-has-icon) + p:is(.rte-inline-image, .rte-has-icon)) > p:is(.rte-inline-image, .rte-has-icon) {
+  display: inline;
 }
 
 .accordion-item :is(.default-content-wrapper, .table.block) table td :is(ul, ol) {
