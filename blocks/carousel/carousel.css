@@ -163,7 +163,7 @@
     background: var(--bbl-color-blue-140);
     font-family: var(--bbl-font-family-looped);
     display: inline-block;
-    padding: 0.25rem 0.4375rem;
+    padding: var(--bbl-space-025) var(--bbl-space-100);
     margin-bottom: 0.8125rem;
     color: var(--bbl-color-white);
     border-radius: var(--bbl-rounded-200);
@@ -273,6 +273,10 @@
         overflow: visible;
         scroll-snap-type: none;
         gap: var(--bbl-space-300);
+    }
+    
+    .carousel-eyebrow{
+        padding:var(--bbl-space-050) var(--bbl-space-200);
     }
 
     .carousel-track.is-sliding {
