@@ -282,18 +282,18 @@
   }
 
   .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow-prev {
-    left: 0.7rem;
+    left: -3.4375rem;
   }
 
   .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow-next {
-    right: 0.7rem;
+    right: -3.4375rem;
   }
 
- :is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
-  left: -3.45rem;
+  :is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
+    left: -3.45rem;
   }
 
-:is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
-  right: -3.45rem;
+  :is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
+    right: -3.45rem;
   }
 }
