@@ -162,8 +162,7 @@
 
 .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb img {
   max-width: 100%;
-  height: calc(100vw);
-  object-fit: contain;
+  height: auto;
 }
 
 /* Without-image slides don't need background */
