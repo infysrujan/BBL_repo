@@ -231,7 +231,8 @@
     height: 2.5rem;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) {
+  .carousel-dotted.show-arrows-dots:has(.simple-carousel),
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) {
     position: relative;
   }
 
@@ -240,8 +241,7 @@
     flex-direction: unset;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow,
-  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow {
+  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .all-mf-fund-cards, .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow {
     display: flex;
     position: absolute;
     top: 50%;
@@ -249,39 +249,17 @@
     z-index: 10;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev {
-    left: -1.25rem;
+  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
+    left: 1.75rem;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next {
-    right: -1.25rem;
+  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
+    right: 1.75rem;
   }
 
-  .carousel-dotted.show-arrows-dots .carousel-dotted-item.with-circular-image.is-active,
-  .carousel-dotted.show-arrows-dots .carousel-dotted-item.with-default-image.is-active,
-  .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item.with-circular-image,
-  .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item.with-default-image {
+  .carousel-dotted.show-arrows-dots .carousel-dotted-item:is(.with-circular-image, .with-default-image).is-active,
+  .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item:is(.with-circular-image, .with-default-image) {
     display: flex;
-  }
-
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev {
-    justify-self: start;
-    margin-left: -1.25rem;
-  }
-
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
-    justify-self: end;
-    margin-right: -1.25rem;
-  }
-
-  .central-aligned .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev {
-    justify-self: start;
-    margin-left: 2.25rem;
-  }
-
-  .central-aligned .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
-    justify-self: end;
-    margin-right: 2.25rem;
   }
 }
 
@@ -303,27 +281,11 @@
     right: 0.7rem;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev {
+  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
     left: -3.45rem;
   }
 
-  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next {
+  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
     right: -3.45rem;
-  }
-
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev {
-    margin-left: -3.45rem;
-  }
-
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
-    margin-right: -3.45rem;
-  }
-
-  .central-aligned .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev {
-    margin-left: 0;
-  }
-
-  .central-aligned .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
-    margin-right: 0;
   }
 }
