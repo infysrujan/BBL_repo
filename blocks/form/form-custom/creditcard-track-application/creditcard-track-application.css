@@ -751,8 +751,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
         & > .cc-panel-item-callback-actions {
           display: flex;
-          margin-top: var(--bbl-space-200);
-          margin-bottom: var(--bbl-form-margin-35);
+          margin-top: var(--bbl-space-200) 0 0 var(--bbl-form-margin-35);
         }
       }
 
