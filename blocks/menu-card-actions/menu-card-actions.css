@@ -33,7 +33,7 @@
 }
 
 .menu-card-action {
-  width: 100%;
+  /* width: 100%; */
 }
 
 .menu-card-action:is(.scrollable, .stacked) {
@@ -217,7 +217,6 @@ body.wealth .menu-card-action-inner {
 .menu-card-action.scrollable .menu-card-action-item {
   flex: 0 0 16.875rem;
   width: 16.875rem;
-  scroll-snap-align: start;
   margin: 0;
   box-sizing: border-box;
   padding: 0 0 var(--bbl-space-250);
