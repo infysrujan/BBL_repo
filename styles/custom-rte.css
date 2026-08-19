@@ -26,6 +26,14 @@
   vertical-align: middle;
 }
 
+.columns p:is(.rte-has-icon, .rte-image-link, .rte-inline-image):has(picture) {
+  margin-block: 0;
+}
+
+.columns p:is(.rte-has-icon, .rte-image-link, .rte-inline-image):has(picture) picture {
+  display: flex;
+}
+
 .default-content-wrapper > p.rte-has-icon:not(.rte-image-link):has(+ p.rte-has-icon:not(.rte-image-link)),
 .default-content-wrapper > p.rte-has-icon:not(.rte-image-link) + p.rte-has-icon:not(.rte-image-link) {
   display: inline;
