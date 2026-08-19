@@ -380,6 +380,16 @@
     justify-self: end;
     margin-right: -1.25rem;
   }
+
+  .central-aligned .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-prev {
+    justify-self: start;
+    margin-left: 36px;
+  }
+
+  .central-aligned .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) .carousel-arrow-next {
+    justify-self: end;
+    margin-right: 36px;
+  }
 }
 
 @media (width > 64rem) {
