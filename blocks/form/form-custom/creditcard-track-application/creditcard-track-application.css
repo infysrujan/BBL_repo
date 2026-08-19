@@ -13,6 +13,9 @@
 
   /* height */
   --bbl-form-height-50: 3.125rem;                  /* 50px */
+
+  /* margin */
+  --bbl-form-margin-35: 2.1875rem                  /* 35px */
 }
 
 main .section.form-container.custom-forms:has(.cc-app-main-form) .form label,
@@ -747,7 +750,9 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         }
 
         & > .cc-panel-item-callback-actions {
+          display: flex;
           margin-top: var(--bbl-space-200);
+          margin-bottom: var(--bbl-form-margin-35);
         }
       }
 
