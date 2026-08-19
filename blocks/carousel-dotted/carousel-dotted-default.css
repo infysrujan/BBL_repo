@@ -962,8 +962,15 @@ p.text-large.text-light {
     margin-bottom: var(--bbl-space-300);
   }
 
-  :lang(th).carousel-dotted .carousel-dotted-description{
+  :lang(th){
+  .carousel-dotted .carousel-dotted-description {
     line-height:  2.5rem;
+    }
+
+  .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
+  .carousel-title :is(h1, h2, h3, h4, h5, h6) {
+    line-height:  2.5rem;
+    }
   }
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant) .carousel-content.content {
