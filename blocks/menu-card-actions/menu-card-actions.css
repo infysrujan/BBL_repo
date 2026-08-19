@@ -25,7 +25,7 @@
 }
 
 .menu-card-action {
-  width: 100%;
+  /* width: 100%; */
 }
 
 .menu-card-action:is(.scrollable, .stacked) {
@@ -87,6 +87,10 @@
 .menu-card-action-item-link .menu-card-action-inner {
   flex: 1;
   transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.wealth .menu-card-action-inner {
+  border: none;
 }
 
 .menu-card-action-item-link:hover .menu-card-action-inner {
@@ -195,7 +199,6 @@
 .menu-card-action.scrollable .menu-card-action-item {
   flex: 0 0 16.875rem;
   width: 16.875rem;
-  scroll-snap-align: start;
   margin: 0;
   box-sizing: border-box;
   padding: 0 0 var(--bbl-space-250);
