@@ -468,6 +468,19 @@ main img {
 }
 
 /* =========================================================================
+    EXCEPTIONAL CONTAINER WIDTH FOR FULL BLEED SECTIONS 
+========================================================================= */
+.full-bleed-bg.card-list-wealth-container .content{
+    max-width: var(--bbl-layout-content-max-width-exception-wealth);
+}
+ 
+.full-bleed-bg.card-list-container .content,
+.full-bleed-bg.menu-card-actions-container .content,
+.full-bleed-bg.teaser-with-bg-image-container .content {
+    max-width: var(--bbl-layout-content-max-width-desktop);
+}
+ 
+/* =========================================================================
    SECTION-COLUMNS - Global Styles
    ========================================================================= */
 .section.columns-3,
