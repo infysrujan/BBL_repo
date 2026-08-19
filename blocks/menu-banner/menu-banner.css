@@ -262,7 +262,7 @@
   }
   
   :lang(th){
-    .menu-banner .title-1 {
+    .menu-banner .title-1 > * {
       line-height:2.5rem;
     }
   }
