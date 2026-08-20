@@ -188,12 +188,6 @@ export function decorateEncodedNbsp(root, selector = 'p, li, td') {
 
 export function decorateIconInContainer(container) {
   decorateEncodedNbsp(container);
-  container.querySelectorAll('td > p').forEach((p) => {
-    if (p.classList.contains('rte-has-icon') || p.classList.contains('rte-inline-image') || p.classList.contains('rte-image-link')) return;
-    const pic = p.querySelector('picture');
-    if (!pic || p.textContent.trim()) return;
-    p.classList.add(pic.closest('a') ? 'rte-image-link' : 'rte-has-icon');
-  });
   runRteMarkers([...container.querySelectorAll('p')]);
 }
 
