@@ -864,6 +864,10 @@
     grid-template-columns: 1fr 1fr;
   }
 
+  .tax-calculator .tax-calc-invest-header-cell {
+    justify-content: center;
+  }
+
   .tax-calculator .tax-calc-invest-table {
     gap: var(--bbl-space-100);
   }
