@@ -470,7 +470,7 @@
   font-size: var(--bbl-font-size-h3-mobile);
   font-weight: var(--bbl-font-weight-regular);
   margin-top: 0.875rem;
-  color: var(--bbl-color-black);
+  color: var(--bbl-color-grey-90);
 }
 
 .saving-plan-info-card-slot .category-banner-btn.button-m.secondary {
