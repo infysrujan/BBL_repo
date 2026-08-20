@@ -130,7 +130,7 @@
 
 /* Card name */
 .mf-comparator-results .mfcr-card-name {
-  font-family: var(--bbl-font-family-medium), sans-serif;
+  font-family: var(--bbl-font-family-medium);
   font-size: 1.5rem;
   line-height: 1.625rem;
   color: var(--bbl-color-black);
@@ -154,7 +154,7 @@
 
 .mf-comparator-results .mfcr-label {
   font-size: 1rem;
-  font-family: var(--bbl-font-family-medium), sans-serif;
+  font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   margin: 0;
 }
