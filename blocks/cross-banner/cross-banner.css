@@ -133,10 +133,6 @@ body.private
     padding-inline: 0;
   }
 
-  .cross-banner-title {
-    font-size: 2.625rem;
-    line-height: 2.516rem;
-  }
 }
 
 @media (width > 64rem) {
@@ -162,8 +158,6 @@ body.private
   }
 
   .cross-banner-title {
-    font-size: var(--bbl-font-size-h2-desktop);
-    line-height: var(--bbl-line-height-h2-desktop);
     margin-bottom: 0;
   }
 
