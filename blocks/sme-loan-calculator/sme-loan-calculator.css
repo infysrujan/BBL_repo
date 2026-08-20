@@ -464,12 +464,8 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   }
 
   .section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav-wrapper {
-    padding: 0 3rem;
+    padding: 0 3.9375rem;
     overflow: visible;
-  }
-
-  .section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav-wrapper {
-    padding-inline: 3.9375rem;
   }
 
   .section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav-wrapper button {
