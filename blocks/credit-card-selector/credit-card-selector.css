@@ -38,10 +38,6 @@
   text-align: left;
 }
 
-.section.full-bleed-bg.credit-card-selector-container {
-  /* padding-inline: var(--bbl-space-200); */
-}
-
 .section.full-bleed-bg.credit-card-selector-container .default-content-wrapper h2 {
   padding-bottom: 1.5rem;
 }
@@ -54,6 +50,16 @@
   .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
     max-width: unset;
     padding-inline: 9rem;
+  }
+}
+
+/* Beyond ultra-wide viewports, stop stretching full-bleed and cap back to the
+   site's shared content width, centered — matches production and the same
+   pattern used by .section.full-bleed-bg (styles/main.css) and the header. */
+@media (width > 120rem) {
+  .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
+  .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
+    max-width: var(--bbl-layout-content-max-width-1920);
   }
 }
 
@@ -447,11 +453,7 @@
   }
 }
 
-/* Matches the live site's actual breakpoint for this component (~42rem /
-   672px) — narrower than the site-wide 47.5rem tablet breakpoint used
-   elsewhere. Below this, Monthly Income/Lifestyles don't have room to sit
-   side-by-side, so the block stays single-column with the mobile dropdown. */
-@media (width > 42rem) {
+@media (width > 47.5rem) {
   .ccs-results-title {
     font-size: var(--bbl-font-size-h1-desktop);
     line-height: var(--bbl-line-height-heading-tight);
