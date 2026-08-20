@@ -144,11 +144,6 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 }
 
 /* ── Layout helpers (scoped) ─────────────────────────────── */
-.sme-loan-calculator .row {
-  display: flex;
-  flex-flow: row wrap;
-}
-
 .sme-loan-calculator .alignc {
   justify-content: center;
   text-align: center;
@@ -182,16 +177,24 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 }
 
 /* ── Fields row ──────────────────────────────────────────── */
-.row.paddingmain {
+.sme-calculate-wrapper {
+  display: flex;
+  flex-flow: row wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.sme-field-rows {
+  display: flex;
+  flex-flow: row wrap;
   flex-direction: column;
   align-items: stretch;
 }
 
-.row.paddingmain.alignc {
-  align-items: center;
-}
-
-.col-md-4.paddingcal {
+.sme-field-wrapper,
+.sme-working-capital-fields {
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -200,7 +203,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   flex-direction: column;
 }
 
-.box-textbox {
+.sme-field-text-box {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -212,7 +215,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.box-textbox:hover {
+.sme-field-text-box:hover {
   border-color: var(--bbl-color-white);
 }
 
@@ -221,16 +224,17 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 }
 
 /* Label column */
-.box-textbox .col-md-6.col-xs-6:first-child {
+.sme-field-text-box .sme-first-column {
   flex: 1;
   min-width: 0;
   width: auto;
 }
 
 /* Input column */
-.box-textbox .col-md-6.col-xs-6.alignright {
+.sme-field-text-box .sme-second-column {
   flex-shrink: 0;
   width: auto;
+  text-align: right;
 }
 
 .label-cal {
@@ -262,13 +266,13 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 }
 
 /* ── Bottom text under each field (Baht, Month, % per year) ─ */
-.sme-loan-calculator .fontcondition {
+.sme-loan-calculator .sme-field-unit {
   font-size: 0.6875rem;
   color: var(--bbl-color-grey-150);
   line-height: 1.4;
 }
 
-.fontcondition.alignright.padbottom25 {
+.sme-field-unit {
   font-family: var(--bbl-font-family-primary);
   display: block;
   text-align: right;
@@ -512,7 +516,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
     text-overflow: unset;
   }
 
-  .box-textbox {
+  .sme-field-text-box {
     align-items: flex-start;
   }
 
@@ -538,7 +542,12 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
     padding: 1.25rem 1rem;
   }
 
-  .row.paddingmain {
+  .sme-calculate-wrapper {
+    flex-direction: row;
+    gap: 0 1rem;
+  }
+
+  .sme-field-rows {
     flex-direction: row;
     align-items: flex-start;
     gap: 0 1rem;
@@ -548,7 +557,8 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
     padding-inline: 5.25rem;
   }
 
-  .col-md-4.paddingcal {
+  .sme-field-wrapper,
+  .sme-working-capital-fields {
     flex: 0 0 calc((100% - 2rem) / 3);
     max-width: calc((100% - 2rem) / 3);
     min-width: 12.5rem;
