@@ -56,12 +56,12 @@
         border: none;
         border-radius: 0;
         padding: 0;
-        row-gap: var(--bbl-form-gap-8);
+        gap: var(--bbl-form-margin-10);
     }
 
     & fieldset.panel-wrapper:not(:has(.date-wrapper)) {
         margin-bottom: 0;
-        gap: 0.4688rem var(--bbl-space-250);
+        gap: var(--bbl-form-margin-10);
     }
 
     & fieldset.panel-wrapper:has(.date-wrapper) > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper),
