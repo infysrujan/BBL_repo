@@ -662,8 +662,8 @@ export async function buildOverseasUI(container, placeholders, configs) {
       const country = (loc.Country || '').trim().toLowerCase();
       const isDomestic = DOMESTIC_COUNTRIES.includes(country);
       const isNonInternational = (loc.InternationalBranch || '').trim().toLowerCase() === 'x';
-      return hasValue(loc.MicroBranchHours) && validTel && address
-        && !isDomestic || isNonInternational;
+      return (hasValue(loc.MicroBranchHours) && validTel && address
+        && !isDomestic) || isNonInternational;
     });
 
     filtered.sort((a, b) => (a.BranchName || '').localeCompare(b.BranchName || '', undefined, { sensitivity: 'base' }));
