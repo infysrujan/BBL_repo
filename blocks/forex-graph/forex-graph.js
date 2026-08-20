@@ -227,15 +227,11 @@ function renderDatepicker(pick, pickerState, monthLabels, dayLabels, buddhistYea
         && Number(selectedParsed.day) === cell.day
         && Number(selectedParsed.month) === pickerState.viewMonth
         && Number(selectedParsed.year) === pickerState.viewYear;
-      const isToday = now.getDate() === cell.day
-        && now.getMonth() + 1 === pickerState.viewMonth
-        && now.getFullYear() === pickerState.viewYear;
 
       const classes = [
         index === 0 || index === 6 ? 'is-weekend' : '',
         isEnabled ? 'is-enabled' : 'is-disabled',
         isSelected ? 'is-current' : '',
-        isToday ? 'is-today' : '',
       ].filter(Boolean).join(' ');
 
       if (isEnabled) {
@@ -456,8 +452,8 @@ export default async function decorate(block) {
     }
 
     const allValues = [...buyingData, ...sellingData].filter((v) => v !== null);
-    const minVal = Math.floor(Math.min(...allValues)) - 1;
-    const maxVal = Math.ceil(Math.max(...allValues)) + 1;
+    const minVal = Math.min(...allValues) - 0.5;
+    const maxVal = Math.ceil(Math.max(...allValues));
 
     // Plugin: draw halo on the cross-dataset point at the same index
     const crossHighlightPlugin = {
@@ -484,9 +480,37 @@ export default async function decorate(block) {
       },
     };
 
+    // Plugin: draw a vertical gridline at every data point, not just the
+    // (auto-skipped) labeled ticks, so the grid lines up with each point.
+    const pointGridPlugin = {
+      id: 'pointGrid',
+      beforeDatasetsDraw(chart) {
+        const { ctx, chartArea } = chart;
+        const meta = chart.getDatasetMeta(0);
+        if (!meta || !meta.data.length) return;
+        // Mobile (below 47.5rem), tablet (47.5rem-64rem), and desktop (above
+        // 64rem) viewports each need the line pulled up shorter than the x
+        // scale's bottom by a different amount.
+        const isMobile = window.innerWidth <= 760;
+        const isTablet = window.innerWidth > 760 && window.innerWidth <= 1024;
+        const lineOffset = (isMobile && 50) || (isTablet && 30) || 20;
+        const lineBottom = chart.scales.x.bottom - lineOffset;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+        ctx.lineWidth = 1;
+        meta.data.forEach((point) => {
+          ctx.beginPath();
+          ctx.moveTo(point.x, chartArea.top);
+          ctx.lineTo(point.x, lineBottom);
+          ctx.stroke();
+        });
+        ctx.restore();
+      },
+    };
+
     state.chartInstance = new Chart(canvas, {
       type: 'line',
-      plugins: [crossHighlightPlugin],
+      plugins: [crossHighlightPlugin, pointGridPlugin],
       data: {
         labels,
         datasets: [
@@ -915,16 +939,11 @@ export default async function decorate(block) {
       state.from.enabledDaysByMonth[monthKey] = enabledDays;
       state.to.enabledDaysByMonth[monthKey] = enabledDays;
 
-      // Set default dates: first valid day of month → last valid day
+      // Set default dates: 1st of month (even if not itself an enabled day) → today
       const monthStr = String(month).padStart(2, '0');
-      if (enabledDays.length) {
-        state.from.selectedDate = `${year}-${monthStr}-${enabledDays[0]}`;
-        state.to.selectedDate = `${year}-${monthStr}-${enabledDays[enabledDays.length - 1]}`;
-      } else {
-        state.from.selectedDate = `${year}-${monthStr}-01`;
-        const todayStr = String(now.getDate()).padStart(2, '0');
-        state.to.selectedDate = `${year}-${monthStr}-${todayStr}`;
-      }
+      const todayStr = String(now.getDate()).padStart(2, '0');
+      state.from.selectedDate = `${year}-${monthStr}-01`;
+      state.to.selectedDate = `${year}-${monthStr}-${todayStr}`;
 
       // Format typed date display values
       state.from.typedDate = formatDateInputValue(
@@ -943,6 +962,10 @@ export default async function decorate(block) {
       state.from.viewMonth = month;
       state.to.viewYear = year;
       state.to.viewMonth = month;
+
+      // Auto-trigger the GO action so the chart is populated on load,
+      // instead of requiring the user to click GO first.
+      await fetchAndRenderChart();
     } finally {
       state.loading = false;
       render();
