@@ -178,7 +178,6 @@
 
 .carousel-dotted-container:has(.all-mf-fund-cards) .carousel-dotted-wrapper {
   overflow: hidden;
-  margin-inline: -0.625rem;
 }
 
 .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-track-viewport {
@@ -226,7 +225,6 @@
 
   .carousel-dotted-container:has(.all-mf-fund-cards) .carousel-dotted-wrapper {
     overflow: unset;
-    margin-inline: 0;
   }
 
   .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow {
