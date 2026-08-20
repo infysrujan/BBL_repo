@@ -39,7 +39,7 @@
 }
 
 .section.full-bleed-bg.credit-card-selector-container {
-  padding-inline: var(--bbl-space-200);
+  /* padding-inline: var(--bbl-space-200); */
 }
 
 .section.full-bleed-bg.credit-card-selector-container .default-content-wrapper h2 {
@@ -170,7 +170,6 @@
 .credit-card-selector .option-list .option-item {
   flex: 0 0 calc(50% - var(--bbl-space-050));
 }
-
 
 /* Mobile: Lifestyle cards scroll horizontally — native scrollbar visible (matches live site) */
 .credit-card-selector .option-list-three-column {
@@ -448,7 +447,11 @@
   }
 }
 
-@media (width > 47.5rem) {
+/* Matches the live site's actual breakpoint for this component (~42rem /
+   672px) — narrower than the site-wide 47.5rem tablet breakpoint used
+   elsewhere. Below this, Monthly Income/Lifestyles don't have room to sit
+   side-by-side, so the block stays single-column with the mobile dropdown. */
+@media (width > 42rem) {
   .ccs-results-title {
     font-size: var(--bbl-font-size-h1-desktop);
     line-height: var(--bbl-line-height-heading-tight);
@@ -463,7 +466,7 @@
   }
 
   .section.full-bleed-bg.credit-card-selector-container {
-    padding-inline: var(--bbl-space-600);
+    /* padding-inline: var(--bbl-space-600); */
   }
 
   /* Two-column grid on tablet */
@@ -479,6 +482,12 @@
 
   .credit-card-selector .filter-options-mobile {
     display: none;
+  }
+
+  /* Monthly Income labels are long — shrink text slightly so the 2x2 grid
+     fits both columns' content without wrapping, matching the live site. */
+  .credit-card-selector .filter-options-desktop .option-text {
+    font-size: var(--bbl-font-size-b2);
   }
 
   /* Lifestyle / stacked icons scale up to their natural 3rem on tablet+ */
@@ -531,6 +540,10 @@
   .credit-card-selector .card-selector-header {
     padding: var(--bbl-space-400) var(--bbl-space-200) var(--bbl-space-700);
     text-align: center;
+  }
+
+  .section.full-bleed-bg.credit-card-selector-container {
+    /* padding-inline: var(--bbl-space-section-xl); */
   }
 
 .section.full-bleed-bg.credit-card-selector-container .default-content-wrapper h2 {
