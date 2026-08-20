@@ -72,11 +72,6 @@
     box-sizing: unset;
   }
 
-  .menu-cards .tips-insight-quick-access-title {
-    font-size: 1.3125rem;
-    line-height: 1.4219rem;
-  }
-
   .menu-cards .tips-insight-quick-access-item img {
     max-width: var(--bbl-space-600);
     max-height: var(--bbl-space-600);
@@ -93,8 +88,4 @@
     flex: calc(32.33% - 4rem);
   }
 
-  .menu-cards .tips-insight-quick-access-title {
-    font-size: var(--bbl-font-size-h3-desktop);
-    line-height: var(--bbl-line-height-h3-desktop);
-  }
 }
