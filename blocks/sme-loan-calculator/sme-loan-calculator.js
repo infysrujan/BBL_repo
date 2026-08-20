@@ -172,8 +172,8 @@ export default async function decorate(block) {
   }
 
   // ── Field card builder ──
-  function buildFieldCard(f) {
-    const cardClass = calcType === 'wc' ? 'sme-working-capital-fields' : 'sme-field-wrapper';
+  function buildFieldCard(f, tabType) {
+    const cardClass = tabType === 'wc' ? 'sme-working-capital-fields' : 'sme-field-wrapper';
     const card = el('div', cardClass);
     const box = el('div', 'sme-field-text-box');
 
@@ -306,7 +306,7 @@ export default async function decorate(block) {
       hdr.textContent = group.header;
       row.appendChild(hdr);
     }
-    group.fields.forEach((f) => row.appendChild(buildFieldCard(f)));
+    group.fields.forEach((f) => row.appendChild(buildFieldCard(f, calcType)));
     dark.appendChild(row);
   });
 
