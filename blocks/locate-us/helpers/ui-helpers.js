@@ -651,11 +651,19 @@ export async function buildOverseasUI(container, placeholders, configs) {
     }, placeholders);
   }
 
+  // Country names (EN + TH) that are domestic, not overseas — excluded here so
+  // a keyword search never surfaces Thailand branches in the overseas locator.
+  const DOMESTIC_COUNTRIES = ['thailand', 'ประเทศไทย'];
+
   function showOverseasResults(allLocs) {
     const filtered = allLocs.filter((loc) => {
       const address = [loc.Address1, loc.Address2, loc.Address3, loc.Province, loc.Postcode].filter(Boolean).join(' ');
       const validTel = hasValue(loc.Tel) && /[\d]/.test(loc.Tel);
-      return hasValue(loc.MicroBranchHours) && validTel && address;
+      const country = (loc.Country || '').trim().toLowerCase();
+      const isDomestic = DOMESTIC_COUNTRIES.includes(country);
+      const isNonInternational = (loc.InternationalBranch || '').trim().toLowerCase() === 'x';
+      return hasValue(loc.MicroBranchHours) && validTel && address
+        && !isDomestic || isNonInternational;
     });
 
     filtered.sort((a, b) => (a.BranchName || '').localeCompare(b.BranchName || '', undefined, { sensitivity: 'base' }));
