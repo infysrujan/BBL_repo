@@ -63,7 +63,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 }
 
 /* ── Tab navigation ───────────────────────────────────────── */
-.section.tabs-container .tabs.simple-tab .tabs-nav-wrapper {
+.section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav-wrapper {
   background-color: var(--bbl-color-truthful-dark-blue);
   padding-inline: 1.9375rem;
   overflow: hidden;
@@ -72,7 +72,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   margin: 0 auto;
 }
 
-.section.tabs-container .tabs.simple-tab .tabs-nav {
+.section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-around;
@@ -84,7 +84,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   max-width: 100%;
 }
 
-.section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
+.section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav button[role="tab"] {
   background: none;
   border: none;
   box-shadow: none;
@@ -103,12 +103,12 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   outline: none;
 }
 
-.section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"]:hover {
+.section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav button[role="tab"]:hover {
   color: var(--bbl-color-white);
 }
 
-.section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"].active,
-.section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"][aria-selected="true"] {
+.section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav button[role="tab"].active,
+.section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav button[role="tab"][aria-selected="true"] {
   color: var(--bbl-color-white);
   font-weight: var(--bbl-font-weight-regular);
   box-shadow: none;
@@ -117,13 +117,13 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 }
 
 /* remove any default EDS tab indicator or white gap */
-.section.tabs-container .tabs.simple-tab .tabs-nav-wrapper::after,
-.section.tabs-container .tabs.simple-tab .tabs-nav::after {
+.section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav-wrapper::after,
+.section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav::after {
   display: none;
 }
 
 /* override global BBL blue active indicator on tab buttons */
-.section.tabs-container .tabs.simple-tab .tabs-nav button::before {
+.section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav button::before {
   background: transparent;
   display: none;
 }
@@ -463,7 +463,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
     font-size: 0.6875rem;
   }
 
-  .section.tabs-container .tabs.simple-tab .tabs-nav-wrapper {
+  .section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav-wrapper {
     padding: 0 3rem;
     overflow: visible;
   }
@@ -477,13 +477,13 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   }
 
   /* All tabs stay in one horizontal row at tablet */
-  .section.tabs-container .tabs.simple-tab .tabs-nav {
+  .section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav {
     flex-wrap: nowrap;
     overflow: visible;
   }
 
   /* Slightly larger than mobile but small enough for all 4 tabs to fit on one line */
-  .section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
+  .section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav button[role="tab"] {
     font-size: 0.8125rem;
     line-height: 0.875rem;
     padding: 1rem 0.5rem;
@@ -536,7 +536,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
     font-size: var(--bbl-font-size-b1-desktop);
   }
 
-  .section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
+  .section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav button[role="tab"] {
     font-size: 1rem;
     line-height: 1rem;
     padding: 1.25rem 1rem;
