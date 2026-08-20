@@ -65,7 +65,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 /* ── Tab navigation ───────────────────────────────────────── */
 .section.tabs-container .tabs.simple-tab .tabs-nav-wrapper {
   background-color: var(--bbl-color-truthful-dark-blue);
-  padding: 0;
+  padding-inline: 1.9375rem;
   overflow: hidden;
   border-bottom: none;
   max-width: 79.5rem;
@@ -90,7 +90,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   box-shadow: none;
   color: var(--bbl-color-sme-tab-inactive);
   font-size: 0.6875rem;
-  line-height: 1.3;
+  line-height: 0.7875rem;
   font-weight: var(--bbl-font-weight-regular);
   padding: 0.625rem 0.25rem;
   cursor: pointer;
@@ -100,7 +100,6 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   box-sizing: border-box;
   white-space: normal;
   transition: color 0.2s;
-  letter-spacing: 0.02em;
   outline: none;
 }
 
@@ -114,7 +113,6 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   font-weight: var(--bbl-font-weight-regular);
   box-shadow: none;
   text-decoration: underline;
-  text-underline-offset: 0.25rem;
   text-decoration-thickness: 0.125rem;
 }
 
@@ -164,7 +162,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 .sme-calc-dark-section {
   background-color: var(--bbl-color-truthful-dark-blue);
   border-radius: 0.5rem 0.5rem 0 0;
-  padding: 1.5rem 1rem 2rem;
+  padding: 3.75rem 1.9375rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -187,8 +185,6 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 .row.paddingmain {
   flex-direction: column;
   align-items: stretch;
-  gap: 0.75rem;
-  margin-bottom: 2rem;
 }
 
 .row.paddingmain.alignc {
@@ -210,7 +206,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   justify-content: space-between;
   gap: 0.75rem;
   flex: 1;
-  border: 0.0625rem solid var(--bbl-color-sme-field-border);
+  border: 0.0625rem solid var(--bbl-color-grey-150);
   border-radius: 0.5rem;
   padding: 0.875rem 1.25rem;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -269,7 +265,6 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 .sme-loan-calculator .fontcondition {
   font-size: 0.6875rem;
   color: var(--bbl-color-grey-150);
-  margin-top: 0.375rem;
   line-height: 1.4;
 }
 
@@ -277,6 +272,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   font-family: var(--bbl-font-family-primary);
   display: block;
   text-align: right;
+  padding-bottom: 1.5625rem;
 }
 
 /* ── Calculate button ────────────────────────────────────── */
@@ -288,9 +284,8 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   min-width: 11.125rem;
   height: 2.75rem;
   padding: 0.0625rem 0;
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-size: 0.8125rem;
+  font-weight: 400;
   cursor: pointer;
   text-transform: uppercase;
   transition: background-color 0.2s;
@@ -304,8 +299,9 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 .sme-calc-result-section {
   background-color: var(--bbl-color-sme-section-bg);
   border-radius: 0 0 0.5rem 0.5rem;
-  padding: 1.75rem 1rem;
+  padding: 1.5625rem 1rem;
   text-align: center;
+  padding-bottom: 3.125rem;
 }
 
 .sme-calc-result-label {
@@ -315,7 +311,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   color: var(--bbl-color-white);
   letter-spacing: 0.01em;
   line-height: 1.625rem;
-  margin: 0 0 1rem;
+  margin: 1.875rem 0 1rem;
 }
 
 .sme-calc-result-label strong {
@@ -472,6 +468,14 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
     overflow: visible;
   }
 
+  .section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav-wrapper {
+    padding-inline: 3.9375rem;
+  }
+
+  .section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav-wrapper button {
+    margin: 0;
+  }
+
   /* All tabs stay in one horizontal row at tablet */
   .section.tabs-container .tabs.simple-tab .tabs-nav {
     flex-wrap: nowrap;
@@ -481,21 +485,23 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   /* Slightly larger than mobile but small enough for all 4 tabs to fit on one line */
   .section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
     font-size: 0.8125rem;
-    line-height: 1.3;
+    line-height: 0.875rem;
     padding: 1rem 0.5rem;
     white-space: normal;
     max-width: none;
   }
 
+
   .sme-calc-dark-section {
     border-radius: 0.75rem 0.75rem 0 0;
-    padding: 2.5rem 3rem 3rem;
+    padding: 2.5rem 5.25rem 3.125rem;
     display: block;
   }
 
   .sme-calc-result-section {
     padding: 1.875rem 0.625rem;
     border-radius: 0;
+    padding-bottom: 3.125rem;
   }
 
   /* Fields remain stacked (column) at tablet — 3-column moves to desktop */
@@ -532,6 +538,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 
   .section.tabs-container .tabs.simple-tab .tabs-nav button[role="tab"] {
     font-size: 1rem;
+    line-height: 1rem;
     padding: 1.25rem 1rem;
   }
 
@@ -539,6 +546,10 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
     flex-direction: row;
     align-items: flex-start;
     gap: 0 1rem;
+  }
+
+  .section.tabs-container:has(.sme-loan-calculator-wrapper) .tabs.simple-tab .tabs-nav-wrapper {
+    padding-inline: 5.25rem;
   }
 
   .col-md-4.paddingcal {
