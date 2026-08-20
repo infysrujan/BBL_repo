@@ -879,7 +879,7 @@ p.text-large.text-light {
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 {
     font-size: 1.5rem;
     line-height: 1.625rem;
-    font-family: BangkokBank-Medium, sans-serif;
+    font-family: var(--bbl-font-family-medium);
     font-weight: var(--bbl-font-weight-regular);
   }
 
