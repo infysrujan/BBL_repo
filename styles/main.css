@@ -15,6 +15,7 @@
     --bbl-layout-content-max-width-desktop: 1240px;
     --bbl-layout-content-max-width-1920: 1752px;
     --bbl-layout-central-aligned-max-width: 900px;
+    --bbl-layout-content-max-width-exception-wealth: 1440px;
 
     /* header height used for scroll-margin-top offset (mobile-first) */
     --header-scroll-offset: 5rem;
