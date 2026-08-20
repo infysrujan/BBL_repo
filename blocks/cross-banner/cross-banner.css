@@ -47,9 +47,9 @@
 
 .cross-banner-title {
   color: var(--bbl-color-black);
-  font-size: var(--bbl-font-size-h3-mobile);
+  font-size: var(--bbl-heading-h2-size);
   font-weight: var(--bbl-font-weight-regular);
-  line-height: var(--bbl-line-height-h3-mobile);
+  line-height: var(--bbl-heading-h2-line-height);
   margin-bottom: 0.9375rem;
   font-family: var(--bbl-font-family-medium);
   display: -webkit-box;

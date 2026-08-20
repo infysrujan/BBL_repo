@@ -30,7 +30,7 @@
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
-  font-size: var(--bbl-font-size-h3-mobile);
+  font-size: var(--bbl-heading-h3-size);
   line-height: var(--bbl-line-height-h3-mobile);
   overflow: hidden;
   display: -webkit-box;
