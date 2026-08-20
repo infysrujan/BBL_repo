@@ -242,7 +242,6 @@
   }
 
   .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .all-mf-fund-cards, .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow {
-    display: flex;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
