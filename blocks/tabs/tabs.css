@@ -127,12 +127,12 @@
 }
 
 /* SPACING INSIDE TAB PANEL between different blocks except download block */
-.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper, :has(.merge-tables)):has(+ *) {
   padding-bottom: 1.5rem;
 }
 
 @media (width > 64rem) {
-  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper, :has(.merge-tables)):has(+ *) {
     padding-bottom: 2rem;
   }
 }
