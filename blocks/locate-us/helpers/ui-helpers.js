@@ -658,6 +658,8 @@ export async function buildOverseasUI(container, placeholders, configs) {
       return hasValue(loc.MicroBranchHours) && validTel && address;
     });
 
+    filtered.sort((a, b) => (a.BranchName || '').localeCompare(b.BranchName || '', undefined, { sensitivity: 'base' }));
+
     if (!filtered.length) {
       resultsSection.hidden = false;
       noResults.hidden = false;
