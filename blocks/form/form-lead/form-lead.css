@@ -159,6 +159,7 @@ main .lead-forms .drop-down-wrapper {
 main .section.form-container.lead-forms .form form .plain-text-wrapper.field-text {
   background-color: unset;
   padding: unset;
+  padding-top: var(--bbl-form-padding-30);
   border-radius: unset;
   font-size: unset;
 }
