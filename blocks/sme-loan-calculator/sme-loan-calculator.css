@@ -285,7 +285,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   height: 2.75rem;
   padding: 0.0625rem 0;
   font-size: 0.8125rem;
-  font-weight: 400;
+  font-weight: var(--bbl-font-weight-regular);
   cursor: pointer;
   text-transform: uppercase;
   transition: background-color 0.2s;
