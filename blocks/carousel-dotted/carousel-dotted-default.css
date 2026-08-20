@@ -364,6 +364,11 @@
   z-index: 2;
 }
 
+.carousel-dotted .carousel-dotted-more .button-container > a {
+  font-size: var(--bbl-font-size-b2-desktop);
+  line-height: var(--bbl-line-height-b2-desktop);
+}
+
 .carousel-dotted .icon-arrow-left {
   display: inline-flex;
   align-items: center;
