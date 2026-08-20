@@ -275,12 +275,6 @@
         gap: var(--bbl-space-300);
     }
 
-    .carousel-eyebrow {
-        padding: var(--bbl-space-050) 0.4375rem;
-        margin-bottom: 0.875rem;
-        font-family: var(--bbl-font-family-medium);
-    }
-
     .carousel-track.is-sliding {
         width: 100%;
         margin-left: 0;
@@ -387,6 +381,12 @@
         min-height: 0;
         display: flex;
         flex-direction: column;
+    }
+
+    .carousel-eyebrow {
+        padding: var(--bbl-space-025) var(--bbl-space-100);
+        margin-bottom: 0.875rem;
+        font-family: var(--bbl-font-family-medium);
     }
 
     .carousel-title {
