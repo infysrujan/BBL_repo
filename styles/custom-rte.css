@@ -57,10 +57,6 @@
   margin-block: 0;
 }
 
-.table.block table td p:is(.rte-has-icon, .rte-image-link, .rte-inline-image):has(picture) picture {
-  display: flex;
-}
-
 .table.block table td li:has(p:is(.rte-inline-image, .rte-has-icon)) p {
   display: inline;
   margin: 0;
