@@ -168,6 +168,10 @@
                 {
                   "name": "Center Content",
                   "value": "center-content"
+                },
+                {
+                  "name": "Right Content",
+                  "value": "right-content"
                 }
               ]
             },
@@ -282,6 +286,7 @@
         "latest-news",
         "forward-points-sme",
         "saving-plan",
+        "bwealth-series",
         "category-banner",      
         "bbm-glow-card",
         "menu-list",

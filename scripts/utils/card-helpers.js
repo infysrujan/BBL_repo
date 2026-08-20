@@ -291,7 +291,13 @@ export function bindPaginationClick(paginationEl, pageRef, onPageChange, scrollT
     }
     if (changed) {
       onPageChange();
-      scrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (scrollTarget) {
+        // Land the target below the fixed header, not behind it. scrollIntoView
+        // honors scroll-margin-top, so reuse the site's --header-scroll-offset
+        // token (same value .section uses) instead of measuring the header in JS.
+        scrollTarget.style.scrollMarginTop = 'var(--header-scroll-offset)';
+        scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   });
 }

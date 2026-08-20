@@ -129,12 +129,19 @@ function createTableElement(columnNames, data, dataType, sourceElement) {
         </tr>
       `).join('');
     } else if (dataType === 'fund') {
-      tbody += data.map((item) => `
+      tbody += data.map((item) => {
+        const navValue = item.mfr_fNav ?? item.NAV;
+        const nav = Number(navValue);
+        // Match fund-prices' formatting: pad to 4 decimal places instead of
+        // showing the raw, sometimes-truncated API value (e.g. 6.562 -> 6.5620).
+        const navText = Number.isFinite(nav) ? nav.toFixed(4) : (navValue || '-');
+        return `
         <tr>
           <td>${item.mf_sEng || item.FundName || '-'}</td>
-          <td>${item.mfr_fNav || item.NAV || '-'}</td>
+          <td>${navText}</td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     }
 
     tbody += '</tbody>';
@@ -432,12 +439,12 @@ export default async function decorate(block) {
     }
 
     if (bblFundData && Array.isArray(bblFundData) && bblFundData.length > 0) {
-      apiData.bblFund = bblFundData.slice(0, 4); // Limit to 4 items
+      apiData.bblFund = bblFundData;
       apiData.bblFundDate = bblFundData[0]?.mfr_dDataDate || '';
     }
 
     if (bcapFundData && Array.isArray(bcapFundData) && bcapFundData.length > 0) {
-      apiData.bcapFund = bcapFundData.slice(0, 4); // Limit to 4 items
+      apiData.bcapFund = bcapFundData;
       apiData.bcapFundDate = bcapFundData[0]?.mfr_dDataDate || '';
     }
   } catch (error) {

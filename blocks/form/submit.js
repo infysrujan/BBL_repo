@@ -56,6 +56,33 @@ export function setFormPlaceholders(placeholders) {
   formPlaceholders = placeholders;
 }
 
+function closeModalsAndScrollTo(element, { toTop = false } = {}) {
+  document.querySelectorAll('dialog[open]').forEach((dialog) => {
+    try { dialog.close(); } catch { /* ignore */ }
+  });
+  document.body.classList.remove('modal-open');
+
+  // On a successful submit the form is replaced by the thank-you content, so scroll all
+  // the way to the top of the page rather than offsetting to the element position.
+  if (toTop) {
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+    return;
+  }
+
+  if (element) {
+    setTimeout(() => {
+      const header = document.querySelector('header')
+        || document.querySelector('.header-wrapper');
+      const headerHeight = header
+        ? (header.getBoundingClientRect().height || header.offsetHeight)
+        : 0;
+      const elementTop = element.getBoundingClientRect().top + window.scrollY;
+      const top = Math.max(0, elementTop - headerHeight - 150);
+      window.scrollTo({ top, behavior: 'smooth' });
+    }, 100);
+  }
+}
+
 export function submitSuccess(e, form) {
   const { payload } = e;
   const authoredThankYouMsg = form.dataset.thankYouMsg;
@@ -67,7 +94,7 @@ export function submitSuccess(e, form) {
     thankyouPanel.dataset.visible = 'true';
     const reviewPanel = form.querySelector('fieldset[name="review_panel"]');
     if (reviewPanel) reviewPanel.dataset.visible = 'false';
-    thankyouPanel.scrollIntoView?.({ behavior: 'smooth' });
+    closeModalsAndScrollTo(thankyouPanel, { toTop: true });
   } else if (thankYouMsg || !redirectUrl) {
     let thankYouMessage = form.parentNode.querySelector('.form-message.success-message');
     if (!thankYouMessage) {
@@ -78,10 +105,9 @@ export function submitSuccess(e, form) {
     // Hide the form and show only the success message
     form.style.display = 'none';
     form.parentNode.insertBefore(thankYouMessage, form);
-    if (thankYouMessage.scrollIntoView) {
-      thankYouMessage.scrollIntoView({ behavior: 'smooth' });
-    }
+    closeModalsAndScrollTo(thankYouMessage, { toTop: true });
   } else {
+    closeModalsAndScrollTo();
     window.location.assign(encodeURI(redirectUrl));
   }
   form.setAttribute('data-submitting', 'false');
@@ -105,7 +131,7 @@ export function submitFailure(_e, form) {
   }
   errorMessage.innerHTML = errorMsg;
   form.prepend(errorMessage);
-  errorMessage.scrollIntoView({ behavior: 'smooth' });
+  closeModalsAndScrollTo(errorMessage);
   form.setAttribute('data-submitting', 'false');
   form.querySelector('button[type="submit"]').disabled = false;
 }
@@ -214,7 +240,7 @@ export async function handleSubmit(e, form, captcha) {
     const firstInvalidEl = form.querySelector(':invalid:not(fieldset)');
     if (firstInvalidEl) {
       firstInvalidEl.focus();
-      firstInvalidEl.scrollIntoView({ behavior: 'smooth' });
     }
+    closeModalsAndScrollTo(firstInvalidEl?.closest('.field-wrapper') || firstInvalidEl);
   }
 }

@@ -77,6 +77,11 @@ function fmtNav(v) {
   return typeof v === 'number' ? v.toFixed(4) : (v ?? 'N/A');
 }
 
+function fmtHeaderNav(v) {
+  const navStr = fmtNav(v);
+  return navStr === 'N/A' ? '0.00' : navStr;
+}
+
 function fmtHistDate(ymd) {
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(ymd);
   if (!m) return ymd;
@@ -616,8 +621,8 @@ export default async function decorate(block) {
     const statLabels = [labels.statRowSelected, labels.statRowYear, labels.statRowInception];
     renderStatTables(stats, highTbody, lowTbody, statLabels, labels.noDataFound);
     chartSubtitle.textContent = subtitle;
-    chartBeginNav.textContent = fmtNav(stats.Begin_mfr_fNav);
-    chartEndNav.textContent = fmtNav(stats.End_mfr_fNav);
+    chartBeginNav.textContent = fmtHeaderNav(stats.Begin_mfr_fNav);
+    chartEndNav.textContent = fmtHeaderNav(stats.End_mfr_fNav);
     renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
     renderHistTable(histTbody, sorted, labels.noDataFound);
 
@@ -652,13 +657,13 @@ export default async function decorate(block) {
   }
 
   /* Calendar pickers for date range */
-  attachCalendarPicker({
+  const drFromPicker = attachCalendarPicker({
     input: drFromInput,
     value: drFrom,
     isDateDisabled: isWeekendOrAfterYesterday,
     onChange: (d) => { drFrom = d; validateAndRenderDetail(); },
   });
-  attachCalendarPicker({
+  const drToPicker = attachCalendarPicker({
     input: drToInput,
     value: drTo,
     isDateDisabled: isWeekendOrAfterYesterday,
@@ -687,9 +692,11 @@ export default async function decorate(block) {
       const start = new Date(end.getFullYear(), end.getMonth(), 1);
       drFrom = start;
       drTo = end;
-      const lang = getCalendarLang();
-      drFromInput.value = formatCalendarDate(start, lang);
-      drToInput.value = formatCalendarDate(end, lang);
+      // Update through the pickers so their internal selection stays in sync with
+      // the input value (otherwise open+click-out reverts the field to the picker's
+      // stale selected date).
+      drFromPicker.setValue(start);
+      drToPicker.setValue(end);
       periodDateRangeEl.classList.remove('hidden');
       validateAndRenderDetail();
     } else {
