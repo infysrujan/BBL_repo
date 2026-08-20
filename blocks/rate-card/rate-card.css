@@ -32,6 +32,7 @@
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-gray-121);
   margin-bottom: var(--bbl-space-250);
+  position: relative;
 }
 
 /* --------------------------------------------------------------------------
@@ -115,8 +116,7 @@
 }
 
 .rate-card .currency-list {
-  padding: 1.5625rem 0;
-  position: relative;
+  padding: 1.5625rem 0 0;
   margin-bottom: 0;
 }
 
@@ -156,7 +156,7 @@
   padding: 0 0 0.625rem;
   text-align: left;
   font-weight: 400;
-  font-size: 0.875rem;
+  font-size: var(--bbl-text-default-size);
   font-family: var(--bbl-font-family-primary);
   background: transparent;
 }
@@ -169,7 +169,7 @@
 
 .rate-card table tbody td {
   padding: 0.3125rem 0;
-  font-size: 0.875rem;
+  font-size: var(--bbl-text-default-size);
   color: var(--bbl-color-gray-121);
   font-family: var(--bbl-font-family-md-number);
   font-weight: 400;
@@ -207,7 +207,7 @@
 
 .rate-card .country-select span {
   color: var(--bbl-color-black);
-  font-size: 0.875rem;
+  font-size: var(--bbl-text-default-size);
   line-height: 1.2031rem;
 }
 
@@ -239,7 +239,7 @@
    DATE UPDATE STYLING
    -------------------------------------------------------------------------- */
 .rate-card .text-x-small {
-  font-size: 0.75rem;
+  font-size: var(--bbl-text-small-size);
   color: var(--bbl-color-grey-90);
   font-family: var(--bbl-font-family-looped);
 }
@@ -320,12 +320,6 @@
     font-family: var(--bbl-font-family-medium);
   }
 
-  .rate-card .country-select span,
-  .rate-card table thead th,
-  .rate-card table tbody td {
-    font-size: 1rem;
-  }
-
   .rate-card .currency-list table tbody td {
     height: 2.5625rem;
   }
@@ -341,7 +335,8 @@
 
   .rate-card section>.inner:first-child .default-wrap {
     position: absolute;
-    bottom: -16%;
+    bottom: 0;
+    padding: 0 1.5rem 1.5rem;
   }
 
   .rate-card .percent {
