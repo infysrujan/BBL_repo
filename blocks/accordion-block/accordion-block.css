@@ -66,7 +66,7 @@
 }
 
 .accordion-toolbar-label:hover {
-  font: 1rem BangkokBank-Medium, sans-serif;
+  font: 1rem var(--bbl-font-family-medium);
   color: var(--bbl-color-blue-90);
 }
 
@@ -107,7 +107,7 @@
   color: var(--bbl-color-black);
   flex-shrink: 0;
   margin-left: 1rem;
-  font: 2rem Muli-Light, sans-serif;
+  font: 2rem var(--bbl-font-family-primary);
   line-height: 1;
   transition: transform 0.2s ease;
 }
@@ -143,7 +143,7 @@
   line-height: var(--bbl-text-accordion-line-height);
   font-weight: var(--bbl-text-accordion-weight);
   color: var(--bbl-color-black);
-  font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif;
+  font-family: var(--bbl-font-family-medium);
 }
 
 .accordion-panel .default-content-wrapper ul {

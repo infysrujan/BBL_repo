@@ -15,6 +15,7 @@
     --bbl-layout-content-max-width-desktop: 1240px;
     --bbl-layout-content-max-width-1920: 1752px;
     --bbl-layout-central-aligned-max-width: 900px;
+    --bbl-layout-content-max-width-exception-wealth: 1440px;
 
     /* header height used for scroll-margin-top offset (mobile-first) */
     --header-scroll-offset: 5rem;
@@ -31,7 +32,7 @@ body {
     display: none;
     margin: 0;
     background-color: var(--bbl-bg-primary);
-    color: var(--bbl-color-grey-70);
+    color: var(--bbl-color-grey-90);
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-text-default-size);
     line-height: var(--bbl-text-default-line-height);
@@ -115,6 +116,7 @@ h6 {
 
 strong{
   font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
 }
 
 p,
