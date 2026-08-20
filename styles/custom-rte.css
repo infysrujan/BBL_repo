@@ -38,7 +38,7 @@
   display: inline;
 }
 
-.table.block table td p:is(.rte-inline-image, .rte-has-icon) {
+.table.block table td p:is(.rte-inline-image, .rte-has-icon, .rte-image-link) {
   display: inline;
   margin: 0;
 }
