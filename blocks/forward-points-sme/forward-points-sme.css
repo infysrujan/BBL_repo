@@ -142,6 +142,7 @@
 .forward-points-sme .fpsme-time-dropdown.is-open .fpsme-time-list {
   display: block;
   width: 7.44rem;
+  overflow-x: hidden;
 }
 
 .forward-points-sme .fpsme-time-item {
@@ -150,6 +151,8 @@
   font-weight: 700;
   color: var(--bbl-color-black);
   cursor: pointer;
+  width: max-content;
+  white-space: nowrap;
 }
 
 .forward-points-sme .fpsme-time-item:hover {
