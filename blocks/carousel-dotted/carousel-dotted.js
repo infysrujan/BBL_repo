@@ -760,6 +760,11 @@ export default async function decorate(block) {
           trackWrapper.getBoundingClientRect();
           trackWrapper.style.transition = '';
           if (trackViewport) {
+            if (slidesCircularImage > 0 && slideEls[0]) {
+              const updateH = () => { if (slideEls[0].offsetHeight > 0) trackViewport.style.height = `${slideEls[0].offsetHeight}px`; };
+              updateH();
+              slideEls[0].querySelectorAll('img').forEach((img) => { if (!img.complete) img.addEventListener('load', updateH, { once: true }); });
+            }
             trackViewport.style.visibility = '';
           }
         } else if (trackWrapper) {

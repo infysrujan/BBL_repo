@@ -892,6 +892,11 @@ p.text-large.text-light {
     margin: 0 1.875rem 0 0;
   }
 
+  .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item.with-circular-image {
+    padding-inline: 3.75rem;
+    box-sizing: border-box;
+  }
+
   .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
     margin: unset;
   }
