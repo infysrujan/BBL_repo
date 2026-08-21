@@ -132,7 +132,7 @@
   border: 0.0625rem solid var(--bbl-color-grey-22);
   border-radius: var(--bbl-radius-input);
   box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 12%);
-  z-index: 400;
+  z-index: 99;
   margin: 0;
   padding: var(--bbl-space-100) 0;
   list-style: none;
