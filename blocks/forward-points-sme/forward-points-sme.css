@@ -150,6 +150,7 @@
   font-weight: 700;
   color: var(--bbl-color-black);
   cursor: pointer;
+  width: max-content;
 }
 
 .forward-points-sme .fpsme-time-item:hover {
