@@ -687,6 +687,10 @@
     font-size: 1rem;
   }
 
+  .forward-points-sme .fpsme-fwd-table-col {
+    padding-inline: 20px;
+  }
+
   .forward-points-sme .fpsme-update-label {
     font-size: 1rem;
     font-weight: 700;
