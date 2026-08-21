@@ -67,6 +67,7 @@
     & fieldset.panel-wrapper:has(.date-wrapper) > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper),
     & fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper) {
         position: relative;
+        grid-column: span 12;
         width: 100%;
         margin: 0;
         padding: 0;
