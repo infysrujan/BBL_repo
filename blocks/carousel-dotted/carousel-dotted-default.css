@@ -1025,4 +1025,8 @@ p.text-large.text-light {
   .carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
     width: 100%;
   }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item.with-circular-image {
+    padding-inline: 0;
+  }
 }

@@ -284,19 +284,14 @@
     height: 2.5rem;
   }
 
-  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow-prev {
+ .carousel-dotted.show-arrows-dots.all-mf-fund-cards,
+ .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots {
+  .carousel-arrow-prev {
     left: -3.4375rem;
   }
 
-  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow-next {
+  .carousel-arrow-next {
     right: -3.4375rem;
   }
-
-  :is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
-    left: -3.4375rem;
-  }
-
-  :is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
-    right: -3.4375rem;
-  }
+ }
 }
