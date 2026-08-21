@@ -115,6 +115,10 @@
   position: relative;
 }
 
+.carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
+  transition: height 300ms ease;
+}
+
 .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper {
   display: flex;
   width: 100%;
