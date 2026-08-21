@@ -257,10 +257,6 @@
   .card-list.credit-card .cards-list-inner {
     min-height: 27rem;
   }
-
-  .ccs-results-disclaimer {
-    margin-inline: 3rem;
-  }
 }
 
 @media (width > 64rem) {
