@@ -369,6 +369,10 @@
               {
                 "name": "Center Content",
                 "value": "center-content"
+              },
+              {
+                "name": "Right Content",
+                "value": "right-content"
               }
             ]
           },
@@ -518,6 +522,10 @@
     ]
   },
   {
+    "id": "bwealth-series",
+    "fields": []
+  },
+  {
     "id": "card-comparator-results",
     "fields": [
       {
@@ -659,6 +667,7 @@
         "name": "cardListLayout",
         "value": "default",
         "label": "Card List Layout",
+        "description": "Select Carousel when the Card List is used as a fragment in the Card List Carousel variation of the Carousel Dotted block.",
         "valueType": "string",
         "options": [
           {
@@ -1059,6 +1068,14 @@
         "name": "financialDate",
         "label": "Financial Date",
         "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "showOnlyMonthYear",
+        "label": "Show Only Month and Year",
+        "description": "If enabled, only the month and year will be displayed.",
+        "valueType": "boolean",
+        "value": false
       }
     ]
   },
@@ -11218,6 +11235,14 @@
         "name": "financialDate",
         "label": "Financial Date",
         "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "showOnlyMonthYear",
+        "label": "Show Only Month and Year",
+        "description": "If enabled, only the month and year will be displayed.",
+        "valueType": "boolean",
+        "value": false
       }
     ]
   },
@@ -12747,6 +12772,10 @@
               {
                 "name": "Border Bottom",
                 "value": "border-bottom"
+              },
+              {
+                "name": "No Border Bottom",
+                "value": "no-border-bottom"
               }
             ]
           },
@@ -12827,6 +12856,10 @@
               {
                 "name": "Dash Cell Highlight",
                 "value": "dash-cell-highlight"
+              },
+              {
+                "name": "Highlight Bold Cells",
+                "value": "highlight-bold-cells"
               }
             ]
           },
@@ -12861,6 +12894,14 @@
             ]
           }
         ]
+      },
+      {
+        "component": "text",
+        "name": "columnWidth",
+        "label": "Column Width",
+        "valueType": "string",
+        "required": false,
+        "description": "Comma-separated width per column, in order. Accepts any CSS width value (e.g. 35%, 30px, fit-content). Use \"auto\" or leave a column blank to size it automatically."
       },
       {
         "component": "text",
@@ -13077,6 +13118,138 @@
         "component": "multiselect",
         "name": "style",
         "label": "Style",
+        "valueType": "string",
+        "required": false,
+        "options": [
+          {
+            "name": "Section type",
+            "children": [
+              {
+                "name": "Central Aligned",
+                "value": "central-aligned"
+              },
+              {
+                "name": "Full Bleed Special",
+                "value": "full-bleed-special"
+              },
+              {
+                "name": "Full Bleed Background",
+                "value": "full-bleed-bg"
+              }
+            ]
+          },
+          {
+            "name": "Background Color",
+            "children": [
+              {
+                "name": "Truthful Blue",
+                "value": "bg-truthful-blue"
+              },
+              {
+                "name": "Deep Blue",
+                "value": "bg-truthful-dark-blue"
+              },
+              {
+                "name": "bgd-blue",
+                "value": "bg-ice-blue"
+              },
+              {
+                "name": "Wealth Theme BG",
+                "value": "bg-grey-10"
+              },
+              {
+                "name": "bgd-grey",
+                "value": "bg-grey-05"
+              },
+              {
+                "name": "Elite Theme BG",
+                "value": "bg-grey-100"
+              },
+              {
+                "name": "Primary Blue S01",
+                "value": "bg-primary-blue-s01"
+              }
+            ]
+          },
+          {
+            "name": "Padding",
+            "children": [
+              {
+                "name": "Padding Top",
+                "value": "pad-top-30"
+              },
+              {
+                "name": "Padding Bottom",
+                "value": "pad-bot-30"
+              }
+            ]
+          },
+          {
+            "name": "Layout",
+            "children": [
+              {
+                "name": "Columns 3",
+                "value": "columns-3"
+              },
+              {
+                "name": "Columns 2(75-25)",
+                "value": "columns-2-75"
+              },
+              {
+                "name": "Columns 2(50-50)",
+                "value": "columns-2-50"
+              },
+              {
+                "name": "Columns 2(65-35)",
+                "value": "columns-2-65"
+              }
+            ]
+          },
+          {
+            "name": "Style",
+            "children": [
+              {
+                "name": "Underline Title",
+                "value": "underline-title"
+              },
+              {
+                "name": "Center Title",
+                "value": "center-title"
+              },
+              {
+                "name": "Center Image",
+                "value": "center-image"
+              },
+              {
+                "name": "Underline Image",
+                "value": "underline-image"
+              },
+              {
+                "name": "Center Content",
+                "value": "center-content"
+              }
+            ]
+          },
+          {
+            "name": "Theme",
+            "children": [
+              {
+                "name": "Background Wealth",
+                "value": "background-wealth"
+              },
+              {
+                "name": "Background Private Banking",
+                "value": "background-privatebanking"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "component": "multiselect",
+        "name": "parent-container-style",
+        "label": "Parent Container Style",
+        "description": "Style classes applied to the section wrapping all tabs (read from the first tab)",
         "valueType": "string",
         "required": false,
         "options": [

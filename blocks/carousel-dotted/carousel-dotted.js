@@ -227,8 +227,8 @@ export default async function decorate(block) {
   // class). When decorate() is called on that copy, we still need to clean up the stale
   // original. The `content` class is always added during decoration, making it the
   // reliable indicator of an already-decorated block.
-  const section = block.closest('.section') || block.parentElement;
-  section.querySelectorAll('.carousel-dotted.block').forEach((other) => {
+  const scope = block.closest('.carousel-dotted-wrapper') || block.closest('.section') || block.parentElement;
+  scope.querySelectorAll('.carousel-dotted.block').forEach((other) => {
     if (other === block) return;
     if (other.classList.contains('content')) other.remove();
   });
@@ -806,18 +806,32 @@ export default async function decorate(block) {
   }
 
   if (circularOrDefaultImage) {
-    window.addEventListener('resize', () => {
+    // Snap the track to the active slide's resting position with no animation.
+    const snapToActive = () => {
       const currentIndex = slideEls.findIndex((slide) => slide.classList.contains('is-active'));
       const trackWrapper = block.querySelector('.carousel-track-wrapper');
       const trackViewport = block.querySelector('.carousel-track-viewport');
       if (!trackWrapper) return;
       const width = (trackViewport || trackWrapper).offsetWidth;
+      if (!width) return; // still hidden (display:none) — nothing meaningful to set yet
       const idx = currentIndex >= 0 ? currentIndex : 0;
       const cloneOffset = shouldCloneTrack ? 1 : 0;
       trackWrapper.style.transition = 'none';
       trackWrapper.style.transform = `translate3d(${-(idx + cloneOffset) * width}px, 0px, 0px)`;
       trackWrapper.getBoundingClientRect();
       trackWrapper.style.transition = '';
+    };
+
+    window.addEventListener('resize', snapToActive);
+
+    let lastWidth = block.offsetWidth;
+    const visibilityObserver = new ResizeObserver(() => {
+      const width = block.offsetWidth;
+      if (width > 0 && width !== lastWidth) {
+        lastWidth = width;
+        snapToActive();
+      }
     });
+    visibilityObserver.observe(block);
   }
 }

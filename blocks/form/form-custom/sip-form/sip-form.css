@@ -11,8 +11,22 @@
   color: var(--bbl-color-grey-85);
 }
 
+.sip-form main .form-container.custom-forms .form button.primary:hover {
+  background: var(--bbl-color-blue-90);
+  border: none;
+  transition: none;
+}
+
+.sip-form main .section.form-container .form form fieldset.panel-wrapper.field-wrapper{
+  gap: 1.25rem;
+}
+
 .sip-form main .form form .field-wrapper{
   margin: 0;
+}
+
+.sip-form main .section.form-container .form form .field-msg.plain-text-wrapper > p:first-child {
+  text-align: left;
 }
 
 .sip-form main .section.form-container.custom-forms {
@@ -150,6 +164,7 @@
 
     @media (width > 47.5rem) {
       & .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
+        flex-wrap: nowrap;
         gap: var(--form-field-gap) 1.875rem;
 
         & .radio-wrapper {
@@ -183,3 +198,22 @@
     }
   }
 }
+
+.sip-form main  .section.form-container.custom-forms .form form .field-icon.panel-wrapper,
+.sip-form.contact-us main  .section.form-container.custom-forms .form form .field-icon.panel-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--bbl-form-margin-10);
+  margin-bottom: var(--bbl-space-250);
+}
+
+.sip-form main .section.form-container.custom-forms .form form .field-icon.panel-wrapper .plain-text-wrapper,
+.sip-form main .section.form-container.custom-forms .form form .field-icon.panel-wrapper .image-wrapper.field-icon {
+  width: auto ;
+
+  & p{
+      margin: 0;
+  }
+}
+
+ 
