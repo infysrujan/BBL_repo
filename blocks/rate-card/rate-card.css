@@ -333,10 +333,14 @@
     font-size: 1.5rem;
   }
 
-  .rate-card section>.inner:first-child .default-wrap {
+  .rate-card .currency-list:last-child {
+    padding-bottom: calc(var(--bbl-space-300) + 1.1875rem + var(--bbl-space-250));
+  }
+
+  .rate-card .currency-list:last-child .default-wrap {
     position: absolute;
     bottom: 0;
-    padding: 0 1.5rem 1.5rem;
+    padding: 0 1.5rem var(--bbl-space-250);
   }
 
   .rate-card .percent {
@@ -391,7 +395,8 @@
 
   .section.columns-3:has(.rate-card) .carousel-dotted.all-without-image {
     min-height: unset;
-    height: calc(100% - 0.2rem);
+    height: 100%;
+    box-sizing: border-box;
     overflow: hidden;
     margin: 0;
   }
@@ -400,7 +405,8 @@
   .section.columns-3:has(.rate-card .tab-header li:not(:first-child) .active) .carousel-dotted.all-without-image,
   .section.columns-3:has(.rate-card .tab-header li:last-child .active) .carousel-dotted.all-without-image {
     min-height: unset;
-    height: calc(100% - 0.2rem);
+    height: 100%;
+    box-sizing: border-box;
   }
 }
 
