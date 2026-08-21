@@ -2,10 +2,6 @@
   margin-block: 0;
 }
 
-main > .carousel-dotted-container:first-child:has(.all-text-animation-variant) {       
-  margin-top: 2.5625rem;
-}
-
 .carousel-dotted {
   position: relative;
   height: auto;
@@ -921,6 +917,10 @@ p.text-large.text-light {
   .carousel-dotted.all-without-image {
     margin-top: 1.25rem;
     min-height: 30.9375rem;
+  }
+
+  main > .carousel-dotted-container:first-child:has(.all-text-animation-variant) {       
+    margin-top: 2.5625rem;
   }
 
   .section:has(.rate-card .tab-header li:not(:first-child) .active) .carousel-dotted.all-without-image {
