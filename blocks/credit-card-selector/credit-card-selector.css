@@ -438,6 +438,11 @@
   transform: rotate(0deg);
 }
 
+.credit-card-selector-wrapper .collapse-toggle-bar.is-collapsed .collapse-toggle-button {
+  padding-top: 0.9375rem;
+  padding-bottom: 0;
+}
+
 /* ==========================================================================
    Touch devices — suppress hover ring so taps do not leave stale outlines
    ========================================================================== */
