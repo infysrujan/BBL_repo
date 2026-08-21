@@ -292,14 +292,6 @@
     right: -3.4375rem;
   }
 
-  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
-    left: -0.9375rem;
-  }
-
-  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
-    right: -0.9375rem;
-  }
-
   :is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
     left: -3.4375rem;
   }
