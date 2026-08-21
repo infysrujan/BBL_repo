@@ -261,7 +261,7 @@
   }
 
   .ccs-results-disclaimer {
-    padding-inline: var(--bbl-space-250);
+    padding-right: var(--bbl-space-250);
   }
 }
 
