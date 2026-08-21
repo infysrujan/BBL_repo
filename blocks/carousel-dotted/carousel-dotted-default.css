@@ -923,6 +923,10 @@ p.text-large.text-light {
     min-height: 30.9375rem;
   }
 
+  main > .carousel-dotted-container:first-child:has(.all-text-animation-variant) {       
+    margin-top: 2.5625rem;
+  }
+
   .section:has(.rate-card .tab-header li:not(:first-child) .active) .carousel-dotted.all-without-image {
     min-height: 50.3125rem;
   }
