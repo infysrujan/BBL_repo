@@ -97,7 +97,6 @@ body.cookie-modal-open .header {
 
 .cookie-modal-description {
   margin: var(--bbl-space-300) 0 0;
-  color: var(--bbl-color-grey-80);
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b2-desktop);
   font-weight: 500;

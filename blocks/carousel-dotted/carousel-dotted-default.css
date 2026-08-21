@@ -162,7 +162,7 @@
 
 .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb img {
   max-width: 100%;
-  height: auto;
+  height: calc(100vw);
 }
 
 /* Without-image slides don't need background */
@@ -892,6 +892,11 @@ p.text-large.text-light {
     margin: 0 1.875rem 0 0;
   }
 
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
+    width: 82.2%;
+    margin-inline: auto;
+  }
+
   .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
     margin: unset;
   }
@@ -910,13 +915,16 @@ p.text-large.text-light {
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
     line-height: 1.625rem;
   }
-
 }
 
 @media (width > 64rem) {
   .carousel-dotted.all-without-image {
     margin-top: 1.25rem;
     min-height: 30.9375rem;
+  }
+
+  main > .carousel-dotted-container:first-child:has(.all-text-animation-variant) {       
+    margin-top: 2.5625rem;
   }
 
   .section:has(.rate-card .tab-header li:not(:first-child) .active) .carousel-dotted.all-without-image {
@@ -1012,5 +1020,9 @@ p.text-large.text-light {
     line-height: 1.4;
     padding-right: 0.9375rem;
     font-family: var(--bbl-font-family-looped);
+  }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
+    width: 100%;
   }
 }
