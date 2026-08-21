@@ -162,7 +162,7 @@
 
 .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb img {
   max-width: 100%;
-  height: auto;
+  height: calc(100vw);
 }
 
 /* Without-image slides don't need background */
@@ -220,7 +220,7 @@
 }
 
 .carousel-dotted .carousel-default-text {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   padding: var(--bbl-space-250) 0;
 }
 
@@ -362,6 +362,11 @@
   bottom: var(--bbl-space-200);
   right: var(--bbl-space-200);
   z-index: 2;
+}
+
+.carousel-dotted .carousel-dotted-more .button-container > a {
+  font-size: var(--bbl-font-size-b2-desktop);
+  line-height: var(--bbl-line-height-b2-desktop);
 }
 
 .carousel-dotted .icon-arrow-left {
@@ -587,7 +592,7 @@
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-text-default-size);
   line-height: var(--bbl-text-default-line-height);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-weight: var(--bbl-text-default-weight);
 }
 
@@ -602,7 +607,7 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-brown,
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin-top: 1.25rem;
 }
 
@@ -879,12 +884,17 @@ p.text-large.text-light {
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 {
     font-size: 1.5rem;
     line-height: 1.625rem;
-    font-family: BangkokBank-Medium, sans-serif;
+    font-family: var(--bbl-font-family-medium);
     font-weight: var(--bbl-font-weight-regular);
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image .circle-image {
     margin: 0 1.875rem 0 0;
+  }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
+    width: 82.2%;
+    margin-inline: auto;
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
@@ -905,13 +915,16 @@ p.text-large.text-light {
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
     line-height: 1.625rem;
   }
-
 }
 
 @media (width > 64rem) {
   .carousel-dotted.all-without-image {
     margin-top: 1.25rem;
     min-height: 30.9375rem;
+  }
+
+  main > .carousel-dotted-container:first-child:has(.all-text-animation-variant) {       
+    margin-top: 2.5625rem;
   }
 
   .section:has(.rate-card .tab-header li:not(:first-child) .active) .carousel-dotted.all-without-image {
@@ -1007,5 +1020,9 @@ p.text-large.text-light {
     line-height: 1.4;
     padding-right: 0.9375rem;
     font-family: var(--bbl-font-family-looped);
+  }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
+    width: 100%;
   }
 }
