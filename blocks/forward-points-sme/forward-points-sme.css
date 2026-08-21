@@ -688,7 +688,7 @@
   }
 
   .forward-points-sme .fpsme-fwd-table-col {
-    padding-inline: 20px;
+    padding-inline: 1.25rem;
   }
 
   .forward-points-sme .fpsme-update-label {
@@ -724,7 +724,7 @@
   .forward-points-sme .fpsme-datepicker {
     max-width: 30rem;
     width: 30rem;
-    padding: 20px 50px;
+    padding: 1.25rem 3.125rem;
   }
 
   .forward-points-sme .fpsme-flag {
