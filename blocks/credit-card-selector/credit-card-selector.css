@@ -403,12 +403,13 @@
   right: 1rem;
   width: 3rem;
   height: 3rem;
-  background: #f5f5f5;
+  background: var(--bbl-color-gray-144);
   border-radius: var(--bbl-radius-md);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-bottom: 0.9375rem;
   z-index: 2;
 }
 
@@ -419,7 +420,7 @@
 
 /* Chevron icon — icomoon icon-dropdown (\e902), same as filter-options-mobile */
 .credit-card-selector-wrapper .collapse-toggle-button::after {
-  content: url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 8C0 3.58172 3.58172 0 8 0H40C44.4183 0 48 3.58172 48 8V40C48 44.4183 44.4183 48 40 48H8C3.58172 48 0 44.4183 0 40V8Z' fill='%23F5F5F5'/%3E%3Cpath d='M33.6001 28.7997L24.0001 19.1997L14.4001 28.7997' stroke='%230064FF' stroke-width='2.5' stroke-miterlimit='10'/%3E%3C/svg%3E%0A");
+  content: "\e902";
   font-family: icomoon, sans-serif;
   font-size: 0.8rem;
   color: var(--bbl-color-active-blue);
@@ -428,13 +429,13 @@
   position: relative;
   z-index: 1;
   line-height: 1;
-  transform: rotate(0deg);
+  transform: rotate(180deg);
   transition: transform 0.3s ease;
 }
 
 /* Rotate chevron to point down when collapsed */
 .credit-card-selector-wrapper .collapse-toggle-bar.is-collapsed .collapse-toggle-button::after {
-  transform: rotate(180deg);
+  transform: rotate(0deg);
 }
 
 /* ==========================================================================
