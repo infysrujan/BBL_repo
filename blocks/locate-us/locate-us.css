@@ -595,8 +595,8 @@
 .locate-us .locate-us-card-directions::before {
   content: '';
   display: inline-block;
-  width: var(--bbl-space-250);
-  height: var(--bbl-space-250);
+  width: var(--bbl-space-300);
+  height: var(--bbl-space-300);
   background-image: url('../../icons/icon_route.svg');
   background-size: contain;
   background-repeat: no-repeat;
