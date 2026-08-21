@@ -226,10 +226,12 @@
 
 .ccs-results-disclaimer {
   margin-top: var(--bbl-space-300);
+  margin-inline: 0;
   padding-top: var(--bbl-space-300);
   font-size: var(--bbl-font-size-b1);
   color: var(--bbl-color-grey-85);
   line-height: 1.6;
+  text-align: left;
 }
 
 @media (width > 47.5rem) {
@@ -257,6 +259,10 @@
   .card-list.credit-card .cards-list-inner {
     min-height: 27rem;
   }
+
+  .ccs-results-disclaimer {
+    padding-inline: var(--bbl-space-250);
+  }
 }
 
 @media (width > 64rem) {
@@ -275,11 +281,6 @@
 
   .card-list.credit-card .cards-list-inner {
     min-height: 28rem;
-  }
-
-  .ccs-results-disclaimer {
-    max-width: 54.5rem;
-    margin-inline: auto;
   }
 
   .card-list.credit-card .cards-list-image.cards-list-image-x-small img {
