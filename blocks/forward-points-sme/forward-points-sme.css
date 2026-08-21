@@ -93,7 +93,7 @@
   padding: 0 1.875rem 0 1.25rem;
   font-size: 0.95rem;
   font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-medium);
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-85);
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-23);
@@ -148,7 +148,8 @@
 .forward-points-sme .fpsme-time-item {
   padding: 0.625rem 1.875rem;
   font-size: 0.875rem;
-  font-weight: 700;
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
   cursor: pointer;
   width: max-content;
@@ -694,10 +695,6 @@
 
   .forward-points-sme .fpsme-date-input {
     font-size: 1rem;
-  }
-
-  .forward-points-sme .fpsme-time-trigger {
-    font-size: 0.9375rem;
   }
 
   .forward-points-sme .fpsme-date-group {
