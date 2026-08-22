@@ -93,7 +93,7 @@
   padding: 0 1.875rem 0 1.25rem;
   font-size: 0.95rem;
   font-family: var(--bbl-font-family-medium);
-  font-weight: var(--bbl-font-weight-medium);
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-85);
   background: var(--bbl-color-white);
   border: 0.0625rem solid var(--bbl-color-grey-23);
@@ -142,14 +142,18 @@
 .forward-points-sme .fpsme-time-dropdown.is-open .fpsme-time-list {
   display: block;
   width: 7.44rem;
+  overflow-x: hidden;
 }
 
 .forward-points-sme .fpsme-time-item {
   padding: 0.625rem 1.875rem;
   font-size: 0.875rem;
-  font-weight: 700;
+  font-family: var(--bbl-font-family-medium);
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
   cursor: pointer;
+  width: max-content;
+  white-space: nowrap;
 }
 
 .forward-points-sme .fpsme-time-item:hover {
@@ -418,7 +422,7 @@
 
 .forward-points-sme .fpsme-unit {
   font-size: 0.8rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   margin-top: 0.3125rem;
 }
 
@@ -451,7 +455,7 @@
   background: none;
   border: none;
   font-size: 0.875rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   cursor: pointer;
   padding: 0 var(--bbl-space-100);
   height: 2.75rem;
@@ -464,12 +468,12 @@
 
 .forward-points-sme .fpsme-print-btn .icon-print {
   font-size: 1rem;
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 .forward-points-sme .fpsme-print-btn:hover,
 .forward-points-sme .fpsme-print-btn:hover .icon-print {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
 }
 
 /* ── Section 2 — Forward points ────────────────────────────── */
@@ -513,7 +517,7 @@
 .forward-points-sme .fpsme-fwd-subtitle {
   font-size: var(--bbl-heading-h4-size);
   font-weight: var(--bbl-font-weight-regular);
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   text-align: center;
   margin-top: 0.9375rem;
   margin-bottom: 0.9375rem;
@@ -684,6 +688,10 @@
     font-size: 1rem;
   }
 
+  .forward-points-sme .fpsme-fwd-table-col {
+    padding-inline: 1.25rem;
+  }
+
   .forward-points-sme .fpsme-update-label {
     font-size: 1rem;
     font-weight: 700;
@@ -691,10 +699,6 @@
 
   .forward-points-sme .fpsme-date-input {
     font-size: 1rem;
-  }
-
-  .forward-points-sme .fpsme-time-trigger {
-    font-size: 0.9375rem;
   }
 
   .forward-points-sme .fpsme-date-group {
@@ -717,7 +721,7 @@
   .forward-points-sme .fpsme-datepicker {
     max-width: 30rem;
     width: 30rem;
-    padding: 20px 50px;
+    padding: 1.25rem 3.125rem;
   }
 
   .forward-points-sme .fpsme-flag {

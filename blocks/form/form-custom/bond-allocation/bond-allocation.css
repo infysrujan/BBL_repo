@@ -5,6 +5,13 @@
 
     & ::after{
       content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3.125rem;
+      height: 0.125rem;
+      background-color: var(--bbl-color-grey-85);
     }
 
     h2{
@@ -126,12 +133,12 @@
     border-bottom: 2px solid var(--bbl-color-gray-300);
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-h2-mobile);
-    font-weight: var(--bbl-font-weight-medium);
+    font-weight: var(--bbl-form-font-weight-bold);
     text-align: left;
     padding: 0.9375rem;
     min-height: 3rem;
     box-sizing: border-box;
-    color: var(--form-label-color);
+    color: var(--bbl-color-grey-159);
   }
 
   & .form form .field-bond-allocation-review .field-totalpurchaseamount > label.field-label,
@@ -151,7 +158,7 @@
     padding: 0.625rem 0.5rem;
     min-height: 3rem;
     box-sizing: border-box;
-    color: var(--form-label-color);
+    color: var(--bbl-color-grey-159);
   }
 
   & .form form .field-bond-allocation-review .field-totalpurchaseamount > label.field-label {
@@ -159,7 +166,9 @@
   }
 
   & .form form .field-bond-allocation-review .field-totalallotment > label.field-label {
-    grid-column: 3;
+    display: block;
+    text-align: right;
+    padding-top: 0.9375rem;
   }
 
   /* Place inputs in grid row 4 */
@@ -222,7 +231,8 @@
     grid-column: 1 / -1;
   }
 
-  & .form form .field-bond-allocation-review .field-errortext {
+  & .form form .field-bond-allocation-review .field-errortext,
+  & .form form .field-bond-allocation-notfound .field-errortext{
     background-color: transparent;
     padding: 0;
     max-width: 400px;
@@ -334,5 +344,9 @@
     & .form form .field-bond-allocation-review fieldset.field-button-panel .submit-wrapper {
       order: -1;
     }
+  }
+
+  & .form form .field-bond-allocation-notfound .plain-text-wrapper p:last-child p {
+    text-align: left;
   }
 }
