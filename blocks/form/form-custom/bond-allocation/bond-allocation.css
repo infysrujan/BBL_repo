@@ -243,6 +243,10 @@
   & .form form .plain-text-wrapper p:last-child p{
     text-align: center;
   }
+  
+  & .form form .field-bond-allocation-notfound .plain-text-wrapper p:last-child p {
+    text-align: left;
+  }
 
   /* ── Bondholder number: centered inline ── */
   & .form form .field-bond-allocation-review .field-resultsbondsubheader.field-wrapper:not(.panel-wrapper) {
