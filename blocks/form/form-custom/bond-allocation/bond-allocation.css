@@ -338,4 +338,8 @@
       order: -1;
     }
   }
+
+  & .form form .field-bond-allocation-notfound .plain-text-wrapper p:last-child p {
+    text-align: left;
+  }
 }
