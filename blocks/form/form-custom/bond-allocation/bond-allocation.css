@@ -126,7 +126,7 @@
     border-bottom: 2px solid var(--bbl-color-gray-300);
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-h2-mobile);
-    font-weight: var(--bbl-font-weight-medium);
+    font-weight: var(--bbl-form-font-weight-bold);
     text-align: left;
     padding: 0.9375rem;
     min-height: 3rem;
