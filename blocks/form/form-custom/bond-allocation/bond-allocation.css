@@ -5,6 +5,13 @@
 
     & ::after{
       content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3.125rem;
+      height: 0.125rem;
+      background-color: var(--bbl-color-grey-85);
     }
 
     h2{
