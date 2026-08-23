@@ -30,5 +30,9 @@
 }
 
 .download-button-wrapper .download-files .download-date-prefix {
-  margin-right: 0.5rem;
+  margin-right: 0.9375rem;
+  min-width: 155px; /* 155px in rem */
+  display: inline-block;
+  font-weight: var(--bbl-font-weight-regular);
+  font-family: var(--bbl-font-family-regular);
 }
