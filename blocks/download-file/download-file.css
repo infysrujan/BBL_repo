@@ -28,3 +28,7 @@
 .full-bleed-bg .accordion-block .download-button-wrapper.content{
   padding-inline: 0;
 }
+
+.download-button-wrapper .download-files .download-date-prefix {
+  margin-right: 0.5rem;
+}
