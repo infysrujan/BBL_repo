@@ -320,6 +320,10 @@
   flex: 1;
 }
 
+.cards-list-content:has(> .cards-list-title:only-child):has(+ .cards-list-downloads) {
+  padding-bottom: 0;
+}
+
 .cards-list-promo-tag {
   font-size: var(--bbl-text-label-tag-size);
   line-height: var(--bbl-text-label-tag-line-height);
