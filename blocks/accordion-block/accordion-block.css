@@ -59,7 +59,8 @@
 }
 
 .accordion-toolbar-icon.icon-close {
-  width: 0.875rem;
+  width: 1.125rem;
+  height: 0.75rem;
 }
 
 .accordion-toolbar-label {
