@@ -1,11 +1,10 @@
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 
 export default function decorate(block) {
-  const [row] = [...block.children];
+  const rows = [...block.children];
+  const [row] = rows;
   if (!row) return;
-  const datePrefix = [...row.children]
-    .find((cell) => !cell.querySelector('a'))
-    ?.textContent.trim();
+  const datePrefix = rows[1]?.textContent.trim();
   const button = createDownloadLink(row);
   if (button && datePrefix) {
     const link = button.querySelector('a');
