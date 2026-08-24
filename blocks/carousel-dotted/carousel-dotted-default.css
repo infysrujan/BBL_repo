@@ -183,7 +183,7 @@
 .carousel-dotted .carousel-dotted-item.without-image .carousel-dotted-content {
   min-height: 100%;
   max-height: 100%;
-  padding: var(--bbl-space-300) var(--bbl-space-150) 4.1875rem;
+  padding: 0 var(--bbl-space-300) 3.44rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
