@@ -83,6 +83,7 @@
 }
 
 .fund-prices-dropdown .fdd-fund-label {
+  padding-top: 0.375rem;
   font-family: var(--bbl-font-family-medium);
   font-size: 0.8rem;
   font-weight: var(--bbl-font-weight-regular);
@@ -301,6 +302,15 @@
     right: 0.5rem;
     font-size: 0.875rem;
   }
+}
+
+.fund-prices-dropdown .fund-prices-print-label p {
+  margin: 0;
+  padding-top: 0.375rem;
+  font-family: var(--bbl-font-family-medium);
+  font-size: 0.8rem;
+  font-weight: var(--bbl-font-weight-regular);
+  color: var(--bbl-color-black);
 }
 
 .fund-prices-dropdown .stat-table-card {
@@ -623,10 +633,6 @@
     margin-left: calc(var(--bbl-space-250) * -1);
     margin-right: calc(var(--bbl-space-250) * -1);
     padding-right: 1.25rem;
-  }
-
-  .stat-tables-print-row .fdd-fund-label {
-    padding-top: 0;
   }
 
   .fdd-period-bar .period-select-wrapper .period-select-btn {
