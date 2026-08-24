@@ -262,6 +262,29 @@
   .fund-prices-dropdown .calendar-input input {
     width: 100%;
   }
+
+  .fund-prices-dropdown .fund-prices-print-label {
+    padding-left: 0;
+    padding-right: 1.875rem;
+  }
+
+  .fund-prices-dropdown .fund-prices-print-label::before {
+    right: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .fund-prices-dropdown .chart-header {
+    padding-left: 0;
+  }
+
+  .fund-prices-dropdown .chart-nav-labels {
+    display: block;
+  }
+
+  .fund-prices-dropdown .chart-nav-item {
+    display: block;
+    white-space: nowrap;
+  }
 }
 
 .fund-prices-dropdown .stat-tables-print-row {
@@ -282,26 +305,11 @@
   cursor: pointer;
 }
 
-@media (width < 47.5rem) {
-  .fund-prices-dropdown .fund-prices-print-label {
-    padding-left: 0;
-    padding-right: 1.875rem;
-  }
-
-}
-
 .fund-prices-dropdown .fund-prices-print-label::before {
   position: absolute;
   right: 1.625rem;
   top: 38%;
   font-size: 1rem;
-}
-
-@media (width < 47.5rem) {
-  .fund-prices-dropdown .fund-prices-print-label::before {
-    right: 0.5rem;
-    font-size: 0.875rem;
-  }
 }
 
 .fund-prices-dropdown .fund-prices-print-label p {
@@ -539,12 +547,6 @@
   padding-left: 3.625rem;
 }
 
-@media (width < 47.5rem) {
-  .fund-prices-dropdown .chart-header {
-    padding-left: 0;
-  }
-}
-
 .fund-prices-dropdown .chart-subtitle {
   font-family: var(--bbl-font-family-medium);
   font-size: 0.8rem;
@@ -572,17 +574,6 @@
 .fund-prices-dropdown .fdd-print-masthead,
 .fund-prices-dropdown .fdd-print-date-range {
   display: none;
-}
-
-@media (width < 47.5rem) {
-  .fund-prices-dropdown .chart-nav-labels {
-    display: block;
-  }
-
-  .fund-prices-dropdown .chart-nav-item {
-    display: block;
-    white-space: nowrap;
-  }
 }
 
 @media (width > 47.5rem) {
@@ -626,9 +617,6 @@
   }
 
   .fund-prices-dropdown .stat-tables-print-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     margin-bottom: 0;
     margin-left: calc(var(--bbl-space-250) * -1);
     margin-right: calc(var(--bbl-space-250) * -1);
@@ -642,8 +630,6 @@
   }
 
   .fund-prices-dropdown .period-select-wrapper {
-    display: inline-block;
-    width: auto;
     padding-left: 0;
     margin-left: -0.9375rem;
   }
@@ -736,8 +722,6 @@
   }
 
   .fund-prices-dropdown .stat-tables-print-row {
-    flex-direction: row;
-    align-items: center;
     gap: var(--bbl-space-100);
   }
 
@@ -747,9 +731,6 @@
   }
 
   .fund-prices-dropdown .fdd-fund-label {
-    font-family: var(--bbl-font-family-medium);
-    font-size: 0.8rem;
-    font-weight: var(--bbl-font-weight-regular);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
