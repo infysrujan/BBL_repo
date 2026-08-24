@@ -892,11 +892,6 @@ p.text-large.text-light {
     margin: 0 1.875rem 0 0;
   }
 
-  .carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
-    width: 82.2%;
-    margin-inline: auto;
-  }
-
   .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
     margin: unset;
   }
@@ -1024,5 +1019,9 @@ p.text-large.text-light {
 
   .carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
     width: 100%;
+  }
+
+  .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item.with-circular-image {
+    padding-inline: 0;
   }
 }
