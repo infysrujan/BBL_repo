@@ -120,7 +120,7 @@
 }
 
 .accordion-header[aria-expanded="true"]::after {
-  content: '–';
+  content: '-';
 }
 
 .accordion-panel {
