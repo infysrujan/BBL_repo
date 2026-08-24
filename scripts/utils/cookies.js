@@ -23,21 +23,9 @@ export function setCookie(name, value, days) {
 }
 
 /**
- * Deletes a cookie by name. Clears it across the domain variants (host-only,
- * current host, and parent domain) a cookie may have been set with, since a
- * plain `Max-Age=0` only removes the cookie if `Domain` matches exactly.
+ * Deletes a cookie by name.
  * @param {string} name
  */
 export function deleteCookie(name) {
-  const encoded = encodeURIComponent(name);
-  const { hostname } = window.location;
-  const labels = hostname.split('.');
-  const domains = [null, hostname, `.${hostname}`];
-  if (labels.length > 2) {
-    domains.push(`.${labels.slice(-2).join('.')}`);
-  }
-
-  domains.forEach((domain) => {
-    document.cookie = `${encoded}=; Max-Age=0; path=/${domain ? `; domain=${domain}` : ''}`;
-  });
+  document.cookie = `${encodeURIComponent(name)}=; Max-Age=0; path=/; SameSite=Lax`;
 }
