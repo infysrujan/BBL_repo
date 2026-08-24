@@ -377,4 +377,9 @@
   .currency-converter .convert-group {
     margin-bottom: 0;
   }
+
+  .currency-converter .amount-input {
+    font-size: 3.875rem;
+    line-height: 4.4375rem;
+  }
 }
