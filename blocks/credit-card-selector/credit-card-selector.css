@@ -134,7 +134,7 @@
   align-items: baseline;
   flex-wrap: wrap;
   gap: var(--bbl-space-075);
-  margin-bottom: var(--bbl-space-150);
+  margin-block: var(--bbl-space-200) var(--bbl-space-150);
 }
 
 /* Mobile / tablet: ~1.286 rem matches original site's 1.286em at this viewport */
@@ -462,6 +462,10 @@
     padding: var(--bbl-space-400) var(--bbl-space-600) var(--bbl-space-600);
   }
 
+  .credit-card-selector .filter-group-header {
+    margin-block: var(--bbl-space-200) 0.625rem;
+  }
+
   .section.full-bleed-bg.credit-card-selector-container {
     padding-inline: var(--bbl-space-600);
   }
@@ -533,9 +537,13 @@
     text-align: center;
   }
 
-.section.full-bleed-bg.credit-card-selector-container .default-content-wrapper h2 {
-  padding-bottom: 2rem;
-}
+  .credit-card-selector .filter-group-header {
+    margin-block: 0;
+  }
+
+  .section.full-bleed-bg.credit-card-selector-container .default-content-wrapper h2 {
+    padding-bottom: 2rem;
+  }
 
   /* Desktop: large heading matches original 48px */
   .credit-card-selector .card-selector-title {
