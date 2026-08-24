@@ -8,7 +8,7 @@ import { createModalShell, hideModal } from '../../scripts/utils/modal.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 import {
-  deleteCookie, deleteCookiesMatching, getCookie, setCookie,
+  deleteCookie, deleteCookiesByValue, getCookie, setCookie,
 } from '../../scripts/utils/cookies.js';
 
 const COOKIE_DURATION_DAYS = 30;
@@ -36,15 +36,6 @@ const COOKIE_NAME_MAP = {
 const COOKIE_VALUE_MAP = {
   AnalysisCookie: 'Analysis',
   AdvertisingCookie: 'Advertising',
-};
-
-// Actual browser cookies each preference controls, so disabling a category removes cookies
-// already set by GA4/GTM (analytics) or Google Ads/Adobe Experience Cloud (advertising),
-// not just the preference flag itself. Consent Mode (see scripts/consent.js) only stops
-// *new* cookies from being written, it doesn't clear ones that already exist.
-const TRACKED_COOKIE_PATTERNS = {
-  AnalysisCookie: [/^_ga$/, /^_ga_/, /^_gid$/, /^_gat/, /^AMCV_/, /^kndctr_/],
-  AdvertisingCookie: [/^_gcl_au$/, /^_fbp$/, /^_fbc$/],
 };
 
 // Sanitizes a free-text label into a valid cookie name (no spaces or special chars).
@@ -376,8 +367,6 @@ export default function decorate(block) {
         setCookie(cookieName, COOKIE_VALUE_MAP[cookieName] || cookieName, COOKIE_DURATION_DAYS);
       } else {
         deleteCookie(cookieName);
-        const trackedPatterns = TRACKED_COOKIE_PATTERNS[cookieName];
-        if (trackedPatterns) deleteCookiesMatching(trackedPatterns);
       }
     });
 
@@ -386,6 +375,17 @@ export default function decorate(block) {
     document.dispatchEvent(new CustomEvent(CONSENT_SAVED_EVENT, {
       detail: { preferences },
     }));
+  });
+
+  // Purges any other browser cookie carrying the disabled category's value
+  // (e.g. "Analysis"/"Advertising"), not just the preference cookie itself.
+  // Kept as a separate listener so it runs alongside, without altering, the save handler above.
+  saveBtn.addEventListener('click', () => {
+    toggleInputs.forEach(({ cookieName, input }) => {
+      if (input.checked) return;
+      const trackedValue = COOKIE_VALUE_MAP[cookieName];
+      if (trackedValue) deleteCookiesByValue(trackedValue);
+    });
   });
 
   block.innerHTML = '';
