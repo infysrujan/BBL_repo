@@ -220,9 +220,9 @@ body.wealth .menu-card-action-inner {
   margin: 0;
 }
 
-
 .menu-card-action-inner .download-button-wrapper {
   margin-top: var(--bbl-space-250);
+  width: 100%;
 }
 
 .menu-card-action-inner .download-button-wrapper.multiple-download-wrapper {

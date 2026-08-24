@@ -349,6 +349,7 @@
 
 .cards-list-downloads .download-button-wrapper.multiple-download-wrapper {
   margin-top: 0.625rem;
+  width: 100%;
 }
 
 .cards-list-downloads .download-button-wrapper:first-child {
