@@ -129,6 +129,10 @@ blockquote {
     margin-bottom: 0.25em;
 }
 
+p {
+    margin-top: 0;
+}
+
 :is(dir, menu, ol, ul) ul {
     list-style-type: disc;
 }
@@ -694,4 +698,8 @@ main img {
 
 .loading.is-active {
     display: block;
+}
+
+.rte-nbsp-only {
+  margin-block: 0;
 }
