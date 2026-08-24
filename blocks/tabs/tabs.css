@@ -272,6 +272,20 @@
   scroll-snap-type: x mandatory;
 }
 
+@media (width > 64rem) {
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) .tabs.icon-tab-carousel :is(.tabs-nav-prev, .tabs-nav-next) {
+    top: 5.81rem;
+  }
+
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) .tabs.icon-tab-carousel .tabs-nav-prev {
+    left: -0.875rem;
+  }
+
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) .tabs.icon-tab-carousel .tabs-nav-next {
+    right: -0.875rem;
+  }
+}
+
 .tabs.icon-tab-carousel .tabs-nav-prev {
   left: 0;
 }
