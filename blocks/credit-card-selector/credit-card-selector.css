@@ -393,7 +393,7 @@
   right: 1rem;
   width: 3rem;
   height: 3rem;
-  background: var(--bbl-color-gray-144);
+  background: var(--bbl-color-grey-10);
   border-radius: var(--bbl-radius-md);
   cursor: pointer;
   display: flex;
