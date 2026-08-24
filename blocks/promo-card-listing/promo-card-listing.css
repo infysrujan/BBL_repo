@@ -269,7 +269,7 @@ body.mobile-app-view main > div:first-child {
 
 @media (width > 47.5rem) {
   .section.tabs-container:has(.tab-panel > .promo-selector-content) {
-  --header-scroll-offset: 7rem;
+  --header-scroll-offset: 5rem;
 }
 
   .promo-selector-grid:has(.promo-selector-empty) {
@@ -329,6 +329,10 @@ body.mobile-app-view main > div:first-child {
 }
 
 @media (width > 64rem) {
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) {
+  --header-scroll-offset: 7rem;
+}
+  
   .promo-selector-grid:has(.promo-selector-empty) {
     width: unset;
     padding-inline: 0;
