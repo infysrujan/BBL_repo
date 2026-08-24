@@ -342,11 +342,6 @@
   .currency-converter .icon-dropdown {
     top: 18.5%;
   }
-
-  .currency-converter .amount-input {
-    font-size: 3.875rem;
-    line-height: 4.4375rem;
-  }
 }
 
 @keyframes wobble-vertical {

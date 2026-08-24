@@ -30,8 +30,8 @@
     align-items: flex-end;
     justify-content: flex-end;
     font-weight: var(--bbl-font-weight-regular);
-    font-size: var(--bbl-text-link-primary-size);
-    line-height: var(--bbl-text-link-primary-line-height);
+    font-size: var(--bbl-font-size-h4-desktop);
+    line-height: var(--bbl-line-height-h4-desktop);
     color: var(--bbl-color-active-blue);
     text-decoration: none;
     position: relative;
