@@ -370,6 +370,12 @@ main img {
     margin: auto;
 }
 
+.section.center-first-paragraph .default-content-wrapper > p:first-child,
+.accordion-panel.center-first-paragraph .default-content-wrapper > p:first-child,
+.tab-panel.center-first-paragraph .default-content-wrapper > p:first-child {
+    text-align: center;
+}
+
 /* =========================================================================
    SECTION-FULL-BLEED-BG - Global Styles
    ========================================================================= */
