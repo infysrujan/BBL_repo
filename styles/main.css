@@ -699,3 +699,7 @@ main img {
 .loading.is-active {
     display: block;
 }
+
+.rte-nbsp-only {
+  margin-block: 0;
+}
