@@ -333,6 +333,10 @@
     font-size: 1.5rem;
   }
 
+  .rate-card table tbody td:last-child {
+    padding-inline-end: 0;
+  }
+
   .rate-card .currency-list:last-child {
     padding-bottom: calc(var(--bbl-space-300) + 1.1875rem + var(--bbl-space-250));
   }
