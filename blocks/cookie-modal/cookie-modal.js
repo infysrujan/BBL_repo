@@ -7,9 +7,7 @@
 import { createModalShell, hideModal } from '../../scripts/utils/modal.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
-import {
-  deleteCookie, deleteCookiesByValue, getCookie, setCookie,
-} from '../../scripts/utils/cookies.js';
+import { deleteCookie, getCookie, setCookie } from '../../scripts/utils/cookies.js';
 
 const COOKIE_DURATION_DAYS = 30;
 const COOKIE_CONSENT = 'ConsentAlert';
@@ -375,17 +373,6 @@ export default function decorate(block) {
     document.dispatchEvent(new CustomEvent(CONSENT_SAVED_EVENT, {
       detail: { preferences },
     }));
-  });
-
-  // Purges any other browser cookie carrying the disabled category's value
-  // (e.g. "Analysis"/"Advertising"), not just the preference cookie itself.
-  // Kept as a separate listener so it runs alongside, without altering, the save handler above.
-  saveBtn.addEventListener('click', () => {
-    toggleInputs.forEach(({ cookieName, input }) => {
-      if (input.checked) return;
-      const trackedValue = COOKIE_VALUE_MAP[cookieName];
-      if (trackedValue) deleteCookiesByValue(trackedValue);
-    });
   });
 
   block.innerHTML = '';

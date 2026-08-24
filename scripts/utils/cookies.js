@@ -22,42 +22,22 @@ export function setCookie(name, value, days) {
     + `expires=${expires}; path=/; SameSite=Lax`;
 }
 
-export function deleteCookie(name) {
-  document.cookie = `${name}=; Max-Age=0; path=/`;
-}
-
 /**
- * Deletes a cookie by name across the domain variants third-party scripts (GA/GTM/Adobe)
- * commonly use, since a delete only succeeds if `Domain` matches how the cookie was
- * originally set. Unlike `deleteCookie`, this also clears cookies scoped to a parent
- * domain (e.g. set with `Domain=.example.com`).
+ * Deletes a cookie by name. Clears it across the domain variants (host-only,
+ * current host, and parent domain) a cookie may have been set with, since a
+ * plain `Max-Age=0` only removes the cookie if `Domain` matches exactly.
  * @param {string} name
  */
-export function deleteCookieAllDomains(name) {
+export function deleteCookie(name) {
   const encoded = encodeURIComponent(name);
   const { hostname } = window.location;
-  const domains = [null, hostname, `.${hostname}`];
   const labels = hostname.split('.');
+  const domains = [null, hostname, `.${hostname}`];
   if (labels.length > 2) {
     domains.push(`.${labels.slice(-2).join('.')}`);
   }
+
   domains.forEach((domain) => {
     document.cookie = `${encoded}=; Max-Age=0; path=/${domain ? `; domain=${domain}` : ''}`;
-  });
-}
-
-/**
- * Deletes every browser cookie whose current value exactly matches `value`.
- * @param {string} value
- */
-export function deleteCookiesByValue(value) {
-  document.cookie.split('; ').forEach((entry) => {
-    const separatorIndex = entry.indexOf('=');
-    if (separatorIndex === -1) return;
-    const name = decodeURIComponent(entry.slice(0, separatorIndex));
-    const cookieValue = decodeURIComponent(entry.slice(separatorIndex + 1));
-    if (cookieValue === value) {
-      deleteCookieAllDomains(name);
-    }
   });
 }
