@@ -353,7 +353,7 @@
   padding-top: var(--bbl-space-250);
 }
 
-.credit-card-selector .selector-actions .button-m.primary {
+.credit-card-selector .selector-actions .button-m.primary:disabled {
   cursor: default;
 }
 
