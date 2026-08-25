@@ -248,9 +248,10 @@
     }
 
     .carousel-header {
-        width: calc(100% - var(--carousel-grid-offset));
+        width: calc(100% - (2 * var(--carousel-grid-offset)));
         margin: 0 0 var(--bbl-space-400);
         margin-left: auto;
+        margin-right: var(--carousel-grid-offset);
         padding-right: 0;
     }
 
@@ -261,7 +262,6 @@
     }
 
     .carousel-header a {
-        margin-right: 0.9375rem;
         font-family: var(--bbl-font-family-looped);
     }
 
@@ -474,6 +474,7 @@
 
     .carousel-header {
         padding-right: 0;
+        width: calc(100% - (2 * var(--carousel-grid-offset)));
     }
 
     .carousel-header h2 {
