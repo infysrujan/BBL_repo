@@ -53,14 +53,23 @@
   padding-bottom: var(--bbl-space-250);
 }
 
-@media (width > 47.5rem) and (width < 64rem) {
-  body.fund-prices-detail-active .fund-prices-container {
+@media (width > 47.5rem) {
+  .fund-prices-container.full-bleed-special.bg-grey-05 {
     padding-inline: var(--bbl-space-section-xs);
   }
 }
 
+@media (width > 64rem) {
+  .fund-prices-container.full-bleed-special.bg-grey-05 {
+    max-width: none;
+    padding-inline: 0;
+    margin-inline: -1rem;
+  }
+}
+
 .fund-prices {
-  max-width: 100%;
+  max-width: var(--bbl-layout-content-max-width-1920);
+  margin-inline: auto;
   overflow-x: hidden;
 }
 
@@ -467,6 +476,11 @@
 
 .hidden {
   display: none;
+}
+
+main:has(.fund-prices) .default-content-wrapper {
+  max-width: var(--bbl-layout-content-max-width-1920);
+  margin-inline: auto;
 }
 
 body.fund-prices-detail-active .default-content-wrapper,

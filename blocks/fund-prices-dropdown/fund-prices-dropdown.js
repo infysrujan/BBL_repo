@@ -171,7 +171,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
   const points = hasHistory ? history : [{ mfr_fNav: 0, mfr_dDataDate: '' }];
 
   const isMobileView = typeof window !== 'undefined' && window.innerWidth < 768;
-  const useRotation = hasData && period !== '1W' && points.length > 1;
+  const useRotation = hasData && points.length > 1 && (period !== '1W' || isMobileView);
   const padB = useRotation ? 70 : 40;
   const H = useRotation ? 360 : 300;
   const padL = 58;
@@ -182,9 +182,11 @@ function renderChart(svgEl, history, period, noDataLabel) {
   const wrapPadH = wrapStyle
     ? parseFloat(wrapStyle.paddingLeft) + parseFloat(wrapStyle.paddingRight)
     : 0;
-  const W = isMobileView ? Math.max((chartWrap?.clientWidth || 400) - wrapPadH, 280) : 940;
+  const W = Math.max((chartWrap?.clientWidth || 400) - wrapPadH, 280);
   svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svgEl.style.minWidth = '';
+  svgEl.style.width = `${W}px`;
+  svgEl.style.height = `${H}px`;
   const innerW = W - padL - padR;
   const innerH = H - padT - padB;
 
@@ -229,7 +231,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
     // 1W: show every data point
     labelSet = new Set(points.map((_, i) => i));
   } else {
-    const labelSpacing = isMobileView ? 38 : 50;
+    const labelSpacing = isMobileView ? 80 : 50;
     const maxXLabels = Math.min(points.length, Math.floor(innerW / labelSpacing));
     const xLabelStep = Math.max(1, Math.ceil(points.length / maxXLabels));
     const prevRegularIdx = Math.floor(lastIdx / xLabelStep) * xLabelStep;
@@ -628,12 +630,10 @@ export default async function decorate(block) {
     renderHistTable(histTbody, sorted, labels.noDataFound);
 
     if (chartSvg.chartResizeObserver) chartSvg.chartResizeObserver.disconnect();
-    if (window.innerWidth < 768) {
-      chartSvg.chartResizeObserver = new ResizeObserver(() => {
-        if (sorted?.length) renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
-      });
-      chartSvg.chartResizeObserver.observe(chartSvg.parentElement);
-    }
+    chartSvg.chartResizeObserver = new ResizeObserver(() => {
+      if (sorted?.length) renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
+    });
+    chartSvg.chartResizeObserver.observe(chartSvg.parentElement);
   }
 
   function validateAndRenderDetail() {
