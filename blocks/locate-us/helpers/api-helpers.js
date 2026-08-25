@@ -42,6 +42,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
   const branchBookingText = placeholders?.branchBookingText || 'Branch Booking';
   const nearestLabel = placeholders?.nearestLocationTag || 'nearest';
   const statusLabel = placeholders?.statusLabel || 'Status:';
+  const closedStatusText = placeholders?.locateUsLabelClose;
   const telLabel = placeholders?.telLabel || 'Tel:';
   const faxLabel = placeholders?.faxLabel || 'Fax:';
   const isNearest = loc.isNearest === true;
@@ -89,7 +90,7 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
   if (branchStatus) {
     card.querySelector('.locate-us-card-detail .locate-us-card-row .locate-us-card-label').textContent = statusLabel;
     const statusEl = card.querySelector('.locate-us-card-status');
-    statusEl.textContent = branchStatus;
+    statusEl.textContent = isOpen ? branchStatus : (closedStatusText || branchStatus);
     statusEl.classList.add(`locate-us-card-status-${branchStatus.toLowerCase()}`);
   }
   if (isOpen) {
