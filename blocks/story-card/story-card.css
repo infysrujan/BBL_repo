@@ -182,8 +182,8 @@
     box-sizing: border-box;
   }
 
-  .story-card .inner {
-    padding: 0;
+  .image-right.story-card .inner {
+    padding: 0 0 0 2.25rem;
   }
 
   .story-card .sub-title-medium.line {
