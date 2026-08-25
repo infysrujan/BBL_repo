@@ -63,14 +63,18 @@
   .fund-prices-container.full-bleed-special.bg-grey-05 {
     max-width: none;
     padding-inline: 0;
-    margin-inline: -1rem;
   }
 }
 
 .fund-prices {
-  max-width: var(--bbl-layout-content-max-width-1920);
-  margin-inline: auto;
   overflow-x: hidden;
+}
+
+@media (width > 64rem) {
+  .fund-prices {
+    padding-inline: max(var(--bbl-space-1050), calc((100vw - 103.5rem) / 2));
+    box-sizing: border-box;
+  }
 }
 
 .fund-prices .fund-prices-toolbar {
@@ -478,9 +482,11 @@
   display: none;
 }
 
-main:has(.fund-prices) .default-content-wrapper {
-  max-width: var(--bbl-layout-content-max-width-1920);
-  margin-inline: auto;
+@media (width > 64rem) {
+  main:has(.fund-prices) .default-content-wrapper {
+    padding-inline: max(var(--bbl-space-1050), calc((100vw - 103.5rem) / 2));
+    box-sizing: border-box;
+  }
 }
 
 body.fund-prices-detail-active .default-content-wrapper,
