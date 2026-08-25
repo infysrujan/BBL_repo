@@ -53,6 +53,12 @@
   padding-bottom: var(--bbl-space-250);
 }
 
+@media (width > 47.5rem) and (width < 64rem) {
+  body.fund-prices-detail-active .fund-prices-container {
+    padding-inline: var(--bbl-space-section-xs);
+  }
+}
+
 .fund-prices {
   max-width: 100%;
   overflow-x: hidden;
