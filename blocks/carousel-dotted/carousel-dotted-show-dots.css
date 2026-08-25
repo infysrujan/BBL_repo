@@ -70,6 +70,6 @@
 
 @media (width>64rem) {
   .carousel-dotted-wrapper .simple-carousel {
-    margin: 3.125rem auto var(--bbl-space-500);
+    margin: 3.125rem auto 2.125rem;
   }
 }
