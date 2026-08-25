@@ -243,8 +243,7 @@
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
     justify-content: stretch;
     overflow: visible;
     scroll-snap-type: none;
