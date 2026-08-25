@@ -11,7 +11,7 @@ import {
   parseCsvConfigList,
   parseIsoDate,
   parseTypedDate,
-} from '../forex-rates/helpers/date-helpers.js';
+} from '../../scripts/utils/date-helpers.js';
 import {
   createApiEndpoints,
   getChartRates,
