@@ -92,6 +92,18 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     line-height: var(--bbl-line-height-b1-desktop);
   }
 
+  & .form input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+
+  & .form input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+  }
+
+  & .form input[type="date"]:invalid::-webkit-datetime-edit {
+    color: transparent;
+  }
+
   & :is(.form select, .drop-down-wrapper.field-wrapper select) {
     width: 100%;
     height: 3.125rem;
@@ -980,7 +992,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     }
 
     & .form form fieldset.panel-wrapper.field-wrapper.cc-app-message-form {
-      width: 83%;
+      width: 70%;
       max-width: var(--cc-message-form-max-width);
       margin-inline: auto;
 

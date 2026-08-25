@@ -374,14 +374,6 @@ main .lead-forms .form select option {
   line-height: var(--bbl-form-line-height-44);
 }
 
-main .lead-forms .form input[type='date']::-webkit-calendar-picker-indicator {
-  display: none;
-}
-
-main .lead-forms .form input[type='date']:invalid::-webkit-datetime-edit {
-  color: transparent;
-}
-
 main .lead-forms .form :is(input, textarea)::placeholder {
   opacity: 1;
   color: var(--bbl-color-grey-150);

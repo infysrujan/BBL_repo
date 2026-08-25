@@ -56,23 +56,18 @@
         border: none;
         border-radius: 0;
         padding: 0;
-        row-gap: var(--bbl-form-gap-8);
+        gap: var(--bbl-form-margin-10);
     }
 
-    /* Compliment / General Panel Fieldset Reset */
-    & fieldset.panel-wrapper:not(:has(.date-wrapper)),
-    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) {
+    & fieldset.panel-wrapper:not(:has(.date-wrapper)) {
         margin-bottom: 0;
-    }
-
-    /* Service Branch Panel: halve the default row-gap (0.9375rem) between the stacked Province/Branch dropdowns */
-    & .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) {
-        row-gap: 0.4688rem;
+        gap: var(--bbl-form-margin-10);
     }
 
     & fieldset.panel-wrapper:has(.date-wrapper) > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper),
     & fieldset.panel-wrapper.field-transdatetimepanel > :is(.date-wrapper, .drop-down-wrapper, .field-wrapper) {
         position: relative;
+        grid-column: span 12;
         width: 100%;
         margin: 0;
         padding: 0;
@@ -126,11 +121,6 @@
         margin: 0;
         text-overflow: ellipsis;
         white-space: nowrap;
-
-        /* The chevron background-image (form-global.css) sits from --bbl-space-150 (12px) to
-           --bbl-space-150 + --bbl-space-250 (32px) off the right edge, but the global select
-           padding-right (--bbl-space-300 / 24px) doesn't reach that far, so long text/ellipsis
-           still lands under the icon. Reserve enough padding to fully clear it, plus a small gap. */
         padding-right: calc(var(--bbl-space-400) + var(--bbl-space-100));
     }
 
@@ -292,9 +282,6 @@
         width: auto;
     }
 
-    /* Mobile/Tablet Dropdown Font Size: 13.3px, smaller than desktop so long option text doesn't collide with the
-       chevron. :is() folds the Service Branch panel scope into a single selector (avoids a duplicate declaration)
-       while still carrying enough specificity to outrank the Date & Time panel's font-size rule above */
     & :is(.drop-down-wrapper, .field-compliantnonfin-complimentpanel > fieldset.panel-wrapper:not(.field-transdatetimepanel) .drop-down-wrapper) select {
         font-size: 0.8313rem;
     }

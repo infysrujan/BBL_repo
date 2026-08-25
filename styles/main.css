@@ -129,6 +129,10 @@ blockquote {
     margin-bottom: 0.25em;
 }
 
+p {
+    margin-top: 0;
+}
+
 :is(dir, menu, ol, ul) ul {
     list-style-type: disc;
 }
@@ -364,6 +368,12 @@ main img {
 .tab-panel.center-content .default-content-wrapper *  {
     text-align: center;
     margin: auto;
+}
+
+.section.center-first-paragraph .default-content-wrapper > p:first-child,
+.accordion-panel.center-first-paragraph .default-content-wrapper > p:first-child,
+.tab-panel.center-first-paragraph .default-content-wrapper > p:first-child {
+    text-align: center;
 }
 
 /* =========================================================================
@@ -694,4 +704,8 @@ main img {
 
 .loading.is-active {
     display: block;
+}
+
+.rte-nbsp-only {
+  margin-block: 0;
 }

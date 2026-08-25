@@ -181,8 +181,12 @@ function runRteMarkers(paragraphs) {
 
 export function decorateEncodedNbsp(root, selector = 'p, li, td') {
   root.querySelectorAll(selector).forEach((el) => {
-    if (!el.innerHTML.includes('&amp;nbsp;')) return;
-    el.innerHTML = el.innerHTML.replace(/&amp;nbsp;/g, '&nbsp;');
+    if (el.innerHTML.includes('&amp;nbsp;')) {
+      el.innerHTML = el.innerHTML.replace(/&amp;nbsp;/g, '&nbsp;');
+    }
+    if (el.tagName === 'P' && /^\u00A0+$/.test(el.textContent)) {
+      el.classList.add('rte-nbsp-only');
+    }
   });
 }
 

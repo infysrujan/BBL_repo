@@ -30,8 +30,8 @@
     align-items: flex-end;
     justify-content: flex-end;
     font-weight: var(--bbl-font-weight-regular);
-    font-size: var(--bbl-text-link-primary-size);
-    line-height: var(--bbl-text-link-primary-line-height);
+    font-size: var(--bbl-font-size-h4-desktop);
+    line-height: var(--bbl-line-height-h4-desktop);
     color: var(--bbl-color-active-blue);
     text-decoration: none;
     position: relative;
@@ -248,9 +248,10 @@
     }
 
     .carousel-header {
-        width: calc(100% - var(--carousel-grid-offset));
+        width: calc(100% - (2 * var(--carousel-grid-offset)));
         margin: 0 0 var(--bbl-space-400);
         margin-left: auto;
+        margin-right: var(--carousel-grid-offset);
         padding-right: 0;
     }
 
@@ -261,7 +262,6 @@
     }
 
     .carousel-header a {
-        margin-right: 0.9375rem;
         font-family: var(--bbl-font-family-looped);
     }
 
@@ -474,6 +474,7 @@
 
     .carousel-header {
         padding-right: 0;
+        width: calc(100% - (2 * var(--carousel-grid-offset)));
     }
 
     .carousel-header h2 {
