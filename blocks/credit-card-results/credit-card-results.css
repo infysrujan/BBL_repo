@@ -20,7 +20,7 @@
 }
 
 .credit-card .cards-list:is(.scrollable, .carousel) .cards-list-item {
-  flex: 0 0 280px;
+  flex: 0 0 17.5rem;
 }
 
 /* ── Block wrapper ──────────────────────────────────────────────────────────── */
