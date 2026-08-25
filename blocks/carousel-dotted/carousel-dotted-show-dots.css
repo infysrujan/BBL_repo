@@ -66,10 +66,11 @@
 
 .carousel-dotted .carousel-dotted-item.simple-carousel {
     margin-top: 0;
+    margin-bottom: 34px;
 } 
 
-@media (width>64rem) {
+/* @media (width>64rem) {
   .carousel-dotted-wrapper .simple-carousel {
     margin: 3.125rem auto 2.125rem;
   }
-}
+} */
