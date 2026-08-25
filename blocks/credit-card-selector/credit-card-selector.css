@@ -517,7 +517,7 @@
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
-    flex: 0 0 30%;
+    flex: 0 0 calc((100% - 3 * var(--bbl-space-250)) / 3);
     margin-bottom: var(--bbl-space-250);
     scroll-snap-align: none;
   }
