@@ -577,10 +577,6 @@ export default async function decorate(block) {
               autoSkipPadding: 10,
               font: { size: 13, weight: '700' },
               color: '#000',
-              padding: 0,
-            },
-            afterFit: (scale) => {
-              scale.height += 20;
             },
           },
           y: {
