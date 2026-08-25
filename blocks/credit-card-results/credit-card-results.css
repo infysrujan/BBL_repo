@@ -8,7 +8,7 @@
    ========================================================================== */
 
 .credit-card-results-container {
-   margin-top: 2.125rem;
+   margin-top: var(--bbl-space-250);
 }
 
 .credit-card-results-wrapper {
