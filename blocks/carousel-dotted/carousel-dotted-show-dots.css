@@ -1,9 +1,7 @@
 /* simple carousel section */
 
 .carousel-dotted-wrapper .simple-carousel{
-  margin: auto;
-  margin-top: 3.125rem;
-  margin-bottom: 1.25rem;
+  margin : 3.125rem auto 1.25rem;
 }
 
 .slick-dots.simple-carousel-dots{
@@ -67,5 +65,11 @@
 }
 
 .carousel-dotted .carousel-dotted-item.simple-carousel {
-    margin-top: 0;
+    margin-bottom: 40px;
 } 
+
+@media (width>64rem) {
+  .carousel-dotted-wrapper .simple-carousel {
+    margin: 3.125rem auto var(--bbl-space-500);
+  }
+}
