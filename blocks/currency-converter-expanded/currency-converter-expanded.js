@@ -394,20 +394,6 @@ export default async function decorate(block) {
   amountInput?.addEventListener('paste', (e) => e.preventDefault());
   amountInput?.addEventListener('cut', (e) => e.preventDefault());
 
-  // amount-input uses a sub-16px font-size, which makes iOS Safari auto-zoom the
-  // viewport on focus. Temporarily cap maximum-scale while focused to suppress that,
-  // then restore the original viewport so pinch-zoom keeps working elsewhere.
-  const viewportMeta = document.querySelector('meta[name="viewport"]');
-  if (viewportMeta) {
-    const defaultViewportContent = viewportMeta.getAttribute('content') ?? '';
-    amountInput?.addEventListener('focus', () => {
-      viewportMeta.setAttribute('content', `${defaultViewportContent}, maximum-scale=1`);
-    });
-    amountInput?.addEventListener('blur', () => {
-      viewportMeta.setAttribute('content', defaultViewportContent);
-    });
-  }
-
   // Append all groups to converter
   converter?.appendChild(fromGroup);
   converter?.appendChild(toGroup);
