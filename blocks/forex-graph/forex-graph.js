@@ -488,13 +488,7 @@ export default async function decorate(block) {
         const { ctx, chartArea } = chart;
         const meta = chart.getDatasetMeta(0);
         if (!meta || !meta.data.length) return;
-        // Mobile (below 47.5rem), tablet (47.5rem-64rem), and desktop (above
-        // 64rem) viewports each need the line pulled up shorter than the x
-        // scale's bottom by a different amount.
-        const isMobile = window.innerWidth <= 760;
-        const isTablet = window.innerWidth > 760 && window.innerWidth <= 1024;
-        const lineOffset = (isMobile && 50) || (isTablet && 30) || 20;
-        const lineBottom = chart.scales.x.bottom - lineOffset;
+        const lineBottom = chartArea.bottom + 10;
         ctx.save();
         ctx.strokeStyle = 'rgba(0,0,0,0.08)';
         ctx.lineWidth = 1;
@@ -583,6 +577,10 @@ export default async function decorate(block) {
               autoSkipPadding: 10,
               font: { size: 13, weight: '700' },
               color: '#000',
+              padding: 0,
+            },
+            afterFit: (scale) => {
+              scale.height += 20;
             },
           },
           y: {
