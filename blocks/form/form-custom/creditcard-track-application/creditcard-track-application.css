@@ -992,7 +992,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     }
 
     & .form form fieldset.panel-wrapper.field-wrapper.cc-app-message-form {
-      width: 83%;
+      width: 70%;
       max-width: var(--cc-message-form-max-width);
       margin-inline: auto;
 
