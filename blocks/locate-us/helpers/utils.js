@@ -1,4 +1,4 @@
-import { getLang } from '../../../scripts/scripts.js';
+import { getLang } from '../../../scripts/bbl-decorators.js';
 
 // ─── Shared utilities ─────────────────────────────────────────────────────────
 
