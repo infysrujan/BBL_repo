@@ -219,12 +219,21 @@ function decorateDatePickerTrigger(form) {
       input.value = displayValue ?? '';
     });
 
+    const enterDateMode = () => {
+      const editValue = input.getAttribute('edit-value');
+      input.type = 'date';
+      input.value = editValue ?? '';
+    };
+
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.className = 'date-picker-trigger';
     trigger.setAttribute('aria-label', 'Open date picker');
     trigger.innerHTML = '<span class="icon-calendar" aria-hidden="true"></span>';
+    trigger.addEventListener('pointerdown', enterDateMode);
     trigger.addEventListener('click', () => {
+      // Safety net for activation paths without a pointerdown (e.g. Enter/Space).
+      enterDateMode();
       input.focus();
       if (typeof input.showPicker === 'function') {
         try {
