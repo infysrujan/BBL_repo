@@ -399,7 +399,6 @@
 
     .carousel-item.active .carousel-description {
         margin-bottom: var(--bbl-space-300);
-        color: var(--bbl-color-gray-142);
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
