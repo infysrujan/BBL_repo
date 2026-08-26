@@ -190,6 +190,10 @@
     }
 
     @media (width > 47.5rem) {
+      & h4 {
+        font-size: var(--bbl-form-font-size-16);
+      }
+
       & .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
         flex-wrap: nowrap;
         gap: var(--form-field-gap) 1.875rem;
@@ -242,5 +246,3 @@
       margin: 0;
   }
 }
-
- 

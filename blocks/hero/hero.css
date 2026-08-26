@@ -400,6 +400,10 @@
   display: none;
 }
 
+.hero-banner-content-inner-text p.hero-banner-desktop-break {
+  display: inline;
+}
+
 .hero-banner-content-inner .button-container {
   margin: 2.0625rem 0 0;
   text-align: center;
