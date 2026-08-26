@@ -336,6 +336,11 @@
   .tabs.icon-tab-carousel .tabs-nav {
     --tabs-per-view: 5;
   }
+
+  .tabs.icon-tab-carousel .tabs-nav button {
+     flex: 0 0 calc(100% / var(--tabs-per-view));
+     min-width: 0;
+  }
 }
 
 @media (width > 64rem) {
