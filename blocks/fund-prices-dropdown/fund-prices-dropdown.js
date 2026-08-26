@@ -298,23 +298,25 @@ function renderChart(svgEl, history, period, noDataLabel) {
     'stroke-linecap': 'round',
   }, svgEl);
 
+  const TT_W = 88;
+  const TT_H = 54;
+  const TT_GAP = 8;
   const tooltipG = el('g', { style: 'display:none; pointer-events:none' }, svgEl);
-  el('rect', {
-    width: 120,
-    height: 54,
+  const tooltipRect = el('rect', {
+    width: TT_W,
+    height: TT_H,
     rx: 6,
     fill: '#1a2e4a',
   }, tooltipG);
+  const tooltipTail = el('path', { fill: '#1a2e4a' }, tooltipG);
   const tooltipDate = el('text', {
-    x: 10,
-    y: 20,
+    'text-anchor': 'middle',
     fill: '#b0c4d8',
     'font-size': 11,
     'font-family': 'BangkokBank-Regular,Arial,sans-serif',
   }, tooltipG);
   const tooltipVal = el('text', {
-    x: 10,
-    y: 42,
+    'text-anchor': 'middle',
     fill: '#ffffff',
     'font-size': 15,
     'font-family': 'BangkokBank-Medium,Arial,sans-serif',
@@ -333,11 +335,21 @@ function renderChart(svgEl, history, period, noDataLabel) {
       }, svgEl);
       hit.addEventListener('mouseenter', () => {
         tooltipG.style.display = '';
-        let tx = cx + 12;
-        let ty = cy - 62;
-        if (tx + 124 > W) tx = cx - 132;
-        if (ty < 0) ty = cy + 10;
-        tooltipG.setAttribute('transform', `translate(${tx},${ty})`);
+        let rectX = -TT_W / 2;
+        if (cx + rectX < 0) rectX = -cx;
+        if (cx + rectX + TT_W > W) rectX = W - TT_W - cx;
+        const above = cy - TT_GAP - TT_H >= 0;
+        const boxY = above ? -TT_H - TT_GAP : TT_GAP;
+        tooltipRect.setAttribute('x', rectX);
+        tooltipRect.setAttribute('y', boxY);
+        tooltipTail.setAttribute('d', above
+          ? `M -5,${-TT_GAP} L 5,${-TT_GAP} L 0,-2 Z`
+          : `M -5,${TT_GAP} L 5,${TT_GAP} L 0,2 Z`);
+        tooltipDate.setAttribute('x', rectX + TT_W / 2);
+        tooltipDate.setAttribute('y', boxY + 20);
+        tooltipVal.setAttribute('x', rectX + TT_W / 2);
+        tooltipVal.setAttribute('y', boxY + 42);
+        tooltipG.setAttribute('transform', `translate(${cx},${cy})`);
         tooltipDate.textContent = fmtHistDate(d.mfr_dDataDate);
         tooltipVal.textContent = fmtNav(d.mfr_fNav);
       });
