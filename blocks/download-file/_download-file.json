@@ -121,6 +121,14 @@
               "value": ""
             }
           ]
+        },
+                {
+          "component": "boolean",
+          "name": "enableTermsConditionPopup",
+          "label": "Enable Terms & Conditions Popup",
+          "description": "If enabled, clicking the download button will show the terms & conditions popup before downloading",
+          "valueType": "boolean",
+          "value": false
         }
       ]
     }
