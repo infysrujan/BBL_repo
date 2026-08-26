@@ -189,15 +189,12 @@
 .fund-prices .fund-prices-print-label {
   display: flex;
   align-items: center;
-  position: relative;
+  gap: var(--bbl-space-100);
   cursor: pointer;
-  padding-right: var(--bbl-space-350);
 }
 
 .fund-prices .fund-prices-print-label::before {
-  position: absolute;
-  right: 0;
-  top: 38%;
+  order: 1;
   font-size: 1rem;
 }
 
@@ -206,8 +203,7 @@
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
-  margin-bottom: 0;
-  padding-top: 0.5625rem;
+  margin: 0;
 }
 
 .fund-prices .fund-prices-error-message p {
@@ -533,6 +529,7 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     align-items: center;
     gap: var(--bbl-space-150);
     padding-left: 0;
+    padding-right: var(--bbl-space-250);
   }
 
   .fund-prices .calendar-wrapper {
@@ -879,6 +876,11 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
 
   #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(6) {
     width: 16%;
+  }
+
+  #fund-prices-print-root .fund-prices-table table tr.header-row td:nth-child(4) {
+    box-sizing: border-box;
+    padding-left: 1rem;
   }
 
   #fund-prices-print-root .fund-prices-disclaimer-text {
