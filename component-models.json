@@ -3724,6 +3724,12 @@
       },
       {
         "component": "text",
+        "name": "datePrefix",
+        "label": "Date Prefix",
+        "description": "Optional date text displayed before the download link text"
+      },
+      {
+        "component": "text",
         "name": "downloadLinkText",
         "label": "Download Text",
         "description": "Download Button label text",
@@ -13120,6 +13126,10 @@
               {
                 "name": "Center Content",
                 "value": "center-content"
+              },
+              {
+                "name": "Center First Paragraph",
+                "value": "center-first-paragraph"
               }
             ]
           },
@@ -13252,6 +13262,10 @@
               {
                 "name": "Center Content",
                 "value": "center-content"
+              },
+              {
+                "name": "Center First Paragraph",
+                "value": "center-first-paragraph"
               }
             ]
           },
