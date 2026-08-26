@@ -493,8 +493,13 @@ export default async function decorate(block) {
         ctx.save();
         ctx.strokeStyle = 'rgba(0,0,0,0.08)';
         ctx.lineWidth = 1;
-        xScale.ticks.forEach((tick) => {
-          const point = meta.data[tick.value];
+        // autoSkip can drop the very last labeled tick, leaving the final
+        // segment without a gridline. Always include the last data point so
+        // the last gridline lines up with the last point on the graph.
+        const indices = new Set(xScale.ticks.map((tick) => tick.value));
+        indices.add(meta.data.length - 1);
+        indices.forEach((index) => {
+          const point = meta.data[index];
           if (!point) return;
           ctx.beginPath();
           ctx.moveTo(point.x, chartArea.top);
@@ -570,6 +575,21 @@ export default async function decorate(block) {
         },
         scales: {
           x: {
+            // autoSkip drops the last tick when it doesn't land on its spacing
+            // interval. Force it back in here (after autoSkip runs, before fit
+            // sizes/rotates labels) so the last date always gets a label.
+            beforeFit: (axis) => {
+              const lastIndex = labels.length - 1;
+              const { ticks } = axis;
+              if (ticks.length && ticks[ticks.length - 1].value !== lastIndex) {
+                // Drop the previously-last tick so it doesn't crowd/overlap the
+                // forced-in last one.
+                ticks.pop();
+                ticks.push({ value: lastIndex, label: axis.getLabelForValue(lastIndex) });
+                // eslint-disable-next-line no-underscore-dangle
+                axis._labelSizes = null;
+              }
+            },
             grid: {
               display: false,
             },
