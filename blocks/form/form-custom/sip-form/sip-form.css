@@ -30,6 +30,33 @@
 }
 
 .sip-form main .section.form-container.custom-forms {
+  .field-thankyou-visible-panel .panel-wrapper .plain-text-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: var(--bbl-space-300);
+    padding: 0 0 0 1.3rem;
+    margin-top: var(--bbl-space-250);
+    margin-bottom: 1.04rem;
+  }
+
+  .field-thankyou-visible-panel .panel-wrapper .plain-text-wrapper::before {
+    content: "\2713";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 50%;
+    background: var(--bbl-color-green-55);
+    color: var(--bbl-color-white);
+    font-size: var(--bbl-font-size-b3-desktop);
+    font-weight: var(--bbl-font-weight-medium);
+    line-height: 1.125rem;
+    text-align: center;
+  }
+
   &.central-aligned > .default-content-wrapper {
     & h2 {
       color: var(--bbl-color-black);
@@ -163,7 +190,12 @@
     }
 
     @media (width > 47.5rem) {
+      & h4 {
+        font-size: var(--bbl-form-font-size-16);
+      }
+
       & .radio-group-wrapper.horizontal:not(.radio-tabs, .cards) {
+        flex-wrap: nowrap;
         gap: var(--form-field-gap) 1.875rem;
 
         & .radio-wrapper {
@@ -214,5 +246,3 @@
       margin: 0;
   }
 }
-
- 

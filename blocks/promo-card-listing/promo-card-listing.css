@@ -5,8 +5,10 @@
    The site-wide value (main.css, 5.25rem) under-shoots the real header height on
    this listing, so override it here, scoped to promo-card-listing pages only.
    Must live on an ancestor of .tabs (custom properties inherit down, not up) --
-   .promo-card-listing itself sits inside .tabs, so it can't be the target. */
-.section.tabs-container:has(.promo-card-listing) {
+   setupPanel() writes the filters/content markup directly into the .tab-panel
+   (see promo-card-listing.js), so there is no .promo-card-listing wrapper between
+   .tab-panel and .promo-selector-content to target instead. */
+.section.tabs-container:has(.tab-panel > .promo-selector-content) {
   --header-scroll-offset: 7rem;
 }
 
@@ -302,8 +304,8 @@ body.mobile-app-view main > div:first-child {
 
   .promo-selector-dropdown {
     max-height: 13.75rem;
-    left: 0.625rem;
-    right: 0.625rem;
+    left: 0;
+    right: 0;
   }
 
   .promo-selector-filter-actions {
@@ -366,8 +368,8 @@ body.mobile-app-view main > div:first-child {
 
   .promo-selector-dropdown {
     max-height: 13.75rem;
-    left: var(--bbl-space-250);
-    right: var(--bbl-space-250);
+    left: 0;
+    right: 0;
   }
 
   body.mobile-app-view header.is-not-overlapped ~ main {

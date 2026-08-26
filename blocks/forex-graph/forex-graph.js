@@ -11,7 +11,7 @@ import {
   parseCsvConfigList,
   parseIsoDate,
   parseTypedDate,
-} from '../forex-rates/helpers/date-helpers.js';
+} from '../../scripts/utils/date-helpers.js';
 import {
   createApiEndpoints,
   getChartRates,
@@ -480,25 +480,22 @@ export default async function decorate(block) {
       },
     };
 
-    // Plugin: draw a vertical gridline at every data point, not just the
-    // (auto-skipped) labeled ticks, so the grid lines up with each point.
+    // Plugin: draw a vertical gridline only at the labeled (auto-skipped)
+    // x-axis ticks, so the number of gridlines matches the visible dates.
     const pointGridPlugin = {
       id: 'pointGrid',
       beforeDatasetsDraw(chart) {
-        const { ctx, chartArea } = chart;
+        const { ctx, chartArea, scales } = chart;
+        const xScale = scales.x;
         const meta = chart.getDatasetMeta(0);
-        if (!meta || !meta.data.length) return;
-        // Mobile (below 47.5rem), tablet (47.5rem-64rem), and desktop (above
-        // 64rem) viewports each need the line pulled up shorter than the x
-        // scale's bottom by a different amount.
-        const isMobile = window.innerWidth <= 760;
-        const isTablet = window.innerWidth > 760 && window.innerWidth <= 1024;
-        const lineOffset = (isMobile && 50) || (isTablet && 30) || 20;
-        const lineBottom = chart.scales.x.bottom - lineOffset;
+        if (!xScale || !meta || !meta.data.length) return;
+        const lineBottom = chartArea.bottom + 10;
         ctx.save();
         ctx.strokeStyle = 'rgba(0,0,0,0.08)';
         ctx.lineWidth = 1;
-        meta.data.forEach((point) => {
+        xScale.ticks.forEach((tick) => {
+          const point = meta.data[tick.value];
+          if (!point) return;
           ctx.beginPath();
           ctx.moveTo(point.x, chartArea.top);
           ctx.lineTo(point.x, lineBottom);

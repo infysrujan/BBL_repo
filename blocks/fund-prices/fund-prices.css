@@ -25,6 +25,10 @@
   padding-left: 1.875rem;
 }
 
+.fund-prices-disclaimer-text a:any-link {
+  color: inherit;
+}
+
 .fund-prices-disclaimer-text ol,
 .fund-prices-disclaimer-text ul {
   list-style: none;
@@ -79,7 +83,7 @@
 }
 
 .fund-prices .fund-prices-table table tr:not(.header-row) td {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
   vertical-align: middle;
