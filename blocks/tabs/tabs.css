@@ -127,12 +127,12 @@
 }
 
 /* SPACING INSIDE TAB PANEL between different blocks except download block */
-.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+.tab-panel > [class$="-wrapper"]:not(.download-file-wrapper, :has(.merge-tables)):has(+ *) {
   padding-bottom: 1.5rem;
 }
 
 @media (width > 64rem) {
-  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper):has(+ *) {
+  .tab-panel > [class$="-wrapper"]:not(.download-file-wrapper, :has(.merge-tables)):has(+ *) {
     padding-bottom: 2rem;
   }
 }
@@ -270,6 +270,20 @@
   gap: unset;
   align-items: flex-start;
   scroll-snap-type: x mandatory;
+}
+
+@media (width > 64rem) {
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) .tabs.icon-tab-carousel :is(.tabs-nav-prev, .tabs-nav-next) {
+    top: 5.81rem;
+  }
+
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) .tabs.icon-tab-carousel .tabs-nav-prev {
+    left: -0.875rem;
+  }
+
+  .section.tabs-container:has(.tab-panel > .promo-selector-content) .tabs.icon-tab-carousel .tabs-nav-next {
+    right: -0.875rem;
+  }
 }
 
 .tabs.icon-tab-carousel .tabs-nav-prev {
@@ -602,7 +616,7 @@
   padding: var(--bbl-space-250) var(--bbl-space-075);
   font-size: 0.7875rem;
   line-height: 1.0631rem;
-  font-family: BangkokBank-Bold, Tahoma, Helvetica, Arial, sans-serif !important;
+  font-family: var(--bbl-font-family-medium);
   text-transform: uppercase;
   border: none;
   background: transparent;

@@ -32,7 +32,7 @@ body {
     display: none;
     margin: 0;
     background-color: var(--bbl-bg-primary);
-    color: var(--bbl-color-grey-70);
+    color: var(--bbl-color-grey-90);
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-text-default-size);
     line-height: var(--bbl-text-default-line-height);
@@ -127,6 +127,10 @@ pre,
 blockquote {
     margin-top: 0.8em;
     margin-bottom: 0.25em;
+}
+
+p {
+    margin-top: 0;
 }
 
 :is(dir, menu, ol, ul) ul {
@@ -364,6 +368,12 @@ main img {
 .tab-panel.center-content .default-content-wrapper *  {
     text-align: center;
     margin: auto;
+}
+
+.section.center-first-paragraph .default-content-wrapper > p:first-child,
+.accordion-panel.center-first-paragraph .default-content-wrapper > p:first-child,
+.tab-panel.center-first-paragraph .default-content-wrapper > p:first-child {
+    text-align: center;
 }
 
 /* =========================================================================
@@ -694,4 +704,8 @@ main img {
 
 .loading.is-active {
     display: block;
+}
+
+.rte-nbsp-only {
+  margin-block: 0;
 }
