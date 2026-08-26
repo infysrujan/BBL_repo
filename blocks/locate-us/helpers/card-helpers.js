@@ -22,8 +22,8 @@ export function buildAddressCard(loc, isNearest, placeholders, configs, isAtm = 
   // ATM/ATM+ cards only show name, address, and directions
   const branchStatus = !isAtm && hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
   const isOpen = branchStatus.toLowerCase() === 'open';
-  const tel = !isAtm && hasValue(loc.Tel) && loc.Tel.trim() !== 'BeID' ? loc.Tel : '';
-  const fax = !isAtm && hasValue(loc.Fax) ? loc.Fax : '';
+  const tel = !isAtm && loc.Tel && loc.Tel.trim() !== '' && loc.Tel.trim() !== 'BeID' ? loc.Tel.trim() : '';
+  const fax = !isAtm && loc.Fax && loc.Fax.trim() !== '' ? loc.Fax.trim() : '';
 
   const card = createEl(`
     <article class="locate-us-card">
@@ -99,8 +99,8 @@ export function buildOverseasCard(loc, placeholders) {
   const address = [loc.Address1, loc.Address2, loc.Address3, loc.Province, loc.Postcode]
     .filter(Boolean).join(' ');
   const hours = hasValue(loc.MicroBranchHours) ? loc.MicroBranchHours : '';
-  const tel = hasValue(loc.Tel) ? loc.Tel : '';
-  const fax = hasValue(loc.Fax) ? loc.Fax : '';
+  const tel = loc.Tel && loc.Tel.trim() !== '' ? loc.Tel.trim() : '';
+  const fax = loc.Fax && loc.Fax.trim() !== '' ? loc.Fax.trim() : '';
   const hoursLabel = placeholders?.hoursLabel || 'Hours:';
   const telLabel = placeholders?.telLabel || 'Tel:';
   const faxLabel = placeholders?.faxLabel || 'Fax:';
