@@ -207,19 +207,21 @@ function decorateDatePickerTrigger(form) {
     const input = original.cloneNode(true);
     original.replaceWith(input);
 
-    input.addEventListener('focus', () => {
-      const editValue = input.getAttribute('edit-value');
-      input.type = 'date';
-      input.value = editValue ?? '';
+    input.addEventListener('change', () => {
+      input.dataset.pendingModelSync = 'true';
     });
 
     input.addEventListener('blur', () => {
-      const displayValue = input.getAttribute('display-value');
       input.type = 'text';
+      if (input.dataset.pendingModelSync === 'true') {
+        return;
+      }
+      const displayValue = input.getAttribute('display-value');
       input.value = displayValue ?? '';
     });
 
     const enterDateMode = () => {
+      delete input.dataset.pendingModelSync;
       const editValue = input.getAttribute('edit-value');
       input.type = 'date';
       input.value = editValue ?? '';
@@ -232,14 +234,16 @@ function decorateDatePickerTrigger(form) {
     trigger.innerHTML = '<span class="icon-calendar" aria-hidden="true"></span>';
     trigger.addEventListener('pointerdown', enterDateMode);
     trigger.addEventListener('click', () => {
-      // Safety net for activation paths without a pointerdown (e.g. Enter/Space).
+      if (document.activeElement === input) {
+        input.blur();
+      }
       enterDateMode();
       input.focus();
       if (typeof input.showPicker === 'function') {
         try {
           input.showPicker();
         } catch {
-          // no-op: no user activation, or picker already open
+          /* empty */
         }
       }
     });
