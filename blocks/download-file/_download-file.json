@@ -115,8 +115,8 @@
             },
             {
               "component": "richtext",
-              "name": "text",
-              "label": "Text",
+              "name": "authorableDate",
+              "label": "Authorable date",
               "valueType": "string",
               "value": ""
             }
