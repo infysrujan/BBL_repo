@@ -1,33 +1,75 @@
 import createDownloadLink from '../../scripts/utils/download-helpers.js';
 
 export default function decorate(block) {
-  const [buttonRow, row1, row2, row3] = [...block.children];
+  const [buttonRow, ...otherRows] = [...block.children];
   if (!buttonRow) return;
 
   const button = createDownloadLink(buttonRow);
 
-  let isBoxed = false;
-  let titleRow = null;
-  let dateRow = null;
+  let isExplicitlyTrue = false;
+  let isExplicitlyFalse = false;
+  const contentRows = [];
 
-  if (row1) {
-    const row1Text = row1.textContent.trim().toLowerCase();
-    if (row1Text === 'true') {
-      isBoxed = true;
-      titleRow = row2 || null;
-      dateRow = row3 || null;
-    } else if (row1Text === 'false') {
-      isBoxed = false;
-      titleRow = null;
-      dateRow = null;
-    } else {
-      const possibleTitle = row1.querySelector(':is(h1, h2, h3, h4, h5, h6)');
-      if (possibleTitle) {
-        titleRow = row1;
-        dateRow = row2 || null;
-        isBoxed = true;
+  otherRows.forEach((row) => {
+    const rawText = row.textContent.replace(/\s+/g, ' ').trim().toLowerCase();
+    const isBoxedProp = Boolean(
+      row.querySelector('[data-aue-prop="boxedCard"]')
+      || row.dataset.aueProp === 'boxedCard'
+      || row.querySelector('input[name="boxedCard"]'),
+    );
+
+    const isTrueVal = rawText === 'true' || rawText === 'on' || rawText === 'yes' || rawText === '1';
+    const isFalseVal = rawText === 'false' || rawText === 'off' || rawText === 'no' || rawText === '0';
+
+    if (isBoxedProp || isTrueVal || isFalseVal) {
+      if (isTrueVal || (isBoxedProp && !isFalseVal && rawText !== 'false')) {
+        isExplicitlyTrue = true;
+      } else if (isFalseVal) {
+        isExplicitlyFalse = true;
       }
+      return;
     }
+
+    if (row.textContent.trim()) {
+      contentRows.push(row);
+    }
+  });
+
+  let isBoxed = false;
+  if (isExplicitlyTrue) {
+    isBoxed = true;
+  } else if (isExplicitlyFalse) {
+    isBoxed = false;
+  } else if (block.classList.contains('boxed-card')) {
+    isBoxed = true;
+  } else if (contentRows.length > 0) {
+    isBoxed = true;
+  }
+
+  let titleEl = null;
+  const dateElements = [];
+
+  if (isBoxed) {
+    contentRows.forEach((row) => {
+      const heading = row.querySelector(':is(h1, h2, h3, h4, h5, h6), [data-aue-prop="title"]');
+      if (heading && !titleEl && heading.textContent.trim()) {
+        titleEl = heading;
+        return;
+      }
+
+      const dateMatches = [...row.querySelectorAll('[data-aue-prop="authorableDate"], p')];
+      if (dateMatches.length > 0) {
+        dateMatches.forEach((el) => {
+          if (el !== titleEl && el.textContent.trim()) {
+            dateElements.push(el);
+          }
+        });
+      } else if (row !== titleEl?.closest('div') && row.textContent.trim()) {
+        const p = document.createElement('p');
+        p.textContent = row.textContent.trim();
+        dateElements.push(p);
+      }
+    });
   }
 
   block.textContent = '';
@@ -35,7 +77,6 @@ export default function decorate(block) {
   if (isBoxed) {
     block.classList.add('boxed-card');
 
-    const titleEl = titleRow?.querySelector(':is(h1, h2, h3, h4, h5, h6), p');
     if (titleEl && titleEl.textContent.trim()) {
       titleEl.classList.add('download-file-title');
       block.appendChild(titleEl);
@@ -48,20 +89,10 @@ export default function decorate(block) {
     block.appendChild(button);
   }
 
-  if (isBoxed && dateRow) {
-    const dateElements = [...dateRow.querySelectorAll(':scope > div > *')];
-    if (dateElements.length > 0) {
-      dateElements.forEach((el) => {
-        if (el.textContent.trim()) {
-          el.classList.add('download-file-date');
-          block.appendChild(el);
-        }
-      });
-    } else if (dateRow.textContent.trim()) {
-      const p = document.createElement('p');
-      p.className = 'download-file-date';
-      p.textContent = dateRow.textContent.trim();
-      block.appendChild(p);
-    }
+  if (isBoxed && dateElements.length > 0) {
+    dateElements.forEach((el) => {
+      el.classList.add('download-file-date');
+      block.appendChild(el);
+    });
   }
 }
