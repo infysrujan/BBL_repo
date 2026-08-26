@@ -49,8 +49,8 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
   // ATM/ATM+ sidebar only shows name, address, and directions
   const branchStatus = !isAtm && hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
   const isOpen = branchStatus.toLowerCase() === 'open';
-  const tel = !isAtm && hasValue(loc.Tel) && loc.Tel.trim() !== 'BeID' ? loc.Tel : '';
-  const fax = !isAtm && hasValue(loc.Fax) ? loc.Fax : '';
+  const tel = !isAtm && loc.Tel && loc.Tel.trim() !== '' && loc.Tel.trim() !== 'BeID' ? loc.Tel.trim() : '';
+  const fax = !isAtm && loc.Fax && loc.Fax.trim() !== '' ? loc.Fax.trim() : '';
   const showAppointment = !isAtm && loc.BranchAppointment;
 
   const card = createEl(`
@@ -146,12 +146,13 @@ export async function fetchNearMe(lat, lng, code, configs) {
 
 export async function fetchProvinces(configs) {
   if (provincesCache) return provincesCache;
-  const url = configs?.locateUsGetProvince;
-  if (!url) {
+  const template = configs?.locateUsGetProvince;
+  if (!template) {
     // eslint-disable-next-line no-console
     console.error('[locate-us] Missing config key: get-providence');
     return [];
   }
+  const url = buildUrl(template);
   const data = await fetchGet(url, { throwOnError: false });
   if (!data) return [];
   provincesCache = data.map((p) => p.Province);
