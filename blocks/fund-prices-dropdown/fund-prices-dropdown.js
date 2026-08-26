@@ -193,7 +193,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
   const rawMax = Math.max(...navs);
   const tickStep = 0.5;
   const yMax = hasData ? Math.ceil(rawMax) : 0.5;
-  const yMin = hasData ? Math.floor(rawMin / tickStep) * tickStep - tickStep : 0;
+  const yMin = hasData ? Math.floor(rawMin) : 0;
 
   const xPos = (i) => (points.length > 1
     ? padL + (i / (points.length - 1)) * innerW
