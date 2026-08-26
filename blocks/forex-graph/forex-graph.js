@@ -193,15 +193,7 @@ function printForexGraph(block, state) {
 // eslint-disable-next-line import/no-unresolved
 const CHARTJS_ESM = 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm';
 
-/**
- * Pick exactly `intermediateCount` data-point indices evenly spaced by real
- * calendar time between the first and last point (plus the first and last
- * index themselves), snapping each checkpoint to whichever real data point
- * lands closest to it. This is plain data-crunching over an array of
- * timestamps — Chart.js is never touched here; the result is just handed to
- * the chart's public `ticks.callback` option and to our own gridline-drawing
- * plugin.
- */
+// Pick `intermediateCount` indices evenly time-spaced between first/last; plain data, no Chart.js.
 function pickEvenlySpacedIndices(timestamps, intermediateCount = 6) {
   const lastIndex = timestamps.length - 1;
   if (lastIndex <= 0) return timestamps.map((_, index) => index);
@@ -493,12 +485,7 @@ export default async function decorate(block) {
     const minVal = Math.min(...allValues) - 0.5;
     const maxVal = Math.ceil(Math.max(...allValues));
 
-    // On narrow (mobile) widths the design wants exactly 6 labels between the
-    // first and last date, evenly spaced by real calendar time, rather than
-    // Chart.js's own index-based autoSkip. Compute that fixed set of indices
-    // up front as plain data — it's then just handed to the public
-    // `ticks.callback` option below and to the gridline plugin, no Chart.js
-    // internals involved.
+    // Mobile wants 6 evenly time-spaced labels instead of index-based autoSkip; precompute indices.
     const hasValidTimestamps = timestamps.length && timestamps.every((t) => t != null);
     const mobileTickIndices = (window.innerWidth <= 760 && hasValidTimestamps)
       ? new Set(pickEvenlySpacedIndices(timestamps, 6))
@@ -542,10 +529,7 @@ export default async function decorate(block) {
         ctx.save();
         ctx.strokeStyle = 'rgba(0,0,0,0.08)';
         ctx.lineWidth = 1;
-        // On mobile, draw a line for exactly the date-based ticks we chose.
-        // Otherwise mirror whatever autoSkip decided to label, and always
-        // include the last data point (autoSkip can drop it if it doesn't
-        // land on its spacing interval).
+        // Mobile: use our date-based ticks; else mirror autoSkip, always including the last point.
         const indices = mobileTickIndices
           ? new Set(mobileTickIndices)
           : new Set(xScale.ticks.map((tick) => tick.value));
@@ -646,11 +630,7 @@ export default async function decorate(block) {
             ticks: {
               maxRotation: 45,
               minRotation: 0,
-              // Mobile: we already picked the exact indices to show, so let
-              // every category through and just blank out the label text for
-              // the ones we don't want — the standard, documented way to
-              // control which ticks render text. Desktop/tablet: unchanged,
-              // Chart.js's own pixel-based autoSkip decides.
+              // Mobile: blank labels outside our indices via callback; desktop keeps autoSkip.
               autoSkip: !mobileTickIndices,
               autoSkipPadding: 10,
               callback: (value) => (
@@ -679,12 +659,7 @@ export default async function decorate(block) {
     });
   }
 
-  // The mobile/desktop tick strategy above is decided once, at chart-build
-  // time, from the current window width. Chart.js's own `responsive: true`
-  // reflows the canvas on resize but won't re-run that decision, so crossing
-  // the breakpoint without a full page reload (e.g. resizing the window, or
-  // rotating a device) would otherwise leave the chart on the wrong ticking
-  // strategy. Rebuild the chart when the breakpoint actually changes.
+  // Tick strategy is decided once at build time; rebuild when the breakpoint actually changes.
   let isMobileBreakpoint = window.innerWidth <= 760;
   let resizeTimeout;
   window.addEventListener('resize', () => {
