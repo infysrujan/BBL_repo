@@ -932,7 +932,7 @@ p.text-large.text-light {
     min-height: 30.9375rem;
   }
 
-  main > .carousel-dotted-container:first-child:has(.all-text-animation-variant) {       
+  main > .carousel-dotted-container:first-child:has(.all-text-animation-variant, .hero-banner-image-carousel) {       
     margin-top: 2.5625rem;
   }
 
