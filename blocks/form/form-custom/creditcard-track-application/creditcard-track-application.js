@@ -198,6 +198,47 @@ function scrollToTopWhenResultPanelRevealed(form) {
 }
 
 /**
+ * for date picker fields, replace the input with a clone to remove any existing event listeners,
+ *
+ * @param {HTMLFormElement} form
+ */
+function decorateDatePickerTrigger(form) {
+  form.querySelectorAll('.date-wrapper.field-wrapper input').forEach((original) => {
+    const input = original.cloneNode(true);
+    original.replaceWith(input);
+
+    input.addEventListener('focus', () => {
+      const editValue = input.getAttribute('edit-value');
+      input.type = 'date';
+      input.value = editValue ?? '';
+    });
+
+    input.addEventListener('blur', () => {
+      const displayValue = input.getAttribute('display-value');
+      input.type = 'text';
+      input.value = displayValue ?? '';
+    });
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'date-picker-trigger';
+    trigger.setAttribute('aria-label', 'Open date picker');
+    trigger.innerHTML = '<span class="icon-calendar" aria-hidden="true"></span>';
+    trigger.addEventListener('click', () => {
+      input.focus();
+      if (typeof input.showPicker === 'function') {
+        try {
+          input.showPicker();
+        } catch {
+          // no-op: no user activation, or picker already open
+        }
+      }
+    });
+    input.insertAdjacentElement('afterend', trigger);
+  });
+}
+
+/**
  * @param {HTMLFormElement} form
  */
 export default function decorateCreditCardTractApplication(form) {
@@ -205,4 +246,5 @@ export default function decorateCreditCardTractApplication(form) {
 
   form.querySelectorAll(PANEL_SELECTOR).forEach(decoratePanel);
   scrollToTopWhenResultPanelRevealed(form);
+  decorateDatePickerTrigger(form);
 }

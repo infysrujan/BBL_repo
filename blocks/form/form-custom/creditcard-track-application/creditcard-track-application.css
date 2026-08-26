@@ -92,16 +92,36 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     line-height: var(--bbl-line-height-b1-desktop);
   }
 
+  & .date-wrapper.field-wrapper input {
+    padding-right: 2.75rem;
+  }
+
+  & .form input[type="date"] {
+    appearance: none;
+  }
+
   & .form input[type="date"]::-webkit-calendar-picker-indicator {
     display: none;
   }
 
-  & .form input[type="date"]::-webkit-date-and-time-value {
-    text-align: left;
-  }
-
-  & .form input[type="date"]:invalid::-webkit-datetime-edit {
-    color: transparent;
+  
+  & .date-picker-trigger {
+      position: absolute;
+      top: 0.875rem;
+      right: var(--bbl-space-300);
+      height: var(--bbl-space-250);
+      width: var(--bbl-space-300);
+      min-width: var(--bbl-space-300);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      color: var(--bbl-color-grey-85);
+      font-size: 1.125rem;
+      cursor: pointer;
   }
 
   & :is(.form select, .drop-down-wrapper.field-wrapper select) {
