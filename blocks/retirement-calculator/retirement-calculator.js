@@ -190,7 +190,7 @@ function buildAgeField(id, label, savedValue, labels) {
 
   input.addEventListener('keypress', (e) => { if (!/\d/.test(e.key)) e.preventDefault(); });
   input.addEventListener('input', () => {
-    input.value = input.value.replace(/\D/g, '');
+    input.value = input.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
     const val = parseInt(input.value, 10) || 0;
     if (val < 1) field.setError(minMsg);
     else if (val > 120) field.setError(maxMsg);
