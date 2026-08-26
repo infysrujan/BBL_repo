@@ -116,8 +116,7 @@
 }
 
 .carousel-dotted.all-hero-banner-image-carousel .carousel-bg {
-  max-height: 21.875rem;
-  height: calc((100vw - 2.5rem) / 1.45);
+  height: clamp(21.5625rem, calc(27.78vw + 14.375rem), 21.875rem);
 }
 
 .carousel-dotted .carousel-bg picture,
@@ -129,7 +128,8 @@
 }
 
 .carousel-dotted.all-hero-banner-image-carousel .carousel-bg img {
-  height: auto;
+  height: 100%;
+  object-fit: cover;
 }
 
 .carousel-dotted.all-text-animation-variant .carousel-bg {
@@ -833,14 +833,18 @@ p.text-large.text-light {
 
   .carousel-dotted.all-hero-banner-image-carousel .carousel-bg {
     position: relative;
+    height: 100%;
+  }
+
+  .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel)
+  > .carousel-dotted
+  > .carousel-track-wrapper {
+    height: 21.875rem;
+    max-height: none;
   }
 
   .carousel-dotted.all-hero-banner-image-carousel .slick-dots {
     bottom: var(--bbl-space-250);
-  }
-
-  .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) {
-    height: 21.875rem;
   }
 
   .carousel-dotted.all-text-animation-variant .carousel-item.text-animation-variant .carousel-bg {
@@ -1005,6 +1009,12 @@ p.text-large.text-light {
   }
 
   .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel) {
+    height: 53.125rem;
+  }
+
+  .carousel-dotted-wrapper:has(> .carousel-dotted.all-hero-banner-image-carousel)
+  > .carousel-dotted
+  > .carousel-track-wrapper {
     height: 53.125rem;
   }
 
