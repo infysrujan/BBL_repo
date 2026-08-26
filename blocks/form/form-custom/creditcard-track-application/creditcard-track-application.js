@@ -197,6 +197,14 @@ function scrollToTopWhenResultPanelRevealed(form) {
   });
 }
 
+function formatDateMask(digits) {
+  const parts = [];
+  if (digits.length > 0) parts.push(digits.slice(0, 2));
+  if (digits.length > 2) parts.push(digits.slice(2, 4));
+  if (digits.length > 4) parts.push(digits.slice(4, 8));
+  return parts.join('/');
+}
+
 /**
  * for date picker fields, replace the input with a clone to remove any existing event listeners,
  *
@@ -206,6 +214,30 @@ function decorateDatePickerTrigger(form) {
   form.querySelectorAll('.date-wrapper.field-wrapper input').forEach((original) => {
     const input = original.cloneNode(true);
     original.replaceWith(input);
+    input.setAttribute('inputmode', 'numeric');
+    input.setAttribute('maxlength', '10');
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key !== 'Backspace' || input.type !== 'text') return;
+      const pos = input.selectionStart;
+      if (pos > 0 && input.selectionStart === input.selectionEnd && input.value[pos - 1] === '/') {
+        input.setSelectionRange(pos - 1, pos - 1);
+      }
+    });
+
+    input.addEventListener('input', () => {
+      if (input.type !== 'text') return;
+      const caretDigitsBefore = input.value.slice(0, input.selectionStart).replace(/\D/g, '').length;
+      const digitsOnly = input.value.replace(/\D/g, '').slice(0, 8);
+      input.value = formatDateMask(digitsOnly);
+      let caret = 0;
+      let digitsSeen = 0;
+      while (caret < input.value.length && digitsSeen < caretDigitsBefore) {
+        if (/\d/.test(input.value[caret])) digitsSeen += 1;
+        caret += 1;
+      }
+      input.setSelectionRange(caret, caret);
+    });
 
     input.addEventListener('change', () => {
       input.dataset.pendingModelSync = 'true';
