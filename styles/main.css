@@ -458,24 +458,6 @@ main img {
 }
 
 /* =========================================================================
-   SECTION-BOXED-CARD - boxed white panel with padding + soft shadow
-   ========================================================================= */
-.section.boxed-card {
-    background: var(--bbl-color-white);
-    padding: 1.875rem;
-    box-shadow: 0 0 1rem 0 var(--bbl-color-black-alpha-10);
-    box-sizing: border-box;
-}
-
-.section.boxed-card.central-aligned {
-    max-width: var(--bbl-layout-central-aligned-max-width);
-}
-
-.section.boxed-card .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
-    margin-top: 0;
-}
-
-/* =========================================================================
    SECTION-CENTRAL-ALIGNED - Global Styles
    ========================================================================= */
 @media (width > 64rem) {
