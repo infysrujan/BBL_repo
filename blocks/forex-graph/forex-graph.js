@@ -477,10 +477,7 @@ export default async function decorate(block) {
     const sellingData = state.chartData.map((d) => d.sellingRate);
     const timestamps = state.chartData.map((d) => d.timestamp);
 
-    // A single-day range (From === To) yields one category, and Chart.js pins a
-    // lone category to the axis origin instead of centering it. Pad with a blank
-    // category on each side so the real one lands in the middle, like the
-    // production site.
+    // Single-day range pins to the axis origin; pad both sides with a blank category to center it.
     if (labels.length === 1) {
       labels.unshift('');
       labels.push('');
@@ -630,9 +627,7 @@ export default async function decorate(block) {
         },
         scales: {
           x: {
-            // autoSkip drops the last tick when it doesn't land on its spacing
-            // interval. Force it back in here (after autoSkip runs, before fit
-            // sizes/rotates labels) so the last date always gets a label.
+            // autoSkip can drop the last tick; force it back in before fit sizes/rotates labels.
             beforeFit: (axis) => {
               const lastIndex = labels.length - 1;
               const { ticks } = axis;
