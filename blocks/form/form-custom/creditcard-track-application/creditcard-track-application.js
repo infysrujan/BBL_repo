@@ -197,92 +197,6 @@ function scrollToTopWhenResultPanelRevealed(form) {
   });
 }
 
-function formatDateMask(digits) {
-  const parts = [];
-  if (digits.length > 0) parts.push(digits.slice(0, 2));
-  if (digits.length > 2) parts.push(digits.slice(2, 4));
-  if (digits.length > 4) parts.push(digits.slice(4, 8));
-  return parts.join('/');
-}
-
-/**
- * for date picker fields, replace the input with a clone to remove any existing event listeners,
- *
- * @param {HTMLFormElement} form
- */
-function decorateDatePickerTrigger(form) {
-  form.querySelectorAll('.date-wrapper.field-wrapper input').forEach((original) => {
-    const input = original.cloneNode(true);
-    original.replaceWith(input);
-    input.setAttribute('inputmode', 'numeric');
-    input.setAttribute('maxlength', '10');
-
-    input.addEventListener('keydown', (e) => {
-      if (e.key !== 'Backspace' || input.type !== 'text') return;
-      const pos = input.selectionStart;
-      if (pos > 0 && input.selectionStart === input.selectionEnd && input.value[pos - 1] === '/') {
-        input.setSelectionRange(pos - 1, pos - 1);
-      }
-    });
-
-    input.addEventListener('input', () => {
-      if (input.type !== 'text') return;
-      const caretDigitsBefore = input.value.slice(0, input.selectionStart).replace(/\D/g, '').length;
-      const digitsOnly = input.value.replace(/\D/g, '').slice(0, 8);
-      input.value = formatDateMask(digitsOnly);
-      let caret = 0;
-      let digitsSeen = 0;
-      while (caret < input.value.length && digitsSeen < caretDigitsBefore) {
-        if (/\d/.test(input.value[caret])) digitsSeen += 1;
-        caret += 1;
-      }
-      input.setSelectionRange(caret, caret);
-    });
-
-    input.addEventListener('change', () => {
-      input.dataset.pendingModelSync = 'true';
-    });
-
-    input.addEventListener('blur', () => {
-      input.type = 'text';
-      if (input.dataset.pendingModelSync === 'true') {
-        return;
-      }
-      const displayValue = input.getAttribute('display-value');
-      input.value = displayValue ?? '';
-    });
-
-    const enterDateMode = () => {
-      delete input.dataset.pendingModelSync;
-      const editValue = input.getAttribute('edit-value');
-      input.type = 'date';
-      input.value = editValue ?? '';
-    };
-
-    const trigger = document.createElement('button');
-    trigger.type = 'button';
-    trigger.className = 'date-picker-trigger';
-    trigger.setAttribute('aria-label', 'Open date picker');
-    trigger.innerHTML = '<span class="icon-calendar" aria-hidden="true"></span>';
-    trigger.addEventListener('pointerdown', enterDateMode);
-    trigger.addEventListener('click', () => {
-      if (document.activeElement === input) {
-        input.blur();
-      }
-      enterDateMode();
-      input.focus();
-      if (typeof input.showPicker === 'function') {
-        try {
-          input.showPicker();
-        } catch {
-          /* empty */
-        }
-      }
-    });
-    input.insertAdjacentElement('afterend', trigger);
-  });
-}
-
 /**
  * @param {HTMLFormElement} form
  */
@@ -291,5 +205,4 @@ export default function decorateCreditCardTractApplication(form) {
 
   form.querySelectorAll(PANEL_SELECTOR).forEach(decoratePanel);
   scrollToTopWhenResultPanelRevealed(form);
-  decorateDatePickerTrigger(form);
 }
