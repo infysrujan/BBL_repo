@@ -765,21 +765,22 @@ export default async function decorate(block) {
     const printLogoEl = printRoot.querySelector('.fdd-print-logo');
     if (logoEl && printLogoEl) printLogoEl.appendChild(logoEl.cloneNode(true));
     const disclaimer = block.closest('.section')?.querySelector('.fund-prices-disclaimer-text')?.cloneNode(true);
-    const printFooter = block.ownerDocument.createElement('div');
     printRoot.id = 'fdd-print-root';
     printRoot.classList.remove('hidden');
     printRoot.classList.toggle('fdd-print-custom-range', currentPeriod === 'DR');
     printRoot.hidden = false;
     printRoot.querySelectorAll('.fund-prices-print-label, .fdd-back-btn').forEach((el) => el.remove());
+    printRoot.querySelectorAll('.detail-chart-svg').forEach((svg) => {
+      svg.style.width = '';
+      svg.style.height = '';
+      svg.style.minWidth = '';
+    });
     if (currentFromDate && currentToDate) {
       const printSubtitle = buildSubtitle(currentFromDate, currentToDate);
       printRoot.querySelectorAll('.fdd-fund-label, .chart-subtitle')
         .forEach((el) => { el.textContent = printSubtitle; });
     }
     if (disclaimer) printRoot.appendChild(disclaimer);
-    printFooter.className = 'fdd-print-footer';
-    printFooter.innerHTML = '<span>https://www.bangkokbank.com/en/Personal/Save-And-Invest/Mutual-Funds/Fund-Prices</span><span>1/1</span>';
-    printRoot.appendChild(printFooter);
 
     const cleanupPrint = () => {
       body.classList.remove('fdd-printing');
