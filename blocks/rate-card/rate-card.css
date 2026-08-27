@@ -362,9 +362,11 @@
     grid-template-rows: 30.625rem; */
 
     /* 490px */
+
     /* column-gap: 1.3125rem; */
 
     /* 21px — gives 570px per column at design viewport */
+    
     /* align-items: unset; */
   }
 
