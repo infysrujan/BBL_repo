@@ -485,10 +485,10 @@ export default async function decorate(block) {
     const minVal = Math.min(...allValues) - 0.5;
     const maxVal = Math.ceil(Math.max(...allValues));
 
-    // Mobile wants 6 evenly time-spaced labels instead of index-based autoSkip; precompute indices.
+    // Mobile wants 7 evenly time-spaced labels instead of index-based autoSkip; precompute indices.
     const hasValidTimestamps = timestamps.length && timestamps.every((t) => t != null);
     const mobileTickIndices = (window.innerWidth <= 760 && hasValidTimestamps)
-      ? new Set(pickEvenlySpacedIndices(timestamps, 6))
+      ? new Set(pickEvenlySpacedIndices(timestamps, 5))
       : null;
 
     // Plugin: draw halo on the cross-dataset point at the same index
@@ -673,10 +673,16 @@ export default async function decorate(block) {
     }, 200);
   });
 
-  const render = () => {
+  const render = ({ redrawChart = false } = {}) => {
     if (rendering) return;
     rendering = true;
-    if (state.chartInstance) {
+
+    // Preserve the existing chart section (title, legend, canvas/chart) unless data changed.
+    const existingChartSection = !redrawChart
+      ? block.querySelector('.forex-graph-chart-section')
+      : null;
+
+    if (redrawChart && state.chartInstance) {
       state.chartInstance.destroy();
       state.chartInstance = null;
     }
@@ -690,6 +696,11 @@ export default async function decorate(block) {
       buddhistYearOffset,
       placeholders,
     );
+
+    if (existingChartSection) {
+      const freshChartSection = block.querySelector('.forex-graph-chart-section');
+      if (freshChartSection) freshChartSection.replaceWith(existingChartSection);
+    }
 
     const dropdownEl = block.querySelector('.forex-graph-dropdown');
     const dropdownTrigger = block.querySelector('.forex-graph-dropdown-trigger');
@@ -888,7 +899,7 @@ export default async function decorate(block) {
       goButton.addEventListener('click', async () => {
         if (state.loading) return;
         await fetchAndRenderChart();
-        render();
+        render({ redrawChart: true });
       });
     }
 
@@ -978,9 +989,11 @@ export default async function decorate(block) {
       document.addEventListener('mousedown', handler);
     });
 
-    // Draw chart after DOM is updated
+    // Only (re)draw the chart when the data actually changed, not on every controls interaction.
     rendering = false;
-    drawChart();
+    if (redrawChart || !state.chartInstance) {
+      drawChart();
+    }
   };
 
   const init = async () => {
@@ -1037,7 +1050,7 @@ export default async function decorate(block) {
       await fetchAndRenderChart();
     } finally {
       state.loading = false;
-      render();
+      render({ redrawChart: true });
     }
   };
 
