@@ -204,8 +204,35 @@ function buildModal({
 /**
  * Opens the modal (appends to document body if not already attached).
  * @param {HTMLElement} overlay
+ * @param {Object} [options]
+ * @param {boolean} [options.resetState=false] If true, resets checkbox and CTA button state.
  */
-function openModal(overlay) {
+function openModal(overlay, { resetState = false } = {}) {
+  if (resetState) {
+    const checkbox = overlay.querySelector('#privacy-modal-checkbox');
+    const ctaBtn = overlay.querySelector('.privacy-modal-cta');
+    const scrollBody = overlay.querySelector('.privacy-modal-body');
+
+    if (checkbox) {
+      checkbox.checked = false;
+      if (scrollBody && isScrolledToBottom(scrollBody)) {
+        checkbox.removeAttribute('disabled');
+      } else {
+        checkbox.setAttribute('disabled', 'true');
+        const onScroll = () => {
+          if (scrollBody && isScrolledToBottom(scrollBody)) {
+            checkbox.removeAttribute('disabled');
+            scrollBody.removeEventListener('scroll', onScroll);
+          }
+        };
+        scrollBody?.addEventListener('scroll', onScroll);
+      }
+    }
+    if (ctaBtn) {
+      ctaBtn.setAttribute('disabled', 'true');
+    }
+  }
+
   showModal(overlay, 'privacy-modal-overlay-visible');
   overlay.focus();
 }
@@ -233,7 +260,8 @@ export default function decorate(block) {
   /* ctaLabel — Row 4 (linkText cell from _button-fields.json) */
   const ctaLabel = rows[4]?.textContent.trim() || 'Agree';
 
-  if (document.querySelector('.privacy-modal-overlay')) {
+  const existingOverlay = document.querySelector('.privacy-modal-overlay');
+  if (existingOverlay) {
     const placeholder = createElement('div', { className: 'privacy-modal-placeholder' });
     moveInstrumentation(block, placeholder);
     block.replaceWith(placeholder);
@@ -248,19 +276,16 @@ export default function decorate(block) {
     return;
   }
 
-  /* If the user already accepted (cookie present), remove block and skip the modal entirely */
-  if (getCookie(COOKIE_NAME) === 'true') {
-    const placeholder = createElement('div', { className: 'privacy-modal-placeholder' });
-    moveInstrumentation(block, placeholder);
-    block.replaceWith(placeholder);
-    return;
-  }
+  let isBypassCookie = false;
+  let activeCustomClass = null;
 
   /* ------------------------------------------------------------------
    * Build the modal once and cache it
    * ------------------------------------------------------------------ */
   function handleAgree() {
-    setCookie(COOKIE_NAME, 'true', COOKIE_DURATION_DAYS);
+    if (!isBypassCookie) {
+      setCookie(COOKIE_NAME, 'true', COOKIE_DURATION_DAYS);
+    }
     closeModal(overlay); // eslint-disable-line no-use-before-define
 
     // Check for pending URL at the time of agreement
@@ -293,8 +318,31 @@ export default function decorate(block) {
 
   /* Replace the original block element with placeholder to keep instrumentation in DOM */
   block.replaceWith(placeholder);
-  window.showPrivacyModal = (pendingUrl) => {
+  window.showPrivacyModal = (pendingUrl, {
+    bypassCookie = false,
+    className = '',
+    resetState = false,
+  } = {}) => {
+    isBypassCookie = bypassCookie;
+
+    // Normal mode: if cookie already present, navigate directly without showing modal
+    if (!bypassCookie && getCookie(COOKIE_NAME) === 'true') {
+      if (pendingUrl) {
+        window.open(pendingUrl, '_blank', 'noopener,noreferrer');
+      }
+      return;
+    }
+
+    if (activeCustomClass) {
+      overlay.classList.remove(...activeCustomClass.split(' ').filter(Boolean));
+      activeCustomClass = null;
+    }
+    if (className) {
+      activeCustomClass = className;
+      overlay.classList.add(...className.split(' ').filter(Boolean));
+    }
+
     window.pendingNavigationUrl = pendingUrl || null;
-    openModal(overlay);
+    openModal(overlay, { resetState });
   };
 }

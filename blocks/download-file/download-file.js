@@ -13,7 +13,11 @@ async function handleDownloadWithPopup(e, link) {
 
   try {
     if (typeof window.showPrivacyModal === 'function') {
-      window.showPrivacyModal(targetUrl);
+      window.showPrivacyModal(targetUrl, {
+        bypassCookie: true,
+        className: 'download-file-modal',
+        resetState: true,
+      });
       return;
     }
 
@@ -27,7 +31,11 @@ async function handleDownloadWithPopup(e, link) {
     await loadFragment(popupPath);
 
     if (typeof window.showPrivacyModal === 'function') {
-      window.showPrivacyModal(targetUrl);
+      window.showPrivacyModal(targetUrl, {
+        bypassCookie: true,
+        className: 'download-file-modal',
+        resetState: true,
+      });
     } else {
       window.open(targetUrl, link.target || '_blank');
     }
