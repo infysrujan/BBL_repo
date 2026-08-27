@@ -219,7 +219,8 @@ function renderChart(svgEl, history, period, noDataLabel) {
       y: y + 4,
       'text-anchor': 'end',
       'font-size': 12,
-      fill: '#46464D',
+      fill: '#000000',
+      'font-weight': 'bold',
       'font-family': "'BBL Sans', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif",
     }, svgEl).textContent = v.toFixed(1);
   });
@@ -263,7 +264,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
         y: H - padB + (useRotation ? 14 : 20),
         'text-anchor': anchor,
         'font-size': 11,
-        fill: '#002850',
+        fill: '#000000',
         'font-weight': 'bold',
         'font-family': 'BangkokBank-Bold,Arial,sans-serif',
       };
