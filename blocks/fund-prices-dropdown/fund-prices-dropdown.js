@@ -211,17 +211,17 @@ function renderChart(svgEl, history, period, noDataLabel) {
       y1: y,
       x2: W - padR,
       y2: y,
-      stroke: '#E8E8E8',
+      stroke: 'var(--bbl-color-gray-122)',
       'stroke-width': 1,
     }, svgEl);
     el('text', {
       x: padL - 8,
       y: y + 4,
       'text-anchor': 'end',
-      'font-size': 12,
-      fill: '#000000',
+      'font-size': 'var(--bbl-body-b3-size)',
+      fill: 'var(--bbl-color-black)',
       'font-weight': 'bold',
-      'font-family': "'BBL Sans', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif",
+      'font-family': 'var(--bbl-font-family-primary)',
     }, svgEl).textContent = v.toFixed(1);
   });
 
@@ -253,7 +253,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
         y1: padT,
         x2: x,
         y2: H - padB,
-        stroke: '#E8E8E8',
+        stroke: 'var(--bbl-color-gray-122)',
         'stroke-width': 1,
       }, svgEl);
       // eslint-disable-next-line no-nested-ternary
@@ -264,7 +264,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
         y: H - padB + (useRotation ? 14 : 20),
         'text-anchor': anchor,
         'font-size': 11,
-        fill: '#000000',
+        fill: 'var(--bbl-color-black)',
         'font-weight': 'bold',
         'font-family': 'BangkokBank-Bold,Arial,sans-serif',
       };
@@ -283,8 +283,8 @@ function renderChart(svgEl, history, period, noDataLabel) {
       cx,
       cy,
       r: 1.8,
-      fill: '#002850',
-      stroke: '#002850',
+      fill: 'var(--bbl-color-truthful-blue)',
+      stroke: 'var(--bbl-color-truthful-blue)',
       'stroke-width': 1,
     }, svgEl);
   });
@@ -292,7 +292,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
   el('polyline', {
     points: pts,
     fill: 'none',
-    stroke: '#002850',
+    stroke: 'var(--bbl-color-truthful-blue)',
     'stroke-width': 2,
     'stroke-linejoin': 'round',
     'stroke-linecap': 'round',
@@ -317,7 +317,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
   }, tooltipG);
   const tooltipVal = el('text', {
     'text-anchor': 'middle',
-    fill: '#ffffff',
+    fill: 'var(--bbl-color-white)',
     'font-size': 15,
     'font-family': 'BangkokBank-Medium,Arial,sans-serif',
   }, tooltipG);
@@ -384,8 +384,8 @@ function renderChart(svgEl, history, period, noDataLabel) {
       x: 0,
       y: -boxH / 2 - 8 + 4,
       'text-anchor': 'middle',
-      fill: '#ffffff',
-      'font-size': 12,
+      fill: 'var(--bbl-color-white)',
+      'font-size': 'var(--bbl-body-b3-size)',
       'font-family': 'BangkokBank-Medium,Arial,sans-serif',
     }, noDataTooltipG).textContent = label;
 
