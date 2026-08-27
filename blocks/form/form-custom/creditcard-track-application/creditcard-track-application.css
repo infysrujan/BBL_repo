@@ -113,6 +113,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         display: none;
       }
 
+      & .form input[type="date"]::-webkit-date-and-time-value {
+        text-align: left;
+      }
+
       & .date-wrapper.field-wrapper::after {
         content: "\e912";
         font-family: var(--bbl-form-font-family-icomoon);
