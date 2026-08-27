@@ -24,11 +24,6 @@
         transform: translateX(-50%);
     }
 
-    /* Radio-tab panel legends: bold */
-    & :is(fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper), fieldset.radio-group-wrapper) > legend.field-label {
-        font-weight: 700;
-    }
-
     /* Personal Information panel legend: tighter spacing (the only panel with a nested radio group) */
     & fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper) > legend.field-label {
         margin-top: 0;
@@ -39,14 +34,13 @@
     /* Section legends: full-width grey bar with underline */
     & :is(fieldset.panel-wrapper, fieldset.radio-group-wrapper) > legend:not([data-visible="false"]) {
         display: block;
-        grid-column: span 12;
         width: 100%;
         max-width: 100%;
-        margin: var(--bbl-form-margin-10) 0;
+        margin: var(--bbl-form-margin-10) 0 var(--bbl-form-margin-5);
         padding: var(--bbl-form-margin-5) 0 var(--bbl-form-margin-5) var(--bbl-form-padding-16);
         font-family: var(--bbl-font-family-primary);
         font-size: var(--bbl-form-font-size-20);
-        font-weight: var(--bbl-font-weight-regular);
+        font-weight: 700;
         color: var(--bbl-text-primary);
         background-color: unset;
         text-decoration: underline;
@@ -57,13 +51,14 @@
         transform: none;
     }
 
-    /* Service Branch & Transaction Date/Time legends: plain, no underline or background.
+    /* Service Branch & Transaction Date/Time legends: plain, no underline, background, or bold weight.
        Matched structurally (no date field + two adjacent dropdowns / has a date field),
        since both panels are reused under multiple tabs with no shared name/class. */
     & fieldset.panel-wrapper:has(.date-wrapper) > legend.field-label:not([data-visible="false"]),
     & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) > legend.field-label {
         background-color: transparent;
         text-decoration: none;
+        font-weight: var(--bbl-font-weight-regular);
     }
 
     /* Field/panel wrappers: full width */
@@ -122,16 +117,14 @@
         font-weight: 400;
         color: var(--bbl-color-black);
         height: 2.6389rem;
-        box-sizing: border-box;
-        width: 100%;
     }
 
     /* Hour/Minute separator colon (turned on for desktop below) */
     & fieldset.panel-wrapper:has(.date-wrapper) > .date-wrapper + .drop-down-wrapper::after {
         content: none;
         position: absolute;
-        top: 50%;
-        right: -0.225rem;
+        top: 32%;
+        right: -0.325rem;
         z-index: 2;
         color: var(--bbl-color-grey-85);
         font-size: var(--bbl-heading-h4-size);
@@ -139,24 +132,10 @@
         transform: translate(50%, -50%);
     }
 
-    /* Inputs, selects & textareas: full width */
-    & :is(input:not([type='radio'], [type='checkbox'], [type='submit'], [type='button'], [type='reset']), select, textarea) {
-        box-sizing: border-box;
-        width: 100%;
-    }
-
     /* Invalid field spacing */
     & .field-invalid :is(.field-validation-error, .field-description) {
         padding-left: var(--bbl-form-padding-16);
         margin-top: var(--bbl-form-margin-5);
-    }
-
-    /* Date/Time & Service Branch invalid fields: red border.
-       Date/Time highlights all three parts since they form one value together;
-       Service Branch highlights only the specific field that's invalid. */
-    & fieldset.panel-wrapper:has(.date-wrapper):has(.field-invalid) > :is(.date-wrapper, .drop-down-wrapper) :is(input, select),
-    & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) > .drop-down-wrapper.field-invalid :is(input, select) {
-        border-color: var(--bbl-color-red-130);
     }
 
     /* Date/Time & Service Branch validation messages: readable wrapping text */
@@ -169,8 +148,6 @@
 
     /* Description textarea */
     & fieldset.panel-wrapper.field-wrapper .field-wrapper.multiline-wrapper textarea {
-        box-sizing: border-box;
-        width: 100%;
         max-width: 100%;
         padding: var(--bbl-form-padding-10) var(--bbl-form-padding-20);
         resize: none;
@@ -181,8 +158,6 @@
 
     /* Dropdown selects */
     & .drop-down-wrapper select {
-        box-sizing: border-box;
-        width: 100%;
         max-width: 100%;
         height: 2.6389rem;
         overflow: hidden;
@@ -381,11 +356,16 @@
 }
 
 /* Tablet & Desktop */
-@media (width > 47.5rem) {
+@media (width > 47.5rem) {    
     .contact-us main .section.form-container.custom-forms .form form {
         /* Date/Time: Date (span 6), Hours (span 3), Minutes (span 3) */
         & fieldset.panel-wrapper:has(.date-wrapper) > :is(.date-wrapper, [class*='-date-']) {
             grid-column: span 6;
+        }
+
+        /* All fields: bottom spacing between stacked fields */
+        & .field-wrapper:not(.button-wrapper, .submit-wrapper, .reset-wrapper, .field-button-panel) {
+        margin-bottom: var(--bbl-form-margin-10);
         }
 
         & fieldset.panel-wrapper:has(.date-wrapper) > .drop-down-wrapper {
