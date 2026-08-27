@@ -125,7 +125,7 @@
   padding: 1.25rem 0;
   overflow: hidden;
   opacity: 1;
-  transition: max-height 0.4s ease-out, opacity 0.35s ease-out, padding-block 0.4s ease-out;
+  transition: max-height 0.4s ease-out, padding-block 0.4s ease-out;
 }
 
 /* Closed state — override the [hidden] display:none so it can animate shut */
@@ -134,7 +134,7 @@
   max-height: 0;
   padding-block: 0;
   opacity: 0;
-  transition: max-height 0.4s ease-out, opacity 0.3s ease-out, padding-block 0.4s ease-out;
+  transition: max-height 0.4s ease-out,  padding-block 0.4s ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
