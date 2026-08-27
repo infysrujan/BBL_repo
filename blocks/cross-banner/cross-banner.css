@@ -175,8 +175,8 @@ body.private
   }
 
    :is(.wealth, .private) :is(.cross-banner-title, .cross-banner-description) {
-    flex: 0 1 21.875rem;   /* was 38.86% */
-    max-width: 21.875rem;  /* was 30.86% */
+    flex: 0 1 21.875rem;  
+    max-width: 21.875rem;  
   }
 }
 
