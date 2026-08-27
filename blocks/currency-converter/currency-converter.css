@@ -4,7 +4,7 @@
    Base Styles (Mobile First)
    ======================================================================== */
 .section.columns-3 {
-  row-gap: 0;
+  /* row-gap: 0; */
 }
 
 .currency-converter {
