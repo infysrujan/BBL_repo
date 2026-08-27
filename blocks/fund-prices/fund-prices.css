@@ -1,8 +1,5 @@
 .fund-prices-page-title {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-heading-h1-size);
-  font-weight: var(--bbl-text-page-title-weight);
-  line-height: var(--bbl-text-page-title-line-height);
   margin-bottom: var(--bbl-space-150);
   padding-bottom: var(--bbl-space-150);
   position: relative;
@@ -481,8 +478,6 @@ body:has(.fund-prices-dropdown:not(.hidden)) .fund-prices-page-title {
 }
 
 body.fund-prices-search-in-header .default-content-wrapper h2 {
-  font-size: var(--bbl-font-size-h3-mobile);
-  line-height: 1.571rem;
   margin: 1.875rem 0;
   padding-bottom: 1.875rem;
   position: relative;
@@ -496,10 +491,6 @@ body.fund-prices-search-in-header .section .default-content-wrapper h2::after {
   width: var(--bbl-space-600);
   height: var(--bbl-space-025);
   background-color: var(--bbl-color-grey-150);
-}
-
-main:has(.fund-prices) .default-content-wrapper > h2:first-child {
-  font-size: var(--bbl-heading-h1-size);
 }
 
 @media (width > 47.5rem) {
@@ -528,11 +519,6 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     display: block;
   }
 
-  body.fund-prices-search-in-header .default-content-wrapper h2 {
-    font-size: 1.4rem;
-    line-height: 1.3125rem;
-  }
-
   .fund-prices-search-bar.is-in-header .fund-select-wrapper {
     flex: 1 1 0;
   }
@@ -559,11 +545,6 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
   .fund-prices-search-bar {
     gap: var(--bbl-space-150);
     padding: var(--bbl-space-150) var(--bbl-space-400);
-  }
-
-  body.fund-prices-search-in-header .default-content-wrapper h2 {
-    font-size: var(--bbl-font-size-h3-desktop);
-    line-height: 2.875rem;
   }
 
   .fund-prices-search-bar .fund-select-wrapper {
