@@ -60,10 +60,6 @@
   margin: 0;
 }
 
-.cards-list-description :is(p, li) a {
-  color: inherit;
-}
-
 .cards-list-description :is(p, li) a[class] {
   display: inline;
   font-weight: inherit;
