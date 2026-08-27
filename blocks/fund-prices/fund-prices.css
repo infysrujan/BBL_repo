@@ -53,28 +53,8 @@
   padding-bottom: var(--bbl-space-250);
 }
 
-@media (width > 47.5rem) {
-  .fund-prices-container.full-bleed-special.bg-grey-05 {
-    padding-inline: var(--bbl-space-section-xs);
-  }
-}
-
-@media (width > 64rem) {
-  .fund-prices-container.full-bleed-special.bg-grey-05 {
-    max-width: none;
-    padding-inline: 0;
-  }
-}
-
 .fund-prices {
   overflow-x: hidden;
-}
-
-@media (width > 64rem) {
-  .fund-prices {
-    padding-inline: max(var(--bbl-space-1050), calc((100vw - 103.5rem) / 2));
-    box-sizing: border-box;
-  }
 }
 
 .fund-prices .fund-prices-toolbar {
@@ -190,6 +170,7 @@
   display: flex;
   align-items: center;
   gap: var(--bbl-space-100);
+  padding-top: 0.5rem;
   cursor: pointer;
 }
 
@@ -478,13 +459,6 @@
   display: none;
 }
 
-@media (width > 64rem) {
-  main:has(.fund-prices) .default-content-wrapper {
-    padding-inline: max(var(--bbl-space-1050), calc((100vw - 103.5rem) / 2));
-    box-sizing: border-box;
-  }
-}
-
 body.fund-prices-detail-active .default-content-wrapper,
 body.fund-prices-detail-active .fund-prices-page-title,
 body.fund-prices-search-in-header .default-content-wrapper {
@@ -519,6 +493,10 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
 }
 
 @media (width > 47.5rem) {
+  .fund-prices-container.full-bleed-special.bg-grey-05 {
+    padding-inline: var(--bbl-space-section-xs);
+  }
+
   body.fund-prices-detail-active .fund-prices-dropdown .fdd-title,
   body.fund-prices-detail-active .fund-prices-dropdown .fdd-title-rule {
     display: block;
@@ -554,20 +532,26 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     font-size: 1.4rem;
     line-height: 1.3125rem;
   }
-
-  .fund-prices-search-bar.is-in-header .fund-select-wrapper {
-    flex: 1 1 0;
-  }
-
-  .fund-prices-search-bar.is-in-header .fund-select-btn {
-    width: 100%;
-  }
 }
 
 @media (width > 64rem) {
+  .fund-prices-container.full-bleed-special.bg-grey-05 {
+    max-width: none;
+    padding-inline: 0;
+  }
+
+  .fund-prices {
+    padding-inline: max(var(--bbl-space-1050), calc((100vw - 103.5rem) / 2));
+    box-sizing: border-box;
+  }
+
+  main:has(.fund-prices) .default-content-wrapper {
+    padding-inline: max(var(--bbl-space-1050), calc((100vw - 103.5rem) / 2));
+    box-sizing: border-box;
+  }
+
   .fund-prices .calendar-wrapper p {
-    margin-top: 0;
-    font-size: 12.8px;
+    font-size: 0.8rem;
   }
 
   .fund-prices .calendar-input input {
@@ -592,10 +576,6 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     flex: 0 0 22rem;
   }
 
-  .fund-prices-search-bar .fund-dropdown.open {
-    width: 100%;
-  }
-
   .fund-prices-search-bar .fund-search-go-btn {
     flex-basis: auto;
     width: auto;
@@ -611,9 +591,6 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
   }
 
   .fund-prices-search-bar.is-in-header label {
-    font-family: var(--bbl-font-family-medium);
-    font-size: var(--bbl-text-label-size);
-    font-weight: var(--bbl-font-weight-medium);
     line-height: 3rem;
   }
 

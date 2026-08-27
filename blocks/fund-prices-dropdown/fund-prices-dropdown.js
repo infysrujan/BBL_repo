@@ -218,10 +218,9 @@ function renderChart(svgEl, history, period, noDataLabel) {
       x: padL - 8,
       y: y + 4,
       'text-anchor': 'end',
-      'font-size': 11,
-      'font-weight': 'bold',
-      fill: '#000000',
-      'font-family': 'BangkokBank-Medium,Arial,sans-serif',
+      'font-size': 12,
+      fill: '#46464D',
+      'font-family': "'BBL Sans', 'BangkokBank-Regular', Tahoma, Helvetica, Arial, sans-serif",
     }, svgEl).textContent = v.toFixed(1);
   });
 
@@ -322,6 +321,10 @@ function renderChart(svgEl, history, period, noDataLabel) {
     'font-family': 'BangkokBank-Medium,Arial,sans-serif',
   }, tooltipG);
 
+  const canHover = typeof window !== 'undefined'
+    && window.matchMedia
+    && window.matchMedia('(hover: hover)').matches;
+
   if (hasData) {
     points.forEach((d, i) => {
       const cx = xPos(i);
@@ -333,7 +336,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
         fill: 'transparent',
         style: 'cursor:pointer',
       }, svgEl);
-      hit.addEventListener('mouseenter', () => {
+      const showTooltip = () => {
         tooltipG.style.display = '';
         let rectX = -TT_W / 2;
         if (cx + rectX < 0) rectX = -cx;
@@ -352,8 +355,12 @@ function renderChart(svgEl, history, period, noDataLabel) {
         tooltipG.setAttribute('transform', `translate(${cx},${cy})`);
         tooltipDate.textContent = fmtHistDate(d.mfr_dDataDate);
         tooltipVal.textContent = fmtNav(d.mfr_fNav);
-      });
-      hit.addEventListener('mouseleave', () => { tooltipG.style.display = 'none'; });
+      };
+      if (canHover) {
+        hit.addEventListener('mouseenter', showTooltip);
+        hit.addEventListener('mouseleave', () => { tooltipG.style.display = 'none'; });
+      }
+      hit.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(); });
     });
   } else {
     const label = noDataLabel || 'No data found';
@@ -391,11 +398,15 @@ function renderChart(svgEl, history, period, noDataLabel) {
         fill: 'transparent',
         style: 'cursor:pointer',
       }, svgEl);
-      hit.addEventListener('mouseenter', () => {
+      const showNoDataTooltip = () => {
         noDataTooltipG.style.display = '';
         noDataTooltipG.setAttribute('transform', `translate(${cx},${cy})`);
-      });
-      hit.addEventListener('mouseleave', () => { noDataTooltipG.style.display = 'none'; });
+      };
+      if (canHover) {
+        hit.addEventListener('mouseenter', showNoDataTooltip);
+        hit.addEventListener('mouseleave', () => { noDataTooltipG.style.display = 'none'; });
+      }
+      hit.addEventListener('click', (e) => { e.stopPropagation(); showNoDataTooltip(); });
     });
   }
 }
@@ -767,7 +778,7 @@ export default async function decorate(block) {
     }
     if (disclaimer) printRoot.appendChild(disclaimer);
     printFooter.className = 'fdd-print-footer';
-    printFooter.innerHTML = '<span>https://www.bangkokbank.com/en/Personal/Save-And-Invest/Mutual-Funds/Fund-Prices</span><span>1/2</span>';
+    printFooter.innerHTML = '<span>https://www.bangkokbank.com/en/Personal/Save-And-Invest/Mutual-Funds/Fund-Prices</span><span>1/1</span>';
     printRoot.appendChild(printFooter);
 
     const cleanupPrint = () => {
