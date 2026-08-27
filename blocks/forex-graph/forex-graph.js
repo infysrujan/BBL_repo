@@ -72,7 +72,7 @@ function printForexGraph(block, state) {
   // interactive/error bits (dropdown list, calendar popups, text inputs, buttons).
   cloned.querySelectorAll('.forex-graph-error').forEach((el) => el.remove());
   cloned.querySelectorAll(
-    '.forex-graph-dropdown-list, .forex-graph-dropdown-chevron, .forex-graph-datepicker, .forex-graph-date-input, .forex-graph-date-trigger, .forex-graph-go-btn, .forex-graph-actions',
+    '.forex-graph-dropdown-list, .forex-graph-dropdown-chevron, .forex-graph-datepicker, .forex-graph-date-input, .forex-graph-go-btn, .forex-graph-actions',
   ).forEach((el) => el.remove());
 
   // <canvas> pixels do not survive cloneNode — swap in a snapshot image.
@@ -91,7 +91,25 @@ function printForexGraph(block, state) {
     || doc.querySelector('.brand-logo-container picture, .brand-logo-container img');
   const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
 
-  const pageTitle = doc.querySelector('h1')?.textContent?.trim() || 'Foreign Exchange Rates';
+  // The page's visible title is an authored <h2> (there is no <h1>), so read the
+  // first main heading — this picks up the localized title (e.g. 外匯兌換率)
+  // instead of falling back to English.
+  const pageTitle = doc.querySelector('main h1, main h2')?.textContent?.trim() || 'Foreign Exchange Rates';
+
+  // Replicate the tab labels (e.g. 外匯兌換率 / 圖表) shown under the title on the
+  // live print. Read from the live tabs component so the active tab is reflected.
+  const tabsHtml = (() => {
+    const tabs = [...doc.querySelectorAll('.tabs-nav [role="tab"]')]
+      .map((b) => ({
+        text: b.textContent.trim(),
+        active: b.classList.contains('active') || b.getAttribute('aria-selected') === 'true',
+      }))
+      .filter((t) => t.text);
+    if (!tabs.length) return '';
+    return `<div class="print-tabs">${tabs
+      .map((t) => `<span class="print-tab${t.active ? ' is-active' : ''}">${escapeHtml(t.text)}</span>`)
+      .join('')}</div>`;
+  })();
 
   const printCss = `
     @page { size: A4 portrait; margin: 10mm; }
@@ -99,41 +117,61 @@ function printForexGraph(block, state) {
     /* Print background colors (title underline) — off by default */
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-    .print-logo { margin-bottom: var(--bbl-space-075); }
+    .print-logo { margin-bottom: 0.75rem; }
     .print-logo img { height: 1.5rem; width: auto; }
-    .print-divider { border: none; border-top: 0.0625rem solid var(--bbl-color-grey-125); margin: var(--bbl-space-075) 0 var(--bbl-space-100); }
 
+    /* No divider/underline — the live print has neither. */
     .print-title {
-      font-size: 1.25rem; font-weight: 700; color: var(--bbl-color-black);
-      margin: 0 0 var(--bbl-space-100); padding-bottom: var(--bbl-space-075); position: relative;
+      font-size: 1.75rem; font-weight: 500; color: var(--bbl-color-black);
+      margin: 0 0 0.75rem;
     }
-    .print-title::after {
-      content: ''; position: absolute; bottom: 0; left: 0;
-      width: 2.25rem; height: var(--bbl-space-025); background: var(--bbl-color-blue-105);
+
+    /* Tab labels row (e.g. 外匯兌換率 / 圖表), centered under the title */
+    .print-tabs {
+      display: flex; justify-content: center; gap: 1.25rem;
+      margin: 0 0 1rem;
     }
+    .print-tab { font-size: 0.5625rem; font-weight: 700; color: var(--bbl-color-grey-90); }
+    .print-tab.is-active { color: var(--bbl-color-black); }
 
     /* Read-only controls (currency + From/To) */
+    /* Live site stacks these vertically: currency, then From label + date,
+       then To label + date — each on its own line. */
+    /* Uniform 0.75rem vertical gap between every control line (currency →
+       From label → From date → To label → To date). */
     .forex-graph-control-row {
-      display: flex; flex-wrap: wrap; align-items: center;
-      gap: 0.4rem 0.8rem; margin-bottom: var(--bbl-space-100);
+      display: flex; flex-direction: column; align-items: flex-start;
+      gap: 0.75rem; margin-bottom: 1.25rem;
     }
     .forex-graph-dropdown { position: static; }
+    /* Indent to align with the dates below; same text size as the dates. */
     .forex-graph-dropdown-trigger {
       display: inline-flex; align-items: center; gap: 0.25rem;
-      border: 0.0625rem solid var(--bbl-color-grey-125); background: none;
-      border-radius: 0.2rem; padding: 0.15rem 0.4rem;
-      font-size: 0.5625rem; font-weight: 700; color: var(--bbl-color-black);
+      border: none; background: none; padding: 0; margin-left: 1.25rem;
+      font-size: 0.8125rem; font-weight: 700; color: var(--bbl-color-black);
     }
-    .forex-graph-date-fields { display: flex; flex-wrap: wrap; gap: 0.8rem; }
-    .forex-graph-date-field { display: flex; align-items: center; gap: 0.25rem; flex: 0 0 auto; }
-    .forex-graph-date-label { display: inline; margin: 0; font-size: 0.5625rem; font-weight: 900; color: var(--bbl-color-black); }
-    .forex-graph-date-group { position: static; }
+    .forex-graph-date-fields { display: flex; flex-direction: column; gap: 0.75rem; }
+    .forex-graph-date-field { display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    .forex-graph-date-label { display: block; margin: 0; font-size: 0.8125rem; font-weight: 400; color: var(--bbl-color-black); }
+    /* Date + calendar icon inline, indented under the label — no border (live). */
+    .forex-graph-date-group { position: static; display: inline-flex; align-items: center; gap: 0.4rem; margin-left: 1.25rem; }
     .forex-graph-date-display {
-      display: inline-block; font-size: 0.5625rem;
-      border: 0.0625rem solid var(--bbl-color-grey-125);
-      padding: 0.15rem 0.4rem; border-radius: 0.2rem;
+      display: inline-block; font-size: 0.8125rem; color: var(--bbl-color-black);
+      border: none; padding: 0;
+    }
+    .forex-graph-date-trigger {
+      position: static; transform: none; width: auto; height: auto;
+      padding: 0; border: none; background: none;
+      color: var(--bbl-color-gray-142); font-size: 0.85rem;
+      display: inline-flex; align-items: center;
     }
 
+    /* Chart sits in a bordered box, matching the live site (same border as the
+       block's on-screen .forex-graph-chart-section). */
+    .forex-graph-chart-section {
+      border: 0.0625rem solid var(--bbl-color-grey-22);
+      border-radius: 0.375rem; padding: 0.85rem; box-sizing: border-box;
+    }
     .forex-graph-chart-header {
       display: flex; align-items: baseline; justify-content: space-between;
       gap: var(--bbl-space-100); margin-bottom: var(--bbl-space-075);
@@ -155,15 +193,16 @@ function printForexGraph(block, state) {
   <html lang="en">
     <head>
       <meta charset="utf-8"/>
-      <title>${escapeHtml(pageTitle)}</title>
+      <title>${escapeHtml(doc.title || pageTitle)}</title>
       <link rel="stylesheet" href="/styles/tokens.css">
       <link rel="stylesheet" href="/styles/fonts.css">
+      <link rel="stylesheet" href="/styles/icomoon.css">
       <style>${printCss}</style>
     </head>
     <body>
       <div class="print-logo">${brandLogo}</div>
-      <hr class="print-divider">
       <h1 class="print-title">${escapeHtml(pageTitle)}</h1>
+      ${tabsHtml}
       <div class="forex-graph block" data-block-status="loaded">
         ${cloned.outerHTML}
       </div>
@@ -175,6 +214,12 @@ function printForexGraph(block, state) {
   doc.body.appendChild(iframe);
 
   iframe.onload = () => {
+    // Give the print frame the real page URL so the browser's print
+    // header/footer show the page (date + title + URL) like the live site,
+    // instead of about:blank. Same-origin, so this doesn't navigate.
+    try {
+      iframe.contentWindow.history.replaceState(null, '', window.location.href);
+    } catch (e) { /* fall back to about:blank */ }
     setTimeout(() => {
       iframe.contentWindow.focus();
       iframe.contentWindow.print();
@@ -319,7 +364,7 @@ function renderBlock(
         </div>
         <div class="forex-graph-date-fields">
           <div class="forex-graph-date-field">
-            <label class="forex-graph-date-label">${escapeHtml(placeholders.fromLabel || 'From')}</label>
+            <label class="forex-graph-date-label">${escapeHtml(placeholders.forexGraphFrom)}</label>
             <div class="forex-graph-date-group forex-graph-from-group">
               <span class="forex-graph-date-display">${escapeHtml(fromDisplayDate)}</span>
               <input type="text" class="forex-graph-date-input forex-graph-from-input" inputmode="text" value="${escapeHtml(state.from.typedDate)}" aria-label="From date" data-pick="from">
@@ -328,7 +373,7 @@ function renderBlock(
             </div>
           </div>
           <div class="forex-graph-date-field">
-            <label class="forex-graph-date-label">${escapeHtml(placeholders.toLabel || 'To')}</label>
+            <label class="forex-graph-date-label">${escapeHtml(placeholders.forexGraphTo)}</label>
             <div class="forex-graph-date-group forex-graph-to-group">
               <span class="forex-graph-date-display">${escapeHtml(toDisplayDate)}</span>
               <input type="text" class="forex-graph-date-input forex-graph-to-input" inputmode="text" value="${escapeHtml(state.to.typedDate)}" aria-label="To date" data-pick="to">
@@ -349,8 +394,8 @@ function renderBlock(
       <div class="forex-graph-chart-header">
         <h5 class="forex-graph-chart-title">${escapeHtml(graphTitle)}</h5>
         <div class="forex-graph-legend">
-          <span class="forex-graph-legend-buying">${escapeHtml(placeholders.buyingLabel || 'Buying')}</span>
-          <span class="forex-graph-legend-selling">${escapeHtml(placeholders.sellingLabel || 'Selling')}</span>
+          <span class="forex-graph-legend-buying">${escapeHtml(placeholders.forexGraphBuying)}</span>
+          <span class="forex-graph-legend-selling">${escapeHtml(placeholders.forexGraphSelling)}</span>
         </div>
       </div>
       <div class="forex-graph-canvas-wrap">
@@ -515,7 +560,7 @@ export default async function decorate(block) {
         labels,
         datasets: [
           {
-            label: placeholders.buyingLabel || 'Buying',
+            label: placeholders.forexGraphBuying,
             data: buyingData,
             borderColor: '#002087',
             backgroundColor: 'transparent',
@@ -530,7 +575,7 @@ export default async function decorate(block) {
             tension: 0.3,
           },
           {
-            label: placeholders.sellingLabel || 'Selling',
+            label: placeholders.forexGraphSelling,
             data: sellingData,
             borderColor: '#ff6e00',
             backgroundColor: 'transparent',
