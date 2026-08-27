@@ -89,20 +89,11 @@ main .section.form-container.custom-forms :is(.checkbox-group-wrapper, .radio-gr
   text-align: center;
 }
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-transdatetimepanel>div:has(select) select {
-  padding-right: 1.875rem;
-}
-
 /* Invalid field padding */
 main .section.form-container.custom-forms .form-wrapper .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper).field-invalid :is(input, select),
 main .section.form-container.custom-forms .form-wrapper .form .drop-down-wrapper.field-invalid select {
   padding: 0 var(--bbl-space-250);
 }
-
-main .section.form-container.custom-forms .form form .field-compliantnonfin-complimentpanel>fieldset.panel-wrapper:not(.field-transdatetimepanel) :is(.field-province, .field-branch) select {
-  padding-right: 1.875rem;
-}
-
 
 /* Approval/privacy panel indent */
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) {
@@ -171,31 +162,6 @@ main .section.form-container.custom-forms .form form .email-wrapper.field-wrappe
 main .section.form-container.custom-forms .form form .email-wrapper.field-wrapper input {
   padding-left: var(--bbl-space-200);
 }
-
-main .section.form-container.custom-forms .form form .text-wrapper.field-officername.icon-username {
-  position: relative;
-}
-
-main .section.form-container.custom-forms .form form .text-wrapper.field-officername.icon-username::before {
-  position: absolute;
-  top: 1.375rem;
-  left: 0.9375rem;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--bbl-space-250);
-  height: var(--bbl-space-250);
-  color: var(--bbl-color-grey-150);
-  transform: translateY(-50%);
-  pointer-events: none;
-  content: "\e906";
-}
-
-main .section.form-container.custom-forms .form form .text-wrapper.field-officername.icon-username input {
-  padding-left: 2.75rem;
-}
-
 
 main .section.form-container.custom-forms .form .form-message.success-message {
   color: var(--bbl-color-black);

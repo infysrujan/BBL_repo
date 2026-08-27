@@ -2,6 +2,7 @@
     /* Form title */
     & .field-title h2,
     & :is(.field-wrapper, .plain-text-wrapper):has(h2) h2 {
+        position: relative;
         text-align: center;
         color: var(--bbl-color-black);
         font-family: var(--bbl-font-family-medium);
