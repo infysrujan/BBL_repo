@@ -193,30 +193,22 @@ function printForexGraph(block, state) {
 // eslint-disable-next-line import/no-unresolved
 const CHARTJS_ESM = 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm';
 
-// Pick `intermediateCount` indices evenly time-spaced between first/last; plain data, no Chart.js.
-function pickEvenlySpacedIndices(timestamps, intermediateCount = 6) {
-  const lastIndex = timestamps.length - 1;
-  if (lastIndex <= 0) return timestamps.map((_, index) => index);
+// Pick `intermediateCount` indices evenly spaced by position between first/last, so
+// ticks land at equal gaps on the (category) x-axis regardless of actual date gaps.
+function pickEvenlySpacedIndices(length, intermediateCount = 6) {
+  const lastIndex = length - 1;
+  if (lastIndex <= 0) return Array.from({ length }, (_, index) => index);
 
-  const startTime = timestamps[0];
-  const totalRange = timestamps[lastIndex] - startTime;
   const segments = intermediateCount + 1;
+  const step = Math.floor(lastIndex / segments);
   const indices = [0];
-  let cursor = 1;
 
   for (let k = 1; k <= intermediateCount; k += 1) {
-    const target = startTime + (totalRange * k) / segments;
-    while (cursor < lastIndex && timestamps[cursor] < target) cursor += 1;
-    const previous = cursor - 1;
+    const idx = step * k;
     const lastPicked = indices[indices.length - 1];
-    const usePrevious = previous > lastPicked
-      && Math.abs(timestamps[previous] - target) <= Math.abs(timestamps[cursor] - target);
-    const closest = usePrevious ? previous : cursor;
-
-    if (closest > lastPicked && closest < lastIndex) {
-      indices.push(closest);
+    if (idx > lastPicked && idx < lastIndex) {
+      indices.push(idx);
     }
-    cursor = Math.max(cursor, indices[indices.length - 1] + 1);
   }
 
   indices.push(lastIndex);
@@ -467,7 +459,6 @@ export default async function decorate(block) {
     const labels = state.chartData.map((d) => d.date);
     const buyingData = state.chartData.map((d) => d.buyingRate);
     const sellingData = state.chartData.map((d) => d.sellingRate);
-    const timestamps = state.chartData.map((d) => d.timestamp);
 
     // Single-day range pins to the axis origin; pad both sides with a blank category to center it.
     if (labels.length === 1) {
@@ -477,19 +468,50 @@ export default async function decorate(block) {
       buyingData.push(null);
       sellingData.unshift(null);
       sellingData.push(null);
-      timestamps.unshift(null);
-      timestamps.push(null);
     }
 
     const allValues = [...buyingData, ...sellingData].filter((v) => v !== null);
     const minVal = Math.min(...allValues) - 0.5;
     const maxVal = Math.ceil(Math.max(...allValues));
 
-    // Mobile wants 7 evenly time-spaced labels instead of index-based autoSkip; precompute indices.
-    const hasValidTimestamps = timestamps.length && timestamps.every((t) => t != null);
-    const mobileTickIndices = (window.innerWidth <= 760 && hasValidTimestamps)
-      ? new Set(pickEvenlySpacedIndices(timestamps, 5))
+    // Breakpoints (see forex-graph.css): mobile < 760px, tablet 760–1024px, desktop 1024px+.
+    const viewportWidth = window.innerWidth;
+    const isMobileViewport = viewportWidth <= 760;
+    const isTabletViewport = viewportWidth > 760 && viewportWidth < 1024;
+
+    const fromParsedForMonth = parseIsoDate(state.from.selectedDate);
+    const toParsedForMonth = parseIsoDate(state.to.selectedDate);
+    const sameMonth = !!(fromParsedForMonth && toParsedForMonth
+      && fromParsedForMonth.year === toParsedForMonth.year
+      && fromParsedForMonth.month === toParsedForMonth.month);
+    const monthDiff = (fromParsedForMonth && toParsedForMonth)
+      ? (Number(toParsedForMonth.year) * 12 + Number(toParsedForMonth.month))
+        - (Number(fromParsedForMonth.year) * 12 + Number(fromParsedForMonth.month))
       : null;
+    const isPrevMonthRange = monthDiff === 1;
+
+    // Mobile wants 6 evenly (position-)spaced labels for a ~1-month-or-less range,
+    // 7 for longer ranges, instead of index-based autoSkip.
+    const rangeDays = (new Date(state.to.selectedDate) - new Date(state.from.selectedDate))
+      / (1000 * 60 * 60 * 24);
+    const mobileIntermediateCount = rangeDays > 31 ? 5 : 4;
+    const mobileTickIndices = isMobileViewport
+      ? new Set(pickEvenlySpacedIndices(labels.length, mobileIntermediateCount))
+      : null;
+
+    // Tablet: same-month range wants 9 evenly (position-)spaced labels; a range
+    // starting in the month before "to" wants 10.
+    let tabletTickIndices = null;
+    if (isTabletViewport && sameMonth) {
+      tabletTickIndices = new Set(pickEvenlySpacedIndices(labels.length, 7));
+    } else if (isTabletViewport && isPrevMonthRange) {
+      tabletTickIndices = new Set(pickEvenlySpacedIndices(labels.length, 8));
+    }
+
+    const customTickIndices = mobileTickIndices || tabletTickIndices;
+
+    // Desktop: when from/to fall in the same month, show every working day instead of autoSkipping.
+    const sameMonthDesktop = !isMobileViewport && !isTabletViewport && sameMonth;
 
     // Plugin: draw halo on the cross-dataset point at the same index
     const crossHighlightPlugin = {
@@ -529,9 +551,9 @@ export default async function decorate(block) {
         ctx.save();
         ctx.strokeStyle = 'rgba(0,0,0,0.08)';
         ctx.lineWidth = 1;
-        // Mobile: use our date-based ticks; else mirror autoSkip, always including the last point.
-        const indices = mobileTickIndices
-          ? new Set(mobileTickIndices)
+        // Mobile/tablet: use our position-based ticks; else mirror autoSkip + last point.
+        const indices = customTickIndices
+          ? new Set(customTickIndices)
           : new Set(xScale.ticks.map((tick) => tick.value));
         indices.add(meta.data.length - 1);
         indices.forEach((index) => {
@@ -630,11 +652,11 @@ export default async function decorate(block) {
             ticks: {
               maxRotation: 45,
               minRotation: 0,
-              // Mobile: blank labels outside our indices via callback; desktop keeps autoSkip.
-              autoSkip: !mobileTickIndices,
+              // Mobile/tablet: blank labels outside our indices via callback; else autoSkip.
+              autoSkip: !customTickIndices && !sameMonthDesktop,
               autoSkipPadding: 10,
               callback: (value) => (
-                mobileTickIndices && !mobileTickIndices.has(value) ? null : labels[value]
+                customTickIndices && !customTickIndices.has(value) ? null : labels[value]
               ),
               font: { size: 13, weight: '700' },
               color: '#000',
@@ -659,15 +681,21 @@ export default async function decorate(block) {
     });
   }
 
-  // Tick strategy is decided once at build time; rebuild when the breakpoint actually changes.
-  let isMobileBreakpoint = window.innerWidth <= 760;
+  // Tick strategy is decided once at build time; rebuild when the breakpoint tier actually changes.
+  const getBreakpointTier = () => {
+    const width = window.innerWidth;
+    if (width <= 760) return 'mobile';
+    if (width < 1024) return 'tablet';
+    return 'desktop';
+  };
+  let breakpointTier = getBreakpointTier();
   let resizeTimeout;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-      const nowMobile = window.innerWidth <= 760;
-      if (nowMobile !== isMobileBreakpoint) {
-        isMobileBreakpoint = nowMobile;
+      const nowTier = getBreakpointTier();
+      if (nowTier !== breakpointTier) {
+        breakpointTier = nowTier;
         drawChart();
       }
     }, 200);
