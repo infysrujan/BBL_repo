@@ -124,7 +124,6 @@
 .accordion-panel {
   padding: 1.25rem 0;
   overflow: hidden;
-  opacity: 1;
   transition: max-height 0.4s ease-out, padding-block 0.4s ease-out;
 }
 
@@ -133,7 +132,6 @@
   display: block;
   max-height: 0;
   padding-block: 0;
-  opacity: 0;
   transition: max-height 0.4s ease-out,  padding-block 0.4s ease-out;
 }
 
