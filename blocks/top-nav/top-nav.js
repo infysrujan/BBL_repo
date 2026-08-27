@@ -107,7 +107,7 @@ export default function decorate(block) {
       }
     }
 
-    const langSwitcher = li.querySelector('a span.top-nav-text')?.textContent;
+    const langSwitcher = li.querySelector('a span.top-nav-text')?.textContent?.trim().toUpperCase();
     if (hideLangSwitcher && ['TH', 'EN'].includes(langSwitcher)) {
       li.style.display = 'none';
     }
