@@ -508,6 +508,7 @@
   white-space: nowrap;
   line-height: 1.375rem;
   text-transform: lowercase;
+  z-index: 1;
 }
 
 /* Label + value rows — matching BBL's 60px td pattern */

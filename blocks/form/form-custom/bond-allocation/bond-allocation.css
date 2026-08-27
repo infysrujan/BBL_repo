@@ -215,6 +215,10 @@
     grid-column: 2;
   }
 
+  & .form form .field-bond-allocation-review .field-totalpurchaseamount > p {
+    padding-right: 1.875rem;
+  }
+
   & .form form .field-bond-allocation-review .plain-text-wrapper p{
     text-align: left;
   }
