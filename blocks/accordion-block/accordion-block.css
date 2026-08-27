@@ -69,11 +69,9 @@
   line-height: var(--bbl-text-accordion-line-height);
   font-weight: var(--bbl-text-accordion-weight);
   font-family:var(--bbl-font-family-medium);
-  transition: color 0.4s ease;
 }
 
 .accordion-toolbar-label:hover {
-  font: 1rem var(--bbl-font-family-medium);
   color: var(--bbl-color-blue-90);
 }
 
@@ -126,9 +124,8 @@
 .accordion-panel {
   padding: 1.25rem 0;
   overflow: hidden;
-  max-height: 62.5rem;
   opacity: 1;
-  transition: max-height 0.4s ease, opacity 0.4s ease, padding-block 0.4s ease;
+  transition: max-height 0.4s ease-out, opacity 0.35s ease-out, padding-block 0.4s ease-out;
 }
 
 /* Closed state — override the [hidden] display:none so it can animate shut */
@@ -137,6 +134,7 @@
   max-height: 0;
   padding-block: 0;
   opacity: 0;
+  transition: max-height 0.4s ease-out, opacity 0.3s ease-out, padding-block 0.4s ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
