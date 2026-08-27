@@ -11,12 +11,15 @@ async function handleDownloadWithPopup(e, link) {
     e.preventDefault();
   }
 
+  const target = link.getAttribute('target') || link.target || '_self';
+
   try {
     if (typeof window.showPrivacyModal === 'function') {
       window.showPrivacyModal(targetUrl, {
         bypassCookie: true,
         className: 'download-file-modal',
         resetState: true,
+        target,
       });
       return;
     }
@@ -35,14 +38,21 @@ async function handleDownloadWithPopup(e, link) {
         bypassCookie: true,
         className: 'download-file-modal',
         resetState: true,
+        target,
       });
+    } else if (target === '_self') {
+      window.location.href = targetUrl;
     } else {
-      window.open(targetUrl, link.target || '_blank');
+      window.open(targetUrl, target);
     }
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('[Download File] Failed to load terms & conditions popup:', err);
-    window.open(targetUrl, link.target || '_blank');
+    if (target === '_self') {
+      window.location.href = targetUrl;
+    } else {
+      window.open(targetUrl, target);
+    }
   }
 }
 

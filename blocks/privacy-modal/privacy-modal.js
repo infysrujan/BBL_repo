@@ -260,6 +260,10 @@ export default function decorate(block) {
   /* ctaLabel — Row 4 (linkText cell from _button-fields.json) */
   const ctaLabel = rows[4]?.textContent.trim() || 'Agree';
 
+  /* targetLink — Row 5 (from _button-fields.json targetSettings) */
+  const targetLinkText = rows[5]?.textContent.trim().toLowerCase() || '';
+  const modalAuthoredTarget = targetLinkText === 'false' || targetLinkText === 'off' || targetLinkText === '_self' ? '_self' : '_blank';
+
   const existingOverlay = document.querySelector('.privacy-modal-overlay');
   if (existingOverlay) {
     const placeholder = createElement('div', { className: 'privacy-modal-placeholder' });
@@ -290,15 +294,22 @@ export default function decorate(block) {
 
     // Check for pending URL at the time of agreement
     const pendingHref = window.pendingNavigationUrl;
+    const pendingTarget = window.pendingNavigationTarget || '_blank';
     if (pendingHref) {
       window.pendingNavigationUrl = null;
-      window.open(pendingHref, '_blank', 'noopener,noreferrer');
+      window.pendingNavigationTarget = null;
+      if (pendingTarget === '_self') {
+        window.location.href = pendingHref;
+      } else {
+        window.open(pendingHref, pendingTarget, 'noopener,noreferrer');
+      }
     }
   }
 
   function handleClose() {
     closeModal(overlay); // eslint-disable-line no-use-before-define
     window.pendingNavigationUrl = null;
+    window.pendingNavigationTarget = null;
   }
 
   const { overlay } = buildModal({
@@ -322,13 +333,18 @@ export default function decorate(block) {
     bypassCookie = false,
     className = '',
     resetState = false,
+    target = modalAuthoredTarget,
   } = {}) => {
     isBypassCookie = bypassCookie;
 
     // Normal mode: if cookie already present, navigate directly without showing modal
     if (!bypassCookie && getCookie(COOKIE_NAME) === 'true') {
       if (pendingUrl) {
-        window.open(pendingUrl, '_blank', 'noopener,noreferrer');
+        if (target === '_self') {
+          window.location.href = pendingUrl;
+        } else {
+          window.open(pendingUrl, target, 'noopener,noreferrer');
+        }
       }
       return;
     }
@@ -343,6 +359,7 @@ export default function decorate(block) {
     }
 
     window.pendingNavigationUrl = pendingUrl || null;
+    window.pendingNavigationTarget = target || '_blank';
     openModal(overlay, { resetState });
   };
 }
