@@ -163,14 +163,22 @@ button {
 
 /* links */
 a:any-link {
-    color: var(--bbl-text-link);
+    color: var(--bbl-color-active-blue);
     text-decoration: none;
     overflow-wrap: break-word;
 }
 
 a:hover {
-    color: var(--bbl-text-link-hover);
+    color: var(--bbl-color-blue-90);
     text-decoration: underline;
+}
+
+:is(.bg-truthful-blue, .bg-truthful-dark-blue, .bg-grey-100) a:any-link {
+    color: var(--bbl-color-white);
+}
+
+:is(.bg-truthful-blue, .bg-truthful-dark-blue, .bg-grey-100) a:hover {
+    color: var(--bbl-color-active-blue);
 }
 
 main img {

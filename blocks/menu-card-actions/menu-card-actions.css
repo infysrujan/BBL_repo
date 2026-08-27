@@ -55,10 +55,6 @@
   overflow: visible;
 }
 
-.menu-card-action-description :is(p, li) a {
-  color: inherit;
-}
-
 .menu-card-action-description :is(p, li) a[class] {
   display: inline;
   font-weight: inherit;
@@ -72,7 +68,6 @@
 
 .menu-card-action-item-link,
 .menu-card-action-item-link:any-link {
-  color: inherit;
   text-decoration: none;
   display: flex;
   flex-direction: column;
