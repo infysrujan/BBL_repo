@@ -97,6 +97,7 @@
   position: absolute;
   top: -0.5rem;
   z-index: 10;
+  left: -4px;
   width: var(--bbl-space-250);
   height: var(--bbl-space-250);
   border-radius: var(--bbl-radius-full);
