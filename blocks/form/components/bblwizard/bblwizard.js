@@ -127,17 +127,25 @@ function applyState(nav, activeIndex) {
     item.removeAttribute('aria-current');
 
     if (i < activeIndex) {
+      // Completed steps are navigable — clicking one jumps back to it.
       item.classList.add('is-completed');
       indicator.innerHTML = CHECKMARK_SVG;
-      item.setAttribute('aria-label', `Step ${i + 1} completed`);
+      item.setAttribute('aria-label', `Step ${i + 1} completed, activate to go back`);
+      item.setAttribute('role', 'button');
+      item.tabIndex = 0;
     } else if (i === activeIndex) {
       item.classList.add('is-active');
       indicator.textContent = String(i + 1);
       item.setAttribute('aria-current', 'step');
       item.setAttribute('aria-label', `Step ${i + 1} current`);
+      item.setAttribute('role', 'listitem');
+      item.removeAttribute('tabindex');
     } else {
+      // Upcoming steps are not reachable by clicking — only submitting advances the form.
       indicator.textContent = String(i + 1);
       item.setAttribute('aria-label', `Step ${i + 1} upcoming`);
+      item.setAttribute('role', 'listitem');
+      item.removeAttribute('tabindex');
     }
   });
 
@@ -197,6 +205,32 @@ export default function decorate(fieldDiv, fd) {
           attributeFilter: ['data-visible'],
         });
       }
+    });
+
+    // Clicking a step icon only ever goes backward to an already-completed step.
+    // Moving forward is never done from here — the form's own submit/next action
+    // is what reveals the next panel.
+    const goToStep = (targetIndex) => {
+      const activeIndex = getActiveIndex(form, panelNames);
+      if (targetIndex >= activeIndex) return;
+      for (let i = targetIndex + 1; i < panelNames.length; i += 1) {
+        const fieldset = form.querySelector(`fieldset[name="${panelNames[i]}"]`);
+        if (fieldset) fieldset.dataset.visible = 'false';
+      }
+    };
+
+    nav.addEventListener('click', (e) => {
+      const stepEl = e.target.closest('.bbl-wizard-step');
+      if (!stepEl) return;
+      goToStep(Number(stepEl.dataset.stepIndex));
+    });
+
+    nav.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const stepEl = e.target.closest('.bbl-wizard-step');
+      if (!stepEl) return;
+      e.preventDefault();
+      goToStep(Number(stepEl.dataset.stepIndex));
     });
   });
 
