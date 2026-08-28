@@ -124,10 +124,10 @@
 .fund-prices-dropdown .period-dropdown-list {
   position: absolute;
   top: calc(100% + var(--bbl-space-025));
-  left: 0.625rem;
-  width: calc(100% - 0.625rem);
+  left: 0;
+  width: 100%;
   background: var(--bbl-color-white);
-  border: solid 0.0625rem var(--bbl-color-gray-122);
+  border: solid 0.0625rem var(--bbl-color-grey-30);
   border-radius: var(--bbl-space-100);
   box-shadow: 0 0 var(--bbl-space-050) 0 rgb(0 0 0 / 5%);
   min-width: 10rem;
@@ -645,6 +645,10 @@
     width: auto;
     min-width: fit-content;
     margin-left: 0.9375rem;
+  }
+
+  .fdd-period-bar .period-select-wrapper .period-dropdown-list {
+    left: 0.9375rem;
   }
 
   .fund-prices-dropdown .period-select-wrapper {
