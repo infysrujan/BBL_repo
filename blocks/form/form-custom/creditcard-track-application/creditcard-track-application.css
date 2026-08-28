@@ -120,7 +120,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       & .date-wrapper.field-wrapper::after {
         content: "\e912";
         font-family: var(--bbl-form-font-family-icomoon);
-        font-size: 1.125rem;
+        font-size: var(--bbl-font-size-h3-mobile);
         color: var(--bbl-color-grey-85);
         position: absolute;
         top: 0;
