@@ -4,7 +4,7 @@
    Base Styles (Mobile First)
    ======================================================================== */
 .section.columns-3 {
-  row-gap: 0;
+  /* row-gap: 0; */
 }
 
 .currency-converter {
@@ -342,11 +342,6 @@
   .currency-converter .icon-dropdown {
     top: 18.5%;
   }
-
-  .currency-converter .amount-input {
-    font-size: 3.875rem;
-    line-height: 4.4375rem;
-  }
 }
 
 @keyframes wobble-vertical {
@@ -381,5 +376,10 @@
 
   .currency-converter .convert-group {
     margin-bottom: 0;
+  }
+
+  .currency-converter .amount-input {
+    font-size: 3.875rem;
+    line-height: 4.4375rem;
   }
 }

@@ -195,7 +195,7 @@ function renderChart(svgEl, history, period, noDataLabel) {
   const rawMax = Math.max(...navs);
   const tickStep = 0.5;
   const yMax = hasData ? Math.ceil(rawMax) : 0.5;
-  const yMin = hasData ? Math.floor(rawMin / tickStep) * tickStep - tickStep : 0;
+  const yMin = hasData ? Math.floor(rawMin) : 0;
 
   const xPos = (i) => (points.length > 1
     ? padL + (i / (points.length - 1)) * innerW
@@ -248,14 +248,16 @@ function renderChart(svgEl, history, period, noDataLabel) {
     const x = xPos(i);
     const isLabelPoint = labelSet.has(i);
     if (isLabelPoint) {
-      el('line', {
-        x1: x,
-        y1: padT,
-        x2: x,
-        y2: H - padB,
-        stroke: 'var(--bbl-color-gray-122)',
-        'stroke-width': 1,
-      }, svgEl);
+      if (points.length > 1) {
+        el('line', {
+          x1: x,
+          y1: padT,
+          x2: x,
+          y2: H - padB,
+          stroke: 'var(--bbl-color-gray-122)',
+          'stroke-width': 1,
+        }, svgEl);
+      }
       // eslint-disable-next-line no-nested-ternary
       const anchor = !hasData ? 'middle' : (useRotation ? 'end' : (i === lastIdx ? 'end' : (i === 0 ? 'start' : 'middle')));
       const clampedX = (hasData && !useRotation && i === lastIdx) ? Math.min(x, W - 4) : x;
