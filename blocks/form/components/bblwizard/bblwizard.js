@@ -197,7 +197,7 @@ export default function decorate(fieldDiv, fd, _container, formId) {
     let lastActiveIndex = getActiveIndex(form, panelNames);
     applyState(nav, lastActiveIndex);
 
-    // Watch each tracked panel fieldset for data-visible changes. This fires for both
+    // Watch for data-visible changes on any of the tracked panels. This fires for both
     // forward navigation (the form's own Next/Submit flow revealing the next panel) and
     // backward navigation (goToStep below) — either way, keep the stepper scrolled into
     // view so the user always lands where the step indicator is visible.
@@ -210,14 +210,10 @@ export default function decorate(fieldDiv, fd, _container, formId) {
       }
     });
 
-    steps.forEach(({ panel }) => {
-      const fieldset = form.querySelector(`fieldset[name="${panel}"]`);
-      if (fieldset) {
-        observer.observe(fieldset, {
-          attributes: true,
-          attributeFilter: ['data-visible'],
-        });
-      }
+    observer.observe(form, {
+      attributes: true,
+      attributeFilter: ['data-visible'],
+      subtree: true,
     });
 
     // Resolve the live rule-engine model for this field so goToStep can correct the
