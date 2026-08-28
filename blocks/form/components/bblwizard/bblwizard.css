@@ -26,6 +26,7 @@
   max-width: 31.25rem;
   line-height: var(--bbl-wizard-line-height-base-mobile);
   font-family: var(--bbl-font-family-medium);
+  scroll-margin-top: 9rem;
 }
 
 main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper:not([class*="field-form-fragment"], .field-button-panel, [class*="field-form-width"], [class*="field-css-"], :has([class*="field-form-width"])) {
