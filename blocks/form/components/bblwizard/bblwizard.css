@@ -174,11 +174,12 @@ main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.r
   background-color: var(--bbl-color-white, #fff);
   cursor: pointer;
   flex-shrink: 0;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
 }
 
 main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards) input[type='radio']:hover {
-  border-color: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-active-blue, #0064ff);
+  opacity: 1;
 }
 
 main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards) input[type='radio']:checked {

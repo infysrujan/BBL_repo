@@ -213,25 +213,23 @@ export default function decorate(fieldDiv, fd) {
     const goToStep = (targetIndex) => {
       const activeIndex = getActiveIndex(form, panelNames);
       if (targetIndex >= activeIndex) return;
+      const targetFieldset = form.querySelector(`fieldset[name="${panelNames[targetIndex]}"]`);
+      if (targetFieldset) targetFieldset.dataset.visible = 'true';
       for (let i = targetIndex + 1; i < panelNames.length; i += 1) {
         const fieldset = form.querySelector(`fieldset[name="${panelNames[i]}"]`);
         if (fieldset) fieldset.dataset.visible = 'false';
       }
     };
 
-    nav.addEventListener('click', (e) => {
+    const onActivate = (e) => {
+      if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
       const stepEl = e.target.closest('.bbl-wizard-step');
       if (!stepEl) return;
+      if (e.type === 'keydown') e.preventDefault();
       goToStep(Number(stepEl.dataset.stepIndex));
-    });
-
-    nav.addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter' && e.key !== ' ') return;
-      const stepEl = e.target.closest('.bbl-wizard-step');
-      if (!stepEl) return;
-      e.preventDefault();
-      goToStep(Number(stepEl.dataset.stepIndex));
-    });
+    };
+    nav.addEventListener('click', onActivate);
+    nav.addEventListener('keydown', onActivate);
   });
 
   return fieldDiv;
