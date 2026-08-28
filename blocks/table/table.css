@@ -238,6 +238,11 @@
   vertical-align: middle;
 }
 
+/* Cells Middle Aligned */
+.table table.cells-middle-aligned tr:not(.header-row) td {
+  vertical-align: middle;
+}
+
 /* --------------------------------------------------------------------------
    BORDER TYPE VARIANTS — last row (specificity 0,3,3)
    -------------------------------------------------------------------------- */
