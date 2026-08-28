@@ -603,13 +603,13 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
   }
 
   .fund-prices-search-bar.is-in-header .fund-select-btn {
-    height: var(--bbl-space-600);
+    height: 2.75rem;
   }
 
   .fund-prices-search-bar.is-in-header .fund-search-go-btn {
     flex: none;
     width: 10rem;
-    height: var(--bbl-space-600);
+    height: 2.75rem;
   }
 }
 
