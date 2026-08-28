@@ -21,11 +21,12 @@ function setupPanel(panel, activeCards, placeholders) {
   const btnId = panel.getAttribute('aria-labelledby');
   const btn = btnId ? document.getElementById(btnId) : null;
   const tabText = btn?.textContent?.trim() || '';
+  const tabTags = btn?.dataset.tags || '';
 
   const topPromoTabLabel = (placeholders.topPromotionsTabLabel || 'toppromotions').toLowerCase().replace(/\s+/g, '');
   const isTopPromo = tabText.toLowerCase().replace(/\s+/g, '') === topPromoTabLabel;
 
-  let cards = sortCards(filterCards(activeCards, tabText, isTopPromo));
+  let cards = sortCards(filterCards(activeCards, tabTags, isTopPromo));
   if (isTopPromo) {
     if (!cards.length) {
       panel.hidden = true;

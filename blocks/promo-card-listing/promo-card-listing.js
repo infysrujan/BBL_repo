@@ -618,15 +618,14 @@ export default async function decorate(block) {
       ? (tabsContainer?.querySelector(`#${tabBtnId}`) || document.getElementById(tabBtnId))
       : null;
     const tabText = tabBtn?.textContent?.trim() || '';
+    const tabTags = tabBtn?.dataset.tags || '';
 
     const dataSet = activeData;
     const dataCategories = dataSet?.categories || [];
     const dataCardTypes = activeCardTypes;
     const dataAreas = activeAreas;
-    const catMeta = dataCategories.find((c) => c.label.toLowerCase() === tabText.toLowerCase())
-      || {};
-    const category = catMeta.label || tabText;
-    const subcategories = catMeta.subcategories || [];
+    const category = tabTags;
+    const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
 
     const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText));
 

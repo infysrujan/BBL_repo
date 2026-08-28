@@ -81,7 +81,6 @@ async function renderNewsMedia(block) {
 
   const [data, placeholders] = await Promise.all([fetchJson(dataUrl), fetchPlaceholders()]);
   const allCards = data?.news || [];
-  const categories = data?.categories || [];
 
   document.querySelector('.tabs.block')?.classList.add('news-media-tabs');
 
@@ -89,10 +88,8 @@ async function renderNewsMedia(block) {
   tabPanels.forEach((panel) => {
     const tabBtnId = panel.getAttribute('aria-labelledby');
     const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
-    const tabText = tabBtn?.textContent?.trim() || '';
-
-    const catMeta = categories.find((c) => c.label.toLowerCase() === tabText.toLowerCase()) || {};
-    const category = catMeta.label || tabText;
+    const tabTags = tabBtn?.dataset.tags || '';
+    const category = tabTags;
 
     setupPanel(panel, allCards, category, locale, pageSize, placeholders);
   });
