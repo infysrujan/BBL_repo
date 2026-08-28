@@ -494,7 +494,7 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
 
 @media (width > 47.5rem) {
   .fund-prices-container.full-bleed-special.bg-grey-05 {
-    padding-inline: var(--bbl-space-section-xs);
+    padding-inline: var(--bbl-space-section-sm);
   }
 
   body.fund-prices-detail-active .fund-prices-dropdown .fdd-title,
