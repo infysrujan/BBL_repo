@@ -306,8 +306,8 @@
 }
 
 .carousel-dotted .slick-dots li.is-active button {
-  width: 0.6875rem;
-  height: 0.6875rem;
+  width: 0.75rem;
+  height: 0.75rem;
   background: var(--bbl-color-active-blue);
   border-color: var(--bbl-color-active-blue);
 }
@@ -796,10 +796,10 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .slick-dots button {
-    width: 0.5625rem;
-    height: 0.5625rem;
-    min-width: 0.5625rem;
-    min-height: 0.5625rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    min-width: 0.5rem;
+    min-height: 0.5rem;
     border-width: 0.063rem;
   }
 
