@@ -69,6 +69,18 @@
   margin-bottom: var(--bbl-space-300);
 }
 
+.fund-prices col {
+  min-width: 10.3125rem;
+}
+
+.fund-prices .fund-prices-table.table table.outline-border {
+  border-color: var(--bbl-color-grey-20);
+}
+
+.fund-prices .fund-prices-table.table table td {
+  border-color: var(--bbl-color-grey-20);
+}
+
 .fund-prices .fund-prices-table table tr.header-row td {
   font-family: var(--bbl-font-family-medium);
   font-size: 1rem;
@@ -85,6 +97,12 @@
   font-weight: var(--bbl-font-weight-regular);
   vertical-align: middle;
   text-align: right;
+}
+
+.fund-prices .fund-prices-table.table table.border-bottom td {
+  border-bottom-color: var(--bbl-color-grey-20);
+  height: 3.5rem;
+  box-sizing: border-box;
 }
 
 /* Mirrors the print stylesheet's tr.header-row td:first-child/:nth-child(2)
