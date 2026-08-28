@@ -17,6 +17,8 @@
  * panel <fieldset>, so panels are found via fieldset[name="panelName"].
  */
 
+import { subscribe } from '../../rules/index.js';
+
 const CHECKMARK_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
 
 /**
@@ -162,9 +164,11 @@ function applyState(nav, activeIndex) {
  *
  * @param {HTMLElement} fieldDiv – The .field-wrapper rendered by form.js
  * @param {Object}      fd       – The field definition from AEM Forms
+ * @param {HTMLElement} _container
+ * @param {string}      formId   – Id used to look up the live rule-engine model
  * @returns {HTMLElement}
  */
-export default function decorate(fieldDiv, fd) {
+export default function decorate(fieldDiv, fd, _container, formId) {
   const titles = toArray(getProp(fd, 'stepTitles'));
   const panels = toArray(getProp(fd, 'stepPanels'));
 
@@ -207,18 +211,36 @@ export default function decorate(fieldDiv, fd) {
       }
     });
 
+    // Resolve the live rule-engine model for this field so goToStep can correct the
+    // model's own cached `visible` value, not just the DOM attribute. The rule engine
+    // only re-syncs the DOM (rules/index.js `case 'visible'`) when its cached value
+    // actually changes; if we only flip dataset.visible here, the model never learns
+    // about it, and the next time the form's own Next/Submit flow recomputes visibility
+    // for these panels it sees no change from its stale cache, so it never re-reveals
+    // them — leaving required fields permanently hidden (and unfocusable) at submit time.
+    let formModel;
+    if (formId) {
+      subscribe(fieldDiv, formId, (el, model, eventType) => {
+        if (eventType === 'register') formModel = model?.form;
+      });
+    }
+
     // Clicking a step icon only ever goes backward to an already-completed step.
     // Moving forward is never done from here — the form's own submit/next action
     // is what reveals the next panel.
     const goToStep = (targetIndex) => {
       const activeIndex = getActiveIndex(form, panelNames);
       if (targetIndex >= activeIndex) return;
-      const targetFieldset = form.querySelector(`fieldset[name="${panelNames[targetIndex]}"]`);
-      if (targetFieldset) targetFieldset.dataset.visible = 'true';
-      for (let i = targetIndex + 1; i < panelNames.length; i += 1) {
-        const fieldset = form.querySelector(`fieldset[name="${panelNames[i]}"]`);
-        if (fieldset) fieldset.dataset.visible = 'false';
-      }
+      panelNames.forEach((name, i) => {
+        const fieldset = form.querySelector(`fieldset[name="${name}"]`);
+        if (!fieldset) return;
+        const isVisible = i <= targetIndex;
+        if (formModel) {
+          const panelModel = formModel.getElement(fieldset.dataset.id);
+          if (panelModel) panelModel.visible = isVisible;
+        }
+        fieldset.dataset.visible = String(isVisible);
+      });
     };
 
     const onActivate = (e) => {
