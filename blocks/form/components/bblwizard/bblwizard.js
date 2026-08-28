@@ -127,25 +127,17 @@ function applyState(nav, activeIndex) {
     item.removeAttribute('aria-current');
 
     if (i < activeIndex) {
-      // Completed steps are navigable — clicking one jumps back to it.
       item.classList.add('is-completed');
       indicator.innerHTML = CHECKMARK_SVG;
-      item.setAttribute('aria-label', `Step ${i + 1} completed, activate to go back`);
-      item.setAttribute('role', 'button');
-      item.tabIndex = 0;
+      item.setAttribute('aria-label', `Step ${i + 1} completed`);
     } else if (i === activeIndex) {
       item.classList.add('is-active');
       indicator.textContent = String(i + 1);
       item.setAttribute('aria-current', 'step');
       item.setAttribute('aria-label', `Step ${i + 1} current`);
-      item.setAttribute('role', 'listitem');
-      item.removeAttribute('tabindex');
     } else {
-      // Upcoming steps are not reachable by clicking — only submitting advances the form.
       indicator.textContent = String(i + 1);
       item.setAttribute('aria-label', `Step ${i + 1} upcoming`);
-      item.setAttribute('role', 'listitem');
-      item.removeAttribute('tabindex');
     }
   });
 
@@ -190,55 +182,22 @@ export default function decorate(fieldDiv, fd) {
     if (!form) return;
 
     // Set initial state
-    let lastActiveIndex = getActiveIndex(form, panelNames);
-    applyState(nav, lastActiveIndex);
+    applyState(nav, getActiveIndex(form, panelNames));
 
-    // Watch for data-visible changes on any of the tracked panels. This fires for both
-    // forward navigation (the form's own Next/Submit flow revealing the next panel) and
-    // backward navigation (goToStep below) — either way, keep the stepper scrolled into
-    // view so the user always lands where the step indicator is visible.
+    // Watch each tracked panel fieldset for data-visible changes
     const observer = new MutationObserver(() => {
-      const activeIndex = getActiveIndex(form, panelNames);
-      applyState(nav, activeIndex);
-      if (activeIndex !== lastActiveIndex) {
-        lastActiveIndex = activeIndex;
-        nav.scrollIntoView({ behavior: 'smooth' });
-      }
+      applyState(nav, getActiveIndex(form, panelNames));
     });
 
-    observer.observe(form, {
-      attributes: true,
-      attributeFilter: ['data-visible'],
-      subtree: true,
-    });
-
-    // Clicking a step icon only ever goes backward to an already-completed step.
-    // Moving forward is never done from here — the form's own submit/next action
-    // is what reveals the next panel.
-    const setPanelVisible = (index, isVisible) => {
-      const fieldset = form.querySelector(`fieldset[name="${panelNames[index]}"]`);
-      if (!fieldset) return;
-      fieldset.dataset.visible = String(isVisible);
-    };
-
-    const goToStep = (targetIndex) => {
-      const activeIndex = getActiveIndex(form, panelNames);
-      if (targetIndex >= activeIndex) return;
-      setPanelVisible(targetIndex, true);
-      for (let i = targetIndex + 1; i < panelNames.length; i += 1) {
-        setPanelVisible(i, false);
+    steps.forEach(({ panel }) => {
+      const fieldset = form.querySelector(`fieldset[name="${panel}"]`);
+      if (fieldset) {
+        observer.observe(fieldset, {
+          attributes: true,
+          attributeFilter: ['data-visible'],
+        });
       }
-    };
-
-    const onActivate = (e) => {
-      if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
-      const stepEl = e.target.closest('.bbl-wizard-step');
-      if (!stepEl) return;
-      if (e.type === 'keydown') e.preventDefault();
-      goToStep(Number(stepEl.dataset.stepIndex));
-    };
-    nav.addEventListener('click', onActivate);
-    nav.addEventListener('keydown', onActivate);
+    });
   });
 
   return fieldDiv;
