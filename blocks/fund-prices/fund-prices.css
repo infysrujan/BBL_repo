@@ -586,7 +586,7 @@ main:has(.fund-prices) .default-content-wrapper > h2:first-child {
     justify-content: flex-end;
     flex-wrap: nowrap;
     min-height: var(--bbl-space-800);
-    padding: 0 max(var(--bbl-space-1050), calc((100vw - 103.5rem) / 2));
+    padding: var(--bbl-space-150) max(var(--bbl-space-1050), calc((100vw - 103.5rem) / 2));
     gap: var(--bbl-space-200);
   }
 

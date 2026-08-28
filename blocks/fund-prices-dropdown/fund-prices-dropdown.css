@@ -134,7 +134,7 @@
   z-index: 500;
   list-style: none;
   display: none;
-  max-height: 10rem;
+  max-height: 9.375rem;
   overflow-y: auto;
   box-sizing: border-box;
   padding: 0;
@@ -591,7 +591,7 @@
   }
 
   .fund-prices-dropdown .fdd-fund-label {
-    max-width: 15rem;
+    max-width: 41.6667%;
   }
 
   .fund-prices-dropdown .chart-subtitle {
@@ -740,11 +740,12 @@
     gap: var(--bbl-space-100);
   }
 
+  .fund-prices-dropdown .stat-table td {
+    font-size: 1rem;
+  }
+
   .fund-prices-dropdown .fdd-fund-label {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
+    font-size: 0.8rem;
   }
 }
 
@@ -831,7 +832,7 @@
     display: none;
     margin-bottom: 2.4375rem;
     font-family: var(--bbl-font-family-primary);
-    font-size: 0.75rem;
+    font-size: var(--bbl-body-b3-size);
     line-height: 1.35;
   }
 
@@ -973,6 +974,16 @@
     display: none;
   }
 
+  #fund-prices-print-root .fund-prices-dropdown .chart-wrap {
+    position: relative;
+    border: 0.0625rem solid #4e4e4e;
+    border-radius: 0;
+    padding: 1.5rem 1.875rem 0.625rem;
+    margin: 0 0 2.1875rem;
+    overflow: visible;
+    break-inside: avoid;
+  }
+
   #fdd-print-root .fdd-chart-panel:not(.hidden) .chart-wrap {
     display: block;
     position: relative;
@@ -1098,7 +1109,6 @@
     margin: 0 0 0.4rem;
   }
 
-  /* stylelint-disable no-descending-specificity */
   #fund-prices-print-root .fund-prices-dropdown {
     padding: 0;
     max-width: none;
@@ -1131,16 +1141,6 @@
 
   #fund-prices-print-root .fund-prices-dropdown .fdd-chart-panel {
     margin-inline: 0;
-  }
-
-  #fund-prices-print-root .fund-prices-dropdown .chart-wrap {
-    position: relative;
-    border: 0.0625rem solid #4e4e4e;
-    border-radius: 0;
-    padding: 1.5rem 1.875rem 0.625rem;
-    margin: 0 0 2.1875rem;
-    overflow: visible;
-    break-inside: avoid;
   }
 
   #fund-prices-print-root .fund-prices-dropdown .chart-header {
@@ -1186,5 +1186,4 @@
     height: 17.5rem;
     box-sizing: border-box;
   }
-  /* stylelint-enable no-descending-specificity */
 }
