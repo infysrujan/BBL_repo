@@ -586,7 +586,12 @@
 
 @media (width > 47.5rem) {
   .fund-prices-dropdown .chart-header {
+    flex-wrap: nowrap;
     gap: var(--bbl-space-500);
+  }
+
+  .fund-prices-dropdown .fdd-fund-label {
+    max-width: 15rem;
   }
 
   .fund-prices-dropdown .chart-subtitle {
@@ -650,7 +655,6 @@
   .fund-prices-dropdown .tab-switcher {
     display: flex;
     justify-content: center;
-    margin-bottom: var(--bbl-space-600);
     gap: var(--bbl-space-400);
   }
 
@@ -765,8 +769,6 @@
     position: relative;
   }
 
-  /* The print root is itself a cloned .fund-prices-dropdown block, so remove
-     the live-view side padding before laying out the A4 content. */
   body.fdd-printing #fdd-print-root.fund-prices-dropdown {
     padding: 0;
     max-width: none;
@@ -1096,9 +1098,6 @@
     margin: 0 0 0.4rem;
   }
 
-  /* When the parent fund-prices print action clones this block, the clone is
-     mounted under #fund-prices-print-root rather than #fdd-print-root. Keep
-     the dropdown's printable geometry identical in either print flow. */
   /* stylelint-disable no-descending-specificity */
   #fund-prices-print-root .fund-prices-dropdown {
     padding: 0;
@@ -1115,12 +1114,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-  }
-
-  #fdd-print-root .stat-tables-row .stat-table-card:first-child,
-  #fdd-print-root .stat-tables-row .stat-table-card:last-child {
-    margin-left: 0;
-    margin-right: 0;
   }
 
   #fund-prices-print-root .fund-prices-dropdown .stat-tables-row {
