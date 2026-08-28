@@ -28,7 +28,7 @@
     & fieldset.panel-wrapper:has(> fieldset.radio-group-wrapper) > legend.field-label {
         margin-top: 0;
         margin-bottom: 0;
-        padding-left: 5px;
+        padding-left: 1rem;
     }
 
     /* Section legends: full-width grey bar with underline */
