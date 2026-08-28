@@ -193,7 +193,7 @@
 .carousel-dotted .carousel-dotted-item.without-image .carousel-dotted-content {
   min-height: 100%;
   max-height: 100%;
-  padding: var(--bbl-space-300) var(--bbl-space-150) 4.1875rem;
+  padding: var(--bbl-space-300) var(--bbl-space-300) 3.44rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -518,10 +518,10 @@
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-title :is(h1, h2, h3, h4, h5, h6) {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-text-article-card-title-size);
-  line-height: var(--bbl-text-article-card-title-line-height);
+  font-size: var(--bbl-text-banner-title-size);
+  line-height: var(--bbl-text-banner-title-line-height);
   color: var(--bbl-color-black);
-  font-weight: var(--bbl-text-article-card-title-weight);
+  font-weight: var(--bbl-text-banner-title-weight);
   padding: var(--bbl-space-200) 0 0;
   margin-block: 0 0.625rem;
   transform: translateY(18.75rem);
@@ -536,9 +536,9 @@
 
 .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
 .carousel-subtitle p{
-  font-size: var(--bbl-heading-h3-reg-size);
-  line-height: var(--bbl-heading-h3-reg-line-height);
-  font-weight: var(--bbl-heading-h3-reg-weight);
+  font-size: var(--bbl-text-banner-description-size);
+  line-height: var(--bbl-text-banner-description-line-height);
+  font-weight: var(--bbl-text-banner-description-weight);
   font-family: var(--bbl-font-family-primary);
   overflow: hidden;
   margin: 0;
@@ -995,7 +995,7 @@ p.text-large.text-light {
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant)
   .carousel-title :is(h1, h2, h3, h4, h5, h6) {
-    line-height:  2.5rem;
+    line-height:  3.75rem;
     }
   }
 
