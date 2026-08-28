@@ -194,11 +194,20 @@ export default function decorate(fieldDiv, fd, _container, formId) {
     if (!form) return;
 
     // Set initial state
-    applyState(nav, getActiveIndex(form, panelNames));
+    let lastActiveIndex = getActiveIndex(form, panelNames);
+    applyState(nav, lastActiveIndex);
 
-    // Watch each tracked panel fieldset for data-visible changes
+    // Watch each tracked panel fieldset for data-visible changes. This fires for both
+    // forward navigation (the form's own Next/Submit flow revealing the next panel) and
+    // backward navigation (goToStep below) — either way, keep the stepper scrolled into
+    // view so the user always lands where the step indicator is visible.
     const observer = new MutationObserver(() => {
-      applyState(nav, getActiveIndex(form, panelNames));
+      const activeIndex = getActiveIndex(form, panelNames);
+      applyState(nav, activeIndex);
+      if (activeIndex !== lastActiveIndex) {
+        lastActiveIndex = activeIndex;
+        nav.scrollIntoView({ behavior: 'smooth' });
+      }
     });
 
     steps.forEach(({ panel }) => {
