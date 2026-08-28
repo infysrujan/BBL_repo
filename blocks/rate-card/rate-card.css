@@ -208,7 +208,8 @@
 .rate-card .country-select span {
   color: var(--bbl-color-black);
   font-size: var(--bbl-text-default-size);
-  line-height: 1.2031rem;
+  line-height: var(--bbl-text-default-line-height);
+  font-weight: var(--bbl-text-default-weight);
 }
 
 /* --------------------------------------------------------------------------
