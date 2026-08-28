@@ -165,8 +165,8 @@ export default function decorateTabs(main) {
       buttonCells.forEach((cell, index) => {
         if (index < validTabs.length) {
           cell.dataset.variant = validTabs[index].tabVariant;
-          const { tags } = validTabs[index].sectionMetadata;
-          if (tags) cell.dataset.tags = tags;
+          const { tabCategoryTag } = validTabs[index].sectionMetadata;
+          if (tabCategoryTag) cell.dataset.tabCategoryTag = tabCategoryTag.split('/').pop();
         }
       });
     }
