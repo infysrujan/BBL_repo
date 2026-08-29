@@ -1,7 +1,7 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
-import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
+import { readBlockConfig } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { activateTab } from '../tabs/helpers/tabs-utils.js';
 import {
@@ -13,7 +13,6 @@ import {
   fetchJson,
   getPromotionPathFlags,
   handleMobileAppView,
-  mergeLocalConfig,
   normalizePromotionType,
   normalizeQueryLang,
   getPromotionApiConfig,
@@ -513,9 +512,6 @@ export default async function decorate(block) {
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
-  if (!configs || !configs.promotionalCardSelector) {
-    await mergeLocalConfig(pathname, lang, effectiveConfigs, toCamelCase);
-  }
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
 
