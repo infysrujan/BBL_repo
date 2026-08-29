@@ -414,6 +414,8 @@ export default async function decorate(block) {
 
   // ── Values & calculation ──
   let lastResult = null;
+  // Holds the error text to show in the comparison table when the last calculation failed.
+  let lastErrorMessage = null;
 
   const getVal = (id) => {
     const inp = block.querySelector(`#${id}`);
@@ -490,6 +492,7 @@ export default async function decorate(block) {
     });
     touchedDecimalFields.clear();
     lastResult = null;
+    lastErrorMessage = null;
     resultLabel.textContent = `${resultValue}`;
     resultLabel.style.whiteSpace = '';
     tbody.innerHTML = '';
@@ -499,7 +502,10 @@ export default async function decorate(block) {
   calcBtn.addEventListener('click', () => {
     const { valid, showMessage } = validateAndMarkErrors();
     if (!valid) {
-      if (showMessage) showError(`${resultText} ${errorMessage}`);
+      if (showMessage) {
+        showError(`${resultText} ${errorMessage}`);
+        lastErrorMessage = errorMessage;
+      }
       return;
     }
 
@@ -508,6 +514,7 @@ export default async function decorate(block) {
     const invalid = !Number.isFinite(raw) || (calcType === 'term' && !(raw > 0));
     if (invalid) {
       showError(errorMessage || 'Cannot Calculate');
+      lastErrorMessage = errorMessage || 'Cannot Calculate';
       return;
     }
 
@@ -516,10 +523,12 @@ export default async function decorate(block) {
     resultNum = el('strong', 'sme-result-number');
     if (raw < 0) {
       lastResult = null;
+      lastErrorMessage = errorMessage || 'Cannot Calculate';
       resultNum.textContent = errorMessage || 'Cannot Calculate';
       resultLabel.append(`${rc.prefix} `, resultNum);
     } else {
       lastResult = raw;
+      lastErrorMessage = null;
       resultNum.textContent = rc.integer
         ? Math.floor(lastResult).toLocaleString('en-US')
         : fmt(lastResult);
@@ -614,9 +623,11 @@ export default async function decorate(block) {
 
   // ── Add to comparison table ──
   addBtn.addEventListener('click', () => {
-    if (lastResult === null) return;
+    if (lastResult === null && lastErrorMessage === null) return;
     tableSection.hidden = false;
-    const resultCell = rc.integer ? Math.floor(lastResult).toLocaleString('en-US') : fmt(lastResult);
+    const resultCell = lastResult === null
+      ? lastErrorMessage
+      : (rc.integer ? Math.floor(lastResult).toLocaleString('en-US') : fmt(lastResult));
     const fieldValues = tableFields.map((f) => {
       const inp = block.querySelector(`#${f.id}`);
       return inp ? inp.value : '';
