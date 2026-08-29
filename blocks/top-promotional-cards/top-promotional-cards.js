@@ -1,7 +1,7 @@
 import {
   buildCardHtml,
   buildCardOptions,
-  fetchJson, sortCards,
+  fetchJson, sortCards, normalizeCategory,
 } from '../../scripts/utils/card-helpers.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
@@ -11,8 +11,9 @@ function filterCards(activeCards, tabText, isTopPromo) {
   if (isTopPromo) {
     return activeCards.filter((card) => card.topPromotion === true);
   }
+  const normalized = normalizeCategory(tabText);
   return activeCards.filter(
-    (card) => card.category?.toLowerCase() === tabText.toLowerCase(),
+    (card) => normalizeCategory(card.category) === normalized,
   );
 }
 

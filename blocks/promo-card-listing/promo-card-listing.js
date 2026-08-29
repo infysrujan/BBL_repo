@@ -19,6 +19,7 @@ import {
   getPromotionApiConfig,
   getPromotionLanguage,
   sortCards,
+  normalizeCategory,
 } from '../../scripts/utils/card-helpers.js';
 
 // --- Autoscroll to the category subnav (any promotions listing in tabs) -----
@@ -222,8 +223,8 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
   const matched = allCards.filter((card) => {
     if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
     if (!topPromotionOnly && category) {
-      const cardCats = normalizeList(card.category).map((c) => c.toLowerCase());
-      if (!cardCats.includes(category.toLowerCase())) return false;
+      const cardCats = normalizeList(card.category).map(normalizeCategory);
+      if (!cardCats.includes(normalizeCategory(category))) return false;
     }
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
     if (subcategory) {
