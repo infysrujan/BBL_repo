@@ -34,6 +34,10 @@
     padding-bottom: 0.9375rem;
   }
 
+  & .plain-text-wrapper.field-inttime h4 {
+    padding-bottom: 0;
+  }
+
   &.central-aligned > .default-content-wrapper {
     & h2 {
       color: var(--bbl-color-black);
@@ -116,7 +120,7 @@
       padding-top: 0;
 
       & .field-wrapper {
-        margin-left: 0;
+        margin: 0.625rem 0 0;
       }
 
       & .checkbox-wrapper {
@@ -134,6 +138,10 @@
         width: 100%;
         margin-left: 0;
       }
+    }
+
+    & :is(input:not([type='radio'], [type='checkbox']), select, textarea) {
+        margin-bottom: 0;
     }
 
     & :is(.field-wrapper, .radio-group-wrapper).col-5,
