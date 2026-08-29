@@ -514,16 +514,11 @@ export default async function decorate(block) {
     const raw = compute();
     // Term must be a positive, finite number of months; other tabs just need a finite number.
     const invalid = !Number.isFinite(raw) || (calcType === 'term' && !(raw > 0));
-    if (invalid) {
-      showError(`${rc.prefix} ${errorMessage || 'Cannot Calculate'}`);
-      lastErrorMessage = errorMessage || 'Cannot Calculate';
-      return;
-    }
 
     resultLabel.textContent = '';
     resultLabel.style.whiteSpace = 'pre-wrap';
     resultNum = el('strong', 'sme-result-number');
-    if (raw < 0) {
+    if (invalid || raw < 0) {
       lastResult = null;
       lastErrorMessage = errorMessage || 'Cannot Calculate';
       resultNum.textContent = errorMessage || 'Cannot Calculate';
