@@ -9,7 +9,6 @@ import {
   buildCardHtml,
   buildCardOptions,
   buildPaginationHtml,
-  getPromotionDataUrl,
   fetchJson,
   getPromotionPathFlags,
   handleMobileAppView,
@@ -526,10 +525,10 @@ export default async function decorate(block) {
   const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
   const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
 
-  const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);
+  const promotionsUrl = promotionApi.baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
   const [activeData, cardRefConfig, placeholders] = await Promise.all([
     fetchPromotionalData(promotionsUrl),
-    fetchJson(effectiveConfigs.bbmCardRef || ''),
+    isBbm ? fetchJson(effectiveConfigs.bbmCardRef || '') : Promise.resolve(null),
     fetchPlaceholders(),
   ]);
   const activeCards = filterByPromotionType(activeData?.cards || [], promotionType);
