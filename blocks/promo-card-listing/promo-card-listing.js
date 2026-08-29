@@ -358,7 +358,9 @@ function setupPanel(
         const cardOptions = buildCardOptions(cardData);
         cardOptions.baseUrl = options.baseUrl;
         if (isBbmPanel) cardOptions.logoHtml = '';
-        return buildCardHtml(cardData, category, placeholders, cardOptions);
+        const cats = cardData.category;
+        const displayTag = Array.isArray(cats) ? cats[0] : (cats || category);
+        return buildCardHtml(cardData, displayTag, placeholders, cardOptions);
       }).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 
@@ -508,7 +510,7 @@ export default async function decorate(block) {
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
-  if (!configs || !configs.promotionalCardSelector || lang !== 'en') {
+  if (!configs || !configs.promotionalCardSelector) {
     await mergeLocalConfig(pathname, lang, effectiveConfigs, toCamelCase);
   }
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
