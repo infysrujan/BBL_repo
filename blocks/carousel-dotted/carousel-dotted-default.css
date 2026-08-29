@@ -599,10 +599,8 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default {
-  font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-text-default-size);
   line-height: var(--bbl-text-default-line-height);
-  color: var(--bbl-color-grey-90);
   font-weight: var(--bbl-text-default-weight);
 }
 
