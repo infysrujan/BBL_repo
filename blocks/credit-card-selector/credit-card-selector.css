@@ -22,15 +22,15 @@
   text-align: left;
 }
 
-.section.full-bleed-bg.credit-card-selector-container .default-content-wrapper h2 {
-  padding-bottom: 1.5rem;
+.section.full-bleed-bg.credit-card-selector-container:not(:has(.is-collapsed)) .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+  padding-bottom: var(--bbl-space-400);
 }
 
 @media (width > 64rem) {
   .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
   .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
     max-width: unset;
-    padding-inline: 9rem;
+    padding-inline: 12rem;
   }
 }
 
@@ -59,6 +59,7 @@
 .section.credit-card-selector-container .default-content-wrapper> :is(h1, h2, h3, h4, h5, h6):first-child {
   margin: 0;
   text-align: left;
+  padding-inline: var(--bbl-space-200);
 }
 
 .credit-card-selector .card-selector-content {
@@ -97,7 +98,7 @@
   align-items: baseline;
   flex-wrap: wrap;
   gap: var(--bbl-space-075);
-  margin-bottom: var(--bbl-space-150);
+  margin-block: var(--bbl-space-200) var(--bbl-space-150);
 }
 
 .credit-card-selector .filter-group-title {
@@ -368,6 +369,10 @@
     padding: var(--bbl-space-400) var(--bbl-space-600) var(--bbl-space-600);
   }
 
+  .credit-card-selector .filter-group-header {
+    margin-block: var(--bbl-space-200) 0.625rem;
+  }
+
   .credit-card-selector .card-selector-content {
     grid-template-columns: 1fr 1fr;
     gap: var(--bbl-space-300);
@@ -420,13 +425,18 @@
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
-    flex: 0 0 calc((100% - 3 * var(--bbl-space-250)) / 3);
-    margin-bottom: var(--bbl-space-250);
+    flex: 0 0 calc((100% - 2.5rem) / 3);
+    margin-bottom: 0;
     scroll-snap-align: none;
   }
 
   .section.credit-card-selector-container .default-content-wrapper> :is(h1, h2, h3, h4, h5, h6):first-child {
     text-align: center;
+    padding-inline: var(--bbl-space-600);
+  }
+
+  .section.full-bleed-bg.credit-card-selector-container:not(:has(.is-collapsed)) .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-600);
   }
 }
 
@@ -436,10 +446,22 @@
     text-align: center;
   }
 
-  .section.full-bleed-bg.credit-card-selector-container .default-content-wrapper h2 {
-    padding-bottom: 2rem;
+  .section.credit-card-selector-container .default-content-wrapper> :is(h1, h2, h3, h4, h5, h6):first-child {
+    padding-inline: var(--bbl-space-1050);
   }
 
+  .section.full-bleed-bg.credit-card-selector-container:not(:has(.is-collapsed)) .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    padding-bottom: var(--bbl-space-700);
+  }
+
+  .credit-card-selector .filter-group-header {
+    margin-block : 0;
+  }
+
+   .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
+    flex: 0 0 calc((100% - 2 * var(--bbl-space-500)) / 3);
+  }
+  
   .credit-card-selector .card-selector-title {
     font-size: var(--bbl-font-size-h1-desktop);
     line-height: var(--bbl-line-height-heading-tight);

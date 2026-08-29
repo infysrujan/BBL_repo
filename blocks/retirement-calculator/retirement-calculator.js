@@ -584,7 +584,7 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
     const crossMsg = getString(labels, 'validationAnnualSavingsIncreaseRateError', '% of annual increase in savings must be less than/equal to the expected annual return.');
     const increaseErr = block.querySelector('#rc-err-savingsIncreaseRate').textContent;
     if (increaseRate > returnRate) {
-      if (!increaseErr) savingsIncreaseRateField.setError(crossMsg);
+      savingsIncreaseRateField.setError(crossMsg);
     } else if (increaseErr === crossMsg) {
       savingsIncreaseRateField.setError('');
     }

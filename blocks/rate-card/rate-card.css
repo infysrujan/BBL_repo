@@ -208,7 +208,8 @@
 .rate-card .country-select span {
   color: var(--bbl-color-black);
   font-size: var(--bbl-text-default-size);
-  line-height: 1.2031rem;
+  line-height: var(--bbl-text-default-line-height);
+  font-weight: var(--bbl-text-default-weight);
 }
 
 /* --------------------------------------------------------------------------
@@ -366,7 +367,7 @@
     /* column-gap: 1.3125rem; */
 
     /* 21px — gives 570px per column at design viewport */
-
+    
     /* align-items: unset; */
   }
 

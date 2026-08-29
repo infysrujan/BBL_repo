@@ -172,7 +172,6 @@
 .ccs-results-toggle {
   display: none;
   justify-content: center;
-  margin-top: var(--bbl-space-300);
 }
 
 .ccs-results-toggle-btn {
@@ -186,9 +185,9 @@
   font-family: var(--bbl-font-family-medium);
   font-size: 1.2em;
   font-weight: var(--bbl-font-weight-regular);
-  padding: var(--bbl-space-100) var(--bbl-space-200);
   border-radius: 0.4375rem;
   transition: background-color 0.2s ease;
+  height: unset;
 }
 
 /* Use the actual chevron SVG instead of the icomoon glyph — suppress the
@@ -242,15 +241,12 @@
     display: none;
   }
 
-  .credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
-    padding-bottom: var(--bbl-space-600);
-  }
-
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     display: flex;
     justify-content: stretch;
     overflow: visible;
     scroll-snap-type: none;
+    padding-bottom: var(--bbl-space-250);
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {
@@ -272,14 +268,11 @@
   .credit-card-results-wrapper {
    --header-scroll-offset: 8.9375rem; /* 143px */
 }
-
-  .credit-card-selector-container > .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6) {
-    padding-bottom: var(--bbl-space-700);
-  }
  
   .card-list.credit-card .cards-list.scrollable.cards-3 {
     justify-content: center;
     gap: var(--bbl-space-500);
+    padding-bottom: var(--bbl-space-500);
   }
 
   .card-list.credit-card .cards-list-inner {
