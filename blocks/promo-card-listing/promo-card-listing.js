@@ -359,7 +359,10 @@ function setupPanel(
         cardOptions.baseUrl = options.baseUrl;
         if (isBbmPanel) cardOptions.logoHtml = '';
         const cats = cardData.category;
-        const displayTag = Array.isArray(cats) ? cats[0] : (cats || category);
+        let displayTag = category;
+        if (!isHighlightsPanel) {
+          displayTag = Array.isArray(cats) ? cats[0] : (cats || category);
+        }
         return buildCardHtml(cardData, displayTag, placeholders, cardOptions);
       }).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
@@ -627,10 +630,9 @@ export default async function decorate(block) {
     const dataCategories = dataSet?.categories || [];
     const dataCardTypes = activeCardTypes;
     const dataAreas = activeAreas;
-    const category = tabTags;
-    const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
-
     const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText));
+    const category = tabTags || (isHighlightsPanel ? tabText : '');
+    const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
 
     setupPanel(
       panel,
