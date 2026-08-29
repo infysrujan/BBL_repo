@@ -515,7 +515,7 @@ export default async function decorate(block) {
     // Term must be a positive, finite number of months; other tabs just need a finite number.
     const invalid = !Number.isFinite(raw) || (calcType === 'term' && !(raw > 0));
     if (invalid) {
-      showError(errorMessage || 'Cannot Calculate');
+      showError(`${rc.prefix} ${errorMessage || 'Cannot Calculate'}`);
       lastErrorMessage = errorMessage || 'Cannot Calculate';
       return;
     }
