@@ -618,7 +618,7 @@ export default async function decorate(block) {
       ? (tabsContainer?.querySelector(`#${tabBtnId}`) || document.getElementById(tabBtnId))
       : null;
     const tabText = tabBtn?.textContent?.trim() || '';
-    const tabTags = tabBtn?.dataset.tabCategoryTag || '';
+    const tabTags = tabBtn?.dataset.tabCategoryTag;
 
     const dataSet = activeData;
     const dataCategories = dataSet?.categories || [];

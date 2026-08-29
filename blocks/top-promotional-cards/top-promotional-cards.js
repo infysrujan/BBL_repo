@@ -21,7 +21,7 @@ function setupPanel(panel, activeCards, placeholders) {
   const btnId = panel.getAttribute('aria-labelledby');
   const btn = btnId ? document.getElementById(btnId) : null;
   const tabText = btn?.textContent?.trim() || '';
-  const tabTags = btn?.dataset.tabCategoryTag || '';
+  const tabTags = btn?.dataset.tabCategoryTag;
 
   const topPromoTabLabel = (placeholders.topPromotionsTabLabel || 'toppromotions').toLowerCase().replace(/\s+/g, '');
   const isTopPromo = tabText.toLowerCase().replace(/\s+/g, '') === topPromoTabLabel;

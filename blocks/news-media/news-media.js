@@ -88,7 +88,7 @@ async function renderNewsMedia(block) {
   tabPanels.forEach((panel) => {
     const tabBtnId = panel.getAttribute('aria-labelledby');
     const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
-    const tabTags = tabBtn?.dataset.tabCategoryTag || '';
+    const tabTags = tabBtn?.dataset.tabCategoryTag;
     const category = tabTags;
 
     setupPanel(panel, allCards, category, locale, pageSize, placeholders);
