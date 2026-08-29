@@ -429,6 +429,8 @@ export default async function decorate(block) {
     return n.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
   };
 
+  const formatResult = (n) => (rc.integer ? Math.floor(n).toLocaleString('en-US') : fmt(n));
+
   // Build the variable map, applying the annual->monthly conversion only where needed.
   const compute = () => {
     const vals = {};
@@ -529,9 +531,7 @@ export default async function decorate(block) {
     } else {
       lastResult = raw;
       lastErrorMessage = null;
-      resultNum.textContent = rc.integer
-        ? Math.floor(lastResult).toLocaleString('en-US')
-        : fmt(lastResult);
+      resultNum.textContent = formatResult(lastResult);
       resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
     }
   });
@@ -625,9 +625,7 @@ export default async function decorate(block) {
   addBtn.addEventListener('click', () => {
     if (lastResult === null && lastErrorMessage === null) return;
     tableSection.hidden = false;
-    const resultCell = lastResult === null
-      ? lastErrorMessage
-      : (rc.integer ? Math.floor(lastResult).toLocaleString('en-US') : fmt(lastResult));
+    const resultCell = lastResult === null ? lastErrorMessage : formatResult(lastResult);
     const fieldValues = tableFields.map((f) => {
       const inp = block.querySelector(`#${f.id}`);
       return inp ? inp.value : '';
