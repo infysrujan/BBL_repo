@@ -245,8 +245,6 @@
 
   .menu-banner .thumb-full {
     height: auto;
-    /* min-height: 0; */
-    /* max-height: none; */
   }
 
   .menu-banner .title-1 > * {
@@ -282,5 +280,3 @@
     margin: 0 auto;
   }
 }
-
- 
