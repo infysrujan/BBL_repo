@@ -1,6 +1,5 @@
 /* Tab Block Core Styles */
 .tabs-container {
-  max-width: 79.5rem;
   margin: 0 auto;
 }
 
@@ -140,6 +139,7 @@
 /* Simple Tab Variant - Default */
 .tabs.simple-tab .tabs-nav {
   padding-bottom: var(--bbl-space-800);
+  margin-top: 1.875rem;
 }
 
 /* Media Tab Variant - with Images */
@@ -365,7 +365,6 @@
   grid-template-columns: 1fr 1fr;
   gap: var(--bbl-space-200);
   overflow-x: hidden;
-  margin: 1.875rem 0;
   justify-content: center;
   align-items: stretch;
   list-style: none;
@@ -399,7 +398,7 @@
   box-sizing: border-box;
   justify-content: flex-start;
   text-align: center;
-  width: 100%;
+  width: 11.75rem;
   background: transparent;
   cursor: pointer;
   position: relative;
@@ -522,13 +521,6 @@
     display: none;
   }
 
-  /* Tiled Tab Flex Layout */
-  .tabs.tiled-tab .tabs-nav-wrapper {
-    padding: 0 var(--bbl-space-1050);
-    margin: 0 auto 1.875rem;
-    max-width: 67rem;
-  }
-
   .tabs.tiled-tab .tabs-nav {
     display: flex;
     align-items: stretch;
@@ -549,7 +541,8 @@
     padding: 0.9375rem;
     font-size: var(--bbl-font-size-h5-desktop);
     line-height: 1.3rem;
-    min-width: 16.875rem;
+    min-width: 15.625rem;
+    min-height: 8.0625rem;
     margin-bottom: var(--bbl-space-250);
   }
 
@@ -586,6 +579,11 @@
 
   .tabs.tiled-tab .tabs-nav li {
     max-width: 18.75rem;
+  }
+
+  .tabs.tiled-tab .tabs-nav button {
+    min-width: 17.5rem;
+    min-height: 8.3125rem;
   }
 }
 
