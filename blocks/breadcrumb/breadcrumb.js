@@ -35,40 +35,12 @@ export function pagePathToUrl(pagePath) {
 function isPageHiddenFromBreadcrumb(page, isCurrentPage = false) {
   if (!page) return false;
 
-  const apiHidden = page.hidebreadcrumb
-    ?? page.hideBreadcrumb
-    ?? page.hideFromBreadcrumb
-    ?? page['hide-from-breadcrumb']
-    ?? page.hidefrombreadcrumb
-    ?? page.hideInBreadcrumb
-    ?? page['hide-in-breadcrumb'];
-
-  if (
-    apiHidden === true
-    || apiHidden === 'true'
-    || apiHidden === 'yes'
-    || apiHidden === 1
-    || apiHidden === '1'
-  ) {
+  if (page.hidebreadcrumb) {
     return true;
   }
 
-  if (isCurrentPage) {
-    const metaHidden = getMetadata('hide-from-breadcrumb')
-      || getMetadata('hidefrombreadcrumb')
-      || getMetadata('hide-breadcrumb')
-      || getMetadata('hidebreadcrumb')
-      || getMetadata('hide-in-breadcrumb');
-    if (
-      metaHidden
-      && (
-        metaHidden.toLowerCase() === 'true'
-        || metaHidden.toLowerCase() === 'yes'
-        || metaHidden === '1'
-      )
-    ) {
-      return true;
-    }
+  if (isCurrentPage && getMetadata('hide-from-breadcrumb') === 'true') {
+    return true;
   }
 
   return false;
