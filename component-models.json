@@ -70,6 +70,12 @@
       },
       {
         "component": "boolean",
+        "name": "hide-from-breadcrumb",
+        "label": "Hide from Breadcrumb",
+        "valueType": "boolean"
+      },
+      {
+        "component": "boolean",
         "label": "Enable Welcome Banner",
         "name": "isWelcomeBanner",
         "valueType": "boolean"
