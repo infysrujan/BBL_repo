@@ -245,8 +245,6 @@
 
   .menu-banner .thumb-full {
     height: auto;
-    min-height: 0;
-    max-height: none;
   }
 
   .menu-banner .title-1 > * {
@@ -260,7 +258,7 @@
   .menu-banner .sub-title-small {
     font-size: 0.8rem;
   }
-  
+
   :lang(th){
     .menu-banner .title-1 > * {
       line-height:2.5rem;
