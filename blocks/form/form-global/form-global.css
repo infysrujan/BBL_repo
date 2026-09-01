@@ -394,8 +394,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   color: var(--bbl-color-active-blue);
 } */
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled):hover,
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.secondary:not(:disabled):hover {
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled):hover{
   border-color: var(--bbl-color-active-blue);
   background-color: var(--bbl-color-active-blue);
   color: var(--bbl-color-white);
