@@ -83,6 +83,16 @@ main .section.form-container .form .col-6.reset-wrapper .button {
   margin-right: auto;
 }
 
+main .section.form-container .form .field-button-panel.field-wrapper:has(.field-label) .col-6.reset-wrapper .button {
+  margin-left: unset;
+}
+
+@media (width > 47.5rem) {
+  main .section.form-container .form .field-button-panel.field-wrapper:has(.field-label) .col-6.reset-wrapper .button {
+    margin-left: var(--bbl-space-200);
+  }
+}
+
 /* Radio group — default variant (standard radio buttons) */
 main .section.form-container .form form .radio-group-wrapper:not(.radio-tabs, .cards) {
   padding-left: 0;
