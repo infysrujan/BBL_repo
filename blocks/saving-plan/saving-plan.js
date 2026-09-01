@@ -270,7 +270,7 @@ function buildCalculationPayload(inputs, inflationRate) {
     FirstSavingAmount: inputs.balance,
     CompensationRate: inputs.annualReturn / 100,
     SavingIncRate: inputs.annualIncrease / 100,
-    inflationrate: inflationRate,
+    InflationRate: inflationRate / 100,
   };
 }
 
