@@ -77,6 +77,8 @@ export default function decorate(block) {
       if (link) {
         link.classList.remove('button');
         link.classList.add('button-m');
+        link.removeAttribute('target');
+        link.removeAttribute('rel');
         ctaDiv.append(link);
         card.append(ctaDiv);
       }
