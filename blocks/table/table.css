@@ -209,6 +209,11 @@
   background-color: var(--bbl-color-blue-40);
 }
 
+/* Header Top Aligned — overrides vertical-align: middle from Center/Right Aligned */
+.table table.header-top-aligned tr.header-row td {
+  vertical-align: top;
+}
+
 /* Highlight Bold Cells — background for any cell containing a <strong>,
    matching whichever Header variant is also applied to the table. No
    background is applied when no matching Header variant is set. */

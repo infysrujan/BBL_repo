@@ -12818,6 +12818,10 @@
                 "value": "header-right-aligned"
               },
               {
+                "name": "Top Aligned",
+                "value": "header-top-aligned"
+              },
+              {
                 "name": "Header Blue",
                 "value": "header-blue"
               },
