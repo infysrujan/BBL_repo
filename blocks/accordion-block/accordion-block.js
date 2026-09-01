@@ -157,8 +157,15 @@ function extractTitleAndBody(section) {
 function wireAccordionHeader(header, panel) {
   header.addEventListener('click', () => {
     const expanded = header.getAttribute('aria-expanded') === 'true';
-    header.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-    panel.hidden = expanded;
+    if (expanded) {
+      header.setAttribute('aria-expanded', 'false');
+      panel.hidden = true;
+      panel.style.maxHeight = '0px';
+    } else {
+      header.setAttribute('aria-expanded', 'true');
+      panel.hidden = false;
+      panel.style.maxHeight = `${panel.scrollHeight + 40}px`;
+    }
   });
 }
 
@@ -188,6 +195,7 @@ function setAllAccordionPanels(block, expand) {
     if (!header || !panel) return;
     header.setAttribute('aria-expanded', expand ? 'true' : 'false');
     panel.hidden = !expand;
+    panel.style.maxHeight = expand ? `${panel.scrollHeight + 40}px` : '0px';
   });
 }
 

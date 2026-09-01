@@ -202,7 +202,7 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-b1-desktop);
     font-weight: var(--bbl-font-weight-regular);
-    padding: 0.625rem 0.75rem;
+    padding: 0.9375rem 0.75rem;
     min-height: 2.75rem;
     box-sizing: border-box;
     border-radius: 0;
@@ -213,6 +213,10 @@
   & .form form .field-bond-allocation-review .field-totalpurchaseamount > input,
    & .form form .field-bond-allocation-review .field-totalpurchaseamount > p {
     grid-column: 2;
+  }
+
+  & .form form .field-bond-allocation-review .field-totalpurchaseamount > p {
+    padding-right: 1.875rem;
   }
 
   & .form form .field-bond-allocation-review .plain-text-wrapper p{
@@ -321,7 +325,10 @@
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
+  }
 
+  /* Stack buttons only on phones; tablets keep the side-by-side base layout */
+  @media (width < 47.5rem) {
     & .form form .field-bond-allocation-review fieldset.field-button-panel {
       flex-direction: column;
       align-items: stretch;
@@ -359,5 +366,4 @@
       padding: 0;
     }
   }
-
 }

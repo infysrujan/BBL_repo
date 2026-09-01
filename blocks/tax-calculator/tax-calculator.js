@@ -981,7 +981,6 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
         Spouse: 0,
         ChildBornBefore61Other: 0,
         ChildBorn61OnWardsOther: 0,
-        FatherInsure: 0,
         // Step 1 values
         ...state.journey1,
         // Step 2 values (with correct API mapping)
@@ -989,6 +988,7 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
         NumberOfChildeBorn61OnWards: values.NumberOfChildeBorn61OnWards || 0,
         FatherMother: (values.FatherMother || []).filter(Boolean).length,
         HomeInterest: values.HomeInterest || 0,
+        FatherInsure: values.FatherInsure || 0,
         Insure: values.Insure || 0,
         PensionInsure: values.PensionInsure || 0,
         HealthInsure: values.HealthInsure || 0,

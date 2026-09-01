@@ -357,16 +357,19 @@
   background-color: var(--bbl-color-map-bg);
 }
 
-.locate-us .locate-us-results:has(.locate-us-no-results:not([hidden])) .locate-us-map-row,
-.locate-us .locate-us-results:has(.locate-us-no-results:not([hidden])) .locate-us-results-title {
+.locate-us .locate-us-results:has(.locate-us-no-results:not([hidden])) .locate-us-map-row {
+  display: none;
+}
+
+/* Domestic pairs the title with the map, so both hide together when there are
+   no results; overseas has no map row, so its title should stay visible. */
+.locate-us .locate-us-results:not(.locate-us-results-overseas):has(.locate-us-no-results:not([hidden])) .locate-us-results-title {
   display: none;
 }
 
 .locate-us .locate-us-no-results {
   color: var(--bbl-color-grey-85);
-  text-align: center;
   width: 100%;
-  padding-top: 1.875rem;
 }
 
 .locate-us .locate-us-map {
@@ -508,6 +511,7 @@
   white-space: nowrap;
   line-height: 1.375rem;
   text-transform: lowercase;
+  z-index: 1;
 }
 
 /* Label + value rows — matching BBL's 60px td pattern */
@@ -519,11 +523,12 @@
 
 .locate-us .locate-us-card-label {
   min-width: 3.75rem;
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.125rem;
   color: var(--bbl-color-gray-142);
   font-family: var(--bbl-font-family-primary);
   flex-shrink: 0;
   padding-top: 0.0625rem;
+  line-height: 1.125rem;
 }
 
 /* Status value + hours stacked in right column */
@@ -537,9 +542,9 @@
 
 .locate-us .locate-us-card-status {
   color: var(--bbl-color-status-other);
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.125rem;
   font-family: var(--bbl-font-family-primary);
-  line-height: 1.375rem;
+  line-height: 1.125rem;
 }
 
 .locate-us .locate-us-card-status-open {
@@ -547,7 +552,7 @@
 }
 
 .locate-us .locate-us-card-hours {
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   overflow-wrap: break-word;
@@ -560,7 +565,7 @@
 
 .locate-us .locate-us-card-tel,
 .locate-us .locate-us-card-fax {
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-font-size-base);
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   overflow-wrap: break-word;
@@ -1273,6 +1278,10 @@
     max-width: 22.5rem;
     box-shadow: 0 var(--bbl-space-025) 1.125rem rgb(0 0 0 / 8%);
     border: none;
+  }
+
+  .locate-us .locate-us-no-results {
+    text-align: center;
   }
 
   /* ── Overseas overrides ── */
