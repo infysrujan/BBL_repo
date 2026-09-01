@@ -357,16 +357,19 @@
   background-color: var(--bbl-color-map-bg);
 }
 
-.locate-us .locate-us-results:has(.locate-us-no-results:not([hidden])) .locate-us-map-row,
-.locate-us .locate-us-results:has(.locate-us-no-results:not([hidden])) .locate-us-results-title {
+.locate-us .locate-us-results:has(.locate-us-no-results:not([hidden])) .locate-us-map-row {
+  display: none;
+}
+
+/* Domestic pairs the title with the map, so both hide together when there are
+   no results; overseas has no map row, so its title should stay visible. */
+.locate-us .locate-us-results:not(.locate-us-results-overseas):has(.locate-us-no-results:not([hidden])) .locate-us-results-title {
   display: none;
 }
 
 .locate-us .locate-us-no-results {
   color: var(--bbl-color-grey-85);
-  text-align: center;
   width: 100%;
-  padding-top: 1.875rem;
 }
 
 .locate-us .locate-us-map {
@@ -1275,6 +1278,10 @@
     max-width: 22.5rem;
     box-shadow: 0 var(--bbl-space-025) 1.125rem rgb(0 0 0 / 8%);
     border: none;
+  }
+
+  .locate-us .locate-us-no-results {
+    text-align: center;
   }
 
   /* ── Overseas overrides ── */
