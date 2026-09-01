@@ -271,6 +271,10 @@ main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa)
   margin-bottom: var(--bbl-margin-block-10px);
 }
 
+main .section.wizard-forms .form form .field-prospectage {
+  position: relative;
+}
+
 main .section.wizard-forms .form form .field-prospectage:has(~ .field-prospectsa) {
   margin-bottom: var(--bbl-margin-block-15px);
 }
@@ -293,6 +297,27 @@ main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa)
   text-align: right;
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-wizard-line-height-base-mobile);
+}
+
+main .section.wizard-forms .form form .field-prospectage > label.field-label::before {
+  content: attr(title);
+  position: absolute;
+  left: var(--bbl-margin-block-14px);
+  bottom: 0;
+  height: 3.125rem;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  z-index: 1;
+  font-size: var(--bbl-font-size-b1-mobile);
+}
+
+main .section.wizard-forms .form form .field-prospectage input {
+  padding-left: 2.5rem;
+}
+
+main .section.wizard-forms .form form .field-prospectage input::placeholder {
+  color: transparent;
 }
 
 main .section.form-container.wizard-forms .form form input[type='number'] {
@@ -584,6 +609,11 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   main .section.wizard-forms .form form :is(.field-prospectage, .field-prospectsa) input {
     font-size: var(--bbl-font-size-b1-desktop);
     line-height: var(--bbl-wizard-line-height-base-desktop);
+  }
+
+  main .section.wizard-forms .form form .field-prospectage > label.field-label::before {
+    height: 3.625rem;
+    font-size: var(--bbl-font-size-b1-desktop);
   }
 
   main .section.form-container.wizard-forms .form form :is(fieldset[class*="field-form-width-740"], fieldset[class*="field-form-width-900"], fieldset[class*="field-form-width-1240"]) {
