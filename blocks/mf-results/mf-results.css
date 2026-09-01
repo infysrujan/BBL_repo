@@ -230,9 +230,7 @@
 
 .mfr-footer .mfr-cta {
   display: inline-flex;
-  text-align: center;
   box-sizing: border-box;
-  vertical-align: middle;
   min-width: 9.6875rem;
   letter-spacing: 0.05rem;
 }
