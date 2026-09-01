@@ -140,7 +140,6 @@
 /* Simple Tab Variant - Default */
 .tabs.simple-tab .tabs-nav {
   padding-bottom: var(--bbl-space-800);
-  margin-top: 1.875rem;
 }
 
 /* Media Tab Variant - with Images */
