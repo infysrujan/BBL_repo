@@ -390,40 +390,32 @@ function buildAccordionPrintDocument(block) {
  */
 function openAccordionPrintWindow(block) {
   const printHtml = buildAccordionPrintDocument(block);
-
-  // A hidden iframe (rather than window.open) never shows a visible popup or
-  // its unstyled content to the user — the print dialog is the only thing
-  // that appears, and it also avoids the blank-first-page pagination bug
-  // popups can hit when printed at a size that doesn't match their content.
-  const iframe = document.createElement('iframe');
-  iframe.style.position = 'fixed';
-  iframe.style.top = '-10000px';
-  iframe.style.left = '-10000px';
-  iframe.style.width = '210mm';
-  iframe.style.height = '297mm';
-  iframe.style.border = '0';
-  iframe.setAttribute('aria-hidden', 'true');
-
-  let cleaned = false;
-  const cleanup = () => {
-    if (cleaned) return;
-    cleaned = true;
-    iframe.remove();
-  };
+  // Match the opener's viewport instead of a small fixed size: printing from a
+  // popup much smaller than the content causes Chrome to paginate against the
+  // cramped initial layout, which can render a spurious blank first page.
+  const printWindow = window.open('', '', `width=${window.outerWidth},height=${window.outerHeight}`);
+  if (!printWindow) return;
 
   const runPrint = () => {
-    const win = iframe.contentWindow;
-    win.addEventListener('afterprint', cleanup, { once: true });
-    win.focus();
-    win.print();
-    // Fallback in case `afterprint` doesn't fire (older/other browsers).
-    setTimeout(cleanup, 60000);
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 100);
   };
 
-  iframe.addEventListener('load', () => requestAnimationFrame(runPrint), { once: true });
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
 
-  document.body.appendChild(iframe);
-  iframe.srcdoc = printHtml;
+  // Checked after write/close: only then does readyState reflect the
+  // document that was just written, so this reliably waits for the
+  // linked stylesheets (fonts, accordion-block.css, table.css, ...) to load
+  // before printing instead of racing them.
+  if (printWindow.document.readyState === 'complete') {
+    requestAnimationFrame(runPrint);
+  } else {
+    printWindow.addEventListener('load', runPrint);
+  }
 }
 
 /**
