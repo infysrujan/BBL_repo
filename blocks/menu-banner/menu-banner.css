@@ -91,10 +91,6 @@
   color: var(--bbl-color-white);
 } */
 
-.menu-banner .title-1 a {
-    text-decoration: none;
-    color: var(--bbl-color-blue-130);
-}
 
 .menu-banner .list-thumb-square {
   list-style: none;
@@ -116,10 +112,12 @@
   height: 100%;
 }
 
+.menu-banner .title-1 a:active,
 .menu-banner .title-1 a:hover {
     text-decoration: none;
-    color: var(--bbl-color-blue-130);
+    color: var(--bbl-color-active-blue);
 }
+
 
 .menu-banner .title-1 > * {
   margin: 0;
