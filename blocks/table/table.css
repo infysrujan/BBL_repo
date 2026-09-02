@@ -266,6 +266,29 @@
 }
 
 /* --------------------------------------------------------------------------
+   CELL VARIANTS — highlight first column (specificity 0,4,2)
+   -------------------------------------------------------------------------- */
+
+/* Highlight First Column — background for every cell in the first column,
+   matching whichever Header variant is also applied to the table. No
+   background is applied when no matching Header variant is set. */
+.table table.highlight-first-column.header-blue td:first-child {
+  background: var(--bbl-color-blue-steel-dark);
+}
+
+.table table.highlight-first-column.header-light-blue td:first-child {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.table table.highlight-first-column.header-light-gray td:first-child {
+  background: var(--bbl-color-grey-19);
+}
+
+.table table.highlight-first-column.header-primary-blue-s01 td:first-child {
+  background: var(--bbl-color-blue-40);
+}
+
+/* --------------------------------------------------------------------------
    HEADER VARIANTS — mixed blue (specificity 0,4,3)
    -------------------------------------------------------------------------- */
 
@@ -279,12 +302,28 @@
 }
 
 /* --------------------------------------------------------------------------
+   HEADER VARIANTS — right aligned except first (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+
+/* Header Right Aligned (exclude first column) */
+.table table.header-right-aligned-except-first tr.header-row td:not(:first-child) {
+  text-align: right;
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
    CELL VARIANTS — center aligned except first (specificity 0,4,3)
    -------------------------------------------------------------------------- */
 
 /* Cells Center Aligned (exclude first column) */
 .table table.cells-center-aligned-except-first tr:not(.header-row) td:not(:first-child) {
   text-align: center;
+  vertical-align: middle;
+}
+
+/* Cells Right Aligned (exclude first column) */
+.table table.cells-right-aligned-except-first tr:not(.header-row) td:not(:first-child) {
+  text-align: right;
   vertical-align: middle;
 }
 
