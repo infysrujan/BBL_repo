@@ -129,7 +129,7 @@
     & fieldset.panel-wrapper:has(.date-wrapper) > .date-wrapper + .drop-down-wrapper::after {
         content: none;
         position: absolute;
-        top: 32%;
+        top: 48%;
         right: -0.325rem;
         z-index: 2;
         color: var(--bbl-color-grey-85);
