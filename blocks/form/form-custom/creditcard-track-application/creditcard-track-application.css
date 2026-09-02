@@ -651,6 +651,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           line-height: var(--bbl-text-small-line-height);
           color: var(--bbl-color-grey-28);
           font-weight: var(--bbl-text-small-weight);
+          padding-right:0.75rem;
         }
 
         & > .cc-panel-item-timeline-muted p {
