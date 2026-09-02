@@ -86,6 +86,12 @@
   line-height: 1;
 }
 
+.retirement-calculator .rc-step-circle .rc-step-check {
+  display: block;
+  width: 0.625rem;
+  height: 0.625rem;
+}
+
 .retirement-calculator .rc-step-active .rc-step-circle {
   background: var(--bbl-color-white);
   border-color: var(--bbl-color-active-blue);
@@ -921,6 +927,11 @@
     width: 1.5rem;
     height: 1.5rem;
     font-size: var(--bbl-font-size-b1);
+  }
+
+  .retirement-calculator .rc-step-circle .rc-step-check {
+    width: 0.75rem;
+    height: 0.75rem;
   }
 
   .retirement-calculator .rc-step-connector {

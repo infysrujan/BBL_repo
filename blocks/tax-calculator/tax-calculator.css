@@ -95,6 +95,12 @@
   line-height: 1;
 }
 
+.tax-calculator .tax-calc-step-circle .tax-calc-step-check {
+  display: block;
+  width: 0.625rem;
+  height: 0.625rem;
+}
+
 .tax-calculator .tax-calc-step-active .tax-calc-step-circle {
   background: var(--bbl-color-white);
   border: 0.125rem solid var(--bbl-color-active-blue);
@@ -947,6 +953,11 @@
     height: 1.5rem;
     font-size: 1rem;
     box-sizing: border-box;
+  }
+
+  .tax-calculator .tax-calc-step-circle .tax-calc-step-check {
+    width: 0.75rem;
+    height: 0.75rem;
   }
 
   .tax-calculator .tax-calc-step {
