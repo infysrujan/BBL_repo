@@ -210,7 +210,7 @@ main .lead-forms .form form .field-infotext {
 }
 
 main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-14);
   padding-right: 0;
