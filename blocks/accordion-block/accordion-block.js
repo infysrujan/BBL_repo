@@ -246,6 +246,7 @@ function buildAccordionPrintDocument(block) {
     return {
       expanded: header?.getAttribute('aria-expanded') === 'true',
       hidden: panel?.hidden ?? true,
+      maxHeight: panel?.style.maxHeight ?? '',
     };
   });
 
@@ -267,6 +268,8 @@ function buildAccordionPrintDocument(block) {
     if (panel) {
       panel.hidden = false;
       panel.removeAttribute('hidden');
+      // Frozen from the live page's layout width; let the print CSS size it instead.
+      panel.style.maxHeight = '';
     }
   });
 
@@ -330,6 +333,7 @@ function buildAccordionPrintDocument(block) {
     if (!header || !panel || !s) return;
     header.setAttribute('aria-expanded', s.expanded ? 'true' : 'false');
     panel.hidden = s.hidden;
+    panel.style.maxHeight = s.maxHeight;
   });
 
   const docTitle = block.querySelector('.accordion-block-title')?.textContent?.trim()
@@ -357,7 +361,7 @@ function buildAccordionPrintDocument(block) {
     .accordion-block-title { font-size: 1.5rem; margin: 0 0 0.5rem; }
     .accordion-item { border-bottom: 0; padding-bottom: 1rem; margin-bottom: 1rem; }
     .accordion-print-heading { font-size: 1rem; margin: 0 0 0.5rem; border-block: 1px solid var(--bbl-color-gray-146); padding-block: 10px; }
-    .accordion-panel { display: block !important; padding: 0; }
+    .accordion-panel { display: block !important; padding: 0; max-height: none !important; overflow: visible !important; }
     .accordion-header { display: none; }
     .accordion-heading { display: none; }
     .accordion-block-toolbar { display: none; }
@@ -417,14 +421,19 @@ function openAccordionPrintWindow(block) {
       printWindow.close();
     }, 100);
   };
+
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
+
+  // Checked after write/close: only then does readyState reflect the
+  // document that was just written, so this reliably waits for the
+  // linked stylesheets (fonts, accordion-block.css, table.css, ...) to load
+  // before printing instead of racing them.
   if (printWindow.document.readyState === 'complete') {
     requestAnimationFrame(runPrint);
   } else {
     printWindow.addEventListener('load', runPrint);
   }
-
-  printWindow.document.write(printHtml);
-  printWindow.document.close();
 }
 
 /**
