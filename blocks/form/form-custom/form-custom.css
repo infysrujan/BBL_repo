@@ -329,7 +329,7 @@ main .section.form-container.custom-forms .form .form-message.success-message {
 
 main .section.form-container.custom-forms .form .form-message.success-message::first-line {
   font-weight: 700;
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
 }
 
 @media (width > 47.5rem) {

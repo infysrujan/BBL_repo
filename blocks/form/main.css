@@ -256,7 +256,6 @@ main .form form .field-wrapper {
 main .form form p {
     font-size: var(--form-paragraph-font-size);
     font-style: var(--form-paragraph-font-style);
-    color: var(--form-paragraph-color);
     margin: var(--form-paragraph-margin);
 }
 

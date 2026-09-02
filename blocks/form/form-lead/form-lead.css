@@ -85,7 +85,7 @@
 }
 
 main .section.form-container.lead-forms .form .form-message.success-message {
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     background-color: transparent;
     border-color: unset;
     padding: unset;
@@ -115,7 +115,7 @@ main .lead-forms .form form p {
 }
 
 main .lead-forms.section.central-aligned > .default-content-wrapper p{
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-19);
 }
@@ -169,7 +169,7 @@ main .lead-forms .form form {
   max-width: 46.25rem;
   width: 100%;
   margin: 0 auto;
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-font-size-b1);
   line-height: var(--bbl-form-line-height-1-3);
@@ -854,7 +854,7 @@ main .lead-forms .form form .radio-group-wrapper.radio-tabs>.radio-wrapper label
   height: 100%;
   margin: 0;
   padding: 0 var(--bbl-form-padding-10);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-font-size-b1-mobile);
   font-weight: var(--bbl-font-weight-medium);
   text-align: center;
