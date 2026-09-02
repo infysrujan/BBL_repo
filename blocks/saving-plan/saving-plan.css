@@ -858,7 +858,7 @@
 .saving-plan-newplan-card.is-placeholder .saving-plan-newplan-lead,
 .saving-plan-newplan-card.is-placeholder .saving-plan-newplan-amount,
 .saving-plan-newplan-card.is-placeholder .saving-plan-newplan-currency {
-  color: var(--bbl-color-grey-90);
+  color: var(--bbl-color-grey-70);
 }
 
 .saving-plan-newplan-footnote {
