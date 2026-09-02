@@ -421,7 +421,7 @@
     flex-flow: row wrap;
     overflow: visible;
     scroll-snap-type: none;
-    gap: 0 var(--bbl-space-250);
+    gap: var(--bbl-space-250);
   }
 
   .card-list.credit-card .cards-list.scrollable.cards-3 .cards-list-item {

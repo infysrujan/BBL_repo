@@ -116,7 +116,7 @@
 
 .table table tr.header-row td :is(strong, b) {
   font-family: var(--bbl-font-family-medium);
-  font-weight: 700;
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-85);
 }
 
@@ -207,6 +207,11 @@
 /* Header Pastel Blue — #A1C6FF background */
 .table table.header-primary-blue-s01 .header-row {
   background-color: var(--bbl-color-blue-40);
+}
+
+/* Header Top Aligned — overrides vertical-align: middle from Center/Right Aligned */
+.table table.header-top-aligned tr.header-row td {
+  vertical-align: top;
 }
 
 /* Highlight Bold Cells — background for any cell containing a <strong>,

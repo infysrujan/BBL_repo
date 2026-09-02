@@ -270,7 +270,7 @@ function buildCalculationPayload(inputs, inflationRate) {
     FirstSavingAmount: inputs.balance,
     CompensationRate: inputs.annualReturn / 100,
     SavingIncRate: inputs.annualIncrease / 100,
-    inflationrate: inflationRate,
+    InflationRate: inflationRate / 100,
   };
 }
 
@@ -346,6 +346,7 @@ function buildDropdownField({
     .map((opt) => `
       <li class="saving-plan-dropdown-option${opt.key === selected?.key ? ' is-selected' : ''}"
           role="option" data-value="${opt.key}" tabindex="-1">
+        <span class="saving-plan-dropdown-option-check icon-check" aria-hidden="true"></span>
         <span class="saving-plan-dropdown-option-label">${opt.label}</span>
       </li>
     `)
@@ -411,7 +412,7 @@ function buildShellMarkup(data) {
         <h2 class="saving-plan-header-title">${labels.sectionTitle}</h2>
         <span class="saving-plan-header-divider" aria-hidden="true"></span>
       </header>
-
+ 
       <div class="saving-plan-calculator">
         <div class="saving-plan-form">
           <h3 class="saving-plan-form-title">${labels.calculateTitle}</h3>
@@ -440,7 +441,7 @@ function buildShellMarkup(data) {
             <button type="button" class="saving-plan-form-btn saving-plan-form-btn-primary" data-action="calculate" disabled>${labels.buttons.calculate}</button>
           </div>
         </div>
-
+ 
         <aside class="saving-plan-result">
           <h3 class="saving-plan-result-title">${labels.resultTitle}</h3>
           <div class="saving-plan-result-card">
@@ -455,7 +456,7 @@ function buildShellMarkup(data) {
           <p class="saving-plan-result-footnote" data-result="footnote-return"></p>
         </aside>
       </div>
-
+ 
       <section class="saving-plan-chart-row" hidden>
         <div class="saving-plan-chart-wrap">
           ${buildChartLegend(labels.chart, getIcon)}
@@ -465,7 +466,7 @@ function buildShellMarkup(data) {
         </div>
         <div class="saving-plan-info-card-slot"></div>
       </section>
-
+ 
       <section class="saving-plan-tweak" hidden>
         <div class="saving-plan-tweak-header">
           <h3 class="saving-plan-tweak-title">${labels.tweakTitle}</h3>
@@ -497,7 +498,7 @@ function buildShellMarkup(data) {
           </div>
         </div>
       </section>
-
+ 
       ${labels.additionalInfoLinkText ? `
       <section class="saving-plan-additional">
         <h3 class="saving-plan-additional-title">${labels.additionalInfoTitle}</h3>
@@ -505,12 +506,12 @@ function buildShellMarkup(data) {
           <li><a class="saving-plan-additional-link" href="${labels.additionalInfoUrl || '#'}">${labels.additionalInfoLinkText}</a></li>
         </ul>
       </section>` : ''}
-
+ 
       <section class="saving-plan-disclaimer">
         <h4 class="saving-plan-disclaimer-title">${labels.disclaimerTitle}</h4>
         <div class="saving-plan-disclaimer-text">${labels.disclaimer}</div>
       </section>
-
+ 
       <section class="saving-plan-products" hidden>
         <h3 class="saving-plan-products-title">${labels.productSectionTitle}</h3>
         <div class="saving-plan-products-divider"></div>

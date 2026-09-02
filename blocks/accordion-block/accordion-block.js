@@ -164,7 +164,7 @@ function wireAccordionHeader(header, panel) {
     } else {
       header.setAttribute('aria-expanded', 'true');
       panel.hidden = false;
-      panel.style.maxHeight = `${panel.scrollHeight}px`;
+      panel.style.maxHeight = `${panel.scrollHeight + 40}px`;
     }
   });
 }
@@ -195,7 +195,7 @@ function setAllAccordionPanels(block, expand) {
     if (!header || !panel) return;
     header.setAttribute('aria-expanded', expand ? 'true' : 'false');
     panel.hidden = !expand;
-    panel.style.maxHeight = expand ? `${panel.scrollHeight}px` : '0px';
+    panel.style.maxHeight = expand ? `${panel.scrollHeight + 40}px` : '0px';
   });
 }
 
@@ -207,13 +207,14 @@ function syncExpandAllToolbarButton(expandBtn, block) {
   const expanded = allAccordionPanelsExpanded(block);
   const label = expandBtn.querySelector('.accordion-toolbar-label');
   const icon = expandBtn.querySelector('.accordion-toolbar-icon');
-  // Label stays "Expand All" in both states — only the icon reflects the change.
-  // aria-pressed carries the toggle state for assistive tech.
   if (label) {
-    label.textContent = placeholders.expandAllLabel;
+    label.textContent = expanded ? placeholders.collapseAllLabel : placeholders.expandAllLabel;
   }
   expandBtn.setAttribute('aria-pressed', expanded ? 'true' : 'false');
-  expandBtn.setAttribute('aria-label', placeholders.ariaLabelExpandAll);
+  expandBtn.setAttribute(
+    'aria-label',
+    expanded ? placeholders.ariaLabelCollapseAll : placeholders.ariaLabelExpandAll,
+  );
   if (icon) {
     icon.className = expanded ? 'accordion-toolbar-icon icon-close' : 'accordion-toolbar-icon icon-expand';
     icon.src = expanded

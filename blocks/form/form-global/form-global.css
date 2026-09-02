@@ -23,6 +23,7 @@ main .section.form-container .form form .field-wrapper.field-invalid :is(input:n
 main .section.form-container .form form .field-invalid :is(.field-validation-error, .field-description) {
   color: var(--bbl-color-red-130);
   font-weight: 400;
+  font-family: var(--bbl-font-family-looped);
 }
 
 main .section.form-container .form form :is(input:not([type='radio'], [type='checkbox']), select, textarea):is(:focus, :focus-visible, :active) {
@@ -81,6 +82,29 @@ main .section.form-container .form .col-6.submit-wrapper .button {
 main .section.form-container .form .col-6.reset-wrapper .button {
   margin-left: var(--bbl-space-200);
   margin-right: auto;
+}
+
+/* Custom Form Button Sizing & Styles — panel + wrapper classes only */
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button {
+  min-width: 9.6875rem;
+}
+
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button:disabled {
+  color: var(--bbl-color-grey-60);
+  border: 0.0417rem solid var(--bbl-color-gray-300);
+  background-color: var(--bbl-color-gray-300);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+main .section.form-container .form .field-button-panel.field-wrapper:has(.field-label) .col-6.reset-wrapper .button {
+  margin-left: unset;
+}
+
+@media (width > 47.5rem) {
+  main .section.form-container .form .field-button-panel.field-wrapper:has(.field-label) .col-6.reset-wrapper .button {
+    margin-left: var(--bbl-space-200);
+  }
 }
 
 /* Radio group — default variant (standard radio buttons) */
@@ -374,19 +398,6 @@ main .section.form-container .form form .plain-text-wrapper.field-text {
   font-size: 1rem;
 }
 
-/* Custom Form Button Sizing & Styles — panel + wrapper classes only */
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button {
-  min-width: 9.6875rem;
-}
-
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button:disabled {
-  color: var(--bbl-color-grey-60);
-  border: 0.0417rem solid var(--bbl-color-gray-300);
-  background-color: var(--bbl-color-gray-300);
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
 /* main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled),
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.secondary:not(:disabled) {
   border: 0.0417rem solid var(--bbl-color-active-blue);
@@ -394,10 +405,9 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
   color: var(--bbl-color-active-blue);
 } */
 
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled):hover,
-main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel .button.secondary:not(:disabled):hover {
+main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled, .secondary):hover{
   border-color: var(--bbl-color-active-blue);
-  background-color: var(--bbl-color-active-blue);
+  background-color: var(--bbl-color-blue-90);
   color: var(--bbl-color-white);
 }
 

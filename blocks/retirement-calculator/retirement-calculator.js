@@ -71,9 +71,12 @@ function buildStepper(labels, activeStep) {
     if (num === activeStep) mod = isLastStep ? ' rc-step-done' : ' rc-step-active';
     else if (num < activeStep) mod = ' rc-step-done';
     const showTick = num < activeStep || (num === activeStep && isLastStep);
+    const stepContent = showTick
+      ? '<img src="/icons/tick.svg" class="rc-step-check" alt="" aria-hidden="true">'
+      : num;
     stepsContainer.appendChild(parseHTML(`
       <div class="rc-step${mod}">
-        <div class="rc-step-circle"><span>${showTick ? '✓' : num}</span></div>
+        <div class="rc-step-circle"><span>${stepContent}</span></div>
         <div class="rc-step-label">${label}</div>
       </div>
     `));
@@ -169,7 +172,7 @@ function buildAgeField(id, label, savedValue, labels) {
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
-        <input type="text" id="rc-${id}" class="rc-field-input"
+        <input type="text" id="rc-${id}" class="rc-field-input" autocomplete="off"
           placeholder="1-120" maxlength="${formatNumber(120).length}" value="${savedValue ?? 0}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
@@ -208,7 +211,7 @@ function buildMoneyField(id, label, savedValue, labels, { max = 999999999 } = {}
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
-        <input type="text" id="rc-${id}" class="rc-field-input"
+        <input type="text" id="rc-${id}" class="rc-field-input" autocomplete="off"
           placeholder="0 - ${formatNumber(max)}" maxlength="${formatNumber(max).length}" value="${formatNumber(savedValue ?? 0)}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
@@ -276,7 +279,7 @@ function buildPercentField(id, label, savedValue, labels, { min = 0, max = 100 }
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
-        <input type="text" id="rc-${id}" class="rc-field-input"
+        <input type="text" id="rc-${id}" class="rc-field-input" autocomplete="off"
           placeholder="${min} - ${max}" maxlength="${formatNumber(Math.floor(max - 0.01)).length + 3}" value="${savedValue ?? 0}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>

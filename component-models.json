@@ -12818,6 +12818,10 @@
                 "value": "header-right-aligned"
               },
               {
+                "name": "Top Aligned",
+                "value": "header-top-aligned"
+              },
+              {
                 "name": "Header Blue",
                 "value": "header-blue"
               },
@@ -13398,6 +13402,13 @@
             ]
           }
         ]
+      },
+      {
+        "component": "aem-tag",
+        "name": "tab-category-tag",
+        "label": "Tab Category Tag",
+        "description": "Select the AEM tag that identifies this tab's category. Used by listing blocks (News & Media, Promotional Card Listing, Top Promotional Cards) to filter cards by category instead of relying on the tab label text.",
+        "valueType": "string"
       }
     ]
   },
