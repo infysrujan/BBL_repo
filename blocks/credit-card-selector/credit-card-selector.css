@@ -34,6 +34,15 @@
   }
 }
 
+@media (width > 120rem) {
+  .section.credit-card-selector-container.central-aligned > .default-content-wrapper,
+  .section.credit-card-selector-container.central-aligned .credit-card-selector.block {
+    max-width: var(--bbl-layout-content-max-width-1920);
+    box-sizing: border-box;
+    margin-inline: auto;
+  }
+}
+
 .credit-card-selector .card-selector-title {
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-font-size-h1-desktop);
