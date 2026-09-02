@@ -810,24 +810,35 @@ function fetchPlanData(prospectAge, prospectGender, prospectCategory, prospectSA
 }
 
 /**
- * Returns a named field from the last fetchPlanData call.
- * For nested rider fields use dot notation: "rider.0.roomAndBoard"
- *
+ * Returns a named field from the last fetchPlanData call, formatted with
+ * comma thousand separators when the value is purely numeric.
  * @name getPlanField
- * @param {string} fieldName - Top-level key (e.g. "planCode", "premium")
- *                             or dot-path (e.g. "rider.0.roomAndBoard")
+ * @param {string} fieldName - e.g. "premium", "rider.0.roomAndBoard"
  * @return {string}
  */
 function getPlanField(fieldName) {
   if (!fetchPlanDataResult) return '';
   const value = String(fieldName).split('.')
     .reduce((obj, k) => (obj != null ? obj[k] : null), fetchPlanDataResult);
-  return value != null ? String(value) : '';
+
+  if (value == null) return '';
+
+  const strValue = String(value).trim();
+  if (strValue === '') return '';
+
+  const num = Number(strValue);
+  if (!Number.isNaN(num)) {
+    return num.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  }
+
+  return strValue;
 }
 
 /**
  * Returns a named field from the rider matching riderCode in the last fetchPlanData result.
  * Returns defaultValue if the riderCode is absent from the rider array.
+ * Purely numeric values are formatted with comma thousand separators
+ * (no decimals). Non-numeric values (e.g. dashes, text) are returned as-is.
  *
  * @name getRiderField
  * @param {string} riderCode - e.g. "TI_Free", "ADBN8", "WP_FREE"
@@ -843,7 +854,18 @@ function getRiderField(riderCode, fieldName, defaultValue) {
   const rider = riders.find((r) => r.riderCode === riderCode);
   if (!rider) return fallback;
   const value = rider[fieldName];
-  return value != null ? String(value) : fallback;
+
+  if (value == null) return fallback;
+
+  const strValue = String(value).trim();
+  if (strValue === '') return fallback;
+
+  const num = Number(strValue);
+  if (!Number.isNaN(num)) {
+    return num.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  }
+
+  return strValue;
 }
 
 /**
