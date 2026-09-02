@@ -121,6 +121,7 @@
   transform: translateX(-50%);
   margin-top: var(--bbl-space-100);
   white-space: normal;
+  text-wrap-mode: nowrap;
   text-align: center;
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);

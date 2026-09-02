@@ -155,6 +155,10 @@ function extractTitleAndBody(section) {
 }
 
 function wireAccordionHeader(header, panel) {
+  panel.querySelectorAll('img').forEach((img) => {
+    img.removeAttribute('loading');
+  });
+
   header.addEventListener('click', () => {
     const expanded = header.getAttribute('aria-expanded') === 'true';
     if (expanded) {
@@ -268,6 +272,11 @@ function buildAccordionPrintDocument(block) {
       panel.hidden = false;
       panel.removeAttribute('hidden');
     }
+  });
+
+  clone.querySelectorAll('img').forEach((img) => {
+    img.removeAttribute('loading');
+    img.setAttribute('loading', 'eager');
   });
 
   const wrapper = block.closest('.accordion-block-wrapper');
@@ -819,7 +828,6 @@ export default async function decorate(block) {
     placeholders.accordionPlaceholder,
   );
   content.appendChild(item);
-  wireAccordionHeader(header, panel);
 
   const fragmentSection = fragment.querySelector(':scope .section');
   if (fragmentSection) {
@@ -837,6 +845,7 @@ export default async function decorate(block) {
     }
     panel.appendChild(contentFrag);
   }
+  wireAccordionHeader(header, panel);
   block.classList.add('accordion-panel-loaded');
   wireAccordionToolbarAndNavigation(block, toolbarButtons);
 }
