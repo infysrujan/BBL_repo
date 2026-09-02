@@ -18,6 +18,10 @@
   padding-inline: 0;
 }
 
+.locate-us .card-list .cards-list-item::after {
+  border: none;
+}
+
 .locate-us .cards-list-item {
   width: auto;
   border: none;
