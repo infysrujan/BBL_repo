@@ -895,7 +895,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper .field-disclaimer .plain-text-wrapper p {
     color: var(--bbl-color-grey-85);
     text-align: left;
-    font-size: var(--form-font-size-xs);
+    font-size: var(--bbl-font-size-b2-desktop);
+    font-weight: var(--bbl-font-weight-regular);
     line-height: var(--bbl-text-default-line-height);
   }
 
