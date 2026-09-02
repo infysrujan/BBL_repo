@@ -1402,6 +1402,7 @@
     padding-right: 1.75rem;
     margin: auto;
     margin-left: 25%;
+    margin-bottom: 1.875rem;
     width: calc(50% - 2.09rem);
   }
 
@@ -1478,5 +1479,23 @@
   .locate-us-fragment .cards-list {
     flex-flow: unset;
     flex-direction: unset;
+  }
+}
+
+
+@media (width > 120rem){
+  .locate-us.block .content{
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .locate-us.block .content > *:not(.locate-us-filter-bar) {
+    max-width: var(--bbl-layout-content-max-width-1920);
+    margin: auto;
+  }
+  .locate-us .locate-us-filter-bar {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    width: calc(50% - 2.8rem);
   }
 }
