@@ -241,7 +241,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   & .form form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper, .drop-down-wrapper, .date-wrapper) {
     position: relative;
     clear: both;
-    margin-bottom: 0.625rem;
+    margin-bottom: 2.19rem;;
   }
 
   /* Mobile: stack half-width fields in a single column */
