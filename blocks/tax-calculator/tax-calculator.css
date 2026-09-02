@@ -97,8 +97,8 @@
 
 .tax-calculator .tax-calc-step-circle .tax-calc-step-check {
   display: block;
-  width: 0.75rem;
-  height: 0.75rem;
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
 .tax-calculator .tax-calc-step-active .tax-calc-step-circle {
@@ -799,11 +799,6 @@
 
   .tax-calculator .tax-calc-step-circle {
     font-size: 0.875rem;
-  }
-
-  .tax-calculator .tax-calc-step-circle .tax-calc-step-check {
-    width: 0.875rem;
-    height: 0.875rem;
   }
 
   .tax-calculator .tax-calc-connector {
