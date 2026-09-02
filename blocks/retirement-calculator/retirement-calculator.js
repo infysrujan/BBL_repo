@@ -80,10 +80,8 @@ async function loadData() {
   return {
     labels,
     apiUrl: siteConfig.retirementCalculatorApiUrl,
-    inflationRate: String(rateList.inflationRate ?? siteConfig.retirementCalculatorInflationRate ?? '1.5'),
-    afterRetirementRate: String(
-      rateList.afterRetirementRate ?? siteConfig.retirementCalculatorAfterRetirementRate ?? '3',
-    ),
+    inflationRate: String(rateList.inflationRate ?? '1.5'),
+    afterRetirementRate: String(rateList.afterRetirementRate ?? '1.5'),
     altCompensationRate: parseFloat(siteConfig.retirementCalculatorAltCompensationRate) || 0.05,
     defaultMonthlyIncome: parseFloat(placeholders.defaultMonthlyIncome) || 20000,
     defaultCurrentAge: parseInt(placeholders.defaultCurrentAge, 10) || 30,
