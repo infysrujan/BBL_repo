@@ -88,6 +88,7 @@
 
 .retirement-calculator .rc-step-circle .rc-step-check {
   display: block;
+  max-width: unset;
   width: 0.875rem;
   height: 0.875rem;
 }
