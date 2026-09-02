@@ -527,11 +527,12 @@
 
 .locate-us .locate-us-card-label {
   min-width: 3.75rem;
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.125rem;
   color: var(--bbl-color-gray-142);
   font-family: var(--bbl-font-family-primary);
   flex-shrink: 0;
   padding-top: 0.0625rem;
+  line-height: 1.125rem;
 }
 
 /* Status value + hours stacked in right column */
@@ -545,9 +546,9 @@
 
 .locate-us .locate-us-card-status {
   color: var(--bbl-color-status-other);
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.125rem;
   font-family: var(--bbl-font-family-primary);
-  line-height: 1.375rem;
+  line-height: 1.125rem;
 }
 
 .locate-us .locate-us-card-status-open {
@@ -555,7 +556,7 @@
 }
 
 .locate-us .locate-us-card-hours {
-  font-size: var(--bbl-font-size-b1);
+  font-size: 1.125rem;
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   overflow-wrap: break-word;
@@ -568,7 +569,7 @@
 
 .locate-us .locate-us-card-tel,
 .locate-us .locate-us-card-fax {
-  font-size: var(--bbl-font-size-b1);
+  font-size: var(--bbl-font-size-base);
   color: var(--bbl-color-grey-85);
   font-family: var(--bbl-font-family-primary);
   overflow-wrap: break-word;
