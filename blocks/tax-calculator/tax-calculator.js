@@ -422,9 +422,12 @@ function buildStepIndicator(labels, activeStep) {
     let stepModifier = '';
     if (stepNumber === activeStep) stepModifier = 'tax-calc-step-active';
     else if (stepNumber < activeStep) stepModifier = 'tax-calc-step-done';
+    const stepContent = stepNumber < activeStep
+      ? '<img src="/icons/tick.svg" class="tax-calc-step-check" alt="" aria-hidden="true">'
+      : stepNumber;
     const step = parseHTML(`
       <div class="tax-calc-step ${stepModifier}">
-        <div class="tax-calc-step-circle"><span>${stepNumber < activeStep ? '✓' : stepNumber}</span></div>
+        <div class="tax-calc-step-circle"><span>${stepContent}</span></div>
         <div class="tax-calc-step-label">${label}</div>
       </div>
     `);
@@ -893,24 +896,33 @@ function renderJourney2(block, data, state, onBack, onCalculate) {
     });
   }
 
-  // Wire PensionInsure <-> ReduceRMF: each deducts from the other's max allowance
+  // Wire PensionInsure <-> ReduceRMF combined max constraint (shared RMF/SSF/PensionInsure60 cap)
   const reduceRMFField = block.querySelector('[data-id="ReduceRMF"]');
   const pensionInsureField = block.querySelector('[data-id="PensionInsure"]');
   const reduceRMFInput = block.querySelector('#tc-ReduceRMF');
   const pensionInsureInput = block.querySelector('#tc-PensionInsure');
   if (pensionInsureInput && reduceRMFInput) {
-    const baseMaxRMF = Math.round(apiResponse.MaxRMF || 0);
-    const baseMaxInsure60 = Math.round(apiResponse.MaxInsure60 || 0);
-
     pensionInsureInput.addEventListener('input', () => {
-      const val = parseFloat(stripCommas(pensionInsureInput.value)) || 0;
-      if (reduceRMFField?.updateMax) reduceRMFField.updateMax(Math.max(0, baseMaxRMF - val));
+      const pensionInsureVal = parseFloat(stripCommas(pensionInsureInput.value)) || 0;
+      const { MaxRMF, MaxRMFSSFInsure60 } = apiResponse;
+      const excess = pensionInsureVal + MaxRMF - MaxRMFSSFInsure60;
+      let newMax = MaxRMF;
+      if (pensionInsureVal + MaxRMF >= MaxRMFSSFInsure60) {
+        newMax = excess <= 0 ? 0 : MaxRMF - excess;
+      }
+      if (reduceRMFField?.updateMax) reduceRMFField.updateMax(Math.max(0, newMax));
       syncStep2ButtonState();
     });
 
     reduceRMFInput.addEventListener('input', () => {
-      const val = parseFloat(stripCommas(reduceRMFInput.value)) || 0;
-      if (pensionInsureField?.updateMax) pensionInsureField.updateMax(Math.max(0, baseMaxInsure60 - val));
+      const rmfSavingsVal = parseFloat(stripCommas(reduceRMFInput.value)) || 0;
+      const { MaxInsure60, MaxRMFSSFInsure60 } = apiResponse;
+      const excess = rmfSavingsVal + MaxInsure60 - MaxRMFSSFInsure60;
+      let newMax = MaxInsure60;
+      if (rmfSavingsVal + MaxInsure60 >= MaxRMFSSFInsure60) {
+        newMax = excess <= 0 ? 0 : MaxInsure60 - excess;
+      }
+      if (pensionInsureField?.updateMax) pensionInsureField.updateMax(Math.max(0, newMax));
       syncStep2ButtonState();
     });
   }
