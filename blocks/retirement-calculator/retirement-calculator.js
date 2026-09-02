@@ -72,7 +72,7 @@ function buildStepper(labels, activeStep) {
     else if (num < activeStep) mod = ' rc-step-done';
     const showTick = num < activeStep || (num === activeStep && isLastStep);
     const stepContent = showTick
-      ? '<img src="/icons/Check 1.svg" class="rc-step-check" alt="" aria-hidden="true">'
+      ? '<img src="/icons/Check-1.svg" class="rc-step-check" alt="" aria-hidden="true">'
       : num;
     stepsContainer.appendChild(parseHTML(`
       <div class="rc-step${mod}">
