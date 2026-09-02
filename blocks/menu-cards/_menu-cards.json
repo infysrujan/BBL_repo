@@ -48,7 +48,7 @@
                     "label": "Number of Cards",
                     "description": "Select the number of cards to display",
                     "valueType": "string",
-                    "value": "",
+                    "value": "three-cards",
                     "options": [
                         {
                             "name": "3 cards in a row",
