@@ -158,6 +158,10 @@
                 {
                   "name": "Highlight First Column",
                   "value": "highlight-first-column"
+                },
+                {
+                  "name": "Highlight All Cells",
+                  "value": "highlight-all-cells"
                 }
               ]
             },

@@ -174,6 +174,13 @@
   background: var(--bbl-color-grey-26);
 }
 
+/* Highlight All Cells — background for every body cell in the table.
+   Defaults to a light-blue background; when a Header variant is also
+   applied, the body cells' background matches that variant's color. */
+.table table.highlight-all-cells tr:not(.header-row) td {
+  background: var(--bbl-color-blue-steel-light);
+}
+
 /* --------------------------------------------------------------------------
    HEADER VARIANTS (specificity 0,3,3)
    -------------------------------------------------------------------------- */
@@ -285,6 +292,28 @@
 }
 
 .table table.highlight-first-column.header-primary-blue-s01 td:first-child {
+  background: var(--bbl-color-blue-40);
+}
+
+/* --------------------------------------------------------------------------
+   CELL VARIANTS — highlight all cells except header (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+
+/* Highlight All Cells — override the default light-blue background with
+   whichever Header variant is also applied to the table. */
+.table table.highlight-all-cells.header-blue tr:not(.header-row) td {
+  background: var(--bbl-color-blue-steel-dark);
+}
+
+.table table.highlight-all-cells.header-light-blue tr:not(.header-row) td {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.table table.highlight-all-cells.header-light-gray tr:not(.header-row) td {
+  background: var(--bbl-color-grey-19);
+}
+
+.table table.highlight-all-cells.header-primary-blue-s01 tr:not(.header-row) td {
   background: var(--bbl-color-blue-40);
 }
 
