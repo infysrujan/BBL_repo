@@ -717,6 +717,7 @@ function printElement() {
    
     .market-report-col {
       gap: 0;
+      align-items: flex-start;
     }
    
   `;
