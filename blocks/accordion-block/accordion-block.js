@@ -235,23 +235,12 @@ function escapeHtml(s) {
 }
 
 /**
- * Snapshot panel open state, expand all, build HTML, restore.
+ * Build the print document HTML with every panel expanded.
  * @param {Element} block
  */
 function buildAccordionPrintDocument(block) {
-  const items = [...block.querySelectorAll(':scope > .content > .accordion-item')];
-  const states = items.map((item) => {
-    const header = item.querySelector('.accordion-header');
-    const panel = item.querySelector('.accordion-panel');
-    return {
-      expanded: header?.getAttribute('aria-expanded') === 'true',
-      hidden: panel?.hidden ?? true,
-      maxHeight: panel?.style.maxHeight ?? '',
-    };
-  });
-
-  setAllAccordionPanels(block, true);
-
+  // Expand only the detached clone below (not `block`) so the live accordion
+  // never visibly flashes open/closed while the print document is assembled.
   const clone = block.cloneNode(true);
   clone.querySelectorAll('.accordion-block-toolbar').forEach((el) => el.remove());
 
@@ -325,16 +314,6 @@ function buildAccordionPrintDocument(block) {
   } else {
     bodyHtml = clone.outerHTML;
   }
-
-  items.forEach((item, i) => {
-    const header = item.querySelector('.accordion-header');
-    const panel = item.querySelector('.accordion-panel');
-    const s = states[i];
-    if (!header || !panel || !s) return;
-    header.setAttribute('aria-expanded', s.expanded ? 'true' : 'false');
-    panel.hidden = s.hidden;
-    panel.style.maxHeight = s.maxHeight;
-  });
 
   const docTitle = block.querySelector('.accordion-block-title')?.textContent?.trim()
     || document.querySelector('title')?.textContent
