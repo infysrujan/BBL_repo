@@ -169,7 +169,7 @@ function buildAgeField(id, label, savedValue, labels) {
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
-        <input type="text" id="rc-${id}" class="rc-field-input"
+        <input type="text" id="rc-${id}" class="rc-field-input" autocomplete="off"
           placeholder="1-120" maxlength="${formatNumber(120).length}" value="${savedValue ?? 0}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
@@ -208,7 +208,7 @@ function buildMoneyField(id, label, savedValue, labels, { max = 999999999 } = {}
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
-        <input type="text" id="rc-${id}" class="rc-field-input"
+        <input type="text" id="rc-${id}" class="rc-field-input" autocomplete="off"
           placeholder="0 - ${formatNumber(max)}" maxlength="${formatNumber(max).length}" value="${formatNumber(savedValue ?? 0)}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
@@ -276,7 +276,7 @@ function buildPercentField(id, label, savedValue, labels, { min = 0, max = 100 }
   const field = parseHTML(`
     <div class="rc-field" data-id="${id}">
       <div class="rc-field-inner">
-        <input type="text" id="rc-${id}" class="rc-field-input"
+        <input type="text" id="rc-${id}" class="rc-field-input" autocomplete="off"
           placeholder="${min} - ${max}" maxlength="${formatNumber(Math.floor(max - 0.01)).length + 3}" value="${savedValue ?? 0}">
         <label class="rc-field-label" for="rc-${id}">${label}</label>
       </div>
