@@ -59,6 +59,7 @@
         background-color: transparent;
         text-decoration: none;
         font-weight: var(--bbl-font-weight-regular);
+        font-size: var(--bbl-form-font-size-14);
     }
 
     /* Field/panel wrappers: full width */
@@ -87,6 +88,11 @@
         padding: 0;
         margin-bottom: var(--bbl-space-200);
         gap: var(--bbl-form-gap-8) var(--bbl-form-margin-10);
+
+        /* Don't stretch Hours/Minutes to match Date's height when its error message
+           grows the row, or the ':' separator (positioned at a % of cell height)
+           drifts out of alignment with the select boxes. */
+        align-items: start;
     }
 
     /* General panels (no date field): grid column spacing */
@@ -365,7 +371,7 @@
 
         /* All fields: bottom spacing between stacked fields */
         & .field-wrapper:not(.button-wrapper, .submit-wrapper, .reset-wrapper, .field-button-panel) {
-        margin-bottom: var(--bbl-form-margin-10);
+        margin: 0 0 var(--bbl-form-margin-10) 0;
         }
 
         & fieldset.panel-wrapper:has(.date-wrapper) > .drop-down-wrapper {
@@ -389,6 +395,16 @@
 
          /* Subtitle: bump up from the mobile size set in the base rule */
         & :is(.field-wrapper, .plain-text-wrapper):has(h2) + .plain-text-wrapper p {
+            font-size: var(--bbl-form-font-size-16);
+        }
+    }
+}
+
+/* Desktop only (Transaction Date/Time & Service Branch legends stay 14px through tablet) */
+@media (width >= 64rem) {
+    .contact-us main .section.form-container.custom-forms .form form {
+        & fieldset.panel-wrapper:has(.date-wrapper) > legend.field-label:not([data-visible="false"]),
+        & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) > legend.field-label {
             font-size: var(--bbl-form-font-size-16);
         }
     }
