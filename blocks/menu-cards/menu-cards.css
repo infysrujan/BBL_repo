@@ -1,10 +1,14 @@
 /* Base styles (mobile-first) */
 
 .menu-cards .tips-insight-quick-access {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--bbl-space-100);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--bbl-space-100);
+
+    &.four-cards {
+        justify-content: flex-start;
+    }
 }
 
 .menu-cards .tips-insight-quick-access-item {
@@ -80,12 +84,17 @@
 
 /* Desktop: width > 1024px */
 @media (width > 64rem) {
-  .menu-cards .tips-insight-quick-access {
-    gap: var(--bbl-space-300);
-  }
+    .menu-cards .tips-insight-quick-access {
+        gap: var(--bbl-space-300);
 
-  .menu-cards .tips-insight-quick-access-item {
-    flex: calc(32.33% - 4rem);
-  }
+        .tips-insight-quick-access-item {
+            flex: calc(32.33% - 4rem);
+        }
 
+        &.four-cards {
+            .tips-insight-quick-access-item {
+                flex: 0 0 calc(25% - 4.25rem);
+            }
+        }
+    }
 }

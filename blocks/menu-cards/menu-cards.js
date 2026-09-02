@@ -11,16 +11,17 @@ function createMenuCard(cardElement, doc) {
   const children = [...cardElement.children];
 
   // Extract menu card fields based on the model structure
-  // [0] = title, [1] = icon image, [2] = link
-  const [titleDiv, iconDiv, linkDiv] = children;
+  // [0] = title, [1] = noOfCards, [2] = icon image, [3] = link
+  const [titleDiv, noOfCards, iconDiv, linkDiv] = children;
 
+  const noOfCardsText = noOfCards?.textContent.trim() || '';
   const titleText = titleDiv?.textContent.trim();
   const iconImg = iconDiv?.querySelector('img');
   const linkElement = linkDiv?.querySelector('a');
 
   // Create menu card item container
   const menuCardItem = createElementFromHTML(
-    '<div class="tips-insight-quick-access-item"></div>',
+    `<div class="tips-insight-quick-access-item ${noOfCardsText}"></div>`,
     doc,
   );
 
