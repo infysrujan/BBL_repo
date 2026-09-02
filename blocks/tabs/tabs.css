@@ -128,17 +128,17 @@
 
 /* SPACING INSIDE TAB PANEL between different blocks except download block and merged tables */
 .tab-panel > [class$="-wrapper"]:not(
-    :has(+ .download-file-wrapper),
+    .download-file-wrapper:has(+ .download-file-wrapper),
     :has(.merge-tables)
-  ):has(+ *) {
+    ):has(+ *) {
   padding-bottom: 1.5rem;
 }
 
 @media (width > 64rem) {
   .tab-panel > [class$="-wrapper"]:not(
-    :has(+ .download-file-wrapper),
+    .download-file-wrapper:has(+ .download-file-wrapper),
     :has(.merge-tables)
-  ):has(+ *) {  
+    ):has(+ *) {
     padding-bottom: 2rem;
   }
 }
