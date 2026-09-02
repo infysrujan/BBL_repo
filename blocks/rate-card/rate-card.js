@@ -1,7 +1,15 @@
 import { fetchConfigs } from '../../scripts/config.js';
-import { createElementFromHTML, moveInstrumentation } from '../../scripts/scripts.js';
+import { createElementFromHTML, moveInstrumentation, getLang } from '../../scripts/scripts.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import { decorateButtonsV1 } from '../../scripts/bbl-decorators.js';
+
+// getLang() reads document.documentElement.lang which may not be set yet when
+// async API calls resolve. Fall back to the URL path segment for reliability.
+function getPageLang() {
+  const first = window.location.pathname.split('/').filter(Boolean)[0];
+  if (first === 'th' || first === 'en') return first;
+  return getLang();
+}
 
 /**
  * Format date string from API format to display format
@@ -73,9 +81,10 @@ function createTabId(cardName) {
  * @param {Array} data - Data array from API
  * @param {string} dataType - Type of data: 'exchange', 'deposit', 'loan', 'fund'
  * @param {Element} sourceElement - Original authored element for instrumentation
+ * @param {string} lang - Current page language ('en' or 'th')
  * @returns {Element} - Table or empty state element
  */
-function createTableElement(columnNames, data, dataType, sourceElement) {
+function createTableElement(columnNames, data, dataType, sourceElement, lang) {
   if (!data || data.length === 0) return null;
 
   let element;
@@ -135,9 +144,12 @@ function createTableElement(columnNames, data, dataType, sourceElement) {
         // Match fund-prices' formatting: pad to 4 decimal places instead of
         // showing the raw, sometimes-truncated API value (e.g. 6.562 -> 6.5620).
         const navText = Number.isFinite(nav) ? nav.toFixed(4) : (navValue || '-');
+        const fundName = lang === 'th'
+          ? (item.mf_sTha || item.mf_sEng)
+          : (item.mf_sEng || item.mf_sTha);
         return `
         <tr>
-          <td>${item.mf_sEng || item.FundName || '-'}</td>
+          <td>${fundName || item.FundName || '-'}</td>
           <td>${navText}</td>
         </tr>
       `;
@@ -223,9 +235,10 @@ function appendTableMeta(container, dateString, timeString, buttonData) {
  * Create tab content with tables
  * @param {Object} tabData - Tab data object
  * @param {Object} apiData - API data for all endpoints
+ * @param {string} lang - Current page language ('en' or 'th')
  * @returns {Element} - Tab content element
  */
-function createTabContent(tabData, apiData) {
+function createTabContent(tabData, apiData, lang) {
   const {
     cardName,
     tableCount,
@@ -278,6 +291,7 @@ function createTabContent(tabData, apiData) {
       apiData1,
       dataType1,
       table1Data.sourceElement,
+      lang,
     );
     if (tableElement) {
       const list = document.createElement('div');
@@ -295,6 +309,7 @@ function createTabContent(tabData, apiData) {
       apiData2,
       dataType2,
       table2Data.sourceElement,
+      lang,
     );
     if (tableElement) {
       const list = document.createElement('div');
@@ -341,6 +356,8 @@ function activateTab(block, index) {
  */
 export default async function decorate(block) {
   decorateButtonsV1(block);
+
+  const lang = getPageLang();
 
   // Fetch configs for API URLs
   const configs = await fetchConfigs();
@@ -483,7 +500,7 @@ export default async function decorate(block) {
     listItem.appendChild(link);
     tabHeader.appendChild(listItem);
 
-    const tabInner = createTabContent(tab, apiData);
+    const tabInner = createTabContent(tab, apiData, lang);
     const hasContent = tabInner.querySelector('.currency-list');
 
     if (!hasContent) {
