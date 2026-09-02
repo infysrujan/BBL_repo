@@ -31,7 +31,7 @@
 .menu-banner .desktop-tools {
   position: relative;
   z-index: 2;
-  padding: var(--bbl-space-500) var(--bbl-space-container-xs);
+  padding: 0;
 }
 
 .menu-banner .desktop-tools .inner {
@@ -91,6 +91,11 @@
   color: var(--bbl-color-white);
 } */
 
+.menu-banner .title-1 a {
+    text-decoration: none;
+    color: var(--bbl-color-blue-130);
+}
+
 .menu-banner .list-thumb-square {
   list-style: none;
   margin: 0;
@@ -111,10 +116,9 @@
   height: 100%;
 }
 
-.menu-banner .title-1 a:active,
 .menu-banner .title-1 a:hover {
     text-decoration: none;
-    color: var(--bbl-color-active-blue);
+    color: var(--bbl-color-blue-130);
 }
 
 .menu-banner .title-1 > * {
