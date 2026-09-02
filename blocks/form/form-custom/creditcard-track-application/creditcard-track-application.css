@@ -24,7 +24,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) .form fieldset.
 main .section.form-container.custom-forms:has(.cc-app-main-form) .form form p {
   font-weight: var(--form-label-font-weight);
   font-size: var(--bbl-font-size-h4-mobile);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
 }
 
 main .section.form-container.custom-forms:has(.cc-app-main-form) div.form-wrapper,
@@ -121,7 +121,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         content: "\e912";
         font-family: var(--bbl-form-font-family-icomoon);
         font-size: var(--bbl-font-size-h3-mobile);
-        color: var(--bbl-color-grey-85);
+        color: var(--bbl-color-grey-90);
         position: absolute;
         top: 0;
         right: var(--bbl-space-300);
@@ -156,7 +156,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     content: "\e902";
     font-family: var(--bbl-form-font-family-icomoon);
     font-size: var(--bbl-form-font-size-6);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     position: absolute;
     right: var(--bbl-space-150);
     bottom: 0;
@@ -395,7 +395,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     font-size: var(--form-font-size-xs);
     font-weight: var(--form-label-font-weight);
     line-height: var(--bbl-text-default-line-height);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
 
      & > .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
     & .field-wrapper:not(.button-wrapper, .field-button-panel, .field-submitbuttonpanel, .field-submitbuttonpanel2, .captcha-wrapper, [class*='cc-app-']),
@@ -642,7 +642,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         }
 
         & > .cc-panel-item-timeline-message p {
-          color: var(--bbl-color-grey-85);
+          color: var(--bbl-color-grey-90);
           font-weight: var(--bbl-text-default-weight);
         }
 
@@ -651,6 +651,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
           line-height: var(--bbl-text-small-line-height);
           color: var(--bbl-color-grey-28);
           font-weight: var(--bbl-text-small-weight);
+          padding-right:0.75rem;
         }
 
         & > .cc-panel-item-timeline-muted p {
@@ -849,7 +850,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
   }
 
   & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper .field-disclaimer .plain-text-wrapper p {
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     text-align: left;
     font-size: var(--form-font-size-xs);
     line-height: var(--bbl-text-default-line-height);

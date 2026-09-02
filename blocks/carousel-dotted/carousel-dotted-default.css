@@ -670,7 +670,6 @@
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
   line-height: 1.285rem;
   margin: unset;
-  color: var(--bbl-color-grey-85);
 }
 
 /* title-3: use regular weight (matches live site inherited font) */

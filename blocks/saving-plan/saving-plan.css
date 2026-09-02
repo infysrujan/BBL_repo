@@ -828,7 +828,7 @@
   color: var(--bbl-color-active-blue);
   font-size: var(--bbl-heading-h3-reg-size);
   line-height: var(--bbl-heading-h3-line-height);
-  font-family: var(--bbl-font-weight-regular);
+  font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-heading-h3-reg-weight);
 }
 
@@ -858,7 +858,7 @@
 .saving-plan-newplan-card.is-placeholder .saving-plan-newplan-lead,
 .saving-plan-newplan-card.is-placeholder .saving-plan-newplan-amount,
 .saving-plan-newplan-card.is-placeholder .saving-plan-newplan-currency {
-  color: var(--bbl-color-grey-90);
+  color: var(--bbl-color-grey-70);
 }
 
 .saving-plan-newplan-footnote {

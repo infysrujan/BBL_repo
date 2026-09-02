@@ -155,6 +155,10 @@ function extractTitleAndBody(section) {
 }
 
 function wireAccordionHeader(header, panel) {
+  panel.querySelectorAll('img').forEach((img) => {
+    img.removeAttribute('loading');
+  });
+
   header.addEventListener('click', () => {
     const expanded = header.getAttribute('aria-expanded') === 'true';
     if (expanded) {
@@ -207,13 +211,14 @@ function syncExpandAllToolbarButton(expandBtn, block) {
   const expanded = allAccordionPanelsExpanded(block);
   const label = expandBtn.querySelector('.accordion-toolbar-label');
   const icon = expandBtn.querySelector('.accordion-toolbar-icon');
-  // Label stays "Expand All" in both states — only the icon reflects the change.
-  // aria-pressed carries the toggle state for assistive tech.
   if (label) {
-    label.textContent = placeholders.expandAllLabel;
+    label.textContent = expanded ? placeholders.collapseAllLabel : placeholders.expandAllLabel;
   }
   expandBtn.setAttribute('aria-pressed', expanded ? 'true' : 'false');
-  expandBtn.setAttribute('aria-label', placeholders.ariaLabelExpandAll);
+  expandBtn.setAttribute(
+    'aria-label',
+    expanded ? placeholders.ariaLabelCollapseAll : placeholders.ariaLabelExpandAll,
+  );
   if (icon) {
     icon.className = expanded ? 'accordion-toolbar-icon icon-close' : 'accordion-toolbar-icon icon-expand';
     icon.src = expanded
@@ -267,6 +272,11 @@ function buildAccordionPrintDocument(block) {
       panel.hidden = false;
       panel.removeAttribute('hidden');
     }
+  });
+
+  clone.querySelectorAll('img').forEach((img) => {
+    img.removeAttribute('loading');
+    img.setAttribute('loading', 'eager');
   });
 
   const wrapper = block.closest('.accordion-block-wrapper');
@@ -818,7 +828,6 @@ export default async function decorate(block) {
     placeholders.accordionPlaceholder,
   );
   content.appendChild(item);
-  wireAccordionHeader(header, panel);
 
   const fragmentSection = fragment.querySelector(':scope .section');
   if (fragmentSection) {
@@ -836,6 +845,7 @@ export default async function decorate(block) {
     }
     panel.appendChild(contentFrag);
   }
+  wireAccordionHeader(header, panel);
   block.classList.add('accordion-panel-loaded');
   wireAccordionToolbarAndNavigation(block, toolbarButtons);
 }

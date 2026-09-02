@@ -29,7 +29,7 @@
 
     p {
       text-align: center;
-      color: var(--bbl-color-grey-85);
+      color: var(--bbl-color-grey-90);
       font-family: var(--bbl-font-family-primary);
       font-size: var(--bbl-font-size-h2-mobile);
       font-weight: var(--bbl-font-weight-regular);
@@ -246,14 +246,11 @@
       font-family: var(--bbl-font-family-primary);
       font-size: var(--bbl-font-size-b1-desktop);
       font-weight: var(--bbl-font-weight-regular);
-      color: var(--bbl-color-grey-85);
+      color: var(--bbl-color-grey-90);
       line-height: var(--bbl-line-height-b1-desktop);
     }
   }
 
-  & .form form .plain-text-wrapper p:last-child p{
-    text-align: center;
-  }
 
 
   & .form form .field-bond-allocation-review .field-heading2.plain-text-wrapper p {
@@ -276,7 +273,7 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-h2-mobile);
     font-weight: var(--bbl-font-weight-regular);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     padding-right: 0;
     white-space: nowrap;
     justify-content: right;
@@ -294,7 +291,7 @@
     font-weight: var(--bbl-font-weight-regular);
     padding: 0;
     min-height: auto;
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     padding-left: 0.25rem;
     display: flex;
   }
@@ -307,8 +304,9 @@
       font-family: var(--bbl-font-family-primary);
       font-size: var(--bbl-font-size-b1-desktop);
       font-weight: var(--bbl-font-weight-regular);
-      color: var(--bbl-color-grey-85);
+      color: var(--bbl-color-grey-90);
       line-height: var(--bbl-line-height-b1-desktop);
+      text-align: left;
     }
   }
 
@@ -359,6 +357,7 @@
     }
   }
 
+  & .form form .field-bond-allocation-review .plain-text-wrapper p:last-child p,
   & .form form .field-bond-allocation-notfound .plain-text-wrapper p:last-child p {
     text-align: left;
   }
