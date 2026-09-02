@@ -242,14 +242,12 @@
 
     /* Form Subtitle (plain-text-wrapper immediately following title h2): Centered */
     & .field-title + .plain-text-wrapper p {
-        color: var(--bbl-color-grey-85);
         text-align: center;
     }
 
     /* Modal Paragraph Styling */
     & .modal .plain-text-wrapper p {
         font-family: var(--bbl-font-family-primary);
-        color: var(--bbl-color-grey-85);
     }
 
     & .modal .plain-text-wrapper p + p {
@@ -257,7 +255,7 @@
     }
 
     & :is(.field-wrapper, .plain-text-wrapper):has(h2) + .plain-text-wrapper p {
-        color: var(--bbl-color-grey-85);
+        color: var(--bbl-color-grey-90);
         text-align: center;
     }
 
