@@ -1,7 +1,8 @@
 import fetchBlockConfig from '../../scripts/block-config.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { fetchPost } from '../../scripts/utils/fetchApi.js';
+import { fetchGet, fetchPost } from '../../scripts/utils/fetchApi.js';
+import { getLang } from '../../scripts/scripts.js';
 
 // ─── Utilities ──────────────────────────────────────────────────────────────────
 
@@ -35,17 +36,54 @@ function getInflationText(labels, data) {
 
 // ─── Data ────────────────────────────────────────────────────────────────────────
 
+/**
+ * Live inflation / after-retirement rates from the fincal rate-list GraphQL query.
+ * The exact content-fragment field names aren't confirmed yet (model lives in AEM,
+ * not this repo), so rates are matched by key substring rather than an exact name -
+ * safe to tighten once the real response shape is known. Falls back to {} (config
+ * sheet / hardcoded values) on any miss or fetch failure.
+ */
+async function loadRateList(siteConfig) {
+  try {
+    const baseUrl = siteConfig.retirementCalculatorRateListUrl
+      || '/graphql/execute.json/bangkokbank/get-fincal-ratelist';
+    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
+    const apimKey = siteConfig.retirementCalculatorApimKey || '';
+    const json = await fetchGet(url, {
+      headers: { 'Ocp-Apim-Subscription-Key': apimKey },
+      throwOnError: false,
+    });
+    const list = Object.values(json?.data || {})
+      .find((val) => Array.isArray(val?.items))?.items || [];
+    const item = list[0] || {};
+    const findRate = (needle) => {
+      const key = Object.keys(item).find((k) => k.toLowerCase().includes(needle));
+      const value = key ? parseFloat(item[key]) : NaN;
+      return Number.isNaN(value) ? undefined : value;
+    };
+    return {
+      inflationRate: findRate('inflation'),
+      afterRetirementRate: findRate('afterretire') ?? findRate('retirerate'),
+    };
+  } catch {
+    return {};
+  }
+}
+
 async function loadData() {
-  const [siteConfig, labels, placeholders] = await Promise.all([
-    fetchConfigs(),
+  const siteConfig = await fetchConfigs();
+  const [labels, placeholders, rateList] = await Promise.all([
     fetchBlockConfig('/retirement-config.json'),
     fetchPlaceholders(),
+    loadRateList(siteConfig),
   ]);
   return {
     labels,
     apiUrl: siteConfig.retirementCalculatorApiUrl,
-    inflationRate: String(siteConfig.retirementCalculatorInflationRate ?? '1.5'),
-    afterRetirementRate: String(siteConfig.retirementCalculatorAfterRetirementRate ?? '3'),
+    inflationRate: String(rateList.inflationRate ?? siteConfig.retirementCalculatorInflationRate ?? '1.5'),
+    afterRetirementRate: String(
+      rateList.afterRetirementRate ?? siteConfig.retirementCalculatorAfterRetirementRate ?? '3',
+    ),
     altCompensationRate: parseFloat(siteConfig.retirementCalculatorAltCompensationRate) || 0.05,
     defaultMonthlyIncome: parseFloat(placeholders.defaultMonthlyIncome) || 20000,
     defaultCurrentAge: parseInt(placeholders.defaultCurrentAge, 10) || 30,
