@@ -205,7 +205,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--bbl-space-100);
-  min-height: var(--bbl-space-700);
+  min-height: 3.375rem;
   width: 100%;
   box-sizing: border-box;
   background-color: var(--bbl-color-white);
