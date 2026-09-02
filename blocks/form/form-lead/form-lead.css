@@ -222,7 +222,6 @@ main .lead-forms .form form .plain-text-wrapper p:last-child {
 }
 
 main .lead-forms .form form .plain-text-wrapper :is(.custom-wffm-form) {
-  color: inherit;
   font-size: inherit;
 }
 
