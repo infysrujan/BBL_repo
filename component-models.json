@@ -12822,6 +12822,10 @@
                 "value": "header-right-aligned"
               },
               {
+                "name": "Right Aligned Except First",
+                "value": "header-right-aligned-except-first"
+              },
+              {
                 "name": "Top Aligned",
                 "value": "header-top-aligned"
               },
@@ -12872,6 +12876,10 @@
                 "value": "cells-center-aligned-except-first"
               },
               {
+                "name": "Cells Right Aligned Except First",
+                "value": "cells-right-aligned-except-first"
+              },
+              {
                 "name": "Cells Middle Aligned",
                 "value": "cells-middle-aligned"
               },
@@ -12882,6 +12890,14 @@
               {
                 "name": "Highlight Bold Cells",
                 "value": "highlight-bold-cells"
+              },
+              {
+                "name": "Highlight First Column",
+                "value": "highlight-first-column"
+              },
+              {
+                "name": "Highlight All Cells",
+                "value": "highlight-all-cells"
               }
             ]
           },

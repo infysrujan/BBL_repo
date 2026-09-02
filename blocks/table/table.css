@@ -175,6 +175,13 @@
   background: var(--bbl-color-grey-26);
 }
 
+/* Highlight All Cells — background for every body cell in the table.
+   Defaults to a light-blue background; when a Header variant is also
+   applied, the body cells' background matches that variant's color. */
+.table table.highlight-all-cells tr:not(.header-row) td {
+  background: var(--bbl-color-blue-steel-light);
+}
+
 /* --------------------------------------------------------------------------
    HEADER VARIANTS (specificity 0,3,3)
    -------------------------------------------------------------------------- */
@@ -267,6 +274,51 @@
 }
 
 /* --------------------------------------------------------------------------
+   CELL VARIANTS — highlight first column (specificity 0,4,2)
+   -------------------------------------------------------------------------- */
+
+/* Highlight First Column — background for every cell in the first column,
+   matching whichever Header variant is also applied to the table. No
+   background is applied when no matching Header variant is set. */
+.table table.highlight-first-column.header-blue td:first-child {
+  background: var(--bbl-color-blue-steel-dark);
+}
+
+.table table.highlight-first-column.header-light-blue td:first-child {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.table table.highlight-first-column.header-light-gray td:first-child {
+  background: var(--bbl-color-grey-19);
+}
+
+.table table.highlight-first-column.header-primary-blue-s01 td:first-child {
+  background: var(--bbl-color-blue-40);
+}
+
+/* --------------------------------------------------------------------------
+   CELL VARIANTS — highlight all cells except header (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+
+/* Highlight All Cells — override the default light-blue background with
+   whichever Header variant is also applied to the table. */
+.table table.highlight-all-cells.header-blue tr:not(.header-row) td {
+  background: var(--bbl-color-blue-steel-dark);
+}
+
+.table table.highlight-all-cells.header-light-blue tr:not(.header-row) td {
+  background: var(--bbl-color-blue-steel-light);
+}
+
+.table table.highlight-all-cells.header-light-gray tr:not(.header-row) td {
+  background: var(--bbl-color-grey-19);
+}
+
+.table table.highlight-all-cells.header-primary-blue-s01 tr:not(.header-row) td {
+  background: var(--bbl-color-blue-40);
+}
+
+/* --------------------------------------------------------------------------
    HEADER VARIANTS — mixed blue (specificity 0,4,3)
    -------------------------------------------------------------------------- */
 
@@ -280,12 +332,28 @@
 }
 
 /* --------------------------------------------------------------------------
+   HEADER VARIANTS — right aligned except first (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+
+/* Header Right Aligned (exclude first column) */
+.table table.header-right-aligned-except-first tr.header-row td:not(:first-child) {
+  text-align: right;
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
    CELL VARIANTS — center aligned except first (specificity 0,4,3)
    -------------------------------------------------------------------------- */
 
 /* Cells Center Aligned (exclude first column) */
 .table table.cells-center-aligned-except-first tr:not(.header-row) td:not(:first-child) {
   text-align: center;
+  vertical-align: middle;
+}
+
+/* Cells Right Aligned (exclude first column) */
+.table table.cells-right-aligned-except-first tr:not(.header-row) td:not(:first-child) {
+  text-align: right;
   vertical-align: middle;
 }
 
@@ -333,6 +401,13 @@
 /* Scroll variant: minimum table width for horizontal overflow */
 .table.scroll table {
   min-width: 61.9375rem;
+}
+
+/* Table nested inside an accordion item — keep a usable minimum width so
+   columns don't collapse when the accordion is narrower than the table;
+   the .table wrapper's overflow-x: auto handles the resulting overflow. */
+.accordion-item .table table {
+  min-width: 31.25rem;
 }
 
 /* --------------------------------------------------------------------------
