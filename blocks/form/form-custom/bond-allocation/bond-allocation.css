@@ -251,9 +251,6 @@
     }
   }
 
-  & .form form .plain-text-wrapper p:last-child p{
-    text-align: center;
-  }
 
 
   & .form form .field-bond-allocation-review .field-heading2.plain-text-wrapper p {
@@ -309,6 +306,7 @@
       font-weight: var(--bbl-font-weight-regular);
       color: var(--bbl-color-grey-85);
       line-height: var(--bbl-line-height-b1-desktop);
+      text-align: left;
     }
   }
 
@@ -359,6 +357,7 @@
     }
   }
 
+  & .form form .field-bond-allocation-review .plain-text-wrapper p:last-child p,
   & .form form .field-bond-allocation-notfound .plain-text-wrapper p:last-child p {
     text-align: left;
   }
