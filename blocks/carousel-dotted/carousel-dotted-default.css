@@ -584,7 +584,7 @@
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .caption {
   flex: 1;
-  padding-right: 30px;
+  padding-right: 1.875rem;
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .title-2 {
