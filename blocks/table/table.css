@@ -165,11 +165,12 @@
   padding: 0.9375rem 0.625rem;
 }
 
-/* --------------------------------------------------------------------------
-   CELL VARIANTS — dash highlight (specificity 0,3,2)
-   -------------------------------------------------------------------------- */
+.table table.outline-border.currency-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  padding: 0.625rem 0;
+}
 
-/* Dash Cell Highlight — #d9d9d9 background for cells containing only "-" */
 .table table.dash-cell-highlight td.cell-dash {
   background: var(--bbl-color-grey-26);
 }
@@ -289,6 +290,14 @@
 }
 
 /* --------------------------------------------------------------------------
+   CURRENCY TABLE — cell padding (specificity 0,4,3)
+   -------------------------------------------------------------------------- */
+.table table.outline-border.currency-table tr.header-row td,
+.table table.outline-border.currency-table tr:not(.header-row) td {
+  padding: 0.9375rem;
+}
+
+/* --------------------------------------------------------------------------
    DOWNLOAD FILE BLOCK
    -------------------------------------------------------------------------- */
 .table table td .download-file {
@@ -373,6 +382,10 @@ td .icon {
 
   .table table tr:not(.header-row) td {
     font-size: 1rem;
+  }
+
+  .table table.outline-border.currency-table {
+    padding: 0.9375rem 1.25rem;
   }
 }
 
