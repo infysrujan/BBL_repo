@@ -1024,7 +1024,7 @@
   .locate-us .locate-us-filter-bar {
     flex-direction: row;
     align-items: center;
-    padding: 0 calc(1.25rem + 1%);
+    padding: 0 0.43rem;
     gap: 0.625rem;
     margin: 0 auto 1.875rem;
   }
@@ -1473,5 +1473,11 @@
   .locate-us-fragment .cards-list {
     flex-flow: unset;
     flex-direction: unset;
+  }
+}
+
+@media (width >= 1920px){
+  .locate-us .locate-us-filter-bar {
+    max-width: 52.5%;
   }
 }
