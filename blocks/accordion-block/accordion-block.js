@@ -394,6 +394,21 @@ function buildAccordionPrintDocument(block) {
   `;
 }
 
+// Waits on each <link> directly — readyState/load only prove the browser
+// finished attempting the stylesheets, not that they applied.
+function waitForStylesheets(doc) {
+  const links = [...doc.querySelectorAll('link[rel="stylesheet"]')];
+  return Promise.all(links.map((link) => new Promise((resolve) => {
+    // Already loaded (e.g. served from cache before the listener attached).
+    if (link.sheet) {
+      resolve();
+      return;
+    }
+    link.addEventListener('load', resolve, { once: true });
+    link.addEventListener('error', resolve, { once: true });
+  }))).then(() => undefined);
+}
+
 /**
  * @param {Element} block
  */
@@ -402,26 +417,18 @@ function openAccordionPrintWindow(block) {
   const printWindow = window.open('', '', 'height=500,width=800');
   if (!printWindow) return;
 
-  const runPrint = () => {
-    printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 100);
-  };
-
   printWindow.document.write(printHtml);
   printWindow.document.close();
 
-  // Checked after write/close: only then does readyState reflect the
-  // document that was just written, so this reliably waits for the
-  // linked stylesheets (fonts, accordion-block.css, table.css, ...) to load
-  // before printing instead of racing them.
-  if (printWindow.document.readyState === 'complete') {
-    requestAnimationFrame(runPrint);
-  } else {
-    printWindow.addEventListener('load', runPrint);
-  }
+  waitForStylesheets(printWindow.document).then(() => {
+    requestAnimationFrame(() => {
+      printWindow.focus();
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 100);
+    });
+  });
 }
 
 /**
