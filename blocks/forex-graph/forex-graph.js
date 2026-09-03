@@ -8,6 +8,7 @@ import {
   buildIntlMonthLabels,
   formatDateInputValue,
   getMonthKey,
+  parseApiDate,
   parseCsvConfigList,
   parseIsoDate,
   parseTypedDate,
@@ -18,6 +19,7 @@ import {
   getDownloadUrl,
   getEnabledDays,
   getFxFamily,
+  getLatestRates,
   normalizeChartData,
 } from './helpers/api-helpers.js';
 import parseAuthoring from './helpers/authoring-helpers.js';
@@ -1029,15 +1031,21 @@ export default async function decorate(block) {
     render();
 
     try {
-      // Load families and enabled days in parallel
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-
-      const [families, enabledDays] = await Promise.all([
+      // Load families and the latest available rates date in parallel. The latest
+      // rates endpoint (shared with forex-rates) tells us the most recent date FX
+      // data actually exists for, so the "To" date doesn't default to today when
+      // today is a weekend/holiday with no data.
+      const [families, latest] = await Promise.all([
         getFxFamily(endpoints).catch(() => []),
-        getEnabledDays(endpoints, year, month).catch(() => []),
+        getLatestRates(endpoints).catch(() => null),
       ]);
+
+      const now = new Date();
+      const latestDate = parseApiDate(latest?.[0]?.Ddate);
+      const year = latestDate ? Number(latestDate.year) : now.getFullYear();
+      const month = latestDate ? Number(latestDate.month) : now.getMonth() + 1;
+
+      const enabledDays = await getEnabledDays(endpoints, year, month).catch(() => []);
 
       const EXCLUDED_FAMILIES = ['MMK', 'INR', 'LAK'];
       state.families = (Array.isArray(families) ? families : [])
@@ -1049,11 +1057,11 @@ export default async function decorate(block) {
       state.from.enabledDaysByMonth[monthKey] = enabledDays;
       state.to.enabledDaysByMonth[monthKey] = enabledDays;
 
-      // Set default dates: 1st of month (even if not itself an enabled day) → today
+      // Set default dates: 1st of month (even if not itself an enabled day) → latest available date
       const monthStr = String(month).padStart(2, '0');
-      const todayStr = String(now.getDate()).padStart(2, '0');
+      const toDayStr = latestDate ? latestDate.day : String(now.getDate()).padStart(2, '0');
       state.from.selectedDate = `${year}-${monthStr}-01`;
-      state.to.selectedDate = `${year}-${monthStr}-${todayStr}`;
+      state.to.selectedDate = `${year}-${monthStr}-${toDayStr}`;
 
       // Format typed date display values
       state.from.typedDate = formatDateInputValue(
