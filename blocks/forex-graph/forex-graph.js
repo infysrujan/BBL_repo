@@ -115,13 +115,11 @@ function printForexGraph(block, state) {
     .print-logo { margin-bottom: 0.75rem; }
     .print-logo img { height: 1.75rem; width: auto; }
 
-    /* No divider/underline — the live print has neither. */
     .print-title {
       font-size: 2.25rem; font-weight: 500; color: var(--bbl-color-black);
       margin: 0.25rem 0 1rem;
     }
 
-    /* Tab labels row (e.g. 外匯兌換率 / 圖表), centered under the title */
     .print-tabs {
       display: flex; justify-content: center; gap: 1.25rem;
       margin: 0 0 1rem;
@@ -135,7 +133,6 @@ function printForexGraph(block, state) {
       gap: 0.75rem; margin-bottom: 1.25rem;
     }
     .forex-graph-dropdown { position: static; }
-    /* Indent to align with the dates below; same text size as the dates. */
     .forex-graph-dropdown-trigger {
       display: inline-flex; align-items: center; gap: 0.25rem;
       border: none; background: none; padding: 0; margin-left: 1.25rem;
@@ -144,7 +141,6 @@ function printForexGraph(block, state) {
     .forex-graph-date-fields { display: flex; flex-direction: column; gap: 0.75rem; }
     .forex-graph-date-field { display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
     .forex-graph-date-label { display: block; margin: 0; font-size: 0.8125rem; font-weight: 400; color: var(--bbl-color-black); }
-    /* Date + calendar icon inline, indented under the label — no border (live). */
     .forex-graph-date-group { position: static; display: inline-flex; align-items: center; gap: 0.4rem; margin-left: 1.25rem; }
     .forex-graph-date-display {
       display: inline-block; font-size: 0.8125rem; color: var(--bbl-color-black);
@@ -157,8 +153,6 @@ function printForexGraph(block, state) {
       display: inline-flex; align-items: center;
     }
 
-    /* Chart sits in a bordered box, matching the live site (same border as the
-       block's on-screen .forex-graph-chart-section). */
     .forex-graph-chart-section {
       border: 0.0625rem solid var(--bbl-color-grey-22);
       border-radius: 0.375rem; padding: 0.85rem; box-sizing: border-box;
