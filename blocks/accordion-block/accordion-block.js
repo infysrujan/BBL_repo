@@ -328,6 +328,10 @@ function buildAccordionPrintDocument(block) {
     || document.querySelector('title')?.textContent
     || placeholders.printLabel;
 
+  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+
   const printCss = `
     @page {
       size: A4 portrait;
@@ -342,6 +346,10 @@ function buildAccordionPrintDocument(block) {
       width: 12.5rem;
       height: 3.125rem;
       margin-block: 3rem 1rem;
+    }
+
+    .accordion-print-brandbar {
+      margin-bottom: 1rem;
     }
 
     .accordion { border: 0; }
@@ -385,6 +393,11 @@ function buildAccordionPrintDocument(block) {
     </head>
     <body class="appear">
       <main>
+       <div class="accordion-print-brandbar">
+          <div class="brand-logo-container">
+            ${brandLogo}
+          </div>
+        </div>
         <div class="section accordion-block-container">
           ${bodyHtml}
         </div>
