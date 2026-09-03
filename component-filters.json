@@ -354,6 +354,32 @@
     ]
   },
   {
+    "id": "menu-card-item-rte",
+    "components": [
+      "richtext"
+    ],
+    "rte": {
+      "toolbar": {
+        "insert": [
+          "link",
+          "unlink",
+          "image",
+          "special_characters"
+        ],
+        "sections": [
+          "insert"
+        ]
+      },
+      "actions": {
+        "image": {
+          "wrapInPicture": false,
+          "shortcut": "Mod-Shift-I",
+          "label": "Insert Image"
+        }
+      }
+    }
+  },
+  {
     "id": "menu-cards",
     "components": [
       "menu-card"
