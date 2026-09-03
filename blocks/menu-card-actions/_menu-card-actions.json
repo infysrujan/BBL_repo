@@ -456,6 +456,10 @@
             "superscript",
             "subscript"
           ],
+          "editor": [
+            "removeformat",
+            "paste_text"
+          ],
           "sections": [
             "format",
             "alignment",
@@ -463,7 +467,8 @@
             "blocks",
             "list",
             "insert",
-            "sr_script"
+            "sr_script",
+            "editor"
           ]
         },
         "actions": {
