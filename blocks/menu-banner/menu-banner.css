@@ -31,7 +31,7 @@
 .menu-banner .desktop-tools {
   position: relative;
   z-index: 2;
-  padding: var(--bbl-space-500) var(--bbl-space-container-xs);
+  padding: 0;
 }
 
 .menu-banner .desktop-tools .inner {
