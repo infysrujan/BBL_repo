@@ -195,6 +195,10 @@
 
 /* Tablet: width > 760px */
 @media (width > 47.5rem) {
+  .menu-banner .desktop-tools {
+    padding-top: 40px;
+  }
+
   .menu-banner .desktop-tools .inner {
     display: block;
   }
@@ -241,6 +245,7 @@
 @media (width > 64rem) {
   .menu-banner .desktop-tools {
     display: flow-root;
+    padding-top: 20px;
   }
 
   .menu-banner .thumb-full {
