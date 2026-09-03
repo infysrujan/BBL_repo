@@ -588,6 +588,12 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
     line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
+  main .section.wizard-forms .form form .field-prospectage > label.field-label::before {
+    height: 3.625rem;
+    top: 1.8125rem;
+    font-size: var(--bbl-font-size-b1-desktop);
+  }
+
   main .wizard-forms .form input {
     height: 3.625rem;
   }
@@ -639,10 +645,6 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
     line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
-  main .section.wizard-forms .form form .field-prospectage > label.field-label::before {
-    height: 3.625rem;
-    font-size: var(--bbl-font-size-b1-desktop);
-  }
 
   main .section.form-container.wizard-forms .form form :is(fieldset[class*="field-form-width-740"], fieldset[class*="field-form-width-900"], fieldset[class*="field-form-width-1240"]) {
     padding-inline: 0;
