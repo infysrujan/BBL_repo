@@ -45,8 +45,7 @@ function getInflationText(labels, data) {
  */
 async function loadRateList(siteConfig) {
   try {
-    const baseUrl = siteConfig.retirementCalculatorRateListUrl
-      || '/graphql/execute.json/bangkokbank/get-fincal-ratelist';
+    const baseUrl = siteConfig.retirementCalculatorRateListUrl;
     const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
     const apimKey = siteConfig.retirementCalculatorApimKey || '';
     const json = await fetchGet(url, {
