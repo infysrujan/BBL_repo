@@ -19,6 +19,10 @@
   --bbl-wizard-font-size-summary-label-desktop: 1.5rem;
   --bbl-wizard-font-size-summary-input-desktop: 1.4rem;
   --bbl-wizard-font-size-summary-value-desktop: 2.2rem;
+  --bbl-wizard-margin-1875: 1.875rem;
+  --bbl-wizard-radio-margin-top: 0.1875rem;
+  --bbl-wizard-margin-input-left: 0.5rem;
+  --bbl-wizard-padding-col1-left: 0.25rem;
 }
 
 .field-bbl-wizard {
@@ -64,7 +68,7 @@ main .section.form-container.wizard-forms .form form fieldset[class*="field-form
 }
 
 main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-900"]:has(.field-veiwplanstext) {
-  padding-bottom: 1.875rem;
+  padding-bottom: var(--bbl-wizard-margin-1875);
 }
 
 main .section.form-container.wizard-forms .form form fieldset[class*="field-form-width-1240"] {
@@ -193,7 +197,7 @@ main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.r
   height: 1.5rem;
   width: 1.5rem;
   padding: 0;
-  margin-top: 0.1875rem;
+  margin-top: var(--bbl-wizard-radio-margin-top);
   border-radius: 50%;
   border: 0.125rem solid var(--bbl-color-grey-40, #c8c8cc);
   opacity: 0.2;
@@ -329,7 +333,7 @@ main .section.wizard-forms .form form .field-prospectage > label.field-label::be
 }
 
 main .section.wizard-forms .form form .field-prospectage input {
-  padding-left: 2.5rem;
+  padding-left: var(--bbl-space-500);
 }
 
 main .section.wizard-forms .form form .field-prospectage input::placeholder {
@@ -364,7 +368,7 @@ main .section.form-container.wizard-forms .form form .field-infotext {
 }
 
 main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-button-panel.field-wrapper {
-  margin: 1.875rem auto;
+  margin: var(--bbl-wizard-margin-1875) auto;
 }
 
 main .section.form-container.wizard-forms .form form .radio-group-wrapper:not(.radio-tabs, .cards, .horizontal) .radio-wrapper label {
@@ -443,7 +447,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
 main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6) {
   position: relative;
   padding-bottom: var(--bbl-space-250);
-  margin-block: 1.875rem;
+  margin-block: var(--bbl-wizard-margin-1875);
 }
 
 main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6)::after {
@@ -461,7 +465,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="insuranceSum
   font-size: var(--bbl-wizard-font-size-summary-heading);
   font-weight: var(--bbl-font-weight-regular);
   line-height: var(--bbl-wizard-line-height-summary-heading);
-  margin-block: 0 0.625rem;
+  margin-block: 0 var(--bbl-margin-block-10px);
 }
 
 main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] .field-label {
@@ -483,19 +487,19 @@ main .section.form-container.wizard-forms .form form fieldset[name="insuranceSum
   font-size: var(--bbl-wizard-font-size-summary-input-mobile);
   color: var(--bbl-color-black, #000);
   font-weight: var(--bbl-font-weight-regular);
-  margin-left: 0.5rem;
+  margin-left: var(--bbl-wizard-margin-input-left);
 }
 
 main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper[name="insuranceSummaryPanel"] > .plain-text-wrapper.col-1 {
   width: max-content;
-  padding: var(--bbl-space-050) 0 0 0.25rem;
+  padding: var(--bbl-space-050) 0 0 var(--bbl-wizard-padding-col1-left);
   border: unset;
   align-self: center;
 }
 
 main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper[name="css-summaryWithHR"] {
   margin-block: var(--bbl-space-250) var(--bbl-margin-block-14px) !important;
-  padding: 0.9375rem 0 0 !important;
+  padding: var(--bbl-margin-block-15px) 0 0 !important;
   border-top: 0.0625rem solid var(--bbl-border-color-gray-301) !important;
   display: flex !important;
   flex-flow: row nowrap !important;
@@ -570,7 +574,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   }
 
   main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-wrapper.field-veiwplanstext :is(h1, h2, h3, h4, h5, h6) {
-    padding-bottom: 1.875rem;
+    padding-bottom: var(--bbl-wizard-margin-1875);
   }
 
   main .section.form-container.wizard-forms .form form :is(fieldset[class*="field-form-width-740"], fieldset[class*="field-form-width-900"], fieldset[class*="field-form-width-1240"]) {
