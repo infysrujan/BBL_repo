@@ -1083,6 +1083,44 @@ function validateMaxCheckbox(selected, maxCount) {
   return arr.length <= Number(maxCount);
 }
 
+/**
+ * Replaces the "Other" selection in a checkbox-group value with the
+ * user-typed free-text value, so the review/summary panel shows the typed
+ *
+ * @name replaceother
+ * @param {string[]|string} selectedValues - Checkbox-group value, either as
+ * @param {string} otherText - The free-text value typed in the "please
+ *   specify" field
+ * @returns {string} Comma-separated string of selected values, with any
+ *   "Other" entry replaced by the typed text
+ */
+function replaceother(selectedValues, otherText) {
+  if (!selectedValues) return '';
+
+  let parts;
+  try {
+    parts = typeof selectedValues === 'string' ? JSON.parse(selectedValues) : selectedValues;
+  } catch (e) {
+    parts = String(selectedValues)
+      .replace(/^\[|\]$/g, '')
+      .split(',')
+      .map((s) => s.replace(/^"|"$/g, '').trim());
+  }
+
+  const otherLabels = ['Others', 'Other', 'อื่น ๆ (โปรดระบุ)'];
+  const typed = (otherText || '').trim();
+
+  return parts
+    .map((part) => {
+      const trimmedPart = String(part).trim();
+      const isOtherLabel = otherLabels.includes(trimmedPart)
+        || trimmedPart.indexOf('อื่น') === 0
+        || trimmedPart.indexOf('Other') === 0;
+      return isOtherLabel && typed !== '' ? typed : trimmedPart;
+    })
+    .join(', ');
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -1119,4 +1157,5 @@ export {
   getSelectedLabelName,
   getSelectedLabelValue,
   validateMaxCheckbox,
+  replaceother,
 };
