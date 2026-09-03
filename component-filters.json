@@ -395,23 +395,13 @@
           "image",
           "special_characters"
         ],
-        "sr_script": [
-          "superscript",
-          "subscript"
-        ],
-        "editor": [
-          "removeformat",
-          "paste_text"
-        ],
         "sections": [
           "format",
           "alignment",
           "indentation",
           "blocks",
           "list",
-          "insert",
-          "sr_script",
-          "editor"
+          "insert"
         ]
       },
       "actions": {
