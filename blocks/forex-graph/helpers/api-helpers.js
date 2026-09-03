@@ -1,4 +1,5 @@
 import { fetchGet } from '../../../scripts/utils/fetchApi.js';
+import fetchLatestRates from '../../../scripts/utils/latest-rates-cache.js';
 
 export function trimValue(value) {
   if (value === null || value === undefined) return '-';
@@ -65,7 +66,7 @@ export async function getFxFamily(endpoints) {
 }
 
 export async function getLatestRates(endpoints) {
-  return fetchGet(endpoints.latestRates());
+  return fetchLatestRates(endpoints.latestRates());
 }
 
 export async function getEnabledDays(endpoints, year, month) {
