@@ -24,7 +24,7 @@ import {
 } from './bbl-decorators.js';
 
 import decorateTabs from '../blocks/tabs/tabs-helper.js';
-import initRteAnchors, { decorateRteInlineImages } from './custom-rte.js';
+import initRteAnchors, { decorateRteInlineImages, decorateNewTabLinks, decorateEncodedNbsp } from './custom-rte.js';
 
 import env from './utils/env.js';
 import { getCookie } from './utils/cookies.js';
@@ -63,8 +63,8 @@ const isEnabled = !window.location.search.includes('martech=off');
 // TODO: Update BBL's Dev, Stage and Prod datastream IDs here
 const dataStreamConfig = {
   dev: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
-  stage: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
-  prod: '3298fa2b-518b-4f4f-9bb3-ae153303a854',
+  stage: '754d5abb-573b-4c8f-907d-a45e3418d700',
+  prod: '68f164c2-a131-443a-a28d-8331a08e499c',
 };
 
 // TODO: Update BBL's Launch script URLs here
@@ -73,9 +73,11 @@ const launchConfig = {
     'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-f69e7329c58a-development.min.js',
   ],
   stage: [
-    'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-f69e7329c58a-development.min.js',
+    'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-bb28126e1019-staging.min.js',
   ],
-  prod: [],
+  prod: [
+    'https://assets.adobedtm.com/0e4712067e10/931565ba35cd/launch-f8fe1c3d0242.min.js',
+  ],
 };
 
 const orgId = '599F1E47665EC45B0A495E73@AdobeOrg';
@@ -140,7 +142,9 @@ export function createElementFromHTML(html, doc) {
 async function loadFonts() {
   await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`);
   try {
-    if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
+    if (!window.location.hostname.includes('localhost')) {
+      sessionStorage.setItem('fonts-loaded', 'true');
+    }
   } catch (e) {
     // do nothing
   }
@@ -181,6 +185,8 @@ export function decorateMain(main) {
   decorateBlocks(main);
   decorateTertiaryButtons(main);
   decorateSvgWithAltText(main);
+  decorateNewTabLinks(main);
+  decorateEncodedNbsp(main);
 
   const pageVariant = getMetadata('pagevariant');
   if (pageVariant) {
@@ -291,7 +297,9 @@ function decorateOgImage() {
   const ogImagePath = getMetadata('ogImage') || getMetadata('ogimage');
   if (!ogImagePath) return;
 
-  const url = ogImagePath.startsWith('http') ? ogImagePath : `${window.location.origin}${ogImagePath}`;
+  const url = ogImagePath.startsWith('http')
+    ? ogImagePath
+    : `${window.location.origin}${ogImagePath}`;
 
   let meta = document.head.querySelector('meta[property="og:image"]');
   if (!meta) {
@@ -320,11 +328,14 @@ function stripImageOptimizationParams(url) {
  */
 function stripSrcsetOptimizationParams(srcset) {
   if (typeof srcset !== 'string') return srcset;
-  return srcset.split(',').map((entry) => {
-    const parts = entry.trim().split(/\s+/);
-    parts[0] = stripImageOptimizationParams(parts[0]);
-    return parts.join(' ');
-  }).join(', ');
+  return srcset
+    .split(',')
+    .map((entry) => {
+      const parts = entry.trim().split(/\s+/);
+      parts[0] = stripImageOptimizationParams(parts[0]);
+      return parts.join(' ');
+    })
+    .join(', ');
 }
 
 /**
@@ -407,6 +418,16 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  const disabledSections = new Set(
+    getMetadata('disable-sections', doc)
+      .split(',')
+      .map((section) => section.trim().toLowerCase())
+      .filter(Boolean),
+  );
+
+  if (!disabledSections.has('header')) {
+    loadHeader(doc.querySelector('header'));
+  }
   const main = doc.querySelector('main');
   await loadSections(main);
 
@@ -420,17 +441,8 @@ async function loadLazy(doc) {
 
   initRteAnchors(main, doc);
   decorateRteInlineImages(main);
+  decorateNewTabLinks(main);
 
-  const disabledSections = new Set(
-    getMetadata('disable-sections', doc)
-      .split(',')
-      .map((section) => section.trim().toLowerCase())
-      .filter(Boolean),
-  );
-
-  if (!disabledSections.has('header')) {
-    loadHeader(doc.querySelector('header'));
-  }
   if (!disabledSections.has('footer')) {
     loadFooter(doc.querySelector('footer'));
   }

@@ -8,16 +8,18 @@ import {
   buildIntlMonthLabels,
   formatDateInputValue,
   getMonthKey,
+  parseApiDate,
   parseCsvConfigList,
   parseIsoDate,
   parseTypedDate,
-} from '../forex-rates/helpers/date-helpers.js';
+} from '../../scripts/utils/date-helpers.js';
 import {
   createApiEndpoints,
   getChartRates,
   getDownloadUrl,
   getEnabledDays,
   getFxFamily,
+  getLatestRates,
   normalizeChartData,
 } from './helpers/api-helpers.js';
 import parseAuthoring from './helpers/authoring-helpers.js';
@@ -29,15 +31,6 @@ function escapeHtml(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
-}
-
-function isDateRangeOver3Years(fromIso, toIso) {
-  if (!fromIso || !toIso) return false;
-  const from = new Date(fromIso);
-  const to = new Date(toIso);
-  const diffMs = to.getTime() - from.getTime();
-  const diffDays = diffMs / (1000 * 60 * 60 * 24);
-  return diffDays >= 365.25 * 3;
 }
 
 function buildGraphTitle(template, currName, currFamily, fromIso, toIso) {
@@ -63,8 +56,166 @@ function buildGraphTitle(template, currName, currFamily, fromIso, toIso) {
     .replace('{{END_DATE}}', endDate);
 }
 
+/**
+ * Print just the chart (title + legend + graph + disclaimer) in an isolated
+ * iframe, mirroring forex-rates. A bare window.print() would print the whole
+ * live page (Currency Calculator, Forward Points, footer, …).
+ * @param {HTMLElement} block
+ * @param {object} state - decorate() state; state.chartInstance holds the Chart
+ */
+function printForexGraph(block, state) {
+  const content = block.querySelector('.forex-graph-content');
+  if (!content) return;
+
+  const doc = block.ownerDocument;
+  const cloned = content.cloneNode(true);
+
+  // Keep the currency + From/To fields as read-only context; strip only the
+  // interactive/error bits (dropdown list, calendar popups, text inputs, buttons).
+  cloned.querySelectorAll('.forex-graph-error').forEach((el) => el.remove());
+  cloned.querySelectorAll(
+    '.forex-graph-dropdown-list, .forex-graph-dropdown-chevron, .forex-graph-datepicker, .forex-graph-date-input, .forex-graph-date-trigger, .forex-graph-go-btn, .forex-graph-actions',
+  ).forEach((el) => el.remove());
+
+  // <canvas> pixels do not survive cloneNode — swap in a snapshot image.
+  const canvasWrap = cloned.querySelector('.forex-graph-canvas-wrap');
+  if (canvasWrap) {
+    canvasWrap.innerHTML = '';
+    if (state.chartInstance) {
+      const img = doc.createElement('img');
+      img.src = state.chartInstance.toBase64Image();
+      img.className = 'forex-graph-print-chart';
+      canvasWrap.appendChild(img);
+    }
+  }
+
+  const logoEl = doc.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+    || doc.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+
+  const pageTitle = doc.querySelector('h1')?.textContent?.trim() || 'Foreign Exchange Rates';
+
+  const printCss = `
+    @page { size: A4 portrait; margin: 10mm; }
+    body { font-family: sans-serif; margin: 0; padding: 0; }
+    /* Print background colors (title underline) — off by default */
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    .print-logo { margin-bottom: var(--bbl-space-075); }
+    .print-logo img { height: 1.5rem; width: auto; }
+    .print-divider { border: none; border-top: 0.0625rem solid var(--bbl-color-grey-125); margin: var(--bbl-space-075) 0 var(--bbl-space-100); }
+
+    .print-title {
+      font-size: 1.25rem; font-weight: 700; color: var(--bbl-color-black);
+      margin: 0 0 var(--bbl-space-100); padding-bottom: var(--bbl-space-075); position: relative;
+    }
+    .print-title::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 2.25rem; height: var(--bbl-space-025); background: var(--bbl-color-blue-105);
+    }
+
+    /* Read-only controls (currency + From/To) */
+    .forex-graph-control-row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.4rem 0.8rem; margin-bottom: var(--bbl-space-100);
+    }
+    .forex-graph-dropdown { position: static; }
+    .forex-graph-dropdown-trigger {
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      border: 0.0625rem solid var(--bbl-color-grey-125); background: none;
+      border-radius: 0.2rem; padding: 0.15rem 0.4rem;
+      font-size: 0.5625rem; font-weight: 700; color: var(--bbl-color-black);
+    }
+    .forex-graph-date-fields { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+    .forex-graph-date-field { display: flex; align-items: center; gap: 0.25rem; flex: 0 0 auto; }
+    .forex-graph-date-label { display: inline; margin: 0; font-size: 0.5625rem; font-weight: 900; color: var(--bbl-color-black); }
+    .forex-graph-date-group { position: static; }
+    .forex-graph-date-display {
+      display: inline-block; font-size: 0.5625rem;
+      border: 0.0625rem solid var(--bbl-color-grey-125);
+      padding: 0.15rem 0.4rem; border-radius: 0.2rem;
+    }
+
+    .forex-graph-chart-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: var(--bbl-space-100); margin-bottom: var(--bbl-space-075);
+    }
+    .forex-graph-chart-title { font-size: 0.75rem; font-weight: 700; color: var(--bbl-color-black); margin: 0; }
+    .forex-graph-legend { display: flex; gap: var(--bbl-space-100); font-size: 0.625rem; font-weight: 700; }
+    .forex-graph-legend-buying { color: #002087; }
+    .forex-graph-legend-selling { color: #ff6e00; }
+
+    .forex-graph-canvas-wrap { width: 100%; }
+    .forex-graph-print-chart { display: block; width: 100%; height: auto; }
+
+    .forex-graph-disclaimer { font-size: 0.5rem; line-height: 1.4; margin-top: var(--bbl-space-100); color: #555; }
+    .forex-graph-disclaimer p { margin: 0; }
+    .forex-graph-disclaimer p:first-child { font-weight: 700; color: var(--bbl-color-black); padding-bottom: 0.2rem; }
+  `;
+
+  const printHtml = `<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <title>${escapeHtml(pageTitle)}</title>
+      <link rel="stylesheet" href="/styles/tokens.css">
+      <link rel="stylesheet" href="/styles/fonts.css">
+      <style>${printCss}</style>
+    </head>
+    <body>
+      <div class="print-logo">${brandLogo}</div>
+      <hr class="print-divider">
+      <h1 class="print-title">${escapeHtml(pageTitle)}</h1>
+      <div class="forex-graph block" data-block-status="loaded">
+        ${cloned.outerHTML}
+      </div>
+    </body>
+  </html>`;
+
+  const iframe = doc.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;border:none;opacity:0;';
+  doc.body.appendChild(iframe);
+
+  iframe.onload = () => {
+    setTimeout(() => {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    }, 300);
+    window.addEventListener('afterprint', () => {
+      if (doc.body.contains(iframe)) doc.body.removeChild(iframe);
+    }, { once: true });
+  };
+
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  iframeDoc.open();
+  iframeDoc.write(printHtml);
+  iframeDoc.close();
+}
+
 // eslint-disable-next-line import/no-unresolved
 const CHARTJS_ESM = 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm';
+
+// Pick `intermediateCount` indices evenly spaced by position between first/last, so
+// ticks land at equal gaps on the (category) x-axis regardless of actual date gaps.
+function pickEvenlySpacedIndices(length, intermediateCount = 6) {
+  const lastIndex = length - 1;
+  if (lastIndex <= 0) return Array.from({ length }, (_, index) => index);
+
+  const segments = intermediateCount + 1;
+  const step = Math.floor(lastIndex / segments);
+  const indices = [0];
+
+  for (let k = 1; k <= intermediateCount; k += 1) {
+    const idx = step * k;
+    const lastPicked = indices[indices.length - 1];
+    if (idx > lastPicked && idx < lastIndex) {
+      indices.push(idx);
+    }
+  }
+
+  indices.push(lastIndex);
+  return indices;
+}
 
 async function loadChartJs() {
   if (window.ForexChart) return window.ForexChart;
@@ -100,15 +251,11 @@ function renderDatepicker(pick, pickerState, monthLabels, dayLabels, buddhistYea
         && Number(selectedParsed.day) === cell.day
         && Number(selectedParsed.month) === pickerState.viewMonth
         && Number(selectedParsed.year) === pickerState.viewYear;
-      const isToday = now.getDate() === cell.day
-        && now.getMonth() + 1 === pickerState.viewMonth
-        && now.getFullYear() === pickerState.viewYear;
 
       const classes = [
         index === 0 || index === 6 ? 'is-weekend' : '',
         isEnabled ? 'is-enabled' : 'is-disabled',
         isSelected ? 'is-current' : '',
-        isToday ? 'is-today' : '',
       ].filter(Boolean).join(' ');
 
       if (isEnabled) {
@@ -279,12 +426,6 @@ export default async function decorate(block) {
     const toParsed = parseIsoDate(state.to.selectedDate);
     if (!fromParsed || !toParsed) return;
 
-    if (isDateRangeOver3Years(state.from.selectedDate, state.to.selectedDate)) {
-      state.error = placeholders.datepickerYearValidation || 'Date range should be between 3 years';
-      state.chartData = [];
-      return;
-    }
-
     state.error = '';
     state.loading = true;
 
@@ -300,7 +441,7 @@ export default async function decorate(block) {
         state.selectedFamily,
         language,
       );
-      state.chartData = normalizeChartData(raw);
+      state.chartData = normalizeChartData(raw, language);
     } finally {
       state.loading = false;
     }
@@ -317,17 +458,62 @@ export default async function decorate(block) {
       state.chartInstance = null;
     }
 
-    // API returns MM/DD/YYYY — reformat to DD/MM/YYYY for display
-    const labels = state.chartData.map((d) => {
-      const parts = d.date.split('/');
-      return parts.length === 3 ? `${parts[1]}/${parts[0]}/${parts[2]}` : d.date;
-    });
+    const labels = state.chartData.map((d) => d.date);
     const buyingData = state.chartData.map((d) => d.buyingRate);
     const sellingData = state.chartData.map((d) => d.sellingRate);
 
+    // Single-day range pins to the axis origin; pad both sides with a blank category to center it.
+    if (labels.length === 1) {
+      labels.unshift('');
+      labels.push('');
+      buyingData.unshift(null);
+      buyingData.push(null);
+      sellingData.unshift(null);
+      sellingData.push(null);
+    }
+
     const allValues = [...buyingData, ...sellingData].filter((v) => v !== null);
-    const minVal = Math.floor(Math.min(...allValues)) - 1;
-    const maxVal = Math.ceil(Math.max(...allValues)) + 1;
+    const minVal = Math.min(...allValues) - 0.5;
+    const maxVal = Math.ceil(Math.max(...allValues));
+
+    // Breakpoints (see forex-graph.css): mobile < 760px, tablet 760–1024px, desktop 1024px+.
+    const viewportWidth = window.innerWidth;
+    const isMobileViewport = viewportWidth <= 760;
+    const isTabletViewport = viewportWidth > 760 && viewportWidth < 1024;
+
+    const fromParsedForMonth = parseIsoDate(state.from.selectedDate);
+    const toParsedForMonth = parseIsoDate(state.to.selectedDate);
+    const sameMonth = !!(fromParsedForMonth && toParsedForMonth
+      && fromParsedForMonth.year === toParsedForMonth.year
+      && fromParsedForMonth.month === toParsedForMonth.month);
+    const monthDiff = (fromParsedForMonth && toParsedForMonth)
+      ? (Number(toParsedForMonth.year) * 12 + Number(toParsedForMonth.month))
+        - (Number(fromParsedForMonth.year) * 12 + Number(fromParsedForMonth.month))
+      : null;
+    const isPrevMonthRange = monthDiff === 1;
+
+    // Mobile wants 6 evenly (position-)spaced labels for a ~1-month-or-less range,
+    // 7 for longer ranges, instead of index-based autoSkip.
+    const rangeDays = (new Date(state.to.selectedDate) - new Date(state.from.selectedDate))
+      / (1000 * 60 * 60 * 24);
+    const mobileIntermediateCount = rangeDays > 31 ? 5 : 4;
+    const mobileTickIndices = isMobileViewport
+      ? new Set(pickEvenlySpacedIndices(labels.length, mobileIntermediateCount))
+      : null;
+
+    // Tablet: same-month range wants 9 evenly (position-)spaced labels; a range
+    // starting in the month before "to" wants 10.
+    let tabletTickIndices = null;
+    if (isTabletViewport && sameMonth) {
+      tabletTickIndices = new Set(pickEvenlySpacedIndices(labels.length, 7));
+    } else if (isTabletViewport && isPrevMonthRange) {
+      tabletTickIndices = new Set(pickEvenlySpacedIndices(labels.length, 8));
+    }
+
+    const customTickIndices = mobileTickIndices || tabletTickIndices;
+
+    // Desktop: when from/to fall in the same month, show every working day instead of autoSkipping.
+    const sameMonthDesktop = !isMobileViewport && !isTabletViewport && sameMonth;
 
     // Plugin: draw halo on the cross-dataset point at the same index
     const crossHighlightPlugin = {
@@ -354,9 +540,39 @@ export default async function decorate(block) {
       },
     };
 
+    // Plugin: draw a vertical gridline only at the labeled (auto-skipped)
+    // x-axis ticks, so the number of gridlines matches the visible dates.
+    const pointGridPlugin = {
+      id: 'pointGrid',
+      beforeDatasetsDraw(chart) {
+        const { ctx, chartArea, scales } = chart;
+        const xScale = scales.x;
+        const meta = chart.getDatasetMeta(0);
+        if (!xScale || !meta || !meta.data.length) return;
+        const lineBottom = chartArea.bottom + 10;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+        ctx.lineWidth = 1;
+        // Mobile/tablet: use our position-based ticks; else mirror autoSkip + last point.
+        const indices = customTickIndices
+          ? new Set(customTickIndices)
+          : new Set(xScale.ticks.map((tick) => tick.value));
+        indices.add(meta.data.length - 1);
+        indices.forEach((index) => {
+          const point = meta.data[index];
+          if (!point) return;
+          ctx.beginPath();
+          ctx.moveTo(point.x, chartArea.top);
+          ctx.lineTo(point.x, lineBottom);
+          ctx.stroke();
+        });
+        ctx.restore();
+      },
+    };
+
     state.chartInstance = new Chart(canvas, {
       type: 'line',
-      plugins: [crossHighlightPlugin],
+      plugins: [crossHighlightPlugin, pointGridPlugin],
       data: {
         labels,
         datasets: [
@@ -367,7 +583,7 @@ export default async function decorate(block) {
             backgroundColor: 'transparent',
             pointBackgroundColor: '#002087',
             pointBorderColor: '#002087',
-            pointRadius: 2,
+            pointRadius: 1.5,
             pointHoverRadius: 4,
             pointHoverBackgroundColor: '#002087',
             pointHoverBorderColor: 'rgba(0,32,135,0.35)',
@@ -382,7 +598,7 @@ export default async function decorate(block) {
             backgroundColor: 'transparent',
             pointBackgroundColor: '#ff6e00',
             pointBorderColor: '#ff6e00',
-            pointRadius: 2,
+            pointRadius: 1.5,
             pointHoverRadius: 4,
             pointHoverBackgroundColor: '#ff6e00',
             pointHoverBorderColor: 'rgba(255,110,0,0.35)',
@@ -419,15 +635,31 @@ export default async function decorate(block) {
         },
         scales: {
           x: {
+            // autoSkip can drop the last tick; force it back in before fit sizes/rotates labels.
+            beforeFit: (axis) => {
+              const lastIndex = labels.length - 1;
+              const { ticks } = axis;
+              if (ticks.length && ticks[ticks.length - 1].value !== lastIndex) {
+                // Drop the previously-last tick so it doesn't crowd/overlap the
+                // forced-in last one.
+                ticks.pop();
+                ticks.push({ value: lastIndex, label: axis.getLabelForValue(lastIndex) });
+                // eslint-disable-next-line no-underscore-dangle
+                axis._labelSizes = null;
+              }
+            },
             grid: {
-              display: true,
-              color: 'rgba(0,0,0,0.08)',
+              display: false,
             },
             ticks: {
               maxRotation: 45,
-              minRotation: 45,
-              autoSkip: true,
-              maxTicksLimit: 6,
+              minRotation: 0,
+              // Mobile/tablet: blank labels outside our indices via callback; else autoSkip.
+              autoSkip: !customTickIndices && !sameMonthDesktop,
+              autoSkipPadding: 10,
+              callback: (value) => (
+                customTickIndices && !customTickIndices.has(value) ? null : labels[value]
+              ),
               font: { size: 13, weight: '700' },
               color: '#000',
             },
@@ -451,10 +683,36 @@ export default async function decorate(block) {
     });
   }
 
-  const render = () => {
+  // Tick strategy is decided once at build time; rebuild when the breakpoint tier actually changes.
+  const getBreakpointTier = () => {
+    const width = window.innerWidth;
+    if (width <= 760) return 'mobile';
+    if (width < 1024) return 'tablet';
+    return 'desktop';
+  };
+  let breakpointTier = getBreakpointTier();
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const nowTier = getBreakpointTier();
+      if (nowTier !== breakpointTier) {
+        breakpointTier = nowTier;
+        drawChart();
+      }
+    }, 200);
+  });
+
+  const render = ({ redrawChart = false } = {}) => {
     if (rendering) return;
     rendering = true;
-    if (state.chartInstance) {
+
+    // Preserve the existing chart section (title, legend, canvas/chart) unless data changed.
+    const existingChartSection = !redrawChart
+      ? block.querySelector('.forex-graph-chart-section')
+      : null;
+
+    if (redrawChart && state.chartInstance) {
       state.chartInstance.destroy();
       state.chartInstance = null;
     }
@@ -468,6 +726,11 @@ export default async function decorate(block) {
       buddhistYearOffset,
       placeholders,
     );
+
+    if (existingChartSection) {
+      const freshChartSection = block.querySelector('.forex-graph-chart-section');
+      if (freshChartSection) freshChartSection.replaceWith(existingChartSection);
+    }
 
     const dropdownEl = block.querySelector('.forex-graph-dropdown');
     const dropdownTrigger = block.querySelector('.forex-graph-dropdown-trigger');
@@ -666,14 +929,14 @@ export default async function decorate(block) {
       goButton.addEventListener('click', async () => {
         if (state.loading) return;
         await fetchAndRenderChart();
-        render();
+        render({ redrawChart: true });
       });
     }
 
     // ── Print button ─────────────────────────────────────────────────────────
     if (printButton) {
       printButton.addEventListener('click', () => {
-        window.print();
+        printForexGraph(block, state);
       });
     }
 
@@ -700,10 +963,19 @@ export default async function decorate(block) {
           if (!data) return;
           const rows = Array.isArray(data) ? data : [];
           if (!rows.length) return;
-          // Build CSV from all keys in the first row
-          const keys = Object.keys(rows[0]);
+          // Map raw API keys to standard CSV column names
+          const formattedRows = rows.map((r) => ({
+            Currency: r.Currency || r.Family || '',
+            Date: r.Date || [r.Ddate, r.DTime || r.Dtime].filter(Boolean).join(' '),
+            'Bank Note: Buying Rates': r['Bank Note: Buying Rates'] || r.BuyingRates || '',
+            'Bank Note: Selling Rates': r['Bank Note: Selling Rates'] || r.SellingRates || '',
+            'Buying Rates: SightBill': r['Buying Rates: SightBill'] || r.SightBill || '',
+            'Buying Rates: TT': r['Buying Rates: TT'] || r.TT || '',
+            'Selling Rates: Bill-DD-TT': r['Selling Rates: Bill-DD-TT'] || r.Bill_DD_TT || '',
+          }));
+          const keys = Object.keys(formattedRows[0]);
           const header = keys.join(',');
-          const lines = rows.map((row) => keys.map((k) => {
+          const lines = formattedRows.map((row) => keys.map((k) => {
             const val = row[k] ?? '';
             return String(val).includes(',') ? `"${val}"` : val;
           }).join(','));
@@ -747,9 +1019,11 @@ export default async function decorate(block) {
       document.addEventListener('mousedown', handler);
     });
 
-    // Draw chart after DOM is updated
+    // Only (re)draw the chart when the data actually changed, not on every controls interaction.
     rendering = false;
-    drawChart();
+    if (redrawChart || !state.chartInstance) {
+      drawChart();
+    }
   };
 
   const init = async () => {
@@ -757,17 +1031,25 @@ export default async function decorate(block) {
     render();
 
     try {
-      // Load families and enabled days in parallel
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-
-      const [families, enabledDays] = await Promise.all([
+      // Load families and the latest available rates date in parallel. The latest
+      // rates endpoint (shared with forex-rates) tells us the most recent date FX
+      // data actually exists for, so the "To" date doesn't default to today when
+      // today is a weekend/holiday with no data.
+      const [families, latest] = await Promise.all([
         getFxFamily(endpoints).catch(() => []),
-        getEnabledDays(endpoints, year, month).catch(() => []),
+        getLatestRates(endpoints).catch(() => null),
       ]);
 
-      state.families = Array.isArray(families) ? families : [];
+      const now = new Date();
+      const latestDate = parseApiDate(latest?.[0]?.Ddate);
+      const year = latestDate ? Number(latestDate.year) : now.getFullYear();
+      const month = latestDate ? Number(latestDate.month) : now.getMonth() + 1;
+
+      const enabledDays = await getEnabledDays(endpoints, year, month).catch(() => []);
+
+      const EXCLUDED_FAMILIES = ['MMK', 'INR', 'LAK'];
+      state.families = (Array.isArray(families) ? families : [])
+        .filter((f) => !EXCLUDED_FAMILIES.includes(f.Family));
       state.selectedFamily = state.families[0]?.Family || 'USD1';
 
       // Cache enabled days for current month in both pickers
@@ -775,16 +1057,11 @@ export default async function decorate(block) {
       state.from.enabledDaysByMonth[monthKey] = enabledDays;
       state.to.enabledDaysByMonth[monthKey] = enabledDays;
 
-      // Set default dates: first valid day of month → last valid day
+      // Set default dates: 1st of month (even if not itself an enabled day) → latest available date
       const monthStr = String(month).padStart(2, '0');
-      if (enabledDays.length) {
-        state.from.selectedDate = `${year}-${monthStr}-${enabledDays[0]}`;
-        state.to.selectedDate = `${year}-${monthStr}-${enabledDays[enabledDays.length - 1]}`;
-      } else {
-        state.from.selectedDate = `${year}-${monthStr}-01`;
-        const todayStr = String(now.getDate()).padStart(2, '0');
-        state.to.selectedDate = `${year}-${monthStr}-${todayStr}`;
-      }
+      const toDayStr = latestDate ? latestDate.day : String(now.getDate()).padStart(2, '0');
+      state.from.selectedDate = `${year}-${monthStr}-01`;
+      state.to.selectedDate = `${year}-${monthStr}-${toDayStr}`;
 
       // Format typed date display values
       state.from.typedDate = formatDateInputValue(
@@ -803,9 +1080,13 @@ export default async function decorate(block) {
       state.from.viewMonth = month;
       state.to.viewYear = year;
       state.to.viewMonth = month;
+
+      // Auto-trigger the GO action so the chart is populated on load,
+      // instead of requiring the user to click GO first.
+      await fetchAndRenderChart();
     } finally {
       state.loading = false;
-      render();
+      render({ redrawChart: true });
     }
   };
 

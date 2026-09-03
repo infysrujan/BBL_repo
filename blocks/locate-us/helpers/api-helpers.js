@@ -18,7 +18,11 @@ function buildEmbedUrl(lat, lng, configs, zoom = 15) {
 export function updateMapIframe(iframe, loc, configs) {
   const lat = parseFloat(loc.Lat);
   const lng = parseFloat(loc.Lng);
-  if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+  if (Number.isNaN(lat) || Number.isNaN(lng)) {
+    const worldSrc = buildEmbedUrl('', '', configs, 1);
+    if (worldSrc) iframe.src = worldSrc;
+    return;
+  }
   const src = buildEmbedUrl(lat, lng, configs);
   if (src) iframe.src = src;
 }
@@ -31,20 +35,23 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
     // eslint-disable-next-line no-console
     console.error('[locate-us] Missing config key: google-maps-directions-url');
   }
-  const directionsUrl = dirTemplate ? buildUrl(dirTemplate, { LAT: loc.Lat, LNG: loc.Lng }) : '';
+  const hasCoords = !!(loc.Lat && loc.Lng);
+  const directionsUrl = (dirTemplate && hasCoords)
+    ? buildUrl(dirTemplate, { LAT: loc.Lat, LNG: loc.Lng }) : '';
   const getDirectionText = placeholders?.getDirectionText || 'Get Direction';
   const branchBookingText = placeholders?.branchBookingText || 'Branch Booking';
   const nearestLabel = placeholders?.nearestLocationTag || 'nearest';
   const statusLabel = placeholders?.statusLabel || 'Status:';
+  const closedStatusText = placeholders?.locateUsLabelClose;
   const telLabel = placeholders?.telLabel || 'Tel:';
   const faxLabel = placeholders?.faxLabel || 'Fax:';
-  const isNearest = loc.Range === 0;
+  const isNearest = loc.isNearest === true;
 
   // ATM/ATM+ sidebar only shows name, address, and directions
   const branchStatus = !isAtm && hasValue(loc.BranchStatus) ? loc.BranchStatus : '';
   const isOpen = branchStatus.toLowerCase() === 'open';
-  const tel = !isAtm && hasValue(loc.Tel) && loc.Tel.trim() !== 'BeID' ? loc.Tel : '';
-  const fax = !isAtm && hasValue(loc.Fax) ? loc.Fax : '';
+  const tel = !isAtm && loc.Tel && loc.Tel.trim() !== '' && loc.Tel.trim() !== 'BeID' ? loc.Tel.trim() : '';
+  const fax = !isAtm && loc.Fax && loc.Fax.trim() !== '' ? loc.Fax.trim() : '';
   const showAppointment = !isAtm && loc.BranchAppointment;
 
   const card = createEl(`
@@ -56,30 +63,34 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
       <div class="locate-us-card-body">
         <hr class="locate-us-card-hr">
         <div class="locate-us-card-detail">
-          ${isNearest ? '<div class="locate-us-card-nearest-tag"></div>' : ''}
+          ${isNearest ? '<span class="locate-us-card-nearest-tag"></span>' : ''}
           ${branchStatus ? `
             <div class="locate-us-card-row">
               <span class="locate-us-card-label"></span>
               <div class="locate-us-card-status-col">
                 <span class="locate-us-card-status"></span>
+
                 ${isOpen ? '<span class="locate-us-card-hours"></span>' : ''}
               </div>
             </div>` : ''}
           ${tel ? '<div class="locate-us-card-row"><span class="locate-us-card-label"></span><span class="locate-us-card-tel"></span></div>' : ''}
           ${fax ? '<div class="locate-us-card-row"><span class="locate-us-card-label"></span><span class="locate-us-card-fax"></span></div>' : ''}
           ${address ? '<p class="locate-us-card-address"></p>' : ''}
-          ${directionsUrl ? '<a class="locate-us-card-directions" target="_blank" rel="noopener noreferrer"></a>' : ''}
           ${showAppointment ? '<a class="locate-us-card-appointment" target="_blank" rel="noopener noreferrer"></a>' : ''}
+        </div>
+        <div class="locate-us-card-footer">
+          <a class="locate-us-card-directions" target="_blank" rel="noopener noreferrer"></a>
         </div>
       </div>
     </article>`);
 
   card.querySelector('.locate-us-card-name').textContent = loc.BranchName;
-  if (isNearest) card.querySelector('.locate-us-card-nearest-tag').textContent = nearestLabel;
+  const nearestTag = card.querySelector('.locate-us-card-nearest-tag');
+  if (isNearest && nearestTag) nearestTag.textContent = nearestLabel;
   if (branchStatus) {
     card.querySelector('.locate-us-card-detail .locate-us-card-row .locate-us-card-label').textContent = statusLabel;
     const statusEl = card.querySelector('.locate-us-card-status');
-    statusEl.textContent = branchStatus;
+    statusEl.textContent = isOpen ? branchStatus : (closedStatusText || branchStatus);
     statusEl.classList.add(`locate-us-card-status-${branchStatus.toLowerCase()}`);
   }
   if (isOpen) {
@@ -98,10 +109,16 @@ export function populateSidebar(sidebar, loc, placeholders, configs, isAtm = fal
     card.querySelector('.locate-us-card-fax').textContent = fax;
   }
   if (address) card.querySelector('.locate-us-card-address').textContent = address;
+  const dirEl = card.querySelector('.locate-us-card-directions');
+  dirEl.textContent = getDirectionText;
   if (directionsUrl) {
-    const dirEl = card.querySelector('.locate-us-card-directions');
     dirEl.href = directionsUrl;
-    dirEl.textContent = getDirectionText;
+  } else {
+    // No coordinates → keep the button visible but disabled.
+    dirEl.classList.add('locate-us-card-directions-disabled');
+    dirEl.setAttribute('aria-disabled', 'true');
+    dirEl.removeAttribute('target');
+    dirEl.removeAttribute('rel');
   }
   if (showAppointment) {
     const appointmentEl = card.querySelector('.locate-us-card-appointment');
@@ -130,12 +147,13 @@ export async function fetchNearMe(lat, lng, code, configs) {
 
 export async function fetchProvinces(configs) {
   if (provincesCache) return provincesCache;
-  const url = configs?.locateUsGetProvince;
-  if (!url) {
+  const template = configs?.locateUsGetProvince;
+  if (!template) {
     // eslint-disable-next-line no-console
     console.error('[locate-us] Missing config key: get-providence');
     return [];
   }
+  const url = buildUrl(template);
   const data = await fetchGet(url, { throwOnError: false });
   if (!data) return [];
   provincesCache = data.map((p) => p.Province);

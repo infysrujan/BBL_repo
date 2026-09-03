@@ -41,6 +41,7 @@
           "name": "cardListLayout",
           "value": "default",
           "label": "Card List Layout",
+          "description": "Select Carousel when the Card List is used as a fragment in the Card List Carousel variation of the Carousel Dotted block.",
           "valueType": "string",
           "options": [
             {
@@ -308,8 +309,12 @@
           "name": "imageLayout",
           "label": "Image Layout",
           "valueType": "string",
-          "value": "default",
+          "value": "none",
           "options": [
+            {
+              "name": "None",
+              "value": "none"
+            },
             {
               "name": "Full",
               "value": "full"
@@ -437,6 +442,14 @@
           "name": "financialDate",
           "label": "Financial Date",
           "valueType": "string"
+        },
+        {
+          "component": "boolean",
+          "name": "showOnlyMonthYear",
+          "label": "Show Only Month and Year",
+          "description": "If enabled, only the month and year will be displayed.",
+          "valueType": "boolean",
+          "value": false
         }
       ]
     }

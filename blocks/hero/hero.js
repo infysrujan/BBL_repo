@@ -2,6 +2,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 import { applyLinkTarget } from '../../scripts/bbl-decorators.js';
 import createSmartImage from '../../scripts/utils/smartcrop-helper.js';
 import { fetchConfigs } from '../../scripts/config.js';
+import { trackLinkClick } from '../../scripts/analytics.js';
 
 const MOBILE_MQ = `(width <= ${
   getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-mobile-max').trim()
@@ -127,6 +128,47 @@ function createElement(tag, ...classNames) {
   return el;
 }
 
+/**
+ * Applies className to a cell's content as one unit. If the cell has a single
+ * child (the common case — one paragraph), the class goes directly on it. If
+ * an author split the text into multiple paragraphs, wrap them all in one
+ * div carrying the class, so every paragraph gets styled consistently
+ * instead of only the first one.
+ */
+function normalizeCellContent(cell, className) {
+  if (!cell?.firstElementChild) return;
+  const wrapper = document.createElement('div');
+  wrapper.classList.add(className);
+  while (cell.firstChild) {
+    wrapper.appendChild(cell.firstChild);
+  }
+  cell.appendChild(wrapper);
+}
+
+function addDesktopBreakClass(textCell) {
+  textCell?.querySelectorAll('.hero-banner-content-inner-text p').forEach((p) => {
+    p.classList.add('hero-banner-desktop-break');
+    p.querySelectorAll('br').forEach((br) => {
+      const next = br.nextSibling;
+      if (next?.nodeType === Node.TEXT_NODE && !/^\s/.test(next.textContent)) {
+        next.textContent = ` ${next.textContent}`;
+      }
+    });
+  });
+}
+
+function addHeadingDesktopBreakClass(headingCell) {
+  headingCell?.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((h) => {
+    h.classList.add('hero-banner-desktop-break');
+    h.querySelectorAll('br').forEach((br) => {
+      const next = br.nextSibling;
+      if (next?.nodeType === Node.TEXT_NODE && !/^\s/.test(next.textContent)) {
+        next.textContent = ` ${next.textContent}`;
+      }
+    });
+  });
+}
+
 function createThumbItem(picture, index, { strip = false, active = false } = {}) {
   const item = createElement('li', 'hero-banner-thumbnail-item');
   if (active) item.classList.add('hero-banner-thumbnail-item-active');
@@ -181,9 +223,9 @@ function buildControls(bannerItem) {
   return bar;
 }
 
-function wireShare(btn) {
+function wireShare(btn, url) {
   btn.addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).catch(() => {});
+    navigator.clipboard.writeText(url || window.location.href).catch(() => {});
     btn.classList.add('hero-ctrl-share-active');
     setTimeout(() => btn.classList.remove('hero-ctrl-share-active'), 2000);
   });
@@ -199,7 +241,7 @@ function wireFullscreen(btn, bannerItem) {
   });
 }
 
-function wireDAMControls(video, bar, videoWrapper, bannerItem) {
+function wireDAMControls(video, bar, videoWrapper, bannerItem, shareUrl) {
   const playBtn = bar.querySelector('.hero-ctrl-play');
   const muteBtn = bar.querySelector('.hero-ctrl-mute');
   const volSlider = bar.querySelector('.hero-ctrl-volume');
@@ -272,6 +314,8 @@ function wireDAMControls(video, bar, videoWrapper, bannerItem) {
   seekBar.addEventListener('input', () => { if (video.duration) video.currentTime = (seekBar.value / 1000) * video.duration; });
 
   wireShare(bar.querySelector('.hero-ctrl-share'));
+  wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), videoWrapper);
+  wireShare(bar.querySelector('.hero-ctrl-share'), shareUrl);
   wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
 }
 
@@ -298,7 +342,7 @@ function loadYTScript(src) {
 }
 
 let ytCounter = 0;
-function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
+function wireYouTubeControls(iframe, bar, bannerItem, ytSrc, shareUrl) {
   const playBtn = bar.querySelector('.hero-ctrl-play');
   const muteBtn = bar.querySelector('.hero-ctrl-mute');
   const volSlider = bar.querySelector('.hero-ctrl-volume');
@@ -389,7 +433,7 @@ function wireYouTubeControls(iframe, bar, bannerItem, ytSrc) {
       if (dur) player.seekTo((seekBar.value / 1000) * dur, true);
     });
 
-    wireShare(bar.querySelector('.hero-ctrl-share'));
+    wireShare(bar.querySelector('.hero-ctrl-share'), shareUrl);
     wireFullscreen(bar.querySelector('.hero-ctrl-fullscreen'), bannerItem);
 
     overlay.addEventListener('click', () => {
@@ -451,7 +495,11 @@ export default async function decorate(block) {
     const headingCell = row.children[col]; col += 1;
     const textCell = row.children[col]; col += 1;
     const linkCell = row.children[col]; col += 1;
-    if (!row.children[col]?.querySelector('picture, a[href]')) col += 1;
+    const skipCell = row.children[col];
+    const isSkippable = skipCell
+      && !skipCell.querySelector('picture, a[href]')
+      && (!skipCell.textContent?.trim() || /^(true|false)$/i.test(skipCell.textContent.trim()));
+    if (isSkippable) col += 1;
     const appStoreImageCell = row.children[col]; col += 1;
     const appStoreLinkCell = row.children[col]; col += 1;
     const googlePlayImageCell = row.children[col]; col += 1;
@@ -479,13 +527,13 @@ export default async function decorate(block) {
         const bar = buildControls(iframeWrapper);
         if (isMobile) {
           iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=0&controls=0&enablejsapi=1&playsinline=1` : youtubeUrl;
-          wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc);
+          wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc, youtubeUrl);
         } else {
           windowLoaded.then(() => {
             const isActive = bannerItem.classList.contains('hero-banner-item-active');
             const autoplay = isActive ? 1 : 0;
             iframe.src = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=${autoplay}&mute=1&controls=0&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}` : youtubeUrl;
-            wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc);
+            wireYouTubeControls(iframe, bar, bannerItem, ytApiSrc, youtubeUrl);
           });
         }
       } else if (damVideoSrc) {
@@ -506,7 +554,7 @@ export default async function decorate(block) {
         videoWrapper.append(video);
         bannerItem.append(videoWrapper);
         const bar = buildControls(videoWrapper);
-        wireDAMControls(video, bar, videoWrapper, bannerItem);
+        wireDAMControls(video, bar, videoWrapper, bannerItem, damVideoSrc);
 
         if (isMobile) {
         // Start paused on mobile
@@ -557,11 +605,11 @@ export default async function decorate(block) {
 
     const contentInner = createElement('div', 'hero-banner-content-inner');
     const logoImg = logoImageCell?.querySelector('img');
+    let logoWrapper = null;
     if (logoImg) {
       logoImg.className = 'hero-banner-logo';
-      const logoWrapper = createElement('div', 'hero-banner-logo-wrapper');
+      logoWrapper = createElement('div', 'hero-banner-logo-wrapper');
       logoWrapper.append(logoImg);
-      contentInner.append(logoWrapper);
     }
 
     const contentGroup = createElement('div', 'hero-banner-content-group');
@@ -570,10 +618,22 @@ export default async function decorate(block) {
       preTitleEl.classList.add('hero-banner-pre-title');
       if (preTitleEl.firstElementChild) preTitleEl.firstElementChild.classList.add('hero-banner-pre-title');
     }
-    if (textCell?.firstElementChild) textCell.firstElementChild.classList.add('hero-banner-content-inner-text');
+    normalizeCellContent(textCell, 'hero-banner-content-inner-text');
+    addDesktopBreakClass(textCell);
+    addHeadingDesktopBreakClass(headingCell);
     const isAppCta = variant === 'simple-app-cta';
-    [preTitleCell, headingCell, textCell, ...(isAppCta ? [] : [linkCell])].forEach((cell) => {
-      if (cell) contentGroup.innerHTML += cell.innerHTML;
+    const hasButtonLink = !isAppCta && !!linkCell?.querySelector('a[href]');
+    // Private/Wealth banking places the logo beside the content (logo left,
+    // content right) via the .hero-banner-content-inner flex layout, so the logo
+    // must be a sibling of the content group rather than nested inside it.
+    const logoInInner = variant === 'private-wealth-banking';
+    const cells = [preTitleCell, headingCell, textCell, ...(hasButtonLink ? [linkCell] : [])];
+    cells.forEach((cell, idx) => {
+      if (!cell) return;
+      while (cell.firstChild) {
+        contentGroup.appendChild(cell.firstChild);
+      }
+      if (idx === 0 && logoWrapper && !logoInInner) contentGroup.appendChild(logoWrapper);
     });
 
     if (isAppCta) {
@@ -604,8 +664,9 @@ export default async function decorate(block) {
         }
       }
     }
-    applyLinkTarget(contentGroup, 'a', targetValue);
+    if (targetValue) applyLinkTarget(contentGroup, 'a.button-m', targetValue);
 
+    if (logoWrapper && logoInInner) contentInner.append(logoWrapper);
     contentInner.append(contentGroup);
     const content = createElement('div', 'hero-banner-content', 'content');
     content.append(contentInner);
@@ -646,4 +707,16 @@ export default async function decorate(block) {
   block.replaceChildren(wrapper);
   changeBanner(block);
   lazyLoadThumbnails(block);
+
+  block.addEventListener('click', (event) => {
+    const button = event.target.closest('.button-m.primary');
+    if (!button) return;
+    console.log('Hero banner CTA clicked');
+    trackLinkClick(
+      event,
+      button,
+      'hero-banner-cta',
+      'hero-banner',
+    );
+  });
 }

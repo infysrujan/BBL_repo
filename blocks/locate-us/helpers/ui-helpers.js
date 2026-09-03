@@ -57,6 +57,17 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   let selectedServiceCode = '';
   let currentIsAtm = false;
   let currentPage = 1;
+  // The location currently shown in the sidebar. Used so the matching card in the
+  // list keeps its active/expanded state across pagination re-renders.
+  let selectedLoc = null;
+  // The province/district currently selected. Retained when the service
+  // (Branch/ATM/ATM+) dropdown changes so results stay scoped to that area.
+  let selectedProvince = '';
+  let selectedDistrict = '';
+  let keywordFromSelection = false;
+  // When a "…with BeMyID" service variant is active, results are filtered to
+  // locations that support Be My ID (the API marks these with Tel === 'BeID').
+  let beMyIdActive = false;
 
   const selectServiceText = placeholders?.selectServiceText || 'Select Service';
   const enterKeywordText = placeholders?.enterKeywordText || 'Enter Keyword';
@@ -158,6 +169,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   const fragmentContainer = container.querySelector('.locate-us-fragment');
 
   function onLocationSelect(loc) {
+    selectedLoc = loc;
     updateMapIframe(mapContainer, loc, configs);
     populateSidebar(mapSidebar, loc, placeholders, configs, currentIsAtm);
     const remark = document.createElement('p');
@@ -166,10 +178,15 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     mapSidebar.appendChild(remark);
   }
 
-  function showResults(allLocs) {
+  function showResults(rawLocs) {
     fragmentContainer.hidden = true;
     fragmentContainer.innerHTML = '';
     currentPage = 1;
+
+    // For a "with BeMyID" variant, keep only locations that support Be My ID.
+    const allLocs = beMyIdActive
+      ? rawLocs.filter((l) => (l.Tel || '').trim() === 'BeID')
+      : rawLocs;
 
     if (!allLocs.length) {
       resultsSection.hidden = false;
@@ -182,9 +199,20 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
     noResults.hidden = true;
     resultsSection.hidden = false;
+    // The API returns a numeric distance in `Range` (km, not a 0/1 flag), so
+    // the nearest branch is the one with the smallest Range. Tag it here so the
+    // card list and sidebar can show the "nearest" badge on that one only, but
+    // only when it is actually within 5 km — farther branches get no badge.
+    const NEAREST_MAX_KM = 5;
+    const nearest = allLocs.reduce(
+      (min, l) => (Number(l.Range) < Number(min.Range) ? l : min),
+      allLocs[0],
+    );
+    const nearestInRange = Number(nearest.Range) <= NEAREST_MAX_KM;
+    allLocs.forEach((l) => { l.isNearest = nearestInRange && l === nearest; });
     onLocationSelect(allLocs[0]);
     // eslint-disable-next-line max-len
-    renderCards(allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs, currentIsAtm);
+    renderCards(allLocs, cardsContainer, paginationEl, currentPage, placeholders, onLocationSelect, configs, currentIsAtm, true, () => selectedLoc);
   }
 
   function buildProvinceList(provinces) {
@@ -195,12 +223,28 @@ export async function buildThailandUI(container, data, placeholders, configs) {
         ${provinces.map(() => '<li class="locate-us-province-item"></li>').join('')}
       </ul>`;
 
+    provinceDropdown.querySelector('.locate-us-province-item-header').addEventListener('click', async () => {
+      keywordInput.value = '';
+      selectedProvince = '';
+      selectedDistrict = '';
+      provinceDropdown.querySelectorAll('.locate-us-province-item').forEach((item) => item.classList.remove('locate-us-province-item-active'));
+      provinceDropdown.hidden = true;
+      dropdownToggle.setAttribute('aria-expanded', 'false');
+      districtWrapper.hidden = true;
+      districtWrapper.innerHTML = '';
+      const nearMeLocations = await fetchNearMe(userLat, userLng, selectedServiceCode, configs);
+      showResults(nearMeLocations);
+    });
+
     provinceDropdown.querySelectorAll('.locate-us-province-item:not(.locate-us-province-item-header)')
       .forEach((li, i) => {
         li.textContent = provinces[i];
         li.addEventListener('click', async () => {
           const province = provinces[i];
+          selectedProvince = province;
+          selectedDistrict = '';
           keywordInput.value = province;
+          keywordFromSelection = true;
           provinceDropdown.querySelectorAll('.locate-us-province-item').forEach((item) => item.classList.remove('locate-us-province-item-active'));
           li.classList.add('locate-us-province-item-active');
           provinceDropdown.hidden = true;
@@ -220,7 +264,7 @@ export async function buildThailandUI(container, data, placeholders, configs) {
               <span class="icon-dropdown locate-us-district-btn-icon" aria-hidden="true"></span>
             </button>
             <ul class="locate-us-district-dropdown" role="listbox" hidden>
-              <li class="locate-us-district-item locate-us-district-item-header" role="option" aria-disabled="true"></li>
+              <li class="locate-us-district-item locate-us-district-item-header" role="option"></li>
               ${districtItems}
             </ul>`;
           const districtBtn = districtWrapper.querySelector('.locate-us-district-btn');
@@ -248,9 +292,19 @@ export async function buildThailandUI(container, data, placeholders, configs) {
             }
           });
 
+          districtDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
+            districtBtnText.textContent = selectDistrictText;
+            selectedDistrict = '';
+            districtDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+            toggleDistrictDropdown(false);
+            const provinceLocations = await fetchByProvince(province, '', userLat, userLng, selectedServiceCode, configs);
+            showResults(provinceLocations);
+          });
+
           districtDropdown.querySelectorAll('.locate-us-district-item:not(.locate-us-district-item-header)').forEach((districtItem) => {
             districtItem.addEventListener('click', async () => {
               const district = districtItem.dataset.value;
+              selectedDistrict = district;
               districtBtnText.textContent = district;
               districtDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
               districtItem.classList.add('locate-us-district-item-active');
@@ -261,12 +315,26 @@ export async function buildThailandUI(container, data, placeholders, configs) {
             });
           });
 
+          districtDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
+            districtBtnText.textContent = selectDistrictText;
+            selectedDistrict = '';
+            districtDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+            toggleDistrictDropdown(false);
+            const districtLocations = await fetchByProvince(province, '', userLat, userLng, selectedServiceCode, configs);
+            showResults(districtLocations);
+          });
+
           districtWrapper.hidden = false;
         });
       });
   }
 
-  async function onServiceChange(selectedService) {
+  async function onServiceChange(selectedService, opts = {}) {
+    // `beMyId`/`baseIndex` are set for the synthetic "…with BeMyID" variants,
+    // which reuse the base ATM/ATM+ service but filter results to Be My ID.
+    const { beMyId = false, baseIndex = -1 } = opts;
+    beMyIdActive = beMyId;
+
     serviceSelect.value = selectedService;
     serviceBtnText.textContent = selectedService;
     toggleServiceDropdown(false);
@@ -274,24 +342,31 @@ export async function buildThailandUI(container, data, placeholders, configs) {
       li.setAttribute('aria-selected', li.dataset.value === selectedService ? 'true' : 'false');
     });
 
-    selectedServiceCode = serviceCodeMap[selectedService] ?? configs?.locateUsDefaultServiceCode;
-
-    const serviceIdx = services.indexOf(selectedService);
-    const serviceUrlCode = serviceParamKeys[serviceIdx] || '';
+    // Resolve the service code + ATM flag from the base option when BeMyID,
+    // otherwise from the selected option itself.
+    const codeIndex = beMyId ? baseIndex : services.indexOf(selectedService);
+    const codeLabel = beMyId ? services[baseIndex] : selectedService;
+    selectedServiceCode = serviceCodeMap[codeLabel] ?? configs?.locateUsDefaultServiceCode;
+    const serviceUrlCode = serviceParamKeys[codeIndex] || '';
     currentIsAtm = serviceUrlCode.toLowerCase().includes('atm');
 
-    const isSpecial = serviceCodeMap[selectedService] === null;
+    const isSpecial = !beMyId && serviceCodeMap[selectedService] === null;
+    // When switching between location-based services (Branch/ATM/ATM+) keep any
+    // province + district already chosen and re-scope the results to them,
+    // instead of resetting to a fresh near-me search.
+    const retainLocation = !isSpecial && Boolean(selectedProvince);
+
     keywordInput.disabled = isSpecial;
-    keywordInput.value = '';
     keywordWrapper.hidden = isSpecial;
-    districtWrapper.hidden = true;
-    districtWrapper.innerHTML = '';
     locationFilterRow.hidden = true;
     locationFilterRow.innerHTML = '';
     provinceDropdown.hidden = true;
     dropdownToggle.setAttribute('aria-expanded', 'false');
 
     if (isSpecial && specialFragmentPath) {
+      // Preserve any province/district selection (and its dropdown DOM) so
+      // returning to a location-based service restores it — the whole keyword
+      // wrapper is hidden while the special fragment is shown, so nothing shows.
       resultsSection.hidden = true;
       fragmentContainer.innerHTML = '';
       const fragment = await loadFragment(specialFragmentPath);
@@ -302,6 +377,32 @@ export async function buildThailandUI(container, data, placeholders, configs) {
       return;
     }
 
+    if (retainLocation) {
+      // Keep the province in the input and the existing district dropdown; just
+      // re-query with the new service code, preserving the district if set.
+      keywordInput.value = selectedProvince;
+      // Restore the district dropdown if it was left hidden (e.g. after the
+      // special-service fragment hid the whole keyword wrapper).
+      if (districtWrapper.innerHTML.trim()) districtWrapper.hidden = false;
+      try {
+        const args = [
+          selectedProvince, selectedDistrict, userLat, userLng, selectedServiceCode, configs,
+        ];
+        const locations = await fetchByProvince(...args);
+        showResults(locations);
+      } catch {
+        // eslint-disable-next-line no-console
+        console.error('[locate-us] Error fetching province locations');
+      }
+      return;
+    }
+
+    // No retained location: reset selection and do a fresh near-me search.
+    selectedProvince = '';
+    selectedDistrict = '';
+    keywordInput.value = '';
+    districtWrapper.hidden = true;
+    districtWrapper.innerHTML = '';
     try {
       const locations = await fetchNearMe(userLat, userLng, selectedServiceCode, configs);
       showResults(locations);
@@ -332,9 +433,15 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   }
 
   dropdownToggle.addEventListener('click', toggleProvinceDropdown);
-  keywordInput.addEventListener('click', toggleProvinceDropdown);
+  keywordInput.addEventListener('click', () => {
+    // Clicking the field clears any selected value so the placeholder shows.
+    keywordInput.value = '';
+    keywordFromSelection = false;
+    toggleProvinceDropdown();
+  });
 
   keywordInput.addEventListener('input', () => {
+    keywordFromSelection = false;
     provinceDropdown.hidden = true;
     dropdownToggle.setAttribute('aria-expanded', 'false');
   });
@@ -348,12 +455,17 @@ export async function buildThailandUI(container, data, placeholders, configs) {
 
   keywordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (keywordFromSelection) return;
     if (!selectedServiceCode) {
       showToast(placeholders?.pleaseSelectServiceText || 'Please select service', placeholders);
       return;
     }
     const keyword = keywordInput.value.trim();
     if (!keyword) return;
+
+    // A keyword search replaces any province/district filter.
+    selectedProvince = '';
+    selectedDistrict = '';
 
     try {
       const kwArgs = [userLat, userLng, keyword, '0', selectedServiceCode, configs];
@@ -367,12 +479,43 @@ export async function buildThailandUI(container, data, placeholders, configs) {
     }
   });
 
+  // Insert a synthetic "…with BeMyID" option directly below its base option
+  // (e.g. "ATM+ with BeMyID" under ATM+) and wire it to the BeMyID variant.
+  function addBeMyIdOption(baseIndex) {
+    const baseLabel = services[baseIndex];
+    const suffix = placeholders?.beMyIdLabelText || 'with BeMyID';
+    const label = `${baseLabel} ${suffix}`;
+    const items = [...serviceDropdown.querySelectorAll('.locate-us-service-item')];
+    let li = items.find((el) => el.dataset.value === label);
+    if (!li) {
+      li = document.createElement('li');
+      li.className = 'locate-us-service-item';
+      li.setAttribute('role', 'option');
+      li.textContent = label;
+      li.dataset.value = label;
+      const baseLi = items.find((el) => el.dataset.value === baseLabel);
+      if (baseLi) baseLi.after(li); else serviceDropdown.appendChild(li);
+      li.addEventListener('click', () => onServiceChange(label, { beMyId: true, baseIndex }));
+    }
+    return label;
+  }
+
   // ── Auto-select service from URL query param ────────────────────────────────
   const urlService = new URLSearchParams(window.location.search).get('service');
   if (urlService && serviceParamKeys.length) {
     const paramIndex = serviceParamKeys.indexOf(urlService);
     if (paramIndex !== -1 && services[paramIndex]) {
       onServiceChange(services[paramIndex]);
+    } else {
+      // Not a listed option — support "<base>-BeMyId" variants by creating an
+      // option below the matching base service (e.g. location-ATM-BeMyId →
+      // ATM, location-ATM-Plus-BeMyId → ATM+).
+      const baseKey = urlService.replace(/-BeMyId$/i, '');
+      const baseIndex = baseKey !== urlService ? serviceParamKeys.indexOf(baseKey) : -1;
+      if (baseIndex !== -1 && services[baseIndex]) {
+        const label = addBeMyIdOption(baseIndex);
+        onServiceChange(label, { beMyId: true, baseIndex });
+      }
     }
   }
 }
@@ -404,6 +547,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
 
   let countriesCache = [];
   let selectedCountry = '';
+  let keywordFromSelection = false;
 
   async function fetchCountries() {
     if (!API_GET_COUNTRY) return [];
@@ -478,6 +622,17 @@ export async function buildOverseasUI(container, placeholders, configs) {
   const cardsContainer = container.querySelector('.locate-us-cards');
   const paginationEl = container.querySelector('.locate-us-pagination');
 
+  // Move the active card to the top of the list (mobile accordion only, matching
+  // the Thailand list). On tablet/desktop the cards are a grid, so keep order.
+  function restoreOrder(activeCard) {
+    const others = [...cardsContainer.querySelectorAll('.locate-us-card')]
+      .filter((c) => c !== activeCard)
+      .sort((a, b) => Number(a.dataset.cardIndex) - Number(b.dataset.cardIndex));
+    cardsContainer.innerHTML = '';
+    cardsContainer.appendChild(activeCard);
+    others.forEach((c) => cardsContainer.appendChild(c));
+  }
+
   function renderOverseasPage(allLocs, page) {
     cardsContainer.innerHTML = '';
     const start = (page - 1) * CARDS_PER_PAGE;
@@ -493,6 +648,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
         if (!isExpanded) {
           body.hidden = false;
           header.setAttribute('aria-expanded', 'true');
+          if (!window.matchMedia('(width > 47.5rem)').matches) restoreOrder(card);
         }
       });
       if (idx === 0) {
@@ -507,12 +663,22 @@ export async function buildOverseasUI(container, placeholders, configs) {
     }, placeholders);
   }
 
+  // Country names (EN + TH) that are domestic, not overseas — excluded here so
+  // a keyword search never surfaces Thailand branches in the overseas locator.
+  const DOMESTIC_COUNTRIES = ['thailand', 'ประเทศไทย'];
+
   function showOverseasResults(allLocs) {
     const filtered = allLocs.filter((loc) => {
       const address = [loc.Address1, loc.Address2, loc.Address3, loc.Province, loc.Postcode].filter(Boolean).join(' ');
       const validTel = hasValue(loc.Tel) && /[\d]/.test(loc.Tel);
-      return hasValue(loc.MicroBranchHours) && validTel && address;
+      const country = (loc.Country || '').trim().toLowerCase();
+      const isDomestic = DOMESTIC_COUNTRIES.includes(country);
+      const isNonInternational = (loc.InternationalBranch || '').trim().toLowerCase() === 'x';
+      return (hasValue(loc.MicroBranchHours) && validTel && address
+        && !isDomestic) || isNonInternational;
     });
+
+    filtered.sort((a, b) => (a.BranchName || '').localeCompare(b.BranchName || '', undefined, { sensitivity: 'base' }));
 
     if (!filtered.length) {
       resultsSection.hidden = false;
@@ -539,6 +705,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
         li.addEventListener('click', async () => {
           selectedCountry = countries[i];
           keywordInput.value = countries[i];
+          keywordFromSelection = true;
           countryDropdown.hidden = true;
           dropdownToggle.setAttribute('aria-expanded', 'false');
           districtWrapper.hidden = true;
@@ -559,7 +726,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
                 <span class="icon-dropdown locate-us-district-btn-icon" aria-hidden="true"></span>
               </button>
               <ul class="locate-us-district-dropdown" role="listbox" hidden>
-                <li class="locate-us-district-item locate-us-district-item-header" role="option" aria-disabled="true"></li>
+                <li class="locate-us-district-item locate-us-district-item-header" role="option"></li>
                 ${cityItems}
               </ul>`;
 
@@ -585,6 +752,14 @@ export async function buildOverseasUI(container, placeholders, configs) {
               if (!districtWrapper.contains(e.target)) toggleCityDropdown(false);
             });
 
+            cityDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
+              cityBtnText.textContent = selectCityText;
+              cityDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+              toggleCityDropdown(false);
+              const countryLocations = await fetchByCountryCity(selectedCountry, '');
+              showOverseasResults(countryLocations);
+            });
+
             cityDropdown.querySelectorAll('.locate-us-district-item:not(.locate-us-district-item-header)').forEach((cityItem) => {
               cityItem.addEventListener('click', async () => {
                 const city = cityItem.dataset.value;
@@ -595,6 +770,14 @@ export async function buildOverseasUI(container, placeholders, configs) {
                 const cityFiltered = await fetchByCountryCity(selectedCountry, city);
                 showOverseasResults(cityFiltered);
               });
+            });
+
+            cityDropdown.querySelector('.locate-us-district-item-header').addEventListener('click', async () => {
+              cityBtnText.textContent = selectCityText;
+              cityDropdown.querySelectorAll('.locate-us-district-item').forEach((item) => item.classList.remove('locate-us-district-item-active'));
+              toggleCityDropdown(false);
+              const cityFiltered = await fetchByCountryCity(selectedCountry, '');
+              showOverseasResults(cityFiltered);
             });
 
             districtWrapper.hidden = false;
@@ -621,6 +804,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
   keywordInput.addEventListener('click', toggleCountryDropdown);
 
   keywordInput.addEventListener('input', () => {
+    keywordFromSelection = false;
     countryDropdown.hidden = true;
     dropdownToggle.setAttribute('aria-expanded', 'false');
   });
@@ -634,6 +818,7 @@ export async function buildOverseasUI(container, placeholders, configs) {
 
   keywordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (keywordFromSelection) return;
     const keyword = keywordInput.value.trim();
     if (!keyword) return;
 

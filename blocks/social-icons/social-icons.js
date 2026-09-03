@@ -4,14 +4,16 @@
 
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
+function getShareUrl() {
+  return document.querySelector('meta[property="og:url"]')?.content || window.location.href;
+}
+
 export default function decorate(block) {
   // Check if we have at least one row with a platform and icon
   const validRows = [...block.children].filter((row) => {
     const cells = [...row.children];
     if (cells.length < 2) return false;
-    const platform = cells[0].textContent.trim();
-    const icon = cells[1].querySelector('picture, img');
-    return platform && icon;
+    return !!cells[0].querySelector('picture, img');
   });
 
   // Hide original content (keep in DOM for Universal Editor)
@@ -38,11 +40,11 @@ export default function decorate(block) {
     const cells = [...row.children];
     if (cells.length < 2) return;
 
-    const platform = cells[0].textContent.trim().toLowerCase();
-    const icon = cells[1].querySelector('picture, img');
-
-    // Skip if no icon
+    const icon = cells[0].querySelector('picture, img');
     if (!icon) return;
+
+    const platformName = cells[1]?.textContent.trim();
+    const platform = platformName.toLowerCase() || '';
 
     // URL is optional — read from cell[2] if present
     let url = null;
@@ -59,10 +61,16 @@ export default function decorate(block) {
     moveInstrumentation(row, li);
     const a = document.createElement('a');
 
-    a.href = '#';
-    if (url) a.dataset.shareHref = url;
+    if (url) {
+      a.href = url.replace('page-url', encodeURIComponent(getShareUrl()));
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    } else {
+      a.href = '#';
+    }
     a.className = `platform-${platform}`;
     a.setAttribute('aria-label', `Share on ${platform}`);
+    a.setAttribute('title', platformName);
 
     const clonedIcon = icon.cloneNode(true);
     clonedIcon.querySelectorAll('img').forEach((img) => {
@@ -142,7 +150,12 @@ export default function decorate(block) {
       e.preventDefault();
       e.stopPropagation();
 
-      const pageUrl = encodeURIComponent(window.location.href);
+      if (a.classList.contains('platform-facebook') && window.FB) {
+        window.FB.ui({ method: 'share', href: getShareUrl() });
+        return;
+      }
+
+      const pageUrl = encodeURIComponent(getShareUrl());
       let shareUrl = a.dataset.shareHref || '';
       if (a.classList.contains('platform-facebook')) {
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;

@@ -2,6 +2,10 @@
   width: 100%;
 }
 
+.section:has(> .video-wrapper) {
+  padding-inline: 1rem;
+}
+
 /* YouTube embed */
 .video .video-embed {
   position: relative;
@@ -12,6 +16,17 @@
   background-color: var(--bbl-color-black);
 }
 
+.video .video-embed video {
+  object-fit: cover;
+}
+
+/* YouTube's player letterboxes/pillarboxes internally to preserve 16:9,
+   so the embed container must match that ratio instead of using a fixed height */
+.video .video-embed:has(iframe) {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
 @media (width > 47.5rem) {
   .video .video-wrapper {
     margin: 0 auto;
@@ -19,6 +34,10 @@
 
   .video .video-embed {
     height: 25.625rem;
+  }
+
+  .section:has(> .video-wrapper) {
+    padding-inline: 3rem;
   }
 }
 
@@ -31,15 +50,22 @@
   .video .video-embed {
     height: 30.625rem;
   }
+
+  .section:has(> .video-wrapper) {
+    padding-inline: 5.25rem;
+  }
 }
 
 .video .video-embed iframe,
 .video .video-embed video {
   position: absolute;
   inset: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
   border: 0;
+  pointer-events: auto;
+  touch-action: manipulation;
 }
 
 /* Image CTA */
@@ -66,8 +92,4 @@
 
 .video .video-image:hover img {
   opacity: 0.85;
-}
-
-.section.full-bleed-special.breadcrumb-container{
-  display: none;
 }

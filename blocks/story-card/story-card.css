@@ -91,7 +91,7 @@
   margin-bottom: 1.875rem;
   font-size: 0.875rem;
   line-height: 1.125rem;
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 10;
@@ -101,6 +101,11 @@
 
 .story-card .text-default p {
   margin: 0;
+}
+
+.story-card .text-default a {
+  color: inherit;
+  text-decoration: none;
 }
 
 .story-card .button-container {
@@ -114,6 +119,11 @@
 
 .story-card .story-card-social-icons a:hover {
   text-decoration: none;
+}
+
+.story-card-content .button-container .button-m {
+  min-width:  8.4375rem;
+  box-sizing: border-box;
 }
 
 /* ========================================================================
@@ -136,12 +146,16 @@
   }
 
   .story-card .outer {
+    flex: 1 1 50%;
+    min-width: 0;
+    width: auto;
     padding: 0 3rem 0 1.25rem;
   }
 
   .story-card .thumb {
     margin: 0;
-    min-width: 50%;
+    flex: 0 0 50%;
+    min-width: 0;
   }
 
   .story-card .thumb picture,
@@ -164,7 +178,12 @@
 /* Desktop */
 @media (width > 64rem) {
   .story-card .outer {
-    max-width: 100%;
+    max-width: 59.375rem;
+    box-sizing: border-box;
+  }
+
+  .image-right.story-card .inner {
+    padding: 0 0 0 2.25rem;
   }
 
   .story-card .sub-title-medium.line {
@@ -174,5 +193,15 @@
   .story-card .text-default {
     font-size: 1rem;
     line-height: 1.375rem;
+  }
+
+  .story-card-content .button-container .button-m {
+    min-width: 9.688rem;
+  }
+
+  :lang(th){
+    .story-card .title-1 {
+      line-height: 2.5rem;
+    }
   }
 }

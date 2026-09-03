@@ -1,4 +1,5 @@
 import { loadFragment } from '../../blocks/fragment/fragment.js';
+import { decorateIconInContainer } from '../custom-rte.js';
 
 export function createModalHeader(lang, closeBtn, {
   headerClass = 'modal-header',
@@ -189,7 +190,19 @@ function decorateModalContent(modalBody) {
     });
   });
 
-  wrappers.slice(1).forEach((wrapper) => wrapper.replaceWith(...wrapper.childNodes));
+  // Only merge a later wrapper into its section's text flow when it's the section's
+  // sole child AND the section has no style classes (e.g. central-aligned, full-bleed-bg)
+  // from section metadata. Those styles have global CSS keyed off
+  // `.section.<style> > .default-content-wrapper`, so unwrapping would silently drop
+  // their styling. Likewise, if the wrapper shares the section with another block (e.g.
+  // accordion), unwrapping would strip the div that block's siblings/CSS rely on — keep
+  // it wrapped in both cases.
+  wrappers.slice(1).forEach((wrapper) => {
+    const { parentElement: section } = wrapper;
+    if (section.children.length === 1 && section.classList.length === 1) {
+      wrapper.replaceWith(...wrapper.childNodes);
+    }
+  });
 }
 
 function buildOverlayModal(doc, extraDialogClass = '') {
@@ -241,6 +254,7 @@ export async function openModal(doc, { fragmentPath, content, dialogClass } = {}
       if (!fragment) return;
       modalBody.replaceChildren(...fragment.children);
       decorateModalContent(modalBody);
+      decorateIconInContainer(modalBody);
     } catch {
       return;
     }

@@ -45,10 +45,10 @@ function readBlockConfig(block) {
 
   return {
     link,
-    linkText: readText(rows[1]) || 'Compare',
-    linkTitle: readText(rows[2]),
-    linkType: readText(rows[3]) || 'primary',
-    targetLink: readText(rows[4]) === 'true',
+    linkText: readText(rows[0]) || anchor?.textContent?.trim() || 'Compare',
+    linkTitle: readText(rows[1]) || anchor?.title?.trim() || '',
+    linkType: readText(rows[2]) || anchor?.className?.trim() || '',
+    targetLink: readText(rows[3]) === 'true' || anchor?.target === '_blank',
   };
 }
 
@@ -65,7 +65,7 @@ function buildErrorDiv(warningText) {
 function buildCtaButton(linkText, linkType) {
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.className = `mfc-btn-${linkType || 'primary'}`;
+  btn.className = `button-m ${linkType || 'primary'}`;
   btn.textContent = linkText;
   btn.disabled = true;
   return btn;
@@ -73,7 +73,7 @@ function buildCtaButton(linkText, linkType) {
 
 function buildComparatorDOM(block, warningText, linkText, linkType) {
   const innerContainer = document.createElement('div');
-  innerContainer.className = 'inner-container';
+  innerContainer.className = 'inner-container content';
 
   const errorDiv = buildErrorDiv(warningText);
   const compareGroup = document.createElement('div');
@@ -160,12 +160,8 @@ export default async function decorate(block) {
   } = buildComparatorDOM(block, warningText, linkText, linkType);
   if (linkTitle) ctaBtn.title = linkTitle;
 
-  let warningTimer = null;
-
   function showWarning() {
-    clearTimeout(warningTimer);
     errorDiv.hidden = false;
-    warningTimer = setTimeout(() => { errorDiv.hidden = true; }, 4000);
   }
 
   function update(selectedCards) {
@@ -173,7 +169,6 @@ export default async function decorate(block) {
     block.classList.toggle('active', count > 0);
     ctaBtn.disabled = count < MIN_COMPARE;
     if (count < MAX_COMPARE) {
-      clearTimeout(warningTimer);
       errorDiv.hidden = true;
     }
     saveComparatorCookie(selectedCards);

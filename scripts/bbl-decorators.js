@@ -1,4 +1,5 @@
 import { fetchConfigs } from './config.js';
+import { isAutoBlockingAttrSkipped } from './utils/dom.js';
 
 import {
   getMetadata,
@@ -151,6 +152,10 @@ function handleGlobalLinkClicks() {
 
     if (!link) return;
 
+    // Social share links (blocks/social-icons) open their own share popup/dialog
+    // and must not be intercepted by the external-redirect confirmation flow.
+    if (link.classList.contains('platform-facebook') && window.FB) return;
+
     if (link.dataset.bypassRedirect === 'true') {
       delete link.dataset.bypassRedirect;
       return;
@@ -166,6 +171,11 @@ function handleGlobalLinkClicks() {
     // Check if it's an external URL
     try {
       const urlObj = new URL(href, window.location.href);
+
+      // Only intercept real web navigations — let mailto:, tel:, sms:, etc. behave natively
+      if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+        return;
+      }
 
       // Skip if same origin
       if (urlObj.hostname === window.location.hostname) {
@@ -271,8 +281,9 @@ async function loadWelcomeBanner(doc) {
     return undefined;
   }
 
-  const lang = doc.documentElement.lang || 'en';
-  const path = `/${lang}/fragments/welcome-banner/welcome-banner`;
+  const configData = await fetchConfigs();
+  const path = configData?.welcomeBannerFragmentPath;
+  if (!path) return undefined;
 
   welcomeBannerLoadPromise = new Promise((resolve) => {
     document.dispatchEvent(new CustomEvent('bbl:load-fragment', {
@@ -286,8 +297,6 @@ async function loadWelcomeBanner(doc) {
             resolve();
             return;
           }
-          const main = doc.querySelector('main');
-          [...fragment.querySelectorAll(':scope > .section')].forEach((s) => main.append(s));
           await waitForImageLoad(doc.querySelector('.welcome-banner-media img'));
           resolve();
         },
@@ -323,7 +332,12 @@ async function loadBreadcrumb(doc) {
 
 function decorateButtonsV1(element) {
   element.querySelectorAll('a').forEach((a) => {
-    a.title = a.title || a.textContent;
+    // Skip adding title for menu-banner links
+    // or if title is explicitly excluded via data-skip-attr-auto-blocking
+    const shouldSkipTitle = a.closest('.menu-banner') || isAutoBlockingAttrSkipped(a, 'title');
+    if (!shouldSkipTitle) {
+      a.title = a.title || a.textContent;
+    }
     if (a.href !== a.textContent) {
       const up = a.parentElement;
       const twoup = a.parentElement.parentElement;
@@ -441,6 +455,17 @@ if (window.LAZY_PHASE) {
 } else {
   document.addEventListener('lazy-phase', () => {
     handleGlobalLinkClicks();
+  });
+}
+
+// Right-click on secondary buttons: show hover style instead of active style (Windows only)
+const isWindows = /Win/i.test(navigator.userAgentData?.platform ?? navigator.platform);
+if (isWindows) {
+  const SECONDARY_BTN_SEL = 'button.secondary, .button-m.secondary';
+  document.addEventListener('contextmenu', (e) => {
+    if (!e.target.closest(SECONDARY_BTN_SEL)) return;
+    document.body.classList.add('right-click-btn-state');
+    document.addEventListener('mouseup', () => document.body.classList.remove('right-click-btn-state'), { once: true });
   });
 }
 

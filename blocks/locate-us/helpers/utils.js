@@ -1,3 +1,5 @@
+import { getLang } from '../../../scripts/bbl-decorators.js';
+
 // ─── Shared utilities ─────────────────────────────────────────────────────────
 
 export function hasValue(val) {
@@ -6,11 +8,22 @@ export function hasValue(val) {
   return trimmed !== '' && !/^[-–—]+$/.test(trimmed);
 }
 
-export function buildUrl(template, params) {
-  return Object.entries(params).reduce(
-    (url, [key, val]) => url.replace(`{{${key}}}`, encodeURIComponent(String(val))),
-    template,
-  );
+export function buildUrl(template, params = {}) {
+  if (!template) return '';
+  const lang = getLang() || 'en';
+  const langCapitalized = lang.toLowerCase() === 'th' ? 'Th' : 'En';
+
+  const defaultParams = {
+    lang: langCapitalized,
+    LANG: lang.toUpperCase(),
+    Lang: langCapitalized,
+    ...params,
+  };
+
+  return Object.entries(defaultParams).reduce((url, [key, val]) => {
+    const regex = new RegExp(`\\{\\{${key}\\}\\}`, 'gi');
+    return url.replace(regex, encodeURIComponent(String(val)));
+  }, template);
 }
 
 export function createEl(html) {
@@ -19,12 +32,20 @@ export function createEl(html) {
   return tpl.content.firstElementChild;
 }
 
+let locateUsToastDismissTimer;
+
 export function showToast(message, placeholders) {
   let container = document.getElementById('locate-us-toast-container');
   if (!container) {
     container = createEl('<div id="locate-us-toast-container" class="locate-us-toast-container"></div>');
     document.body.appendChild(container);
   }
+
+  if (locateUsToastDismissTimer) {
+    clearTimeout(locateUsToastDismissTimer);
+    locateUsToastDismissTimer = undefined;
+  }
+  container.querySelectorAll('.locate-us-toast').forEach((el) => el.remove());
 
   const closeLabel = placeholders?.locateUsAriaToastClose || 'Close';
 
@@ -34,10 +55,18 @@ export function showToast(message, placeholders) {
       <button type="button" class="locate-us-toast-close" aria-label="${closeLabel}">×</button>
     </div>`);
 
+  const dismiss = () => {
+    if (locateUsToastDismissTimer) {
+      clearTimeout(locateUsToastDismissTimer);
+      locateUsToastDismissTimer = undefined;
+    }
+    toast.remove();
+  };
+
   toast.querySelector('.locate-us-toast-message').textContent = message;
-  toast.querySelector('.locate-us-toast-close').addEventListener('click', () => toast.remove());
+  toast.querySelector('.locate-us-toast-close').addEventListener('click', dismiss);
   container.appendChild(toast);
-  setTimeout(() => toast.remove(), 4000);
+  locateUsToastDismissTimer = setTimeout(dismiss, 4000);
 }
 
 export function getUserLocation(defaultLat, defaultLng) {

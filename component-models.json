@@ -204,6 +204,14 @@
             "description": "Enable this to open the button link in a modal overlay. Add the fragment path in the Link field above.",
             "valueType": "boolean",
             "value": false
+          },
+          {
+            "component": "boolean",
+            "name": "enableCookieModal",
+            "label": "Open cookie modal",
+            "description": "Enable this to open the cookie settings modal. Add the cookie-modal fragment path in the Link field above.",
+            "valueType": "boolean",
+            "value": false
           }
         ]
       }
@@ -276,28 +284,28 @@
                 "value": "bg-truthful-blue"
               },
               {
-                "name": "Truthful Dark Blue",
+                "name": "Deep Blue",
                 "value": "bg-truthful-dark-blue"
               },
               {
-                "name": "Ice Blue",
+                "name": "bgd-blue",
                 "value": "bg-ice-blue"
               },
               {
-                "name": "Grey 10",
+                "name": "Wealth Theme BG",
                 "value": "bg-grey-10"
               },
               {
-                "name": "Grey 05",
+                "name": "bgd-grey",
                 "value": "bg-grey-05"
               },
               {
-                "name": "Grey 100",
+                "name": "Elite Theme BG",
                 "value": "bg-grey-100"
               },
               {
-                "name": "Blue 01",
-                "value": "bg-blue-01"
+                "name": "Primary Blue S01",
+                "value": "bg-primary-blue-s01"
               }
             ]
           },
@@ -336,6 +344,10 @@
               {
                 "name": "Columns 2(25-75)",
                 "value": "columns-2-25"
+              },
+              {
+                "name": "Columns 2(33-67)",
+                "value": "columns-2-33"
               }
             ]
           },
@@ -361,6 +373,10 @@
               {
                 "name": "Center Content",
                 "value": "center-content"
+              },
+              {
+                "name": "Right Content",
+                "value": "right-content"
               }
             ]
           },
@@ -510,6 +526,10 @@
     ]
   },
   {
+    "id": "bwealth-series",
+    "fields": []
+  },
+  {
     "id": "card-comparator-results",
     "fields": [
       {
@@ -651,6 +671,7 @@
         "name": "cardListLayout",
         "value": "default",
         "label": "Card List Layout",
+        "description": "Select Carousel when the Card List is used as a fragment in the Card List Carousel variation of the Carousel Dotted block.",
         "valueType": "string",
         "options": [
           {
@@ -918,8 +939,12 @@
         "name": "imageLayout",
         "label": "Image Layout",
         "valueType": "string",
-        "value": "default",
+        "value": "none",
         "options": [
+          {
+            "name": "None",
+            "value": "none"
+          },
           {
             "name": "Full",
             "value": "full"
@@ -1047,6 +1072,14 @@
         "name": "financialDate",
         "label": "Financial Date",
         "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "showOnlyMonthYear",
+        "label": "Show Only Month and Year",
+        "description": "If enabled, only the month and year will be displayed.",
+        "valueType": "boolean",
+        "value": false
       }
     ]
   },
@@ -1310,6 +1343,10 @@
           {
             "name": "10 seconds",
             "value": "10000"
+          },
+          {
+            "name": "15 seconds",
+            "value": "15000"
           }
         ],
         "condition": {
@@ -3389,21 +3426,18 @@
             "value": "tertiary"
           }
         ]
-      },
+      }
+    ]
+  },
+  {
+    "id": "credit-card-results",
+    "fields": [
       {
-        "component": "container",
-        "name": "targetSettings",
-        "label": "Target Settings",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "targetLink",
-            "label": "Open link in new tab",
-            "description": "Enable to open the Compare button link in a new browser tab",
-            "valueType": "boolean",
-            "value": false
-          }
-        ]
+        "component": "richtext",
+        "name": "disclaimerText",
+        "value": "",
+        "label": "Disclaimer Text",
+        "valueType": "string"
       }
     ]
   },
@@ -3479,13 +3513,6 @@
             "value": "tertiary"
           }
         ]
-      },
-      {
-        "component": "richtext",
-        "name": "disclaimerText",
-        "value": "",
-        "label": "Disclaimer Text",
-        "valueType": "string"
       }
     ]
   },
@@ -3698,6 +3725,12 @@
         "name": "downloadLink",
         "label": "Download Link",
         "description": "Download Link for the button"
+      },
+      {
+        "component": "text",
+        "name": "datePrefix",
+        "label": "Date Prefix",
+        "description": "Optional date text displayed before the download link text"
       },
       {
         "component": "text",
@@ -4030,14 +4063,14 @@
         "name": "ctaLabel",
         "label": "CTA Label",
         "valueType": "string",
-        "required": true
+        "required": false
       },
       {
         "component": "text",
         "name": "printCtaLabel",
         "label": "Print CTA Label",
         "valueType": "string",
-        "required": true
+        "required": false
       },
       {
         "component": "richtext",
@@ -6387,6 +6420,10 @@
           {
             "name": "123,421,567",
             "value": "###,###,###"
+          },
+          {
+            "name": "1,234.20",
+            "value": "#,##0.00"
           }
         ]
       },
@@ -9996,32 +10033,6 @@
     ]
   },
   {
-    "id": "fund-prices-table",
-    "fields": [
-      {
-        "component": "richtext",
-        "name": "tableContent",
-        "label": "Table Content",
-        "valueType": "string",
-        "value": "",
-        "rte": {
-          "toolbar": {
-            "insert": [
-              "table"
-            ],
-            "editor": [
-              "removeformat"
-            ],
-            "sections": [
-              "insert",
-              "editor"
-            ]
-          }
-        }
-      }
-    ]
-  },
-  {
     "id": "fund-prices",
     "fields": [
       {
@@ -10072,6 +10083,113 @@
         "value": "",
         "label": "All Funds Label",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "header-banner-slide",
+    "fields": [
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title",
+        "description": "credit card banner title"
+      },
+      {
+        "component": "select",
+        "name": "titleType",
+        "label": "Title Type",
+        "options": [
+          {
+            "name": "h1",
+            "value": "h1"
+          },
+          {
+            "name": "h2",
+            "value": "h2"
+          },
+          {
+            "name": "h3",
+            "value": "h3"
+          },
+          {
+            "name": "h4",
+            "value": "h4"
+          },
+          {
+            "name": "h5",
+            "value": "h5"
+          },
+          {
+            "name": "h6",
+            "value": "h6"
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "name": "autoScroll",
+        "label": "Auto-Scroll",
+        "valueType": "boolean",
+        "value": true
+      },
+      {
+        "component": "select",
+        "name": "scrollTimeDelay",
+        "label": "Scroll Time Delay (milliseconds)",
+        "valueType": "string",
+        "value": "3000",
+        "options": [
+          {
+            "name": "3 seconds",
+            "value": "3000"
+          },
+          {
+            "name": "5 seconds",
+            "value": "5000"
+          },
+          {
+            "name": "10 seconds",
+            "value": "10000"
+          }
+        ],
+        "condition": {
+          "and": [
+            {
+              "!!": [
+                {
+                  "var": "autoScroll"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "boolean",
+        "name": "infiniteLoop",
+        "label": "Infinite Loop",
+        "valueType": "boolean",
+        "value": true
+      }
+    ]
+  },
+  {
+    "id": "credit-card",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "creditCardImage",
+        "label": "Credit Card Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "creditCardImageAlt",
+        "label": "Alt",
+        "value": ""
       }
     ]
   },
@@ -11131,6 +11249,14 @@
         "name": "financialDate",
         "label": "Financial Date",
         "valueType": "string"
+      },
+      {
+        "component": "boolean",
+        "name": "showOnlyMonthYear",
+        "label": "Show Only Month and Year",
+        "description": "If enabled, only the month and year will be displayed.",
+        "valueType": "boolean",
+        "value": false
       }
     ]
   },
@@ -12268,8 +12394,8 @@
       {
         "component": "text",
         "name": "linkText",
-        "label": "Text",
-        "description": "Button label text",
+        "label": "Search Button Text",
+        "description": "Search Button label text",
         "required": true
       },
       {
@@ -12287,8 +12413,8 @@
       {
         "component": "text",
         "name": "learnMoreLinkText",
-        "label": "Text",
-        "description": "Button label text",
+        "label": "Learn More Button Text",
+        "description": "Learn More Button label text",
         "required": true
       },
       {
@@ -12329,11 +12455,17 @@
         "required": true
       },
       {
-        "component": "richtext",
+        "component": "text",
         "name": "modalDescription",
         "label": "Modal Description",
         "valueType": "string",
-        "required": false
+        "required": true
+      },
+      {
+        "component": "aem-content",
+        "name": "resultsPageUrl",
+        "label": "Results Page URL",
+        "description": "Page the user is redirected to after searching, with type/year query params appended"
       }
     ]
   },
@@ -12450,37 +12582,23 @@
     "id": "social-icon",
     "fields": [
       {
-        "component": "select",
-        "name": "platform",
-        "label": "Platform",
-        "valueType": "string",
-        "required": true,
-        "options": [
-          {
-            "name": "Facebook",
-            "value": "facebook"
-          },
-          {
-            "name": "X",
-            "value": "x"
-          },
-          {
-            "name": "Line",
-            "value": "line"
-          }
-        ]
-      },
-      {
         "component": "reference",
         "name": "icon",
-        "label": "Icon",
+        "label": "Social Icon",
+        "valueType": "string",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "alt",
+        "label": "Platform",
         "valueType": "string",
         "required": true
       },
       {
         "component": "text",
         "name": "url",
-        "label": "URL",
+        "label": "Link",
         "valueType": "string",
         "required": true
       }
@@ -12522,31 +12640,6 @@
         "description": "Author iframe HTML, links, and supporting notes.",
         "valueType": "string",
         "value": ""
-      }
-    ]
-  },
-  {
-    "id": "social-icon",
-    "fields": [
-      {
-        "component": "reference",
-        "name": "icon",
-        "label": "Social Icon",
-        "valueType": "string",
-        "required": true
-      },
-      {
-        "component": "text",
-        "name": "alt",
-        "label": "Alt Text",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "url",
-        "label": "Link",
-        "valueType": "string",
-        "required": true
       }
     ]
   },
@@ -12693,6 +12786,10 @@
               {
                 "name": "Border Bottom",
                 "value": "border-bottom"
+              },
+              {
+                "name": "No Border Bottom",
+                "value": "no-border-bottom"
               }
             ]
           },
@@ -12725,6 +12822,14 @@
                 "value": "header-right-aligned"
               },
               {
+                "name": "Right Aligned Except First",
+                "value": "header-right-aligned-except-first"
+              },
+              {
+                "name": "Top Aligned",
+                "value": "header-top-aligned"
+              },
+              {
                 "name": "Header Blue",
                 "value": "header-blue"
               },
@@ -12741,8 +12846,8 @@
                 "value": "header-light-gray"
               },
               {
-                "name": "Header Pastel Blue",
-                "value": "header-pastel-blue"
+                "name": "Header Primary Blue S01",
+                "value": "header-primary-blue-s01"
               }
             ]
           },
@@ -12771,8 +12876,28 @@
                 "value": "cells-center-aligned-except-first"
               },
               {
+                "name": "Cells Right Aligned Except First",
+                "value": "cells-right-aligned-except-first"
+              },
+              {
+                "name": "Cells Middle Aligned",
+                "value": "cells-middle-aligned"
+              },
+              {
                 "name": "Dash Cell Highlight",
                 "value": "dash-cell-highlight"
+              },
+              {
+                "name": "Highlight Bold Cells",
+                "value": "highlight-bold-cells"
+              },
+              {
+                "name": "Highlight First Column",
+                "value": "highlight-first-column"
+              },
+              {
+                "name": "Highlight All Cells",
+                "value": "highlight-all-cells"
               }
             ]
           },
@@ -12807,6 +12932,14 @@
             ]
           }
         ]
+      },
+      {
+        "component": "text",
+        "name": "columnWidth",
+        "label": "Column Width",
+        "valueType": "string",
+        "required": false,
+        "description": "Comma-separated width per column, in order. Accepts any CSS width value (e.g. 35%, 30px, fit-content). Use \"auto\" or leave a column blank to size it automatically."
       },
       {
         "component": "text",
@@ -13051,24 +13184,28 @@
                 "value": "bg-truthful-blue"
               },
               {
-                "name": "Truthful Dark Blue",
+                "name": "Deep Blue",
                 "value": "bg-truthful-dark-blue"
               },
               {
-                "name": "Ice Blue",
+                "name": "bgd-blue",
                 "value": "bg-ice-blue"
               },
               {
-                "name": "Grey 10",
+                "name": "Wealth Theme BG",
                 "value": "bg-grey-10"
               },
               {
-                "name": "Grey 05",
+                "name": "bgd-grey",
                 "value": "bg-grey-05"
               },
               {
-                "name": "Grey 100",
+                "name": "Elite Theme BG",
                 "value": "bg-grey-100"
+              },
+              {
+                "name": "Primary Blue S01",
+                "value": "bg-primary-blue-s01"
               }
             ]
           },
@@ -13099,6 +13236,10 @@
               {
                 "name": "Columns 2(50-50)",
                 "value": "columns-2-50"
+              },
+              {
+                "name": "Columns 2(65-35)",
+                "value": "columns-2-65"
               }
             ]
           },
@@ -13114,8 +13255,20 @@
                 "value": "center-title"
               },
               {
+                "name": "Center Image",
+                "value": "center-image"
+              },
+              {
+                "name": "Underline Image",
+                "value": "underline-image"
+              },
+              {
                 "name": "Center Content",
                 "value": "center-content"
+              },
+              {
+                "name": "Center First Paragraph",
+                "value": "center-first-paragraph"
               }
             ]
           },
@@ -13133,6 +13286,149 @@
             ]
           }
         ]
+      },
+      {
+        "component": "multiselect",
+        "name": "parent-container-style",
+        "label": "Parent Container Style",
+        "description": "Style classes applied to the section wrapping all tabs (read from the first tab)",
+        "valueType": "string",
+        "required": false,
+        "options": [
+          {
+            "name": "Section type",
+            "children": [
+              {
+                "name": "Central Aligned",
+                "value": "central-aligned"
+              },
+              {
+                "name": "Full Bleed Special",
+                "value": "full-bleed-special"
+              },
+              {
+                "name": "Full Bleed Background",
+                "value": "full-bleed-bg"
+              }
+            ]
+          },
+          {
+            "name": "Background Color",
+            "children": [
+              {
+                "name": "Truthful Blue",
+                "value": "bg-truthful-blue"
+              },
+              {
+                "name": "Deep Blue",
+                "value": "bg-truthful-dark-blue"
+              },
+              {
+                "name": "bgd-blue",
+                "value": "bg-ice-blue"
+              },
+              {
+                "name": "Wealth Theme BG",
+                "value": "bg-grey-10"
+              },
+              {
+                "name": "bgd-grey",
+                "value": "bg-grey-05"
+              },
+              {
+                "name": "Elite Theme BG",
+                "value": "bg-grey-100"
+              },
+              {
+                "name": "Primary Blue S01",
+                "value": "bg-primary-blue-s01"
+              }
+            ]
+          },
+          {
+            "name": "Padding",
+            "children": [
+              {
+                "name": "Padding Top",
+                "value": "pad-top-30"
+              },
+              {
+                "name": "Padding Bottom",
+                "value": "pad-bot-30"
+              }
+            ]
+          },
+          {
+            "name": "Layout",
+            "children": [
+              {
+                "name": "Columns 3",
+                "value": "columns-3"
+              },
+              {
+                "name": "Columns 2(75-25)",
+                "value": "columns-2-75"
+              },
+              {
+                "name": "Columns 2(50-50)",
+                "value": "columns-2-50"
+              },
+              {
+                "name": "Columns 2(65-35)",
+                "value": "columns-2-65"
+              }
+            ]
+          },
+          {
+            "name": "Style",
+            "children": [
+              {
+                "name": "Underline Title",
+                "value": "underline-title"
+              },
+              {
+                "name": "Center Title",
+                "value": "center-title"
+              },
+              {
+                "name": "Center Image",
+                "value": "center-image"
+              },
+              {
+                "name": "Underline Image",
+                "value": "underline-image"
+              },
+              {
+                "name": "Center Content",
+                "value": "center-content"
+              },
+              {
+                "name": "Center First Paragraph",
+                "value": "center-first-paragraph"
+              }
+            ]
+          },
+          {
+            "name": "Theme",
+            "children": [
+              {
+                "name": "Background Wealth",
+                "value": "background-wealth"
+              },
+              {
+                "name": "Background Private Banking",
+                "value": "background-privatebanking"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "component": "aem-tag",
+        "name": "tab-category-tag",
+        "label": "Tab Category Tag",
+        "description": "Select the AEM tag that identifies this tab's category. Used by listing blocks (News & Media, Promotional Card Listing, Top Promotional Cards) to filter cards by category instead of relying on the tab label text.",
+        "valueType": "string"
       }
     ]
   },

@@ -3,10 +3,13 @@
 /* ========================================================================
    Base Styles (Mobile First)
    ======================================================================== */
+.section.columns-3 {
+  /* row-gap: 0; */
+}
 
 .currency-converter {
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 0.4375rem;
 }
 
@@ -18,14 +21,23 @@
 /* Convert Groups (From/To Sections) */
 .currency-converter .convert-group {
   position: relative;
+  z-index: 1;
   border: 0.0625rem solid rgb(255 255 255 / 30%);
   border-radius: 0.4375rem;
   padding: var(--bbl-space-300);
-  margin-bottom: var(--bbl-space-300);
+  margin-bottom: var(--bbl-space-250);
   margin-left: auto;
   margin-right: auto;
   background-color: var(--bbl-color-truthful-dark-blue);
   height: 9.375rem;
+}
+
+.currency-converter .convert-group:first-of-type {
+  margin-bottom: var(--bbl-space-300);
+}
+
+.currency-converter .convert-group:has(.currency-dropdown.active) {
+  z-index: 20;
 }
 
 .currency-converter .convert-group::after {
@@ -89,9 +101,9 @@
   right: 0;
   margin: auto var(--bbl-space-300);
   border-bottom: 0.0625rem solid var(--bbl-color-grey-125);
-  font-size: 3.4125rem;
-  font-weight: 900;
-  line-height: 4.875rem;
+  font-size: 1.625rem;
+  font-weight: 400;
+  line-height: 1.875rem;
   height: auto;
 }
 
@@ -123,8 +135,8 @@
 }
 
 .currency-converter .icon-dropdown:hover,
-.currency-converter .country-select:hover ~ .icon-dropdown {
-    animation: wobble-vertical .75s alternate;
+.currency-converter .country-select:hover~.icon-dropdown {
+  animation: wobble-vertical .75s alternate;
 }
 
 .currency-converter .icon-dropdown::before {
@@ -171,7 +183,7 @@
 }
 
 .currency-converter .search-currency::placeholder {
-  color: var(--bbl-color-grey-70);
+  color: var(--bbl-color-grey-90);
   font-size: 1rem;
   font-family: var(--bbl-font-family-primary);
 }
@@ -200,7 +212,7 @@
   background-color: #e5edf4;
 }
 
-.currency-converter .currency-dropdown-list  li:hover {
+.currency-converter .currency-dropdown-list li:hover {
   background-color: #e5edf4;
 }
 
@@ -239,7 +251,7 @@
 }
 
 /* Currency name text */
-.currency-converter .currency-dropdown-list li > span {
+.currency-converter .currency-dropdown-list li>span {
   font-size: 0.875rem;
   color: var(--bbl-color-black);
   line-height: 2.25rem;
@@ -257,7 +269,7 @@
   border-radius: 50%;
   padding: 0;
   position: absolute;
-  top: 48%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 5;
@@ -268,14 +280,6 @@
   flex-direction: column;
   opacity: 0.9;
   transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.currency-converter .btn-convert:hover {
-  opacity: 1;
-}
-
-.currency-converter .btn-convert:active {
-  transform: translate(-50%, -50%) scale(0.95);
 }
 
 .currency-converter .btn-convert:disabled {
@@ -318,36 +322,36 @@
   display: none;
 }
 
+.currency-converter-wrapper {
+  height: 100%;
+}
+
 @media (width > 47.5rem) {
   .currency-converter .convert-group {
-    height: 11.5rem;
+    height: 11.41rem;
   }
 
   .currency-converter .icon-dropdown {
     top: 18.5%;
   }
-
-  .currency-converter .amount-input {
-    font-size: 3.9rem;
-  }
 }
 
 @keyframes wobble-vertical {
-    25% {
-        margin-top: 0.25rem
-    }
+  25% {
+    margin-top: 0.25rem
+  }
 
-    50% {
-        margin-top: -0.125rem
-    }
+  50% {
+    margin-top: -0.125rem
+  }
 
-    75% {
-        margin-top: 0.0625rem
-    }
+  75% {
+    margin-top: 0.0625rem
+  }
 
-    100% {
-        margin-top: 0
-    }
+  100% {
+    margin-top: 0
+  }
 }
 
 @media (width > 64rem) {
@@ -355,14 +359,20 @@
     display: block;
   }
 
-  .currency-converter .converter {
-    padding: 1.25rem 0;
-  }
-  
-  .currency-converter .currency-title-from, 
+  .currency-converter .currency-title-from,
   .currency-converter .currency-title-to,
   .currency-converter .country-select .code,
-  .currency-converter .currency-dropdown-list li > span {
+  .currency-converter .currency-dropdown-list li>span {
     font-size: 1rem;
+  }
+
+  .currency-converter .convert-group {
+    margin-bottom: 0;
+  }
+
+  .currency-converter .amount-input {
+    font-size: 3.875rem;
+    line-height: 4.4375rem;
+    font-weight: 900;
   }
 }

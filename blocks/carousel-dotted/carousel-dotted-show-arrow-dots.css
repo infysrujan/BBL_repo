@@ -49,7 +49,6 @@
 
 /* Arrows (show-arrows-dots enables display) */
 .carousel-dotted.show-arrows-dots .carousel-arrow {
-  position: relative;
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
@@ -100,37 +99,6 @@
   margin-right: 0.25rem;
 }
 
-.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:hover {
-  background-color: var(--bbl-color-white);
-}
-
-.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:active {
-  background-color: var(--bbl-color-gray-300);
-}
-
-.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-next:hover {
-  margin-left: 0.313rem;
-}
-
-.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow-prev:hover {
-  margin-left: -0.313rem;
-}
-
-/* Dots */
-.carousel-dotted.show-arrows-dots .slick-dots {
-  grid-column: 1 / 4;
-  grid-row: 2;
-  position: static;
-  transform: none;
-  margin-top: 0.75rem;
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  width: auto;
-  height: auto;
-}
-
-/* stylelint-disable-next-line no-descending-specificity */
 .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item img,
 .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item picture {
   width: 100%;
@@ -139,25 +107,104 @@
   object-fit: cover;
 }
 
-/* stylelint-disable-next-line no-descending-specificity */
-.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper {
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-viewport {
+  overflow: hidden;
   width: 100%;
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
 }
 
-.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item {
+.carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
+  transition: height 300ms ease;
+}
+
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper {
+  display: flex;
   width: 100%;
+  overflow: visible;
+  grid-column: unset;
+  grid-row: unset;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+/* Keep all slides in the flex track so transform can animate between them */
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper .carousel-dotted-item {
+  display: flex;
+  flex: 0 0 100%;
+  width: 100%;
+  flex-shrink: 0;
+  flex-direction: column;
+  opacity: 1;
+  transition: none;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active {
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow {
+  box-shadow: none;
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow::before {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-top-width: 0.125rem;
+  border-right-width: 0.125rem;
+  border-top-color: var(--bbl-color-grey-60);
+  border-right-color: var(--bbl-color-grey-60);
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:hover {
+  background-color: var(--bbl-color-white);
+}
+
+.carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-arrow:active {
+  background-color: var(--bbl-color-gray-300);
+}
+
+/* Dots */
+.carousel-dotted.show-arrows-dots .slick-dots {
+  grid-column: 1 / 4;
+  grid-row: 2;
+  position: static;
+  transform: none;
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  width: auto;
+  height: auto;
+  overflow: visible;
+}
+
+.carousel-dotted.show-arrows-dots .carousel-track-viewport:has(.with-default-image.carousel-dotted-item.is-active),
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-viewport:has(.with-default-image.carousel-dotted-item) {
+  box-sizing: border-box;
+  border: 0.063rem solid var(--bbl-color-black-alpha-10);
+  box-shadow: 0 0 0.625rem transparent;
+  border-radius: var(--bbl-rounded-100);
 }
 
 @media (width > 47.5rem) {
-  .carousel-dotted.show-arrows-dots {
-    display: grid;
-    grid-template-columns: 2.5rem 1fr 2.5rem;
-    grid-template-rows: auto auto;
-    gap: 0;
-    column-gap: 1rem;
-  }
-
-  /* show-arrows-dots: keep items hidden/visible via display, not opacity */
   .carousel-dotted.show-arrows-dots .carousel-dotted-item {
     position: relative;
     inset: unset;
@@ -171,10 +218,13 @@
     flex-direction: row;
   }
 
-  .carousel-dotted.show-arrows-dots .with-default-image.carousel-dotted-item.is-active {
-    border: 0.063rem solid var(--bbl-color-black-alpha-10);
-    box-shadow: 0 0 0.625rem transparent;
-    border-radius: var(--bbl-rounded-100);
+  .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper .carousel-dotted-item {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .carousel-dotted.show-arrows-dots .with-default-image.carousel-dotted-item.is-active,
+  .carousel-dotted.show-arrows-dots.mixed-image-slides .with-default-image.carousel-dotted-item {
     align-items: center;
   }
 
@@ -184,26 +234,42 @@
     width: 2.5rem;
     height: 2.5rem;
   }
-}
 
-@media (width > 47.5rem) {
-  /* Fix tablet spacing and align arrows automatically to content size */
-  .carousel-dotted.show-arrows-dots {
-    display: grid;
-    grid-template-columns: 2.5rem 1fr 2.5rem;
-    grid-template-rows: auto auto;
-    gap: 0;
-    column-gap: 1.25rem;
-    min-height: unset;
-  }
-
-  .carousel-dotted.show-arrows-dots .carousel-dotted-item {
+  .carousel-dotted.show-arrows-dots:has(.simple-carousel),
+  .carousel-dotted.show-arrows-dots.mixed-image-slides:not(:has(.simple-carousel)) {
     position: relative;
-    inset: unset;
   }
 
-  .carousel-dotted.show-arrows-dots .carousel-dotted-item.with-circular-image.is-active,
-  .carousel-dotted.show-arrows-dots .carousel-dotted-item.with-default-image.is-active {
+  .carousel-dotted.show-arrows-dots:has(.simple-carousel) .carousel-dotted-item.is-active {
+    display: block;
+    flex-direction: unset;
+  }
+
+  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .all-mf-fund-cards, .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+  }
+
+  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
+    left: -0.9375rem;
+  }
+
+  .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
+    right: -0.9375rem;
+  }
+
+  .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
+    left: 1.75rem;
+  }
+
+  .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots:is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
+    right: 1.75rem;
+  }
+
+  .carousel-dotted.show-arrows-dots .carousel-dotted-item:is(.with-circular-image, .with-default-image).is-active,
+  .carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-dotted-item:is(.with-circular-image, .with-default-image) {
     display: flex;
   }
 }
@@ -217,4 +283,20 @@
     width: 2.5rem;
     height: 2.5rem;
   }
-} 
+
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow-prev {
+    left: -3.4375rem;
+  }
+
+  .carousel-dotted.show-arrows-dots.all-mf-fund-cards .carousel-arrow-next {
+    right: -3.4375rem;
+  }
+
+  :is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-prev {
+    left: -3.4375rem;
+  }
+
+  :is(.carousel-dotted.show-arrows-dots, .full-bleed-bg.central-aligned .carousel-dotted.show-arrows-dots):is(:has(.simple-carousel), .mixed-image-slides:not(:has(.simple-carousel))) .carousel-arrow-next {
+    right: -3.4375rem;
+  }
+}

@@ -1,7 +1,7 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
-import { readBlockConfig, toCamelCase } from '../../scripts/aem.js';
+import { readBlockConfig } from '../../scripts/aem.js';
 import { isAuthoringInstance } from '../../scripts/bbl-decorators.js';
 import { activateTab } from '../tabs/helpers/tabs-utils.js';
 import {
@@ -9,17 +9,73 @@ import {
   buildCardHtml,
   buildCardOptions,
   buildPaginationHtml,
-  getPromotionDataUrl,
   fetchJson,
   getPromotionPathFlags,
   handleMobileAppView,
-  mergeLocalConfig,
   normalizePromotionType,
   normalizeQueryLang,
   getPromotionApiConfig,
   getPromotionLanguage,
   sortCards,
+  normalizeCategory,
 } from '../../scripts/utils/card-helpers.js';
+
+// --- Autoscroll to the category subnav (any promotions listing in tabs) -----
+// Breathing room (px) left between the fixed header and the subnav after
+// scrolling. One value for every viewport — the header height is measured
+// separately at scroll time. Increase for more space above the subnav.
+const SUBNAV_GAP = 68;
+
+// id put on the subnav (tabs) element so the scroll can target it by id.
+const SUBNAV_ID = 'promo-subnav';
+
+// Smoothly scroll the window to targetY over `duration` ms with an ease-in-out
+// curve (slow start, fast middle, slow end).
+function swingScrollTo(targetY, duration = 600) {
+  const startY = window.scrollY;
+  const diff = targetY - startY;
+  if (Math.abs(diff) < 1) return;
+  const start = performance.now();
+  const step = (now) => {
+    const p = Math.min((now - start) / duration, 1);
+    window.scrollTo(0, Math.round(startY + diff * (0.5 - Math.cos(p * Math.PI) / 2)));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+// Scroll the subnav (looked up by id) to just below the fixed header, keeping
+// the header visible. The header loads async and pins only in reaction to a
+// scroll event, so: wait for its bar to exist, jump past its pin threshold
+// (locks it, no flicker), force its classes, then measure the subnav's live
+// position and smooth-scroll so it lands SUBNAV_GAP px below the header.
+// Bounded ~3s; skips if the header or subnav never appear.
+function scrollToSubnav(subnavId) {
+  const deadline = Date.now() + 3000;
+  const run = () => {
+    const subnav = document.getElementById(subnavId);
+    const header = document.querySelector('.header');
+    const desktop = window.matchMedia('(min-width: 1025px)').matches;
+    const bar = header && (desktop
+      ? header.querySelector('.main-nav-desktop')
+      : header.querySelector('.mobile-top-bar'));
+    if (!subnav || !bar) {
+      if (Date.now() < deadline) requestAnimationFrame(run);
+      return;
+    }
+    const topNav = header.querySelector('.top-nav');
+    const threshold = desktop && topNav
+      ? Math.ceil(topNav.getBoundingClientRect().height) + 1
+      : 1;
+    window.scrollTo({ top: threshold, behavior: 'auto' });
+    if (desktop) topNav?.classList.add('is-hidden');
+    bar.classList.add('is-scrolled');
+    const headerHeight = bar.getBoundingClientRect().height;
+    const target = subnav.getBoundingClientRect().top + window.scrollY - headerHeight - SUBNAV_GAP;
+    swingScrollTo(Math.max(0, target));
+  };
+  run();
+}
 
 const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
 
@@ -136,7 +192,7 @@ function normalizeList(value) {
 
 function buildSubOptions(items, defaultLabel) {
   const defaultOption = defaultLabel
-    ? `<li class="promo-selector-option" data-value="" role="option">${defaultLabel}</li>`
+    ? `<li class="promo-selector-option is-active" data-value="" role="option">${defaultLabel}</li>`
     : '';
   return defaultOption.concat(items
     .map((s) => {
@@ -165,8 +221,8 @@ function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
   const matched = allCards.filter((card) => {
     if (topPromotionOnly && !isTruthyFlag(card.topPromotion)) return false;
     if (!topPromotionOnly && category) {
-      const cardCats = normalizeList(card.category).map((c) => c.toLowerCase());
-      if (!cardCats.includes(category.toLowerCase())) return false;
+      const cardCats = normalizeList(card.category).map(normalizeCategory);
+      if (!cardCats.includes(normalizeCategory(category))) return false;
     }
     if (card.promotionEndDate && new Date(card.promotionEndDate) < today) return false;
     if (subcategory) {
@@ -257,12 +313,12 @@ function setupPanel(
           </ul>
         </div>
         <div class="promo-selector-filter-actions">
-          <div class="promo-selector-filter-action btn-reset"><button class="promo-selector-btn-reset button secondary" type="button">${labelReset}</button></div>
-          <div class="promo-selector-filter-action btn-search"><button class="promo-selector-btn-search button primary" type="button">${labelSearch}</button></div>
+          <div class="promo-selector-filter-action btn-reset"><button class="promo-selector-btn-reset button-m secondary" type="button">${labelReset}</button></div>
+          <div class="promo-selector-filter-action btn-search"><button class="promo-selector-btn-search button-m primary" type="button">${labelSearch}</button></div>
         </div>
       </div>
       <div class="promo-selector-content pad-top-30 pad-bot-30">
-        <div class="promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
+        <div class="listing-card-grid promo-selector-grid${isBbmPanel ? ' is-bbm-grid' : ''}"></div>
         <div class="promo-selector-pagination"></div>
       </div>`;
   }
@@ -300,13 +356,19 @@ function setupPanel(
         const cardOptions = buildCardOptions(cardData);
         cardOptions.baseUrl = options.baseUrl;
         if (isBbmPanel) cardOptions.logoHtml = '';
-        return buildCardHtml(cardData, category, placeholders, cardOptions);
+        const cats = cardData.category;
+        let displayTag = category;
+        if (!isHighlightsPanel) {
+          displayTag = Array.isArray(cats) ? cats[0] : (cats || category);
+        }
+        return buildCardHtml(cardData, displayTag, placeholders, cardOptions);
       }).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 
+    const carouselNavBtnsLabels = { prevBtnLabel: placeholders.carouselPrevBtnLabel || 'Previous', nextBtnLabel: placeholders.carouselNextBtnLabel || 'Next' };
     paginationEl.innerHTML = hidePagination
       ? ''
-      : buildPaginationHtml(state.page, Math.ceil(total / pageSize));
+      : buildPaginationHtml(state.page, Math.ceil(total / pageSize), carouselNavBtnsLabels);
   }
 
   if (options.immediate) {
@@ -323,9 +385,27 @@ function setupPanel(
 
   if (disableFilters) return;
 
+  const isDesktop = () => window.matchMedia('(width > 64rem)').matches;
+  // After an option is chosen the dropdown closes; a double-click's 2nd click can
+  // land on Reset/Search (or another filter) underneath and wipe the selection.
+  let suppressClickThroughUntil = 0;
+  const shouldSuppressClickThrough = () => Date.now() < suppressClickThroughUntil;
+  const armClickThroughGuard = () => {
+    suppressClickThroughUntil = Date.now() + 500;
+  };
+
+  // Capture-phase: block stray clicks that land under the closing dropdown.
+  panel.addEventListener('click', (e) => {
+    if (!shouldSuppressClickThrough()) return;
+    if (e.target.closest('.promo-selector-option')) return;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+
   panel.querySelectorAll('.promo-selector-filter-btn').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (shouldSuppressClickThrough()) return;
       const filter = btn.closest('.promo-selector-filter');
       const isOpen = filter.classList.contains('is-open');
       panel.querySelectorAll('.promo-selector-filter').forEach((f) => {
@@ -339,26 +419,35 @@ function setupPanel(
     });
   });
 
-  const isDesktop = () => window.matchMedia('(width > 64rem)').matches;
-
   function makeSingleSelect(filterAttr, stateKey, defaultLabel) {
-    panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`).forEach((opt) => {
-      opt.addEventListener('click', () => {
-        const isActive = opt.classList.contains('is-active');
-        panel.querySelectorAll(`[data-filter="${filterAttr}"] .promo-selector-option`)
-          .forEach((o) => o.classList.remove('is-active'));
-        const labelEl = panel.querySelector(
-          `[data-filter="${filterAttr}"] .promo-selector-filter-label`,
-        );
-        if (isActive) {
-          state[stateKey] = '';
-          labelEl.textContent = defaultLabel;
-        } else {
+    const filterEl = panel.querySelector(`[data-filter="${filterAttr}"]`);
+    const labelEl = filterEl?.querySelector('.promo-selector-filter-label');
+    filterEl?.querySelectorAll('.promo-selector-option').forEach((opt) => {
+      opt.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.detail > 1 || shouldSuppressClickThrough()) return;
+
+        const val = opt.dataset.value || '';
+        // Placeholder row clears the filter; re-clicking the active value only closes.
+        if (!val) {
+          filterEl.querySelectorAll('.promo-selector-option')
+            .forEach((o) => o.classList.remove('is-active'));
           opt.classList.add('is-active');
-          state[stateKey] = opt.dataset.value;
-          labelEl.textContent = opt.dataset.value;
+          state[stateKey] = '';
+          if (labelEl) labelEl.textContent = defaultLabel;
+        } else if (opt.classList.contains('is-active')) {
+          // Keep current selection — do not toggle off on double / re-click.
+        } else {
+          filterEl.querySelectorAll('.promo-selector-option')
+            .forEach((o) => o.classList.remove('is-active'));
+          opt.classList.add('is-active');
+          state[stateKey] = val;
+          if (labelEl) labelEl.textContent = val;
         }
-        panel.querySelector(`[data-filter="${filterAttr}"]`).classList.remove('is-open');
+        filterEl.classList.remove('is-open');
+        filterEl.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
+        armClickThroughGuard();
         state.page = 1;
         if (isDesktop()) render();
       });
@@ -375,19 +464,33 @@ function setupPanel(
     state.area = '';
     state.page = 1;
     panel.querySelectorAll('.promo-selector-option').forEach((o) => o.classList.remove('is-active'));
+    panel.querySelectorAll('.promo-selector-option[data-value=""]').forEach((o) => o.classList.add('is-active'));
     panel.querySelector('[data-filter="subcategory"] .promo-selector-filter-label').textContent = labelCategory;
     panel.querySelector('[data-filter="cardType"] .promo-selector-filter-label').textContent = labelCardType;
     panel.querySelector('[data-filter="area"] .promo-selector-filter-label').textContent = labelArea;
     render();
   }
 
-  panel.querySelector('.promo-selector-btn-reset')?.addEventListener('click', resetFilters);
-  panel.querySelector('.promo-selector-btn-search')?.addEventListener('click', () => {
+  panel.querySelector('.promo-selector-btn-reset')?.addEventListener('click', (e) => {
+    if (shouldSuppressClickThrough()) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    resetFilters();
+  });
+  panel.querySelector('.promo-selector-btn-search')?.addEventListener('click', (e) => {
+    if (shouldSuppressClickThrough()) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
     state.page = 1;
     render();
   });
 
-  bindPaginationClick(paginationEl, state, render, gridEl);
+  const scrollTarget = panel.closest('.tabs') || gridEl;
+  bindPaginationClick(paginationEl, state, render, scrollTarget);
 }
 
 export default async function decorate(block) {
@@ -408,9 +511,6 @@ export default async function decorate(block) {
 
   const configs = await fetchConfigs();
   const effectiveConfigs = configs || {};
-  if (!configs || !configs.promotionalCardSelector || lang !== 'en') {
-    await mergeLocalConfig(pathname, lang, effectiveConfigs, toCamelCase);
-  }
   const creditBaseUrl = effectiveConfigs.promotionalCardSelector || '';
   const bbmBaseUrl = effectiveConfigs.promotionalCardSelectorBbm || '';
 
@@ -425,10 +525,10 @@ export default async function decorate(block) {
   const rawPageSize = parseInt(effectiveConfigs.promotionalItemsPerPage, 10);
   const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? rawPageSize : 12;
 
-  const promotionsUrl = getPromotionDataUrl(promotionApi.baseUrl, lang);
+  const promotionsUrl = promotionApi.baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
   const [activeData, cardRefConfig, placeholders] = await Promise.all([
     fetchPromotionalData(promotionsUrl),
-    fetchJson(effectiveConfigs.bbmCardRef || ''),
+    isBbm ? fetchJson(effectiveConfigs.bbmCardRef || '') : Promise.resolve(null),
     fetchPlaceholders(),
   ]);
   const activeCards = filterByPromotionType(activeData?.cards || [], promotionType);
@@ -487,6 +587,13 @@ export default async function decorate(block) {
   const promoSection = block.closest('.section');
   if (promoSection) promoSection.classList.add('promo-card-listing-section');
 
+  // Autoscroll on any promotions listing rendered in tabs. The listing lives in
+  // a .section.tabs-container — that section is the subnav we scroll to.
+  // Structural (no config gate); skipped when the URL targets an in-page anchor.
+  const tabsSection = block.closest('.section.tabs-container')
+    || document.querySelector('.section.tabs-container');
+  const autoScroll = !window.location.hash && !!tabsSection;
+
   if (tabsContainer) {
     const tabsNav = tabsContainer.querySelector('.tabs-nav');
     const navWrapper = tabsContainer.querySelector('.tabs-nav-wrapper');
@@ -512,17 +619,15 @@ export default async function decorate(block) {
       ? (tabsContainer?.querySelector(`#${tabBtnId}`) || document.getElementById(tabBtnId))
       : null;
     const tabText = tabBtn?.textContent?.trim() || '';
+    const tabTags = tabBtn?.dataset.tabCategoryTag;
 
     const dataSet = activeData;
     const dataCategories = dataSet?.categories || [];
     const dataCardTypes = activeCardTypes;
     const dataAreas = activeAreas;
-    const catMeta = dataCategories.find((c) => c.label.toLowerCase() === tabText.toLowerCase())
-      || {};
-    const category = catMeta.label || tabText;
-    const subcategories = catMeta.subcategories || [];
-
     const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText));
+    const category = tabTags || (isHighlightsPanel ? tabText : '');
+    const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
 
     setupPanel(
       panel,
@@ -539,6 +644,9 @@ export default async function decorate(block) {
         hidePagination: disableFilters && isBbm,
         isBbm,
         isHighlightsPanel,
+        // Autoscroll pages: render the active panel now so the page reaches its
+        // full height before we scroll (otherwise a short doc clamps the scroll).
+        immediate: autoScroll,
         baseUrl: promotionApi?.baseUrl,
       },
     );
@@ -550,6 +658,17 @@ export default async function decorate(block) {
       f.querySelector('.promo-selector-filter-btn')?.setAttribute('aria-expanded', 'false');
     });
   });
+
+  // Autoscroll to the subnav (keeps the header visible). One-shot so multiple
+  // blocks don't compete; runs on load if the document isn't ready yet.
+  if (autoScroll && !document.documentElement.dataset.promoAutoscrolled) {
+    document.documentElement.dataset.promoAutoscrolled = '1';
+    // Tag the tabs section with a stable id, then scroll to that id.
+    if (!tabsSection.id) tabsSection.id = SUBNAV_ID;
+    const run = () => scrollToSubnav(tabsSection.id);
+    if (document.readyState === 'complete') run();
+    else window.addEventListener('load', run, { once: true });
+  }
 
   block.hidden = true;
 }

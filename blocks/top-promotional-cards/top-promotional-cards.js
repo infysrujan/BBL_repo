@@ -1,7 +1,7 @@
 import {
   buildCardHtml,
   buildCardOptions,
-  fetchJson, sortCards,
+  fetchJson, sortCards, normalizeCategory,
 } from '../../scripts/utils/card-helpers.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
@@ -11,13 +11,9 @@ function filterCards(activeCards, tabText, isTopPromo) {
   if (isTopPromo) {
     return activeCards.filter((card) => card.topPromotion === true);
   }
-  const topCards = activeCards.filter(
-    (card) => card.topCategory === true
-      && card.category?.toLowerCase() === tabText.toLowerCase(),
-  );
-  if (topCards.length) return topCards;
+  const normalized = normalizeCategory(tabText);
   return activeCards.filter(
-    (card) => card.category?.toLowerCase() === tabText.toLowerCase(),
+    (card) => normalizeCategory(card.category) === normalized,
   );
 }
 
@@ -26,11 +22,12 @@ function setupPanel(panel, activeCards, placeholders) {
   const btnId = panel.getAttribute('aria-labelledby');
   const btn = btnId ? document.getElementById(btnId) : null;
   const tabText = btn?.textContent?.trim() || '';
+  const tabTags = btn?.dataset.tabCategoryTag;
 
   const topPromoTabLabel = (placeholders.topPromotionsTabLabel || 'toppromotions').toLowerCase().replace(/\s+/g, '');
   const isTopPromo = tabText.toLowerCase().replace(/\s+/g, '') === topPromoTabLabel;
 
-  let cards = sortCards(filterCards(activeCards, tabText, isTopPromo));
+  let cards = sortCards(filterCards(activeCards, tabTags, isTopPromo));
   if (isTopPromo) {
     if (!cards.length) {
       panel.hidden = true;
@@ -49,7 +46,7 @@ function setupPanel(panel, activeCards, placeholders) {
   cards = cards.slice(0, 4);
 
   const grid = document.createElement('div');
-  grid.className = 'promo-selector-grid top-promo-grid';
+  grid.className = 'promo-selector-grid top-promo-grid listing-card-grid';
   grid.innerHTML = cards.length
     ? cards.map((card) => buildCardHtml(card, card.category || tabText, placeholders, buildCardOptions(card))).join('')
     : `<p class="top-promo-empty">${noResultsText}</p>`;
@@ -60,7 +57,7 @@ function setupPanel(panel, activeCards, placeholders) {
 export default async function decorate(block) {
   const lang = getLang();
   const configs = await fetchConfigs();
-  const baseUrl = configs?.promoCardListingCardSelector || '';
+  const baseUrl = configs?.promotionalCardSelector || '';
   const promotionsUrl = baseUrl.replace(/\.json$/, lang !== 'en' ? `.${lang}.json` : '.json');
 
   const [data, placeholders] = await Promise.all([

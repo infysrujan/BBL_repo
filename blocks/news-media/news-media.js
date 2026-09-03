@@ -1,7 +1,9 @@
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { buildCardHtml, buildPaginationHtml, bindPaginationClick } from '../../scripts/utils/card-helpers.js';
+import {
+  buildCardHtml, buildPaginationHtml, bindPaginationClick, normalizeCategory,
+} from '../../scripts/utils/card-helpers.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const LOCALE_MAP = { th: 'th-TH', en: 'en-US' };
@@ -25,7 +27,7 @@ function filterAndPage(allCards, category, page, pageSize) {
   const filtered = category
     ? allCards.filter((c) => {
       const cats = Array.isArray(c.category) ? c.category : [c.category];
-      return cats.includes(category);
+      return cats.map(normalizeCategory).includes(normalizeCategory(category));
     })
     : allCards;
 
@@ -64,10 +66,10 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
       }).join('')
       : `<p class="listing-card-empty">${placeholders.newsMediaNoResults || 'No results found.'}</p>`;
 
-    paginationEl.innerHTML = buildPaginationHtml(state.page, totalPages);
-    bindPaginationClick(paginationEl, state, render, gridEl);
+    const carouselNavBtnsLabels = { prevBtnLabel: placeholders.carouselPrevBtnLabel || 'Previous', nextBtnLabel: placeholders.carouselNextBtnLabel || 'Next' };
+    paginationEl.innerHTML = buildPaginationHtml(state.page, totalPages, carouselNavBtnsLabels);
   }
-
+  bindPaginationClick(paginationEl, state, render, gridEl);
   render();
 }
 
@@ -81,7 +83,6 @@ async function renderNewsMedia(block) {
 
   const [data, placeholders] = await Promise.all([fetchJson(dataUrl), fetchPlaceholders()]);
   const allCards = data?.news || [];
-  const categories = data?.categories || [];
 
   document.querySelector('.tabs.block')?.classList.add('news-media-tabs');
 
@@ -89,10 +90,8 @@ async function renderNewsMedia(block) {
   tabPanels.forEach((panel) => {
     const tabBtnId = panel.getAttribute('aria-labelledby');
     const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
-    const tabText = tabBtn?.textContent?.trim() || '';
-
-    const catMeta = categories.find((c) => c.label.toLowerCase() === tabText.toLowerCase()) || {};
-    const category = catMeta.label || tabText;
+    const tabTags = tabBtn?.dataset.tabCategoryTag;
+    const category = tabTags;
 
     setupPanel(panel, allCards, category, locale, pageSize, placeholders);
   });

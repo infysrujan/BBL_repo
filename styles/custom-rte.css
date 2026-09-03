@@ -1,0 +1,105 @@
+.default-content-wrapper :is(ol, ul):not(:where(.footer-container) *) {
+  margin: 0 0 0 var(--bbl-space-250);
+  padding: 0;
+}
+
+.default-content-wrapper :is(ol, ul):not(:where(.footer-container) *) li {
+  margin: 0 0 0.625rem var(--bbl-space-250);
+}
+
+.default-content-wrapper :is(ol, ul):not(:where(.footer-container) *) li p {
+  margin: 0;
+}
+
+.default-content-wrapper p.rte-inline-image {
+  display: inline;
+  margin: 0;
+}
+
+.default-content-wrapper p:is(.rte-inline-image, .rte-has-icon) picture {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.columns p:is(.rte-has-icon, .rte-image-link, .rte-inline-image):has(picture) {
+  margin-block: 0;
+}
+
+.columns p:is(.rte-has-icon, .rte-image-link, .rte-inline-image):has(picture) picture {
+  display: flex;
+}
+
+.default-content-wrapper li:has(p:is(.rte-inline-image, .rte-has-icon)) p {
+  display: inline;
+  margin: 0;
+}
+
+.default-content-wrapper li:has(p:is(.rte-inline-image, .rte-has-icon)) p:has(picture) {
+  display: inline;
+}
+
+.table.block table td p:is(.rte-inline-image, .rte-has-icon, .rte-image-link) {
+  display: inline;
+  margin: 0;
+}
+
+.table.block table td p:is(.rte-inline-image, .rte-has-icon) picture {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.table.block table td p.rte-has-icon + p {
+  display: inline;
+  vertical-align: middle;
+}
+
+.table.block table td p:is(.rte-has-icon, .rte-image-link, .rte-inline-image):has(picture) {
+  margin-block: 0;
+}
+
+.table.block table td li:has(p:is(.rte-inline-image, .rte-has-icon)) p {
+  display: inline;
+  margin: 0;
+}
+
+.table.block table td li:has(p:is(.rte-inline-image, .rte-has-icon)) p:has(picture) {
+  display: inline;
+}
+
+.default-content-wrapper > p.rte-inline-image:has(picture):has(+ p.rte-inline-image:has(picture)),
+.default-content-wrapper > p.rte-inline-image:has(picture) + p.rte-inline-image:has(picture) {
+  display: inline;
+}
+
+.default-content-wrapper > p.rte-inline-image:not(.rte-image-link):has(+ p:not(.rte-inline-image)) {
+  display: inline-block;
+  vertical-align: middle;
+  margin-block: 0;
+}
+
+.default-content-wrapper > p.rte-inline-image:not(.rte-image-link) + p:not(.rte-inline-image) {
+  display: inline;
+  vertical-align: middle;
+}
+
+.default-content-wrapper > p.rte-has-icon:not(.rte-image-link):has(+ p.rte-has-icon:not(.rte-image-link)),
+.default-content-wrapper > p.rte-has-icon:not(.rte-image-link) + p.rte-has-icon:not(.rte-image-link) {
+  display: inline;
+}
+
+.default-content-wrapper li:has(> p:is(.rte-inline-image, .rte-has-icon) + p:is(.rte-inline-image, .rte-has-icon)) > p:is(.rte-inline-image, .rte-has-icon) {
+  display: inline;
+}
+
+.accordion-item :is(.default-content-wrapper, .table.block) table td :is(ul, ol) {
+  margin: 0 0 0 var(--bbl-space-250);
+  padding: 0;
+}
+
+.accordion-item :is(.default-content-wrapper, .table.block) table td :is(ul, ol) li {
+  margin: 0 0 0.625rem var(--bbl-space-250);
+}
+
+/* .default-content-wrapper > :not(.button-container, .footer-container) a:any-link {
+  color: inherit;
+} */

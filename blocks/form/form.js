@@ -1,6 +1,8 @@
 import { createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './components/repeat/repeat.js';
-import { emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE } from './constant.js';
+import {
+  emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE,
+} from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
 import { handleSubmit } from './submit.js';
@@ -8,8 +10,11 @@ import DocBasedFormToAF from './transform.js';
 import decorateCreditCardTractApplication from './form-custom/creditcard-track-application/creditcard-track-application.js';
 import decorateBondAllocationForm from './form-custom/bond-allocation/bond-allocation.js';
 import decorateSipForm from './form-custom/sip-form/sip-form.js';
+import decorateDebtSupportForm from './form-custom/debt-support/debt-support.js';
 import decorateSmeLoanForm from './form-custom/sme-loan-form/sme-loan-form.js';
 import decorateReliefMeasures from './form-custom/relief-measures/relief-measures.js';
+import decorateCreditCardForm from './form-custom/credit-card-form/credit-card-form.js';
+import decorateContactUsForm from './form-custom/contact-us/contact-us.js';
 import {
   checkValidation,
   createButton,
@@ -134,7 +139,7 @@ function createPlainText(fd) {
 function createImage(fd) {
   const field = createFieldWrapper(fd);
   field.id = fd?.id;
-  const imagePath = fd.value || fd.properties['fd:repoPath'] || '';
+  const imagePath = (fd.value || fd.properties['fd:repoPath'] || '').replaceAll('_', '-').toLowerCase();
   const altText = fd.altText || fd.name;
   field.append(createOptimizedPicture(imagePath, altText));
   return field;
@@ -251,6 +256,21 @@ function inputDecorator(field, element) {
   }
 }
 
+const REVIEW_TEXT_EXCLUDED_TYPES = ['radio', 'checkbox', 'file', 'hidden', 'submit', 'button', 'image', 'range', 'color'];
+function convertToReviewText(fieldWrapper) {
+  const input = fieldWrapper?.classList?.contains('field-wrapper') && !fieldWrapper.classList.contains('panel-wrapper')
+    ? fieldWrapper.querySelector(':scope > input')
+    : null;
+  if (!input || REVIEW_TEXT_EXCLUDED_TYPES.includes(input.type)) {
+    return;
+  }
+  const text = document.createElement('p');
+  text.id = input.id;
+  text.className = 'field-review-value';
+  text.textContent = input.value;
+  input.replaceWith(text);
+}
+
 function decoratePanelContainer(panelDefinition, panelContainer) {
   if (!panelContainer) return;
 
@@ -288,8 +308,15 @@ function renderField(fd) {
   return field;
 }
 
-export async function generateFormRendition(panel, container, formId, getItems = (p) => p?.items) {
+export async function generateFormRendition(
+  panel,
+  container,
+  formId,
+  getItems = (p) => p?.items,
+  insideReviewPanel = false,
+) {
   const items = getItems(panel) || [];
+  const isReviewContext = insideReviewPanel || !!container?.classList?.contains('form-review-2col');
   const promises = items.map(async (field) => {
     field.value = field.value ?? '';
     const { fieldType } = field;
@@ -312,8 +339,11 @@ export async function generateFormRendition(panel, container, formId, getItems =
     }
     colSpanDecorator(field, element);
     if (field?.fieldType === 'panel') {
-      await generateFormRendition(field, element, formId, getItems);
+      await generateFormRendition(field, element, formId, getItems, isReviewContext);
       return element;
+    }
+    if (isReviewContext) {
+      convertToReviewText(element);
     }
     await componentDecorator(element, field, container, formId);
     return element;
@@ -352,8 +382,11 @@ async function createFormForAuthoring(formDef) {
   decorateCreditCardTractApplication(form);
   decorateBondAllocationForm(form);
   decorateSipForm(form);
+  decorateDebtSupportForm(form);
   decorateSmeLoanForm(form);
   decorateReliefMeasures(form);
+  decorateCreditCardForm(form);
+  decorateContactUsForm(form);
   return form;
 }
 
@@ -411,8 +444,11 @@ export async function createForm(formDef, data, source = 'aem') {
   decorateCreditCardTractApplication(form);
   decorateBondAllocationForm(form);
   decorateSipForm(form);
+  decorateDebtSupportForm(form);
   decorateSmeLoanForm(form);
   decorateReliefMeasures(form);
+  decorateCreditCardForm(form);
+  decorateContactUsForm(form);
   return {
     form,
     captcha,

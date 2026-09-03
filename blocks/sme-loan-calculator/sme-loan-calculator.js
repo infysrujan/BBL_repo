@@ -33,7 +33,10 @@ export default async function decorate(block) {
     th.className = 'lineth';
     if (opts.rowSpan) th.rowSpan = opts.rowSpan;
     if (opts.colSpan) th.colSpan = opts.colSpan;
-    th.textContent = text;
+    const inner = document.createElement('span');
+    inner.className = 'lineth-inner';
+    inner.textContent = text;
+    th.appendChild(inner);
     row.appendChild(th);
     return th;
   }
@@ -169,25 +172,25 @@ export default async function decorate(block) {
   }
 
   // ── Field card builder ──
-  function buildFieldCard(f) {
-    const card = el('div', 'col-md-4 paddingcal');
-    const box = el('div', 'box-textbox');
+  function buildFieldCard(f, tabType) {
+    const cardClass = tabType === 'wc' ? 'sme-working-capital-fields' : 'sme-field-wrapper';
+    const card = el('div', cardClass);
+    const box = el('div', 'sme-field-text-box');
 
-    const lblCol = el('div', 'col-md-6 col-xs-6');
+    const lblCol = el('div', 'sme-first-column');
     const lbl = el('label', 'label-cal');
     lbl.setAttribute('for', f.id);
     lbl.textContent = f.label;
     lblCol.appendChild(lbl);
 
-    const inpCol = el('div', 'col-md-6 col-xs-6 alignright');
+    const inpCol = el('div', 'sme-second-column');
     const inp = el('input', 'textbox-cal');
     inp.type = 'text';
     inp.id = f.id;
     inp.autocomplete = 'off';
-    inp.inputMode = f.valueType === 'decimal' ? 'decimal' : 'numeric';
-    inp.value = f.valueType === 'decimal' ? '0.00' : '0';
-    // Consistent placeholder for every field (integer + decimal), so all tabs look alike.
-    inp.placeholder = f.valueType === 'decimal' ? '0.00' : '0';
+    const isDecimal = f.valueType === 'decimal' && !['H', 'C', 'F'].includes(f.id);
+    inp.inputMode = isDecimal ? 'decimal' : 'numeric';
+    inp.value = isDecimal ? '0.00' : '0';
     inpCol.appendChild(inp);
 
     box.appendChild(lblCol);
@@ -195,7 +198,7 @@ export default async function decorate(block) {
     card.appendChild(box);
 
     if (f.bottomText) {
-      const bt = el('div', 'fontcondition alignright padbottom25');
+      const bt = el('div', 'sme-field-unit');
       bt.textContent = f.bottomText;
       card.appendChild(bt);
     }
@@ -297,17 +300,17 @@ export default async function decorate(block) {
 
   const dark = el('div', 'sme-calc-dark-section');
   fieldGroups.forEach((group) => {
-    const row = el('div', 'row paddingmain');
+    const row = el('div', 'sme-field-rows');
     if (group.header) {
       const hdr = el('div', 'fontcontent');
       hdr.textContent = group.header;
       row.appendChild(hdr);
     }
-    group.fields.forEach((f) => row.appendChild(buildFieldCard(f)));
+    group.fields.forEach((f) => row.appendChild(buildFieldCard(f, calcType)));
     dark.appendChild(row);
   });
 
-  const btnRow = el('div', 'row paddingmain alignc');
+  const btnRow = el('div', 'sme-calculate-wrapper');
   const calcBtn = el('button', 'sme-calc-btn');
   calcBtn.type = 'button';
   calcBtn.textContent = buttonName || placeholders.smeCalcButton || 'CALCULATE';
@@ -349,21 +352,48 @@ export default async function decorate(block) {
     wc: placeholders.smeResultColWc || 'Working Capital',
   };
 
+  // Some table column headers come from placeholders instead of the authored field label.
+  const FIELD_HEADER_PLACEHOLDERS = {
+    n: 'smeResultColTerm',
+    H: 'smeResultColInventory',
+  };
+  const fieldHeaderLabel = (f) => {
+    const key = FIELD_HEADER_PLACEHOLDERS[f.id];
+    return key ? (placeholders[key] || f.label) : f.label;
+  };
+
+  // Comparison-table-only column order: under the Account Receivable / Account Payable
+  // groups, "Credit Term" swaps with the 3rd column so it renders last. The input form
+  // above (built from fieldGroups directly) keeps the authored order.
+  const TABLE_COLUMN_SWAP_GROUPS = ['account receivable', 'account payable'];
+  const tableGroupFields = (group) => {
+    const isSwapGroup = TABLE_COLUMN_SWAP_GROUPS.includes(group.header.trim().toLowerCase());
+    if (!isSwapGroup || group.fields.length < 3) return group.fields;
+    const reordered = [...group.fields];
+    [reordered[1], reordered[2]] = [reordered[2], reordered[1]];
+    return reordered;
+  };
+  const tableFieldGroups = fieldGroups.map((group) => ({
+    ...group,
+    fields: tableGroupFields(group),
+  }));
+  const tableFields = tableFieldGroups.flatMap((group) => group.fields);
+
   const resulttbl = el('div', 'resulttbl');
   const table = el('table', 'tablelong fontcomparetable');
   const thead = document.createElement('thead');
-  const hasGroups = fieldGroups.some((g) => g.header && g.fields.length > 1);
+  const hasGroups = tableFieldGroups.some((g) => g.header && g.fields.length > 1);
 
   if (hasGroups) {
     const row1 = document.createElement('tr');
     const row2 = document.createElement('tr');
     appendTh(row1, resultColHeader[calcType], { rowSpan: 2 });
-    fieldGroups.forEach((group) => {
+    tableFieldGroups.forEach((group) => {
       if (group.header && group.fields.length > 1) {
         appendTh(row1, group.header, { colSpan: group.fields.length });
-        group.fields.forEach((f) => appendTh(row2, f.label));
+        group.fields.forEach((f) => appendTh(row2, fieldHeaderLabel(f)));
       } else {
-        group.fields.forEach((f) => appendTh(row1, f.label, { rowSpan: 2 }));
+        group.fields.forEach((f) => appendTh(row1, fieldHeaderLabel(f), { rowSpan: 2 }));
       }
     });
     thead.appendChild(row1);
@@ -371,7 +401,7 @@ export default async function decorate(block) {
   } else {
     const headerRow = document.createElement('tr');
     appendTh(headerRow, resultColHeader[calcType]);
-    fields.forEach((f) => appendTh(headerRow, f.label));
+    tableFields.forEach((f) => appendTh(headerRow, fieldHeaderLabel(f)));
     thead.appendChild(headerRow);
   }
 
@@ -384,6 +414,8 @@ export default async function decorate(block) {
 
   // ── Values & calculation ──
   let lastResult = null;
+  // Holds the error text to show in the comparison table when the last calculation failed.
+  let lastErrorMessage = null;
 
   const getVal = (id) => {
     const inp = block.querySelector(`#${id}`);
@@ -396,6 +428,8 @@ export default async function decorate(block) {
     if (!Number.isFinite(n)) return 'N/A';
     return n.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
   };
+
+  const formatResult = (n) => (rc.integer ? Math.floor(n).toLocaleString('en-US') : fmt(n));
 
   // Build the variable map, applying the annual->monthly conversion only where needed.
   const compute = () => {
@@ -450,46 +484,73 @@ export default async function decorate(block) {
     lastResult = null;
   };
 
+  function clearFormAndResult() {
+    fields.forEach((f) => {
+      const inp = block.querySelector(`#${f.id}`);
+      if (!inp) return;
+      const isDecimal = f.valueType === 'decimal' && !['H', 'C', 'F'].includes(f.id);
+      inp.value = isDecimal ? '0.00' : '0';
+      inp.classList.remove('input-error');
+    });
+    touchedDecimalFields.clear();
+    lastResult = null;
+    lastErrorMessage = null;
+    resultLabel.textContent = `${resultValue}`;
+    resultLabel.style.whiteSpace = '';
+    tbody.innerHTML = '';
+    tableSection.hidden = true;
+  }
+
   calcBtn.addEventListener('click', () => {
     const { valid, showMessage } = validateAndMarkErrors();
     if (!valid) {
-      if (showMessage) showError(`${resultText} ${errorMessage}`);
+      if (showMessage) {
+        showError(`${resultText} ${errorMessage}`);
+        lastErrorMessage = errorMessage;
+      }
       return;
     }
 
     const raw = compute();
     // Term must be a positive, finite number of months; other tabs just need a finite number.
     const invalid = !Number.isFinite(raw) || (calcType === 'term' && !(raw > 0));
-    if (invalid) {
-      showError(errorMessage || 'Cannot Calculate');
-      return;
-    }
 
-    lastResult = raw;
     resultLabel.textContent = '';
     resultLabel.style.whiteSpace = 'pre-wrap';
     resultNum = el('strong', 'sme-result-number');
-    resultNum.textContent = rc.integer
-      ? Math.floor(lastResult).toLocaleString('en-US')
-      : fmt(lastResult);
-    resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
+    if (invalid || raw < 0) {
+      lastResult = null;
+      lastErrorMessage = errorMessage || 'Cannot Calculate';
+      resultNum.textContent = errorMessage || 'Cannot Calculate';
+      resultLabel.append(`${rc.prefix} `, resultNum);
+    } else {
+      lastResult = raw;
+      lastErrorMessage = null;
+      resultNum.textContent = formatResult(lastResult);
+      resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
+    }
   });
 
   // ── Input behaviour ──
   block.querySelectorAll('.textbox-cal').forEach((inp) => {
     const f = fields.find((x) => x.id === inp.id);
-    const decimal = f?.valueType === 'decimal';
+    const decimal = f?.valueType === 'decimal' && !['H', 'C', 'F'].includes(f?.id);
+    const isRateField = ['i', 'D', 'G'].includes(f?.id);
 
     inp.addEventListener('focus', () => {
-      if (inp.value === '0' || inp.value === '0.00') inp.select();
+      if (inp.value === '0' || inp.value === '0.00' || inp.value === '0.000') inp.value = '';
     });
 
     inp.addEventListener('blur', () => {
       const v = parseFloat(inp.value.replace(/,/g, ''));
       if (!Number.isFinite(v)) {
-        inp.value = decimal ? '0.00' : '0';
+        if (isRateField) inp.value = '0.000';
+        else inp.value = decimal ? '0.00' : '0';
       } else {
-        inp.value = decimal ? v.toFixed(2) : Math.round(v).toLocaleString('en-US');
+        const decPlaces = isRateField ? 3 : 2;
+        inp.value = decimal
+          ? v.toLocaleString('en-US', { minimumFractionDigits: decPlaces, maximumFractionDigits: decPlaces })
+          : Math.round(v).toLocaleString('en-US');
       }
     });
 
@@ -497,15 +558,48 @@ export default async function decorate(block) {
       inp.classList.remove('input-error');
       if (decimal) {
         touchedDecimalFields.add(f.id);
+
+        let maxBefore = 9;
+        let maxAfter = 2;
+        if (isRateField) {
+          maxBefore = 2;
+          maxAfter = 3;
+        } else if (f.id === 'H' || f.id === 'C' || f.id === 'F') {
+          maxBefore = 6;
+        } else if (f.id === 'A') {
+          maxBefore = 8;
+        } else if (f.id === 'n') {
+          maxBefore = 3;
+        }
+
+        const parts = inp.value.replace(/,/g, '').split('.');
+        if (parts[0].length > maxBefore) parts[0] = parts[0].slice(0, maxBefore);
+        if (parts[1] && parts[1].length > maxAfter) parts[1] = parts[1].slice(0, maxAfter);
+        const newValue = parts.join('.');
+
+        if (inp.value !== newValue) {
+          const pos = inp.selectionStart;
+          inp.value = newValue;
+          inp.setSelectionRange(pos, pos);
+        }
       } else {
         const pos = inp.selectionStart;
-        const raw = inp.value.replace(/,/g, '');
+        let raw = inp.value.replace(/,/g, '');
+
+        let limit = 9;
+        if (f.id === 'n') limit = 3;
+        else if (f.id === 'A') limit = 8;
+        else if (f.id === 'H' || f.id === 'C' || f.id === 'F') limit = 6;
+
+        if (raw.length > limit) raw = raw.slice(0, limit);
         const num = parseInt(raw, 10);
         if (!Number.isNaN(num)) {
           const formatted = num.toLocaleString('en-US');
           const delta = formatted.length - inp.value.length;
           inp.value = formatted;
           inp.setSelectionRange(pos + delta, pos + delta);
+        } else {
+          inp.value = '';
         }
       }
     });
@@ -524,14 +618,37 @@ export default async function decorate(block) {
 
   // ── Add to comparison table ──
   addBtn.addEventListener('click', () => {
-    if (lastResult === null) return;
+    if (lastResult === null && lastErrorMessage === null) return;
     tableSection.hidden = false;
-    const tr = document.createElement('tr');
-    appendTd(tr, rc.integer ? Math.floor(lastResult).toLocaleString('en-US') : fmt(lastResult));
-    fields.forEach((f) => {
+    const resultCell = lastResult === null ? lastErrorMessage : formatResult(lastResult);
+    const fieldValues = tableFields.map((f) => {
       const inp = block.querySelector(`#${f.id}`);
-      appendTd(tr, inp ? inp.value : '');
+      return inp ? inp.value : '';
     });
+    const newRowValues = [resultCell, ...fieldValues];
+    const existingRows = [...tbody.querySelectorAll('tr')].map((row) => [...row.children].map((td) => td.textContent.trim()));
+    const isDuplicate = existingRows.some((rowValues) => rowValues.length === newRowValues.length
+      && rowValues.every((val, idx) => val === newRowValues[idx]));
+    if (isDuplicate) return;
+
+    const tr = document.createElement('tr');
+    appendTd(tr, resultCell);
+    fieldValues.forEach((value) => appendTd(tr, value));
     tbody.appendChild(tr);
+
+    const maxRows = 5;
+    while (tbody.children.length > maxRows) tbody.removeChild(tbody.firstElementChild);
   });
+
+  // Reset form, result, and comparison table when switching simple tabs.
+  document.addEventListener('click', (e) => {
+    const simpleTab = e.target.closest('[data-tab-variant="simple-tab"]');
+    if (!simpleTab) return;
+
+    const tabPanel = block.closest('.tab-panel');
+    const tabRoot = tabPanel?.parentElement?.parentElement;
+    if (!tabRoot?.contains(simpleTab)) return;
+
+    clearFormAndResult();
+  }, true);
 }

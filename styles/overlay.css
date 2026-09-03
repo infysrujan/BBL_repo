@@ -36,11 +36,6 @@ body.modal-open {
     box-sizing: border-box;
 }
 
-.modal-body picture,
-.modal-body img {
-    display: block;
-}
-
 .modal-body picture {
     width: 100%;
 }
@@ -48,6 +43,11 @@ body.modal-open {
 .modal-body img {
     width: 100%;
     height: auto;
+}
+
+.modal-body .accordion-toolbar-icon{
+    height: 0.75rem;
+    width: 1.125rem;
 }
 
 .modal-close {

@@ -8,9 +8,7 @@
       padding: 0;
       color: var(--bbl-color-black);
       font-family: var(--bbl-font-family-medium);
-      font-size: var(--bbl-font-size-h3-mobile);
       font-weight: var(--bbl-font-weight-regular);
-      line-height: var(--bbl-line-height-h3-mobile);
       text-align: center;
     }
   }
@@ -21,6 +19,18 @@
     width: 100%;
     max-width: 46.25rem;
     margin-inline: auto;
+  }
+
+  & .form form .field-wrapper:has(>.field-description) {
+    margin-bottom: 1.5rem;
+    position: relative;
+
+    & .field-description {
+      position: absolute;
+      right: 0;
+      left: 0.875rem;
+      bottom: -1rem;
+    }
   }
 
   & :is(.form-wrapper, .form.block) {
@@ -38,7 +48,7 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--form-font-size-xs);
     line-height: var(--bbl-text-default-line-height);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
   }
 
   & .form form :is(p, .repeat-wrapper, .field-wrapper) {
@@ -47,17 +57,49 @@
 
   & .form form fieldset.panel-wrapper.field-wrapper > legend:not([data-visible='false']) {
     width: 100%;
-    margin: 20px 0 10px;
+    margin: 1.25rem 0 0.625rem;
     padding: var(--bbl-space-075);
     text-align: left;
-    font-size: var(--bbl-font-size-b2-desktop);
+    font-size: 1rem;
     line-height: var(--bbl-space-250);
-    color: var(--bbl-color-grey-160);
-    background-color: var(--bbl-color-gray-122);
+    color: var(--bbl-color-grey-156);
+    background-color: var(--bbl-color-gray-299);
     border-bottom: 0.0625rem solid var(--bbl-color-white);
     border-right: 0.0625rem solid var(--bbl-color-white);
-    font-weight: var(--bbl-font-weight-medium);
+    font-weight: 600;
     font-family: var(--bbl-font-family-primary);
+  }
+
+  & .form form input:disabled {
+    background-color: var(--bbl-color-gray-151);
+  }
+
+  & .form form input[type="number"] {
+    appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        appearance: none;
+        margin: 0;
+    }
+  }
+
+  & .form form input::-webkit-contacts-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+  }
+
+  & .form form select {
+    font-family: var(--bbl-font-family-medium);
+    font-size: 0.95rem;
+    font-weight: 400;
+  }
+
+  & .form form .field-description p {
+    text-align: right;
+    font-size: 0.875rem;
+    color: var(--bbl-color-gray-800);
   }
 
   & .form form .form-review-2col fieldset.panel-wrapper.field-wrapper > legend {
@@ -80,7 +122,7 @@
   }
 
   & .form form :is(.field-infotext p, .plain-text-wrapper p) {
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     font-size: var(--form-font-size-xs);
     line-height: 1.5625rem;
   }
@@ -93,7 +135,7 @@
     text-align: center;
     font-size: var(--form-font-size-xs);
     font-weight: var(--bbl-font-weight-medium);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
   }
 
   & .form form :is(.field-prefix-dropdown, .field-province).field-wrapper > .field-label {
@@ -122,6 +164,10 @@
     }
   }
 
+  & .form form .radio-group-wrapper > legend.field-label {
+    padding: 0.625rem 0;
+  }
+
   & .form form .radio-group-wrapper.field-convenienttime:not(.radio-tabs, .cards) {
     display: flex;
     flex-flow: column nowrap;
@@ -139,7 +185,7 @@
       flex-wrap: nowrap;
       width: auto;
       max-width: 100%;
-      min-width: 8.75rem;
+      min-width: 18rem;
       margin: 0;
       justify-content: flex-start;
 
@@ -162,7 +208,7 @@
     padding-left: var(--bbl-space-250);
     box-sizing: border-box;
     max-width: 100%;
-    text-align: left;
+    text-align: center;
     font-family: var(--bbl-font-family-bold);
     background: none;
     border: none;
@@ -254,6 +300,10 @@
     min-width: 0;
     box-sizing: border-box;
 
+    & .field-description {
+      bottom: -6.25rem;
+    }
+
     & :is(input, textarea, select) {
       width: 100%;
       max-width: 100%;
@@ -319,6 +369,20 @@
     scrollbar-width: thin;
   }
 
+  & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .plain-text-wrapper.tnc-text-decoration,
+  & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) fieldset.panel-wrapper .plain-text-wrapper.tnc-text-decoration {
+    max-height: 15.437rem;
+    margin-bottom: 1.875rem;
+  }
+
+  & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration > p > p:first-child {
+    padding-right: 0;
+  }
+
+  & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) input[type='checkbox'] {
+    top: -0.25rem;
+  }
+
   & .form form fieldset.panel-wrapper.field-wrapper:has(> .field-approvalcheckbox, > .field-privacy) .checkbox-wrapper {
     display: contents;
   }
@@ -340,8 +404,6 @@
     &.central-aligned > .default-content-wrapper {
       & h2 {
         margin: var(--bbl-space-500) 0 var(--bbl-space-300);
-        font-size: var(--bbl-font-size-h3-desktop);
-        line-height: var(--bbl-line-height-h3-desktop);
       }
     }
 
@@ -351,6 +413,15 @@
       & .radio-wrapper {
         margin: 0 var(--bbl-space-250);
       }
+    }
+
+    & .form form .field-wrapper:has(>.field-description) .field-description {
+      right: 0;
+      left: 1.25rem
+    }
+
+    & .form form fieldset.field-salutation-panel .text-wrapper .field-description {
+      left: -14.125rem;
     }
 
     & .form form .field-wrapper.col-4 {
@@ -394,5 +465,12 @@
     & .form form fieldset.panel-wrapper.field-wrapper > .checkbox-group-wrapper .checkbox-wrapper {
       width: calc(50% - var(--bbl-space-200));
     }
+
+    & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .plain-text-wrapper.tnc-text-decoration,
+    & .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) fieldset.panel-wrapper .plain-text-wrapper.tnc-text-decoration {
+      max-height: 9.375rem;
+      margin-bottom: 2.312rem;
+    }
   }
 }
+ 

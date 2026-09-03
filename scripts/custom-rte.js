@@ -1,53 +1,230 @@
-const ICON_MARKER_RE = /#icon(\d*)(?:-(inline|block))?/i;
-const DCW = '.default-content-wrapper';
+const NEWTAB_RE = /#(newtab)/i;
 
-export function decorateRteInlineImages(main) {
-  main.querySelectorAll(`${DCW} p, ${DCW} li, ${DCW} td`).forEach((el) => {
-    if (!el.innerHTML.includes('&amp;nbsp;')) return;
-    el.innerHTML = el.innerHTML.replace(/&amp;nbsp;/g, '&nbsp;');
+function walkToPicture(startNode, forward = true) {
+  let n = startNode;
+  while (n && n.nodeName !== 'PICTURE') n = forward ? n.nextSibling : n.previousSibling;
+  return n || null;
+}
+
+function adjacentPicture(p) {
+  return p.nextElementSibling?.querySelector('picture')
+    ?? p.previousElementSibling?.querySelector('picture')
+    ?? null;
+}
+
+function setPicDimensions(pic, w, h) {
+  pic.style.width = w;
+  pic.style.height = h;
+  const img = pic.querySelector('img');
+  if (img) { img.style.width = w; img.style.height = h; }
+}
+
+function processInlineImageMarkers(paragraphs) {
+  const INLINE_IMAGE_RE = /#inlineimage/i;
+  paragraphs.forEach((markerP) => {
+    if (!INLINE_IMAGE_RE.test(markerP.textContent)) return;
+
+    markerP.classList.add('rte-inline-image');
+
+    if (!markerP.querySelector('picture')) {
+      const nextEl = markerP.nextElementSibling;
+      const prevEl = markerP.previousElementSibling;
+      if (nextEl?.querySelector('picture')) nextEl.classList.add('rte-inline-image');
+      else if (prevEl?.querySelector('picture')) prevEl.classList.add('rte-inline-image');
+    }
+
+    const tw = document.createTreeWalker(markerP, NodeFilter.SHOW_TEXT);
+    for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+      if (INLINE_IMAGE_RE.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/#inlineimage\s*/gi, '');
+    }
+
+    if (!markerP.textContent.trim() && !markerP.querySelector('picture, img')) markerP.remove();
   });
+}
 
-  main.querySelectorAll(`${DCW} p picture, ${DCW} li picture`)
-    .forEach((pic) => pic.classList.add('rte-inline-image'));
+function processIconMarkers(paragraphs) {
+  const ICON_MARKER_RE = /#icon(\d*)(?:x(\d+))?(?:-(inline|block))?/i;
+  paragraphs.forEach((markerP) => {
+    if (!ICON_MARKER_RE.test(markerP.textContent)) return;
+    let hasIcon = false;
+    [...markerP.childNodes].forEach((node) => {
+      if (node.nodeType !== Node.TEXT_NODE) return;
+      const match = ICON_MARKER_RE.exec(node.nodeValue);
+      if (!match) return;
+      const [fullMatch, width, height] = match;
+      const w = parseInt(width, 10) || 40;
+      const widthPx = `${w}px`;
+      const heightPx = `${parseInt(height, 10) || w}px`;
 
-  main.querySelectorAll(`${DCW} p`).forEach((markerP) => {
-    const match = ICON_MARKER_RE.exec(markerP.textContent);
-    if (!match) return;
+      let pic = walkToPicture(node.nextSibling);
+      let textHandled = false;
 
-    const [fullMatch, size] = match;
-    const px = `${parseInt(size, 10) || 40}px`;
-
-    const prev = markerP.previousElementSibling;
-    const next = markerP.nextElementSibling;
-    const picture = (prev?.tagName === 'P' ? prev.querySelector('picture.rte-inline-image') : null)
-      ?? (next?.tagName === 'P' ? next.querySelector('picture.rte-inline-image') : null)
-      ?? markerP.querySelector('picture.rte-inline-image');
-
-    if (picture) {
-      picture.style.width = px;
-      picture.style.height = px;
-
-      const segments = markerP.innerHTML.split(/<br\s*\/?>/i);
-      const markerOnNewLine = segments.length > 1
-        && ICON_MARKER_RE.test(segments[segments.length - 1]);
-      const restText = markerP.textContent.replace(fullMatch, '').trim();
-
-      if (restText && !markerOnNewLine) {
-        markerP.innerHTML = markerP.innerHTML.replace(fullMatch, '').trimEnd();
-        const picP = picture.closest('p');
-        if (picP && picP !== markerP) {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'has-inline-icon';
-          markerP.parentNode.insertBefore(wrapper, markerP);
-          wrapper.append(markerP, picP);
+      if (!pic) {
+        const nextP = markerP.nextElementSibling?.tagName === 'P' ? markerP.nextElementSibling : null;
+        const prevP = markerP.previousElementSibling?.tagName === 'P' ? markerP.previousElementSibling : null;
+        const nextPic = nextP?.querySelector('picture');
+        const prevPic = prevP?.querySelector('picture');
+        let adjacentP = null;
+        if (nextPic) {
+          pic = nextPic;
+          adjacentP = nextP;
+        } else if (prevPic) {
+          pic = prevPic;
+          adjacentP = prevP;
         }
-      } else if (markerOnNewLine) {
-        markerP.innerHTML = segments.slice(0, -1).join('<br>').trimEnd();
-      } else {
-        markerP.remove();
+
+        if (adjacentP) {
+          const beforeText = node.nodeValue.slice(0, match.index);
+          const afterText = node.nodeValue.slice(match.index + fullMatch.length);
+          node.nodeValue = beforeText;
+          node.after(pic);
+          if (afterText) pic.after(document.createTextNode(afterText));
+          if (!adjacentP.textContent.trim() && !adjacentP.querySelector('a, img')) adjacentP.remove();
+          textHandled = true;
+        }
       }
+
+      if (pic) {
+        setPicDimensions(pic, widthPx, heightPx);
+        if (!textHandled) node.nodeValue = node.nodeValue.replace(fullMatch, '');
+        hasIcon = true;
+      }
+    });
+
+    if (hasIcon) {
+      if (!markerP.textContent.trim() && !markerP.querySelector('picture, a')) markerP.remove();
+      else if (markerP.querySelector('picture')) markerP.classList.add('rte-has-icon');
     }
   });
+}
+
+function processImageLinks(paragraphs) {
+  const IMAGE_LINK_RE = /#imagelink/i;
+  paragraphs.forEach((markerP) => {
+    if (!IMAGE_LINK_RE.test(markerP.textContent)) return;
+
+    const markerNode = [...markerP.childNodes].find(
+      (n) => n.nodeType === Node.TEXT_NODE && IMAGE_LINK_RE.test(n.nodeValue),
+    );
+    if (!markerNode) return;
+
+    // Search after markerNode then before it — icon processing may have already moved the picture
+    const pic = walkToPicture(markerNode.nextSibling)
+      ?? walkToPicture(markerNode.previousSibling, false)
+      ?? adjacentPicture(markerP);
+    if (!pic) return;
+
+    const picP = pic.closest('p');
+    let anchor = markerP.querySelector('a');
+    let linkP = null;
+
+    if (!anchor) {
+      const nextSib = picP?.nextElementSibling;
+      if (nextSib && nextSib !== markerP && !IMAGE_LINK_RE.test(nextSib.textContent)) {
+        anchor = nextSib.querySelector('a');
+        if (anchor) linkP = nextSib;
+      }
+    }
+    if (!anchor) {
+      const prevSib = picP?.previousElementSibling;
+      if (prevSib && prevSib !== markerP && !IMAGE_LINK_RE.test(prevSib.textContent)) {
+        anchor = prevSib.querySelector('a');
+        if (anchor) linkP = prevSib;
+      }
+    }
+    if (!anchor) return;
+
+    let openInNewTab = false;
+    [...markerP.childNodes].forEach((n) => {
+      if (n.nodeType !== Node.TEXT_NODE || !NEWTAB_RE.test(n.nodeValue)) return;
+      n.nodeValue = n.nodeValue.replace(NEWTAB_RE, '').trimEnd();
+      openInNewTab = true;
+    });
+
+    const link = anchor.cloneNode(false);
+    link.removeAttribute('class');
+    if (openInNewTab) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
+    pic.replaceWith(link);
+    link.append(pic);
+
+    markerNode.nodeValue = markerNode.nodeValue.replace(/#imagelink\s*/i, '');
+    if (markerP.contains(anchor)) anchor.remove();
+    linkP?.remove();
+
+    if (!markerP.textContent.trim() && !markerP.querySelector('picture, img')) markerP.remove();
+    else markerP.classList.add('rte-image-link');
+  });
+}
+
+function runRteMarkers(paragraphs) {
+  processInlineImageMarkers(paragraphs);
+  processIconMarkers(paragraphs);
+  processImageLinks(paragraphs);
+  paragraphs.forEach((p) => {
+    if (!p.isConnected) return;
+    if (p.classList.contains('rte-inline-image') && !p.querySelector('picture, img')) {
+      p.classList.remove('rte-inline-image');
+      return;
+    }
+    if (!p.classList.contains('rte-inline-image') || !p.querySelector('picture') || !p.textContent.trim()) return;
+    let next = p.nextElementSibling;
+    while (next?.classList.contains('rte-inline-image') && !next.textContent.trim()) {
+      const pic = next.querySelector('picture');
+      if (!pic) break;
+      p.append(pic.closest('a') ?? pic);
+      const done = next;
+      next = done.nextElementSibling;
+      done.remove();
+    }
+  });
+}
+
+export function decorateEncodedNbsp(root, selector = 'p, li, td') {
+  root.querySelectorAll(selector).forEach((el) => {
+    if (el.innerHTML.includes('&amp;nbsp;')) {
+      el.innerHTML = el.innerHTML.replace(/&amp;nbsp;/g, '&nbsp;');
+    }
+    if (el.tagName === 'P' && /^\u00A0+$/.test(el.textContent)) {
+      el.classList.add('rte-nbsp-only');
+    }
+  });
+}
+
+export function decorateIconInContainer(container) {
+  decorateEncodedNbsp(container);
+  runRteMarkers([...container.querySelectorAll('p')]);
+}
+
+const INLINE_WRAPPERS = new Set(['STRONG', 'EM', 'U', 'SPAN', 'B', 'I']);
+
+function stripMarker(node, trimEnd) {
+  if (!node || node.nodeType !== Node.TEXT_NODE || !NEWTAB_RE.test(node.nodeValue)) return false;
+  const v = node.nodeValue.replace(NEWTAB_RE, '');
+  node.nodeValue = trimEnd ? v.trimEnd() : v.trimStart();
+  return true;
+}
+
+export function decorateNewTabLinks(container) {
+  container.querySelectorAll('a').forEach((a) => {
+    const href = a.getAttribute('href') || '';
+    const inHref = NEWTAB_RE.test(href);
+    const parent = a.parentElement;
+    const isWrapped = parent && parent !== container && INLINE_WRAPPERS.has(parent.tagName);
+    const found = [
+      stripMarker(a.previousSibling, true),
+      stripMarker(a.nextSibling, false),
+      isWrapped && stripMarker(parent.previousSibling, true),
+      isWrapped && stripMarker(parent.nextSibling, false),
+    ].some(Boolean);
+    if (!inHref && !found) return;
+    if (inHref) a.setAttribute('href', href.replace(NEWTAB_RE, ''));
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+  });
+}
+
+export function decorateRteInlineImages(main) {
+  runRteMarkers([...main.querySelectorAll('.default-content-wrapper p')]);
 }
 
 /**

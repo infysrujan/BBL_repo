@@ -52,6 +52,7 @@
       "privacy-modal",
       "external-redirect-popup",
       "credit-card-selector",
+      "credit-card-results",
       "credit-card-comparator",
       "card-comparator-results",
       "video",
@@ -81,6 +82,7 @@
       "latest-news",
       "forward-points-sme",
       "saving-plan",
+      "bwealth-series",
       "category-banner",
       "bbm-glow-card",
       "menu-list",
@@ -91,6 +93,7 @@
       "mf-comparator",
       "mf-questionnaire",
       "cc-campaign",
+      "header-banner-slide",
       "custom-button"
     ]
   },
@@ -289,22 +292,10 @@
     ]
   },
   {
-    "id": "fund-prices-table",
-    "rte": {
-      "toolbar": {
-        "insert": [
-          "table"
-        ],
-        "editor": [
-          "removeformat"
-        ],
-        "sections": [
-          "insert",
-          "editor"
-        ]
-      }
-    },
-    "components": []
+    "id": "header-banner-slide",
+    "components": [
+      "credit-card"
+    ]
   },
   {
     "id": "header-section",
@@ -493,18 +484,24 @@
       "warning-card",
       "menu-cards",
       "carousel-dotted",
+      "menu-banner",
       "cross-banner",
       "form",
       "embed-adaptive-form",
+      "content-insert-cards",
+      "menu-card-actions",
       "download-file",
+      "teaser-with-bg-image",
       "table",
       "accordion-block",
+      "rate-card",
+      "card-list",
+      "video",
+      "stock-ticker",
+      "menu-list",
       "forex-rates",
       "forex-graph",
-      "sme-loan-calculator",
-      "table",
-      "card-list",
-      "menu-card-actions"
+      "sme-loan-calculator"
     ]
   },
   {

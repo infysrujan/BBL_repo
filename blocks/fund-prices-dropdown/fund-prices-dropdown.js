@@ -1,8 +1,20 @@
 import { attachCalendarPicker, formatCalendarDate, getCalendarLang } from '../../scripts/utils/calendar-picker.js';
-import { parseLocalDateFromYmd, getApiUrls } from '../fund-prices-table/fund-prices-table.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { fetchConfigs } from '../../scripts/config.js';
+import { fetchPlaceholders } from '../../scripts/placeholder.js';
 
 export const MAX_FUND_PRICE_HISTORY_YEARS = 3;
+
+function parseLocalDateFromYmd(ymd) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd).trim());
+  if (!m) return null;
+  const y = Number(m[1]);
+  const mo = Number(m[2]) - 1;
+  const d = Number(m[3]);
+  const date = new Date(y, mo, d);
+  if (date.getFullYear() !== y || date.getMonth() !== mo || date.getDate() !== d) return null;
+  return date;
+}
 
 function pad2(n) {
   return String(n).padStart(2, '0');
@@ -33,20 +45,41 @@ function isRangeExceedsLimit(fromDate, toDate) {
   return fromDate < limitedFrom;
 }
 
+function isToBeforeFrom(fromDate, toDate) {
+  return toDate < fromDate;
+}
+
+function isWeekendOrAfterYesterday(date) {
+  const day = date.getDay();
+  if (day === 0 || day === 6) return true;
+  const now = new Date();
+  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+  return date > yesterday;
+}
+
 async function fetchFundDetailStats(fundId, fromDate, toDate) {
-  const { apiBase } = await getApiUrls();
+  const configs = await fetchConfigs();
+  const apiBase = configs.fundPricesApiUrl || '';
   const data = await fetchGet(`${apiBase}/Fund_Nav/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
   return Array.isArray(data) ? data[0] : data;
 }
 
 async function fetchFundDetailHistory(fundId, fromDate, toDate) {
-  const { apiBase } = await getApiUrls();
+  const configs = await fetchConfigs();
+  const apiBase = configs.fundPricesApiUrl || '';
   const data = await fetchGet(`${apiBase}/FundPrice/${fundId}/${formatDatePath(fromDate)}/${formatDatePath(toDate)}/N`);
   return Array.isArray(data) ? data : [];
 }
 
 function fmtNav(v) {
+  const num = Number(v);
+  if (!Number.isNaN(num) && num === 0) return 'N/A';
   return typeof v === 'number' ? v.toFixed(4) : (v ?? 'N/A');
+}
+
+function fmtHeaderNav(v) {
+  const navStr = fmtNav(v);
+  return navStr === 'N/A' ? '0.00' : navStr;
 }
 
 function fmtHistDate(ymd) {
@@ -55,7 +88,7 @@ function fmtHistDate(ymd) {
   return `${m[3]}/${m[2]}/${m[1]}`;
 }
 
-function renderStatTables(stats, highTbody, lowTbody, rowLabels) {
+function renderStatTables(stats, highTbody, lowTbody, rowLabels, noDataLabel) {
   const rows = [
     {
       label: rowLabels[0],
@@ -85,19 +118,43 @@ function renderStatTables(stats, highTbody, lowTbody, rowLabels) {
     tbody.innerHTML = '';
   });
 
+  const allHiNA = rows.every(({ hi }) => fmtNav(hi) === 'N/A');
+  const allLoNA = rows.every(({ lo }) => fmtNav(lo) === 'N/A');
+
+  if (allHiNA) {
+    const tr = highTbody.ownerDocument.createElement('tr');
+    tr.innerHTML = `<td colspan="2" class="stat-no-data">${noDataLabel}</td>`;
+    highTbody.appendChild(tr);
+  }
+  if (allLoNA) {
+    const tr = lowTbody.ownerDocument.createElement('tr');
+    tr.innerHTML = `<td colspan="2" class="stat-no-data">${noDataLabel}</td>`;
+    lowTbody.appendChild(tr);
+  }
+
   rows.forEach(({
     label, hi, hiDate, lo, loDate,
   }) => {
-    [[highTbody, hi, hiDate], [lowTbody, lo, loDate]].forEach(([tbody, val, date]) => {
+    const targets = [
+      [highTbody, hi, hiDate, allHiNA],
+      [lowTbody, lo, loDate, allLoNA],
+    ];
+    targets.forEach(([tbody, val, date, skip]) => {
+      if (skip) return;
       const tr = tbody.ownerDocument.createElement('tr');
-      const dateStr = date ? ` "${fmtHistDate(date)}"` : '';
-      tr.innerHTML = `<td>${label}${dateStr}</td><td class="stat-nav-val">${fmtNav(val)}</td>`;
+      const navStr = fmtNav(val);
+      const isNoData = navStr === 'N/A';
+      let dateStr = '';
+      if (isNoData) dateStr = ' "-"';
+      else if (date) dateStr = ` "${fmtHistDate(date)}"`;
+      const navDisplay = isNoData ? noDataLabel : navStr;
+      tr.innerHTML = `<td>${label}${dateStr}</td><td class="stat-nav-val">${navDisplay}</td>`;
       tbody.appendChild(tr);
     });
   });
 }
 
-function renderChart(svgEl, history, period) {
+function renderChart(svgEl, history, period, noDataLabel) {
   svgEl.innerHTML = '';
   const doc = svgEl.ownerDocument;
   const ns = 'http://www.w3.org/2000/svg';
@@ -109,19 +166,12 @@ function renderChart(svgEl, history, period) {
     return e;
   }
 
-  if (!history || history.length < 2) {
-    el('text', {
-      x: '50%',
-      y: '50%',
-      'text-anchor': 'middle',
-      'font-size': 14,
-      fill: '#999',
-    }, svgEl).textContent = 'No data';
-    return;
-  }
+  const hasHistory = history && history.length > 0;
+  const hasData = hasHistory && history.some((d) => Number(d.mfr_fNav) !== 0);
+  const points = hasHistory ? history : [{ mfr_fNav: 0, mfr_dDataDate: '' }];
 
   const isMobileView = typeof window !== 'undefined' && window.innerWidth < 768;
-  const useRotation = period !== '1W';
+  const useRotation = hasData && points.length > 1 && (period !== '1W' || isMobileView);
   const padB = useRotation ? 70 : 40;
   const H = useRotation ? 360 : 300;
   const padL = 58;
@@ -132,20 +182,24 @@ function renderChart(svgEl, history, period) {
   const wrapPadH = wrapStyle
     ? parseFloat(wrapStyle.paddingLeft) + parseFloat(wrapStyle.paddingRight)
     : 0;
-  const W = isMobileView ? Math.max((chartWrap?.clientWidth || 400) - wrapPadH, 280) : 940;
+  const W = Math.max((chartWrap?.clientWidth || 400) - wrapPadH, 280);
   svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svgEl.style.minWidth = '';
+  svgEl.style.width = `${W}px`;
+  svgEl.style.height = `${H}px`;
   const innerW = W - padL - padR;
   const innerH = H - padT - padB;
 
-  const navs = history.map((d) => d.mfr_fNav);
+  const navs = points.map((d) => d.mfr_fNav);
   const rawMin = Math.min(...navs);
   const rawMax = Math.max(...navs);
   const tickStep = 0.5;
-  const yMax = Math.ceil(rawMax);
-  const yMin = Math.floor(rawMin / tickStep) * tickStep - tickStep;
+  const yMax = hasData ? Math.ceil(rawMax) : 0.5;
+  const yMin = hasData ? Math.floor(rawMin) : 0;
 
-  const xPos = (i) => padL + (i / (history.length - 1)) * innerW;
+  const xPos = (i) => (points.length > 1
+    ? padL + (i / (points.length - 1)) * innerW
+    : padL + innerW / 2);
   const yPos = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * innerH;
 
   const ticks = [];
@@ -157,29 +211,29 @@ function renderChart(svgEl, history, period) {
       y1: y,
       x2: W - padR,
       y2: y,
-      stroke: '#E8E8E8',
+      stroke: 'var(--bbl-color-gray-122)',
       'stroke-width': 1,
     }, svgEl);
     el('text', {
       x: padL - 8,
       y: y + 4,
       'text-anchor': 'end',
-      'font-size': 11,
-      fill: '#78787D',
-      'font-family': 'BangkokBank-Regular,Arial,sans-serif',
+      'font-size': 'var(--bbl-body-b1-size)',
+      fill: 'var(--bbl-color-black)',
+      'font-weight': 'bold',
+      'font-family': 'var(--bbl-font-family-primary)',
     }, svgEl).textContent = v.toFixed(1);
   });
 
-  const lastIdx = history.length - 1;
+  const lastIdx = points.length - 1;
   let labelSet;
   if (!useRotation) {
-    // 1W: always show first, middle, last
-    const midIdx = Math.round(lastIdx / 2);
-    labelSet = new Set([0, midIdx, lastIdx]);
+    // 1W: show every data point
+    labelSet = new Set(points.map((_, i) => i));
   } else {
-    const labelSpacing = isMobileView ? 38 : 50;
-    const maxXLabels = Math.min(history.length, Math.floor(innerW / labelSpacing));
-    const xLabelStep = Math.max(1, Math.ceil(history.length / maxXLabels));
+    const labelSpacing = isMobileView ? 80 : 50;
+    const maxXLabels = Math.min(points.length, Math.floor(innerW / labelSpacing));
+    const xLabelStep = Math.max(1, Math.ceil(points.length / maxXLabels));
     const prevRegularIdx = Math.floor(lastIdx / xLabelStep) * xLabelStep;
     const pixelGap = lastIdx > 0 ? (xPos(lastIdx) - xPos(prevRegularIdx)) : Infinity;
     const tooClose = prevRegularIdx !== lastIdx && pixelGap < labelSpacing;
@@ -190,47 +244,49 @@ function renderChart(svgEl, history, period) {
     labelSet.add(lastIdx);
   }
 
-  history.forEach((d, i) => {
+  points.forEach((d, i) => {
     const x = xPos(i);
     const isLabelPoint = labelSet.has(i);
     if (isLabelPoint) {
-      el('line', {
-        x1: x,
-        y1: padT,
-        x2: x,
-        y2: H - padB,
-        stroke: '#E8E8E8',
-        'stroke-width': 1,
-      }, svgEl);
+      if (points.length > 1) {
+        el('line', {
+          x1: x,
+          y1: padT,
+          x2: x,
+          y2: H - padB,
+          stroke: 'var(--bbl-color-gray-122)',
+          'stroke-width': 1,
+        }, svgEl);
+      }
       // eslint-disable-next-line no-nested-ternary
-      const anchor = useRotation ? 'end' : (i === lastIdx ? 'end' : (i === 0 ? 'start' : 'middle'));
-      const clampedX = (!useRotation && i === lastIdx) ? Math.min(x, W - 4) : x;
+      const anchor = !hasData ? 'middle' : (useRotation ? 'end' : (i === lastIdx ? 'end' : (i === 0 ? 'start' : 'middle')));
+      const clampedX = (hasData && !useRotation && i === lastIdx) ? Math.min(x, W - 4) : x;
       const txtAttrs = {
         x: clampedX,
         y: H - padB + (useRotation ? 14 : 20),
         'text-anchor': anchor,
-        'font-size': 11,
-        fill: '#002850',
+        'font-size': 'var(--bbl-body-b1-size)',
+        fill: 'var(--bbl-color-black)',
         'font-weight': 'bold',
         'font-family': 'BangkokBank-Bold,Arial,sans-serif',
       };
       if (useRotation) txtAttrs.transform = `rotate(-45, ${clampedX}, ${H - padB + 14})`;
       const txt = el('text', txtAttrs, svgEl);
-      txt.textContent = fmtHistDate(d.mfr_dDataDate);
+      txt.textContent = hasData ? fmtHistDate(d.mfr_dDataDate) : (noDataLabel || 'No data found');
     }
   });
 
-  const pts = history.map((d, i) => `${xPos(i)},${yPos(d.mfr_fNav)}`).join(' ');
+  const pts = points.map((d, i) => `${xPos(i)},${yPos(d.mfr_fNav)}`).join(' ');
 
-  history.forEach((d, i) => {
+  points.forEach((d, i) => {
     const cx = xPos(i);
     const cy = yPos(d.mfr_fNav);
     el('circle', {
       cx,
       cy,
       r: 1.8,
-      fill: '#002850',
-      stroke: '#002850',
+      fill: 'var(--bbl-color-blue-indigo)',
+      stroke: 'var(--bbl-color-blue-indigo)',
       'stroke-width': 1,
     }, svgEl);
   });
@@ -238,102 +294,177 @@ function renderChart(svgEl, history, period) {
   el('polyline', {
     points: pts,
     fill: 'none',
-    stroke: '#002850',
+    stroke: 'var(--bbl-color-blue-indigo)',
     'stroke-width': 2,
     'stroke-linejoin': 'round',
     'stroke-linecap': 'round',
   }, svgEl);
 
+  const TT_W = 88;
+  const TT_H = 54;
+  const TT_GAP = 8;
   const tooltipG = el('g', { style: 'display:none; pointer-events:none' }, svgEl);
-  el('rect', {
-    width: 120,
-    height: 54,
+  const tooltipRect = el('rect', {
+    width: TT_W,
+    height: TT_H,
     rx: 6,
     fill: '#1a2e4a',
   }, tooltipG);
+  const tooltipTail = el('path', { fill: '#1a2e4a' }, tooltipG);
   const tooltipDate = el('text', {
-    x: 10,
-    y: 20,
+    'text-anchor': 'middle',
     fill: '#b0c4d8',
     'font-size': 11,
     'font-family': 'BangkokBank-Regular,Arial,sans-serif',
   }, tooltipG);
   const tooltipVal = el('text', {
-    x: 10,
-    y: 42,
-    fill: '#ffffff',
+    'text-anchor': 'middle',
+    fill: 'var(--bbl-color-white)',
     'font-size': 15,
     'font-family': 'BangkokBank-Medium,Arial,sans-serif',
   }, tooltipG);
 
-  history.forEach((d, i) => {
-    const cx = xPos(i);
-    const cy = yPos(d.mfr_fNav);
-    const hit = el('circle', {
-      cx,
-      cy,
-      r: 14,
-      fill: 'transparent',
-      style: 'cursor:pointer',
-    }, svgEl);
-    hit.addEventListener('mouseenter', () => {
-      tooltipG.style.display = '';
-      let tx = cx + 12;
-      let ty = cy - 62;
-      if (tx + 124 > W) tx = cx - 132;
-      if (ty < 0) ty = cy + 10;
-      tooltipG.setAttribute('transform', `translate(${tx},${ty})`);
-      tooltipDate.textContent = fmtHistDate(d.mfr_dDataDate);
-      tooltipVal.textContent = fmtNav(d.mfr_fNav);
+  const canHover = typeof window !== 'undefined'
+    && window.matchMedia
+    && window.matchMedia('(hover: hover)').matches;
+
+  if (hasData) {
+    points.forEach((d, i) => {
+      const cx = xPos(i);
+      const cy = yPos(d.mfr_fNav);
+      const hit = el('circle', {
+        cx,
+        cy,
+        r: 14,
+        fill: 'transparent',
+        style: 'cursor:pointer',
+      }, svgEl);
+      const showTooltip = () => {
+        tooltipG.style.display = '';
+        let rectX = -TT_W / 2;
+        if (cx + rectX < 0) rectX = -cx;
+        if (cx + rectX + TT_W > W) rectX = W - TT_W - cx;
+        const above = cy - TT_GAP - TT_H >= 0;
+        const boxY = above ? -TT_H - TT_GAP : TT_GAP;
+        tooltipRect.setAttribute('x', rectX);
+        tooltipRect.setAttribute('y', boxY);
+        tooltipTail.setAttribute('d', above
+          ? `M -5,${-TT_GAP} L 5,${-TT_GAP} L 0,-2 Z`
+          : `M -5,${TT_GAP} L 5,${TT_GAP} L 0,2 Z`);
+        tooltipDate.setAttribute('x', rectX + TT_W / 2);
+        tooltipDate.setAttribute('y', boxY + 20);
+        tooltipVal.setAttribute('x', rectX + TT_W / 2);
+        tooltipVal.setAttribute('y', boxY + 42);
+        tooltipG.setAttribute('transform', `translate(${cx},${cy})`);
+        tooltipDate.textContent = fmtHistDate(d.mfr_dDataDate);
+        tooltipVal.textContent = fmtNav(d.mfr_fNav);
+      };
+      if (canHover) {
+        hit.addEventListener('mouseenter', showTooltip);
+        hit.addEventListener('mouseleave', () => { tooltipG.style.display = 'none'; });
+      }
+      hit.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(); });
     });
-    hit.addEventListener('mouseleave', () => { tooltipG.style.display = 'none'; });
-  });
+  } else {
+    const label = noDataLabel || 'No data found';
+    const textW = Math.max(60, label.length * 6.5 + 20);
+    const boxH = 30;
+    const noDataTooltipG = el('g', { style: 'display:none; pointer-events:none' }, svgEl);
+    el('rect', {
+      x: -textW / 2,
+      y: -boxH - 8,
+      width: textW,
+      height: boxH,
+      rx: 6,
+      fill: '#1a2e4a',
+    }, noDataTooltipG);
+    el('path', {
+      d: `M -5,${-8} L 5,${-8} L 0,${-2} Z`,
+      fill: '#1a2e4a',
+    }, noDataTooltipG);
+    el('text', {
+      x: 0,
+      y: -boxH / 2 - 8 + 4,
+      'text-anchor': 'middle',
+      fill: 'var(--bbl-color-white)',
+      'font-size': 'var(--bbl-body-b3-size)',
+      'font-family': 'BangkokBank-Medium,Arial,sans-serif',
+    }, noDataTooltipG).textContent = label;
+
+    points.forEach((d, i) => {
+      const cx = xPos(i);
+      const cy = yPos(d.mfr_fNav);
+      const hit = el('circle', {
+        cx,
+        cy,
+        r: 14,
+        fill: 'transparent',
+        style: 'cursor:pointer',
+      }, svgEl);
+      const showNoDataTooltip = () => {
+        noDataTooltipG.style.display = '';
+        noDataTooltipG.setAttribute('transform', `translate(${cx},${cy})`);
+      };
+      if (canHover) {
+        hit.addEventListener('mouseenter', showNoDataTooltip);
+        hit.addEventListener('mouseleave', () => { noDataTooltipG.style.display = 'none'; });
+      }
+      hit.addEventListener('click', (e) => { e.stopPropagation(); showNoDataTooltip(); });
+    });
+  }
 }
 
-function renderHistTable(tbody, history) {
+function renderHistTable(tbody, history, noDataLabel) {
   tbody.innerHTML = '';
   history.forEach((d) => {
     const tr = tbody.ownerDocument.createElement('tr');
-    tr.innerHTML = `<td>${fmtHistDate(d.mfr_dDataDate)}</td>`
-      + `<td>${fmtNav(d.mfr_fNav)}</td>`
-      + `<td>${fmtNav(d.mfr_fBuy)}</td>`
-      + `<td>${fmtNav(d.mfr_fSel)}</td>`;
+    const isNoData = fmtNav(d.mfr_fNav) === 'N/A';
+    const dateDisplay = isNoData ? '' : fmtHistDate(d.mfr_dDataDate);
+    const navDisplay = isNoData ? noDataLabel : fmtNav(d.mfr_fNav);
+    const selDisplay = isNoData ? noDataLabel : fmtNav(d.mfr_fSel);
+    const buyDisplay = isNoData ? noDataLabel : fmtNav(d.mfr_fBuy);
+    tr.innerHTML = `<td>${dateDisplay}</td>`
+      + `<td>${navDisplay}</td>`
+      + `<td>${selDisplay}</td>`
+      + `<td>${buyDisplay}</td>`;
     tbody.appendChild(tr);
   });
 }
 
 export default async function decorate(block) {
-  const authoredRows = [...block.children];
-  function txt(i, fallback) {
-    return authoredRows[i]?.querySelector('p')?.textContent?.trim() || fallback;
+  const ph = await fetchPlaceholders();
+  function txt(phKey) {
+    return ph[phKey];
   }
   const labels = {
-    title: txt(0, 'Fund Price Details'),
-    printLabel: txt(1, 'Print'),
-    backLabel: txt(2, 'Fund Prices'),
-    statHighHeader: txt(3, 'Highest Fund Price'),
-    statLowHeader: txt(4, 'Lowest Fund Price'),
-    navColHeader: txt(5, 'NAV'),
-    graphTab: txt(6, 'GRAPH'),
-    tableTab: txt(7, 'VIEW TABLE DATA'),
-    beginNavLabel: txt(8, 'Beginning NAV'),
-    endNavLabel: txt(9, 'Ending NAV'),
-    histDateHeader: txt(10, 'Date'),
-    histSellHeader: txt(11, 'Selling Price'),
-    histRedeemHeader: txt(12, 'Redemption Price'),
-    statRowSelected: txt(13, 'In the selected period'),
-    statRowYear: txt(14, 'During the last 12 months'),
-    statRowInception: txt(15, 'Since Inception'),
-    fromLabel: txt(16, 'From'),
-    toLabel: txt(17, 'To'),
-    rangeError: txt(18, 'Date range should be between 3 years'),
-    period1w: txt(19, '1 Week'),
-    period1m: txt(20, '1 Month'),
-    period3m: txt(21, '3 Months'),
-    period6m: txt(22, '6 Months'),
-    period1y: txt(23, '1 Year'),
-    period3y: txt(24, '3 Years'),
-    periodDr: txt(25, 'Date Range'),
+    title: txt('fundPricesDropdownTitle'),
+    printLabel: txt('fundPricesDropdownPrint'),
+    backLabel: txt('fundPricesDropdownBack'),
+    statHighHeader: txt('fundPricesDropdownStatHigh'),
+    statLowHeader: txt('fundPricesDropdownStatLow'),
+    navColHeader: txt('fundPricesDropdownNav'),
+    graphTab: txt('fundPricesDropdownGraph'),
+    tableTab: txt('fundPricesDropdownTable'),
+    beginNavLabel: txt('fundPricesDropdownBeginNav'),
+    endNavLabel: txt('fundPricesDropdownEndNav'),
+    histDateHeader: txt('fundPricesDropdownHistDate'),
+    histSellHeader: txt('fundPricesDropdownHistSell'),
+    histRedeemHeader: txt('fundPricesDropdownHistRedeem'),
+    statRowSelected: txt('fundPricesDropdownStatSelected'),
+    statRowYear: txt('fundPricesDropdownStatYear'),
+    statRowInception: txt('fundPricesDropdownStatInception'),
+    noDataFound: txt('fundPricesDropdownNoData'),
+    fromLabel: txt('fundPricesDropdownFrom'),
+    toLabel: txt('fundPricesDropdownTo'),
+    rangeError: txt('fundPricesDropdownRangeError'),
+    toBeforeFromError: txt('fundPricesDropdownToBeforeFromError'),
+    period1w: txt('fundPricesDropdownPeriod1w'),
+    period1m: txt('fundPricesDropdownPeriod1m'),
+    period3m: txt('fundPricesDropdownPeriod3m'),
+    period6m: txt('fundPricesDropdownPeriod6m'),
+    period1y: txt('fundPricesDropdownPeriod1y'),
+    period3y: txt('fundPricesDropdownPeriod3y'),
+    periodDr: txt('fundPricesDropdownPeriodDr'),
   };
   const PERIOD_OPTIONS = [
     { code: '1W', label: labels.period1w },
@@ -350,7 +481,7 @@ export default async function decorate(block) {
       <div class="fdd-print-datetime"></div>
       <div class="fdd-print-page-title">Fund Prices - BBL Asset Management</div>
       <div></div>
-      <div class="fdd-print-logo"><img src="/icons/logo.svg" alt="Bangkok Bank" /></div>
+      <div class="fdd-print-logo"></div>
       <div></div>
       <div class="fdd-print-search">${labels.backLabel === 'Fund Prices' ? 'Search Fund' : labels.backLabel}</div>
     </div>
@@ -475,6 +606,8 @@ export default async function decorate(block) {
   let latestMdate = null;
   let drFrom = new Date();
   let drTo = new Date();
+  let currentFromDate = null;
+  let currentToDate = null;
 
   function periodDateRange(periodCode) {
     const end = latestMdate ? (parseLocalDateFromYmd(latestMdate) ?? new Date()) : new Date();
@@ -493,12 +626,13 @@ export default async function decorate(block) {
   }
 
   function buildSubtitle(fromDate, toDate) {
-    const period = PERIOD_OPTIONS.find((p) => p.code === currentPeriod)?.label ?? currentPeriod;
-    return `"${currentFund?.name}" Open-end Fund : ${period} : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
+    return `"${currentFund?.name}" Open-end Fund : ${formatDMY(fromDate)} - ${formatDMY(toDate)}`;
   }
 
   async function renderDetail(fromDate, toDate) {
     const subtitle = buildSubtitle(fromDate, toDate);
+    currentFromDate = fromDate;
+    currentToDate = toDate;
     fundLabel.textContent = subtitle;
     printFrom.textContent = formatCalendarDate(fromDate, getCalendarLang());
     printTo.textContent = formatCalendarDate(toDate, getCalendarLang());
@@ -514,24 +648,27 @@ export default async function decorate(block) {
     const history = historyResult.status === 'fulfilled' ? historyResult.value : [];
     const sorted = [...history].sort((a, b) => a.mfr_dDataDate.localeCompare(b.mfr_dDataDate));
     const statLabels = [labels.statRowSelected, labels.statRowYear, labels.statRowInception];
-    renderStatTables(stats, highTbody, lowTbody, statLabels);
+    renderStatTables(stats, highTbody, lowTbody, statLabels, labels.noDataFound);
     chartSubtitle.textContent = subtitle;
-    chartBeginNav.textContent = fmtNav(stats.Begin_mfr_fNav);
-    chartEndNav.textContent = fmtNav(stats.End_mfr_fNav);
-    renderChart(chartSvg, sorted, currentPeriod);
-    renderHistTable(histTbody, [...sorted].reverse());
+    chartBeginNav.textContent = fmtHeaderNav(stats.Begin_mfr_fNav);
+    chartEndNav.textContent = fmtHeaderNav(stats.End_mfr_fNav);
+    renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
+    renderHistTable(histTbody, sorted, labels.noDataFound);
 
     if (chartSvg.chartResizeObserver) chartSvg.chartResizeObserver.disconnect();
-    if (window.innerWidth < 768) {
-      chartSvg.chartResizeObserver = new ResizeObserver(() => {
-        if (sorted?.length) renderChart(chartSvg, sorted, currentPeriod);
-      });
-      chartSvg.chartResizeObserver.observe(chartSvg.parentElement);
-    }
+    chartSvg.chartResizeObserver = new ResizeObserver(() => {
+      if (sorted?.length) renderChart(chartSvg, sorted, currentPeriod, labels.noDataFound);
+    });
+    chartSvg.chartResizeObserver.observe(chartSvg.parentElement);
   }
 
   function validateAndRenderDetail() {
     if (currentPeriod === 'DR') {
+      if (drFrom && drTo && isToBeforeFrom(drFrom, drTo)) {
+        rangeError.textContent = labels.toBeforeFromError;
+        rangeError.classList.remove('hidden');
+        return;
+      }
       if (drFrom && drTo && isRangeExceedsLimit(drFrom, drTo)) {
         rangeError.textContent = labels.rangeError;
         rangeError.classList.remove('hidden');
@@ -547,16 +684,16 @@ export default async function decorate(block) {
   }
 
   /* Calendar pickers for date range */
-  attachCalendarPicker({
+  const drFromPicker = attachCalendarPicker({
     input: drFromInput,
     value: drFrom,
-    allDaysEnabled: true,
+    isDateDisabled: isWeekendOrAfterYesterday,
     onChange: (d) => { drFrom = d; validateAndRenderDetail(); },
   });
-  attachCalendarPicker({
+  const drToPicker = attachCalendarPicker({
     input: drToInput,
     value: drTo,
-    allDaysEnabled: true,
+    isDateDisabled: isWeekendOrAfterYesterday,
     onChange: (d) => { drTo = d; validateAndRenderDetail(); },
   });
 
@@ -579,13 +716,16 @@ export default async function decorate(block) {
     periodSelectBtn.classList.toggle('active', period === 'DR');
     if (period === 'DR') {
       const end = latestMdate ? (parseLocalDateFromYmd(latestMdate) ?? new Date()) : new Date();
-      const start = new Date(end.getFullYear(), end.getMonth() - 1, end.getDate());
+      const start = new Date(end.getFullYear(), end.getMonth(), 1);
       drFrom = start;
       drTo = end;
-      const lang = getCalendarLang();
-      drFromInput.value = formatCalendarDate(start, lang);
-      drToInput.value = formatCalendarDate(end, lang);
+      // Update through the pickers so their internal selection stays in sync with
+      // the input value (otherwise open+click-out reverts the field to the picker's
+      // stale selected date).
+      drFromPicker.setValue(start);
+      drToPicker.setValue(end);
       periodDateRangeEl.classList.remove('hidden');
+      validateAndRenderDetail();
     } else {
       periodDateRangeEl.classList.add('hidden');
       validateAndRenderDetail();
@@ -623,16 +763,27 @@ export default async function decorate(block) {
     e.preventDefault();
     const { body, defaultView } = block.ownerDocument;
     const printRoot = block.cloneNode(true);
+    const logoEl = block.ownerDocument.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
+      || block.ownerDocument.querySelector('.brand-logo-container picture, .brand-logo-container img');
+    const printLogoEl = printRoot.querySelector('.fdd-print-logo');
+    if (logoEl && printLogoEl) printLogoEl.appendChild(logoEl.cloneNode(true));
     const disclaimer = block.closest('.section')?.querySelector('.fund-prices-disclaimer-text')?.cloneNode(true);
-    const printFooter = block.ownerDocument.createElement('div');
     printRoot.id = 'fdd-print-root';
     printRoot.classList.remove('hidden');
+    printRoot.classList.toggle('fdd-print-custom-range', currentPeriod === 'DR');
     printRoot.hidden = false;
     printRoot.querySelectorAll('.fund-prices-print-label, .fdd-back-btn').forEach((el) => el.remove());
+    printRoot.querySelectorAll('.detail-chart-svg').forEach((svg) => {
+      svg.style.width = '';
+      svg.style.height = '';
+      svg.style.minWidth = '';
+    });
+    if (currentFromDate && currentToDate) {
+      const printSubtitle = buildSubtitle(currentFromDate, currentToDate);
+      printRoot.querySelectorAll('.fdd-fund-label, .chart-subtitle')
+        .forEach((el) => { el.textContent = printSubtitle; });
+    }
     if (disclaimer) printRoot.appendChild(disclaimer);
-    printFooter.className = 'fdd-print-footer';
-    printFooter.innerHTML = '<span>https://www.bangkokbank.com/en/Personal/Save-And-Invest/Mutual-Funds/Fund-Prices</span><span>1/2</span>';
-    printRoot.appendChild(printFooter);
 
     const cleanupPrint = () => {
       body.classList.remove('fdd-printing');

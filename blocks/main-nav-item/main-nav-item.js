@@ -12,7 +12,7 @@ function isMegaMenuColumn(row) {
 function isQuickNavItem(row) {
   const cols = row.children;
 
-  const hasLabelInFirst = !!cols[0].querySelector('span');
+  const hasLabelInFirst = !!cols[0].querySelector('p');
   const hasLinkInFirst = !!cols[0].querySelector('a');
   const hasPictureInFirst = !!cols[0].querySelector('picture');
 
