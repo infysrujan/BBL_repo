@@ -179,7 +179,7 @@ export function normalizeCardTypeValue(cardType) {
 }
 
 export function normalizeCategory(s) {
-  return (s || '').toLowerCase().replace(/&/g, 'and').replace(/\s+/g, ' ').trim();
+  return (s || '').toLowerCase().replace(/\s*[&/]\s*/g, ' and ').replace(/\s+/g, ' ').trim();
 }
 
 function getCardTypeLogo(cardType) {
