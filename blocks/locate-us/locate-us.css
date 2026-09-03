@@ -1079,11 +1079,13 @@
     flex: 2;
     gap: 0.625rem;
   }
+
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper:has(.locate-us-district-wrapper:not([hidden])) {
     flex: 2;
     gap: 1.25rem;
     padding: 0 1.56rem;
   }
+
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
     flex: 2;
     gap: 1.25rem;
@@ -1349,9 +1351,10 @@
 } */
 
 @media (width > 64rem) {
-  .locate-us.block:not(:has(.locate-us-results-overseas)) .content{
+  .locate-us.block:not(:has(.locate-us-results-overseas)) .content {
     padding-inline: 0;
   }
+
   .locate-us .locate-us-keyword-search-btn {
     right: var(--bbl-space-250);
   }
@@ -1491,7 +1494,7 @@
     flex-direction: unset;
   }
 
-  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper{
+  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
     margin-left: 25%;
     width: 50%;
     padding: 0 2.5rem;
@@ -1501,35 +1504,40 @@
     gap: 2.5rem;
     padding: 0 2.813rem;
   }
+
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper:has(.locate-us-district-wrapper:not([hidden])) {
     gap: 2.5rem;
     padding: 0 2.813rem;
     max-width: 43%;
   }
-  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form{
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form {
     max-width: 60%;
   }
 }
 
-@media (width > 87.5rem){
-  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper:has(.locate-us-district-wrapper:not([hidden])){
+@media (width > 87.5rem) {
+  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper:has(.locate-us-district-wrapper:not([hidden])) {
     max-width: 45%;
     margin-left: 25%;
   }
-  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form{
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form {
     max-width: 63%;
   }
 }
-@media (width > 120rem){
-  .locate-us.block:not(:has(.locate-us-results-overseas)) .content{
+
+@media (width > 120rem) {
+  .locate-us.block:not(:has(.locate-us-results-overseas)) .content {
     margin: 0;
     max-width: 100%;
   }
 
-  .locate-us.block .content > *:not(.locate-us-filter-bar) {
+  .locate-us.block .content>*:not(.locate-us-filter-bar) {
     max-width: var(--bbl-layout-content-max-width-1920);
     margin: auto;
   }
+
   .locate-us .locate-us-filter-bar {
     padding-left: 2rem;
     padding-right: 2rem;
