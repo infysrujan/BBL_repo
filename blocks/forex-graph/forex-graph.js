@@ -91,13 +91,8 @@ function printForexGraph(block, state) {
     || doc.querySelector('.brand-logo-container picture, .brand-logo-container img');
   const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
 
-  // The page's visible title is an authored <h2> (there is no <h1>), so read the
-  // first main heading — this picks up the localized title (e.g. 外匯兌換率)
-  // instead of falling back to English.
   const pageTitle = doc.querySelector('main h1, main h2')?.textContent?.trim() || 'Foreign Exchange Rates';
 
-  // Replicate the tab labels (e.g. 外匯兌換率 / 圖表) shown under the title on the
-  // live print. Read from the live tabs component so the active tab is reflected.
   const tabsHtml = (() => {
     const tabs = [...doc.querySelectorAll('.tabs-nav [role="tab"]')]
       .map((b) => ({
@@ -135,10 +130,6 @@ function printForexGraph(block, state) {
     .print-tab.is-active { color: var(--bbl-color-black); }
 
     /* Read-only controls (currency + From/To) */
-    /* Live site stacks these vertically: currency, then From label + date,
-       then To label + date — each on its own line. */
-    /* Uniform 0.75rem vertical gap between every control line (currency →
-       From label → From date → To label → To date). */
     .forex-graph-control-row {
       display: flex; flex-direction: column; align-items: flex-start;
       gap: 0.75rem; margin-bottom: 1.25rem;
@@ -214,9 +205,6 @@ function printForexGraph(block, state) {
   doc.body.appendChild(iframe);
 
   iframe.onload = () => {
-    // Give the print frame the real page URL so the browser's print
-    // header/footer show the page (date + title + URL) like the live site,
-    // instead of about:blank. Same-origin, so this doesn't navigate.
     try {
       iframe.contentWindow.history.replaceState(null, '', window.location.href);
     } catch (e) { /* fall back to about:blank */ }
