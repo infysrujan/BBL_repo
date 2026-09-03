@@ -122,8 +122,8 @@ function printForexGraph(block, state) {
 
     /* No divider/underline — the live print has neither. */
     .print-title {
-      font-size: 2rem; font-weight: 500; color: var(--bbl-color-black);
-      margin: 0 0 0.75rem;
+      font-size: 2.25rem; font-weight: 500; color: var(--bbl-color-black);
+      margin: 0.25rem 0 1rem;
     }
 
     /* Tab labels row (e.g. 外匯兌換率 / 圖表), centered under the title */
@@ -184,7 +184,7 @@ function printForexGraph(block, state) {
     .forex-graph-canvas-wrap { width: 100%; }
     .forex-graph-print-chart { display: block; width: 100%; height: auto; }
 
-    .forex-graph-disclaimer { font-size: 0.5rem; line-height: 1.4; margin-top: var(--bbl-space-100); color: #555; }
+    .forex-graph-disclaimer { font-size: 0.5rem; line-height: 1.4; margin-top: 1.5rem; color: #555; }
     .forex-graph-disclaimer p { margin: 0; }
     .forex-graph-disclaimer p:first-child { font-weight: 700; color: var(--bbl-color-black); padding-bottom: 0.2rem; }
   `;
