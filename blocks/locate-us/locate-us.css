@@ -1072,11 +1072,11 @@
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
-    padding: var(--bbl-space-000);
-    flex: 1;
     margin: 0 auto;
     justify-content: center;
-    padding: 0 1.25rem;
+    flex: 2;
+    gap: 1.25rem;
+    padding: 0 1.56rem;
   }
 
   .locate-us .locate-us-keyword-wrapper:has(.locate-us-district-wrapper:not([hidden])) {
@@ -1085,12 +1085,6 @@
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper:has(.locate-us-district-wrapper:not([hidden])) {
-    flex: 2;
-    gap: 1.25rem;
-    padding: 0 1.56rem;
-  }
-
-  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
     flex: 2;
     gap: 1.25rem;
     padding: 0 1.56rem;
@@ -1463,6 +1457,7 @@
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form {
     flex: 1;
+    max-width: 60%;
   }
 
   .locate-us .cards-list.cards-3 .cards-list-item .cards-list-image.cards-list-image-x-small {
@@ -1501,10 +1496,6 @@
   .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
     margin-left: 25%;
     width: 50%;
-    padding: 0 2.5rem;
-  }
-
-  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-wrapper {
     gap: 2.5rem;
     padding: 0 2.813rem;
   }
@@ -1515,9 +1506,6 @@
     max-width: 43%;
   }
 
-  .locate-us:has(.locate-us-results-overseas) .locate-us-keyword-form {
-    max-width: 60%;
-  }
 }
 
 @media (width > 87.5rem) {
