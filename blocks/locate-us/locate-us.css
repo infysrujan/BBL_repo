@@ -506,7 +506,7 @@
 /* nearest tag — absolute badge in top-right of card detail */
 .locate-us .locate-us-card-nearest-tag {
   position: absolute;
-  right: 0;
+  right: -1.25rem;
   background-color: var(--bbl-color-blue-222);
   border-radius: var(--bbl-rounded-050) 0 0 var(--bbl-rounded-050);
   color: var(--bbl-color-blue-105);
@@ -1061,6 +1061,10 @@
     padding-right: var(--bbl-space-500);
     max-width: 100%;
     box-sizing: border-box;
+  }
+
+  .locate-us .locate-us-card-nearest-tag {
+    right: 0;
   }
 
   .locate-us .locate-us-district-btn {
