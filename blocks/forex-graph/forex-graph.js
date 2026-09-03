@@ -118,11 +118,11 @@ function printForexGraph(block, state) {
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
     .print-logo { margin-bottom: 0.75rem; }
-    .print-logo img { height: 1.5rem; width: auto; }
+    .print-logo img { height: 1.75rem; width: auto; }
 
     /* No divider/underline — the live print has neither. */
     .print-title {
-      font-size: 1.75rem; font-weight: 500; color: var(--bbl-color-black);
+      font-size: 2rem; font-weight: 500; color: var(--bbl-color-black);
       margin: 0 0 0.75rem;
     }
 
@@ -177,7 +177,7 @@ function printForexGraph(block, state) {
       gap: var(--bbl-space-100); margin-bottom: var(--bbl-space-075);
     }
     .forex-graph-chart-title { font-size: 0.75rem; font-weight: 700; color: var(--bbl-color-black); margin: 0; }
-    .forex-graph-legend { display: flex; gap: var(--bbl-space-100); font-size: 0.625rem; font-weight: 700; }
+    .forex-graph-legend { display: none; }
     .forex-graph-legend-buying { color: #002087; }
     .forex-graph-legend-selling { color: #ff6e00; }
 
