@@ -124,19 +124,29 @@ function createTableElement(columnNames, data, dataType, sourceElement, lang) {
       `;
       }).join('');
     } else if (dataType === 'deposit') {
-      tbody += data.map((item) => `
+      tbody += data.map((item) => {
+        const depositName = lang === 'th'
+          ? (item.DepositNameTh || item.DepositNameEn)
+          : (item.DepositNameEn || item.DepositNameTh);
+        return `
         <tr>
-          <td>${item.DepositNameEn || '-'}</td>
+          <td>${depositName || '-'}</td>
           <td class="text-right"><span class="percent">${item.DepositRates || '0.00'}</span></td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     } else if (dataType === 'loan') {
-      tbody += data.map((item) => `
+      tbody += data.map((item) => {
+        const loanName = lang === 'th'
+          ? (item.LoanNameTh || item.LoanNameEn)
+          : (item.LoanNameEn || item.LoanNameTh);
+        return `
         <tr>
-          <td>${item.LoanNameEn || '-'}</td>
+          <td>${loanName || '-'}</td>
           <td class="text-right"><span class="percent">${item.LoanRates || '0.00'}</span></td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     } else if (dataType === 'fund') {
       tbody += data.map((item) => {
         const navValue = item.mfr_fNav ?? item.NAV;
