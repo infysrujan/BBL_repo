@@ -541,7 +541,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   padding: 0;
 }
 
-@media (width >= 47.5rem) {
+@media (width > 47.5rem) {
   main .form-container.wizard-forms {
     padding-inline: var(--bbl-space-600);
   }
@@ -582,7 +582,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   }
 }
 
-@media (width >= 64rem) {
+@media (width > 64rem) {
   .bbl-wizard-steps {
     font-size: var(--bbl-font-size-b1-desktop);
     line-height: var(--bbl-wizard-line-height-base-desktop);
