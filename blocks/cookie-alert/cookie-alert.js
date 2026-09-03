@@ -171,7 +171,7 @@ export default async function decorate(block) {
           });
 
           btnsEl.append(btn);
-        } else if (href.includes('#acceptall')) {
+        } else if (href.includes('#accept-all')) {
           // Accept button
           const btn = document.createElement('button');
           btn.type = 'button';
