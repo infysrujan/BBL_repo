@@ -599,10 +599,8 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-circular-image .text-default {
-  font-family: var(--bbl-font-family-primary);
   font-size: var(--bbl-text-default-size);
   line-height: var(--bbl-text-default-line-height);
-  color: var(--bbl-color-grey-90);
   font-weight: var(--bbl-text-default-weight);
 }
 
@@ -672,7 +670,6 @@
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
   line-height: 1.285rem;
   margin: unset;
-  color: var(--bbl-color-grey-85);
 }
 
 /* title-3: use regular weight (matches live site inherited font) */

@@ -169,7 +169,6 @@
   line-height: var(--bbl-text-default-line-height);
   font-weight: var(--bbl-text-default-weight);
   font-family: var(--bbl-font-family-primary);
-  color: var(--bbl-color-grey-85);
   margin: 0;
   overflow: hidden;
   display: -webkit-box;
