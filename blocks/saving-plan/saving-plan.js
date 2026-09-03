@@ -3,11 +3,30 @@ import { getLang } from '../../scripts/bbl-decorators.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchJson } from '../../scripts/utils/card-helpers.js';
-import { fetchPost } from '../../scripts/utils/fetchApi.js';
+import { fetchGet, fetchPost } from '../../scripts/utils/fetchApi.js';
 import { loadChartJs, renderChart, buildChartLegend } from './saving-plan-chart.js';
 
 const ICON_BASE = '/icons/saving-plan';
 const ICONS_CACHE = {};
+const DEFAULT_INFLATION_RATE = 1.5;
+
+// Live inflation rate from the fincal rate-list GraphQL query — mirrors retirement-calculator.js.
+function toRate(value) {
+  const n = parseFloat(value);
+  return Number.isNaN(n) ? undefined : n;
+}
+
+async function loadInflationRate(rateListUrl) {
+  if (!rateListUrl) return undefined;
+  try {
+    const url = rateListUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
+    const json = await fetchGet(url, { throwOnError: false });
+    const item = json?.data?.RateList?.items?.[0] || {};
+    return toRate(item.InflationRate);
+  } catch {
+    return undefined;
+  }
+}
 
 async function loadIcons() {
   const names = ['goal', 'goal-amount', 'goal-period', 'balance', 'annual-return', 'annual-increase', 'step-up', 'step-up-adjusted'];
@@ -54,6 +73,16 @@ function fillTemplate(template, vars) {
   );
 }
 
+// Pulls the numeric bound(s) authored inside a config message, e.g.
+// "must not be greater than 999,999,999" -> [999999999], so the enforced
+// threshold always matches what's shown to the user, with nothing duplicated in code.
+function extractNumbersFromText(text) {
+  // (?<!\d) keeps a "-" between two numbers (e.g. "0-100") from being read as a minus
+  // sign — it only counts as negative when it isn't glued to a preceding digit.
+  const matches = String(text || '').match(/(?<!\d)-?[\d,]+(?:\.\d+)?/g);
+  return matches ? matches.map((n) => Number(n.replace(/,/g, ''))) : [];
+}
+
 function parseProducts(L) {
   const nums = [...new Set(
     Object.keys(L)
@@ -86,8 +115,30 @@ function buildDataFromConfig(json, lang, placeholders, inflationRate) {
   const futureValueTemplate = (L['common-toHaveMoney'] || '')
     .replace('{money}', '{amount}').replace('{unit}', unit);
 
-  const minError = L['validation-minValueError'] || '';
-  const maxError = L['validation-maxValueError'] || '';
+  // minValueError/maxValueError are used only for the expected-return field, filled
+  // with its own placeholder-authored range (e.g. "0.1 - 40") rather than a hard-coded number.
+  const minValueErrorMsg = L['validation-minValueError'] || '';
+  const maxValueErrorMsg = L['validation-maxValueError'] || '';
+  // percentageError is the message/bound source for annualIncrease, the other % field.
+  const percentageErrorMsg = L['validation-percentageError'] || '';
+  const minDesiredSavingAmountMsg = L['validation-minDesiredSavingAmount'] || '';
+  const maxDesiredSavingAmountMsg = L['validation-maxDesiredSavingAmount'] || '';
+  const minYearsToSaveMsg = L['validation-minYearsToSave'] || '';
+  const maxYearsToSaveMsg = L['validation-maxYearsToSave'] || '';
+  const [goalAmountMin] = extractNumbersFromText(minDesiredSavingAmountMsg);
+  const [goalAmountMax] = extractNumbersFromText(maxDesiredSavingAmountMsg);
+  const [goalPeriodMin] = extractNumbersFromText(minYearsToSaveMsg);
+  const [goalPeriodMax] = extractNumbersFromText(maxYearsToSaveMsg);
+  const [percentageMin] = extractNumbersFromText(percentageErrorMsg);
+
+  // No dedicated per-field message exists for balance or annualReturn, so their bounds
+  // come from the field's own placeholder range text (e.g. "0.1 - 40"), the same value
+  // shown to the user as the input hint — one authored source, not a hard-coded number.
+  const balancePlaceholder = placeholders.savingPlanPlaceholderBalance || '0 - 999,999,999';
+  const annualReturnPlaceholder = placeholders.savingPlanPlaceholderAnnualReturn || '0.1 - 40';
+  const [balanceMin, balanceMax] = extractNumbersFromText(balancePlaceholder);
+  const [annualReturnMin, annualReturnMax] = extractNumbersFromText(annualReturnPlaceholder);
+
   const configuredReturnRate = C['defaultFormValues-expectedReturnRate'];
 
   const goalKeys = [...new Set(
@@ -167,18 +218,20 @@ function buildDataFromConfig(json, lang, placeholders, inflationRate) {
       },
       validation: {
         goalAmount: {
-          min: fillTemplate(minError, { min: '10,000' }),
-          max: fillTemplate(maxError, { max: '999,999,999' }),
+          min: minDesiredSavingAmountMsg,
+          max: maxDesiredSavingAmountMsg,
         },
         annualReturn: {
-          min: fillTemplate(minError, { min: '0.1' }),
-          max: fillTemplate(maxError, { max: '40' }),
+          min: fillTemplate(minValueErrorMsg, { min: String(annualReturnMin) }),
+          max: fillTemplate(maxValueErrorMsg, { max: String(annualReturnMax) }),
         },
         goalPeriod: {
-          min: fillTemplate(minError, { min: '1' }),
-          max: fillTemplate(maxError, { max: '30' }),
+          min: minYearsToSaveMsg,
+          max: maxYearsToSaveMsg,
         },
-        annualIncrease: { max: fillTemplate(maxError, { max: '40' }) },
+        annualIncrease: {
+          min: percentageErrorMsg,
+        },
         crossFieldIncreaseExceedsReturn: L['validation-annualSavingIncreaseRateError'] || '',
       },
     },
@@ -192,11 +245,11 @@ function buildDataFromConfig(json, lang, placeholders, inflationRate) {
       annualIncrease: Number(C['defaultFormValues-annualSavingIncreaseRate']) || 0,
     },
     validation: {
-      goalAmount: { min: 10000, max: 999999999 },
-      goalPeriod: { min: 1, max: 30 },
-      balance: { min: 0 },
-      annualReturn: { min: 0.1, max: 40 },
-      annualIncrease: { min: 0, max: 40 },
+      goalAmount: { min: goalAmountMin, max: goalAmountMax },
+      goalPeriod: { min: goalPeriodMin, max: goalPeriodMax },
+      balance: { min: balanceMin, max: balanceMax },
+      annualReturn: { min: annualReturnMin, max: annualReturnMax },
+      annualIncrease: { min: percentageMin },
     },
     goals,
     products: parseProducts(L),
@@ -279,8 +332,6 @@ async function fetchCalculation(inputs, calcUrl, apimKey, inflationRate) {
   if (!calcUrl) return fallback;
   try {
     const payload = buildCalculationPayload(inputs, inflationRate);
-    // eslint-disable-next-line no-console
-    console.log('[saving-plan] API request payload:', payload);
     const json = await fetchPost(calcUrl, payload, {
       headers: { 'Ocp-Apim-Subscription-Key': apimKey },
       throwOnError: false,
@@ -290,8 +341,6 @@ async function fetchCalculation(inputs, calcUrl, apimKey, inflationRate) {
       console.warn('[saving-plan] API error — using fallback');
       return fallback;
     }
-    // eslint-disable-next-line no-console
-    console.log('[saving-plan] API response:', json);
     return normalizeCalculationResponse(json, fallback);
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -1169,9 +1218,8 @@ export default async function decorate(block) {
   const configPath = siteConfig.savingPlanConfigPath;
   if (!configPath) return;
 
-  const [json, placeholders] = await Promise.all([
+  const [json] = await Promise.all([
     fetchJson(configPath),
-    fetchPlaceholders(),
     loadIcons(),
   ]);
 
@@ -1184,9 +1232,12 @@ export default async function decorate(block) {
 
   const calcUrl = cfg.savingPlanCalculatorUrl || '';
   const apimKey = cfg.savingPlanApimKey || '';
-  const commonData = json.common?.data || [];
-  const inflationRateEntry = commonData.find(({ Key }) => Key === 'defaultFormValues-inflationRate');
-  const inflationRate = parseFloat(inflationRateEntry?.Value);
+
+  const [placeholders, liveInflationRate] = await Promise.all([
+    fetchPlaceholders(),
+    loadInflationRate(cfg.savingPlanInflationRateUrl),
+  ]);
+  const inflationRate = liveInflationRate ?? DEFAULT_INFLATION_RATE;
 
   const lang = getLang();
   const data = buildDataFromConfig(json, lang, placeholders, inflationRate);
