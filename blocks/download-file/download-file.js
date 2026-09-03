@@ -15,7 +15,7 @@ export default function decorate(block) {
     dateSpan.textContent = datePrefix;
     link?.prepend(dateSpan);
   }
-  if (button) applyLinkTarget(button, 'a', targetLink);
+  if (button && targetLink) applyLinkTarget(button, 'a', targetLink);
   block.textContent = '';
   if (button) block.appendChild(button);
 }
