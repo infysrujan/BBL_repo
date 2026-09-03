@@ -104,7 +104,7 @@ main .section.wizard-forms .form form label,
 main .section.wizard-forms .form form legend,
 main .section.wizard-forms .form form p,
 main .section.wizard-forms .form form .field-label {
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
 }
 
 main .section.wizard-forms .form form p,

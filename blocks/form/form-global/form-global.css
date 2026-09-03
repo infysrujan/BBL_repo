@@ -37,7 +37,7 @@ main .section.form-container .form form .field-wrapper:not(.field-invalid) :is(i
 
 /* Legend font styling overrides */
 main .section.form-container .panel-wrapper>legend.field-label {
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-body-b1-size);
   font-weight: var(--bbl-font-weight-medium);
   cursor: default;
@@ -46,7 +46,7 @@ main .section.form-container .panel-wrapper>legend.field-label {
 }
 
 main .section.form-container :is(.checkbox-group-wrapper, .radio-group-wrapper)>legend.field-label {
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   font-size: var(--bbl-heading-h4-size);
   font-weight: var(--bbl-font-weight-regular);
   cursor: default;
@@ -503,7 +503,7 @@ main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.
   padding: 0 var(--bbl-space-100) 0 0;
   border: 0;
   border-radius: var(--bbl-radius-none);
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
   line-height: var(--bbl-line-height-h2-mobile);
   font-size: var(--bbl-body-b1-size);
   overflow: auto;
@@ -517,7 +517,7 @@ main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.
   max-height: 9.375rem;
   margin: 0 0 1.25rem;
   padding: 0 var(--bbl-space-100) 0 0;
-  color: var(--bbl-color-grey-85);
+  color: var(--bbl-color-grey-90);
 }
 
 main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration :is(p, div) {
