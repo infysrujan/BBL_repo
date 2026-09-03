@@ -91,7 +91,6 @@
   color: var(--bbl-color-white);
 } */
 
-
 .menu-banner .list-thumb-square {
   list-style: none;
   margin: 0;
@@ -117,7 +116,6 @@
     text-decoration: none;
     color: var(--bbl-color-active-blue);
 }
-
 
 .menu-banner .title-1 > * {
   margin: 0;
@@ -196,7 +194,7 @@
 /* Tablet: width > 760px */
 @media (width > 47.5rem) {
   .menu-banner .desktop-tools {
-    padding-top: 40px;
+    padding-top: 2.5rem;
   }
 
   .menu-banner .desktop-tools .inner {
@@ -245,7 +243,7 @@
 @media (width > 64rem) {
   .menu-banner .desktop-tools {
     display: flow-root;
-    padding-top: 20px;
+    padding-top: 1.25rem;
   }
 
   .menu-banner .thumb-full {
