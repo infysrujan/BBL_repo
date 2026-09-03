@@ -36,33 +36,21 @@ function getInflationText(labels, data) {
 
 // ─── Data ────────────────────────────────────────────────────────────────────────
 
-/**
- * Live inflation / after-retirement rates from the fincal rate-list GraphQL query.
- * The exact content-fragment field names aren't confirmed yet (model lives in AEM,
- * not this repo), so rates are matched by key substring rather than an exact name -
- * safe to tighten once the real response shape is known. Falls back to {} (config
- * sheet / hardcoded values) on any miss or fetch failure.
- */
+/** Live inflation / after-retirement rates from the fincal rate-list GraphQL query. */
+function toRate(value) {
+  const n = parseFloat(value);
+  return Number.isNaN(n) ? undefined : n;
+}
+
 async function loadRateList(siteConfig) {
   try {
     const baseUrl = siteConfig.retirementCalculatorRateListUrl;
     const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
-    const apimKey = siteConfig.retirementCalculatorApimKey || '';
-    const json = await fetchGet(url, {
-      headers: { 'Ocp-Apim-Subscription-Key': apimKey },
-      throwOnError: false,
-    });
-    const list = Object.values(json?.data || {})
-      .find((val) => Array.isArray(val?.items))?.items || [];
-    const item = list[0] || {};
-    const findRate = (needle) => {
-      const key = Object.keys(item).find((k) => k.toLowerCase().includes(needle));
-      const value = key ? parseFloat(item[key]) : NaN;
-      return Number.isNaN(value) ? undefined : value;
-    };
+    const json = await fetchGet(url, { throwOnError: false });
+    const item = json?.data?.RateList?.items?.[0] || {};
     return {
-      inflationRate: findRate('inflation'),
-      afterRetirementRate: findRate('afterretire') ?? findRate('retirerate'),
+      inflationRate: toRate(item.InflationRate),
+      afterRetirementRate: toRate(item.AfterRetireRate),
     };
   } catch {
     return {};
