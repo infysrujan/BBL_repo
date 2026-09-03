@@ -22,12 +22,12 @@ const ALL_MAPPED_CODES = new Set([
 ]);
 
 /**
-* @param {unknown} payload - Raw JSON from GetMarketsum
-* @returns {{
-*   mktdate: string | null,
-*   rows: Array<{ mktcode?: string, mktno?: string, mktvalue?: string }>,
-* }}
-*/
+ * @param {unknown} payload - Raw JSON from GetMarketsum
+ * @returns {{
+ *   mktdate: string | null,
+ *   rows: Array<{ mktcode?: string, mktno?: string, mktvalue?: string }>,
+ * }}
+ */
 export function parseMarketSumResponse(payload) {
   if (!Array.isArray(payload) || payload.length < 2) {
     return { mktdate: null, rows: [] };
@@ -39,11 +39,11 @@ export function parseMarketSumResponse(payload) {
 }
 
 /**
-* Split flat market rows into arrays keyed by mktcode (only mapped codes).
-* Each array is sorted by numeric mktno.
-* @param {Array<{ mktcode?: string, mktno?: string, mktvalue?: string }>} rows
-* @returns {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>}
-*/
+ * Split flat market rows into arrays keyed by mktcode (only mapped codes).
+ * Each array is sorted by numeric mktno.
+ * @param {Array<{ mktcode?: string, mktno?: string, mktvalue?: string }>} rows
+ * @returns {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>}
+ */
 export function groupMarketRowsByCode(rows) {
   /** @type {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} */
   const byCode = {};
@@ -69,9 +69,9 @@ export function groupMarketRowsByCode(rows) {
 }
 
 /**
-* Full model: date + column1/column2 groups + flat lookup by code.
-* @param {unknown} payload - Raw JSON from GetMarketsum
-*/
+ * Full model: date + column1/column2 groups + flat lookup by code.
+ * @param {unknown} payload - Raw JSON from GetMarketsum
+ */
 export function buildMarketReportModel(payload) {
   const { mktdate, rows } = parseMarketSumResponse(payload);
   const byMktCode = groupMarketRowsByCode(rows);
@@ -87,9 +87,9 @@ async function fetchMarketSummary(url) {
 }
 
 /**
-* @param {string} url
-* @returns {Promise<unknown[] | null>}
-*/
+ * @param {string} url
+ * @returns {Promise<unknown[] | null>}
+ */
 async function fetchInterestRateArray(url) {
   try {
     const data = await fetchGet(url, { throwOnError: false });
@@ -100,9 +100,9 @@ async function fetchInterestRateArray(url) {
 }
 
 /**
-* @param {HTMLTableElement} table
-* @returns {HTMLTableSectionElement}
-*/
+ * @param {HTMLTableElement} table
+ * @returns {HTMLTableSectionElement}
+ */
 function getTableBodyForDataRows(table) {
   let tbody = table.tBodies[0];
   if (!tbody) {
@@ -118,9 +118,9 @@ function getTableBodyForDataRows(table) {
 }
 
 /**
-* @param {HTMLTableElement} table
-* @param {HTMLTableSectionElement} tbody
-*/
+ * @param {HTMLTableElement} table
+ * @param {HTMLTableSectionElement} tbody
+ */
 function columnCountForInterestTable(table, tbody) {
   const firstBodyRow = tbody.querySelector('tr');
   let n = firstBodyRow?.querySelectorAll('td').length ?? 0;
@@ -132,9 +132,9 @@ function columnCountForInterestTable(table, tbody) {
 }
 
 /**
-* @param {string[]} values
-* @param {number} colCount
-*/
+ * @param {string[]} values
+ * @param {number} colCount
+ */
 function padToColumnCount(values, colCount) {
   const out = values.slice(0, colCount);
   while (out.length < colCount) out.push('');
@@ -142,9 +142,9 @@ function padToColumnCount(values, colCount) {
 }
 
 /**
-* @param {HTMLTableRowElement} tr
-* @param {string[]} texts
-*/
+ * @param {HTMLTableRowElement} tr
+ * @param {string[]} texts
+ */
 function fillInterestRateRowCells(tr, texts) {
   const cells = tr.querySelectorAll('td');
   texts.forEach((text, j) => {
@@ -159,9 +159,9 @@ function fillInterestRateRowCells(tr, texts) {
 }
 
 /**
-* @param {string[]} texts
-* @returns {HTMLTableRowElement}
-*/
+ * @param {string[]} texts
+ * @returns {HTMLTableRowElement}
+ */
 function createInterestRateRow(texts) {
   const tr = document.createElement('tr');
   texts.forEach((text, i) => {
@@ -178,9 +178,9 @@ function createInterestRateRow(texts) {
 }
 
 /**
-* @param {HTMLTableElement} table
-* @param {Array<{ LoanNameEn?: string, LoanName?: string, LoanRates?: string }>} rows
-*/
+ * @param {HTMLTableElement} table
+ * @param {Array<{ LoanNameEn?: string, LoanName?: string, LoanRates?: string }>} rows
+ */
 function populateLoanRateTableFromApi(table, rows) {
   if (!table || !Array.isArray(rows)) return;
   const tbody = getTableBodyForDataRows(table);
@@ -201,9 +201,9 @@ function populateLoanRateTableFromApi(table, rows) {
 }
 
 /**
-* @param {HTMLTableElement} table
-* @param {Array<{ DepositNameEn?: string, DepositName?: string, DepositRates?: string }>} rows
-*/
+ * @param {HTMLTableElement} table
+ * @param {Array<{ DepositNameEn?: string, DepositName?: string, DepositRates?: string }>} rows
+ */
 function populateDepositRateTableFromApi(table, rows) {
   if (!table || !Array.isArray(rows)) return;
   const tbody = getTableBodyForDataRows(table);
@@ -224,10 +224,10 @@ function populateDepositRateTableFromApi(table, rows) {
 }
 
 /**
-* @param {ParentNode} root
-* @param {unknown[] | null} loanRows
-* @param {unknown[] | null} depositRows
-*/
+ * @param {ParentNode} root
+ * @param {unknown[] | null} loanRows
+ * @param {unknown[] | null} depositRows
+ */
 function populateLoanAndDepositTables(root, loanRows, depositRows) {
   const lr = root.querySelector('table#lr');
   const dr = root.querySelector('table#dr');
@@ -245,11 +245,11 @@ function tableUsesHeaderRowClass(table) {
 }
 
 /**
-* Prefix a positive numeric value with "+" (negative values already carry
-* their own "-" from the API; non-numeric/zero values pass through unchanged).
-* @param {string} value
-* @returns {string}
-*/
+ * Prefix a positive numeric value with "+" (negative values already carry
+ * their own "-" from the API; non-numeric/zero values pass through unchanged).
+ * @param {string} value
+ * @returns {string}
+ */
 function withSign(value) {
   const num = Number(value);
   if (!Number.isFinite(num) || num <= 0) return value;
@@ -257,10 +257,10 @@ function withSign(value) {
 }
 
 /**
-* @param {HTMLTableElement} table
-* @param {string} tableId
-* @param {Array<{ mktvalue: string }> | undefined} tableData
-*/
+ * @param {HTMLTableElement} table
+ * @param {string} tableId
+ * @param {Array<{ mktvalue: string }> | undefined} tableData
+ */
 function populateHeaderClassTable(table, tableId, tableData) {
   if (!Array.isArray(tableData)) return;
 
@@ -297,10 +297,10 @@ function populateHeaderClassTable(table, tableId, tableData) {
 }
 
 /**
-* @param {HTMLTableElement} table
-* @param {string} tableId
-* @param {Array<{ mktvalue: string }> | undefined} tableData
-*/
+ * @param {HTMLTableElement} table
+ * @param {string} tableId
+ * @param {Array<{ mktvalue: string }> | undefined} tableData
+ */
 function populateStandardLayoutTable(table, tableId, tableData) {
   if (!Array.isArray(tableData)) return;
 
@@ -351,9 +351,9 @@ function populateStandardLayoutTable(table, tableId, tableData) {
 }
 
 /**
-* @param {HTMLElement} panel
-* @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} byMktCode
-*/
+ * @param {HTMLElement} panel
+ * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} byMktCode
+ */
 function populateTablesInPanel(panel, byMktCode) {
   [...panel.querySelectorAll('table')].forEach((table) => {
     const tableId = table.getAttribute('id')?.toUpperCase();
@@ -368,35 +368,32 @@ function populateTablesInPanel(panel, byMktCode) {
 }
 
 /**
-* Appends each row's mktvalue as parsed HTML (entities and tags like &nbsp;,
-).
-* Inserts a leading space before the first non-empty row and a line break before the second.
-* @param {HTMLElement} container
-* @param {Array<{ mktvalue: string }> | undefined} rows
-*/
+ * Appends each row's mktvalue as parsed HTML (entities and tags like &nbsp;, <br>).
+ * Inserts a leading space before the first non-empty row and a line break before the second.
+ * @param {HTMLElement} container
+ * @param {Array<{ mktvalue: string }> | undefined} rows
+ */
 function appendMktValuesAsHtml(container, rows) {
   if (!container || !Array.isArray(rows)) {
     return { heading: null, para: null };
   }
-
-  const target = container;
-  const html = target.innerHTML;
+  const html = container.innerHTML;
   const updatedHtml = `
     ${html} <span>${rows[0].mktvalue.trim()}</span>
   `;
-  target.innerHTML = updatedHtml;
-  target.classList.add('market-report-author');
+  container.innerHTML = updatedHtml;
+  container.classList.add('market-report-author');
   const p = document.createElement('p');
   p.innerHTML = rows[1].mktvalue;
 
-  return { heading: target, para: p };
+  return { heading: container, para: p };
 }
 
 /**
-* Appends FXMO values from the API to the first direct child of `.table-wrapper`.
-* @param {HTMLElement} tableWrapper
-* @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
-*/
+ * Appends FXMO values from the API to the first direct child of `.table-wrapper`.
+ * @param {HTMLElement} tableWrapper
+ * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
+ */
 export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
   const row = tableWrapper.children[0];
   if (!row) return;
@@ -406,10 +403,10 @@ export function populateFxmo(tableWrapper, tableData, wrapperDiv) {
 }
 
 /**
-* Appends TBMO values from the API to the second direct child of `.table-wrapper`.
-* @param {HTMLElement} tableWrapper
-* @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
-*/
+ * Appends TBMO values from the API to the second direct child of `.table-wrapper`.
+ * @param {HTMLElement} tableWrapper
+ * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} tableData
+ */
 export function populateTbmo(tableWrapper, tableData, wrapperDiv) {
   const row = tableWrapper.children[0];
   if (!row) return;
@@ -419,8 +416,8 @@ export function populateTbmo(tableWrapper, tableData, wrapperDiv) {
 }
 
 /**
-* @param {HTMLElement[]} children
-*/
+ * @param {HTMLElement[]} children
+ */
 function indexOfChildContainingRR(children) {
   return children.findIndex(
     (el) => el.querySelector?.('table#rr') || el.querySelector?.('table[id="RR"]'),
@@ -428,9 +425,9 @@ function indexOfChildContainingRR(children) {
 }
 
 /**
-* @param {HTMLElement[]} children
-* @param {number} blockIndex
-*/
+ * @param {HTMLElement[]} children
+ * @param {number} blockIndex
+ */
 function indexOfPrecedingHeading(children, blockIndex) {
   for (let j = blockIndex - 1; j >= 0; j -= 1) {
     const { tagName } = children[j];
@@ -440,9 +437,9 @@ function indexOfPrecedingHeading(children, blockIndex) {
 }
 
 /**
-* Index of last <p> after the last div.table.block (exclusive end for right column).
-* @param {HTMLElement[]} children
-*/
+ * Index of last <p> after the last div.table.block (exclusive end for right column).
+ * @param {HTMLElement[]} children
+ */
 function indexAfterWhichRightColumnEnds(children) {
   const lastTableBlockIdx = children.reduce(
     (last, el, i) => (el.matches?.('div.table.block') ? i : last),
@@ -460,10 +457,10 @@ function indexAfterWhichRightColumnEnds(children) {
 }
 
 /**
-* @param {HTMLElement[]} leftNodes
-* @param {HTMLElement[]} rightNodes
-* @returns {HTMLDivElement}
-*/
+ * @param {HTMLElement[]} leftNodes
+ * @param {HTMLElement[]} rightNodes
+ * @returns {HTMLDivElement}
+ */
 function buildTwoColumnPageLayout(leftNodes, rightNodes) {
   const pageLayout = document.createElement('div');
   pageLayout.classList.add('market-report-page');
@@ -489,9 +486,9 @@ function buildTwoColumnPageLayout(leftNodes, rightNodes) {
 }
 
 /**
-* Split at heading before table#rr; right column excludes trailing footnote <p>.
-* @param {HTMLElement} tableWrapper
-*/
+ * Split at heading before table#rr; right column excludes trailing footnote <p>.
+ * @param {HTMLElement} tableWrapper
+ */
 function applyTableWrapperPageLayout(tableWrapper) {
   if (tableWrapper.querySelector(':scope > .market-report-page')) return;
 
@@ -510,18 +507,18 @@ function applyTableWrapperPageLayout(tableWrapper) {
 }
 
 /**
-* Month names for the market report date
-*/
+ * Month names for the market report date
+ */
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
 /**
-* Convert API date `DD/MM/YYYY` to display form `D Month YYYY`.
-* @param {string | null | undefined} mktdate
-* @returns {string}
-*/
+ * Convert API date `DD/MM/YYYY` to display form `D Month YYYY`.
+ * @param {string | null | undefined} mktdate
+ * @returns {string}
+ */
 function formatMarketReportDate(mktdate) {
   if (!mktdate) return '';
   const parts = mktdate.split('/');
@@ -533,12 +530,12 @@ function formatMarketReportDate(mktdate) {
 }
 
 /**
-* @returns {Promise<{
-*   model: ReturnType<typeof buildMarketReportModel>,
-*   loanRows: unknown[] | null,
-*   depositRows: unknown[] | null,
-* }>}
-*/
+ * @returns {Promise<{
+ *   model: ReturnType<typeof buildMarketReportModel>,
+ *   loanRows: unknown[] | null,
+ *   depositRows: unknown[] | null,
+ * }>}
+ */
 async function fetchMarketReportData() {
   const [configs] = await Promise.all([fetchConfigs()]);
   const [summaryPayload, loanRows, depositRows] = await Promise.all([
@@ -604,8 +601,8 @@ function styleHeadingsBeforeButtonContainers(panel) {
   });
 }
 /**
-* Style the text-small class to the paragraphs following the tables
-*/
+ * Style the text-small class to the paragraphs following the tables
+ */
 /** @param {ParentNode} panel */
 function applyTextSmallToTableFollowParagraphs(panel) {
   const followingPTags = panel.querySelectorAll('.table + p');
@@ -642,87 +639,87 @@ function printElement() {
       size: A4 portrait;
       margin: 10mm; /* Standard margins for printers */
     }
-
+ 
     .header {
       position: unset;
     }
-
+   
     .brand-logo-container {
       width: 12.5rem;
       height: 3.125rem;
       margin-block: 3rem 1rem;
     }
-
+     
     .tabs-dropdown {
       display: none;
     }
-
+   
     .tabs-nav-wrapper .tabs-nav {
      display: block;
     }
-
+ 
     .market-report-page a.print-button.icon-print {
       display: none;
     }
-
+ 
     .market-report-tools-assistance {
       display: none;
     }
-
+ 
     .table table tr td {
       padding: 0.3125rem 0.75rem;
     }
-
+ 
     .table-wrapper {
       font-size: 0.75rem;
     }
-
+ 
     .market-report-page .table table tr td,
     .market-report-page .table table[class*="header-"] tr.header-row td {
       height: 1rem;
     }
-
+ 
     .table table.outline-border {
       border: none;
     }
-
+ 
     tr {
       border-block: 0.0625rem solid var(--bbl-color-grey-30);
     }
-
+ 
     .market-report-page .button-container {
       display: none;
     }
-
+ 
     .table table.header-blue tr.header-row {
       border-block: 0.125rem solid black;
     }
-
+ 
     .table table tr.header-row td ,
     .table table tr:not(.header-row) td {
       padding: 0.1875rem 0.75rem;
       font-size: 0.75rem;
-
+     
     }
-
+ 
     .market-report-col-left :is(h1, h2, h3, h4, h5, h6), .market-report-col-right :is(h1, h2, h3, h4, h5, h6) {
       font-size: 0.875rem;
     }
-
+ 
     .market-report-page .table.block {
       margin: 1rem 0 2rem;
     }
-
+ 
     .tabs.simple-tab .tabs-nav {
       padding-bottom: 0;
       margin-top: 0;
     }
-
+   
     .market-report-col {
       gap: 1.25rem;
       align-items: flex-start;
     }
-
+   
   `;
 
   const printHtml = `
@@ -777,10 +774,10 @@ function printElement() {
 }
 /* Create the top row of the market report */
 /**
-* @param {string} formattedDate
-* @param {HTMLElement} tableWrapper
-* @returns {HTMLDivElement}
-*/
+ * @param {string} formattedDate
+ * @param {HTMLElement} tableWrapper
+ * @returns {HTMLDivElement}
+ */
 function createMarketReportTopRow(formattedDate) {
   const topRow = document.createElement('div');
   topRow.className = 'market-report-top-row';
@@ -804,10 +801,10 @@ function createMarketReportTopRow(formattedDate) {
 
 /* Decorate the table wrapper */
 /**
-* @param {HTMLElement} tableWrapper
-* @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} byMktCode
-* @param {HTMLDivElement} topRow
-*/
+ * @param {HTMLElement} tableWrapper
+ * @param {Record<string, Array<{ mktcode: string, mktno: string, mktvalue: string }>>} byMktCode
+ * @param {HTMLDivElement} topRow
+ */
 function decorateTableWrapper(tableWrapper, byMktCode, topRow) {
   const writtenBy = document.createElement('div');
   writtenBy.classList.add('market-report-written-by');
@@ -824,11 +821,11 @@ function decorateTableWrapper(tableWrapper, byMktCode, topRow) {
 
 /* Populate the panel tables */
 /**
-* @param {ParentNode} panel
-* @param {ReturnType<typeof buildMarketReportModel>} model
-* @param {unknown[] | null} loanRows
-* @param {unknown[] | null} depositRows
-*/
+ * @param {ParentNode} panel
+ * @param {ReturnType<typeof buildMarketReportModel>} model
+ * @param {unknown[] | null} loanRows
+ * @param {unknown[] | null} depositRows
+ */
 function populatePanelTables(panel, model, loanRows, depositRows) {
   populateTablesInPanel(panel, model.byMktCode);
   populateLoanAndDepositTables(panel, loanRows, depositRows);
@@ -887,17 +884,17 @@ function setupOthbisGthbColumns(panel) {
 }
 
 /**
-* Some content authoring produces separate default-content-wrapper/table-wrapper
-* sibling pairs (one pair per field) instead of one continuous table-wrapper
-* holding every heading/table in document order. The rest of this file's layout
-* logic (applyTableWrapperPageLayout, populateFxmo/populateTbmo, and the
-* left/right split it builds) was written for — and is proven correct against —
-* that single flat continuous shape. Rather than rewriting that proven logic,
-* normalize the DOM to match it: merge every such wrapper's children into one
-* new table-wrapper, in document order, before any of the existing decoration
-* runs.
-* @param {HTMLElement} panel
-*/
+ * Some content authoring produces separate default-content-wrapper/table-wrapper
+ * sibling pairs (one pair per field) instead of one continuous table-wrapper
+ * holding every heading/table in document order. The rest of this file's layout
+ * logic (applyTableWrapperPageLayout, populateFxmo/populateTbmo, and the
+ * left/right split it builds) was written for — and is proven correct against —
+ * that single flat continuous shape. Rather than rewriting that proven logic,
+ * normalize the DOM to match it: merge every such wrapper's children into one
+ * new table-wrapper, in document order, before any of the existing decoration
+ * runs.
+ * @param {HTMLElement} panel
+ */
 function flattenMarketReportContent(panel) {
   const wrappers = [...panel.querySelectorAll(':scope > .default-content-wrapper, :scope > .table-wrapper')];
   if (wrappers.length <= 1) return;
