@@ -310,7 +310,7 @@ main .section.wizard-forms .form form .field-prospectage > label.field-label::be
   content: attr(title);
   position: absolute;
   left: var(--bbl-margin-block-14px);
-  top: 25px;
+  top: 1.5625rem;
   height: 3.125rem;
   display: flex;
   align-items: center;
