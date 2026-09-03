@@ -452,13 +452,18 @@
             "image",
             "special_characters"
           ],
+          "sr_script": [
+            "superscript",
+            "subscript"
+          ],
           "sections": [
             "format",
             "alignment",
             "indentation",
             "blocks",
             "list",
-            "insert"
+            "insert",
+            "sr_script"
           ]
         },
         "actions": {
