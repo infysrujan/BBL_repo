@@ -10,6 +10,15 @@
   --bbl-wizard-line-height-base-desktop: 1.3rem;
   --bbl-wizard-line-height-radio-desktop: 2.3rem;
   --bbl-wizard-line-height-plain-text-desktop: 1.375rem;
+  --bbl-wizard-line-height-summary-info: 1.6rem;
+  --bbl-wizard-line-height-summary-heading: 1.6875rem;
+  --bbl-wizard-font-size-summary-heading: 1.125rem;
+  --bbl-wizard-font-size-summary-label-mobile: 1.3125rem;
+  --bbl-wizard-font-size-summary-input-mobile: 1.225rem;
+  --bbl-wizard-font-size-summary-value-mobile: 1.925rem;
+  --bbl-wizard-font-size-summary-label-desktop: 1.5rem;
+  --bbl-wizard-font-size-summary-input-desktop: 1.4rem;
+  --bbl-wizard-font-size-summary-value-desktop: 2.2rem;
 }
 
 .field-bbl-wizard {
@@ -412,7 +421,7 @@ main .section.form-container.wizard-forms .form form {
 
 main .section.form-container.wizard-forms .form form fieldset:has(> fieldset[name="css-summaryWithHR"]) > .field-infotext p {
   font-size: var(--bbl-font-size-base);
-  line-height: 1.6rem;
+  line-height: var(--bbl-wizard-line-height-summary-info);
   color: var(--bbl-color-black);
 }
 
@@ -427,7 +436,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="insuranceSum
 
 main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .plain-text-wrapper.field-wrapper.col-1 p {
   font-size: var(--bbl-font-size-base);
-  line-height: 1.1375rem;
+  line-height: var(--bbl-wizard-line-height-base-mobile);
   color: var(--bbl-color-black);
 }
 
@@ -449,9 +458,9 @@ main .section.form-container.wizard-forms .form form .field-wrapper.plain-text-w
 }
 
 main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] :is(h1, h2, h3, h4, h5, h6) {
-  font-size: 1.125rem;
+  font-size: var(--bbl-wizard-font-size-summary-heading);
   font-weight: var(--bbl-font-weight-regular);
-  line-height: 1.6875rem;
+  line-height: var(--bbl-wizard-line-height-summary-heading);
   margin-block: 0 0.625rem;
 }
 
@@ -471,7 +480,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="insuranceSum
 }
 
 main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 input {
-  font-size: 1.225rem;
+  font-size: var(--bbl-wizard-font-size-summary-input-mobile);
   color: var(--bbl-color-black, #000);
   font-weight: var(--bbl-font-weight-regular);
   margin-left: 0.5rem;
@@ -509,7 +518,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   min-width: 0;
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-medium);
-  font-size: 1.3125rem;
+  font-size: var(--bbl-wizard-font-size-summary-label-mobile);
   margin-block: var(--bbl-space-200);
 }
 
@@ -519,9 +528,9 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   max-width: 100%;
   min-width: 0;
   font-family: var(--bbl-font-family-medium);
-  font-size: 1.925rem;
+  font-size: var(--bbl-wizard-font-size-summary-value-mobile);
   font-weight: var(--bbl-font-weight-regular);
-  line-height: 1.1375rem;
+  line-height: var(--bbl-wizard-line-height-base-mobile);
 }
 
 main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .plain-text-wrapper.field-wrapper.col-1 {
@@ -644,8 +653,8 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   }
 
   main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 label.field-label {
-    font-size: 1.5rem;
-    line-height: 1.3rem;
+    font-size: var(--bbl-wizard-font-size-summary-label-desktop);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
   main .section.form-container.wizard-forms .form form fieldset.panel-wrapper.field-wrapper[name="css-summaryWithHR"] {
@@ -653,21 +662,21 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
   }
  
   main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 input {
-    font-size: 1.4rem;
-    line-height: 1.3rem;
+    font-size: var(--bbl-wizard-font-size-summary-input-desktop);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
   main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .plain-text-wrapper.col-1 p {
     font-size: var(--bbl-font-size-base);
-    line-height: 1.3rem;
+    line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
   main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .plain-text-wrapper.field-wrapper.col-1 p {
-    line-height: 1.3rem;
+    line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 
   main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 input {
-    font-size: 2.2rem;
-    line-height: 1.3rem;
+    font-size: var(--bbl-wizard-font-size-summary-value-desktop);
+    line-height: var(--bbl-wizard-line-height-base-desktop);
   }
 }
