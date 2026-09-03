@@ -65,13 +65,7 @@
         "component": "boolean",
         "name": "breadcrumb",
         "value": true,
-        "label": "Breadcrumb",
-        "valueType": "boolean"
-      },
-      {
-        "component": "boolean",
-        "name": "hide-from-breadcrumb",
-        "label": "Hide from Breadcrumb",
+        "label": "Hide the entire breadcrumb from the current page",
         "valueType": "boolean"
       },
       {
@@ -86,6 +80,12 @@
         "name": "ogImage",
         "label": "OG Image",
         "description": "Select the image asset to use for the Open Graph og:image meta tag."
+      },
+      {
+        "component": "boolean",
+        "name": "hide-from-breadcrumb",
+        "label": "Hide only the current page’s breadcrumb from the breadcrumb trail.",
+        "valueType": "boolean"
       }
     ]
   },
