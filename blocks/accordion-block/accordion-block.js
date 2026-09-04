@@ -275,10 +275,14 @@ function buildAccordionPrintDocument(block) {
   // The title is authored as a sibling `default-content-wrapper` next to the block's own
   // wrapper — true whether that wrapper's parent is a top-level section (common case) or a
   // nested container like a tabs panel, so this check works regardless of nesting depth.
+  // Authors often leave a stray empty paragraph (e.g. "&nbsp;") next to the block, which also
+  // lands in its own `default-content-wrapper`; that must not be mistaken for a real title.
   const wrapperParent = wrapper?.parentElement || null;
   const hasSiblingTitle = Boolean(
     wrapperParent && [...wrapperParent.children].some(
-      (child) => child !== wrapper && child.classList.contains('default-content-wrapper'),
+      (child) => child !== wrapper
+        && child.classList.contains('default-content-wrapper')
+        && child.textContent.trim(),
     ),
   );
 
