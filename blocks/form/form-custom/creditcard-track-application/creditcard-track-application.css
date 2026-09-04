@@ -527,7 +527,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
         justify-content: flex-start;
         align-items: flex-start;
         width: 100%;
-        max-width: 100%;
+        max-width: 39.6rem;
         margin-top: 1.25rem;
         margin-inline: auto;
 
@@ -1156,4 +1156,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
       }
     }
   }
+}
+
+main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
+  padding-block-start: 6rem;
 }
