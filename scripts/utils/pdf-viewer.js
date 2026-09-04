@@ -10,6 +10,7 @@ import {
 export default function openPdfViewer({
   path,
   name = '',
+  googleViewerUrl = '',
   downloadLabel = 'Download',
   classPrefix = 'srr-preview',
 } = {}) {
@@ -60,7 +61,21 @@ export default function openPdfViewer({
   downloadLink.rel = 'noopener';
   buttonGroup.append(downloadLink);
 
-  embedEl.src = path;
+  fetch(path)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load PDF: ${response.status}`);
+      }
+
+      embedEl.src = path;
+    })
+    .catch(() => {
+      if (googleViewerUrl) {
+        embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(
+          path,
+        )}`;
+      }
+    });
 
   centerContent.append(pdfEmbed, buttonGroup);
   body.append(centerContent);
