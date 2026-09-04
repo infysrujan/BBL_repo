@@ -73,16 +73,6 @@ function fillTemplate(template, vars) {
   );
 }
 
-// Pulls the numeric bound(s) authored inside a config message, e.g.
-// "must not be greater than 999,999,999" -> [999999999], so the enforced
-// threshold always matches what's shown to the user, with nothing duplicated in code.
-function extractNumbersFromText(text) {
-  // (?<!\d) keeps a "-" between two numbers (e.g. "0-100") from being read as a minus
-  // sign — it only counts as negative when it isn't glued to a preceding digit.
-  const matches = String(text || '').match(/(?<!\d)-?[\d,]+(?:\.\d+)?/g);
-  return matches ? matches.map((n) => Number(n.replace(/,/g, ''))) : [];
-}
-
 function parseProducts(L) {
   const nums = [...new Set(
     Object.keys(L)
@@ -115,29 +105,25 @@ function buildDataFromConfig(json, lang, placeholders, inflationRate) {
   const futureValueTemplate = (L['common-toHaveMoney'] || '')
     .replace('{money}', '{amount}').replace('{unit}', unit);
 
-  // minValueError/maxValueError are used only for the expected-return field, filled
-  // with its own placeholder-authored range (e.g. "0.1 - 40") rather than a hard-coded number.
+  // validation-* strings are display copy only — the enforced bounds come from their
+  // own validationBounds-* numbers in the common sheet, so parsing text is not needed.
   const minValueErrorMsg = L['validation-minValueError'] || '';
   const maxValueErrorMsg = L['validation-maxValueError'] || '';
-  // percentageError is the message/bound source for annualIncrease, the other % field.
   const percentageErrorMsg = L['validation-percentageError'] || '';
   const minDesiredSavingAmountMsg = L['validation-minDesiredSavingAmount'] || '';
   const maxDesiredSavingAmountMsg = L['validation-maxDesiredSavingAmount'] || '';
   const minYearsToSaveMsg = L['validation-minYearsToSave'] || '';
   const maxYearsToSaveMsg = L['validation-maxYearsToSave'] || '';
-  const [goalAmountMin] = extractNumbersFromText(minDesiredSavingAmountMsg);
-  const [goalAmountMax] = extractNumbersFromText(maxDesiredSavingAmountMsg);
-  const [goalPeriodMin] = extractNumbersFromText(minYearsToSaveMsg);
-  const [goalPeriodMax] = extractNumbersFromText(maxYearsToSaveMsg);
-  const [percentageMin] = extractNumbersFromText(percentageErrorMsg);
 
-  // No dedicated per-field message exists for balance or annualReturn, so their bounds
-  // come from the field's own placeholder range text (e.g. "0.1 - 40"), the same value
-  // shown to the user as the input hint — one authored source, not a hard-coded number.
-  const balancePlaceholder = placeholders.savingPlanPlaceholderBalance || '0 - 999,999,999';
-  const annualReturnPlaceholder = placeholders.savingPlanPlaceholderAnnualReturn || '0.1 - 40';
-  const [balanceMin, balanceMax] = extractNumbersFromText(balancePlaceholder);
-  const [annualReturnMin, annualReturnMax] = extractNumbersFromText(annualReturnPlaceholder);
+  const goalAmountMin = Number(C['validationBounds-desiredSavingAmountMin']) || 10000;
+  const goalAmountMax = Number(C['validationBounds-desiredSavingAmountMax']) || 999999999;
+  const goalPeriodMin = Number(C['validationBounds-yearsToSaveMin']) || 1;
+  const goalPeriodMax = Number(C['validationBounds-yearsToSaveMax']) || 30;
+  const balanceMin = Number(C['validationBounds-savedAmountMin']) || 0;
+  const balanceMax = Number(C['validationBounds-savedAmountMax']) || 999999999;
+  const annualReturnMin = Number(C['validationBounds-expectedReturnRateMin']) || 0.1;
+  const annualReturnMax = Number(C['validationBounds-expectedReturnRateMax']) || 40;
+  const percentageMin = Number(C['validationBounds-annualSavingIncreaseRateMin']) || 0;
 
   const configuredReturnRate = C['defaultFormValues-expectedReturnRate'];
 
