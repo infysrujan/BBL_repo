@@ -1121,6 +1121,44 @@ function replaceother(selectedValues, otherText) {
     .join(', ');
 }
 
+/**
+ * Blocks any non-digit character from being entered into inputs whose field
+ * wrapper (or the input itself) has the `number-only` CSS class — set via
+ * AEM Forms authoring's "Custom CSS Class Name" field. Typing, paste, and
+ * drag-drop are all prevented before the character ever renders. Delegated
+ * handling via document-level listener, so it also covers inputs added
+ * dynamically after this script loads.
+ *
+ * @name restrictNumberOnlyInputs
+ * @returns {void}
+ */
+function restrictNumberOnlyInputs() {
+  document.addEventListener('beforeinput', (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) {
+      return;
+    }
+
+    // AEM Forms applies "Custom CSS Class Name" to the field wrapper, not
+    // always the input itself — so check the input and its ancestors.
+    const isNumberOnly = input.classList.contains('number-only')
+      || input.closest('.number-only') !== null;
+    if (!isNumberOnly) {
+      return;
+    }
+
+    const insertingTypes = ['insertText', 'insertFromPaste', 'insertFromDrop', 'insertCompositionText'];
+    if (!insertingTypes.includes(event.inputType)) {
+      return;
+    }
+
+    if (event.data !== null && /\D/.test(event.data)) {
+      event.preventDefault();
+    }
+  });
+}
+restrictNumberOnlyInputs();
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
