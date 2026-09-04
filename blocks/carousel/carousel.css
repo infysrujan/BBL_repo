@@ -162,7 +162,10 @@
     font-weight: var(--bbl-text-label-tag-weight);
     background: var(--bbl-color-blue-140);
     font-family: var(--bbl-font-family-looped);
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: 1.4375rem;
     padding: var(--bbl-space-025) var(--bbl-space-100);
     margin-bottom: 0.8125rem;
     color: var(--bbl-color-white);
@@ -382,6 +385,7 @@
     }
 
     .carousel-eyebrow {
+        height: 1.875rem;
         padding: var(--bbl-space-050) var(--bbl-space-100);
         margin-bottom: 0.875rem;
         font-family: var(--bbl-font-family-medium);
