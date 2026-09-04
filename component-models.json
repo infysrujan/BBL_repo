@@ -10233,6 +10233,10 @@
           {
             "name": "Simple with App cta",
             "value": "simple-app-cta"
+          },
+          {
+            "name": "Default",
+            "value": "default"
           }
         ]
       }
