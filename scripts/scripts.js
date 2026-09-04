@@ -243,10 +243,14 @@ function getDocumentLangFromPath(pathname) {
     const lang = segments[2];
     if (lang === 'en') return 'en';
     if (lang === 'th') return 'th';
+    if (lang === 'zh') return 'zh';
+    if (lang === 'jp') return 'jp';
   }
 
   if (first === 'en') return 'en';
   if (first === 'th') return 'th';
+  if (first === 'zh') return 'zh';
+  if (first === 'jp') return 'jp';
 
   // Check bblcorporate#lang cookie
   const cookie = document.cookie
@@ -278,7 +282,7 @@ function redirectToLocale() {
   const locale = getDocumentLangFromPath(pathname);
 
   // If locale doesn't exist in path, redirect
-  if (!/^\/(en|th)(\/|$)/.test(pathname)) {
+  if (!/^\/(en|th|zh|jp)(\/|$)/.test(pathname)) {
     window.location.href = `/${locale}${pathname === '/' ? '/' : pathname}`;
   }
 }
