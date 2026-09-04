@@ -65,11 +65,10 @@ export default function openPdfViewer({
   const pdfBlobPromise = fetch(path).then((r) => r.blob());
 
   pdfBlobPromise
-    .then((blob) => {
+    .then(() => {
       // Keep the blob URL alive for the lifetime of the modal so the viewer's
       // built-in download button can still fetch it; revoke on close() below.
-      objectUrl = URL.createObjectURL(blob);
-      embedEl.src = objectUrl;
+      embedEl.src = path;
     })
     .catch(() => {
       if (googleViewerUrl) embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
