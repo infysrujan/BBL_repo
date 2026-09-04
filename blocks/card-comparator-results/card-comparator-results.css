@@ -225,6 +225,10 @@
   white-space: nowrap;
 }
 
+.card-comparator-results .ccr-apply-mobile-btn:nth-child(2) {
+  display: none;
+}
+
 /* No results */
 
 .card-comparator-results .ccr-no-results {
@@ -306,6 +310,10 @@
   .card-comparator-results .ccr-apply-desktop:hover {
     background: var(--bbl-color-blue-90);
     border-color: var(--bbl-color-blue-90);
+  }
+  
+  .card-comparator-results .ccr-apply-mobile-btn:nth-child(2) {
+    display: block;
   }
 }
 
