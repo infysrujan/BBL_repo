@@ -271,7 +271,7 @@
   border-color: var(--bbl-color-active-blue);
 }
 
-@media (width >= 48rem) {
+@media (width >= 47.5rem) {
   .card-comparator-results .ccr-scroll-dots {
     display: none;
   }

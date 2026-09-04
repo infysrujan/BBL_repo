@@ -280,7 +280,7 @@ function initMobileCarousel(grid, doc) {
   dotsEl.className = 'ccr-scroll-dots';
   grid.parentElement.appendChild(dotsEl);
 
-  const isMobile = () => window.innerWidth < 768;
+  const isMobile = () => window.innerWidth < 760;
   const getItems = () => [...grid.querySelectorAll('.ccr-card:not([data-ccr-clone])')];
 
   const centerLeft = (item) => item.getBoundingClientRect().left
