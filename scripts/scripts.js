@@ -266,9 +266,9 @@ function getDocumentLangFromPath(pathname) {
 }
 
 function redirectToLocale() {
-  if (document.querySelector('[data-aue-resource]')) {
-    return;
-  }
+  // Don't redirect on the authoring instance — path/locale rewrites would fight
+  // with the editor's own resource path.
+  if (document.querySelector('[data-aue-resource]')) return;
 
   let { pathname } = window.location;
 

@@ -25,6 +25,10 @@
   overflow: auto hidden;
 }
 
+.accordion-item .table {
+  overflow: auto hidden;
+}
+
 /* Table element */
 .table table {
   width: 100%;
@@ -403,11 +407,8 @@
   min-width: 61.9375rem;
 }
 
-/* Table nested inside an accordion item — keep a usable minimum width so
-   columns don't collapse when the accordion is narrower than the table;
-   the .table wrapper's overflow-x: auto handles the resulting overflow. */
 .accordion-item .table table {
-  min-width: 31.25rem;
+  min-width: 61.9375rem;
 }
 
 /* --------------------------------------------------------------------------
@@ -433,6 +434,10 @@ td .icon {
   .table.scroll {
     overflow: auto hidden;
   }
+
+  .accordion-item .table {
+    overflow: auto hidden;
+  }
 }
 
 /* ==========================================================================
@@ -448,6 +453,14 @@ td .icon {
   }
 
   .table.scroll table {
+    min-width: 0;
+  }
+
+  .accordion-item .table{
+    overflow: visible;
+  } 
+  
+  .accordion-item .table table {
     min-width: 0;
   }
 
