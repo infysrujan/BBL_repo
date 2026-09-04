@@ -280,7 +280,8 @@ function initMobileCarousel(grid, doc) {
   dotsEl.className = 'ccr-scroll-dots';
   grid.parentElement.appendChild(dotsEl);
 
-  const getItems = () => [...grid.querySelectorAll('.ccr-card')];
+  const isMobile = () => window.innerWidth < 768;
+  const getItems = () => [...grid.querySelectorAll('.ccr-card:not([data-ccr-clone])')];
 
   const scrollToItem = (item) => {
     const offset = item.getBoundingClientRect().left
@@ -302,8 +303,18 @@ function initMobileCarousel(grid, doc) {
       dot.addEventListener('click', () => scrollToItem(item));
       dotsEl.appendChild(dot);
     });
+
+    if (!isMobile() || grid.querySelector('[data-ccr-clone]')) return;
+    const first = items[0].cloneNode(true);
+    const last = items[items.length - 1].cloneNode(true);
+    first.dataset.ccrClone = 'true';
+    last.dataset.ccrClone = 'true';
+    grid.append(first);
+    grid.prepend(last);
+    requestAnimationFrame(() => { grid.scrollLeft = items[0].offsetLeft; });
   };
 
+  let wrapTimer;
   grid.addEventListener('scroll', () => {
     const dots = [...dotsEl.querySelectorAll('.ccr-scroll-dot')];
     const items = getItems();
@@ -316,6 +327,27 @@ function initMobileCarousel(grid, doc) {
       if (dist < minDistance) { minDistance = dist; activeIndex = i; }
     });
     dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+
+    if (!isMobile()) return;
+    clearTimeout(wrapTimer);
+    wrapTimer = setTimeout(() => {
+      const all = [...grid.querySelectorAll('.ccr-card')];
+      const { left } = grid.getBoundingClientRect();
+      let snapIdx = 0;
+      let minDist = Infinity;
+      all.forEach((item, i) => {
+        const dist = Math.abs(item.getBoundingClientRect().left - left);
+        if (dist < minDist) { minDist = dist; snapIdx = i; }
+      });
+      if (!all[snapIdx]?.dataset.ccrClone) return;
+      const real = snapIdx === 0 ? items[items.length - 1] : items[0];
+      const dx = real.getBoundingClientRect().left - all[snapIdx].getBoundingClientRect().left;
+      if (!dx) return;
+      // Instant wrap after the clone snap so the loop is not a visible jump.
+      grid.style.scrollSnapType = 'none';
+      grid.scrollLeft += dx;
+      requestAnimationFrame(() => grid.style.removeProperty('scroll-snap-type'));
+    }, 150);
   }, { passive: true });
 
   return buildDots;
