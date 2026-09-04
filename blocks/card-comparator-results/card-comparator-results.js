@@ -310,6 +310,7 @@ function initMobileCarousel(grid, doc) {
     if (!first) return;
     grid.style.scrollSnapType = 'none';
     grid.scrollLeft = centerLeft(first);
+    requestAnimationFrame(() => grid.style.removeProperty('scroll-snap-type'));
   };
 
   const syncLoop = () => {
@@ -360,11 +361,8 @@ function initMobileCarousel(grid, doc) {
     if (!real) return;
     grid.style.scrollSnapType = 'none';
     grid.scrollLeft += real.getBoundingClientRect().left - snapped.getBoundingClientRect().left;
+    requestAnimationFrame(() => grid.style.removeProperty('scroll-snap-type'));
   };
-
-  grid.addEventListener('touchstart', () => {
-    grid.style.removeProperty('scroll-snap-type');
-  }, { passive: true });
 
   let wrapTimer;
   grid.addEventListener('scroll', () => {
@@ -379,7 +377,7 @@ function initMobileCarousel(grid, doc) {
     }
     if (!isMobile()) return;
     clearTimeout(wrapTimer);
-    wrapTimer = setTimeout(wrapIfClone, 80);
+    wrapTimer = setTimeout(wrapIfClone, 180);
   }, { passive: true });
   grid.addEventListener('scrollend', wrapIfClone);
 
