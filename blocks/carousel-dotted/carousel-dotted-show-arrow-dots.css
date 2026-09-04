@@ -204,6 +204,11 @@
   border-radius: var(--bbl-rounded-100);
 }
 
+.carousel-dotted.show-arrows-dots.mixed-image-slides .carousel-track-wrapper .carousel-dotted-item.with-default-image {
+  flex-basis: calc(100% + 1px);
+  width: calc(100% + 1px);
+}
+
 @media (width > 47.5rem) {
   .carousel-dotted.show-arrows-dots .carousel-dotted-item {
     position: relative;
