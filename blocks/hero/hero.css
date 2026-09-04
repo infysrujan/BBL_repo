@@ -92,6 +92,10 @@
   height: auto;
 }
 
+.hero-banner-default .hero-banner-item {
+  height: 33.125rem; 
+}
+
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner, .hero-banner-private-wealth-banking) .hero-banner-item {
   max-height: 21.875rem;
   height: calc((100vw - 2.5rem) / 1.3);
