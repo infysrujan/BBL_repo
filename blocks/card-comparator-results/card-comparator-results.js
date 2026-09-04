@@ -283,74 +283,107 @@ function initMobileCarousel(grid, doc) {
   const isMobile = () => window.innerWidth < 768;
   const getItems = () => [...grid.querySelectorAll('.ccr-card:not([data-ccr-clone])')];
 
+  const centerLeft = (item) => item.getBoundingClientRect().left
+    - grid.getBoundingClientRect().left
+    + grid.scrollLeft
+    - (grid.clientWidth - item.offsetWidth) / 2;
+
   const scrollToItem = (item) => {
-    const offset = item.getBoundingClientRect().left
-      - grid.getBoundingClientRect().left
-      + grid.scrollLeft;
-    grid.scrollTo({ left: offset, behavior: 'smooth' });
+    grid.scrollTo({ left: centerLeft(item), behavior: 'smooth' });
+  };
+
+  const closestCard = (cards) => {
+    const center = grid.getBoundingClientRect().left + grid.clientWidth / 2;
+    let best = cards[0];
+    let min = Infinity;
+    cards.forEach((item) => {
+      const r = item.getBoundingClientRect();
+      const dist = Math.abs(r.left + r.width / 2 - center);
+      if (dist < min) { min = dist; best = item; }
+    });
+    return best;
+  };
+
+  const centerFirst = () => {
+    if (!isMobile()) return;
+    const first = getItems()[0];
+    if (!first) return;
+    grid.style.scrollSnapType = 'none';
+    grid.scrollLeft = centerLeft(first);
+  };
+
+  const syncLoop = () => {
+    grid.querySelectorAll('[data-ccr-clone]').forEach((el) => el.remove());
+    grid.scrollLeft = 0;
+    if (!isMobile()) return;
+    const items = getItems();
+    if (items.length <= 1) return;
+    const n = items.length;
+    const makeClone = (i) => {
+      const el = items[i].cloneNode(true);
+      el.dataset.ccrClone = 'true';
+      el.dataset.ccrCloneOf = String(i);
+      return el;
+    };
+    // [3rd][1st][2nd]… — last card peeks left, second peeks right.
+    grid.prepend(makeClone(n - 1));
+    if (n > 2) grid.prepend(makeClone(n - 2));
+    grid.append(makeClone(0));
+    if (n > 2) grid.append(makeClone(1));
+    requestAnimationFrame(() => requestAnimationFrame(centerFirst));
   };
 
   const buildDots = () => {
     dotsEl.innerHTML = '';
     const items = getItems();
-    if (items.length <= 1) return;
-    items.forEach((item, i) => {
-      const dot = doc.createElement('button');
-      dot.type = 'button';
-      dot.className = 'ccr-scroll-dot';
-      if (i === 0) dot.classList.add('is-active');
-      dot.setAttribute('aria-label', `Card ${i + 1}`);
-      dot.addEventListener('click', () => scrollToItem(item));
-      dotsEl.appendChild(dot);
-    });
-
-    if (!isMobile() || grid.querySelector('[data-ccr-clone]')) return;
-    const first = items[0].cloneNode(true);
-    const last = items[items.length - 1].cloneNode(true);
-    first.dataset.ccrClone = 'true';
-    last.dataset.ccrClone = 'true';
-    grid.append(first);
-    grid.prepend(last);
-    requestAnimationFrame(() => { grid.scrollLeft = items[0].offsetLeft; });
+    if (items.length > 1) {
+      items.forEach((item, i) => {
+        const dot = doc.createElement('button');
+        dot.type = 'button';
+        dot.className = 'ccr-scroll-dot';
+        if (i === 0) dot.classList.add('is-active');
+        dot.setAttribute('aria-label', `Card ${i + 1}`);
+        dot.addEventListener('click', () => scrollToItem(item));
+        dotsEl.appendChild(dot);
+      });
+    }
+    syncLoop();
   };
+
+  const wrapIfClone = () => {
+    if (!isMobile()) return;
+    const items = getItems();
+    if (items.length <= 1) return;
+    const snapped = closestCard([...grid.querySelectorAll('.ccr-card')]);
+    if (!snapped?.dataset.ccrClone) return;
+    const real = items[Number(snapped.dataset.ccrCloneOf)];
+    if (!real) return;
+    grid.style.scrollSnapType = 'none';
+    grid.scrollLeft += real.getBoundingClientRect().left - snapped.getBoundingClientRect().left;
+  };
+
+  grid.addEventListener('touchstart', () => {
+    grid.style.removeProperty('scroll-snap-type');
+  }, { passive: true });
 
   let wrapTimer;
   grid.addEventListener('scroll', () => {
     const dots = [...dotsEl.querySelectorAll('.ccr-scroll-dot')];
     const items = getItems();
-    if (!items.length || !dots.length) return;
-    const containerLeft = grid.getBoundingClientRect().left;
-    let activeIndex = 0;
-    let minDistance = Infinity;
-    items.forEach((item, i) => {
-      const dist = Math.abs(item.getBoundingClientRect().left - containerLeft);
-      if (dist < minDistance) { minDistance = dist; activeIndex = i; }
-    });
-    dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
-
+    if (items.length && dots.length) {
+      const snapped = closestCard([...grid.querySelectorAll('.ccr-card')]);
+      const activeIndex = snapped?.dataset.ccrCloneOf !== undefined
+        ? Number(snapped.dataset.ccrCloneOf)
+        : items.indexOf(snapped);
+      dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+    }
     if (!isMobile()) return;
     clearTimeout(wrapTimer);
-    wrapTimer = setTimeout(() => {
-      const all = [...grid.querySelectorAll('.ccr-card')];
-      const { left } = grid.getBoundingClientRect();
-      let snapIdx = 0;
-      let minDist = Infinity;
-      all.forEach((item, i) => {
-        const dist = Math.abs(item.getBoundingClientRect().left - left);
-        if (dist < minDist) { minDist = dist; snapIdx = i; }
-      });
-      if (!all[snapIdx]?.dataset.ccrClone) return;
-      const real = snapIdx === 0 ? items[items.length - 1] : items[0];
-      const dx = real.getBoundingClientRect().left - all[snapIdx].getBoundingClientRect().left;
-      if (!dx) return;
-      // Instant wrap after the clone snap so the loop is not a visible jump.
-      grid.style.scrollSnapType = 'none';
-      grid.scrollLeft += dx;
-      requestAnimationFrame(() => grid.style.removeProperty('scroll-snap-type'));
-    }, 150);
+    wrapTimer = setTimeout(wrapIfClone, 80);
   }, { passive: true });
+  grid.addEventListener('scrollend', wrapIfClone);
 
-  return buildDots;
+  return { buildDots, syncLoop, centerFirst };
 }
 
 // ── Cookie reader ──────────────────────────────────────────────────────────────
@@ -492,10 +525,13 @@ export default async function decorate(block) {
   container.className = 'ccr-grid';
   innerContainer.appendChild(container);
 
-  const buildDots = initMobileCarousel(container, doc);
+  const { buildDots, syncLoop, centerFirst } = initMobileCarousel(container, doc);
 
   const doAlign = () => {
-    const measure = () => requestAnimationFrame(() => equalizeRowHeights(container));
+    const measure = () => requestAnimationFrame(() => {
+      equalizeRowHeights(container);
+      centerFirst();
+    });
 
     const runAlign = () => {
       // document.fonts.ready may already be resolved when a section that was
@@ -551,6 +587,10 @@ export default async function decorate(block) {
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => equalizeRowHeights(container), 150);
+    resizeTimer = setTimeout(() => {
+      syncLoop();
+      equalizeRowHeights(container);
+      centerFirst();
+    }, 150);
   });
 }
