@@ -165,8 +165,7 @@ function buildApplyArea(card, doc, labels, icons) {
   area.appendChild(desktopBtn);
 
   // Mobile: boxed button per enabled channel — one button when only web or
-  // only mobile apply is enabled, two when both are
-  const mobileGroup = doc.createElement('div');
+  const mobileGroup = doc.createElement('span');
   mobileGroup.className = 'ccr-apply-mobile-group';
 
   if (hasWebApply) {
