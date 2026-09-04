@@ -230,39 +230,30 @@ document.addEventListener('bbl:load-fragment', async (e) => {
   }
 });
 
+const SUPPORTED_LOCALES = ['en', 'th', 'zh', 'jp'];
+
 /**
  * Resolves html lang from URL path (locale segment after host, e.g. bangkokbank.com/en/...).
  * @param {string} pathname - `window.location.pathname`
- * @returns {'en'|'th'}
+ * @returns {'en'|'th'|'zh'|'jp'}
  */
 function getDocumentLangFromPath(pathname) {
   const segments = pathname.split('/').filter(Boolean);
-  const first = segments[0];
+  const getLocale = (index) => {
+    const locale = segments[index];
+    return SUPPORTED_LOCALES.includes(locale) ? locale : '';
+  };
 
   if (document.querySelector('[data-aue-resource]')) {
-    const lang = segments[2];
-    if (lang === 'en') return 'en';
-    if (lang === 'th') return 'th';
-    if (lang === 'zh') return 'zh';
-    if (lang === 'jp') return 'jp';
+    const authoringLocale = getLocale(2);
+    if (authoringLocale) return authoringLocale;
   }
 
-  if (first === 'en') return 'en';
-  if (first === 'th') return 'th';
-  if (first === 'zh') return 'zh';
-  if (first === 'jp') return 'jp';
+  const pathLocale = getLocale(0);
+  if (pathLocale) return pathLocale;
 
-  // Check bblcorporate#lang cookie
-  const cookie = document.cookie
-    .split(';')
-    .map((c) => c.trim())
-    .find((c) => c.startsWith('bblcorporate#lang='));
-  if (cookie) {
-    return cookie.split('=')[1];
-  }
-
-  // Fallback to 'th'
-  return 'th';
+  const cookieLocale = getCookie('bblcorporate#lang');
+  return SUPPORTED_LOCALES.includes(cookieLocale) ? cookieLocale : 'th';
 }
 
 function redirectToLocale() {
@@ -282,7 +273,7 @@ function redirectToLocale() {
   const locale = getDocumentLangFromPath(pathname);
 
   // If locale doesn't exist in path, redirect
-  if (!/^\/(en|th|zh|jp)(\/|$)/.test(pathname)) {
+  if (!new RegExp(`^/(${SUPPORTED_LOCALES.join('|')})(/|$)`).test(pathname)) {
     window.location.href = `/${locale}${pathname === '/' ? '/' : pathname}`;
   }
 }
