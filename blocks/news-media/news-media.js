@@ -89,6 +89,12 @@ async function renderNewsMedia(block) {
   const [data, placeholders] = await Promise.all([fetchJson(dataUrl), fetchPlaceholders()]);
   const allCards = data?.news || [];
 
+  const initParams = new URLSearchParams(window.location.search);
+  if (initParams.has('page')) {
+    initParams.delete('page');
+    window.history.replaceState(null, '', `?${initParams.toString()}`);
+  }
+
   document.querySelector('.tabs.block')?.classList.add('news-media-tabs');
 
   const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
@@ -106,6 +112,7 @@ async function renderNewsMedia(block) {
     btn.addEventListener('click', () => {
       const params = new URLSearchParams(window.location.search);
       params.set('year', btn.textContent.trim());
+      params.delete('page');
       window.history.replaceState(null, '', `?${params.toString()}`);
     });
   });
