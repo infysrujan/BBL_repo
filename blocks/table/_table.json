@@ -112,6 +112,10 @@
                 {
                   "name": "Header Primary Blue S01",
                   "value": "header-primary-blue-s01"
+                },
+                {
+                  "name": "Right Aligned Last Line",
+                  "value": "header-right-aligned-last-line"
                 }
               ]
             },
