@@ -313,9 +313,40 @@ function initMobileCarousel(grid, doc) {
     requestAnimationFrame(() => grid.style.removeProperty('scroll-snap-type'));
   };
 
+  const currentIndex = () => {
+    const items = getItems();
+    const snapped = closestCard([...grid.querySelectorAll('.ccr-card')]);
+    if (snapped?.dataset.ccrCloneOf !== undefined) return Number(snapped.dataset.ccrCloneOf);
+    const i = items.indexOf(snapped);
+    return i < 0 ? 0 : i;
+  };
+
+  const goNext = () => {
+    if (!isMobile()) return;
+    const items = getItems();
+    if (items.length <= 1) return;
+    const next = (currentIndex() + 1) % items.length;
+    if (next === 0) {
+      const clones = [...grid.querySelectorAll('.ccr-card[data-ccr-clone-of="0"]')];
+      scrollToItem(clones[clones.length - 1] || items[0]);
+      return;
+    }
+    scrollToItem(items[next]);
+  };
+
+  let autoTimer;
+  const stopAuto = () => clearInterval(autoTimer);
+  const startAuto = () => {
+    stopAuto();
+    if (!isMobile() || getItems().length <= 1) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    autoTimer = setInterval(goNext, 15000);
+  };
+
   const syncLoop = () => {
     grid.querySelectorAll('[data-ccr-clone]').forEach((el) => el.remove());
     grid.scrollLeft = 0;
+    stopAuto();
     if (!isMobile()) return;
     const items = getItems();
     if (items.length <= 1) return;
@@ -331,7 +362,10 @@ function initMobileCarousel(grid, doc) {
     if (n > 2) grid.prepend(makeClone(n - 2));
     grid.append(makeClone(0));
     if (n > 2) grid.append(makeClone(1));
-    requestAnimationFrame(() => requestAnimationFrame(centerFirst));
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      centerFirst();
+      startAuto();
+    }));
   };
 
   const buildDots = () => {
@@ -380,6 +414,9 @@ function initMobileCarousel(grid, doc) {
     wrapTimer = setTimeout(wrapIfClone, 180);
   }, { passive: true });
   grid.addEventListener('scrollend', wrapIfClone);
+  grid.addEventListener('touchstart', stopAuto, { passive: true });
+  grid.addEventListener('touchend', startAuto, { passive: true });
+  doc.addEventListener('visibilitychange', () => (doc.hidden ? stopAuto() : startAuto()));
 
   return { buildDots, syncLoop, centerFirst };
 }
