@@ -667,9 +667,9 @@ function renderJourney2(block, data, state, onBack, onCalculate, savedValues = {
         RMFSumRetire: journey2Values.RMFSumRetire,
         RMFSavingRateRetire: journey2Values.RMFSavingRateRetire,
         RMFCompensationRateRetire: journey2Values.RMFCompensationRateRetirePct / 100,
-        SumYearRetire: journey2Values.SumYearRetire,
+        SumYearRetire: journey2Values.OneTimeMoneyRetire,
         YearCompensationRateRetire: journey2Values.YearCompensationRateRetirePct / 100,
-        OneTimeMoneyRetire: journey2Values.OneTimeMoneyRetire,
+        OneTimeMoneyRetire: journey2Values.SumYearRetire,
         inflationrate: data.inflationRate,
         afterretirerate: data.afterRetirementRate,
       };
