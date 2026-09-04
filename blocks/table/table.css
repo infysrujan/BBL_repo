@@ -407,7 +407,7 @@
    columns don't collapse when the accordion is narrower than the table;
    the .table wrapper's overflow-x: auto handles the resulting overflow. */
 .accordion-item .table table {
-  min-width: 31.25rem;
+  min-width: 61.9375rem;
 }
 
 /* --------------------------------------------------------------------------
