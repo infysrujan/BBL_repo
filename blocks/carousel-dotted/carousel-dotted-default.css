@@ -200,7 +200,10 @@
 }
 
 .carousel-dotted .carousel-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 1.4375rem;
   font-size: var(--bbl-text-label-tag-size);
   font-weight: var(--bbl-text-label-tag-weight);
   line-height: var(--bbl-text-label-tag-line-height);
@@ -985,7 +988,8 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-badge{
-    padding:var(--bbl-space-050) var(--bbl-space-100);
+    height: 1.875rem;
+    padding: var(--bbl-space-050) var(--bbl-space-100);
   }
 
   .carousel-dotted .carousel-dotted-description {
