@@ -415,7 +415,7 @@
 
     .carousel-track .carousel-item:not(.active) {
         position: relative;
-        width: calc(33.34vw - 3.75rem);
+        width: calc(33.34vw - 4.875rem);
         height: 30.625rem;
     }
 
@@ -486,6 +486,6 @@
     }
 
     .carousel-track .carousel-item:not(.active) {
-        width: 36.25rem;
+        width: 35.125rem;
     }
 }
