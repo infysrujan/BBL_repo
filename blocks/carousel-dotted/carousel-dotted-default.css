@@ -649,7 +649,8 @@
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  margin: 0;
   flex: 1;
 }
 
@@ -890,6 +891,7 @@ p.text-large.text-light {
 
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor {
     padding: 0 1.875rem;
+    justify-content: center;
   }
 
   /* title-3 desktop: regular weight to match live site */
