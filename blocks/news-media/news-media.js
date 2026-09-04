@@ -69,7 +69,12 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
     const carouselNavBtnsLabels = { prevBtnLabel: placeholders.carouselPrevBtnLabel || 'Previous', nextBtnLabel: placeholders.carouselNextBtnLabel || 'Next' };
     paginationEl.innerHTML = buildPaginationHtml(state.page, totalPages, carouselNavBtnsLabels);
   }
-  bindPaginationClick(paginationEl, state, render, gridEl);
+  bindPaginationClick(paginationEl, state, () => {
+    render();
+    const params = new URLSearchParams(window.location.search);
+    params.set('page', state.page);
+    window.history.replaceState(null, '', `?${params.toString()}`);
+  }, gridEl);
   render();
 }
 
