@@ -646,7 +646,7 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor {
-  padding: 1.875rem 1.25rem;
+  padding: 1.875rem var(--bbl-space-250);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
