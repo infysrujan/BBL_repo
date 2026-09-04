@@ -1121,6 +1121,40 @@ function replaceother(selectedValues, otherText) {
     .join(', ');
 }
 
+/**
+ * Blocks any non-digit character from being entered into inputs whose field
+ * wrapper (or the input itself) has the `number-only` CSS class — set via
+ *
+ * @name restrictNumberOnlyInputs
+ * @returns {void}
+ */
+function restrictNumberOnlyInputs() {
+  if (typeof document === 'undefined') return;
+
+  document.addEventListener('beforeinput', (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const isNumberOnly = input.classList.contains('number-only')
+      || input.closest('.number-only') !== null;
+    if (!isNumberOnly) {
+      return;
+    }
+
+    const insertingTypes = ['insertText', 'insertFromPaste', 'insertFromDrop', 'insertCompositionText'];
+    if (!insertingTypes.includes(event.inputType)) {
+      return;
+    }
+
+    if (event.data !== null && /\D/.test(event.data)) {
+      event.preventDefault();
+    }
+  });
+}
+restrictNumberOnlyInputs();
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
