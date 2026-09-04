@@ -209,6 +209,29 @@ function markHeaderRows(table) {
   }
 }
 
+// A header cell's own text-align can't differ per line, so the last
+// <br>-separated section of its authored content (e.g. a trailing unit
+// label, in whichever language it was authored) is split into its own
+// block and right-aligned independently of the rest of the cell.
+function alignHeaderLastLine(table) {
+  if (!table.classList.contains('header-right-aligned-last-line')) return;
+
+  const headerCells = table.querySelectorAll(':scope > tbody > tr.header-row > td');
+  headerCells.forEach((cell) => {
+    const children = [...cell.childNodes];
+    const lastBreakIndex = children.map((node) => node.nodeName).lastIndexOf('BR');
+    if (lastBreakIndex === -1) return;
+
+    const lastLineNodes = children.slice(lastBreakIndex + 1);
+    if (!lastLineNodes.some((node) => node.textContent?.trim())) return;
+
+    const lastLine = document.createElement('span');
+    lastLine.className = 'table-header-last-line';
+    lastLineNodes.forEach((node) => lastLine.append(node));
+    cell.append(lastLine);
+  });
+}
+
 function isAuthoringInstance(block) {
   const section = block.closest('.section');
   const hasAueAttrs = [block, section]
@@ -242,6 +265,7 @@ function mergeTablesInSection(block) {
   markHeaderRows(targetTable);
   applyMixedBlueHeader(targetTable);
   highlightDashCells(targetTable);
+  alignHeaderLastLine(targetTable);
 }
 
 function hasMatchingPlaceholders(table, nestedTables) {
@@ -347,6 +371,7 @@ export default async function decorate(block) {
     markHeaderRows(parentTable);
     applyMixedBlueHeader(parentTable);
     highlightDashCells(parentTable);
+    alignHeaderLastLine(parentTable);
     moveInstrumentation(rows[tableRowIndex], parentTable);
     block.textContent = '';
     block.append(parentTable);
@@ -364,6 +389,7 @@ export default async function decorate(block) {
   markHeaderRows(parentTable);
   applyMixedBlueHeader(parentTable);
   highlightDashCells(parentTable);
+  alignHeaderLastLine(parentTable);
 
   moveInstrumentation(rows[tableRowIndex], parentTable);
 

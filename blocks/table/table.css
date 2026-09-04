@@ -121,6 +121,14 @@
   background: transparent;
 }
 
+/* Right Aligned Last Line — the trailing <br>-separated section of a
+   header cell (split out in JS into its own span) sits right-aligned on
+   its own line, independent of whichever alignment variant the table uses. */
+.table table.header-right-aligned-last-line tr.header-row td .table-header-last-line {
+  display: block;
+  text-align: right;
+}
+
 .table table tr.header-row td :is(strong, b) {
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-font-weight-regular);
