@@ -209,16 +209,25 @@ function markHeaderRows(table) {
   }
 }
 
-// A header cell's own text-align can't differ per line, so the last
-// <br>-separated section of its authored content (e.g. a trailing unit
-// label, in whichever language it was authored) is split into its own
-// block and right-aligned independently of the rest of the cell.
+// A header cell's own text-align can't differ per line, so the last line
+// of its authored content (e.g. a trailing unit label, in whichever
+// language it was authored) is split into its own block and right-aligned
+// independently of the rest of the cell. Authors may separate that last
+// line either as its own <p>, or with a trailing <br> inside a single
+// block — both are supported.
 function alignHeaderLastLine(table) {
   if (!table.classList.contains('header-right-aligned-last-line')) return;
 
   const headerCells = table.querySelectorAll(':scope > tbody > tr.header-row > td');
   headerCells.forEach((cell) => {
     const children = [...cell.childNodes];
+    const paragraphs = children.filter((node) => node.nodeType === Node.ELEMENT_NODE && node.tagName === 'P');
+
+    if (paragraphs.length > 1) {
+      paragraphs[paragraphs.length - 1].classList.add('table-header-last-line');
+      return;
+    }
+
     const lastBreakIndex = children.map((node) => node.nodeName).lastIndexOf('BR');
     if (lastBreakIndex === -1) return;
 
