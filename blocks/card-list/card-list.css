@@ -497,6 +497,10 @@
   color: var(--bbl-color-grey-85);
 }
 
+.cards-list-inner:has(.download-button-wrapper) .cards-list-date {
+  padding-top: 1.875rem;
+}
+
 .cards-list-button .global-dropdown {
   width: 100%;
   margin-top: var(--bbl-space-250);
