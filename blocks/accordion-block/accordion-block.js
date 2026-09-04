@@ -272,19 +272,21 @@ function buildAccordionPrintDocument(block) {
   });
 
   const wrapper = block.closest('.accordion-block-wrapper');
-  const container = wrapper?.parentElement?.classList.contains('accordion-block-container')
-    ? wrapper.parentElement
-    : null;
-  let wrapperIsDirectChild = false;
+  // The title is authored as a sibling `default-content-wrapper` next to the block's own
+  // wrapper — true whether that wrapper's parent is a top-level section (common case) or a
+  // nested container like a tabs panel, so this check works regardless of nesting depth.
+  const wrapperParent = wrapper?.parentElement || null;
+  const hasSiblingTitle = Boolean(
+    wrapperParent && [...wrapperParent.children].some(
+      (child) => child !== wrapper && child.classList.contains('default-content-wrapper'),
+    ),
+  );
+
   /** @type {string|null} */
   let prependHtml = null;
-  if (container) {
-    // includes title / text within the same section of the accordion block
-    wrapperIsDirectChild = Boolean(
-      container && [...container.children].includes(wrapper),
-    );
-  } else {
-    // includes title, text from the previous section if the accordion block is within tab section
+  if (!hasSiblingTitle) {
+    // Falls back to the previous section's title when the accordion is inside a tabs panel
+    // and the title lives outside that panel, alongside the tabs block itself.
     const section = block.closest('.section');
     if (section?.classList.contains('tabs-container')) {
       const prevSection = section.previousElementSibling;
@@ -299,14 +301,14 @@ function buildAccordionPrintDocument(block) {
 
   let bodyHtml;
   const promoBlock = document.querySelector('.promotional-details');
-  if (wrapperIsDirectChild) {
+  if (hasSiblingTitle) {
     const shell = document.createElement('div');
     if (promoBlock) {
       const promoClone = promoBlock.cloneNode(true);
       promoClone.querySelectorAll('.promo-detail-image').forEach((el) => el.remove());
       shell.appendChild(promoClone);
     }
-    [...container.children].forEach((child) => {
+    [...wrapperParent.children].forEach((child) => {
       if (child === wrapper) {
         shell.appendChild(clone);
       } else if (child.classList.contains('default-content-wrapper')) {
