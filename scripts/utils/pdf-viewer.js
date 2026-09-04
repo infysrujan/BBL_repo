@@ -10,7 +10,6 @@ import {
 export default function openPdfViewer({
   path,
   name = '',
-  googleViewerUrl = '',
   downloadLabel = 'Download',
   classPrefix = 'srr-preview',
 } = {}) {
@@ -61,28 +60,13 @@ export default function openPdfViewer({
   downloadLink.rel = 'noopener';
   buttonGroup.append(downloadLink);
 
-  let objectUrl = null;
-  const pdfBlobPromise = fetch(path).then((r) => r.blob());
-
-  pdfBlobPromise
-    .then(() => {
-      // Keep the blob URL alive for the lifetime of the modal so the viewer's
-      // built-in download button can still fetch it; revoke on close() below.
-      embedEl.src = path;
-    })
-    .catch(() => {
-      if (googleViewerUrl) embedEl.src = `${googleViewerUrl}?embedded=true&url=${encodeURIComponent(path)}`;
-    });
+  embedEl.src = path;
 
   centerContent.append(pdfEmbed, buttonGroup);
   body.append(centerContent);
   dialog.append(header, body);
 
   function close() {
-    if (objectUrl) {
-      URL.revokeObjectURL(objectUrl);
-      objectUrl = null;
-    }
     document.body.classList.remove(`${classPrefix}-open`);
     hideModal(overlay, `${classPrefix}-visible`);
   }
