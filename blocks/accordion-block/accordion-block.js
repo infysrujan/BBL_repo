@@ -285,16 +285,14 @@ function buildAccordionPrintDocument(block) {
   /** @type {string|null} */
   let prependHtml = null;
   if (!hasSiblingTitle) {
-    // Falls back to the previous section's title when the accordion is inside a tabs panel
-    // and the title lives outside that panel, alongside the tabs block itself.
+    // Common authoring pattern: the title lives in its own section directly above the
+    // accordion's section (not just when the accordion sits inside a tabs panel).
     const section = block.closest('.section');
-    if (section?.classList.contains('tabs-container')) {
-      const prevSection = section.previousElementSibling;
-      if (prevSection?.classList.contains('section')) {
-        const contentWrapper = prevSection.querySelector(':scope > .default-content-wrapper:first-child');
-        if (contentWrapper) {
-          prependHtml = contentWrapper.cloneNode(true).outerHTML;
-        }
+    const prevSection = section?.previousElementSibling;
+    if (prevSection?.classList.contains('section')) {
+      const contentWrapper = prevSection.querySelector(':scope > .default-content-wrapper:first-child');
+      if (contentWrapper) {
+        prependHtml = contentWrapper.cloneNode(true).outerHTML;
       }
     }
   }
