@@ -646,11 +646,10 @@
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor {
-  padding: 2rem;
+  padding: 1.875rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  margin: 0;
   flex: 1;
 }
 
@@ -680,6 +679,7 @@
   line-height: 1.428rem;
   font-family: var(--bbl-font-family-primary);
   font-weight: var(--bbl-font-weight-regular);
+  margin:0;
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .title-3 p {
