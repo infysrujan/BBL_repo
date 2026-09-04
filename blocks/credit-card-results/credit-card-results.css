@@ -89,6 +89,7 @@
 
 .ccs-card-list-container .cards-list.scrollable {
   scrollbar-width: none;
+  scroll-snap-type: x mandatory;
 }
 
 .ccs-card-list-container .cards-list.scrollable::-webkit-scrollbar {
