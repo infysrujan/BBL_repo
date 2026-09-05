@@ -1032,6 +1032,7 @@
         },
         {
           "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopField",
+          "name": "heroImagePickerDesktop",
           "condition": {
             "or": [
               {
@@ -1055,6 +1056,7 @@
         },
         {
           "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopMimeTypeField",
+          "name": "heroImagePickerDesktopMimeType",
           "condition": {
             "or": [
               {
@@ -1078,6 +1080,7 @@
         },
         {
           "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
+          "name": "heroImagePickerMobile",
           "condition": {
             "or": [
               {
@@ -1101,6 +1104,7 @@
         },
         {
           "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
+          "name": "heroImagePickerMobileMimeType",
           "condition": {
             "or": [
               {
@@ -1124,6 +1128,7 @@
         },
         {
           "...": "../../models/elements/_image-picker.json#/_imagePickerAltField",
+          "name": "heroImagePickerAlt",
           "condition": {
             "or": [
               {

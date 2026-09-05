@@ -2215,7 +2215,7 @@
       },
       {
         "component": "custom-asset-namespace:custom-asset",
-        "name": "imagePickerDesktop",
+        "name": "heroImagePickerDesktop",
         "label": "Image (Desktop)",
         "description": "Select an image shown at desktop breakpoints",
         "configUrl": "/content/dam/image.config.json",
@@ -2244,7 +2244,7 @@
       {
         "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "imagePickerDesktopMimeType",
+        "name": "heroImagePickerDesktopMimeType",
         "condition": {
           "or": [
             {
@@ -2268,7 +2268,7 @@
       },
       {
         "component": "custom-asset-namespace:custom-asset",
-        "name": "imagePickerMobile",
+        "name": "heroImagePickerMobile",
         "label": "Image (Mobile)",
         "description": "Select an image shown at mobile breakpoints",
         "configUrl": "/content/dam/image.config.json",
@@ -2297,7 +2297,7 @@
       {
         "component": "custom-asset-namespace:custom-asset-mimetype",
         "valueType": "string",
-        "name": "imagePickerMobileMimeType",
+        "name": "heroImagePickerMobileMimeType",
         "condition": {
           "or": [
             {
@@ -2322,7 +2322,7 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "imagePickerAlt",
+        "name": "heroImagePickerAlt",
         "label": "Alternative text for accessibility",
         "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
         "condition": {
