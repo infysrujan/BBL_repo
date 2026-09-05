@@ -70,6 +70,7 @@ body.mobile-app-view main > div:first-child {
 
 .promotional-details .promo-detail-image img {
   display: block;
+  box-sizing: border-box;
   width: 100%;
   height: auto;
   border: 0.3125rem solid var(--bbl-color-white);
