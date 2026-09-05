@@ -156,34 +156,35 @@ function buildApplyArea(card, doc, labels, icons) {
   const webUrl = resolveApplyUrl(card.webApplyUrl);
   const mobileUrl = resolveApplyUrl(card.mobileApplyUrl);
 
-  // Desktop: single apply button shown when webApplyEnabled
+  // Desktop: single apply button — shown whenever either channel is enabled,
+  // preferring the website URL when both are enabled
+  const desktopBtn = doc.createElement('a');
+  desktopBtn.href = (hasWebApply ? webUrl : mobileUrl) || '#';
+  desktopBtn.className = 'ccr-apply-btn ccr-apply-desktop';
+  desktopBtn.textContent = labels.applyNow;
+  area.appendChild(desktopBtn);
+
+  // Mobile: boxed button per enabled channel — one button when only web or
+  const mobileGroup = doc.createElement('span');
+  mobileGroup.className = 'ccr-apply-mobile-group';
+
   if (hasWebApply) {
-    const desktopBtn = doc.createElement('a');
-    desktopBtn.href = webUrl || '#';
-    desktopBtn.className = 'ccr-apply-btn ccr-apply-desktop';
-    desktopBtn.textContent = labels.applyNow;
-    area.appendChild(desktopBtn);
-  }
-
-  // Mobile: two buttons shown when mobileApplyEnabled
-  if (hasMobileApply) {
-    const mobileGroup = doc.createElement('div');
-    mobileGroup.className = 'ccr-apply-mobile-group';
-
     const webBtn = doc.createElement('a');
     webBtn.href = webUrl || '#';
     webBtn.className = 'ccr-apply-btn ccr-apply-mobile-btn';
     webBtn.innerHTML = `${icons.web}<span>${labels.applyViaWebsite}</span>`;
     mobileGroup.appendChild(webBtn);
+  }
 
+  if (hasMobileApply) {
     const mwebBtn = doc.createElement('a');
     mwebBtn.href = mobileUrl || '#';
     mwebBtn.className = 'ccr-apply-btn ccr-apply-mobile-btn';
     mwebBtn.innerHTML = `${icons.mweb}<span>${labels.applyViaMobile}</span>`;
     mobileGroup.appendChild(mwebBtn);
-
-    area.appendChild(mobileGroup);
   }
+
+  area.appendChild(mobileGroup);
 
   return area;
 }
