@@ -177,11 +177,11 @@ a:hover {
     text-decoration: underline;
 }
 
-:is(.bg-truthful-blue, .bg-truthful-dark-blue, .bg-grey-100) a:any-link:not(.download-files, .global-dropdown-panel, .global-dropdown *) {
+:is(.bg-truthful-blue, .bg-truthful-dark-blue, .bg-grey-100) a:any-link {
     color: var(--bbl-color-white);
 }
 
-:is(.bg-truthful-blue, .bg-truthful-dark-blue, .bg-grey-100) a:hover:not(.download-files, .global-dropdown-panel, .global-dropdown *) {
+:is(.bg-truthful-blue, .bg-truthful-dark-blue, .bg-grey-100) a:hover {
     color: var(--bbl-color-active-blue);
 }
 
@@ -368,10 +368,10 @@ main img {
     }
 }
 
-.section.bg-truthful-blue  *:not(.download-files, .global-dropdown, .global-dropdown *),
-.section.bg-truthful-dark-blue  *:not(.download-files, .global-dropdown, .global-dropdown *),
-.tab-panel.bg-truthful-blue  *:not(.download-files, .global-dropdown, .global-dropdown *),
-.tab-panel.bg-truthful-dark-blue  *:not(.download-files, .global-dropdown, .global-dropdown *){
+.section.bg-truthful-blue  *,
+.section.bg-truthful-dark-blue  *,
+.tab-panel.bg-truthful-blue  *,
+.tab-panel.bg-truthful-dark-blue  *{
     color: var(--bbl-color-white);
 }
 
