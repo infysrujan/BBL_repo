@@ -93,7 +93,8 @@
 }
 
 .hero-banner-default .hero-banner-item {
-  height: 33.125rem; 
+  max-height: 21.875rem;
+  height: calc((100vw - 2.5rem) / 1.3);
 }
 
 :is(.hero-banner-simple, .hero-banner-simple-logo-banner, .hero-banner-private-wealth-banking) .hero-banner-item {
@@ -720,6 +721,11 @@
 @media (width > 47.5rem) {
   .hero-banner-video {
     min-height: 38rem;
+  }
+
+  .hero-banner-item {
+    max-height: 33.125rem;
+    height: calc(100vw * .35);
   }
 
   .hero-banner-hero-with-thumbnail-images .hero-banner-item:has(iframe) .hero-banner-video-wrapper {
