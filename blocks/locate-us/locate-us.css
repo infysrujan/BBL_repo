@@ -226,7 +226,7 @@
 .locate-us .locate-us-keyword-search-btn {
   position: absolute;
   top: 50%;
-  right: 0.75rem;
+  right: 1.125rem;
   transform: translateY(-50%);
   padding: 0;
   border: none;
