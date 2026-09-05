@@ -208,16 +208,17 @@ function renderDetails(container, data, locale, viewFull, registerCtaUrl) {
           ${imageColHtml}
           <div class="promo-detail-content">
             <div class="promo-detail-description">${description}</div>
-            ${buildRegisterCtaHtml(ctaLabel, ctaUrl)}
           </div>
         </div>
       </div>
     </div>`;
 
   const disclaimerHtml = buildDisclaimerHtml(disclaimerEnabled, disclaimerText);
+  const contentEl = container.querySelector('.promo-detail-content');
   if (disclaimerHtml) {
-    container.querySelector('.promo-detail-content')?.insertAdjacentHTML('beforeend', disclaimerHtml);
+    contentEl?.insertAdjacentHTML('beforeend', disclaimerHtml);
   }
+  contentEl?.insertAdjacentHTML('beforeend', buildRegisterCtaHtml(ctaLabel, ctaUrl));
 
   if (imageUrl) bindImageModal(container, imageUrl, cleanTitle);
 }

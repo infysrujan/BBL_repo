@@ -122,7 +122,7 @@ body.mobile-app-view main > div:first-child {
 }
 
 .promotional-details .promo-detail-cta {
-  margin-top: var(--bbl-space-200);
+  margin: 1.875rem auto 0;
 }
 
 .promotional-details .promo-detail-disclaimer p {
