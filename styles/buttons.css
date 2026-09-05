@@ -553,7 +553,7 @@ a.link-inverted[aria-disabled="true"] {
 
 .global-dropdown-panel {
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     left: 0;
     width: 100%;
     min-width: 100%;
