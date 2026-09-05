@@ -1029,6 +1029,121 @@
               "contentInsertCarouselCards"
             ]
           }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopField",
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "heroBannerImageCarousel"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "textAnimationVariant"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerDesktopMimeTypeField",
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "heroBannerImageCarousel"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "textAnimationVariant"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileField",
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "heroBannerImageCarousel"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "textAnimationVariant"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerMobileMimeTypeField",
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "heroBannerImageCarousel"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "textAnimationVariant"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "...": "../../models/elements/_image-picker.json#/_imagePickerAltField",
+          "condition": {
+            "or": [
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "heroBannerImageCarousel"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "slideType"
+                  },
+                  "textAnimationVariant"
+                ]
+              }
+            ]
+          }
         }
       ]
     },
