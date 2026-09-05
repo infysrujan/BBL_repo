@@ -123,6 +123,8 @@
 }
 
 .locate-us .locate-us-service-btn-icon {
+  position: absolute;
+  right: 0.9375rem;
   font-size: 0.375rem;
   color: var(--bbl-color-gray-142);
   flex-shrink: 0;
@@ -766,6 +768,8 @@
 }
 
 .locate-us .locate-us-district-btn-icon {
+  position: absolute;
+  right: 0.9375rem;
   font-size: 0.375rem;
   color: var(--bbl-color-gray-142);
   flex-shrink: 0;
@@ -1058,7 +1062,6 @@
 
   .locate-us .locate-us-keyword-form {
     height: 2.75rem;
-    padding-right: var(--bbl-space-500);
     max-width: 100%;
     box-sizing: border-box;
   }
@@ -1351,10 +1354,6 @@
 @media (width > 64rem) {
   .locate-us.block:not(:has(.locate-us-results-overseas)) .content {
     padding-inline: 0;
-  }
-
-  .locate-us .locate-us-keyword-search-btn {
-    right: var(--bbl-space-250);
   }
 
   .locate-us .locate-us-map-row {
