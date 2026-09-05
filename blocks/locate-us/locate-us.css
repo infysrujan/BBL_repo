@@ -1062,6 +1062,7 @@
 
   .locate-us .locate-us-keyword-form {
     height: 2.75rem;
+    padding-right: var(--bbl-space-500);
     max-width: 100%;
     box-sizing: border-box;
   }
