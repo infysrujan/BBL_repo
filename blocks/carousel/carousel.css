@@ -107,6 +107,10 @@
     margin-right: 6.25rem;
 }
 
+.carousel-track .carousel-item:focus {
+    outline: none;
+}
+
 .carousel .carousel-item-link {
     text-decoration: none;
 }

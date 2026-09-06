@@ -29,7 +29,7 @@ function createCarouselHeader(title, linkElement, doc) {
  * @returns {Element} The formatted carousel card
  */
 function createCarouselCard(cardElement, doc) {
-  const card = createElementFromHTML('<div class="carousel-item"></div>', doc);
+  const card = createElementFromHTML('<div class="carousel-item" tabindex="-1"></div>', doc);
 
   const children = [...cardElement.children];
 
@@ -265,6 +265,11 @@ function initCarousel(track) {
     item.addEventListener('dragstart', (e) => {
       e.preventDefault();
     });
+    item.addEventListener('pointerdown', (e) => {
+      if (window.innerWidth >= DESKTOP_BREAKPOINT && !e.target.closest('a, button')) {
+        item.focus();
+      }
+    });
   });
 
   prevButton.addEventListener('click', () => {
@@ -283,12 +288,19 @@ function initCarousel(track) {
 
   carousel.addEventListener('keydown', (e) => {
     if (window.innerWidth < DESKTOP_BREAKPOINT) return;
+    if (e.target.closest('input, textarea, select')) return;
     if (e.key === 'ArrowLeft') {
       e.preventDefault();
       prevButton.click();
+      if (items[currentIndex]) {
+        items[currentIndex].focus({ preventScroll: true });
+      }
     } else if (e.key === 'ArrowRight') {
       e.preventDefault();
       nextButton.click();
+      if (items[currentIndex]) {
+        items[currentIndex].focus({ preventScroll: true });
+      }
     }
   });
 
@@ -303,9 +315,6 @@ function initCarousel(track) {
     hasDragged = false;
     startX = e.clientX;
     startY = e.clientY;
-    if (track.setPointerCapture) {
-      track.setPointerCapture(e.pointerId);
-    }
   });
 
   track.addEventListener('pointermove', (e) => {
@@ -322,6 +331,9 @@ function initCarousel(track) {
         return;
       }
       hasDragged = true;
+      if (track.setPointerCapture) {
+        track.setPointerCapture(e.pointerId);
+      }
     }
 
     if (hasDragged) {
@@ -351,6 +363,9 @@ function initCarousel(track) {
         track.style.transition = CAROUSEL_TRANSITION;
         track.style.transform = `translateX(${currentTrackOffset}px)`;
       }
+      setTimeout(() => {
+        hasDragged = false;
+      }, 0);
     }
   };
 
