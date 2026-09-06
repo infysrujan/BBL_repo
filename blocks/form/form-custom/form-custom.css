@@ -34,12 +34,19 @@ main .section.form-container.custom-forms .form form .date-wrapper.field-wrapper
 
 @media (any-pointer: coarse) {
   main .section.form-container.custom-forms .form form input[type="date"] {
-    appearance: none;
+    position: relative;
     padding-right: var(--bbl-space-500);
   }
 
   main .section.form-container.custom-forms .form form input[type="date"]::-webkit-calendar-picker-indicator {
-    display: none;
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: var(--bbl-space-500);
+    height: auto;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
   }
 
   main .section.form-container.custom-forms .form form input[type="date"]::-webkit-date-and-time-value {
