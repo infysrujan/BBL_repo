@@ -19,7 +19,7 @@ function formatMenuCardDate(dateStr, monthYearOnly = false) {
     return monthYearOnly ? `${month} ${year}` : `${date.getDate()} ${month} ${year}`;
   }
   const options = { month: 'long', year: 'numeric', ...(monthYearOnly ? {} : { day: 'numeric' }) };
-  return date.toLocaleDateString('en-GB', options);
+  return date.toLocaleDateString('en-US', options);
 }
 
 function parseBooleanFlag(value, defaultValue = false) {
@@ -183,6 +183,7 @@ function createCardListItem(cardElement, doc) {
     temp.querySelectorAll('a').forEach((anchor) => {
       const downloadLink = createDownloadLink(anchor, doc);
       if (downloadLink) {
+        downloadLink.classList.remove('content');
         downloadLink.classList.add('multiple-download-wrapper');
         downloadLink.querySelector('.download-files')?.addEventListener('click', (e) => e.stopPropagation());
         buttonWrapper.appendChild(downloadLink);

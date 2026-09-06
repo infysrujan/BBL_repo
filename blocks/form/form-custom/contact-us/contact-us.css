@@ -125,6 +125,10 @@
         height: 2.6389rem;
     }
 
+    & .date-wrapper.field-wrapper {
+        --bbl-form-date-icon-height: 2.6389rem;
+    }
+
     /* Hour/Minute separator colon (turned on for desktop below) */
     & fieldset.panel-wrapper:has(.date-wrapper) > .date-wrapper + .drop-down-wrapper::after {
         content: none;
