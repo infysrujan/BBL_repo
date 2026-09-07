@@ -117,32 +117,14 @@ async function renderNewsMedia(block) {
 
   document.querySelector('.tabs.block')?.classList.add('news-media-tabs');
 
-  const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
-  const panelInfos = tabPanels.map((panel) => {
-    const tabBtnId = panel.getAttribute('aria-labelledby');
-    const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
-    const tabTags = tabBtn?.dataset.tabCategoryTag;
-    const yearKey = tagToGregorianYear(tabTags, lang);
-    return {
-      panel, tabBtn, tabTags, yearKey,
-    };
-  });
-
-  const hasYearMatch = panelInfos.some((info) => info.yearKey === yearParam);
-
-  let activeYearKey = null;
-  panelInfos.forEach(({
-    panel, tabBtn, tabTags, yearKey,
-  }) => {
-    const isActiveTab = hasYearMatch
-      ? yearKey === yearParam
-      : tabBtn?.getAttribute('aria-selected') === 'true';
-
-    if (isActiveTab) activeYearKey = yearKey;
-
-    const initialPage = isActiveTab ? pageParam : 1;
-    setupPanel(panel, allCards, tabTags, locale, pageSize, placeholders, initialPage, yearKey);
-  });
+  const tabBtns = [...document.querySelectorAll('.news-media-tabs .tabs-nav button')];
+  const yearMatchBtn = tabBtns.find(
+    (btn) => tagToGregorianYear(btn.dataset.tabCategoryTag, lang) === yearParam,
+  );
+  const defaultBtn = tabBtns.find((btn) => btn.getAttribute('aria-selected') === 'true');
+  const activeBtn = yearMatchBtn || defaultBtn;
+  const activeTag = activeBtn?.dataset.tabCategoryTag;
+  const activeYearKey = activeBtn ? tagToGregorianYear(activeTag, lang) : null;
 
   if (yearParam && activeYearKey && activeYearKey !== yearParam) {
     const params = new URLSearchParams(window.location.search);
@@ -150,13 +132,16 @@ async function renderNewsMedia(block) {
     window.history.replaceState(null, '', `?${params.toString()}`);
   }
 
-  const tabBtns = [...document.querySelectorAll('.news-media-tabs .tabs-nav button')];
+  const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
+  tabPanels.forEach((panel) => {
+    const tabBtn = document.getElementById(panel.getAttribute('aria-labelledby'));
+    const tabTags = tabBtn?.dataset.tabCategoryTag;
+    const yearKey = tagToGregorianYear(tabTags, lang);
+    const initialPage = tabBtn === activeBtn ? pageParam : 1;
+    setupPanel(panel, allCards, tabTags, locale, pageSize, placeholders, initialPage, yearKey);
+  });
 
-  if (hasYearMatch) {
-    tabBtns
-      .find((btn) => tagToGregorianYear(btn.dataset.tabCategoryTag, lang) === yearParam)
-      ?.click();
-  }
+  yearMatchBtn?.click();
 
   tabBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
