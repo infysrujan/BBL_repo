@@ -42,7 +42,7 @@ function filterAndPage(allCards, category, page, pageSize) {
   return { cards: sorted.slice(start, start + pageSize), total };
 }
 
-function setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage = 1) {
+function setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage = 1, yearLabel = '') {
   panel.innerHTML = `
     <div class="news-media-content">
       <div class="news-media-grid"></div>
@@ -75,6 +75,7 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders, i
   bindPaginationClick(paginationEl, state, () => {
     render();
     const params = new URLSearchParams(window.location.search);
+    if (yearLabel) params.set('year', yearLabel);
     params.set('page', state.page);
     window.history.replaceState(null, '', `?${params.toString()}`);
   }, gridEl);
@@ -110,7 +111,8 @@ async function renderNewsMedia(block) {
       : tabBtn?.getAttribute('aria-selected') === 'true';
 
     const initialPage = isActiveTab ? pageParam : 1;
-    setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage);
+    const yearLabel = tabBtn?.textContent.trim() || '';
+    setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage, yearLabel);
   });
 
   const tabBtns = [...document.querySelectorAll('.news-media-tabs .tabs-nav button')];
