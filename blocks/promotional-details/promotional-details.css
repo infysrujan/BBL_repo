@@ -70,6 +70,7 @@ body.mobile-app-view main > div:first-child {
   box-sizing: border-box;
   width: 100%;
   height: auto;
+  box-sizing: border-box;
   border: 0.3125rem solid var(--bbl-color-white);
   box-shadow: 0 var(--bbl-space-025) var(--bbl-space-100) 0
     var(--bbl-color-grey-152);
