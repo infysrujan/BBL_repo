@@ -10,7 +10,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.625rem;
-  margin-bottom: var(--bbl-space-200);
+  margin-bottom: 1.875rem; /* 30px */
 }
 
 .dynamic-board .db-controls-left {
@@ -181,9 +181,9 @@
   border: 0.0625rem solid var(--bbl-color-grey-22);
   border-radius: var(--bbl-space-075);
   box-shadow: 0 var(--bbl-space-100) var(--bbl-space-300) var(--bbl-color-black-alpha-12);
-  z-index: 400;
+  z-index: 50;
   margin: 0;
-  padding: var(--bbl-space-100) 0;
+  padding: 0;
   list-style: none;
   box-sizing: border-box;
 }
@@ -194,10 +194,12 @@
 
 .dynamic-board .db-time-item {
   padding: 0.625rem 1.875rem;
-  font-size: var(--bbl-font-size-b2);
-  font-weight: 700;
+  font-family: var(--bbl-font-family-medium);
+  font-size: var(--bbl-font-size-b1-desktop); /* 16px */
+  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .dynamic-board .db-time-item:hover {
