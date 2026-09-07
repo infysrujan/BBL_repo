@@ -286,7 +286,7 @@ button.tertiary {
   position: absolute;
   font-family: icomoon, sans-serif;
   font-size: 0.625rem;
-  top: 50%;
+  top: 55%;
   right: 0;
   transform: translateY(-50%);
   text-decoration: none;
