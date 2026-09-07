@@ -67,6 +67,21 @@ function sortBySourcing(cards) {
   });
 }
 
+function sortByInitialOrder(rawCards, sheetCards) {
+  const orderMap = {};
+  sheetCards.forEach((row) => {
+    const name = norm(row['Product Name (EN)'] || '');
+    const value = getCardField(row, 'Initial Ordering', 'InitialOrdering', 'initialOrder');
+    if (name && value !== '') orderMap[name] = parseInt(value, 10);
+  });
+
+  return sortBySourcing(rawCards).sort((a, b) => {
+    const nameA = norm(getCardField(a, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
+    const nameB = norm(getCardField(b, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
+    return (orderMap[nameA] ?? 9999) - (orderMap[nameB] ?? 9999);
+  });
+}
+
 // ── Data fetching ──────────────────────────────────────────────────────────────
 
 async function loadCardData() {
@@ -487,7 +502,8 @@ export default async function decorate(block) {
 
   // Fetch both data sources in parallel for initial render
   const [sheetCards, rawCards] = await Promise.all([loadSheetData(), loadCardData()]);
-  const allCards = sortBySourcing(rawCards); // used for initial (unfiltered) display
+  // used for initial (unfiltered) display
+  const allCards = sortByInitialOrder(rawCards, sheetCards);
 
   const {
     cardListContainer, toggleWrap, toggleBtn,
