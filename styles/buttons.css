@@ -267,14 +267,14 @@ button.tertiary {
   background: transparent;
   color: var(--bbl-color-active-blue);
   border: none;
-  padding: 0;
   height: auto;
+  padding-right: 0.9375rem;
+  position: relative;
   font-weight: var(--bbl-text-link-primary-weight);
   font-size: var(--bbl-text-link-primary-size);
   line-height: var(--bbl-text-link-primary-line-height);
   font-family: var(--bbl-font-family-medium);
   text-decoration: none;
-  gap: var(--bbl-space-050);
   display: inline-flex;
   align-items: center;
 }
@@ -283,13 +283,12 @@ button.tertiary {
 .adobe-ue-edit .button-container > a.button::after,/* Authoring support: added class for better button visibility in Adobe UE */
 .button-tertiary::after {
   content: '\e901';
-  display: inline-block;
-  width: 1em;
-  height: 1em;
+  position: absolute;
   font-family: icomoon, sans-serif;
   font-size: 0.625rem;
-  vertical-align: middle;
-  flex: 0 0 auto;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
   text-decoration: none;
   transition: transform 0.2s ease-in-out;
 }
