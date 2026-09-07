@@ -249,14 +249,13 @@ main .form form p,
 main .form form .repeat-wrapper,
 main .form form .field-wrapper {
     margin: var(--form-field-gap);
-    color: var(--form-label-color);
+    color: var(--bbl-color-grey-90);
     grid-column: span 12;
 }
 
 main .form form p {
     font-size: var(--form-paragraph-font-size);
     font-style: var(--form-paragraph-font-style);
-    color: var(--form-paragraph-color);
     margin: var(--form-paragraph-margin);
 }
 
