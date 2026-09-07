@@ -282,17 +282,15 @@ button.tertiary {
 /* Arrow icon */
 .adobe-ue-edit .button-container > a.button::after,/* Authoring support: added class for better button visibility in Adobe UE */
 .button-tertiary::after {
-  content: '';
+  content: '\e901';
   display: inline-block;
   width: 1em;
   height: 1em;
-  background-color: var(--bbl-color-active-blue);
+  font-family: icomoon, sans-serif;
+  font-size: 0.625rem;
   vertical-align: middle;
   flex: 0 0 auto;
   text-decoration: none;
-  /* stylelint-disable-next-line property-no-vendor-prefix */
-  -webkit-mask: url('../icons/Chevron-right.svg') no-repeat center / 100% 100%;
-  mask: url('../icons/Chevron-right.svg') no-repeat center / 100% 100%;
   transition: transform 0.2s ease-in-out;
 }
 
