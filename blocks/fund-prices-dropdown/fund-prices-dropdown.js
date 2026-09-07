@@ -489,7 +489,7 @@ export default async function decorate(block) {
       <div class="fdd-header-top">
         <button class="fdd-back-btn" aria-label="Back to ${labels.backLabel}">&#8249; ${labels.backLabel}</button>
       </div>
-      <div class="fdd-title">${labels.title}</div>
+      <h2 class="fdd-title">${labels.title}</h2>
       <hr class="fdd-title-rule" />
     </div>
 
@@ -524,7 +524,7 @@ export default async function decorate(block) {
     </div>
 
     <div class="stat-tables-print-row">
-      <div class="fdd-fund-label"></div>
+      <h5 class="fdd-fund-label"></h5>
       <div class="fund-prices-print-label icon-print"><p>${labels.printLabel}</p></div>
     </div>
     <div class="stat-tables-row">
