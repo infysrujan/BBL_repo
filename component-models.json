@@ -10233,6 +10233,10 @@
           {
             "name": "Simple with App cta",
             "value": "simple-app-cta"
+          },
+          {
+            "name": "Default",
+            "value": "default"
           }
         ]
       }
@@ -12828,6 +12832,10 @@
               {
                 "name": "Top Aligned",
                 "value": "header-top-aligned"
+              },
+              {
+                "name": "Middle Aligned",
+                "value": "header-middle-aligned"
               },
               {
                 "name": "Header Blue",

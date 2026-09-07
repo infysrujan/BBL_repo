@@ -237,6 +237,11 @@
   vertical-align: top;
 }
 
+/* Header Middle Aligned — overrides default vertical-align: top */
+.table table.header-middle-aligned > :where(tbody) > tr.header-row > td {
+  vertical-align: middle;
+}
+
 /* Highlight Bold Cells — background for any cell containing a <strong>,
    matching whichever Header variant is also applied to the table. No
    background is applied when no matching Header variant is set. */
