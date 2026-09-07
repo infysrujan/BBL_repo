@@ -300,7 +300,7 @@ button.tertiary {
 }
 
 .button-tertiary:hover::after {
-  transform: translateX(4px);
+  right: -0.3125rem;
 }
 
 /* Active/Pressed */
