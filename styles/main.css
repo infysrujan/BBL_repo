@@ -388,6 +388,13 @@ main img {
     text-align: center;
 }
 
+.section.center-aligned-first-paragraph .default-content-wrapper > p:first-of-type,
+.accordion-panel.center-aligned-first-paragraph .default-content-wrapper > p:first-of-type,
+.tab-panel.center-aligned-first-paragraph .default-content-wrapper > p:first-of-type {
+    max-width: var(--bbl-layout-central-aligned-max-width);
+    margin: 0 auto;
+}
+
 /* =========================================================================
    SECTION-FULL-BLEED-BG - Global Styles
    ========================================================================= */
