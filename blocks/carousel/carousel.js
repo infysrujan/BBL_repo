@@ -265,11 +265,18 @@ function initCarousel(track) {
     item.addEventListener('dragstart', (e) => {
       e.preventDefault();
     });
-    item.addEventListener('pointerdown', (e) => {
-      if (window.innerWidth >= DESKTOP_BREAKPOINT && !e.target.closest('a, button')) {
-        item.focus();
-      }
-    });
+  });
+
+  carousel.addEventListener('mouseenter', () => {
+    if (window.innerWidth >= DESKTOP_BREAKPOINT && !carousel.contains(document.activeElement)) {
+      items[currentIndex]?.focus({ preventScroll: true });
+    }
+  });
+
+  carousel.addEventListener('pointerdown', (e) => {
+    if (window.innerWidth >= DESKTOP_BREAKPOINT && !e.target.closest('a, button')) {
+      items[currentIndex]?.focus({ preventScroll: true });
+    }
   });
 
   prevButton.addEventListener('click', () => {
