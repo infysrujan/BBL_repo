@@ -110,6 +110,7 @@
 .carousel .carousel-item-link {
     text-decoration: none;
 }
+
 .carousel-item.active .carousel-item-link  {
     max-width: 50%;
 }

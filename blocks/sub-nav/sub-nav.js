@@ -42,7 +42,13 @@ function bindLocateUsContainersToTabs(tabButtons) {
     if (!btn.id) btn.id = `sub-nav-tab-${index}`;
   });
 
+  const hash = window.location.hash.toLowerCase();
   let activeIndex = 0;
+  if (hash === '#tab2' && tabButtons.length > 1) {
+    activeIndex = 1;
+  } else if (hash === '#tab1') {
+    activeIndex = 0;
+  }
 
   const syncPanels = () => {
     const containers = [...document.querySelectorAll('.locate-us-container')];
@@ -69,8 +75,19 @@ function bindLocateUsContainersToTabs(tabButtons) {
   tabButtons.forEach((btn, index) => {
     btn.addEventListener('click', () => {
       activeIndex = index;
+      window.history.pushState(null, '', `#tab${index + 1}`);
       syncPanels();
     });
+  });
+
+  window.addEventListener('popstate', () => {
+    const currentHash = window.location.hash.toLowerCase();
+    if (currentHash === '#tab2' && tabButtons.length > 1) {
+      activeIndex = 1;
+    } else if (currentHash === '#tab1' || !currentHash) {
+      activeIndex = 0;
+    }
+    syncPanels();
   });
 
   syncPanels();

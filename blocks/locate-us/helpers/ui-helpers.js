@@ -489,8 +489,17 @@ export async function buildThailandUI(container, data, placeholders, configs) {
   // (e.g. "ATM+ with BeMyID" under ATM+) and wire it to the BeMyID variant.
   function addBeMyIdOption(baseIndex) {
     const baseLabel = services[baseIndex];
+    const baseKey = serviceParamKeys[baseIndex] || '';
     const suffix = placeholders?.beMyIdLabelText || 'with BeMyID';
-    const label = `${baseLabel} ${suffix}`;
+    const fallbackLabel = `${baseLabel} ${suffix}`;
+
+    let label = fallbackLabel;
+    if (baseKey.toLowerCase() === 'location-atm') {
+      label = placeholders?.atmBeMyId || placeholders?.atmWithBeMyId || fallbackLabel;
+    } else if (baseKey.toLowerCase() === 'location-atm-plus') {
+      label = placeholders?.atmPlusBeMyId || placeholders?.atmPlusWithBeMyId || fallbackLabel;
+    }
+
     const items = [...serviceDropdown.querySelectorAll('.locate-us-service-item')];
     let li = items.find((el) => el.dataset.value === label);
     if (!li) {
@@ -557,7 +566,8 @@ export async function buildOverseasUI(container, placeholders, configs) {
 
   async function fetchCountries() {
     if (!API_GET_COUNTRY) return [];
-    const data = await fetchGet(API_GET_COUNTRY, { throwOnError: false });
+    const url = buildUrl(API_GET_COUNTRY);
+    const data = await fetchGet(url, { throwOnError: false });
     if (!data) return [];
     return data.map((c) => c.Country);
   }
