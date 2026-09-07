@@ -42,7 +42,24 @@ function filterAndPage(allCards, category, page, pageSize) {
   return { cards: sorted.slice(start, start + pageSize), total };
 }
 
-function setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage = 1, yearLabel = '') {
+const BE_CE_OFFSET = 543;
+
+function tagToGregorianYear(tag, lang) {
+  const match = /(\d+)$/.exec(tag || '');
+  if (!match) return '';
+  const n = parseInt(match[1], 10);
+  return lang === 'th' ? String(n - BE_CE_OFFSET) : String(n);
+}
+
+function preserveQueryOnLangLinks() {
+  const { search } = window.location;
+  document.querySelectorAll('.top-nav li.top-nav-item.link-icon > a[href]').forEach((a) => {
+    const [path] = a.getAttribute('href').split('?');
+    a.setAttribute('href', path + search);
+  });
+}
+
+function setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage = 1, yearKey = '') {
   panel.innerHTML = `
     <div class="news-media-content">
       <div class="news-media-grid"></div>
@@ -75,9 +92,10 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders, i
   bindPaginationClick(paginationEl, state, () => {
     render();
     const params = new URLSearchParams(window.location.search);
-    if (yearLabel) params.set('year', yearLabel);
+    if (yearKey) params.set('year', yearKey);
     params.set('page', state.page);
     window.history.replaceState(null, '', `?${params.toString()}`);
+    preserveQueryOnLangLinks();
   }, gridEl);
   render();
 }
@@ -104,31 +122,36 @@ async function renderNewsMedia(block) {
     const tabBtnId = panel.getAttribute('aria-labelledby');
     const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
     const tabTags = tabBtn?.dataset.tabCategoryTag;
-    const category = tabTags;
+    const yearKey = tagToGregorianYear(tabTags, lang);
 
     const isActiveTab = yearParam
-      ? tabBtn?.textContent.trim() === yearParam
+      ? yearKey === yearParam
       : tabBtn?.getAttribute('aria-selected') === 'true';
 
     const initialPage = isActiveTab ? pageParam : 1;
-    const yearLabel = tabBtn?.textContent.trim() || '';
-    setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage, yearLabel);
+    setupPanel(panel, allCards, tabTags, locale, pageSize, placeholders, initialPage, yearKey);
   });
 
   const tabBtns = [...document.querySelectorAll('.news-media-tabs .tabs-nav button')];
 
   if (yearParam) {
-    tabBtns.find((btn) => btn.textContent.trim() === yearParam)?.click();
+    tabBtns
+      .find((btn) => tagToGregorianYear(btn.dataset.tabCategoryTag, lang) === yearParam)
+      ?.click();
   }
 
   tabBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const params = new URLSearchParams(window.location.search);
-      params.set('year', btn.textContent.trim());
+      params.set('year', tagToGregorianYear(btn.dataset.tabCategoryTag, lang));
       params.delete('page');
       window.history.replaceState(null, '', `?${params.toString()}`);
+      preserveQueryOnLangLinks();
     });
   });
+
+  preserveQueryOnLangLinks();
+  document.addEventListener('header-decorated', preserveQueryOnLangLinks);
 
   block.hidden = true;
 }
