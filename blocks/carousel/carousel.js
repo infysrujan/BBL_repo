@@ -387,6 +387,12 @@ function initCarousel(track) {
     }
   }, true);
 
+  carousel.addEventListener('click', (e) => {
+    if (window.innerWidth >= DESKTOP_BREAKPOINT && !hasDragged && !e.target.closest('a, button')) {
+      items[currentIndex]?.focus({ preventScroll: true });
+    }
+  });
+
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
