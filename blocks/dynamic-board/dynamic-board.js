@@ -1016,7 +1016,7 @@ export default async function decorate(block) {
             <ul class="db-time-list" id="db-time-list" role="listbox"></ul>
           </div>
         </div>
-        <button type="button" class="db-go-btn" id="db-go-btn">${escapeHtml(authoring.ctaButtonLabel)}</button>
+        <button type="button" class="db-go-btn button-m primary" id="db-go-btn">${escapeHtml(authoring.ctaButtonLabel)}</button>
       </div>
       <div class="db-controls-right">
         <button type="button" class="db-filter-btn" id="db-filter-btn">
