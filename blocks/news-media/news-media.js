@@ -42,7 +42,7 @@ function filterAndPage(allCards, category, page, pageSize) {
   return { cards: sorted.slice(start, start + pageSize), total };
 }
 
-function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
+function setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage = 1) {
   panel.innerHTML = `
     <div class="news-media-content">
       <div class="news-media-grid"></div>
@@ -51,11 +51,14 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
 
   const gridEl = panel.querySelector('.news-media-grid');
   const paginationEl = panel.querySelector('.listing-card-pagination');
-  const state = { page: 1 };
+  const state = { page: initialPage };
 
   function render() {
-    const { cards, total } = filterAndPage(allCards, category, state.page, pageSize);
-    const totalPages = Math.ceil(total / pageSize);
+    const totalPages = Math.ceil(filterAndPage(allCards, category, 1, pageSize).total / pageSize);
+    if (state.page < 1) state.page = 1;
+    if (totalPages && state.page > totalPages) state.page = totalPages;
+
+    const { cards } = filterAndPage(allCards, category, state.page, pageSize);
 
     gridEl.innerHTML = cards.length
       ? cards.map((c) => {
@@ -69,7 +72,12 @@ function setupPanel(panel, allCards, category, locale, pageSize, placeholders) {
     const carouselNavBtnsLabels = { prevBtnLabel: placeholders.carouselPrevBtnLabel || 'Previous', nextBtnLabel: placeholders.carouselNextBtnLabel || 'Next' };
     paginationEl.innerHTML = buildPaginationHtml(state.page, totalPages, carouselNavBtnsLabels);
   }
-  bindPaginationClick(paginationEl, state, render, gridEl);
+  bindPaginationClick(paginationEl, state, () => {
+    render();
+    const params = new URLSearchParams(window.location.search);
+    params.set('page', state.page);
+    window.history.replaceState(null, '', `?${params.toString()}`);
+  }, gridEl);
   render();
 }
 
@@ -84,6 +92,10 @@ async function renderNewsMedia(block) {
   const [data, placeholders] = await Promise.all([fetchJson(dataUrl), fetchPlaceholders()]);
   const allCards = data?.news || [];
 
+  const initSearch = new URLSearchParams(window.location.search);
+  const yearParam = initSearch.get('year');
+  const pageParam = parseInt(initSearch.get('page'), 10) || 1;
+
   document.querySelector('.tabs.block')?.classList.add('news-media-tabs');
 
   const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
@@ -93,22 +105,28 @@ async function renderNewsMedia(block) {
     const tabTags = tabBtn?.dataset.tabCategoryTag;
     const category = tabTags;
 
-    setupPanel(panel, allCards, category, locale, pageSize, placeholders);
+    const isActiveTab = yearParam
+      ? tabBtn?.textContent.trim() === yearParam
+      : tabBtn?.getAttribute('aria-selected') === 'true';
+
+    const initialPage = isActiveTab ? pageParam : 1;
+    setupPanel(panel, allCards, category, locale, pageSize, placeholders, initialPage);
   });
 
   const tabBtns = [...document.querySelectorAll('.news-media-tabs .tabs-nav button')];
+
+  if (yearParam) {
+    tabBtns.find((btn) => btn.textContent.trim() === yearParam)?.click();
+  }
+
   tabBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const params = new URLSearchParams(window.location.search);
       params.set('year', btn.textContent.trim());
+      params.delete('page');
       window.history.replaceState(null, '', `?${params.toString()}`);
     });
   });
-
-  const yearParam = new URLSearchParams(window.location.search).get('year');
-  if (yearParam) {
-    tabBtns.find((btn) => btn.textContent.trim() === yearParam)?.click();
-  }
 
   block.hidden = true;
 }
