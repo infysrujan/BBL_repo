@@ -382,9 +382,15 @@ main img {
     margin: auto;
 }
 
-.section.center-first-paragraph .default-content-wrapper > p:first-of-type,
-.accordion-panel.center-first-paragraph .default-content-wrapper > p:first-of-type,
-.tab-panel.center-first-paragraph .default-content-wrapper > p:first-of-type {
+.section.center-first-paragraph .default-content-wrapper > p:first-child,
+.accordion-panel.center-first-paragraph .default-content-wrapper > p:first-child,
+.tab-panel.center-first-paragraph .default-content-wrapper > p:first-child {
+    text-align: center;
+}
+
+.section.center-aligned-first-paragraph .default-content-wrapper > p:first-of-type,
+.accordion-panel.center-aligned-first-paragraph .default-content-wrapper > p:first-of-type,
+.tab-panel.center-aligned-first-paragraph .default-content-wrapper > p:first-of-type {
     max-width: var(--bbl-layout-central-aligned-max-width);
     margin: 0 auto;
 }
