@@ -118,23 +118,41 @@ async function renderNewsMedia(block) {
   document.querySelector('.tabs.block')?.classList.add('news-media-tabs');
 
   const tabPanels = [...document.querySelectorAll('[role="tabpanel"]')];
-  tabPanels.forEach((panel) => {
+  const panelInfos = tabPanels.map((panel) => {
     const tabBtnId = panel.getAttribute('aria-labelledby');
     const tabBtn = tabBtnId ? document.getElementById(tabBtnId) : null;
     const tabTags = tabBtn?.dataset.tabCategoryTag;
     const yearKey = tagToGregorianYear(tabTags, lang);
+    return {
+      panel, tabBtn, tabTags, yearKey,
+    };
+  });
 
-    const isActiveTab = yearParam
+  const hasYearMatch = panelInfos.some((info) => info.yearKey === yearParam);
+
+  let activeYearKey = null;
+  panelInfos.forEach(({
+    panel, tabBtn, tabTags, yearKey,
+  }) => {
+    const isActiveTab = hasYearMatch
       ? yearKey === yearParam
       : tabBtn?.getAttribute('aria-selected') === 'true';
+
+    if (isActiveTab) activeYearKey = yearKey;
 
     const initialPage = isActiveTab ? pageParam : 1;
     setupPanel(panel, allCards, tabTags, locale, pageSize, placeholders, initialPage, yearKey);
   });
 
+  if (yearParam && activeYearKey && activeYearKey !== yearParam) {
+    const params = new URLSearchParams(window.location.search);
+    params.set('year', activeYearKey);
+    window.history.replaceState(null, '', `?${params.toString()}`);
+  }
+
   const tabBtns = [...document.querySelectorAll('.news-media-tabs .tabs-nav button')];
 
-  if (yearParam) {
+  if (hasYearMatch) {
     tabBtns
       .find((btn) => tagToGregorianYear(btn.dataset.tabCategoryTag, lang) === yearParam)
       ?.click();
