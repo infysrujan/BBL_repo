@@ -114,7 +114,8 @@
 .carousel .carousel-item-link {
     text-decoration: none;
 }
-.carousel-item.active .carousel-item-link  {
+
+.carousel-item.active .carousel-item-link {
     max-width: 50%;
 }
 
@@ -475,6 +476,10 @@
         -webkit-line-clamp: 3;
         line-clamp: 3;
         margin-bottom: var(--bbl-space-200);
+    }
+
+    .carousel-track .carousel-item:not(.active) .carousel-cta {
+        margin-bottom: var(--bbl-space-250);
     }
 }
 
