@@ -338,6 +338,14 @@
         display: inline-block;
     }
 
+    .carousel-prev {
+        left: 2.8125rem;
+    }
+
+    .carousel-next {
+        right: 2.8125rem;
+    }
+
     .carousel-track .carousel-item.active {
         display: flex;
         width: calc(66.66vw - 8.25rem);
@@ -505,5 +513,13 @@
 
     .carousel-track .carousel-item:not(.active) {
         width: 35.125rem;
+    }
+
+    .carousel-prev {
+        left: calc(var(--carousel-grid-offset) + 2.8125rem);
+    }
+
+    .carousel-next {
+        right: calc(var(--carousel-grid-offset) + 2.8125rem);
     }
 }

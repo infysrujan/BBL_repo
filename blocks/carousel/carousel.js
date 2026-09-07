@@ -127,7 +127,19 @@ function initCarousel(track) {
   const prevButton = carousel.querySelector('.carousel-prev');
   const nextButton = carousel.querySelector('.carousel-next');
 
+  prevButton.disabled = true;
+  nextButton.disabled = totalItems <= 1;
+
+  items.forEach((item, index) => {
+    if (window.innerWidth >= DESKTOP_BREAKPOINT) {
+      item.classList.toggle('active', index === 0);
+    } else {
+      item.classList.add('active');
+    }
+  });
+
   function measureItemWidth(item) {
+    if (!item) return 0;
     // eslint-disable-next-line no-unused-expressions
     item.offsetHeight;
     return item.offsetWidth;
@@ -164,6 +176,7 @@ function initCarousel(track) {
 
     const carouselRect = carousel.getBoundingClientRect();
     const trackRect = track.getBoundingClientRect();
+    if (trackRect.height === 0) return;
     const navTop = trackRect.top - carouselRect.top + trackRect.height / 2;
     const activeWidth = measureItemWidth(items[currentIndex]);
     const buttonOffset = (button) => button.offsetWidth / 2;
@@ -400,6 +413,18 @@ function initCarousel(track) {
       updateCarousel(false);
     }, 250);
   });
+
+  let lastWidth = carousel.offsetWidth;
+  if (typeof ResizeObserver !== 'undefined') {
+    const visibilityObserver = new ResizeObserver(() => {
+      const width = carousel.offsetWidth;
+      if (width > 0 && width !== lastWidth) {
+        lastWidth = width;
+        updateCarousel(false);
+      }
+    });
+    visibilityObserver.observe(carousel);
+  }
 
   if (!isMobileOrTablet()) {
     requestAnimationFrame(() => {
