@@ -91,6 +91,8 @@ function buildLocation(data) {
   const parts = [
     data.HOUSE_NO ? `บ้านเลขที่ ${data.HOUSE_NO}` : '',
     data.VILLAGE_NO ? `หมู่ที่ ${data.VILLAGE_NO}` : '',
+    data.VILLAGE_NAME ? data.VILLAGE_NAME : '',
+    data.LOCATION_SOI && data.LOCATION_SOI !== '-' ? `${data.LOCATION_SOI}` : '',
     data.LOCATION_ROAD && data.LOCATION_ROAD !== '-' ? `ถนน ${data.LOCATION_ROAD}` : '',
     data.LOCATION_TAMBON ? `ตำบล ${data.LOCATION_TAMBON}` : '',
     data.LOCATION_AMPHUR ? `อำเภอ ${data.LOCATION_AMPHUR}` : '',
