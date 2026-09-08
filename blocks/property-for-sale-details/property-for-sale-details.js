@@ -88,15 +88,19 @@ function formatArea(data) {
 }
 
 function buildLocation(data) {
+  const province = data.LOCATION_PROVINCE || '';
+  const isBangkok = province === 'กรุงเทพมหานคร';
   const parts = [
     data.HOUSE_NO ? `บ้านเลขที่ ${data.HOUSE_NO}` : '',
     data.VILLAGE_NO ? `หมู่ที่ ${data.VILLAGE_NO}` : '',
-    data.VILLAGE_NAME ? data.VILLAGE_NAME : '',
-    data.LOCATION_SOI && data.LOCATION_SOI !== '-' ? `${data.LOCATION_SOI}` : '',
+    data.FLOOR_NO ? `ชั้น ${data.FLOOR_NO}` : '',
+    data.VILLAGE_NAME ? `หมู่บ้าน/โครงการ ${data.VILLAGE_NAME}` : '',
+    data.BUILDING_NAME ? `อาคาร ${data.BUILDING_NAME}` : '',
+    data.LOCATION_SOI && data.LOCATION_SOI !== '-' ? `ซอย ${data.LOCATION_SOI}` : '',
     data.LOCATION_ROAD && data.LOCATION_ROAD !== '-' ? `ถนน ${data.LOCATION_ROAD}` : '',
-    data.LOCATION_TAMBON ? `ตำบล ${data.LOCATION_TAMBON}` : '',
-    data.LOCATION_AMPHUR ? `อำเภอ ${data.LOCATION_AMPHUR}` : '',
-    data.LOCATION_PROVINCE ? `จังหวัด ${data.LOCATION_PROVINCE}` : '',
+    isBangkok
+      ? `แขวง ${data.LOCATION_TAMBON || ''} เขต ${data.LOCATION_AMPHUR || ''} จังหวัด ${province}`.replace(/\s+/g, ' ').trim()
+      : `ตำบล ${data.LOCATION_TAMBON || ''} อำเภอ ${data.LOCATION_AMPHUR || ''} จังหวัด ${province}`.replace(/\s+/g, ' ').trim(),
   ].filter(Boolean);
   return parts.join(' ') || '-';
 }
