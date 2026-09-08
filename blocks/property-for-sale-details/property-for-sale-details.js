@@ -115,7 +115,11 @@ function getFieldValue(field, data, currency, openMapLabel, mapBaseUrl) {
     case 'PR_PRICE': return data.PR_PRICE ? `${formatPrice(data.PR_PRICE)} ${currency}` : '-';
     case 'SPECIAL_PRICE': return data.SPECIAL_PRICE ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
     case 'MAP': return buildMapLink(data, openMapLabel, mapBaseUrl);
-    default: return data[field] || '-';
+    default: {
+      const raw = data[field];
+      if (typeof raw === 'string' && !raw.trim()) return '-';
+      return raw || '-';
+    }
   }
 }
 
