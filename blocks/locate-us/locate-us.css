@@ -944,6 +944,7 @@
   width: calc(100% - var(--bbl-space-400));
   left: unset;
   right: unset;
+  margin-top: 1rem;
 }
 
 /* ── Sub-nav tab overrides — mobile only ────────────────────────────────────── */
@@ -1310,9 +1311,7 @@
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {
-    left: 0;
-    right: 0;
-    width: auto;
+    width: 71%;
   }
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-location-filter-row {
@@ -1353,10 +1352,6 @@
 } */
 
 @media (width > 64rem) {
-  .locate-us.block:not(:has(.locate-us-results-overseas)) .content {
-    padding-inline: 0;
-  }
-
   .locate-us .locate-us-map-row {
     padding: 0 0 1.875rem;
   }
