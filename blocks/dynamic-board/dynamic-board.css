@@ -637,6 +637,10 @@
   -webkit-overflow-scrolling: touch;
   margin-top: var(--bbl-space-150);
   max-height: 40rem;
+
+  /* scroll bar fix */
+  width: calc(100% + var(--bbl-space-050));
+  margin-right: calc(-1 * var(--bbl-space-050));
 }
 
 .dynamic-board .db-table-wrap::-webkit-scrollbar {

@@ -16,7 +16,7 @@ function createCarouselHeader(title, linkElement, doc) {
   const headerHTML = `
     <div class="carousel-header">
       ${title ? `<h2>${title}</h2>` : ''}
-      ${linkElement ? `<a href="${linkElement.href}" class="link-primary" target="${linkElement.target || '_self'}"${linkElement.title ? ` title="${linkElement.title}"` : ''}>${linkElement.textContent}</a>` : ''}
+      ${linkElement ? `<a href="${linkElement.href}" class="${linkElement.className}" target="${linkElement.target || '_self'}"${linkElement.title ? ` title="${linkElement.title}"` : ''}>${linkElement.textContent}</a>` : ''}
     </div>
   `;
   return createElementFromHTML(headerHTML, doc);
