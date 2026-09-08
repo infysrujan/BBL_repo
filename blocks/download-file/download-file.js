@@ -150,10 +150,16 @@ export default function decorate(block) {
       return;
     }
 
-    if (row.textContent.trim()) {
-      const p = document.createElement('p');
-      p.textContent = row.textContent.trim();
-      dateElements.push(p);
+    // Positional fallback (published view, no data-aue-prop):
+    // First non-boolean text row = datePrefix; subsequent ones = authorable date
+    if (!prop && row.textContent.trim()) {
+      if (!datePrefix) {
+        datePrefix = row.textContent.trim();
+      } else {
+        const p = document.createElement('p');
+        p.textContent = row.textContent.trim();
+        dateElements.push(p);
+      }
     }
   });
 
