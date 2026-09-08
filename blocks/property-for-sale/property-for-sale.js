@@ -520,6 +520,7 @@ export default async function decorate(block) {
     if (regionId) {
       provinceFilter.classList.remove('is-hidden');
       districtFilter.classList.remove('is-hidden');
+      districtDropdown.innerHTML = buildOptions([{ value: '', label: allDistrictLabel }]);
       const provinces = await fetchJson(`${apiBase}/GetProvince/${regionId}`);
       if (Array.isArray(provinces) && provinces.length) {
         provinceDropdown.innerHTML = buildOptions([
