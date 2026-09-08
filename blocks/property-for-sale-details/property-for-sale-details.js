@@ -99,11 +99,18 @@ function buildLocation(data) {
   return parts.join(' ') || '-';
 }
 
+function resolveGps(data) {
+  if (data.GPS_LATITUDE && data.GPS_LONGTITUDE) {
+    return { lat: data.GPS_LATITUDE, lng: data.GPS_LONGTITUDE };
+  }
+  const [lat, lng] = (data.GPS_DATA || '').split(',').map((s) => s.trim());
+  return lat && lng ? { lat, lng } : null;
+}
+
 function buildMapLink(data, label, mapBaseUrl) {
-  const lat = data.GPS_LATITUDE;
-  const lng = data.GPS_LONGTITUDE;
-  if (!lat || !lng || !mapBaseUrl) return '-';
-  const href = `${mapBaseUrl}N ${lat} E ${lng}`;
+  const gps = resolveGps(data);
+  if (!gps || !mapBaseUrl) return '-';
+  const href = `${mapBaseUrl}N ${gps.lat} E ${gps.lng}`;
   return `<a href="${href}" target="_blank" class="prop-for-sale-map-link">${label}<img src="/icons/google-map-open.ico" alt="" class="prop-for-sale-map-icon"></a>`;
 }
 
