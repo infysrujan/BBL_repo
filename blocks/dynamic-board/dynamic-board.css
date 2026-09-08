@@ -195,8 +195,9 @@
 .dynamic-board .db-time-item {
   padding: 0.625rem 1.875rem;
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1-desktop); /* 16px */
-  font-weight: var(--bbl-font-weight-regular);
+  font-size: var(--bbl-text-default-size);
+  line-height: var(--bbl-text-default-line-height);
+  font-weight: var(--bbl-text-default-weight);
   color: var(--bbl-color-black);
   cursor: pointer;
   white-space: nowrap;
@@ -990,11 +991,7 @@
     width: 10rem;
   }
 
-  /* Client-provided measurement: the visible trigger is 109.26px wide at
-     this breakpoint. Sized on the wrap (the flex item) rather than the
-     trigger itself, so .db-time-dropdown/.db-time-trigger's width: 100%
-     resolves to the same box — otherwise the wrap renders wider than the
-     control it contains. */
+  /* Client-provided measurement: sized on the wrap so .db-time-trigger's width: 100% matches. */
   .dynamic-board .db-time-wrap {
     flex: 0 0 6.7681rem;
   }
