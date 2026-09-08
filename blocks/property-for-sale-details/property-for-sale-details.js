@@ -159,8 +159,9 @@ function buildDetailHtml(data, placeholders, detailRows, mapBaseUrl) {
     label, value, special, starting,
   }) => {
     const cls = `prop-for-sale-value${special ? ' prop-for-sale-special-price' : ''}${starting ? ' prop-for-sale-starting-price' : ''}`;
+    const hideRow = special && (value === '-' || !!value) ? 'hidden' : '';
     return `
-    <div class="prop-for-sale-row">
+    <div class="prop-for-sale-row ${hideRow}">
       <div class="prop-for-sale-label">${label}</div>
       <div class="${cls}">${value}</div>
     </div>`;
