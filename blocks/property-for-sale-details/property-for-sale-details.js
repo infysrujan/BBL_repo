@@ -88,13 +88,19 @@ function formatArea(data) {
 }
 
 function buildLocation(data) {
+  const province = data.LOCATION_PROVINCE || '';
+  const isBangkok = province === 'กรุงเทพมหานคร';
   const parts = [
     data.HOUSE_NO ? `บ้านเลขที่ ${data.HOUSE_NO}` : '',
     data.VILLAGE_NO ? `หมู่ที่ ${data.VILLAGE_NO}` : '',
+    data.FLOOR_NO ? `ชั้น ${data.FLOOR_NO}` : '',
+    data.VILLAGE_NAME ? `หมู่บ้าน/โครงการ ${data.VILLAGE_NAME}` : '',
+    data.BUILDING_NAME ? `อาคาร ${data.BUILDING_NAME}` : '',
+    data.LOCATION_SOI && data.LOCATION_SOI !== '-' ? `ซอย ${data.LOCATION_SOI}` : '',
     data.LOCATION_ROAD && data.LOCATION_ROAD !== '-' ? `ถนน ${data.LOCATION_ROAD}` : '',
-    data.LOCATION_TAMBON ? `ตำบล ${data.LOCATION_TAMBON}` : '',
-    data.LOCATION_AMPHUR ? `อำเภอ ${data.LOCATION_AMPHUR}` : '',
-    data.LOCATION_PROVINCE ? `จังหวัด ${data.LOCATION_PROVINCE}` : '',
+    isBangkok
+      ? `แขวง ${data.LOCATION_TAMBON || ''} เขต ${data.LOCATION_AMPHUR || ''} จังหวัด ${province}`.replace(/\s+/g, ' ').trim()
+      : `ตำบล ${data.LOCATION_TAMBON || ''} อำเภอ ${data.LOCATION_AMPHUR || ''} จังหวัด ${province}`.replace(/\s+/g, ' ').trim(),
   ].filter(Boolean);
   return parts.join(' ') || '-';
 }
@@ -108,9 +114,16 @@ function resolveGps(data) {
 }
 
 function buildMapLink(data, label, mapBaseUrl) {
-  const gps = resolveGps(data);
-  if (!gps || !mapBaseUrl) return '-';
-  const href = `${mapBaseUrl}N ${gps.lat} E ${gps.lng}`;
+  let lat = data.GPS_LATITUDE;
+  let lng = data.GPS_LONGTITUDE;
+  // GPS_LATITUDE/GPS_LONGTITUDE can come back blank while GPS_DATA ("lat, lng") still has a value
+  if ((!lat || !lng) && data.GPS_DATA) {
+    const [gpsLat, gpsLng] = data.GPS_DATA.split(',').map((v) => v.trim());
+    lat = lat || gpsLat;
+    lng = lng || gpsLng;
+  }
+  if (!lat || !lng || !mapBaseUrl) return '-';
+  const href = `${mapBaseUrl}N ${lat} E ${lng}`;
   return `<a href="${href}" target="_blank" class="prop-for-sale-map-link">${label}<img src="/icons/google-map-open.ico" alt="" class="prop-for-sale-map-icon"></a>`;
 }
 
@@ -122,7 +135,11 @@ function getFieldValue(field, data, currency, openMapLabel, mapBaseUrl) {
     case 'PR_PRICE': return data.PR_PRICE ? `${formatPrice(data.PR_PRICE)} ${currency}` : '-';
     case 'SPECIAL_PRICE': return data.SPECIAL_PRICE ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
     case 'MAP': return buildMapLink(data, openMapLabel, mapBaseUrl);
-    default: return data[field] || '-';
+    default: {
+      const raw = data[field];
+      if (typeof raw === 'string' && !raw.trim()) return '-';
+      return raw || '-';
+    }
   }
 }
 
