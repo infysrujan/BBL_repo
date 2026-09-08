@@ -100,8 +100,14 @@ function buildLocation(data) {
 }
 
 function buildMapLink(data, label, mapBaseUrl) {
-  const lat = data.GPS_LATITUDE;
-  const lng = data.GPS_LONGTITUDE;
+  let lat = data.GPS_LATITUDE;
+  let lng = data.GPS_LONGTITUDE;
+  // GPS_LATITUDE/GPS_LONGTITUDE can come back blank while GPS_DATA ("lat, lng") still has a value
+  if ((!lat || !lng) && data.GPS_DATA) {
+    const [gpsLat, gpsLng] = data.GPS_DATA.split(',').map((v) => v.trim());
+    lat = lat || gpsLat;
+    lng = lng || gpsLng;
+  }
   if (!lat || !lng || !mapBaseUrl) return '-';
   const href = `${mapBaseUrl}N ${lat} E ${lng}`;
   return `<a href="${href}" target="_blank" class="prop-for-sale-map-link">${label}<img src="/icons/google-map-open.ico" alt="" class="prop-for-sale-map-icon"></a>`;
