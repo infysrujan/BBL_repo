@@ -1165,6 +1165,33 @@
     min-width: 0;
   }
 
+  /* truncateNameCell() bakes a shortened "…" name straight into the DOM
+     (the full name only exists in data-title, used for the on-screen hover
+     tooltip). This direct-print fallback can't rewrite that text like
+     printElement() does, so swap the visible truncated span for the
+     full data-title text instead of printing it cut off. */
+  .dynamic-board .db-td-name[data-title] .db-td-name-text {
+    display: none;
+  }
+
+  .dynamic-board .db-td-name[data-title]::after {
+    content: attr(data-title);
+    position: static;
+    display: block;
+    width: auto;
+    padding: 0;
+    color: inherit;
+    line-height: inherit;
+    white-space: pre-line;
+    border-radius: 0;
+    font-weight: inherit;
+    background-color: transparent;
+    opacity: 1;
+    z-index: auto;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
   .dynamic-board .db-td-symbol,
   .dynamic-board .db-td-num {
     white-space: normal;
