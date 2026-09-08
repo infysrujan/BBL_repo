@@ -585,13 +585,6 @@ function printElement(block) {
     td.textContent = td.textContent.trim();
   });
 
-  content.querySelectorAll('.db-td-name[data-title]').forEach((td) => {
-    const fullName = td.getAttribute('data-title');
-    const nameSpan = td.querySelector('.db-td-name-text');
-    if (nameSpan && fullName) nameSpan.textContent = fullName;
-    td.removeAttribute('data-title');
-  });
-
   // The live header's Symbol column has colspan=2 for layout reasons the
   // body doesn't match (only one Symbol cell, since the checkbox column is
   // stripped above) — fixed by position (first header cell only), not by
