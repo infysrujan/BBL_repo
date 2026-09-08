@@ -142,6 +142,7 @@
 .menu-banner .thumb-square {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: var(--bbl-space-200);
   background: var(--bbl-color-white);
   border: 1px solid rgb(0 0 0 / 10%);
@@ -187,7 +188,6 @@
   font-size: 0.7rem;
   line-height: 1.2;
   color: var(--bbl-color-black);
-  flex: 1;
   text-align: center;
 }
 
@@ -283,3 +283,4 @@
     margin: 0 auto;
   }
 }
+ 
