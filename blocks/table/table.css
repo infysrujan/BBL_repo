@@ -114,8 +114,7 @@
   background: transparent;
 }
 
-/* Right Aligned Last Line — the trailing 
--separated section of a
+/* Right Aligned Last Line — the trailing <br>-separated section of a
    header cell (split out in JS into its own span) sits right-aligned on
    its own line, independent of whichever alignment variant the table uses. */
 .table table.header-right-aligned-last-line tr.header-row td .table-header-last-line {
@@ -229,6 +228,11 @@
 /* Header Top Aligned — overrides vertical-align: middle from Center/Right Aligned */
 .table table.header-top-aligned > :where(tbody) > tr.header-row > td {
   vertical-align: top;
+}
+
+/* Header Middle Aligned — overrides default vertical-align: top */
+.table table.header-middle-aligned > :where(tbody) > tr.header-row > td {
+  vertical-align: middle;
 }
 
 /* Highlight Bold Cells — background for any cell containing a <strong>,
