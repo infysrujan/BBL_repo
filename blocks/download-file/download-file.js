@@ -177,7 +177,6 @@ export default function decorate(block) {
     dateSpan.textContent = datePrefix;
     link?.prepend(dateSpan);
   }
-  if (button && targetLink) applyLinkTarget(button, 'a', targetLink);
   block.textContent = '';
 
   if (isBoxed) {
