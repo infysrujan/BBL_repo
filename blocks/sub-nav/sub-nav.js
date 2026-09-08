@@ -122,7 +122,7 @@ export default function decorate(block) {
   backButton.type = 'button';
   backButton.className = 'sub-nav-back';
   backButton.setAttribute('aria-label', 'Go back to previous page');
-  backButton.innerHTML = '<span class="sub-nav-back-circle icon-arrow-left"></span>';
+  backButton.innerHTML = '<span class="sub-nav-back-circle icon-dropdown"></span>';
   backButton.addEventListener('click', async () => {
     const parentUrl = await getParentPageUrl();
     if (parentUrl) {

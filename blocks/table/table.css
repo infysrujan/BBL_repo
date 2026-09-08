@@ -115,7 +115,7 @@
   text-align: left;
   font-weight: 400;
   font-size: 0.875rem;
-  font-family: var(--bbl-font-family-primary);
+  font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-grey-85);
   vertical-align: top;
   background: transparent;
@@ -235,6 +235,11 @@
 /* Header Top Aligned — overrides vertical-align: middle from Center/Right Aligned */
 .table table.header-top-aligned > :where(tbody) > tr.header-row > td {
   vertical-align: top;
+}
+
+/* Header Middle Aligned — overrides default vertical-align: top */
+.table table.header-middle-aligned > :where(tbody) > tr.header-row > td {
+  vertical-align: middle;
 }
 
 /* Highlight Bold Cells — background for any cell containing a <strong>,
