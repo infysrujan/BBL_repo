@@ -48,6 +48,10 @@
   position: absolute;
   top: 0.625rem;
   left: 0.625rem;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 1.4375rem;
   padding: var(--bbl-space-025) var(--bbl-space-100);
   background: var(--bbl-color-blue-140);
   color: var(--bbl-color-white);
@@ -70,10 +74,6 @@
 .listing-card-desc p {
   margin: 0;
   line-height: 1.203rem;
-}
-
-.listing-card-desc :is(p, li) a {
-  color: inherit;
 }
 
 .listing-card-desc :is(p, li) a[class] {
@@ -256,22 +256,24 @@
 }
 
 @media (width > 64rem) {
+  .listing-card-grid{
+    gap: var(--bbl-space-500);
+    padding-bottom: var(--bbl-space-500);
+  }
+  
   .listing-card-grid:has(.listing-card-empty) {
     width: unset;
     padding-inline: 0;
   }
 
-  .listing-card-grid{
-    gap: var(--bbl-space-500);
-    padding-bottom: var(--bbl-space-500);
-  }
 
   .listing-card-container {
     width: calc(25% - 1.875rem);
   }
 
   .listing-card-tag {
-    padding:var(--bbl-space-050) var(--bbl-space-200);
+    height: 1.875rem;
+    padding: var(--bbl-space-050) var(--bbl-space-100);
   }
 
   .listing-card-empty {

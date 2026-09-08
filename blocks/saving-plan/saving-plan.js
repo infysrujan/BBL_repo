@@ -3,11 +3,30 @@ import { getLang } from '../../scripts/bbl-decorators.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchJson } from '../../scripts/utils/card-helpers.js';
-import { fetchPost } from '../../scripts/utils/fetchApi.js';
+import { fetchGet, fetchPost } from '../../scripts/utils/fetchApi.js';
 import { loadChartJs, renderChart, buildChartLegend } from './saving-plan-chart.js';
 
 const ICON_BASE = '/icons/saving-plan';
 const ICONS_CACHE = {};
+const DEFAULT_INFLATION_RATE = 1.5;
+
+// Live inflation rate from the fincal rate-list GraphQL query — mirrors retirement-calculator.js.
+function toRate(value) {
+  const n = parseFloat(value);
+  return Number.isNaN(n) ? undefined : n;
+}
+
+async function loadInflationRate(rateListUrl) {
+  if (!rateListUrl) return undefined;
+  try {
+    const url = rateListUrl.replace(/;language=[^;?&]*/i, `;language=${getLang()}`);
+    const json = await fetchGet(url, { throwOnError: false });
+    const item = json?.data?.RateList?.items?.[0] || {};
+    return toRate(item.InflationRate);
+  } catch {
+    return undefined;
+  }
+}
 
 async function loadIcons() {
   const names = ['goal', 'goal-amount', 'goal-period', 'balance', 'annual-return', 'annual-increase', 'step-up', 'step-up-adjusted'];
@@ -86,8 +105,26 @@ function buildDataFromConfig(json, lang, placeholders, inflationRate) {
   const futureValueTemplate = (L['common-toHaveMoney'] || '')
     .replace('{money}', '{amount}').replace('{unit}', unit);
 
-  const minError = L['validation-minValueError'] || '';
-  const maxError = L['validation-maxValueError'] || '';
+  // validation-* strings are display copy only — the enforced bounds come from their
+  // own validationBounds-* numbers in the common sheet, so parsing text is not needed.
+  const minValueErrorMsg = L['validation-minValueError'] || '';
+  const maxValueErrorMsg = L['validation-maxValueError'] || '';
+  const percentageErrorMsg = L['validation-percentageError'] || '';
+  const minDesiredSavingAmountMsg = L['validation-minDesiredSavingAmount'] || '';
+  const maxDesiredSavingAmountMsg = L['validation-maxDesiredSavingAmount'] || '';
+  const minYearsToSaveMsg = L['validation-minYearsToSave'] || '';
+  const maxYearsToSaveMsg = L['validation-maxYearsToSave'] || '';
+
+  const goalAmountMin = Number(C['validationBounds-desiredSavingAmountMin']) || 10000;
+  const goalAmountMax = Number(C['validationBounds-desiredSavingAmountMax']) || 999999999;
+  const goalPeriodMin = Number(C['validationBounds-yearsToSaveMin']) || 1;
+  const goalPeriodMax = Number(C['validationBounds-yearsToSaveMax']) || 30;
+  const balanceMin = Number(C['validationBounds-savedAmountMin']) || 0;
+  const balanceMax = Number(C['validationBounds-savedAmountMax']) || 999999999;
+  const annualReturnMin = Number(C['validationBounds-expectedReturnRateMin']) || 0.1;
+  const annualReturnMax = Number(C['validationBounds-expectedReturnRateMax']) || 40;
+  const percentageMin = Number(C['validationBounds-annualSavingIncreaseRateMin']) || 0;
+
   const configuredReturnRate = C['defaultFormValues-expectedReturnRate'];
 
   const goalKeys = [...new Set(
@@ -167,18 +204,20 @@ function buildDataFromConfig(json, lang, placeholders, inflationRate) {
       },
       validation: {
         goalAmount: {
-          min: fillTemplate(minError, { min: '10,000' }),
-          max: fillTemplate(maxError, { max: '999,999,999' }),
+          min: minDesiredSavingAmountMsg,
+          max: maxDesiredSavingAmountMsg,
         },
         annualReturn: {
-          min: fillTemplate(minError, { min: '0.1' }),
-          max: fillTemplate(maxError, { max: '40' }),
+          min: fillTemplate(minValueErrorMsg, { min: String(annualReturnMin) }),
+          max: fillTemplate(maxValueErrorMsg, { max: String(annualReturnMax) }),
         },
         goalPeriod: {
-          min: fillTemplate(minError, { min: '1' }),
-          max: fillTemplate(maxError, { max: '30' }),
+          min: minYearsToSaveMsg,
+          max: maxYearsToSaveMsg,
         },
-        annualIncrease: { max: fillTemplate(maxError, { max: '40' }) },
+        annualIncrease: {
+          min: percentageErrorMsg,
+        },
         crossFieldIncreaseExceedsReturn: L['validation-annualSavingIncreaseRateError'] || '',
       },
     },
@@ -192,11 +231,11 @@ function buildDataFromConfig(json, lang, placeholders, inflationRate) {
       annualIncrease: Number(C['defaultFormValues-annualSavingIncreaseRate']) || 0,
     },
     validation: {
-      goalAmount: { min: 10000, max: 999999999 },
-      goalPeriod: { min: 1, max: 30 },
-      balance: { min: 0 },
-      annualReturn: { min: 0.1, max: 40 },
-      annualIncrease: { min: 0, max: 40 },
+      goalAmount: { min: goalAmountMin, max: goalAmountMax },
+      goalPeriod: { min: goalPeriodMin, max: goalPeriodMax },
+      balance: { min: balanceMin, max: balanceMax },
+      annualReturn: { min: annualReturnMin, max: annualReturnMax },
+      annualIncrease: { min: percentageMin },
     },
     goals,
     products: parseProducts(L),
@@ -270,7 +309,7 @@ function buildCalculationPayload(inputs, inflationRate) {
     FirstSavingAmount: inputs.balance,
     CompensationRate: inputs.annualReturn / 100,
     SavingIncRate: inputs.annualIncrease / 100,
-    inflationrate: inflationRate,
+    InflationRate: inflationRate / 100,
   };
 }
 
@@ -279,8 +318,6 @@ async function fetchCalculation(inputs, calcUrl, apimKey, inflationRate) {
   if (!calcUrl) return fallback;
   try {
     const payload = buildCalculationPayload(inputs, inflationRate);
-    // eslint-disable-next-line no-console
-    console.log('[saving-plan] API request payload:', payload);
     const json = await fetchPost(calcUrl, payload, {
       headers: { 'Ocp-Apim-Subscription-Key': apimKey },
       throwOnError: false,
@@ -290,8 +327,6 @@ async function fetchCalculation(inputs, calcUrl, apimKey, inflationRate) {
       console.warn('[saving-plan] API error — using fallback');
       return fallback;
     }
-    // eslint-disable-next-line no-console
-    console.log('[saving-plan] API response:', json);
     return normalizeCalculationResponse(json, fallback);
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -346,6 +381,7 @@ function buildDropdownField({
     .map((opt) => `
       <li class="saving-plan-dropdown-option${opt.key === selected?.key ? ' is-selected' : ''}"
           role="option" data-value="${opt.key}" tabindex="-1">
+        <span class="saving-plan-dropdown-option-check icon-check" aria-hidden="true"></span>
         <span class="saving-plan-dropdown-option-label">${opt.label}</span>
       </li>
     `)
@@ -411,7 +447,7 @@ function buildShellMarkup(data) {
         <h2 class="saving-plan-header-title">${labels.sectionTitle}</h2>
         <span class="saving-plan-header-divider" aria-hidden="true"></span>
       </header>
-
+ 
       <div class="saving-plan-calculator">
         <div class="saving-plan-form">
           <h3 class="saving-plan-form-title">${labels.calculateTitle}</h3>
@@ -440,7 +476,7 @@ function buildShellMarkup(data) {
             <button type="button" class="saving-plan-form-btn saving-plan-form-btn-primary" data-action="calculate" disabled>${labels.buttons.calculate}</button>
           </div>
         </div>
-
+ 
         <aside class="saving-plan-result">
           <h3 class="saving-plan-result-title">${labels.resultTitle}</h3>
           <div class="saving-plan-result-card">
@@ -455,7 +491,7 @@ function buildShellMarkup(data) {
           <p class="saving-plan-result-footnote" data-result="footnote-return"></p>
         </aside>
       </div>
-
+ 
       <section class="saving-plan-chart-row" hidden>
         <div class="saving-plan-chart-wrap">
           ${buildChartLegend(labels.chart, getIcon)}
@@ -465,7 +501,7 @@ function buildShellMarkup(data) {
         </div>
         <div class="saving-plan-info-card-slot"></div>
       </section>
-
+ 
       <section class="saving-plan-tweak" hidden>
         <div class="saving-plan-tweak-header">
           <h3 class="saving-plan-tweak-title">${labels.tweakTitle}</h3>
@@ -497,7 +533,7 @@ function buildShellMarkup(data) {
           </div>
         </div>
       </section>
-
+ 
       ${labels.additionalInfoLinkText ? `
       <section class="saving-plan-additional">
         <h3 class="saving-plan-additional-title">${labels.additionalInfoTitle}</h3>
@@ -505,12 +541,12 @@ function buildShellMarkup(data) {
           <li><a class="saving-plan-additional-link" href="${labels.additionalInfoUrl || '#'}">${labels.additionalInfoLinkText}</a></li>
         </ul>
       </section>` : ''}
-
+ 
       <section class="saving-plan-disclaimer">
         <h4 class="saving-plan-disclaimer-title">${labels.disclaimerTitle}</h4>
         <div class="saving-plan-disclaimer-text">${labels.disclaimer}</div>
       </section>
-
+ 
       <section class="saving-plan-products" hidden>
         <h3 class="saving-plan-products-title">${labels.productSectionTitle}</h3>
         <div class="saving-plan-products-divider"></div>
@@ -651,7 +687,6 @@ function setSliderBounds(root, name, {
 }
 
 function goalAmountStep(amount) {
-  if (amount >= 1000000) return 50000;
   if (amount >= 100000) return 10000;
   if (amount >= 10000) return 1000;
   return 100;
@@ -894,7 +929,8 @@ function formatLive(input, decimal, digitCap) {
     const raw = clampToDigitCap(sanitizeDecimalInput(input.value), digitCap);
     input.value = raw;
     let count = 0;
-    let newCursor = raw.length;
+    // digitsBeforeCursor === 0 means the cursor sits before any digit/dot, so it belongs at 0.
+    let newCursor = digitsBeforeCursor === 0 ? 0 : raw.length;
     for (let i = 0; i < raw.length; i += 1) {
       if (/[\d.]/.test(raw[i])) count += 1;
       if (count === digitsBeforeCursor) { newCursor = i + 1; break; }
@@ -913,7 +949,8 @@ function formatLive(input, decimal, digitCap) {
   input.value = formatted;
   // Find new cursor: walk formatted string counting digits until we match digitsBeforeCursor.
   let count = 0;
-  let newCursor = formatted.length;
+  // digitsBeforeCursor === 0 means the cursor sits before any digit/dot, so it belongs at 0.
+  let newCursor = digitsBeforeCursor === 0 ? 0 : formatted.length;
   for (let i = 0; i < formatted.length; i += 1) {
     if (/[\d.]/.test(formatted[i])) count += 1;
     if (count === digitsBeforeCursor) { newCursor = i + 1; break; }
@@ -1059,11 +1096,19 @@ function attachHandlers(state, data) {
     const decimal = wrap.dataset.decimal === '1';
     const digitCap = FIELD_DIGIT_CAP[wrap.dataset.field];
     const smart = wrap.dataset.field === 'annualReturn' || wrap.dataset.field === 'annualIncrease';
-    if (wrap.dataset.field === 'annualIncrease') {
+    if (wrap.dataset.field === 'annualIncrease' || wrap.dataset.field === 'goalAmount') {
       input.addEventListener('focus', () => {
         // Clear a zero value on focus so the placeholder shows and the user can
-        // type immediately; blur restores 0.00 if left empty.
+        // type immediately; blur restores the previous value if left empty.
         if (parseNumber(input.value) === 0) input.value = '';
+      });
+    }
+    if (wrap.dataset.field === 'annualReturn') {
+      input.addEventListener('focus', () => {
+        // Show full 2-decimal precision while editing (e.g. "0.5" -> "0.50");
+        // blur re-applies the smart format that trims trailing zeros.
+        const value = parseNumber(input.value);
+        if (Number.isFinite(value)) input.value = formatDecimal(value);
       });
     }
     input.addEventListener('input', () => {
@@ -1159,9 +1204,8 @@ export default async function decorate(block) {
   const configPath = siteConfig.savingPlanConfigPath;
   if (!configPath) return;
 
-  const [json, placeholders] = await Promise.all([
+  const [json] = await Promise.all([
     fetchJson(configPath),
-    fetchPlaceholders(),
     loadIcons(),
   ]);
 
@@ -1174,9 +1218,12 @@ export default async function decorate(block) {
 
   const calcUrl = cfg.savingPlanCalculatorUrl || '';
   const apimKey = cfg.savingPlanApimKey || '';
-  const commonData = json.common?.data || [];
-  const inflationRateEntry = commonData.find(({ Key }) => Key === 'defaultFormValues-inflationRate');
-  const inflationRate = parseFloat(inflationRateEntry?.Value);
+
+  const [placeholders, liveInflationRate] = await Promise.all([
+    fetchPlaceholders(),
+    loadInflationRate(cfg.savingPlanInflationRateUrl),
+  ]);
+  const inflationRate = liveInflationRate ?? DEFAULT_INFLATION_RATE;
 
   const lang = getLang();
   const data = buildDataFromConfig(json, lang, placeholders, inflationRate);

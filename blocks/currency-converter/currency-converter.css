@@ -102,7 +102,7 @@
   margin: auto var(--bbl-space-300);
   border-bottom: 0.0625rem solid var(--bbl-color-grey-125);
   font-size: 1.625rem;
-  font-weight: 900;
+  font-weight: 400;
   line-height: 1.875rem;
   height: auto;
 }
@@ -282,14 +282,6 @@
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.currency-converter .btn-convert:hover {
-  opacity: 1;
-}
-
-.currency-converter .btn-convert:active {
-  transform: translate(-50%, -50%) scale(0.95);
-}
-
 .currency-converter .btn-convert:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -381,5 +373,6 @@
   .currency-converter .amount-input {
     font-size: 3.875rem;
     line-height: 4.4375rem;
+    font-weight: 900;
   }
 }
