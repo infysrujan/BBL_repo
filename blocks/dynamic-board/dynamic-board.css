@@ -217,12 +217,7 @@
 
 /* ── Go button ─────────────────────────────────────────────── */
 
-/* Uses .button-m.primary from buttons.css for color/height/padding/hover/
-   disabled states. Width is driven by --db-go-btn-width, redeclared per
-   breakpoint below; flex-basis sets the size in the flex row and
-   max-width overrides .button-m's own `max-width: fit-content` (which
-   would otherwise clamp the button back down to its label's intrinsic
-   width). */
+/* Uses .button-m.primary from buttons.css; width driven by --db-go-btn-width, redeclared per breakpoint below. */
 
 .dynamic-board .db-go-btn {
   --db-go-btn-width: 8.4375rem; /* 135px — mobile */
