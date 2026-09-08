@@ -1310,10 +1310,6 @@
     flex: 1;
   }
 
-  .locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {
-    width: 71%;
-  }
-
   .locate-us:has(.locate-us-results-overseas) .locate-us-location-filter-row {
     padding: var(--bbl-space-000);
     margin-top: var(--bbl-space-200);
@@ -1500,6 +1496,10 @@
     padding: 0 2.813rem;
     max-width: 43%;
   }
+  
+  .locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {
+    width: calc(434px + (100vw - 1200px) * 0.5);
+  }
 
 }
 
@@ -1530,4 +1530,9 @@
     padding-right: 2rem;
     width: calc(50% - 2.8rem);
   }
+
+  .locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {
+    width: 49.62rem;
+  }
+
 }
