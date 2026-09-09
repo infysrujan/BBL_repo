@@ -59,26 +59,24 @@ function normalizeBenefit(str) {
   return BENEFIT_ALIASES[n] || n;
 }
 
-function sortBySourcing(cards) {
-  return [...cards].sort((a, b) => {
-    const an = parseInt(getCardField(a, 'Sourcing', 'sourcingNumber', 'Sourcing Number', 'order') || 9999, 10);
-    const bn = parseInt(getCardField(b, 'Sourcing', 'sourcingNumber', 'Sourcing Number', 'order') || 9999, 10);
-    return an - bn;
-  });
-}
-
 function sortByInitialOrder(rawCards, sheetCards) {
-  const orderMap = {};
+  const initialOrderMap = {};
+  const sourcingMap = {};
   sheetCards.forEach((row) => {
     const name = norm(row['Product Name (EN)'] || '');
-    const value = getCardField(row, 'Initial Ordering', 'InitialOrdering', 'initialOrder');
-    if (name && value !== '') orderMap[name] = parseInt(value, 10);
+    if (!name) return;
+    const initialOrder = getCardField(row, 'Initial Ordering', 'InitialOrdering', 'initialOrder');
+    if (initialOrder !== '') initialOrderMap[name] = parseInt(initialOrder, 10);
+    sourcingMap[name] = parseInt(row.Sourcing || 9999, 10);
   });
 
-  return sortBySourcing(rawCards).sort((a, b) => {
+  return [...rawCards].sort((a, b) => {
     const nameA = norm(getCardField(a, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
     const nameB = norm(getCardField(b, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
-    return (orderMap[nameA] ?? 9999) - (orderMap[nameB] ?? 9999);
+    const initialA = initialOrderMap[nameA] ?? 9999;
+    const initialB = initialOrderMap[nameB] ?? 9999;
+    if (initialA !== initialB) return initialA - initialB;
+    return (sourcingMap[nameA] ?? 9999) - (sourcingMap[nameB] ?? 9999);
   });
 }
 
