@@ -122,7 +122,6 @@ function buildCtaAnchor(doc, ctaData, dismissAndSuppress) {
   const target = sourceAnchor.getAttribute('target') || '';
 
   sourceAnchor.classList.replace('button', 'button-m');
-
   sourceAnchor.addEventListener('click', (e) => {
     e.preventDefault();
     dismissAndSuppress();
@@ -221,5 +220,4 @@ export default function decorate(block) {
   // ── Show banner ────────────────────────────────────────────────────────────
   doc.body.classList.add('modal-open');
   showModal(overlay, 'welcome-banner-overlay-visible');
-}
- 
+} 
