@@ -29,7 +29,7 @@
 
     p {
       text-align: center;
-      color: var(--bbl-color-grey-85);
+      color: var(--bbl-color-grey-90);
       font-family: var(--bbl-font-family-primary);
       font-size: var(--bbl-font-size-h2-mobile);
       font-weight: var(--bbl-font-weight-regular);
@@ -219,7 +219,8 @@
     padding-right: 1.875rem;
   }
 
-  & .form form .field-bond-allocation-review .plain-text-wrapper p{
+  & .form form .field-bond-allocation-review .plain-text-wrapper p,
+  & .form form .field-bond-allocation-notfound .plain-text-wrapper p {
     text-align: left;
   }
 
@@ -246,14 +247,11 @@
       font-family: var(--bbl-font-family-primary);
       font-size: var(--bbl-font-size-b1-desktop);
       font-weight: var(--bbl-font-weight-regular);
-      color: var(--bbl-color-grey-85);
+      color: var(--bbl-color-grey-90);
       line-height: var(--bbl-line-height-b1-desktop);
     }
   }
 
-  & .form form .plain-text-wrapper p:last-child p{
-    text-align: center;
-  }
 
 
   & .form form .field-bond-allocation-review .field-heading2.plain-text-wrapper p {
@@ -276,7 +274,7 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--bbl-font-size-h2-mobile);
     font-weight: var(--bbl-font-weight-regular);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     padding-right: 0;
     white-space: nowrap;
     justify-content: right;
@@ -294,21 +292,22 @@
     font-weight: var(--bbl-font-weight-regular);
     padding: 0;
     min-height: auto;
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     padding-left: 0.25rem;
     display: flex;
   }
 
   /* ── infotxt / thank-you text ── */
-  & .form form .field-bond-allocation-review .field-successpanel > .plain-text-wrapper {
+  & .form form .field-bond-allocation-review .field-successpanel .plain-text-wrapper {
     padding: 1.5625rem 0.0625rem 0.9375rem;
 
     & p {
       font-family: var(--bbl-font-family-primary);
       font-size: var(--bbl-font-size-b1-desktop);
       font-weight: var(--bbl-font-weight-regular);
-      color: var(--bbl-color-grey-85);
+      color: var(--bbl-color-grey-90);
       line-height: var(--bbl-line-height-b1-desktop);
+      text-align: left;
     }
   }
 
@@ -359,6 +358,7 @@
     }
   }
 
+  & .form form .field-bond-allocation-review .plain-text-wrapper p:last-child p,
   & .form form .field-bond-allocation-notfound .plain-text-wrapper p:last-child p {
     text-align: left;
   }
