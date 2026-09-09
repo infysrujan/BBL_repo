@@ -141,7 +141,9 @@ function buildFilterHtml(p, propertyTypes, priceRanges) {
 function buildPropCardHtml(item, detailPath, p, category, pfsData) {
   const photo = item.PHOTO_FILE_1;
   const currency = p.propertyForSaleCurrency || 'บาท';
-  const price = item.PR_PRICE ? `${formatPrice(item.PR_PRICE)} ${currency}` : '';
+  const price = Number(item.PR_PRICE) > 0
+    ? `${formatPrice(item.PR_PRICE)} ${currency}`
+    : (p.propertyForSaleContactStaff || 'ติดต่อเจ้าหน้าที่');
   const specialPrice = item.SPECIAL_PRICE ? `${formatPrice(item.SPECIAL_PRICE)} ${currency}` : '';
   const location = [item.LOCATION_AMPHUR, item.LOCATION_PROVINCE].filter(Boolean).join(', ');
   const tag = pfsData.categoryLabel[category] || item.MAIN_ASSET || '';
