@@ -105,14 +105,6 @@ function buildLocation(data) {
   return parts.join(' ') || '-';
 }
 
-function resolveGps(data) {
-  if (data.GPS_LATITUDE && data.GPS_LONGTITUDE) {
-    return { lat: data.GPS_LATITUDE, lng: data.GPS_LONGTITUDE };
-  }
-  const [lat, lng] = (data.GPS_DATA || '').split(',').map((s) => s.trim());
-  return lat && lng ? { lat, lng } : null;
-}
-
 function buildMapLink(data, label, mapBaseUrl) {
   let lat = data.GPS_LATITUDE;
   let lng = data.GPS_LONGTITUDE;
