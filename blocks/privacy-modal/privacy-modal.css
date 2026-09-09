@@ -149,12 +149,12 @@
   text-indent: 1.5em;
 }
 
-.privacy-modal-overlay.download-file-modal .privacy-modal-body p {
-  text-indent: 0;
-}
-
 .privacy-modal-body p:last-child {
   margin-bottom: 0;
+}
+
+.privacy-modal-overlay.download-file-modal .privacy-modal-body p {
+  text-indent: 0;
 }
 
 .privacy-modal-body ul,
