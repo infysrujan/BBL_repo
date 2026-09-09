@@ -1505,6 +1505,8 @@
 
   .locate-us:has(.locate-us-results-overseas) .locate-us-province-dropdown {
     width: calc(434px + (100vw - 1200px) * 0.5);
+    margin-left: auto;
+    margin-right: auto;
   }
 
 }
