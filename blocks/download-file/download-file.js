@@ -69,113 +69,66 @@ export default function decorate(block) {
   let isBoxed = block.classList.contains('boxed-card');
   let titleEl = null;
   const dateElements = [];
-  const booleanRows = [];
+  const lastIdx = otherRows.length - 1;
 
-  // Direct query check for Universal Editor instrumentation
-  const uePrefixProp = block.querySelector('[data-aue-prop="datePrefix"]');
-  if (uePrefixProp && uePrefixProp.textContent.trim()) {
-    datePrefix = uePrefixProp.textContent.trim();
-  }
+  otherRows.forEach((row, idx) => {
+    const rawText = row.textContent.replace(/\s+/g, ' ').trim();
+    const rawLower = rawText.toLowerCase();
+    const isTrueVal = rawLower === 'true' || rawLower === 'on' || rawLower === 'yes' || rawLower === '1';
+    const isFalseVal = rawLower === 'false' || rawLower === 'off' || rawLower === 'no' || rawLower === '0';
 
-  const uePopupProp = block.querySelector('[data-aue-prop="enableTermsConditionPopup"]');
-  if (uePopupProp) {
-    const txt = uePopupProp.textContent.trim().toLowerCase();
-    if (txt === 'true' || txt === 'on' || txt === '1') isTermsPopupEnabled = true;
-    else if (txt === 'false' || txt === 'off' || txt === '0') isTermsPopupEnabled = false;
-  }
-
-  const ueBoxedProp = block.querySelector('[data-aue-prop="boxedCard"]');
-  if (ueBoxedProp) {
-    const txt = ueBoxedProp.textContent.trim().toLowerCase();
-    if (txt === 'true' || txt === 'on' || txt === '1') isBoxed = true;
-    else if (txt === 'false' || txt === 'off' || txt === '0') isBoxed = false;
-  }
-
-  otherRows.forEach((row) => {
-    const rawText = row.textContent.replace(/\s+/g, ' ').trim().toLowerCase();
-    const isTrueVal = rawText === 'true' || rawText === 'on' || rawText === 'yes' || rawText === '1';
-    const isFalseVal = rawText === 'false' || rawText === 'off' || rawText === 'no' || rawText === '0';
-
+    // data-aue-prop is present in Universal Editor; absent in published/preview view.
     const prop = row.querySelector('[data-aue-prop]')?.getAttribute('data-aue-prop')
       || row.dataset.aueProp
       || row.querySelector('input[name]')?.getAttribute('name');
 
-    if (prop === 'datePrefix') {
-      if (row.textContent.trim()) datePrefix = row.textContent.trim();
+    // ── datePrefix ── model field #2, always otherRows[0] in published view
+    if (prop === 'datePrefix' || (!prop && idx === 0)) {
+      if (rawText && !isTrueVal && !isFalseVal) datePrefix = rawText;
       return;
     }
 
-    if (prop === 'targetLink') {
-      if (isTrueVal && link) link.target = '_blank';
-      else if (isFalseVal && link) link.target = '_self';
+    // ── targetLink ── model field #3 (inside targetSettings container), otherRows[1]
+    if (prop === 'targetLink' || (!prop && idx === 1 && (isTrueVal || isFalseVal))) {
+      if (link) link.target = isTrueVal ? '_blank' : '_self';
       return;
     }
 
-    if (prop === 'enableTermsConditionPopup') {
-      if (isTrueVal || (rawText.includes('true') && !isFalseVal)) {
-        isTermsPopupEnabled = true;
-      }
+    // ── boxedCard ── model field #4, otherRows[2]
+    if (prop === 'boxedCard' || (!prop && idx === 2 && (isTrueVal || isFalseVal))) {
+      isBoxed = isTrueVal;
       return;
     }
 
-    if (prop === 'boxedCard') {
-      if (isTrueVal || (rawText.includes('true') && !isFalseVal)) {
-        isBoxed = true;
-      } else if (isFalseVal) {
-        isBoxed = false;
-      }
+    // ── enableTermsConditionPopup ── always the LAST field in the model / last row
+    if (prop === 'enableTermsConditionPopup' || (!prop && idx === lastIdx && (isTrueVal || isFalseVal))) {
+      isTermsPopupEnabled = isTrueVal;
       return;
     }
 
-    // Find title heading
+    // ── boxedCardSettings fields (title heading + authorableDate richtext) ──
+    // These rows sit between boxedCard (idx=2) and the last popup row.
     const heading = row.querySelector(':is(h1, h2, h3, h4, h5, h6), [data-aue-prop="title"]');
     if (heading && !titleEl && heading.textContent.trim()) {
       titleEl = heading;
       return;
     }
 
-    // Find authorable date
     const dateMatches = [...row.querySelectorAll('[data-aue-prop="authorableDate"], [data-richtext-prop="authorableDate"]')];
     if (dateMatches.length > 0 && !isTrueVal && !isFalseVal) {
       dateMatches.forEach((el) => {
-        if (el !== titleEl && el.textContent.trim()) {
-          dateElements.push(el);
-        }
+        if (el !== titleEl && el.textContent.trim()) dateElements.push(el);
       });
       return;
     }
 
-    if (isTrueVal || isFalseVal) {
-      booleanRows.push({ row, isTrue: isTrueVal });
-      return;
-    }
-
-    // Positional fallback (published view, no data-aue-prop):
-    // datePrefix always appears BEFORE boolean rows (targetLink / boxedCard).
-    // Once any boolean row has been seen, remaining text rows are authorableDate.
-    if (!prop && row.textContent.trim()) {
-      if (!datePrefix && booleanRows.length === 0) {
-        datePrefix = row.textContent.trim();
-      } else {
-        const p = document.createElement('p');
-        p.textContent = row.textContent.trim();
-        dateElements.push(p);
-      }
+    // Positional fallback for authorableDate plain text (no data-aue-prop in published view)
+    if (!isTrueVal && !isFalseVal && rawText) {
+      const p = document.createElement('p');
+      p.textContent = rawText;
+      dateElements.push(p);
     }
   });
-
-  // If boolean rows were found without explicit data-aue-prop
-  if (booleanRows.length >= 3) {
-    if (booleanRows[0].isTrue && link) link.target = '_blank';
-    else if (!booleanRows[0].isTrue && link) link.target = '_self';
-    isBoxed = booleanRows[1].isTrue;
-    isTermsPopupEnabled = booleanRows[2].isTrue;
-  } else if (booleanRows.length === 2) {
-    isBoxed = booleanRows[0].isTrue;
-    isTermsPopupEnabled = booleanRows[1].isTrue;
-  } else if (booleanRows.length === 1) {
-    isBoxed = booleanRows[0].isTrue;
-  }
 
   // Prepend datePrefix if present
   if (button && datePrefix) {
