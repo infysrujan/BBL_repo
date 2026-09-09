@@ -356,7 +356,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
 
   & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) .button:not(:disabled),
   & .form .button.secondary {
-    border: 0.0417rem solid var(--bbl-color-active-blue);
+    border: 1px solid var(--bbl-color-active-blue);
     background-color: var(--bbl-color-white);
     color: var(--bbl-color-active-blue);
   }
