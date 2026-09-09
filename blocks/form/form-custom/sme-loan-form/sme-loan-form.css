@@ -95,8 +95,12 @@
     font-size: 0.95rem;
     font-weight: 400;
   }
-
-  & .form form .field-description p {
+  
+  & .form form .text-wrapper.field-wrapper[data-description]::after {
+    content: attr(data-description);
+    position:absolute;
+    right: 0;
+    bottom: -1rem;
     text-align: right;
     font-size: 0.875rem;
     color: var(--bbl-color-gray-800);
