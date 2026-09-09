@@ -146,13 +146,9 @@ function buildCompareCard(card, doc, labels) {
   const riskRaw = getField('RiskLevel', 'riskLevel', 'type');
   let riskLabel = '';
   let riskIsHtml = false;
-  if (Array.isArray(riskRaw) && riskRaw.length) {
-    riskLabel = riskRaw.map(tagToLabel).join(', ');
-  } else if (riskRaw && typeof riskRaw === 'object' && riskRaw.html) {
+  if (riskRaw && typeof riskRaw === 'object' && riskRaw.html) {
     riskLabel = riskRaw.html;
     riskIsHtml = true;
-  } else if (typeof riskRaw === 'string') {
-    riskLabel = riskRaw ? riskRaw.replace(/^level-/i, 'Level ') : '';
   }
 
   const fundTypeRaw = getField('FundType', 'fundType', 'type');
