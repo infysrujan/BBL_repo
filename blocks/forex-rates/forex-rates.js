@@ -153,6 +153,13 @@ function printForexRates(block) {
     '.forex-rates-print-btn, .forex-rates-go-btn, .forex-rates-time-list, .forex-rates-time-chevron, .forex-rates-date-trigger',
   ).forEach((el) => el.remove());
 
+  // Force eager loading for the print snapshot — Safari/WebKit does not paint
+  // loading="lazy" images that never entered the viewport when it rasterizes
+  // for print, so the currency flags would come out blank.
+  cloned.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+    img.setAttribute('loading', 'eager');
+  });
+
   const dateInput = cloned.querySelector('.forex-rates-date-text-input');
   if (dateInput) {
     const span = block.ownerDocument.createElement('span');
@@ -164,7 +171,15 @@ function printForexRates(block) {
   const doc = block.ownerDocument;
   const logoEl = doc.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
     || doc.querySelector('.brand-logo-container picture, .brand-logo-container img');
-  const brandLogo = logoEl ? logoEl.cloneNode(true).outerHTML : '';
+  let brandLogo = '';
+  if (logoEl) {
+    const logoClone = logoEl.cloneNode(true);
+    logoClone.querySelectorAll?.('img[loading="lazy"]').forEach((img) => img.setAttribute('loading', 'eager'));
+    if (logoClone.tagName === 'IMG' && logoClone.getAttribute('loading') === 'lazy') {
+      logoClone.setAttribute('loading', 'eager');
+    }
+    brandLogo = logoClone.outerHTML;
+  }
 
   const pageTitle = getPageTitle(doc);
 
