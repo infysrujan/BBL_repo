@@ -151,9 +151,10 @@ export default function decorate(block) {
     }
 
     // Positional fallback (published view, no data-aue-prop):
-    // First non-boolean text row = datePrefix; subsequent ones = authorable date
+    // datePrefix always appears BEFORE boolean rows (targetLink / boxedCard).
+    // Once any boolean row has been seen, remaining text rows are authorableDate.
     if (!prop && row.textContent.trim()) {
-      if (!datePrefix) {
+      if (!datePrefix && booleanRows.length === 0) {
         datePrefix = row.textContent.trim();
       } else {
         const p = document.createElement('p');
