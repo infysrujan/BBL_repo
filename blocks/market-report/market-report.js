@@ -758,10 +758,10 @@ function printElement() {
 
   const runPrint = () => {
     printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 100);
+    printWindow.print();
+    // Set after print() so the earlier focus() can't trigger it; fires when the
+    // user leaves Safari's print overlay and focus returns to the tab.
+    printWindow.onfocus = () => printWindow.close();
   };
   if (printWindow.document.readyState === 'complete') {
     requestAnimationFrame(runPrint);
