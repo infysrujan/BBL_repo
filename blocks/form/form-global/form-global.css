@@ -406,7 +406,7 @@ main .section.form-container.custom-forms .form form fieldset.panel-wrapper.fiel
 } */
 
 main .section.form-container.custom-forms .form form fieldset.panel-wrapper.field-button-panel :is(.reset-wrapper, .button-wrapper:not(.submit-wrapper)) .button:not(:disabled, .secondary):hover{
-  border-color: var(--bbl-color-active-blue);
+  border-color: var(--bbl-color-blue-90);
   background-color: var(--bbl-color-blue-90);
   color: var(--bbl-color-white);
 }
