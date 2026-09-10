@@ -669,7 +669,11 @@ function printElement() {
     .tabs-dropdown {
       display: none;
     }
-   
+
+    .sub-nav.block {
+      display: none;
+    }
+
     .tabs-nav-wrapper .tabs-nav {
      display: block;
     }
