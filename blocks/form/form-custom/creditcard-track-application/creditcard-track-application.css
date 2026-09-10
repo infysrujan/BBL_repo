@@ -349,14 +349,14 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     .submit-wrapper .button:not(:disabled),
     .cc-panel-item-panel-action-primary .button:not(:disabled)
   ) {
-    border: 0.0417rem solid transparent;
+    border: 0.0625rem solid transparent;
     background-color: var(--bbl-color-active-blue);
     color: var(--bbl-color-white);
   }
 
   & .form :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary) .button:not(:disabled),
   & .form .button.secondary {
-    border: 0.0417rem solid var(--bbl-color-active-blue);
+    border: 0.0625rem solid var(--bbl-color-active-blue);
     background-color: var(--bbl-color-white);
     color: var(--bbl-color-active-blue);
   }
@@ -375,7 +375,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     :is(.cc-panel-item-panel-action, .cc-panel-item-panel-action-secondary, .cc-panel-item-panel-action-primary) .button:disabled
   ) {
     color: var(--bbl-color-grey-60);
-    border: 0.0417rem solid var(--bbl-color-gray-300);
+    border: 0.0625rem solid var(--bbl-color-gray-300);
     background-color: var(--bbl-color-gray-300);
     cursor: not-allowed;
     pointer-events: none;
