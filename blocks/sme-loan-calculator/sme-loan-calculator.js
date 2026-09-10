@@ -588,8 +588,10 @@ export default async function decorate(block) {
 
         let limit = 9;
         if (f.id === 'n') limit = 3;
-        else if (f.id === 'A') limit = 8;
-        else if (f.id === 'H' || f.id === 'C' || f.id === 'F') limit = 6;
+        else if (f.id === 'A') limit = 10;
+        else if (f.id === 'F') limit = 6;
+        else if (f.id === 'C' || f.id === 'H') limit = 7;
+        else if (f.id === 'P' || f.id === 'B' || f.id === 'E') limit = 11;
 
         if (raw.length > limit) raw = raw.slice(0, limit);
         const num = parseInt(raw, 10);

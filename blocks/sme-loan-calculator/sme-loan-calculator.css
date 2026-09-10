@@ -503,7 +503,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 
   /* Fields remain stacked (column) at tablet — 3-column moves to desktop */
   .textbox-cal {
-    width: 5.5rem;
+    width: max-content;
     font-size: var(--bbl-font-size-15);
   }
 
