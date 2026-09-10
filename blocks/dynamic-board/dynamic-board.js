@@ -187,7 +187,7 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(fmtPct(rate.BID_YIELD))}</td>`}
       <td class="db-td-num">${escapeHtml(fmtPrice(rate.OFFER_PRICE))}</td>
       <td class="db-td-num">${escapeHtml(fmtPct(rate.OFFER_YIELD))}</td>
-      <td class="db-td-num">${escapeHtml(formatRemainTerm(rate.REMAIN_TERM || '00.00.00'))}</td>
+      <td class="db-td-num">${escapeHtml(formatRemainTerm(rate.REMAIN_TERM || '00.00.00', state.isThai))}</td>
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
       <td class="db-td-num db-td-maturity">
         ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels, state.buddhistYearOffset))}
