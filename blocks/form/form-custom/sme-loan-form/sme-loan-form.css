@@ -205,6 +205,10 @@
       margin: 0;
       justify-content: flex-start;
 
+      &:lang(th) {
+        min-width: 11rem;
+      }
+
       & label.field-label {
         min-width: 0;
         white-space: normal;
