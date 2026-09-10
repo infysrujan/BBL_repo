@@ -6,7 +6,10 @@ function initCarousel(carousel, track) {
 
   const autoplay = carousel.dataset.autoplay !== 'false';
   const speed = parseInt(carousel.dataset.autoplaySpeed, 10) || 3000;
+  const hasAuthoringAttrs = !!track.querySelector('[data-aue-resource]');
+  const isAuthoring = hasAuthoringAttrs && window.self !== window.top;
   const infinite = carousel.dataset.infinite !== 'false';
+  const canClone = infinite && !isAuthoring;
   const STEP = 4;
   const maxIndex = realTotal - STEP;
 
@@ -19,30 +22,78 @@ function initCarousel(carousel, track) {
   for (let i = 0; i <= maxIndex; i += STEP) positions.push(i);
   if (positions[positions.length - 1] < maxIndex) positions.push(maxIndex);
 
+  const offset = canClone ? STEP : 0;
+
+  if (canClone) {
+    const realItems = [...track.children];
+    realItems.slice(-STEP).reverse().forEach((c) => track.prepend(c.cloneNode(true)));
+    realItems.slice(0, STEP).forEach((c) => track.appendChild(c.cloneNode(true)));
+  }
+
   track.style.width = `${track.children.length * itemStep - GAP}px`;
 
   let posIdx = 0;
   let autoplayTimer = null;
   let isDragging = false;
   let startX = 0;
+  let isWrapping = false;
 
-  function moveTo(slideIdx) {
-    posIdx = slideIdx;
-    track.style.transform = `translate3d(${-positions[posIdx] * itemStep}px, 0, 0)`;
+  function moveTo(slideIdx, animate = true) {
+    if (!animate) track.style.transition = 'none';
+    track.style.transform = `translate3d(${-(offset + slideIdx) * itemStep}px, 0, 0)`;
+    if (!animate) {
+      requestAnimationFrame(() => requestAnimationFrame(() => { track.style.transition = ''; }));
+    }
   }
 
-  moveTo(0);
+  moveTo(0, false);
 
   function stopAutoplay() { clearInterval(autoplayTimer); autoplayTimer = null; }
 
   function next() {
+    if (isWrapping) return;
     if (!infinite && posIdx >= positions.length - 1) { stopAutoplay(); return; }
-    moveTo((posIdx + 1) % positions.length);
+
+    if (posIdx >= positions.length - 1) {
+      if (!canClone) {
+        posIdx = 0;
+        moveTo(positions[posIdx]);
+        return;
+      }
+      isWrapping = true;
+      track.style.transform = `translate3d(${-(offset + realTotal) * itemStep}px, 0, 0)`;
+      track.addEventListener('transitionend', () => {
+        moveTo(0, false);
+        posIdx = 0;
+        isWrapping = false;
+      }, { once: true });
+    } else {
+      posIdx += 1;
+      moveTo(positions[posIdx]);
+    }
   }
 
   function prev() {
+    if (isWrapping) return;
     if (!infinite && posIdx <= 0) return;
-    moveTo((posIdx - 1 + positions.length) % positions.length);
+
+    if (posIdx <= 0) {
+      if (!canClone) {
+        posIdx = positions.length - 1;
+        moveTo(positions[posIdx]);
+        return;
+      }
+      isWrapping = true;
+      track.style.transform = 'translate3d(0px, 0, 0)';
+      track.addEventListener('transitionend', () => {
+        moveTo(positions[positions.length - 1], false);
+        posIdx = positions.length - 1;
+        isWrapping = false;
+      }, { once: true });
+    } else {
+      posIdx -= 1;
+      moveTo(positions[posIdx]);
+    }
   }
 
   function startAutoplay() {
