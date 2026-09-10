@@ -182,6 +182,20 @@ function printForexRates(block) {
   }
 
   const pageTitle = getPageTitle(doc);
+  const documentTitle = doc.title || pageTitle;
+
+  const tabsHtml = (() => {
+    const tabs = [...doc.querySelectorAll('.tabs-nav [role="tab"]')]
+      .map((b) => ({
+        text: b.textContent.trim(),
+        active: b.classList.contains('active') || b.getAttribute('aria-selected') === 'true',
+      }))
+      .filter((t) => t.text);
+    if (!tabs.length) return '';
+    return `<div class="print-tabs">${tabs
+      .map((t) => `<span class="print-tab${t.active ? ' is-active' : ''}">${escapeHtml(t.text)}</span>`)
+      .join('')}</div>`;
+  })();
 
   const printCss = `
     @page { size: A4 portrait; margin: 10mm; }
@@ -205,6 +219,14 @@ function printForexRates(block) {
       content: ''; position: absolute; bottom: 0; left: 0;
       width: 2.25rem; height: var(--bbl-space-025); background: var(--bbl-color-blue-105);
     }
+
+    /* Tabs */
+    .print-tabs {
+      display: flex; justify-content: flex-end; gap: 1.25rem;
+      margin: 0 0 var(--bbl-space-075);
+    }
+    .print-tab { font-size: 0.75rem; font-weight: 700; color: var(--bbl-color-black); }
+    .print-tab.is-active { text-decoration: underline; }
 
     /* Controls */
     .forex-rates-control-row {
@@ -266,7 +288,7 @@ function printForexRates(block) {
   <html lang="en">
     <head>
       <meta charset="utf-8"/>
-      <title>${escapeHtml(pageTitle)}</title>
+      <title>${escapeHtml(documentTitle)}</title>
       <link rel="stylesheet" href="/styles/tokens.css">
       <link rel="stylesheet" href="/styles/fonts.css">
       <style>${printCss}</style>
@@ -275,6 +297,7 @@ function printForexRates(block) {
       <div class="print-logo">${brandLogo}</div>
       <hr class="print-divider">
       <h1 class="print-title">${escapeHtml(pageTitle)}</h1>
+      ${tabsHtml}
       <div class="forex-rates block" data-block-status="loaded">
         ${cloned.outerHTML}
       </div>
@@ -298,6 +321,7 @@ function printForexRates(block) {
   const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
   iframeDoc.open();
   iframeDoc.write(printHtml);
+  iframeDoc.title = documentTitle;
   iframeDoc.close();
 }
 
