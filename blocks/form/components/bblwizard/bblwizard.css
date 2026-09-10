@@ -480,7 +480,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="insuranceSum
 }
 
 main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 .field-label {
-  white-space: nowrap;
+  white-space: normal;
 }
 
 main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 input {
