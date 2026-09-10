@@ -222,7 +222,7 @@ function printForexRates(block) {
 
     /* Tabs */
     .print-tabs {
-      display: flex; justify-content: flex-end; gap: 1.25rem;
+      display: flex; justify-content: center; gap: 1.25rem;
       margin: 0 0 var(--bbl-space-075);
     }
     .print-tab { font-size: 0.75rem; font-weight: 700; color: var(--bbl-color-black); }
