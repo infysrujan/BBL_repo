@@ -54,10 +54,14 @@ function buildDownloadHref(downloadUrl, symbol) {
 }
 
 // ─── sort helper ──────────────────────────────────────────────────────────────
-function sortValue(rate, key) {
+function sortValue(rate, key, isThai) {
   if (key === 'REMAIN_TERM') return remainTermToMonths(rate.REMAIN_TERM || '00.00.00');
   if (key === 'MATURITY_DATE') return new Date(rate.MATURITY_DATE).getTime();
-  if (key === 'BOND_SYMBOL' || key === 'NAME_ENG') return (rate[key] || '').toLowerCase();
+  if (key === 'BOND_SYMBOL') return (rate.BOND_SYMBOL || '').toLowerCase();
+  // The Name column's sortKey is always 'NAME_ENG', but the cell itself renders
+  // NAME_THAI on the Thai locale (see renderRow) — sort by whichever field is
+  // actually on screen, or the sort order and the displayed text disagree.
+  if (key === 'NAME_ENG') return (rate[isThai ? 'NAME_THAI' : 'NAME_ENG'] || '').toLowerCase();
   const n = parseFloat(rate[key]);
   return Number.isNaN(n) ? Infinity : n;
 }
@@ -203,8 +207,12 @@ function renderTable(tbodySel, tbodyAll, state) {
   const selRates = state.rates.filter((r) => state.selectedIds.includes(String(r.AutoID)));
   const unsel = state.rates.filter((r) => !state.selectedIds.includes(String(r.AutoID)));
   unsel.sort((a, b) => {
-    const av = sortValue(a, state.sortKey);
-    const bv = sortValue(b, state.sortKey);
+    const av = sortValue(a, state.sortKey, state.isThai);
+    const bv = sortValue(b, state.sortKey, state.isThai);
+    if (typeof av === 'string' && typeof bv === 'string') {
+      const cmp = av.localeCompare(bv, state.isThai ? 'th' : undefined);
+      return state.sortAsc ? cmp : -cmp;
+    }
     if (av < bv) return state.sortAsc ? -1 : 1;
     if (av > bv) return state.sortAsc ? 1 : -1;
     return 0;
