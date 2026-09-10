@@ -157,9 +157,9 @@ fieldset[name="css-summaryWithHR"] > .plain-text-wrapper.col-1 p {
    form-button.css styles as outlined. Override to filled.   */
 
 .field-bookconsultationbutton button[type='button'] {
-  background: var(--bbl-color-active-blue, #0064ff) !important;
-  color: var(--bbl-color-white, #fff) !important;
-  border-color: var(--bbl-color-active-blue, #0064ff) !important;
+  background: var(--bbl-color-active-blue, #0064ff);
+  color: var(--bbl-color-white, #fff);
+  border-color: var(--bbl-color-active-blue, #0064ff);
 }
 
 .field-bookconsultationbutton button[type='button']:hover {
