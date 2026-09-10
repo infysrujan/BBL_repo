@@ -650,8 +650,6 @@ function printElement() {
   if (!logoEl) return;
   const brandLogo = logoEl.cloneNode(true).outerHTML;
 
-  const printWindow = window.open('', '', 'height=500,width=800');
-
   const printCss = `
     @page {
       size: A4 portrait;
@@ -774,48 +772,35 @@ function printElement() {
   </html>
   `;
 
-  const runPrint = () => {
-    printWindow.focus();
+  // Print through a hidden iframe rather than a popup window: iOS Safari turns
+  // window.open into a stuck new tab it won't let the script close, whereas an
+  // iframe prints in place with nothing to close.
+  document.querySelector('.market-report-print-frame')?.remove();
 
-    // 1. Setup the close handler function
-    const closeWindow = () => {
-      printWindow.close();
-    };
+  const printFrame = document.createElement('iframe');
+  printFrame.className = 'market-report-print-frame';
+  printFrame.setAttribute('aria-hidden', 'true');
+  printFrame.style.cssText = 'position:fixed;left:-9999px;width:0;height:0;border:0;';
+  printFrame.srcdoc = printHtml;
 
-    // 2. Primary listener: standard afterprint event
-    printWindow.addEventListener('afterprint', closeWindow, { once: true });
+  printFrame.addEventListener(
+    'load',
+    () => {
+      const frameWindow = printFrame.contentWindow;
+      if (!frameWindow) {
+        printFrame.remove();
+        return;
+      }
+      frameWindow.addEventListener('afterprint', () => printFrame.remove(), {
+        once: true,
+      });
+      frameWindow.focus();
+      frameWindow.print();
+    },
+    { once: true },
+  );
 
-    // 3. Safari Mobile Fallback: Watch the print media query state change
-    if (printWindow.matchMedia) {
-      const mediaQueryList = printWindow.matchMedia('print');
-      mediaQueryList.addEventListener(
-        'change',
-        (mql) => {
-          // If mql.matches is false, it means the user left the print screen
-          if (!mql.matches) {
-            closeWindow();
-          }
-        },
-        { once: true },
-      );
-    }
-
-    // 4. Trigger the print dialog
-    printWindow.print();
-  };
-
-  // CRITICAL FIX: Write the HTML *before* checking readiness or attaching listeners,
-  // because document.write resets the document structure.
-  printWindow.document.open();
-  printWindow.document.write(printHtml);
-  printWindow.document.close();
-
-  // 5. Safely handle the execution timing
-  if (printWindow.document.readyState === 'complete') {
-    requestAnimationFrame(runPrint);
-  } else {
-    printWindow.addEventListener('load', runPrint, { once: true });
-  }
+  document.body.appendChild(printFrame);
 }
 /* Create the top row of the market report */
 /**
