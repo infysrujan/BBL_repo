@@ -520,7 +520,6 @@ main .section.form-container.wizard-forms .form form fieldset[name="css-summaryW
 main .section.form-container.wizard-forms .form form fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 label.field-label {
   margin-bottom: 0;
   flex: 0 1 auto;
-  max-width: 61.5%;
   min-width: 0;
   font-weight: var(--bbl-font-weight-regular);
   font-family: var(--bbl-font-family-medium);
