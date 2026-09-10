@@ -158,7 +158,7 @@ function renderThead(thead, state, tbodySel) {
       });
     } else {
       const cs = col.colspan > 1 ? `colspan="${col.colspan}"` : '';
-      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}">${escapeHtml(col.label)}</th>`;
+      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}"><span class="db-th-label">${escapeHtml(col.label)}</span></th>`;
     }
   });
   row1 += '</tr>';
@@ -190,7 +190,7 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(formatRemainTerm(rate.REMAIN_TERM || '00.00.00'))}</td>
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
       <td class="db-td-num db-td-maturity">
-        ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}
+        ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels, state.buddhistYearOffset))}
         <a class="db-td-dl" href="${buildDownloadHref(state.downloadUrl, sym)}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
         </a>
@@ -1268,7 +1268,6 @@ export default async function decorate(block) {
     renderThead(thead, state, tbodySel);
     try {
       await loadRates(state);
-      state.selectedIds = [];
       renderTable(tbodySel, tbodyAll, state);
     } catch (err) {
       // eslint-disable-next-line no-console
