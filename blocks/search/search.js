@@ -1,3 +1,5 @@
+import { getLang } from '../../scripts/scripts.js';
+
 /**
  * Decorates the Search block.
  * Creates a search link with an icon for the header navigation.
@@ -24,6 +26,9 @@ export default function decorate(block) {
     const ariaLabelCell = rows[1]?.querySelector('p');
     ariaLabel = ariaLabelCell?.textContent?.trim() || ariaLabel;
   }
+  if (getLang().toLowerCase().startsWith('th') && ariaLabel === 'Search') {
+    ariaLabel = 'ค้นหา';
+  }
 
   // Clear the block content
   block.textContent = '';
@@ -42,7 +47,7 @@ export default function decorate(block) {
   const searchPlaceholder = document.createElement('span');
   searchPlaceholder.className = 'search-placeholder';
   searchPlaceholder.setAttribute('aria-hidden', 'true');
-  searchPlaceholder.textContent = 'Search';
+  searchPlaceholder.textContent = ariaLabel;
   searchLink.appendChild(searchPlaceholder);
 
   searchWrapper.appendChild(searchLink);
