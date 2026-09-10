@@ -163,6 +163,6 @@ fieldset[name="css-summaryWithHR"] > .plain-text-wrapper.col-1 p {
 }
 
 .field-bookconsultationbutton button[type='button']:hover {
-  background: var(--bbl-color-truthful-blue, #002850) !important;
-  border-color: var(--bbl-color-truthful-blue, #002850) !important;
+  background: var(--bbl-color-blue-90, #0048B7);
+  border-color: var(--bbl-color-blue-90, #0048B7);
 }
