@@ -6,7 +6,8 @@ function initCarousel(carousel, track) {
 
   const autoplay = carousel.dataset.autoplay !== 'false';
   const speed = parseInt(carousel.dataset.autoplaySpeed, 10) || 3000;
-  const infinite = carousel.dataset.infinite !== 'false';
+  const isUEAuthoring = !!track.querySelector('[data-aue-resource]');
+  const infinite = carousel.dataset.infinite !== 'false' && !isUEAuthoring;
   const STEP = 4;
   const maxIndex = realTotal - STEP;
 
@@ -21,7 +22,7 @@ function initCarousel(carousel, track) {
 
   const offset = infinite ? STEP : 0;
 
-  if (infinite && !track.querySelector('[data-aue-resource]')) {
+  if (infinite) {
     const realItems = [...track.children];
     realItems.slice(-STEP).reverse().forEach((c) => track.prepend(c.cloneNode(true)));
     realItems.slice(0, STEP).forEach((c) => track.appendChild(c.cloneNode(true)));
