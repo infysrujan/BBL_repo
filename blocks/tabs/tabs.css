@@ -533,8 +533,7 @@
     overflow-x: auto;
     flex-flow: row nowrap;
     justify-content: flex-start;
-    margin: 0;
-    padding: 0;
+    padding: 0 1.43rem;
   }
 
   .tabs.tiled-tab .tabs-nav li {
