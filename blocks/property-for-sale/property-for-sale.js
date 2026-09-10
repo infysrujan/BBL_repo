@@ -245,12 +245,13 @@ async function loadPfsData(configUrl) {
 
 function buildSearchUrl(apiBase, params, validCategories) {
   const v = validateSearchParams(params, validCategories);
-  const location = v.district || v.province;
+  const province = v.province ? encodeURIComponent(v.province) : 0;
+  const district = v.district ? encodeURIComponent(v.district) : 0;
   const segments = [
     v.page,
     v.regionId,
-    location ? encodeURIComponent(location) : 0,
-    0,
+    province,
+    district,
     v.keyword ? v.keyword.split(',').map((s) => encodeURIComponent(s.trim())).join(',') : 0,
     v.priceRangeKey,
     v.category,
