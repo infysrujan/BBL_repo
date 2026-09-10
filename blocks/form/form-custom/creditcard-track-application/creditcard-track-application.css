@@ -42,7 +42,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
   box-shadow: none;
 }
 
-main .section.form-container.custom-forms:has(.cc-app-main-form) {
+.credit-card-form main .section.form-container.custom-forms:has(.cc-app-main-form) {
   --cc-form-max-width: 55.625rem;
   --cc-form-gutter: 0.9375rem;
   --cc-timeline-panel-width: 28.75rem;
@@ -122,6 +122,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
+  }
+
+  & .date-wrapper.field-wrapper::after {
+    top: 1.625rem;
   }
 
   & :is(.form select, .drop-down-wrapper.field-wrapper select) {
