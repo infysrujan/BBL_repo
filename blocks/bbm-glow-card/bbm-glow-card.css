@@ -1,7 +1,3 @@
 .section.bbm-glow-card-container .content {
     padding-inline: 0;
 }
-
-body.bangkok-bankm-card .section.bbm-glow-card-container .title-card{
-    color: var(--bbl-color-white);
-}
