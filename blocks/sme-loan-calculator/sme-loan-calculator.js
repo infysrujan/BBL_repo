@@ -365,7 +365,12 @@ export default async function decorate(block) {
   // Comparison-table-only column order: under the Account Receivable / Account Payable
   // groups, "Credit Term" swaps with the 3rd column so it renders last. The input form
   // above (built from fieldGroups directly) keeps the authored order.
-  const TABLE_COLUMN_SWAP_GROUPS = ['account receivable', 'account payable'];
+  const TABLE_COLUMN_SWAP_GROUPS = [
+    'account receivable',
+    'account payable',
+    'ลูกหนี้การค้า',
+    'เจ้าหนี้การค้า',
+  ];
   const tableGroupFields = (group) => {
     const isSwapGroup = TABLE_COLUMN_SWAP_GROUPS.includes(group.header.trim().toLowerCase());
     if (!isSwapGroup || group.fields.length < 3) return group.fields;
