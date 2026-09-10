@@ -6,8 +6,7 @@ function initCarousel(carousel, track) {
 
   const autoplay = carousel.dataset.autoplay !== 'false';
   const speed = parseInt(carousel.dataset.autoplaySpeed, 10) || 3000;
-  const isUEAuthoring = !!track.querySelector('[data-aue-resource]');
-  const infinite = carousel.dataset.infinite !== 'false' && !isUEAuthoring;
+  const infinite = carousel.dataset.infinite !== 'false';
   const STEP = 4;
   const maxIndex = realTotal - STEP;
 
