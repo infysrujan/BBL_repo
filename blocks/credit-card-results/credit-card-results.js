@@ -59,24 +59,19 @@ function normalizeBenefit(str) {
   return BENEFIT_ALIASES[n] || n;
 }
 
-function sortByInitialOrder(rawCards, sheetCards) {
-  const initialOrderMap = {};
-  const sourcingMap = {};
-  sheetCards.forEach((row) => {
+function sortBySheetOrder(rawCards, sheetCards) {
+  const orderMap = {};
+  sheetCards.forEach((row, index) => {
     const name = norm(row['Product Name (EN)'] || '');
-    if (!name) return;
-    const initialOrder = getCardField(row, 'Initial Ordering', 'InitialOrdering', 'initialOrder');
-    if (initialOrder !== '') initialOrderMap[name] = parseInt(initialOrder, 10);
-    sourcingMap[name] = parseInt(row.Sourcing || 9999, 10);
+    if (name && !(name in orderMap)) orderMap[name] = index;
   });
 
   return [...rawCards].sort((a, b) => {
     const nameA = norm(getCardField(a, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
     const nameB = norm(getCardField(b, 'nameEN', 'Product Name (EN)', 'name', 'cardName'));
-    const initialA = initialOrderMap[nameA] ?? 9999;
-    const initialB = initialOrderMap[nameB] ?? 9999;
-    if (initialA !== initialB) return initialA - initialB;
-    return (sourcingMap[nameA] ?? 9999) - (sourcingMap[nameB] ?? 9999);
+    const orderA = orderMap[nameA] ?? Number.MAX_SAFE_INTEGER;
+    const orderB = orderMap[nameB] ?? Number.MAX_SAFE_INTEGER;
+    return orderA - orderB;
   });
 }
 
@@ -501,7 +496,7 @@ export default async function decorate(block) {
   // Fetch both data sources in parallel for initial render
   const [sheetCards, rawCards] = await Promise.all([loadSheetData(), loadCardData()]);
   // used for initial (unfiltered) display
-  const allCards = sortByInitialOrder(rawCards, sheetCards);
+  const allCards = sortBySheetOrder(rawCards, sheetCards);
 
   const {
     cardListContainer, toggleWrap, toggleBtn,
