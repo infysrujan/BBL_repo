@@ -1,6 +1,7 @@
 const DEFAULT_API_URL = 'https://bbl-sea-apim-u.azure-api.net/api/uat/BondConnectService/GetBondConnectDetail';
 const LOCAL_API_URL = DEFAULT_API_URL;
 const LOCAL_API_KEY = '';
+const API_PATH_FRAGMENT = '/BondConnectService/GetBondConnectDetail';
 const BOND_CONNECT_PANEL_SELECTOR = [
   '.bond-connect-panel',
   '.field-bond-connect',
@@ -33,6 +34,9 @@ const LABEL_FIELDS = {
   total: ['hdConnectTotal', 'ConnectTotal', 'connectTotal'],
   grandTotal: ['hdConnectGrandTotal', 'ConnectGrandTotal', 'connectGrandTotal'],
 };
+
+const serviceResponseRenderers = new Set();
+let serviceResponseCaptureBound = false;
 
 function isBondConnectForm(form) {
   if (!form) return false;
@@ -316,6 +320,74 @@ function getApiConfig() {
   };
 }
 
+function isBondConnectServiceRequest(input) {
+  const url = typeof input === 'string' ? input : input?.url;
+  return String(url || '').includes(API_PATH_FRAGMENT);
+}
+
+function notifyServiceResponseRenderers(result) {
+  serviceResponseRenderers.forEach((renderResult) => {
+    renderResult(result);
+  });
+}
+
+function parseServiceResponse(response) {
+  if (!response) return null;
+  if (typeof response === 'object') return response;
+  try {
+    return JSON.parse(response);
+  } catch {
+    return null;
+  }
+}
+
+function bindFetchResponseCapture() {
+  if (!window.fetch || window.fetch.bondConnectCaptureBound) return;
+
+  const originalFetch = window.fetch.bind(window);
+  const fetchWithBondConnectCapture = async (...args) => {
+    const response = await originalFetch(...args);
+    if (isBondConnectServiceRequest(args[0])) {
+      response.clone().json()
+        .then((result) => notifyServiceResponseRenderers(result))
+        .catch(() => {});
+    }
+    return response;
+  };
+
+  fetchWithBondConnectCapture.bondConnectCaptureBound = true;
+  window.fetch = fetchWithBondConnectCapture;
+}
+
+function bindXhrResponseCapture() {
+  const XhrConstructor = window.XMLHttpRequest;
+  if (!XhrConstructor || XhrConstructor.prototype.bondConnectCaptureBound) return;
+
+  const originalOpen = XhrConstructor.prototype.open;
+  const originalSend = XhrConstructor.prototype.send;
+
+  XhrConstructor.prototype.open = function open(method, url, ...args) {
+    this.bondConnectRequestUrl = url;
+    return originalOpen.call(this, method, url, ...args);
+  };
+
+  XhrConstructor.prototype.send = function send(...args) {
+    if (isBondConnectServiceRequest(this.bondConnectRequestUrl)) {
+      this.addEventListener('load', () => {
+        if (this.status < 200 || this.status >= 300) return;
+
+        const result = this.responseType === 'json'
+          ? parseServiceResponse(this.response)
+          : parseServiceResponse(this.responseText);
+        if (result) notifyServiceResponseRenderers(result);
+      });
+    }
+    return originalSend.apply(this, args);
+  };
+
+  XhrConstructor.prototype.bondConnectCaptureBound = true;
+}
+
 function setPanelVisible(form, selector, visible) {
   const panel = form.querySelector(selector);
   if (!panel) return;
@@ -376,10 +448,20 @@ function showResult(form, result) {
   setPanelVisible(form, '.field-mainformpanel', false);
   setPanelVisible(form, '.field-bond-allocation-review', hasData);
   setPanelVisible(form, '.field-bond-allocation-notfound', !hasData);
+  return hasData;
 }
 
 function showApiError(form, visible = true) {
   setPanelVisible(form, '.field-errorloading', visible);
+}
+
+function bindServiceResponseRendering(form) {
+  serviceResponseRenderers.add((result) => showResult(form, result));
+  if (serviceResponseCaptureBound) return;
+
+  serviceResponseCaptureBound = true;
+  bindFetchResponseCapture();
+  bindXhrResponseCapture();
 }
 
 function bindLocalApiSubmit(form) {
@@ -442,7 +524,7 @@ function bindResultFieldRendering(form) {
   getResultFields(form).forEach((field) => {
     const renderFromField = () => {
       const result = parseJsonValue(field.value);
-      if (result) renderBondConnectTable(form, result);
+      if (result) showResult(form, result);
     };
 
     field.addEventListener('change', renderFromField);
@@ -458,11 +540,12 @@ export default function decorateBondConnectForm(form) {
 
   document.body.classList.add('bond-connect-form');
   bindResultFieldRendering(form);
+  bindServiceResponseRendering(form);
   bindLocalApiSubmit(form);
 
   window.BondConnectAem = window.BondConnectAem || {};
   window.BondConnectAem.render = (result, targetForm = form) => (
-    renderBondConnectTable(targetForm, result)
+    showResult(targetForm, result)
   );
   window.BondConnectAem.setApiKey = (key) => {
     sessionStorage.setItem('bondConnectApiKey', key);
@@ -477,6 +560,6 @@ export default function decorateBondConnectForm(form) {
   };
 
   form.addEventListener('bondconnect:render', (event) => {
-    renderBondConnectTable(form, event.detail);
+    showResult(form, event.detail);
   });
 }
