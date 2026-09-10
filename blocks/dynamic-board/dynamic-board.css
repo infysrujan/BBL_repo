@@ -772,10 +772,6 @@
   color: var(--bbl-color-active-blue);
 }
 
-.dynamic-board .db-table thead th.db-th-sort.db-th-sorted {
-  background-image: url("/icons/bond-sorted.svg");
-}
-
 .dynamic-board .db-th-group {
   border-bottom: 0.0625rem solid var(--bbl-color-grey-20);
 }
