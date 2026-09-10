@@ -314,7 +314,7 @@ function populateStandardLayoutTable(table, tableId, tableData) {
         tds[0].textContent = `${tds[0].textContent}${extra}`;
       }
       for (let j = 1; j < tds.length; j += 1) {
-        const dataIndex = (i * (tds.length - 1)) + (j - 1) + 1;
+        const dataIndex = i * (tds.length - 1) + (j - 1) + 1;
         if (tableData[dataIndex]) {
           if (j === 1) {
             tds[j].textContent = `${tableData[dataIndex].mktvalue} $/Barrel`;
@@ -496,7 +496,10 @@ function applyTableWrapperPageLayout(tableWrapper) {
   const rrBlockIndex = indexOfChildContainingRR(wrapperChildren);
   if (rrBlockIndex === -1) return;
 
-  const splitRightStart = indexOfPrecedingHeading(wrapperChildren, rrBlockIndex);
+  const splitRightStart = indexOfPrecedingHeading(
+    wrapperChildren,
+    rrBlockIndex,
+  );
   const rightEndExclusive = indexAfterWhichRightColumnEnds(wrapperChildren);
 
   const pageLayout = buildTwoColumnPageLayout(
@@ -510,8 +513,18 @@ function applyTableWrapperPageLayout(tableWrapper) {
  * Month names for the market report date
  */
 const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 /**
@@ -614,8 +627,9 @@ function applyTextSmallToTableFollowParagraphs(panel) {
 }
 
 function hideToolsAndAssistanceFromPrint(content) {
-  const heading = [...content.querySelectorAll('h1, h2, h3, h4, h5, h6')]
-    .find((element) => element.textContent.trim().toLowerCase() === 'tools & assistance');
+  const heading = [...content.querySelectorAll('h1, h2, h3, h4, h5, h6')].find(
+    (element) => element.textContent.trim().toLowerCase() === 'tools & assistance',
+  );
   heading?.closest('.section')?.classList.add('market-report-tools-assistance');
 }
 
@@ -627,8 +641,12 @@ function printElement() {
 
   hideToolsAndAssistanceFromPrint(content);
 
-  const logoEl = document.querySelector('.brand-logo-print-logo picture, .brand-logo-print-logo img')
-    || document.querySelector('.brand-logo-container picture, .brand-logo-container img');
+  const logoEl = document.querySelector(
+    '.brand-logo-print-logo picture, .brand-logo-print-logo img',
+  )
+    || document.querySelector(
+      '.brand-logo-container picture, .brand-logo-container img',
+    );
   if (!logoEl) return;
   const brandLogo = logoEl.cloneNode(true).outerHTML;
 
@@ -758,19 +776,46 @@ function printElement() {
 
   const runPrint = () => {
     printWindow.focus();
+
+    // 1. Setup the close handler function
+    const closeWindow = () => {
+      printWindow.close();
+    };
+
+    // 2. Primary listener: standard afterprint event
+    printWindow.addEventListener('afterprint', closeWindow, { once: true });
+
+    // 3. Safari Mobile Fallback: Watch the print media query state change
+    if (printWindow.matchMedia) {
+      const mediaQueryList = printWindow.matchMedia('print');
+      mediaQueryList.addEventListener(
+        'change',
+        (mql) => {
+          // If mql.matches is false, it means the user left the print screen
+          if (!mql.matches) {
+            closeWindow();
+          }
+        },
+        { once: true },
+      );
+    }
+
+    // 4. Trigger the print dialog
     printWindow.print();
-    // Set after print() so the earlier focus() can't trigger it; fires when the
-    // user leaves Safari's print overlay and focus returns to the tab.
-    printWindow.onfocus = () => printWindow.close();
   };
+
+  // CRITICAL FIX: Write the HTML *before* checking readiness or attaching listeners,
+  // because document.write resets the document structure.
+  printWindow.document.open();
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
+
+  // 5. Safely handle the execution timing
   if (printWindow.document.readyState === 'complete') {
     requestAnimationFrame(runPrint);
   } else {
-    printWindow.addEventListener('load', runPrint);
+    printWindow.addEventListener('load', runPrint, { once: true });
   }
-
-  printWindow.document.write(printHtml);
-  printWindow.document.close();
 }
 /* Create the top row of the market report */
 /**
@@ -896,7 +941,11 @@ function setupOthbisGthbColumns(panel) {
  * @param {HTMLElement} panel
  */
 function flattenMarketReportContent(panel) {
-  const wrappers = [...panel.querySelectorAll(':scope > .default-content-wrapper, :scope > .table-wrapper')];
+  const wrappers = [
+    ...panel.querySelectorAll(
+      ':scope > .default-content-wrapper, :scope > .table-wrapper',
+    ),
+  ];
   if (wrappers.length <= 1) return;
 
   const target = document.createElement('div');
