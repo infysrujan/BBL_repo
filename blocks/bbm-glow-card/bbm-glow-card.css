@@ -2,6 +2,6 @@
     padding-inline: 0;
 }
 
-.section.bbm-glow-card-container  .title-card{
+body.bangkok-bankm-card .section.bbm-glow-card-container .title-card{
     color: var(--bbl-color-white);
 }
