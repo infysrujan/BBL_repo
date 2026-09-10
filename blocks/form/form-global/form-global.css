@@ -217,7 +217,8 @@ main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio
   border-radius: 0.4375rem 0 0 0.4375rem;
 }
 
-main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper:last-of-type input[type='radio'] {
+main .section.form-container .form form .radio-group-wrapper.radio-tabs > .radio-wrapper:last-of-type input[type='radio'],
+main .section.form-container .form form .radio-group-wrapper.radio-tabs.field-invalid > .radio-wrapper:not(:has(~ .radio-wrapper)) input[type="radio"] {
   border-radius: 0 0.4375rem 0.4375rem 0;
 }
 
@@ -543,7 +544,7 @@ main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.
 }
 
 main .section.form-container.custom-forms .form form :is(fieldset.panel-wrapper.custom-fieldset-approval, fieldset.panel-wrapper.field-wrapper fieldset.panel-wrapper.custom-fieldset-approval) .tnc-text-decoration a {
-  text-decoration: none;
+  text-decoration: underline;
   transition: color 0.3s ease;
 }
 

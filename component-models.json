@@ -46,6 +46,10 @@
           {
             "name": "Error Page",
             "value": "error-page"
+          },
+          {
+            "name": "Bangkok Bankm Promotion",
+            "value": "bangkok-bankm-promotion"
           }
         ]
       },
@@ -65,7 +69,7 @@
         "component": "boolean",
         "name": "breadcrumb",
         "value": true,
-        "label": "Breadcrumb",
+        "label": "Hide the entire breadcrumb from the current page",
         "valueType": "boolean"
       },
       {
@@ -77,9 +81,15 @@
       {
         "component": "reference",
         "valueType": "string",
-        "name": "ogImage",
+        "name": "og:image",
         "label": "OG Image",
         "description": "Select the image asset to use for the Open Graph og:image meta tag."
+      },
+      {
+        "component": "boolean",
+        "name": "hide-from-breadcrumb",
+        "label": "Hide only the current page’s breadcrumb from the breadcrumb trail.",
+        "valueType": "boolean"
       }
     ]
   },
@@ -2212,6 +2222,139 @@
             "contentInsertCarouselCards"
           ]
         }
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "heroImagePickerDesktop",
+        "label": "Image (Desktop)",
+        "description": "Select an image shown at desktop breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "heroBannerImageCarousel"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "textAnimationVariant"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "heroImagePickerDesktopMimeType",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "heroBannerImageCarousel"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "textAnimationVariant"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "name": "heroImagePickerMobile",
+        "label": "Image (Mobile)",
+        "description": "Select an image shown at mobile breakpoints",
+        "configUrl": "/content/dam/image.config.json",
+        "valueType": "string",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "heroBannerImageCarousel"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "textAnimationVariant"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "heroImagePickerMobileMimeType",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "heroBannerImageCarousel"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "textAnimationVariant"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heroImagePickerAlt",
+        "label": "Alternative text for accessibility",
+        "description": "Write descriptive, concise, relevant alt text to describe the image in context, enhancing accessibility for visually impaired users and improving SEO.",
+        "condition": {
+          "or": [
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "heroBannerImageCarousel"
+              ]
+            },
+            {
+              "===": [
+                {
+                  "var": "slideType"
+                },
+                "textAnimationVariant"
+              ]
+            }
+          ]
+        }
       }
     ]
   },
@@ -3759,6 +3902,82 @@
             "value": false
           }
         ]
+      },
+      {
+        "component": "boolean",
+        "name": "boxedCard",
+        "label": "Boxed Card",
+        "description": "Enable to display as a boxed card",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "container",
+        "name": "boxedCardSettings",
+        "label": "Boxed Card Settings",
+        "valueType": "object",
+        "collapsible": true,
+        "condition": {
+          "===": [
+            {
+              "var": "boxedCard"
+            },
+            true
+          ]
+        },
+        "fields": [
+          {
+            "component": "text",
+            "name": "title",
+            "label": "Title"
+          },
+          {
+            "component": "select",
+            "name": "titleType",
+            "label": "Title Type",
+            "options": [
+              {
+                "name": "h1",
+                "value": "h1"
+              },
+              {
+                "name": "h2",
+                "value": "h2"
+              },
+              {
+                "name": "h3",
+                "value": "h3"
+              },
+              {
+                "name": "h4",
+                "value": "h4"
+              },
+              {
+                "name": "h5",
+                "value": "h5"
+              },
+              {
+                "name": "h6",
+                "value": "h6"
+              }
+            ]
+          },
+          {
+            "component": "richtext",
+            "name": "authorableDate",
+            "label": "Authorable date",
+            "valueType": "string",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "name": "enableTermsConditionPopup",
+        "label": "Enable Terms & Conditions Popup",
+        "description": "If enabled, clicking the download button will show the terms & conditions popup before downloading",
+        "valueType": "boolean",
+        "value": false
       }
     ]
   },
@@ -10233,6 +10452,10 @@
           {
             "name": "Simple with App cta",
             "value": "simple-app-cta"
+          },
+          {
+            "name": "Default",
+            "value": "default"
           }
         ]
       }
@@ -12830,6 +13053,10 @@
                 "value": "header-top-aligned"
               },
               {
+                "name": "Middle Aligned",
+                "value": "header-middle-aligned"
+              },
+              {
                 "name": "Header Blue",
                 "value": "header-blue"
               },
@@ -13273,6 +13500,10 @@
               {
                 "name": "Center First Paragraph",
                 "value": "center-first-paragraph"
+              },
+              {
+                "name": "Center Aligned First Paragraph",
+                "value": "center-aligned-first-paragraph"
               }
             ]
           },
@@ -13409,6 +13640,10 @@
               {
                 "name": "Center First Paragraph",
                 "value": "center-first-paragraph"
+              },
+              {
+                "name": "Center Aligned First Paragraph",
+                "value": "center-aligned-first-paragraph"
               }
             ]
           },

@@ -54,10 +54,14 @@ function buildDownloadHref(downloadUrl, symbol) {
 }
 
 // ─── sort helper ──────────────────────────────────────────────────────────────
-function sortValue(rate, key) {
+function sortValue(rate, key, isThai) {
   if (key === 'REMAIN_TERM') return remainTermToMonths(rate.REMAIN_TERM || '00.00.00');
   if (key === 'MATURITY_DATE') return new Date(rate.MATURITY_DATE).getTime();
-  if (key === 'BOND_SYMBOL' || key === 'NAME_ENG') return (rate[key] || '').toLowerCase();
+  if (key === 'BOND_SYMBOL') return (rate.BOND_SYMBOL || '').toLowerCase();
+  // The Name column's sortKey is always 'NAME_ENG', but the cell itself renders
+  // NAME_THAI on the Thai locale (see renderRow) — sort by whichever field is
+  // actually on screen, or the sort order and the displayed text disagree.
+  if (key === 'NAME_ENG') return (rate[isThai ? 'NAME_THAI' : 'NAME_ENG'] || '').toLowerCase();
   const n = parseFloat(rate[key]);
   return Number.isNaN(n) ? Infinity : n;
 }
@@ -154,7 +158,7 @@ function renderThead(thead, state, tbodySel) {
       });
     } else {
       const cs = col.colspan > 1 ? `colspan="${col.colspan}"` : '';
-      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}">${escapeHtml(col.label)}</th>`;
+      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}"><span class="db-th-label">${escapeHtml(col.label)}</span></th>`;
     }
   });
   row1 += '</tr>';
@@ -186,7 +190,7 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(formatRemainTerm(rate.REMAIN_TERM || '00.00.00'))}</td>
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
       <td class="db-td-num db-td-maturity">
-        ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}
+        ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels, state.buddhistYearOffset))}
         <a class="db-td-dl" href="${buildDownloadHref(state.downloadUrl, sym)}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
         </a>
@@ -203,8 +207,12 @@ function renderTable(tbodySel, tbodyAll, state) {
   const selRates = state.rates.filter((r) => state.selectedIds.includes(String(r.AutoID)));
   const unsel = state.rates.filter((r) => !state.selectedIds.includes(String(r.AutoID)));
   unsel.sort((a, b) => {
-    const av = sortValue(a, state.sortKey);
-    const bv = sortValue(b, state.sortKey);
+    const av = sortValue(a, state.sortKey, state.isThai);
+    const bv = sortValue(b, state.sortKey, state.isThai);
+    if (typeof av === 'string' && typeof bv === 'string') {
+      const cmp = av.localeCompare(bv, state.isThai ? 'th' : undefined);
+      return state.sortAsc ? cmp : -cmp;
+    }
     if (av < bv) return state.sortAsc ? -1 : 1;
     if (av > bv) return state.sortAsc ? 1 : -1;
     return 0;
@@ -583,6 +591,13 @@ function printElement(block) {
   // its trimmed date text so the cell is exactly one line tall.
   content.querySelectorAll('.db-td-maturity').forEach((td) => {
     td.textContent = td.textContent.trim();
+  });
+
+  content.querySelectorAll('.db-td-name[data-title]').forEach((td) => {
+    const fullName = td.getAttribute('data-title');
+    const nameSpan = td.querySelector('.db-td-name-text');
+    if (nameSpan && fullName) nameSpan.textContent = fullName;
+    td.removeAttribute('data-title');
   });
 
   // The live header's Symbol column has colspan=2 for layout reasons the
@@ -1016,7 +1031,7 @@ export default async function decorate(block) {
             <ul class="db-time-list" id="db-time-list" role="listbox"></ul>
           </div>
         </div>
-        <button type="button" class="db-go-btn" id="db-go-btn">${escapeHtml(authoring.ctaButtonLabel)}</button>
+        <button type="button" class="db-go-btn button-m primary" id="db-go-btn">${escapeHtml(authoring.ctaButtonLabel)}</button>
       </div>
       <div class="db-controls-right">
         <button type="button" class="db-filter-btn" id="db-filter-btn">
@@ -1253,7 +1268,6 @@ export default async function decorate(block) {
     renderThead(thead, state, tbodySel);
     try {
       await loadRates(state);
-      state.selectedIds = [];
       renderTable(tbodySel, tbodyAll, state);
     } catch (err) {
       // eslint-disable-next-line no-console

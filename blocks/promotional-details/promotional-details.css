@@ -37,12 +37,9 @@ body.mobile-app-view main > div:first-child {
 }
 
 .promotional-details .promo-detail-title {
-  font-size: 1.4rem;
-  line-height: 1.375rem;
   font-family: var(--bbl-font-family-medium);
   color: var(--bbl-color-black);
   margin: 1.875rem 0;
-  font-weight: var(--bbl-font-weight-regular);
   padding-bottom: 1.875rem;
   letter-spacing: -0.0125rem;
   position: relative;
@@ -226,11 +223,6 @@ body.mobile-app-view main > div:first-child {
   .promotional-details .promo-detail-disclaimer p {
     font-size: var(--bbl-font-size-b1);
     line-height: 1.375rem;
-  }
-
-  .promotional-details .promo-detail-title {
-    font-size: var(--bbl-heading-h3-size);
-    line-height: 2.875rem;
   }
 
   .promotional-details .promo-detail-date {
