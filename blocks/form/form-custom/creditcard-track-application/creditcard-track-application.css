@@ -42,7 +42,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
   box-shadow: none;
 }
 
-main .section.form-container.custom-forms:has(.cc-app-main-form) {
+.credit-card-form main .section.form-container.custom-forms:has(.cc-app-main-form) {
   --cc-form-max-width: 55.625rem;
   --cc-form-gutter: 0.9375rem;
   --cc-timeline-panel-width: 28.75rem;
@@ -103,7 +103,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     line-height: 2.75rem;
   }
 
-  @media (width >= 36rem) {
+  @media (width >= 47.5rem) {
     & .form :is(.text-wrapper, .number-wrapper, .email-wrapper, .telephone-wrapper).field-wrapper :is(input, textarea) {
       height: 3.4375rem;
       padding-left: 1.5625rem;
@@ -121,6 +121,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
+  }
+
+  & .date-wrapper.field-wrapper::after {
+    top: 1.625rem;
   }
 
   & :is(.form select, .drop-down-wrapper.field-wrapper select) {
@@ -142,7 +146,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) {
     text-overflow: ellipsis;
   }
 
-  @media (width >= 36rem) {
+  @media (width >= 47.5rem) {
     & :is(.form select, .drop-down-wrapper.field-wrapper select) {
       height: 3.4375rem;
     }
