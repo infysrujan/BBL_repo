@@ -1,3 +1,7 @@
 .section.bbm-glow-card-container .content {
     padding-inline: 0;
 }
+
+.section.bbm-glow-card-container  .title-card{
+    color: var(--bbl-color-white);
+}
