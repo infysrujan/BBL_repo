@@ -7,11 +7,11 @@ import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
-function filterCards(activeCards, tabText, isTopPromo) {
+function filterCards(activeCards, categoryValue, isTopPromo) {
   if (isTopPromo) {
     return activeCards.filter((card) => card.topPromotion === true);
   }
-  const normalized = normalizeCategory(tabText);
+  const normalized = normalizeCategory(categoryValue);
   return activeCards.filter(
     (card) => normalizeCategory(card.category) === normalized,
   );
@@ -27,7 +27,11 @@ function setupPanel(panel, activeCards, placeholders) {
   const topPromoTabLabel = (placeholders.topPromotionsTabLabel || 'toppromotions').toLowerCase().replace(/\s+/g, '');
   const isTopPromo = tabText.toLowerCase().replace(/\s+/g, '') === topPromoTabLabel;
 
-  let cards = sortCards(filterCards(activeCards, tabTags, isTopPromo));
+  let matchedCards = filterCards(activeCards, tabTags, isTopPromo);
+  if (!isTopPromo && !matchedCards.length && tabText && tabText !== tabTags) {
+    matchedCards = filterCards(activeCards, tabText, isTopPromo);
+  }
+  let cards = sortCards(matchedCards);
   if (isTopPromo) {
     if (!cards.length) {
       panel.hidden = true;

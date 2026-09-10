@@ -212,6 +212,14 @@ function isTruthyFlag(value) {
     || normalized === '1';
 }
 
+function categoryHasMatch(cards, categoryValue) {
+  if (!categoryValue) return false;
+  const normalized = normalizeCategory(categoryValue);
+  return cards.some(
+    (card) => normalizeList(card.category).map(normalizeCategory).includes(normalized),
+  );
+}
+
 function filterCards(allCards, filters, page, pageSize, topPromotionOnly) {
   const {
     category, subcategory, cardType, area,
@@ -626,12 +634,17 @@ export default async function decorate(block) {
     const dataCardTypes = activeCardTypes;
     const dataAreas = activeAreas;
     const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText));
-    const category = tabTags || (isHighlightsPanel ? tabText : '');
+    const cardsForPanel = isHighlightsPanel ? topPromoCards : activeCards;
+    let category = tabTags || (isHighlightsPanel ? tabText : '');
+    if (!isHighlightsPanel && tabTags && tabText && tabText !== tabTags
+      && !categoryHasMatch(cardsForPanel, tabTags)) {
+      category = tabText;
+    }
     const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
 
     setupPanel(
       panel,
-      isHighlightsPanel ? topPromoCards : activeCards,
+      cardsForPanel,
       category,
       subcategories,
       dataCardTypes,
