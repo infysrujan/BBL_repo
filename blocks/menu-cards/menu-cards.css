@@ -28,7 +28,7 @@
 
 .menu-cards .tips-insight-quick-access-item:hover {
   border: 1px solid var(--bbl-color-active-blue);
-  box-shadow: 0.3125rem 0.3125rem 0 rgb(0 51 153 / 17%);
+  box-shadow: 0.3125rem 0.3125rem 0 var(--bbl-color-blue-105-alpha-17);
 }
 
 .menu-cards .tips-insight-quick-access-title {
@@ -143,11 +143,5 @@
   .menu-cards .tips-insight-quick-access.four-cards
     .tips-insight-quick-access-item {
     flex: 0 0 calc(25% - 4.25rem);
-  }
-
-  .menu-cards .tips-insight-quick-access.four-cards
-    .tips-insight-quick-access-item
-    .tips-insight-quick-access-title {
-    font-size: var(--bbl-heading-h2-size);
   }
 }

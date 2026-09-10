@@ -11412,9 +11412,9 @@
       },
       {
         "component": "select",
-        "name": "noOfCards",
-        "label": "Number of Cards",
-        "description": "Select the number of cards to display",
+        "name": "cardsInARow",
+        "label": "Number of cards in a row",
+        "description": "Select the number of cards to display in a row",
         "valueType": "string",
         "value": "three-cards",
         "options": [

@@ -89,11 +89,11 @@ function createMenuCard(cardElement, doc) {
 export default function decorate(block) {
   const doc = block.ownerDocument;
   const children = [...block.children];
-  const [noOfCards] = children.slice(1, 2);
-  const noOfCardsText = noOfCards?.textContent?.trim() || '';
+  const [numCardsInARowElement] = children.slice(1, 2);
+  const numCardsInARowClass = numCardsInARowElement?.textContent?.trim() || '';
   // Create main container
   const menuCardsContainer = createElementFromHTML(
-    `<div class="tips-insight-quick-access ${noOfCardsText}"></div>`,
+    `<div class="tips-insight-quick-access ${numCardsInARowClass}"></div>`,
     doc,
   );
 
