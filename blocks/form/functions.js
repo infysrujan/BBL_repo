@@ -495,21 +495,35 @@ function getBranchEnumNames(province, lang = 'th') {
   return data.map((item) => item.BranchName);
 }
 
-// Wraps a select's <option> elements into <optgroup> by district.
-// Main-thread DOM only — never called from inside the Rule Engine worker.
+// Wraps a select's <option> elements into <optgroup> by district, with
+// districts sorted A-Z and branches within each district sorted A-Z.
 function applyBranchDistrictGroupingToSelect(selectEl, data) {
   const districtByBranchName = {};
   data.forEach((item) => {
     districtByBranchName[item.BranchName] = item.Address3 ? String(item.Address3).trim() : '';
   });
 
+  // Collator gives correct A-Z ordering for both Thai and English labels.
+  const collator = new Intl.Collator(undefined, { sensitivity: 'base' });
+
+  // (district, then option label) so everything ends up A-Z.
+  const entries = Array.from(selectEl.querySelectorAll('option'))
+    .map((opt) => ({
+      opt,
+      district: districtByBranchName[opt.value] || '',
+    }))
+    .filter((entry) => entry.district !== '');
+
+  entries.sort((a, b) => {
+    const districtCompare = collator.compare(a.district, b.district);
+    if (districtCompare !== 0) return districtCompare;
+    return collator.compare(a.opt.textContent, b.opt.textContent);
+  });
+
   let currentGroup = null;
   let currentDistrict = null;
 
-  Array.from(selectEl.querySelectorAll('option')).forEach((opt) => {
-    const district = districtByBranchName[opt.value] || '';
-    if (!district) return;
-
+  entries.forEach(({ opt, district }) => {
     if (district !== currentDistrict) {
       currentGroup = document.createElement('optgroup');
       currentGroup.label = district;
@@ -566,6 +580,7 @@ if (typeof document !== 'undefined') {
     });
   }, 300);
 }
+
 /**
  * Validates Thai Citizen ID using the official algorithm
  * @name validateThaiCitizenID
@@ -1155,6 +1170,12 @@ function restrictNumberOnlyInputs() {
 }
 restrictNumberOnlyInputs();
 
+/** format number at review panel
+*/
+function formatNumberWithCommas(value) {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -1192,4 +1213,5 @@ export {
   getSelectedLabelValue,
   validateMaxCheckbox,
   replaceother,
+  formatNumberWithCommas,
 };

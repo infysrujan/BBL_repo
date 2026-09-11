@@ -377,11 +377,6 @@
   z-index: 2;
 }
 
-.carousel-dotted .carousel-dotted-more .button-container > a {
-  font-size: var(--bbl-font-size-b2-desktop);
-  line-height: var(--bbl-line-height-b2-desktop);
-}
-
 .carousel-dotted .icon-arrow-left {
   display: inline-flex;
   align-items: center;
@@ -926,6 +921,12 @@ p.text-large.text-light {
 
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
     line-height: 1.625rem;
+  }
+
+  /* Step number below title: keep the extra top spacing at tablet */
+  .carousel-dotted .carousel-dotted-item.with-default-image
+  .caption.editor .title-3 ~ .text-default p.text-large.text-light {
+    padding-top: 1.875rem;
   }
 }
 
