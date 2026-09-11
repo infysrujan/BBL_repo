@@ -274,6 +274,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   display: block;
   text-align: right;
   padding-bottom: 1.5625rem;
+  padding-top: 0.1875rem;
 }
 
 /* ── Calculate button ────────────────────────────────────── */
