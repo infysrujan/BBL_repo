@@ -1,19 +1,18 @@
 import {
   buildCardHtml,
   buildCardOptions,
-  fetchJson, sortCards, normalizeCategory,
+  fetchJson, sortCards,
 } from '../../scripts/utils/card-helpers.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchConfigs } from '../../scripts/config.js';
 
-function filterCards(activeCards, tabText, isTopPromo) {
+function filterCards(activeCards, categoryValue, isTopPromo) {
   if (isTopPromo) {
     return activeCards.filter((card) => card.topPromotion === true);
   }
-  const normalized = normalizeCategory(tabText);
   return activeCards.filter(
-    (card) => normalizeCategory(card.category) === normalized,
+    (card) => card.category === categoryValue,
   );
 }
 
