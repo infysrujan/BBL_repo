@@ -183,7 +183,7 @@ function buildFilterState(block, filterGroups) {
         ?.textContent
         ?.trim() ?? '';
       const titleLower = group.displayTitle.toLowerCase();
-      if (titleLower.includes('income')) {
+      if (titleLower.includes('income') || titleLower.includes('รายได้ต่อเดือน')) {
         state.income = value;
       } else {
         state.benefit = value;
