@@ -8251,6 +8251,173 @@
     ]
   },
   {
+    "id": "calendar",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Basic",
+        "name": "basic"
+      },
+      {
+        "component": "text",
+        "name": "label",
+        "label": "Label",
+        "valueType": "string",
+        "description": "Label shown above the date field."
+      },
+      {
+        "component": "text",
+        "name": "placeholder",
+        "label": "Placeholder",
+        "valueType": "string",
+        "description": "Placeholder text shown in the empty input field."
+      },
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Field name",
+        "valueType": "string",
+        "value": "date",
+        "description": "Name used for this field's value when the form is submitted."
+      },
+      {
+        "component": "date-time",
+        "name": "default",
+        "label": "Default Value",
+        "valueType": "date"
+      },
+      {
+        "component": "text",
+        "name": "customClassName",
+        "label": "Custom CSS Class Name",
+        "description": "Enter one or more CSS class names (space-separated) to apply custom styling to this date input field wrapper.",
+        "valueType": "string"
+      },
+      {
+        "component": "tab",
+        "label": "Validation",
+        "name": "validation"
+      },
+      {
+        "component": "boolean",
+        "name": "required",
+        "label": "Required",
+        "valueType": "boolean"
+      },
+      {
+        "component": "date-time",
+        "name": "minimumDate",
+        "label": "Minimum date",
+        "valueType": "date",
+        "description": "Minimum date allowed in the field"
+      },
+      {
+        "component": "text",
+        "name": "minimumMessage",
+        "label": "Minimum error message",
+        "valueType": "string",
+        "description": "Error message shown when the date entered is before the minimum date."
+      },
+      {
+        "component": "date-time",
+        "name": "maximumDate",
+        "label": "Maximum date",
+        "valueType": "date",
+        "description": "Maximum date allowed in the field"
+      },
+      {
+        "component": "text",
+        "name": "maximumMessage",
+        "label": "Maximum error message",
+        "valueType": "string",
+        "description": "Error message shown when the date entered is after the maximum date."
+      },
+      {
+        "component": "tab",
+        "label": "Formats",
+        "name": "formats"
+      },
+      {
+        "component": "select",
+        "label": "Display Format",
+        "name": "displayFormat",
+        "valueType": "string",
+        "value": "d MMMM y (BE)",
+        "description": "How the date is shown to the user in the input field.",
+        "options": [
+          {
+            "name": "No Pattern",
+            "value": ""
+          },
+          {
+            "name": "1 มกราคม 2569 (Thai, Buddhist Era)",
+            "value": "d MMMM y (BE)"
+          },
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
+          },
+          {
+            "name": "01 April, 2007",
+            "value": "d MMMM, y"
+          },
+          {
+            "name": "April 01, 2007",
+            "value": "MMMM d, y"
+          },
+          {
+            "name": "Sunday, 01 April, 2007",
+            "value": "EEEE, d MMMM, y"
+          },
+          {
+            "name": "Sunday, April 01, 2007",
+            "value": "EEEE, MMMM d, y"
+          },
+          {
+            "name": "D/M/YYYY (1/4/2007)",
+            "value": "d/M/y"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "label": "Submit Value Format",
+        "name": "valueFormat",
+        "valueType": "string",
+        "value": "d MMMM y (BE)",
+        "description": "Format of the date value sent on form submission.",
+        "options": [
+          {
+            "name": "1 มกราคม 2569 (Thai, Buddhist Era)",
+            "value": "d MMMM y (BE)"
+          },
+          {
+            "name": "DD/MM/YYYY (01/04/2007)",
+            "value": "dd/MM/yyyy"
+          },
+          {
+            "name": "YYYY-MM-DD (2007-04-01) — ISO 8601",
+            "value": "yyyy-MM-dd"
+          },
+          {
+            "name": "MM/DD/YYYY (04/01/2007)",
+            "value": "MM/dd/yyyy"
+          },
+          {
+            "name": "D/M/YYYY (1/4/2007)",
+            "value": "d/M/y"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "helpText",
+        "label": "Help text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "double-key-dropdown",
     "fields": [
       {
