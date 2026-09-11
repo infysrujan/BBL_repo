@@ -526,9 +526,9 @@ main .form .button-wrapper button {
 }
 
 main .form .button-wrapper button:hover {
-    border: 3px solid var(--bbl-color-blue-90);
+    border: 3px solid var(--bbl-color-active-blue);
     color: var(--bbl-color-white);
-    background-color: var(--bbl-color-blue-90);
+    background-color: var(--bbl-color-active-blue);
 }
 
 main .form .button-wrapper button[disabled] {
