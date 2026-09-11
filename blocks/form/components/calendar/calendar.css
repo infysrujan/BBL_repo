@@ -7,7 +7,6 @@
   flex-direction: column;
   gap: 0.5rem;
   width: 100%;
-  max-width: 20rem;
 }
 
 .dpth-label {
@@ -57,17 +56,19 @@
   border-color: var(--bbl-color-active-blue, #0070d2);
 }
 
-/* ── Calendar SVG icon ───────────────────────────────────────────────────── */
+/* ── Calendar icon ───────────────────────────────────────────────────────── */
 
 .dpth-icon {
   position: absolute;
-  right: 0.75rem;
+  right: var(--bbl-space-300, 0.75rem);
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
   color: var(--bbl-color-grey-85, #555);
   pointer-events: none;
+  font-size: var(--bbl-font-size-h3-mobile, 1.25rem);
+  line-height: 1;
 }
 
 /* ── Popover container ───────────────────────────────────────────────────── */
