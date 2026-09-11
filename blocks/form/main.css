@@ -525,10 +525,16 @@ main .form .button-wrapper button {
     cursor:pointer
 }
 
-main .form .button-wrapper button:hover {
+main .form .button-wrapper button.secondary:hover {
     border: 3px solid var(--bbl-color-active-blue);
     color: var(--bbl-color-white);
     background-color: var(--bbl-color-active-blue);
+}
+
+main .form .button-wrapper button.primary:hover {
+    border: 3px solid var(--bbl-color-blue-90);
+    color: var(--bbl-color-white);
+    background-color: var(--bbl-color-blue-90);
 }
 
 main .form .button-wrapper button[disabled] {
