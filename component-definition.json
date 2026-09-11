@@ -1301,7 +1301,8 @@
                 "resourceType": "core/fd/components/form/datepicker/v1/datepicker",
                 "template": {
                   "jcr:title": "Calendar",
-                  "fieldType": "calendar"
+                  "fieldType": "date-input",
+                  "fd:viewType": "calendar"
                 }
               }
             }
