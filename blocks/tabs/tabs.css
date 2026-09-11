@@ -532,7 +532,7 @@
     gap: var(--bbl-space-300);
     overflow-x: auto;
     flex-flow: row nowrap;
-    justify-content: flex-start;
+    justify-content: space-between;
     padding: 0 1.43rem;
   }
 
@@ -590,7 +590,7 @@
   }
 
   .tabs.tiled-tab .tabs-nav button {
-    min-width: 17.5rem;
+    min-width: 17.9rem;
     min-height: 8.3125rem;
   }
 }
