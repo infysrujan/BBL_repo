@@ -123,7 +123,7 @@ export default function decorate(block) {
   const placeholder = config.placeholder || (lang === 'th' ? 'วว เดือน ปปปป' : 'Month DD, YYYY');
   const fieldName = config.name || 'date';
   const minDate = parseConfigDate(config['min-date']);
-  const maxDate = parseConfigDate(config['max-date']);
+  const maxDate = parseConfigDate(config['max-date']) ?? startOfDay(new Date());
   const initialDate = parseConfigDate(config.value);
 
   /* ── Build DOM ── */
