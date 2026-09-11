@@ -1177,10 +1177,14 @@ function restrictNumberOnlyInputs() {
     }
   });
 }
-
 restrictNumberOnlyInputs();
-/** format number at review panel
-*/
+
+/**
+ * Formats a number with comma separators
+ * @name formatNumberWithCommas
+ * @param {string} value - The numeric value to format
+ * @return {string}
+ */
 function formatNumberWithCommas(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
