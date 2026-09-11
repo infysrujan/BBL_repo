@@ -421,6 +421,8 @@ export default async function decorate(block) {
   let lastResult = null;
   // Holds the error text to show in the comparison table when the last calculation failed.
   let lastErrorMessage = null;
+  // True once a result/error is on screen: focusing a field then clears it for fresh entry.
+  let resultPopulated = false;
 
   const getVal = (id) => {
     const inp = block.querySelector(`#${id}`);
@@ -487,6 +489,7 @@ export default async function decorate(block) {
     resultNum.textContent = msg;
     resultLabel.append(resultNum);
     lastResult = null;
+    resultPopulated = true;
   };
 
   function clearFormAndResult() {
@@ -500,6 +503,7 @@ export default async function decorate(block) {
     touchedDecimalFields.clear();
     lastResult = null;
     lastErrorMessage = null;
+    resultPopulated = false;
     resultLabel.textContent = `${resultValue}`;
     resultLabel.style.whiteSpace = '';
     tbody.innerHTML = '';
@@ -534,6 +538,7 @@ export default async function decorate(block) {
       resultNum.textContent = formatResult(lastResult);
       resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
     }
+    resultPopulated = true;
   });
 
   // ── Input behaviour ──
@@ -543,6 +548,11 @@ export default async function decorate(block) {
     const isRateField = ['i', 'D', 'G'].includes(f?.id);
 
     inp.addEventListener('focus', () => {
+      // Once a result is on screen, focusing a field clears it so the user can enter fresh values.
+      if (resultPopulated) {
+        inp.value = '';
+        return;
+      }
       if (inp.value === '0' || inp.value === '0.00' || inp.value === '0.000') inp.value = '';
     });
 
