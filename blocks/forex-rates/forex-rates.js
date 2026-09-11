@@ -182,7 +182,7 @@ function printForexRates(block) {
   }
 
   const pageTitle = getPageTitle(doc);
-  const documentTitle = doc.title || pageTitle;
+  const documentTitle = doc.title || doc.querySelector('title')?.textContent || pageTitle;
 
   const tabsHtml = (() => {
     const tabs = [...doc.querySelectorAll('.tabs-nav [role="tab"]')]
@@ -309,6 +309,9 @@ function printForexRates(block) {
   doc.body.appendChild(iframe);
 
   iframe.onload = () => {
+    try {
+      iframe.contentWindow.history.replaceState(null, '', window.location.href);
+    } catch (e) { /* fall back to about:blank */ }
     setTimeout(() => {
       iframe.contentWindow.focus();
       iframe.contentWindow.print();
