@@ -475,6 +475,7 @@ main .section.form-container.wizard-forms .form form fieldset[name="insuranceSum
 
 main .section.form-container.wizard-forms .form form fieldset[name="insuranceSummaryPanel"] > .field-wrapper.col-11 {
   align-items: baseline;
+  align-self: baseline;
   gap: 0.5rem;
   padding: 0;
   border: unset;
