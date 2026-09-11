@@ -76,11 +76,10 @@ function scrollToSubnav(subnavId) {
   run();
 }
 
-const TOP_PROMO_KEYS = ['topPromotions', 'highlights', 'highlight', 'featured', ''];
-
-function isTopPromotionsLabel(value) {
+function isTopPromotionsLabel(value, placeholders) {
   const key = String(value || '').trim().toLowerCase().replace(/\s+/g, '');
-  return TOP_PROMO_KEYS.some((k) => k.toLowerCase() === key);
+  const highlightsLabel = (placeholders?.promotionMbHighlights || 'highlights').toLowerCase().replace(/\s+/g, '');
+  return key === highlightsLabel;
 }
 
 function extractListingConfig(block) {
@@ -552,7 +551,7 @@ export default async function decorate(block) {
     }
     const firstCategory = activeCategories[0]?.label || '';
     const firstSubcategories = activeCategories[0]?.subcategories || [];
-    const isHighlightsPanel = isBbm && isTopPromotionsLabel(firstCategory);
+    const isHighlightsPanel = isBbm && isTopPromotionsLabel(firstCategory, placeholders);
     previewPanel.innerHTML = '';
     setupPanel(
       previewPanel,
@@ -620,7 +619,7 @@ export default async function decorate(block) {
     const dataCategories = dataSet?.categories || [];
     const dataCardTypes = activeCardTypes;
     const dataAreas = activeAreas;
-    const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText));
+    const isHighlightsPanel = isBbm && (index === 0 || isTopPromotionsLabel(tabText, placeholders));
     const category = tabTags || (isHighlightsPanel ? tabText : '');
     const subcategories = dataCategories.find((c) => c.label === tabTags)?.subcategories || [];
 
