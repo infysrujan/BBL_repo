@@ -242,7 +242,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
   font-size: 1rem;
   font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-grey-150);
-  cursor: pointer;
+  cursor: default;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
