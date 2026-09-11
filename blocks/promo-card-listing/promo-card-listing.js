@@ -268,6 +268,7 @@ function setupPanel(
     hidePagination = false,
     isBbm: isBbmPanel = false,
     isHighlightsPanel = false,
+    tabText: displayTabText = category,
   } = options;
   const labelCategory = placeholders.promoFilterCategory || 'Category';
   const labelCardType = placeholders.promoFilterCardType || 'Card Type';
@@ -356,12 +357,7 @@ function setupPanel(
         const cardOptions = buildCardOptions(cardData);
         cardOptions.baseUrl = options.baseUrl;
         if (isBbmPanel) cardOptions.logoHtml = '';
-        const cats = cardData.category;
-        let displayTag = category;
-        if (!isHighlightsPanel) {
-          displayTag = Array.isArray(cats) ? cats[0] : (cats || category);
-        }
-        return buildCardHtml(cardData, displayTag, placeholders, cardOptions);
+        return buildCardHtml(cardData, displayTabText, placeholders, cardOptions);
       }).join('')
       : `<p class="promo-selector-empty">${placeholders.promoNoResults || 'No results found.'}</p>`;
 
@@ -644,6 +640,7 @@ export default async function decorate(block) {
         hidePagination: disableFilters && isBbm,
         isBbm,
         isHighlightsPanel,
+        tabText,
         // Autoscroll pages: render the active panel now so the page reaches its
         // full height before we scroll (otherwise a short doc clamps the scroll).
         immediate: autoScroll,

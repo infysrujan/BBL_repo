@@ -48,7 +48,7 @@ function setupPanel(panel, activeCards, placeholders) {
   const grid = document.createElement('div');
   grid.className = 'promo-selector-grid top-promo-grid listing-card-grid';
   grid.innerHTML = cards.length
-    ? cards.map((card) => buildCardHtml(card, card.category || tabText, placeholders, buildCardOptions(card))).join('')
+    ? cards.map((card) => buildCardHtml(card, tabText, placeholders, buildCardOptions(card))).join('')
     : `<p class="top-promo-empty">${noResultsText}</p>`;
 
   panel.append(grid);
