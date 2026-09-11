@@ -251,11 +251,12 @@ export default async function decorate(block) {
   const formulaDescription = siteConfigs[configKeyMap[calcType]] || '';
 
   // Result presentation per tab. `integer` => round up to whole months.
+  // Suffix text is authored via placeholders, falling back to the default label.
   const resultConfig = {
-    monthly: { suffix: ' baht.', integer: false },
-    loanbalance: { suffix: ' baht.', integer: false },
-    term: { suffix: ' month.', integer: true },
-    wc: { suffix: ' baht.', integer: false },
+    monthly: { suffix: placeholders.smeMonthlyResultSuffix || 'baht.', integer: false },
+    loanbalance: { suffix: placeholders.smeLoanbalanceResultSuffix || 'baht.', integer: false },
+    term: { suffix: placeholders.smeTermResultSuffix || 'month.', integer: true },
+    wc: { suffix: placeholders.smeWcResultSuffix || 'baht.', integer: false },
   };
   const rc = { prefix: resultText, ...resultConfig[calcType] };
 
@@ -536,7 +537,7 @@ export default async function decorate(block) {
       lastResult = raw;
       lastErrorMessage = null;
       resultNum.textContent = formatResult(lastResult);
-      resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
+      resultLabel.append(`${rc.prefix} `, resultNum, ` ${rc.suffix}`);
     }
     resultPopulated = true;
   });
