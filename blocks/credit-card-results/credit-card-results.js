@@ -20,7 +20,7 @@ const MOBILE_BREAKPOINT = `(width < ${TABLET_MIN})`;
 const BENEFIT_ALIASES = {
   rewards: 'point',
   เครดิตเงินคืน: 'cash back',
-  คะแนนสะสม: 'point',
+  ช็อปปิง: 'point',
 };
 const LIFESTYLE_ALIASES = {
   ใช้จ่ายทั่วไป: 'everyday',
@@ -29,6 +29,7 @@ const LIFESTYLE_ALIASES = {
   ทำบุญ: 'donation',
   รถยนต์: 'automotive',
   ช้อปปิ้ง: 'shopping',
+  คะแนนสะสม: 'shopping',
 };
 
 // ── String / data utilities ────────────────────────────────────────────────────
@@ -163,7 +164,7 @@ async function resolveFilteredCards(sheetCards, filterState) {
   const lang = getLang();
   const productNameKey = lang === 'th' ? 'Product Name (TH)' : 'Product Name (EN)';
   const cardNameKeys = lang === 'th'
-    ? ['nameTH', 'Product Name (TH)', 'cardNameTH']
+    ? ['nameTH', 'Product Name (TH)', 'cardNameTH', 'name']
     : ['nameEN', 'Product Name (EN)', 'name', 'cardName'];
 
   const matchingRows = filterSheetCards(sheetCards, filterState);
