@@ -269,7 +269,7 @@ main:has(.sme-loan-calculator-wrapper) .section:not(.tabs-container, .center-tit
 .sme-loan-calculator .sme-field-unit {
   font-size: 0.6875rem;
   color: var(--bbl-color-grey-150);
-  line-height: 1.4;
+  line-height: 0.8938rem;
   font-family: var(--bbl-font-family-primary);
   display: block;
   text-align: right;
