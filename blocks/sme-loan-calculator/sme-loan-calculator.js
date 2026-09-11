@@ -547,15 +547,19 @@ export default async function decorate(block) {
     });
 
     inp.addEventListener('blur', () => {
-      const v = parseFloat(inp.value.replace(/,/g, ''));
+      const raw = inp.value.replace(/,/g, '');
+      const v = parseFloat(raw);
       if (!Number.isFinite(v)) {
         if (isRateField) inp.value = '0.000';
         else inp.value = decimal ? '0.00' : '0';
+      } else if (decimal) {
+        // Preserve the precision the user actually entered (no forced trailing zeros);
+        // only add thousands separators to the integer part.
+        const [intPart, decPart] = raw.split('.');
+        const formattedInt = (parseInt(intPart, 10) || 0).toLocaleString('en-US');
+        inp.value = decPart ? `${formattedInt}.${decPart}` : formattedInt;
       } else {
-        const decPlaces = isRateField ? 3 : 2;
-        inp.value = decimal
-          ? v.toLocaleString('en-US', { minimumFractionDigits: decPlaces, maximumFractionDigits: decPlaces })
-          : Math.round(v).toLocaleString('en-US');
+        inp.value = Math.round(v).toLocaleString('en-US');
       }
     });
 
