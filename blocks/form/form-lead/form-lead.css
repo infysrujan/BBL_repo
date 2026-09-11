@@ -456,7 +456,7 @@ main .lead-forms .form form .email-wrapper::before {
   justify-content: center;
   width: var(--bbl-space-250);
   height: 1.1875rem;
-  color: var(--bbl-color-grey-40);
+  color: var(--bbl-color-grey-90);
   transform: translateY(-50%);
   pointer-events: none;
 }
