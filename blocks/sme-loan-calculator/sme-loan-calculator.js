@@ -421,6 +421,8 @@ export default async function decorate(block) {
   let lastResult = null;
   // Holds the error text to show in the comparison table when the last calculation failed.
   let lastErrorMessage = null;
+  // True once a result/error is on screen: focusing a field then clears it for fresh entry.
+  let resultPopulated = false;
 
   const getVal = (id) => {
     const inp = block.querySelector(`#${id}`);
@@ -487,6 +489,7 @@ export default async function decorate(block) {
     resultNum.textContent = msg;
     resultLabel.append(resultNum);
     lastResult = null;
+    resultPopulated = true;
   };
 
   function clearFormAndResult() {
@@ -500,6 +503,7 @@ export default async function decorate(block) {
     touchedDecimalFields.clear();
     lastResult = null;
     lastErrorMessage = null;
+    resultPopulated = false;
     resultLabel.textContent = `${resultValue}`;
     resultLabel.style.whiteSpace = '';
     tbody.innerHTML = '';
@@ -534,6 +538,7 @@ export default async function decorate(block) {
       resultNum.textContent = formatResult(lastResult);
       resultLabel.append(`${rc.prefix} `, resultNum, rc.suffix);
     }
+    resultPopulated = true;
   });
 
   // ── Input behaviour ──
@@ -543,19 +548,28 @@ export default async function decorate(block) {
     const isRateField = ['i', 'D', 'G'].includes(f?.id);
 
     inp.addEventListener('focus', () => {
+      // Once a result is on screen, focusing a field clears it so the user can enter fresh values.
+      if (resultPopulated) {
+        inp.value = '';
+        return;
+      }
       if (inp.value === '0' || inp.value === '0.00' || inp.value === '0.000') inp.value = '';
     });
 
     inp.addEventListener('blur', () => {
-      const v = parseFloat(inp.value.replace(/,/g, ''));
+      const raw = inp.value.replace(/,/g, '');
+      const v = parseFloat(raw);
       if (!Number.isFinite(v)) {
         if (isRateField) inp.value = '0.000';
         else inp.value = decimal ? '0.00' : '0';
+      } else if (decimal) {
+        // Preserve the precision the user actually entered (no forced trailing zeros);
+        // only add thousands separators to the integer part.
+        const [intPart, decPart] = raw.split('.');
+        const formattedInt = (parseInt(intPart, 10) || 0).toLocaleString('en-US');
+        inp.value = decPart ? `${formattedInt}.${decPart}` : formattedInt;
       } else {
-        const decPlaces = isRateField ? 3 : 2;
-        inp.value = decimal
-          ? v.toLocaleString('en-US', { minimumFractionDigits: decPlaces, maximumFractionDigits: decPlaces })
-          : Math.round(v).toLocaleString('en-US');
+        inp.value = Math.round(v).toLocaleString('en-US');
       }
     });
 
@@ -593,10 +607,10 @@ export default async function decorate(block) {
 
         let limit = 9;
         if (f.id === 'n') limit = 3;
-        else if (f.id === 'A') limit = 10;
-        else if (f.id === 'F') limit = 6;
-        else if (f.id === 'C' || f.id === 'H') limit = 7;
-        else if (f.id === 'P' || f.id === 'B' || f.id === 'E') limit = 11;
+        else if (f.id === 'A') limit = 8;
+        else if (f.id === 'C' || f.id === 'F') limit = 6;
+        else if (f.id === 'H') limit = 7;
+        else if (f.id === 'P' || f.id === 'B' || f.id === 'E') limit = 9;
 
         if (raw.length > limit) raw = raw.slice(0, limit);
         const num = parseInt(raw, 10);
