@@ -731,7 +731,7 @@ p.text-large.text-light {
   }
 
   .carousel-dotted.all-with-image .carousel-dotted-item.is-active {
-    min-height: 27.8125rem;
+    min-height: 28.375rem;
   } 
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant, .has-hero-variant) .carousel-track-wrapper {
@@ -1049,4 +1049,8 @@ p.text-large.text-light {
   .carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
     width: 100%;
   }
+  
+  .carousel-dotted.all-with-image .carousel-dotted-item.is-active {
+    min-height: 27.8125rem;
+  } 
 }
