@@ -663,11 +663,10 @@
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default.pad-bot {
   margin-top: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 }
 
 .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
-  line-height: 1.285rem;
   margin: unset;
 }
 
@@ -700,7 +699,7 @@ p.text-large.text-light {
 
 /* Description padding — only when no step text is present in the wrapper */
 .carousel-dotted .carousel-dotted-item.with-default-image
-.caption.editor .text-default.pad-bot:not(:has(p.text-large)) p {
+.caption.editor .text-default.pad-bot:not(:has(p.text-large)) {
   padding-top: 1.875rem;
   padding-bottom: 1.875rem;
 }
@@ -731,7 +730,7 @@ p.text-large.text-light {
   }
 
   .carousel-dotted.all-with-image .carousel-dotted-item.is-active {
-    min-height: 27.8125rem;
+    min-height: 28.375rem;
   } 
 
   .carousel-dotted:is(.all-hero-banner-image-carousel, .all-text-animation-variant, .has-hero-variant) .carousel-track-wrapper {
@@ -914,13 +913,7 @@ p.text-large.text-light {
   }
 
   .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default {
-    line-height: 1.625rem;
-    font-family: var(--bbl-font-family-primary);
     font-weight: var(--bbl-font-weight-regular);
-  }
-
-  .carousel-dotted .carousel-dotted-item.with-default-image .caption.editor .text-default p {
-    line-height: 1.625rem;
   }
 
   /* Step number below title: keep the extra top spacing at tablet */
@@ -1049,4 +1042,8 @@ p.text-large.text-light {
   .carousel-dotted.show-arrows-dots.mixed-image-slides:has(.with-circular-image) .carousel-track-viewport {
     width: 100%;
   }
+  
+  .carousel-dotted.all-with-image .carousel-dotted-item.is-active {
+    min-height: 27.8125rem;
+  } 
 }

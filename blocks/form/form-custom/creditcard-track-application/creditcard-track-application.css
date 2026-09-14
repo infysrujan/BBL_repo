@@ -1132,6 +1132,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
   }
 }
 
+main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
+  padding-block-start: 3rem;
+}
+
 @media (width >= 64rem) {
   main .section.header-banner-slide-container + .section.form-container.custom-forms:has(.cc-app-main-form) {
     padding-block-start: 2.5rem;
