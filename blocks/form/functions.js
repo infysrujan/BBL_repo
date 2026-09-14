@@ -1137,8 +1137,10 @@ function replaceother(selectedValues, otherText) {
 }
 
 /**
- * Blocks any non-digit character from being entered into inputs whose field
- * wrapper (or the input itself) has the `number-only` CSS class — set via
+ * Restricts input characters based on CSS classes on the input or its ancestors:
+ * - `number-only`  → digits only
+ * - `english-only` → English letters only (a-z, A-Z)
+ * - both classes   → digits and English letters
  *
  * @name restrictNumberOnlyInputs
  * @returns {void}
@@ -1154,7 +1156,10 @@ function restrictNumberOnlyInputs() {
 
     const isNumberOnly = input.classList.contains('number-only')
       || input.closest('.number-only') !== null;
-    if (!isNumberOnly) {
+    const isEnglishOnly = input.classList.contains('english-only')
+      || input.closest('.english-only') !== null;
+
+    if (!isNumberOnly && !isEnglishOnly) {
       return;
     }
 
@@ -1163,7 +1168,18 @@ function restrictNumberOnlyInputs() {
       return;
     }
 
-    if (event.data !== null && /\D/.test(event.data)) {
+    if (event.data === null) return;
+
+    let pattern;
+    if (isNumberOnly && isEnglishOnly) {
+      pattern = /[^a-zA-Z0-9]/;
+    } else if (isNumberOnly) {
+      pattern = /\D/;
+    } else {
+      pattern = /[^a-zA-Z]/;
+    }
+
+    if (pattern.test(event.data)) {
       event.preventDefault();
     }
   });
