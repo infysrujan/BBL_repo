@@ -24,6 +24,10 @@ body.wealth main .bg-grey-100 .default-content-wrapper :is(h1, h2, h3, h4, h5, h
     color: var(--bbl-color-white);
 }
 
+/* =========================================================================
+   SECTION-LEVEL THEME VARIANTS - For Wealth Elite Gray Theme
+   ========================================================================= */
+
 body.wealth main .elite-theme-gray-bg {
     background: var(--bbl-color-grey-100);
     padding-block: 1.5rem;
