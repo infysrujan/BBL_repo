@@ -6,6 +6,8 @@ import { fetchGet } from '../../scripts/utils/fetchApi.js';
 
 const MAX_COMPARE = 3;
 const ZERO_WIDTH_SPACE = String.fromCharCode(8203);
+// Used when the debitPrepaidCardSelectorSuggesterData config key is missing/unset.
+const DEFAULT_CARDS_API_URL = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-cards-by-language-category-and-type;language=en;';
 
 function norm(str) {
   return (str || '').toString().split(ZERO_WIDTH_SPACE).join('')
@@ -26,41 +28,31 @@ function resolveImageUrl(card) {
   return raw._publishUrl || raw._authorUrl || '';
 }
 
-function extractCategoryFromTag(tagValue) {
-  if (!tagValue) return '';
-  const parts = tagValue.split(/[/:]/);
-  return norm(parts[parts.length - 1] || '');
+/**
+ * The authored category tag looks like "bangkokbank:assets/debit-cards/card-type/m-visa".
+ * The single cards API takes both segments as separate params, so split them out here.
+ */
+function parseCardCategoryTag(tagValue) {
+  const parts = norm(tagValue).split(/[/:]/).filter(Boolean);
+  const typeIdx = parts.indexOf('card-type');
+  const cardType = typeIdx >= 0 ? parts[typeIdx + 1] : parts[parts.length - 1];
+  const cardCategory = typeIdx >= 0 ? parts[typeIdx - 1] : parts[1];
+  return { cardCategory: cardCategory || '', cardType: cardType || '' };
 }
 
-function matchesCategory(card, categorySlug) {
-  if (!categorySlug) return true;
-  const cardType = getCardField(card, 'cardType', 'Card Type', 'cardTypeName');
-  const candidates = [
-    ...(Array.isArray(cardType) ? cardType : [cardType]),
-    ...(Array.isArray(card.tags) ? card.tags : []),
-  ].filter(Boolean);
-  return candidates.some((val) => {
-    const normalized = extractCategoryFromTag(val);
-    return normalized === categorySlug
-      || normalized.includes(categorySlug)
-      || categorySlug.includes(normalized);
-  });
-}
-
-async function loadCardData(debitPrepaid) {
+async function loadCardData(cardCategory, cardType) {
   try {
     const configs = await fetchConfigs();
-    const configKey = debitPrepaid === 'prepaid'
-      ? 'prepaidCardSelectorSuggesterData'
-      : 'debitCardSelectorSuggesterData';
-    const baseUrl = configs[configKey] || configs.creditCardSelectorSuggesterData;
-    if (!baseUrl) return [];
+    const baseUrl = configs.debitPrepaidCardSelectorSuggesterData || DEFAULT_CARDS_API_URL;
     const lang = getLang();
-    const url = baseUrl.replace(/;language=[^;?&]*/i, `;language=${lang}`);
-    const cacheKey = `bbl-${debitPrepaid}-cards-${lang}`;
+    // Prepaid cards have no sub-type, so only debit cards pass cardType.
+    const isPrepaid = cardCategory === 'prepaid-cards';
+    const typeParam = isPrepaid ? '' : `cardType=${cardType};`;
+    const url = `${baseUrl.replace(/;language=[^;?&]*/i, `;language=${lang}`)}cardCategory=${cardCategory};${typeParam}`;
+    const cacheKey = `bbl-dp-cards-${cardCategory}-${isPrepaid ? '' : cardType}-${lang}`;
     if (!window[cacheKey]) {
       window[cacheKey] = fetchGet(url, { throwOnError: false })
-        .then((json) => json?.data?.creditCardsList?.items || json?.data || json?.items || [])
+        .then((json) => json?.data?.cardsList?.items || json?.data || json?.items || [])
         .catch(() => []);
     }
     return window[cacheKey];
@@ -334,8 +326,11 @@ export default async function decorate(block) {
     ?? row?.textContent?.trim()
     ?? '';
 
-  const debitPrepaid = norm(readRowText(rows[0])) === 'prepaid' ? 'prepaid' : 'debit';
-  const categorySlug = extractCategoryFromTag(readRowText(rows[1]));
+  const debitPrepaid = norm(readRowText(rows[0]));
+  const { cardCategory: tagCardCategory, cardType } = parseCardCategoryTag(readRowText(rows[1]));
+  const cardCategory = debitPrepaid === 'debit' || debitPrepaid === 'prepaid'
+    ? `${debitPrepaid}-cards`
+    : tagCardCategory;
 
   rows.forEach((row) => { row.classList.add('dp-source-row'); });
 
@@ -344,11 +339,11 @@ export default async function decorate(block) {
   const doc = block.ownerDocument;
   const lang = getLang();
 
-  const [, , ph, allCards] = await Promise.all([
+  const [, , ph, cards] = await Promise.all([
     loadCSS(`${window.hlx.codeBasePath}/blocks/card-list/card-list.css`),
     waitForOwnCss(`${window.hlx.codeBasePath}/blocks/debit-prepaid/debit-prepaid.css`),
     fetchPlaceholders(),
-    loadCardData(debitPrepaid),
+    loadCardData(cardCategory, cardType),
   ]);
 
   const isTH = lang === 'th';
@@ -360,8 +355,6 @@ export default async function decorate(block) {
     nextCard: ph.cardNext || (isTH ? 'การ์ดถัดไป' : 'Next card'),
     goToCard: ph.cardGoToCard || (isTH ? 'ไปที่การ์ด' : 'Go to card'),
   };
-
-  const cards = allCards.filter((card) => matchesCategory(card, categorySlug));
 
   const container = doc.createElement('div');
   container.className = 'dp-card-list-container dp-built';
