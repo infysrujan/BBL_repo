@@ -13,12 +13,28 @@
     }
   }
 
-  & :is(.form-wrapper, .form.block, .form),
-  & .form form,
+  & :is(.form-wrapper, .form.block, .form) {
+    width: 100%;
+    margin-inline: auto;
+  }
+
   & .form form fieldset.panel-wrapper.field-main-form-panel {
     width: 100%;
     max-width: 46.25rem;
     margin-inline: auto;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+  }
+
+  & .form form,
+  & .form form > fieldset.panel-wrapper.field-wrapper {
+    max-width: none;
+  }
+
+  & .form form fieldset.panel-wrapper.field-title-panel {
+    width: 100%;
+    max-width: none;
   }
 
   & .form form .field-wrapper:has(>.field-description) {
@@ -48,7 +64,7 @@
     font-family: var(--bbl-font-family-primary);
     font-size: var(--form-font-size-xs);
     line-height: var(--bbl-text-default-line-height);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
   }
 
   & .form form :is(p, .repeat-wrapper, .field-wrapper) {
@@ -101,7 +117,7 @@
     font-size: 0.875rem;
     color: var(--bbl-color-gray-800);
   }
-
+  
   & .form form .form-review-2col fieldset.panel-wrapper.field-wrapper > legend {
     width: 100%;
     margin: 0;
@@ -122,7 +138,7 @@
   }
 
   & .form form :is(.field-infotext p, .plain-text-wrapper p) {
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
     font-size: var(--form-font-size-xs);
     line-height: 1.5625rem;
   }
@@ -135,7 +151,7 @@
     text-align: center;
     font-size: var(--form-font-size-xs);
     font-weight: var(--bbl-font-weight-medium);
-    color: var(--bbl-color-grey-85);
+    color: var(--bbl-color-grey-90);
   }
 
   & .form form :is(.field-prefix-dropdown, .field-province).field-wrapper > .field-label {
@@ -188,6 +204,10 @@
       min-width: 18rem;
       margin: 0;
       justify-content: flex-start;
+
+      &:lang(th) {
+        min-width: 11rem;
+      }
 
       & label.field-label {
         min-width: 0;
@@ -281,12 +301,6 @@
         cursor: pointer;
       }
     }
-  }
-
-  & .form form fieldset.panel-wrapper.field-main-form-panel {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 0;
   }
 
   & .form form fieldset.panel-wrapper.field-main-form-panel > .field-wrapper {
@@ -418,6 +432,10 @@
     & .form form .field-wrapper:has(>.field-description) .field-description {
       right: 0;
       left: 1.25rem
+    }
+
+    & .form form fieldset.field-salutation-panel .text-wrapper .field-description {
+      left: -14.125rem;
     }
 
     & .form form .field-wrapper.col-4 {

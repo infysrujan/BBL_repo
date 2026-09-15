@@ -54,10 +54,14 @@ function buildDownloadHref(downloadUrl, symbol) {
 }
 
 // ─── sort helper ──────────────────────────────────────────────────────────────
-function sortValue(rate, key) {
+function sortValue(rate, key, isThai) {
   if (key === 'REMAIN_TERM') return remainTermToMonths(rate.REMAIN_TERM || '00.00.00');
   if (key === 'MATURITY_DATE') return new Date(rate.MATURITY_DATE).getTime();
-  if (key === 'BOND_SYMBOL' || key === 'NAME_ENG') return (rate[key] || '').toLowerCase();
+  if (key === 'BOND_SYMBOL') return (rate.BOND_SYMBOL || '').toLowerCase();
+  // The Name column's sortKey is always 'NAME_ENG', but the cell itself renders
+  // NAME_THAI on the Thai locale (see renderRow) — sort by whichever field is
+  // actually on screen, or the sort order and the displayed text disagree.
+  if (key === 'NAME_ENG') return (rate[isThai ? 'NAME_THAI' : 'NAME_ENG'] || '').toLowerCase();
   const n = parseFloat(rate[key]);
   return Number.isNaN(n) ? Infinity : n;
 }
@@ -119,7 +123,25 @@ function updateFilterBtn(btn, state) {
   btn.classList.toggle('is-active', isActive);
 }
 
-function renderThead(thead, state) {
+// Group header ("Bidding Price"/"Offering Price")
+function syncStickyOffsets(thead, tbodySel) {
+  const groupHeader = thead.querySelector('.db-th-group');
+  const secondRow = thead.querySelector('tr:last-child');
+  if (groupHeader && secondRow) {
+    // position:sticky lives on the <th> cells, not the <tr>.
+    const top = `${groupHeader.getBoundingClientRect().height}px`;
+    secondRow.querySelectorAll('th').forEach((th) => { th.style.top = top; });
+  }
+  if (!tbodySel) return;
+  const theadH = thead.getBoundingClientRect().height;
+  let offset = theadH;
+  tbodySel.querySelectorAll('tr').forEach((tr) => {
+    tr.style.top = `${offset}px`;
+    offset += tr.getBoundingClientRect().height;
+  });
+}
+
+function renderThead(thead, state, tbodySel) {
   let row1 = '<tr>';
   let row2 = '<tr>';
   state.columns.forEach((col) => {
@@ -136,20 +158,14 @@ function renderThead(thead, state) {
       });
     } else {
       const cs = col.colspan > 1 ? `colspan="${col.colspan}"` : '';
-      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}">${escapeHtml(col.label)}</th>`;
+      row1 += `<th rowspan="2" ${cs} ${sa} class="${sc}"><span class="db-th-label">${escapeHtml(col.label)}</span></th>`;
     }
   });
   row1 += '</tr>';
   row2 += '</tr>';
   thead.innerHTML = row1 + row2;
 
-  requestAnimationFrame(() => {
-    const groupHeader = thead.querySelector('.db-th-group');
-    const secondRow = thead.querySelector('tr:last-child');
-    if (groupHeader && secondRow) {
-      secondRow.style.top = `${groupHeader.getBoundingClientRect().height}px`;
-    }
-  });
+  requestAnimationFrame(() => syncStickyOffsets(thead, tbodySel));
 }
 
 function renderRow(rate, isSelected, state) {
@@ -171,10 +187,10 @@ function renderRow(rate, isSelected, state) {
       <td class="db-td-num">${escapeHtml(fmtPct(rate.BID_YIELD))}</td>`}
       <td class="db-td-num">${escapeHtml(fmtPrice(rate.OFFER_PRICE))}</td>
       <td class="db-td-num">${escapeHtml(fmtPct(rate.OFFER_YIELD))}</td>
-      <td class="db-td-num">${escapeHtml(formatRemainTerm(rate.REMAIN_TERM || '00.00.00'))}</td>
+      <td class="db-td-num">${escapeHtml(formatRemainTerm(rate.REMAIN_TERM || '00.00.00', state.isThai))}</td>
       <td class="db-td-num">${escapeHtml(fmtPct(rate.CURRENT_COUPON))}</td>
       <td class="db-td-num db-td-maturity">
-        ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels))}
+        ${escapeHtml(formatMaturityDate(rate.MATURITY_DATE, state.monthLabels, state.buddhistYearOffset))}
         <a class="db-td-dl" href="${buildDownloadHref(state.downloadUrl, sym)}" download aria-label="Download ${sym} factsheet">
           <img src="/icons/bond-download.svg" width="22" height="22" alt="" aria-hidden="true">
         </a>
@@ -191,8 +207,12 @@ function renderTable(tbodySel, tbodyAll, state) {
   const selRates = state.rates.filter((r) => state.selectedIds.includes(String(r.AutoID)));
   const unsel = state.rates.filter((r) => !state.selectedIds.includes(String(r.AutoID)));
   unsel.sort((a, b) => {
-    const av = sortValue(a, state.sortKey);
-    const bv = sortValue(b, state.sortKey);
+    const av = sortValue(a, state.sortKey, state.isThai);
+    const bv = sortValue(b, state.sortKey, state.isThai);
+    if (typeof av === 'string' && typeof bv === 'string') {
+      const cmp = av.localeCompare(bv, state.isThai ? 'th' : undefined);
+      return state.sortAsc ? cmp : -cmp;
+    }
     if (av < bv) return state.sortAsc ? -1 : 1;
     if (av > bv) return state.sortAsc ? 1 : -1;
     return 0;
@@ -200,14 +220,7 @@ function renderTable(tbodySel, tbodyAll, state) {
   tbodySel.innerHTML = selRates.map((r) => renderRow(r, true, state)).join('');
   tbodyAll.innerHTML = unsel.map((r) => renderRow(r, false, state)).join('');
   const thead = tbodySel.closest('table')?.querySelector('thead');
-  if (thead) {
-    const theadH = thead.getBoundingClientRect().height;
-    let offset = theadH;
-    tbodySel.querySelectorAll('tr').forEach((tr) => {
-      tr.style.top = `${offset}px`;
-      offset += tr.getBoundingClientRect().height;
-    });
-  }
+  if (thead) syncStickyOffsets(thead, tbodySel);
 }
 
 // ─── month picker ─────────────────────────────────────────────────────────────
@@ -487,7 +500,7 @@ function wireFilterEvents(
     try {
       await loadFilteredRates(state);
       state.selectedIds = [];
-      renderThead(thead, state);
+      renderThead(thead, state, tbodySel);
       renderTable(tbodySel, tbodyAll, state);
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -578,6 +591,13 @@ function printElement(block) {
   // its trimmed date text so the cell is exactly one line tall.
   content.querySelectorAll('.db-td-maturity').forEach((td) => {
     td.textContent = td.textContent.trim();
+  });
+
+  content.querySelectorAll('.db-td-name[data-title]').forEach((td) => {
+    const fullName = td.getAttribute('data-title');
+    const nameSpan = td.querySelector('.db-td-name-text');
+    if (nameSpan && fullName) nameSpan.textContent = fullName;
+    td.removeAttribute('data-title');
   });
 
   // The live header's Symbol column has colspan=2 for layout reasons the
@@ -1011,7 +1031,7 @@ export default async function decorate(block) {
             <ul class="db-time-list" id="db-time-list" role="listbox"></ul>
           </div>
         </div>
-        <button type="button" class="db-go-btn" id="db-go-btn">${escapeHtml(authoring.ctaButtonLabel)}</button>
+        <button type="button" class="db-go-btn button-m primary" id="db-go-btn">${escapeHtml(authoring.ctaButtonLabel)}</button>
       </div>
       <div class="db-controls-right">
         <button type="button" class="db-filter-btn" id="db-filter-btn">
@@ -1075,7 +1095,13 @@ export default async function decorate(block) {
   const tbodySel = block.querySelector('#db-tbody-sel');
   const tbodyAll = block.querySelector('#db-tbody-all');
 
-  renderThead(thead, state);
+  renderThead(thead, state, tbodySel);
+
+  // The second header row and the pinned selected rows are position:sticky at
+  if (typeof ResizeObserver !== 'undefined') {
+    const stickyObserver = new ResizeObserver(() => syncStickyOffsets(thead, tbodySel));
+    stickyObserver.observe(thead);
+  }
 
   // ── initial data load ──
   try {
@@ -1094,7 +1120,7 @@ export default async function decorate(block) {
     state.rates = Array.isArray(latestRates) ? latestRates : [];
 
     renderTimeDropdown(timeListEl, timeLabelEl, state);
-    renderThead(thead, state);
+    renderThead(thead, state, tbodySel);
     renderTable(tbodySel, tbodyAll, state);
   } catch (err) {
     // eslint-disable-next-line no-console
@@ -1180,7 +1206,7 @@ export default async function decorate(block) {
     if (state.sortKey === key) state.sortAsc = !state.sortAsc;
     else { state.sortKey = key; state.sortAsc = true; }
     state.sortUserSet = true;
-    renderThead(thead, state);
+    renderThead(thead, state, tbodySel);
     renderTable(tbodySel, tbodyAll, state);
   });
 
@@ -1239,10 +1265,9 @@ export default async function decorate(block) {
     state.sortAsc = true;
     state.sortUserSet = false;
     updateFilterBtn(filterBtn, state);
-    renderThead(thead, state);
+    renderThead(thead, state, tbodySel);
     try {
       await loadRates(state);
-      state.selectedIds = [];
       renderTable(tbodySel, tbodyAll, state);
     } catch (err) {
       // eslint-disable-next-line no-console
