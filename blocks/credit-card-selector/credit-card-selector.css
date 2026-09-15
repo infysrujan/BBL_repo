@@ -469,6 +469,6 @@
 
   .credit-card-selector .card-selector-content {
     gap: var(--bbl-space-400) 3rem;
-    padding-inline: 192px;
+    padding-inline: 12rem;
   }
 }
