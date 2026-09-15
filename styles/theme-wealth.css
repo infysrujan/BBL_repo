@@ -29,6 +29,10 @@ body.wealth main .elite-theme-gray-bg {
     padding-block: 1.5rem;
 }
 
+body.wealth main .elite-theme-gray-bg .default-content-wrapper :is(p, a){
+    font-weight: 400;
+}
+
 body.wealth main .elite-theme-gray-bg .default-content-wrapper :is(h1, h2, h3, h4, h5, h6, p) {
     color: var(--bbl-color-white);
 }
