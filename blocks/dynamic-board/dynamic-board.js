@@ -62,6 +62,10 @@ function sortValue(rate, key, isThai) {
   // NAME_THAI on the Thai locale (see renderRow) — sort by whichever field is
   // actually on screen, or the sort order and the displayed text disagree.
   if (key === 'NAME_ENG') return (rate[isThai ? 'NAME_THAI' : 'NAME_ENG'] || '').toLowerCase();
+  // Legacy sorts '-' before '+' (opposite of plain order); remap to match.
+  if (key === 'ISSUE_RATING' || key === 'ISSUER_RATING') {
+    return (rate[key] || '').toLowerCase().replace(/-/g, 'n').replace(/\+/g, 'p');
+  }
   const n = parseFloat(rate[key]);
   return Number.isNaN(n) ? Infinity : n;
 }
