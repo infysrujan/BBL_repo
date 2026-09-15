@@ -135,13 +135,12 @@
   .menu-cards .tips-insight-quick-access.four-cards {
     grid-template-columns: repeat(
       auto-fit,
-      minmax(16.875rem, 1fr)
+      minmax(16rem, 1fr)
     );
     gap: var(--bbl-space-300);
   }
 
-  .menu-cards .tips-insight-quick-access.four-cards
-    .tips-insight-quick-access-item {
-    flex: 0 0 calc(25% - 4.25rem);
+  .menu-cards .tips-insight-quick-access.four-cards .tips-insight-quick-access-item {
+    flex: none;
   }
 }
