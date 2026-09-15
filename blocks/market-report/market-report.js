@@ -626,11 +626,19 @@ function applyTextSmallToTableFollowParagraphs(panel) {
   });
 }
 
+const TOOLS_AND_ASSISTANCE_HEADINGS = ['tools & assistance', 'เครื่องมือช่วยเหลือ'];
+
 function hideToolsAndAssistanceFromPrint(content) {
-  const heading = [...content.querySelectorAll('h1, h2, h3, h4, h5, h6')].find(
-    (element) => element.textContent.trim().toLowerCase() === 'tools & assistance',
-  );
-  heading?.closest('.section')?.classList.add('market-report-tools-assistance');
+  [...content.querySelectorAll('h1, h2, h3, h4, h5, h6')]
+    .filter((element) => TOOLS_AND_ASSISTANCE_HEADINGS
+      .includes(element.textContent.trim().toLowerCase()))
+    .forEach((heading) => {
+      const section = heading.closest('.section');
+      if (!section) return;
+
+      section.classList.add('market-report-tools-assistance');
+      section.setAttribute('data-market-report-hidden-section', 'tools-assistance');
+    });
 }
 
 function printElement() {
@@ -682,7 +690,8 @@ function printElement() {
       display: none;
     }
  
-    .market-report-tools-assistance {
+    .market-report-tools-assistance,
+    [data-market-report-hidden-section="tools-assistance"] {
       display: none;
     }
  
