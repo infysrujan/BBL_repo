@@ -30,7 +30,7 @@ body.wealth main .elite-theme-gray-bg {
 }
 
 body.wealth main .elite-theme-gray-bg .default-content-wrapper :is(p, a){
-    font-weight: 400;
+    font-weight: var(--bbl-font-weight-regular);
 }
 
 body.wealth main .elite-theme-gray-bg .default-content-wrapper :is(h1, h2, h3, h4, h5, h6, p) {
