@@ -55,10 +55,10 @@ body.wealth main .elite-theme-gray-bg .default-content-wrapper br + a:hover {
 
     body.wealth main .elite-theme-gray-bg .default-content-wrapper :is(h1, h2, h3, h4, h5, h6):first-child {
         margin-block: 0 1.875rem;
+        padding-bottom: 1.875rem;
     }
 
     body.wealth main .elite-theme-gray-bg .default-content-wrapper br + a {
        margin-top: 1.875rem;
-       padding-bottom: 1.875rem;
     }
 }
