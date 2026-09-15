@@ -123,25 +123,7 @@ function updateFilterBtn(btn, state) {
   btn.classList.toggle('is-active', isActive);
 }
 
-// Group header ("Bidding Price"/"Offering Price")
-function syncStickyOffsets(thead, tbodySel) {
-  const groupHeader = thead.querySelector('.db-th-group');
-  const secondRow = thead.querySelector('tr:last-child');
-  if (groupHeader && secondRow) {
-    // position:sticky lives on the <th> cells, not the <tr>.
-    const top = `${groupHeader.getBoundingClientRect().height}px`;
-    secondRow.querySelectorAll('th').forEach((th) => { th.style.top = top; });
-  }
-  if (!tbodySel) return;
-  const theadH = thead.getBoundingClientRect().height;
-  let offset = theadH;
-  tbodySel.querySelectorAll('tr').forEach((tr) => {
-    tr.style.top = `${offset}px`;
-    offset += tr.getBoundingClientRect().height;
-  });
-}
-
-function renderThead(thead, state, tbodySel) {
+function renderThead(thead, state) {
   let row1 = '<tr>';
   let row2 = '<tr>';
   state.columns.forEach((col) => {
@@ -164,8 +146,6 @@ function renderThead(thead, state, tbodySel) {
   row1 += '</tr>';
   row2 += '</tr>';
   thead.innerHTML = row1 + row2;
-
-  requestAnimationFrame(() => syncStickyOffsets(thead, tbodySel));
 }
 
 function renderRow(rate, isSelected, state) {
@@ -219,8 +199,6 @@ function renderTable(tbodySel, tbodyAll, state) {
   });
   tbodySel.innerHTML = selRates.map((r) => renderRow(r, true, state)).join('');
   tbodyAll.innerHTML = unsel.map((r) => renderRow(r, false, state)).join('');
-  const thead = tbodySel.closest('table')?.querySelector('thead');
-  if (thead) syncStickyOffsets(thead, tbodySel);
 }
 
 // ─── month picker ─────────────────────────────────────────────────────────────
@@ -500,7 +478,7 @@ function wireFilterEvents(
     try {
       await loadFilteredRates(state);
       state.selectedIds = [];
-      renderThead(thead, state, tbodySel);
+      renderThead(thead, state);
       renderTable(tbodySel, tbodyAll, state);
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -895,6 +873,25 @@ function printElement(block) {
         display: table-row-group;
       }
 
+      /* The live (screen) stylesheet turns these into display:block with
+         their own display:table rows, so the scrollable body's columns stay
+         aligned with thead — see dynamic-board.css. That's irrelevant here
+         (print uses table-layout: auto + nowrap instead, see COLUMN SIZING
+         STRATEGY above), and their #id selectors there otherwise outrank the
+         plain-class rules in this block. */
+      .dynamic-board .db-table-wrap #db-tbody-sel,
+      .dynamic-board .db-table-wrap #db-tbody-all {
+        display: table-row-group;
+        max-height: none;
+        overflow-y: visible;
+      }
+
+      .dynamic-board .db-table-wrap #db-tbody-sel tr,
+      .dynamic-board .db-table-wrap #db-tbody-all tr {
+        display: table-row;
+        width: auto;
+      }
+
       .dynamic-board .db-table {
         break-inside: auto;
       }
@@ -1095,13 +1092,7 @@ export default async function decorate(block) {
   const tbodySel = block.querySelector('#db-tbody-sel');
   const tbodyAll = block.querySelector('#db-tbody-all');
 
-  renderThead(thead, state, tbodySel);
-
-  // The second header row and the pinned selected rows are position:sticky at
-  if (typeof ResizeObserver !== 'undefined') {
-    const stickyObserver = new ResizeObserver(() => syncStickyOffsets(thead, tbodySel));
-    stickyObserver.observe(thead);
-  }
+  renderThead(thead, state);
 
   // ── initial data load ──
   try {
@@ -1120,7 +1111,7 @@ export default async function decorate(block) {
     state.rates = Array.isArray(latestRates) ? latestRates : [];
 
     renderTimeDropdown(timeListEl, timeLabelEl, state);
-    renderThead(thead, state, tbodySel);
+    renderThead(thead, state);
     renderTable(tbodySel, tbodyAll, state);
   } catch (err) {
     // eslint-disable-next-line no-console
@@ -1206,7 +1197,7 @@ export default async function decorate(block) {
     if (state.sortKey === key) state.sortAsc = !state.sortAsc;
     else { state.sortKey = key; state.sortAsc = true; }
     state.sortUserSet = true;
-    renderThead(thead, state, tbodySel);
+    renderThead(thead, state);
     renderTable(tbodySel, tbodyAll, state);
   });
 
@@ -1265,7 +1256,7 @@ export default async function decorate(block) {
     state.sortAsc = true;
     state.sortUserSet = false;
     updateFilterBtn(filterBtn, state);
-    renderThead(thead, state, tbodySel);
+    renderThead(thead, state);
     try {
       await loadRates(state);
       renderTable(tbodySel, tbodyAll, state);
