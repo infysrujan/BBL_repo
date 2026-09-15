@@ -508,15 +508,15 @@
 }
 
 .carousel-dotted-container .all-text-animation-variant .carousel-content.content:not(:has(.button-container)) {
-  margin-bottom: 40px;
+  margin-bottom: var(--bbl-space-500);
 }
 
 .carousel-dotted-container .all-text-animation-variant .carousel-content.content:has(.button-container) {
-  margin-bottom: 20px;
+  margin-bottom: var(--bbl-space-250);
 }
 
 .carousel-dotted-container .all-text-animation-variant .slick-dots {
-  bottom: 20px;
+  bottom: var(--bbl-space-250);
 }
 
 .carousel-dotted.dots-center-inside-container.all-without-image .slick-dots {
