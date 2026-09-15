@@ -284,7 +284,7 @@ function createTabContent(tabData, apiData, lang) {
     apiData1 = apiData.exchange || [];
     dateString1 = apiData.exchangeDate || '';
     timeString1 = apiData.exchangeTime || '';
-  } else if (cardNameLower.includes('rate')) {
+  } else if (cardNameLower.includes('rate') || cardNameLower.includes('ดอกเบี้ย')) {
     // Rates tab has both deposit and loan
     dataType1 = 'deposit';
     dataType2 = 'loan';
