@@ -660,11 +660,6 @@
 }
 
 .dynamic-board .db-table thead th {
-  /* border-box so the fixed % widths below (own the whole cell box) aren't
-     inflated by this cell's padding, which differs per column (the sort-icon
-     columns alone add another 1.25rem of right padding) — with the default
-     content-box, that padding would push cells with more of it wider than
-     their matching tbody column, which uses different padding. */
   box-sizing: border-box;
   padding: 0.375rem 0.625rem;
   font-size: var(--bbl-font-size-b1-mobile);
@@ -801,20 +796,6 @@
   background: var(--bbl-color-blue-steel);
 }
 
-/* #db-tbody-all owns the row scrolling instead of db-table-wrap. A fixed
-   max-height + overflow-y only creates an actual scrollport on a <tbody>
-   once it's display:block — verified against the live bangkokbank.com price
-   board, which scrolls its own body tbody the same way. thead and
-   #db-tbody-sel stay outside that scrollport, so they're always visible
-   above it without needing position:sticky.
-
-   display:block on the tbody takes its rows out of the table's shared column
-   layout, so each <tr> is promoted to its own display:table (fixed layout)
-   instead of being left as a plain table-row — that avoids the browser's
-   anonymous-table wrapper, which sizes to shrink-wrapped content instead of
-   the full table width. Combined with the explicit per-column widths below
-   (shared with thead), this is what keeps the two independently-laid-out
-   pieces visually aligned. */
 .dynamic-board .db-table-wrap #db-tbody-sel,
 .dynamic-board .db-table-wrap #db-tbody-all {
   display: block;
@@ -859,10 +840,6 @@
 
 /* ── Cell types ────────────────────────────────────────────── */
 
-/* Each row in #db-tbody-sel/#db-tbody-all is its own independent
-   table-layout:fixed table (see the "display: table" rule above), so these
-   widths — matching the th widths above by column, not by shared layout —
-   are what keeps them visually aligned with thead's columns. */
 .dynamic-board .db-td-check {
   width: 3%;
 }

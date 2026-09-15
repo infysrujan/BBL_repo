@@ -873,12 +873,6 @@ function printElement(block) {
         display: table-row-group;
       }
 
-      /* The live (screen) stylesheet turns these into display:block with
-         their own display:table rows, so the scrollable body's columns stay
-         aligned with thead — see dynamic-board.css. That's irrelevant here
-         (print uses table-layout: auto + nowrap instead, see COLUMN SIZING
-         STRATEGY above), and their #id selectors there otherwise outrank the
-         plain-class rules in this block. */
       .dynamic-board .db-table-wrap #db-tbody-sel,
       .dynamic-board .db-table-wrap #db-tbody-all {
         display: table-row-group;
