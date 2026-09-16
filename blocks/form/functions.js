@@ -1147,29 +1147,23 @@ function replaceother(selectedValues, otherText) {
  */
 function restrictNumberOnlyInputs() {
   if (typeof document === 'undefined') return;
-
   document.addEventListener('beforeinput', (event) => {
     const input = event.target;
     if (!(input instanceof HTMLInputElement)) {
       return;
     }
-
     const isNumberOnly = input.classList.contains('number-only')
       || input.closest('.number-only') !== null;
     const isEnglishOnly = input.classList.contains('english-only')
       || input.closest('.english-only') !== null;
-
     if (!isNumberOnly && !isEnglishOnly) {
       return;
     }
-
     const insertingTypes = ['insertText', 'insertFromPaste', 'insertFromDrop', 'insertCompositionText'];
     if (!insertingTypes.includes(event.inputType)) {
       return;
     }
-
     if (event.data === null) return;
-
     let pattern;
     if (isNumberOnly && isEnglishOnly) {
       pattern = /[^a-zA-Z0-9]/;
@@ -1178,7 +1172,6 @@ function restrictNumberOnlyInputs() {
     } else {
       pattern = /[^a-zA-Z]/;
     }
-
     if (pattern.test(event.data)) {
       event.preventDefault();
     }
@@ -1186,8 +1179,12 @@ function restrictNumberOnlyInputs() {
 }
 restrictNumberOnlyInputs();
 
-/** format number at review panel
-*/
+/**
+ * Formats a number with comma separators
+ * @name formatNumberWithCommas
+ * @param {string} value - The numeric value to format
+ * @return {string}
+ */
 function formatNumberWithCommas(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
