@@ -1,15 +1,10 @@
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import { resolvePhotoSrc, formatPrice, isPromotionOverDate } from '../../scripts/utils/card-helpers.js';
 
 function getFileId() {
   return new URLSearchParams(window.location.search).get('FILE_ID') || '';
-}
-
-function resolvePhotoSrc(photo) {
-  if (!photo) return '';
-  if (photo.startsWith('data:')) return photo;
-  return `data:image/jpeg;base64,${photo}`;
 }
 
 function getPhotos(data) {
@@ -75,14 +70,6 @@ function buildCarousel(photos, data, p) {
   </div>`;
 }
 
-function formatPrice(price) {
-  if (!price) return '';
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(price);
-}
-
 function formatArea(data) {
   return `${data.AREA_RAI ?? 0}-${data.AREA_QUARTER ?? 0}-${data.AREA_SQUARE_WAH ?? 0}-${data.AREA_SQUARE_METER ?? 0}`;
 }
@@ -117,34 +104,6 @@ function buildMapLink(data, label, mapBaseUrl) {
   if (!lat || !lng || !mapBaseUrl) return '-';
   const href = `${mapBaseUrl}N ${lat} E ${lng}`;
   return `<a href="${href}" target="_blank" class="prop-for-sale-map-link">${label}<img src="/icons/google-map-open.ico" alt="" class="prop-for-sale-map-icon"></a>`;
-}
-
-function parseDmy(value) {
-  const parts = String(value).split('/');
-  if (parts.length !== 3) return null;
-  const [day, month, year] = parts.map((n) => parseInt(n, 10));
-  if (!day || !month || !year) return null;
-  return new Date(year, month - 1, day);
-}
-
-// Mirrors the legacy getOverDatePromotion(): a promotion is excluded when its
-// dates are missing, today is outside the start/end range (date-only), or the
-// special price is absent.
-function isPromotionOverDate(item) {
-  if (!item.START_SPECAIL_PRICE_DATE || !item.END_SPECAIL_PRICE_DATE) return true;
-
-  const start = parseDmy(item.START_SPECAIL_PRICE_DATE);
-  const end = parseDmy(item.END_SPECAIL_PRICE_DATE);
-  if (!start || !end) return true;
-
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  if (today > end) return true;
-  if (start > today) return true;
-  if (item.SPECIAL_PRICE == null || Number(item.SPECIAL_PRICE) === 0) return true;
-
-  return false;
 }
 
 function getFieldValue(field, data, currency, openMapLabel, mapBaseUrl, contactLabel) {
