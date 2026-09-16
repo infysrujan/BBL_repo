@@ -1189,6 +1189,60 @@ function formatNumberWithCommas(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
+/**
+ * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
+ * Only applies to fields where the author has added the "preserve-unit-label"
+ * custom CSS class via the component dialog - so this never affects fields
+ * @name preserveFieldUnitLabels
+ * @returns {void}
+ */
+function preserveFieldUnitLabels() {
+  if (typeof document === 'undefined') return;
+
+  const initWrapper = (wrapper) => {
+    if (wrapper.dataset.unitLabelInit === 'true') return;
+
+    const rawDescription = wrapper.getAttribute('data-description');
+    if (!rawDescription) return;
+
+    const temp = document.createElement('div');
+    temp.innerHTML = rawDescription;
+    const unitText = temp.textContent.trim();
+    if (!unitText) return;
+
+    const computedPosition = window.getComputedStyle(wrapper).position;
+    if (computedPosition === 'static') {
+      wrapper.style.position = 'relative';
+    }
+
+    const unitLabel = document.createElement('span');
+    unitLabel.className = 'field-unit-label';
+    unitLabel.textContent = unitText;
+    unitLabel.style.position = 'absolute';
+    unitLabel.style.right = '0';
+    unitLabel.style.top = '0';
+    unitLabel.style.color = '#767676';
+    unitLabel.style.fontSize = '0.875rem';
+    unitLabel.style.pointerEvents = 'none';
+    unitLabel.style.background = 'transparent';
+
+    wrapper.appendChild(unitLabel);
+    wrapper.dataset.unitLabelInit = 'true';
+  };
+
+  const scan = () => {
+    // Only fields explicitly marked with the custom class from the dialog
+    document.querySelectorAll('.field-wrapper.preserve-unit-label[data-description]').forEach(initWrapper);
+  };
+
+  scan();
+
+  const observer = new MutationObserver(() => scan());
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
+preserveFieldUnitLabels();
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
@@ -1227,4 +1281,5 @@ export {
   validateMaxCheckbox,
   replaceother,
   formatNumberWithCommas,
+  preserveFieldUnitLabels,
 };
