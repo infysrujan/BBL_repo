@@ -119,13 +119,41 @@ function buildMapLink(data, label, mapBaseUrl) {
   return `<a href="${href}" target="_blank" class="prop-for-sale-map-link">${label}<img src="/icons/google-map-open.ico" alt="" class="prop-for-sale-map-icon"></a>`;
 }
 
+function parseDmy(value) {
+  const parts = String(value).split('/');
+  if (parts.length !== 3) return null;
+  const [day, month, year] = parts.map((n) => parseInt(n, 10));
+  if (!day || !month || !year) return null;
+  return new Date(year, month - 1, day);
+}
+
+// Mirrors the legacy getOverDatePromotion(): a promotion is excluded when its
+// dates are missing, today is outside the start/end range (date-only), or the
+// special price is absent.
+function isPromotionOverDate(item) {
+  if (!item.START_SPECAIL_PRICE_DATE || !item.END_SPECAIL_PRICE_DATE) return true;
+
+  const start = parseDmy(item.START_SPECAIL_PRICE_DATE);
+  const end = parseDmy(item.END_SPECAIL_PRICE_DATE);
+  if (!start || !end) return true;
+
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  if (today > end) return true;
+  if (start > today) return true;
+  if (item.SPECIAL_PRICE == null || Number(item.SPECIAL_PRICE) === 0) return true;
+
+  return false;
+}
+
 function getFieldValue(field, data, currency, openMapLabel, mapBaseUrl, contactLabel) {
   switch (field) {
     case 'FILE_ID': return data.FILE_ID ? `${data.FILE_ID}${data.OLD_FILE_ID ? ` หรือ ${data.OLD_FILE_ID}` : ''}` : '-';
     case 'AREA': return formatArea(data);
     case 'LOCATION': return buildLocation(data);
     case 'PR_PRICE': return Number(data.PR_PRICE) > 0 ? `${formatPrice(data.PR_PRICE)} ${currency}` : contactLabel;
-    case 'SPECIAL_PRICE': return data.SPECIAL_PRICE ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
+    case 'SPECIAL_PRICE': return !isPromotionOverDate(data) ? `${formatPrice(data.SPECIAL_PRICE)} ${currency}` : '-';
     case 'MAP': return buildMapLink(data, openMapLabel, mapBaseUrl);
     default: {
       const raw = data[field];
@@ -152,7 +180,7 @@ function buildDetailHtml(data, placeholders, detailRows, mapBaseUrl) {
     label, value, special, starting,
   }) => {
     const cls = `prop-for-sale-value${special ? ' prop-for-sale-special-price' : ''}${starting ? ' prop-for-sale-starting-price' : ''}`;
-    const hideRow = special && (value === '-' || !!value) ? 'hidden' : '';
+    const hideRow = special && value === '-' ? 'hidden' : '';
     return `
     <div class="prop-for-sale-row ${hideRow}">
       <div class="prop-for-sale-label">${label}</div>
