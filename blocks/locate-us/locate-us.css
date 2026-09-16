@@ -1538,7 +1538,7 @@
 
   .locate-us.block .content>*:not(.locate-us-filter-bar) {
     max-width: var(--bbl-layout-content-max-width-1920);
-    margin: auto;
+    margin-inline: auto;
   }
 
   .locate-us .locate-us-filter-bar {
