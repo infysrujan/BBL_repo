@@ -218,6 +218,17 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     margin-bottom: 2.19rem;;
   }
 
+  & .form form fieldset.panel-wrapper.field-wrapper.cc-app-message-form :is(
+  .text-wrapper,
+  .number-wrapper,
+  .email-wrapper,
+  .telephone-wrapper,
+  .drop-down-wrapper,
+  .date-wrapper
+) {
+  margin-bottom: 0.625rem;
+}
+
   /* Mobile: stack half-width fields in a single column */
   & .form form .field-wrapper.col-6:not(.button-wrapper) {
     grid-column: span 12;
