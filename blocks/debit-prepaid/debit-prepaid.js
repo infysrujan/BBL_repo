@@ -3,10 +3,13 @@ import { getLang } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
 import { fetchConfigs } from '../../scripts/config.js';
 import { fetchGet } from '../../scripts/utils/fetchApi.js';
+import {
+  plaintext, resolveApplyUrl, resolveCardPageUrl, resolveImageUrl,
+} from '../../scripts/utils/card-compare-fields.js';
 
 const MAX_COMPARE = 3;
 const ZERO_WIDTH_SPACE = String.fromCharCode(8203);
-// Used when the debitPrepaidCardSelectorSuggesterData config key is missing/unset.
+const CARDS_API_CONFIG_KEY = 'debitPrepaidCardSelectorSuggesterData';
 const DEFAULT_CARDS_API_URL = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-cards-by-language-category-and-type;language=en;';
 
 function norm(str) {
@@ -20,12 +23,39 @@ function getCardField(card, ...keys) {
   return key !== undefined ? card[key] : '';
 }
 
-function resolveImageUrl(card) {
-  const raw = card.imageUrl || card.image || '';
-  if (!raw) return '';
-  if (typeof raw === 'string') return raw;
-  // eslint-disable-next-line no-underscore-dangle
-  return raw._publishUrl || raw._authorUrl || '';
+function getCardsFromResponse(json) {
+  return json?.data?.cardsList?.items || json?.data || json?.items || [];
+}
+
+function getCardPageHref(card) {
+  const href = resolveCardPageUrl(card);
+  return href.startsWith('/content/bangkokbank')
+    ? href.replace(/^\/content\/bangkokbank/, '')
+    : href;
+}
+
+function getCardViewData(card, lang) {
+  const nameEN = getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName');
+  const nameTH = getCardField(card, 'nameTH', 'Product Name (TH)', 'cardNameTH');
+  const isTH = lang === 'th';
+
+  return {
+    primaryName: isTH && nameTH ? nameTH : nameEN,
+    secondaryName: isTH && nameTH ? nameEN : nameTH,
+    description: getCardField(card, 'cardDescription', 'description'),
+    imageUrl: resolveImageUrl(card, 'imageUrl', 'image'),
+    cardId: card.cardId || card.id || '',
+    learnMoreHref: getCardPageHref(card),
+    slogan: plaintext(getCardField(card, 'slogan', 'Slogan', 'cardSlogan')),
+    cardBenefits: plaintext(
+      getCardField(card, 'cardBenefits', 'Card Benefits', 'benefits', 'cardBenefit'),
+    ),
+    fees: plaintext(getCardField(card, 'fees', 'Fees', 'feeDetails', 'feesDescription')),
+    webApplyEnabled: card.webApplyEnabled === true || card.webApplyEnabled === 'true',
+    mobileApplyEnabled: card.mobileApplyEnabled === true || card.mobileApplyEnabled === 'true',
+    webApplyUrl: resolveApplyUrl(card.webApplyUrl),
+    mobileApplyUrl: resolveApplyUrl(card.mobileApplyUrl),
+  };
 }
 
 /**
@@ -43,7 +73,7 @@ function parseCardCategoryTag(tagValue) {
 async function loadCardData(cardCategory, cardType) {
   try {
     const configs = await fetchConfigs();
-    const baseUrl = configs.debitPrepaidCardSelectorSuggesterData || DEFAULT_CARDS_API_URL;
+    const baseUrl = configs[CARDS_API_CONFIG_KEY] || DEFAULT_CARDS_API_URL;
     const lang = getLang();
     // Prepaid cards have no sub-type, so only debit cards pass cardType.
     const isPrepaid = cardCategory === 'prepaid-cards';
@@ -52,7 +82,7 @@ async function loadCardData(cardCategory, cardType) {
     const cacheKey = `bbl-dp-cards-${cardCategory}-${isPrepaid ? '' : cardType}-${lang}`;
     if (!window[cacheKey]) {
       window[cacheKey] = fetchGet(url, { throwOnError: false })
-        .then((json) => json?.data?.cardsList?.items || json?.data || json?.items || [])
+        .then(getCardsFromResponse)
         .catch(() => []);
     }
     return window[cacheKey];
@@ -66,35 +96,38 @@ function buildCardBlock(cards, doc, lang, labels) {
   block.className = 'card-list debit-prepaid-cards block';
   block.dataset.blockName = 'card-list';
 
+  const viewport = doc.createElement('div');
+  viewport.className = 'dp-track-viewport';
+
   const list = doc.createElement('div');
   list.className = 'cards-list dp-track';
 
   cards.forEach((card) => {
-    const nameEN = getCardField(card, 'nameEN', 'Product Name (EN)', 'name', 'cardName');
-    const nameTH = getCardField(card, 'nameTH', 'Product Name (TH)', 'cardNameTH');
-    const description = getCardField(card, 'cardDescription', 'description');
-    const imgSrc = resolveImageUrl(card);
-    const { cardPageUrl } = card;
-    // eslint-disable-next-line no-underscore-dangle
-    let learnMoreHref = (cardPageUrl && (cardPageUrl._publishUrl || cardPageUrl._authorUrl || cardPageUrl._path)) || '';
-    if (learnMoreHref.startsWith('/content/bangkokbank')) {
-      learnMoreHref = learnMoreHref.replace(/^\/content\/bangkokbank/, '');
-    }
-    const isTH = lang === 'th';
-    const primaryName = isTH && nameTH ? nameTH : nameEN;
-    const secondaryName = isTH && nameTH ? nameEN : nameTH;
+    const {
+      primaryName, secondaryName, description, imageUrl, cardId, learnMoreHref,
+      slogan, cardBenefits, fees, webApplyEnabled, mobileApplyEnabled,
+      webApplyUrl, mobileApplyUrl,
+    } = getCardViewData(card, lang);
 
     const cardEl = doc.createElement('div');
     cardEl.className = 'cards-list-item';
+    cardEl.dataset.compareSlogan = slogan;
+    cardEl.dataset.compareCardBenefits = cardBenefits;
+    cardEl.dataset.compareFees = fees;
+    cardEl.dataset.compareLearnHref = learnMoreHref;
+    cardEl.dataset.compareWebApplyEnabled = webApplyEnabled ? 'true' : 'false';
+    cardEl.dataset.compareMobileApplyEnabled = mobileApplyEnabled ? 'true' : 'false';
+    cardEl.dataset.compareWebApplyUrl = webApplyUrl;
+    cardEl.dataset.compareMobileApplyUrl = mobileApplyUrl;
 
     const inner = doc.createElement('div');
     inner.className = 'cards-list-inner';
 
-    if (imgSrc) {
+    if (imageUrl) {
       const imageWrapper = doc.createElement('div');
       imageWrapper.className = 'cards-list-image cards-list-image-x-small';
       const img = doc.createElement('img');
-      img.src = imgSrc;
+      img.src = imageUrl;
       img.alt = primaryName;
       img.loading = 'lazy';
       imageWrapper.appendChild(img);
@@ -115,7 +148,7 @@ function buildCardBlock(cards, doc, lang, labels) {
     titleEl.className = 'cards-list-title has-title-underline';
     const h3 = doc.createElement('h3');
     h3.textContent = primaryName;
-    h3.dataset.cardId = card.cardId || card.id || '';
+    h3.dataset.cardId = cardId;
     titleEl.appendChild(h3);
     content.appendChild(titleEl);
 
@@ -144,7 +177,8 @@ function buildCardBlock(cards, doc, lang, labels) {
     list.appendChild(cardEl);
   });
 
-  block.appendChild(list);
+  viewport.appendChild(list);
+  block.appendChild(viewport);
   return block;
 }
 
@@ -159,6 +193,14 @@ function addCompareButtons(blockEl, doc, labels) {
     btn.dataset.cardName = h3?.textContent?.trim() ?? '';
     btn.dataset.cardId = h3?.dataset?.cardId ?? '';
     btn.dataset.cardImage = item?.querySelector('img')?.src ?? '';
+    btn.dataset.cardSlogan = item?.dataset.compareSlogan ?? '';
+    btn.dataset.cardBenefits = item?.dataset.compareCardBenefits ?? '';
+    btn.dataset.cardFees = item?.dataset.compareFees ?? '';
+    btn.dataset.cardLearnHref = item?.dataset.compareLearnHref ?? '';
+    btn.dataset.webApplyEnabled = item?.dataset.compareWebApplyEnabled ?? 'false';
+    btn.dataset.mobileApplyEnabled = item?.dataset.compareMobileApplyEnabled ?? 'false';
+    btn.dataset.webApplyUrl = item?.dataset.compareWebApplyUrl ?? '';
+    btn.dataset.mobileApplyUrl = item?.dataset.compareMobileApplyUrl ?? '';
     wrapper.appendChild(btn);
   });
 }
@@ -185,130 +227,255 @@ function waitForOwnCss(href) {
     link.addEventListener('error', resolve, { once: true });
   });
 }
+const TABLET_MIN = getComputedStyle(document.documentElement).getPropertyValue('--bbl-breakpoint-tablet-min').trim() || '47.5rem';
 
-function initCarousel(cardsList, prevBtn, nextBtn, dotsEl, doc, labels, signal) {
-  const realItems = [...cardsList.querySelectorAll('.cards-list-item')];
+// Same offset formula as carousel-dotted's getCardListCarouselOffsetForSlide: center the
+// active item on mobile, left-align it on desktop.
+function getItemOffset(viewportEl, itemEl) {
+  if (!itemEl) return 0;
+  const isMobile = window.matchMedia(`(max-width: ${TABLET_MIN})`).matches;
+  if (!isMobile) return Math.max(0, itemEl.offsetLeft);
+  const targetOffset = itemEl.offsetLeft + (itemEl.offsetWidth / 2) - (viewportEl.offsetWidth / 2);
+  return Math.max(0, targetOffset);
+}
+
+function setTrackOffset(trackEl, offsetPx) {
+  trackEl.style.transform = `translate3d(${-offsetPx}px, 0px, 0px)`;
+}
+
+// Mirrors carousel-dotted's drag/swipe handling (carousel-dotted.js initializeDragSwipe):
+// a single swipe past the threshold always advances/retreats by exactly one step, same as
+// a single arrow click.
+function attachDragSwipe(viewportEl, move, signal, threshold = 50) {
+  let isDragging = false;
+  let startX = 0;
+  let currentX = 0;
+  let hasMoved = false;
+
+  const handleStart = (e) => {
+    if (e.target.closest('a, button')) return;
+    isDragging = true;
+    hasMoved = false;
+    startX = e.type === 'touchstart' ? e.touches[0].pageX : (e.pageX || e.clientX);
+    currentX = startX;
+  };
+
+  const handleMove = (e) => {
+    if (!isDragging) return;
+    currentX = e.type === 'touchmove' ? e.touches[0].pageX : (e.pageX || e.clientX);
+    if (Math.abs(currentX - startX) > 5) hasMoved = true;
+  };
+
+  const handleEnd = () => {
+    if (!isDragging) return;
+    isDragging = false;
+    const deltaX = currentX - startX;
+    if (hasMoved && Math.abs(deltaX) > threshold) {
+      move(deltaX < 0 ? 1 : -1);
+    }
+    startX = 0;
+    currentX = 0;
+    hasMoved = false;
+  };
+
+  const handleCancel = () => {
+    isDragging = false;
+    startX = 0;
+    currentX = 0;
+    hasMoved = false;
+  };
+
+  viewportEl.addEventListener('mousedown', handleStart, { signal });
+  viewportEl.addEventListener('mousemove', handleMove, { signal });
+  viewportEl.addEventListener('mouseup', handleEnd, { signal });
+  viewportEl.addEventListener('mouseleave', handleCancel, { signal });
+  viewportEl.addEventListener('touchstart', handleStart, { passive: true, signal });
+  viewportEl.addEventListener('touchmove', handleMove, { passive: true, signal });
+  viewportEl.addEventListener('touchend', handleEnd, { signal });
+  viewportEl.addEventListener('touchcancel', handleCancel, { signal });
+}
+
+function initCarousel(viewportEl, trackEl, prevBtn, nextBtn, dotsEl, labels, signal) {
+  const doc = viewportEl.ownerDocument;
+  const realItems = [...trackEl.querySelectorAll('.cards-list-item')];
   const count = realItems.length;
   const loopEnabled = count > 1;
 
-  const cloneRealSet = () => realItems.map((item) => {
+  const cloneItem = (item) => {
     const clone = item.cloneNode(true);
     clone.classList.add('dp-clone');
     clone.setAttribute('aria-hidden', 'true');
     if ('inert' in clone) clone.inert = true;
     clone.querySelectorAll('a, button').forEach((el) => el.setAttribute('tabindex', '-1'));
     return clone;
-  });
+  };
 
+  // Arrows advance a full page of cards at a time. Capped below `count` so a tiny card
+  // set (2-3 cards) can't step by its own length and land back where it started.
+  const CARDS_PER_STEP = 3;
+  const step = loopEnabled ? Math.min(CARDS_PER_STEP, count - 1) : 0;
+  // One dot per page, not per card — a 5-card set with a 3-card step is 2 pages (0-2, 2-4),
+  // not 5 individual stops. The last page is anchored to end on the final card (rather than
+  // starting a short page) so every page always shows a full `step` cards.
+  const numPages = loopEnabled ? Math.ceil(count / step) : 1;
+  const pageStartIndex = (pageIdx) => (loopEnabled ? Math.min(pageIdx * step, count - step) : 0);
+  let currentPage = 0;
+
+  // Loop trick shared with carousel-dotted's arrow-track variants (updateFragmentTrack /
+  // circularOrDefaultImage), generalized to a page: a clone of the last `step` items leads
+  // the track and a clone of the first `step` items trails it, so a full-page wrap has real
+  // card content to animate through the boundary before snapping instantly back to the
+  // real page — otherwise the peeked area beyond a single clone would show empty space.
+  let cloneHeadItems = [];
+  let cloneTailItems = [];
   if (loopEnabled) {
+    cloneHeadItems = realItems.slice(-step).map(cloneItem);
+    cloneTailItems = realItems.slice(0, step).map(cloneItem);
+
     const headFrag = doc.createDocumentFragment();
-    cloneRealSet().forEach((clone) => headFrag.appendChild(clone));
-    cardsList.insertBefore(headFrag, cardsList.firstChild);
+    cloneHeadItems.forEach((clone) => headFrag.appendChild(clone));
+    trackEl.insertBefore(headFrag, trackEl.firstChild);
 
     const tailFrag = doc.createDocumentFragment();
-    cloneRealSet().forEach((clone) => tailFrag.appendChild(clone));
-    cardsList.appendChild(tailFrag);
+    cloneTailItems.forEach((clone) => tailFrag.appendChild(clone));
+    trackEl.appendChild(tailFrag);
   }
 
-  const allItems = [...cardsList.querySelectorAll('.cards-list-item')];
-
-  const getItemOffset = (item) => {
-    const itemRect = item.getBoundingClientRect();
-    const peek = (cardsList.clientWidth - itemRect.width) / 2;
-    return itemRect.left - cardsList.getBoundingClientRect().left + cardsList.scrollLeft - peek;
-  };
-
-  let bounds = { lower: 0, upper: 0, setWidth: 0 };
-  const computeBounds = () => {
-    if (!loopEnabled) return;
-    const lower = getItemOffset(allItems[count]);
-    const upper = getItemOffset(allItems[count * 2]);
-    bounds = { lower, upper, setWidth: upper - lower };
-  };
-
-  const scrollToItem = (item) => {
-    cardsList.scrollTo({ left: getItemOffset(item), behavior: 'smooth' });
-  };
-
-  const buildDots = () => {
-    dotsEl.innerHTML = '';
-    realItems.forEach((item, i) => {
-      const dot = doc.createElement('button');
-      dot.type = 'button';
-      dot.className = 'dp-scroll-dot';
-      if (i === 0) dot.classList.add('is-active');
-      dot.setAttribute('aria-label', `${labels.goToCard} ${i + 1}`);
-      dot.addEventListener('click', () => scrollToItem(item), { signal });
-      dotsEl.appendChild(dot);
+  // Clones sit in the flex row even when the real cards already fit the viewport (e.g. only
+  // 2 cards on a wide screen), which would make the row wider than the viewport and defeat
+  // `justify-content: safe center` in the CSS (safe centering falls back to start-aligned the
+  // moment the box actually overflows). Pull clones out of layout whenever they're not needed
+  // so the real cards can center normally, same as the static (no-carousel) layout.
+  const setClonesVisible = (visible) => {
+    [...cloneHeadItems, ...cloneTailItems].forEach((clone) => {
+      clone.classList.toggle('dp-clone-hidden', !visible);
     });
   };
 
-  const jumpIfOutsideRealBlock = () => {
-    if (!loopEnabled) return;
-    if (cardsList.scrollLeft < bounds.lower - 1) {
-      cardsList.scrollLeft += bounds.setWidth;
-    } else if (cardsList.scrollLeft >= bounds.upper - 1) {
-      cardsList.scrollLeft -= bounds.setWidth;
+  const updateDots = (pageIdx) => {
+    [...dotsEl.querySelectorAll('.dp-scroll-dot')].forEach((dot, i) => {
+      dot.classList.toggle('is-active', i === pageIdx);
+    });
+  };
+
+  function goToPage(pageIdx) {
+    currentPage = pageIdx;
+    setTrackOffset(trackEl, getItemOffset(viewportEl, realItems[pageStartIndex(pageIdx)]));
+    updateDots(pageIdx);
+  }
+
+  const buildDots = () => {
+    dotsEl.innerHTML = '';
+    for (let p = 0; p < numPages; p += 1) {
+      const dot = doc.createElement('button');
+      dot.type = 'button';
+      dot.className = 'dp-scroll-dot';
+      if (p === 0) dot.classList.add('is-active');
+      dot.setAttribute('aria-label', `${labels.goToCard} ${p + 1}`);
+      dot.addEventListener('click', () => goToPage(p), { signal });
+      dotsEl.appendChild(dot);
     }
   };
 
-  const updateNav = () => {
-    const showNav = loopEnabled && bounds.setWidth > cardsList.clientWidth + 1;
-    prevBtn.classList.toggle('is-hidden', !showNav);
-    nextBtn.classList.toggle('is-hidden', !showNav);
-    dotsEl.classList.toggle('is-hidden', !showNav);
-    if (!showNav) return;
-
-    prevBtn.disabled = false;
-    nextBtn.disabled = false;
-
-    const step = bounds.setWidth / count;
-    const rawIndex = Math.round((cardsList.scrollLeft - bounds.lower) / step);
-    const activeIndex = ((rawIndex % count) + count) % count;
-
-    const dots = [...dotsEl.querySelectorAll('.dp-scroll-dot')];
-    dots.forEach((dot, i) => dot.classList.toggle('is-active', i === activeIndex));
+  const getContentSpan = () => {
+    if (!count) return 0;
+    const first = realItems[0];
+    const last = realItems[count - 1];
+    return (last.offsetLeft + last.offsetWidth) - first.offsetLeft;
   };
 
-  const refresh = () => { computeBounds(); updateNav(); };
+  // Whether the cards actually need to scroll/page, i.e. they don't all fit in the
+  // viewport at once. When they do fit, the track is left at rest (transform: none) and
+  // `justify-content: safe center` in the CSS centers the row — matching the static,
+  // non-carousel layout. Nav (arrows/dots) is only ever shown when this is true.
+  const contentOverflows = () => loopEnabled && getContentSpan() > viewportEl.clientWidth + 1;
 
-  const scrollByOneCard = (direction) => {
-    const step = realItems[0].getBoundingClientRect().width + 16;
-    cardsList.scrollBy({ left: direction * step, behavior: 'smooth' });
+  const updateNavVisibility = (overflow) => {
+    prevBtn.classList.toggle('is-hidden', !overflow);
+    nextBtn.classList.toggle('is-hidden', !overflow);
+    dotsEl.classList.toggle('is-hidden', !overflow);
+    // Keep arrows enabled so they can loop, matching carousel-dotted's arrow-track variants.
+    prevBtn.disabled = !loopEnabled;
+    nextBtn.disabled = !loopEnabled;
   };
 
-  const onSettled = () => {
-    jumpIfOutsideRealBlock();
-    updateNav();
+  function move(direction) {
+    if (!contentOverflows()) return;
+
+    const prevPage = currentPage;
+    const nextPage = (((prevPage + direction) % numPages) + numPages) % numPages;
+    const isLoopingForward = direction > 0 && nextPage === 0 && prevPage === numPages - 1;
+    const isLoopingBackward = direction < 0 && nextPage === numPages - 1 && prevPage === 0;
+
+    currentPage = nextPage;
+    updateDots(nextPage);
+
+    const targetIndex = pageStartIndex(nextPage);
+
+    if (loopEnabled && (isLoopingForward || isLoopingBackward)) {
+      // targetIndex lands in [0, step) when wrapping forward and [count - step, count) when
+      // wrapping backward, so it maps directly onto the matching clone block below.
+      const cloneEl = isLoopingForward
+        ? cloneTailItems[targetIndex]
+        : cloneHeadItems[targetIndex - (count - step)];
+      setTrackOffset(trackEl, getItemOffset(viewportEl, cloneEl));
+      setTimeout(() => {
+        trackEl.style.transition = 'none';
+        setTrackOffset(trackEl, getItemOffset(viewportEl, realItems[targetIndex]));
+        trackEl.getBoundingClientRect();
+        trackEl.style.transition = '';
+      }, 600);
+      return;
+    }
+
+    setTrackOffset(trackEl, getItemOffset(viewportEl, realItems[targetIndex]));
+  }
+
+  const refresh = () => {
+    const overflow = contentOverflows();
+    trackEl.style.transition = 'none';
+    setClonesVisible(overflow);
+    setTrackOffset(
+      trackEl,
+      overflow ? getItemOffset(viewportEl, realItems[pageStartIndex(currentPage)]) : 0,
+    );
+    trackEl.getBoundingClientRect();
+    trackEl.style.transition = '';
+    updateNavVisibility(overflow);
   };
 
   buildDots();
-  computeBounds();
-  if (loopEnabled) cardsList.scrollLeft = bounds.lower;
-  updateNav();
+  refresh();
 
-  prevBtn.addEventListener('click', () => scrollByOneCard(-1), { signal });
-  nextBtn.addEventListener('click', () => scrollByOneCard(1), { signal });
+  prevBtn.addEventListener('click', () => move(-1), { signal });
+  nextBtn.addEventListener('click', () => move(1), { signal });
 
-  if ('onscrollend' in window) {
-    cardsList.addEventListener('scrollend', onSettled, { signal });
-  } else {
-    let settleTimer;
-    cardsList.addEventListener('scroll', () => {
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(onSettled, 120);
-    }, { passive: true, signal });
-  }
-  cardsList.addEventListener('scroll', updateNav, { passive: true, signal });
+  if (loopEnabled) attachDragSwipe(viewportEl, move, signal);
 
   let resizeScheduled = false;
-  window.addEventListener('resize', () => {
+  const scheduleRefresh = () => {
     if (resizeScheduled) return;
     resizeScheduled = true;
     requestAnimationFrame(() => { resizeScheduled = false; refresh(); });
-  }, { signal });
+  };
+  window.addEventListener('resize', scheduleRefresh, { signal });
 
-  return { updateNav: refresh };
+  // The block can still measure 0-width the moment it's built — e.g. while its section is
+  // hidden during lazy-load — so a single post-build refresh() can under/over-report overflow
+  // and hide the arrows until an unrelated window resize forces a recheck. Watch the viewport's
+  // actual rendered size and refresh whenever it changes, including whenever it first appears.
+  let lastWidth = viewportEl.offsetWidth;
+  const sizeObserver = new ResizeObserver(() => {
+    const width = viewportEl.offsetWidth;
+    if (width > 0 && width !== lastWidth) {
+      lastWidth = width;
+      refresh();
+    }
+  });
+  sizeObserver.observe(viewportEl);
+  signal.addEventListener('abort', () => sizeObserver.disconnect());
+
+  return { refresh };
 }
 
 export default async function decorate(block) {
@@ -392,9 +559,10 @@ export default async function decorate(block) {
 
     restoreCompareState();
 
-    const cardsList = blockEl.querySelector('.cards-list.dp-track');
-    const { updateNav } = initCarousel(cardsList, prevBtn, nextBtn, dotsEl, doc, labels, signal);
-    requestAnimationFrame(updateNav);
+    const viewport = blockEl.querySelector('.dp-track-viewport');
+    const track = blockEl.querySelector('.cards-list.dp-track');
+    const { refresh } = initCarousel(viewport, track, prevBtn, nextBtn, dotsEl, labels, signal);
+    requestAnimationFrame(refresh);
   }
 
   block.addEventListener('click', (e) => {
@@ -403,14 +571,29 @@ export default async function decorate(block) {
     e.preventDefault();
 
     window.ccsSelectedCards = window.ccsSelectedCards || [];
-    const { cardName, cardImage, cardId } = btn.dataset;
+    const {
+      cardName, cardImage, cardId, cardSlogan, cardBenefits, cardFees, cardLearnHref,
+      webApplyEnabled, mobileApplyEnabled, webApplyUrl, mobileApplyUrl,
+    } = btn.dataset;
     if (btn.classList.contains('is-comparing')) return;
 
     if (window.ccsSelectedCards.length >= MAX_COMPARE) {
       document.dispatchEvent(new CustomEvent('credit-card-compare-limit-reached'));
       return;
     }
-    window.ccsSelectedCards.push({ id: cardId, name: cardName, image: cardImage });
+    window.ccsSelectedCards.push({
+      id: cardId,
+      name: cardName,
+      image: cardImage,
+      slogan: cardSlogan,
+      cardBenefits,
+      fees: cardFees,
+      cardPageUrl: cardLearnHref ? { _publishUrl: cardLearnHref } : undefined,
+      webApplyEnabled: webApplyEnabled === 'true',
+      mobileApplyEnabled: mobileApplyEnabled === 'true',
+      webApplyUrl,
+      mobileApplyUrl,
+    });
 
     restoreCompareState();
 

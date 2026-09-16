@@ -32,29 +32,29 @@
   min-width: 0;
 }
 
+.card-list.debit-prepaid-cards .dp-track-viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
 .card-list.debit-prepaid-cards .cards-list.dp-track {
   display: flex;
   flex-flow: row nowrap;
   align-items: stretch;
   justify-content: safe center;
   gap: var(--bbl-space-250);
-  overflow: auto hidden;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
   padding: 0.625rem 0.125rem;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-}
-
-.card-list.debit-prepaid-cards .cards-list.dp-track::-webkit-scrollbar {
-  display: none;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .card-list.debit-prepaid-cards .cards-list.dp-track .cards-list-item {
   flex: 0 0 17.5rem;
-  scroll-snap-align: center;
   margin-bottom: 0;
+}
+
+.card-list.debit-prepaid-cards .cards-list.dp-track .dp-clone-hidden {
+  display: none;
 }
 
 .debit-prepaid-results .dp-arrow {
@@ -225,5 +225,9 @@
   .card-list.debit-prepaid-cards .cards-list-image.cards-list-image-x-small img {
     width: auto;
     height: 100%;
+  }
+
+  .card-list.debit-prepaid-cards .cards-list.dp-track .cards-list-item {
+    flex: 0 0 17rem;
   }
 }
