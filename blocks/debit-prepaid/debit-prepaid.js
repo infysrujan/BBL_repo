@@ -1,16 +1,12 @@
 import { loadCSS } from '../../scripts/aem.js';
 import { getLang } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholder.js';
-import { fetchConfigs } from '../../scripts/config.js';
-import { fetchGet } from '../../scripts/utils/fetchApi.js';
 import {
-  plaintext, resolveApplyUrl, resolveCardPageUrl, resolveImageUrl,
+  loadCardData, plaintext, resolveApplyUrl, resolveCardPageUrl, resolveImageUrl,
 } from '../../scripts/utils/card-compare-fields.js';
 
 const MAX_COMPARE = 3;
 const ZERO_WIDTH_SPACE = String.fromCharCode(8203);
-const CARDS_API_CONFIG_KEY = 'debitPrepaidCardSelectorSuggesterData';
-const DEFAULT_CARDS_API_URL = 'https://publish-p185039-e1939903.adobeaemcloud.com/graphql/execute.json/bangkokbank/get-cards-by-language-category-and-type;language=en;';
 
 function norm(str) {
   return (str || '').toString().split(ZERO_WIDTH_SPACE).join('')
@@ -21,10 +17,6 @@ function norm(str) {
 function getCardField(card, ...keys) {
   const key = keys.find((k) => card[k] !== null && card[k] !== undefined && card[k] !== '');
   return key !== undefined ? card[key] : '';
-}
-
-function getCardsFromResponse(json) {
-  return json?.data?.cardsList?.items || json?.data || json?.items || [];
 }
 
 function getCardPageHref(card) {
@@ -68,27 +60,6 @@ function parseCardCategoryTag(tagValue) {
   const cardType = typeIdx >= 0 ? parts[typeIdx + 1] : parts[parts.length - 1];
   const cardCategory = typeIdx >= 0 ? parts[typeIdx - 1] : parts[1];
   return { cardCategory: cardCategory || '', cardType: cardType || '' };
-}
-
-async function loadCardData(cardCategory, cardType) {
-  try {
-    const configs = await fetchConfigs();
-    const baseUrl = configs[CARDS_API_CONFIG_KEY] || DEFAULT_CARDS_API_URL;
-    const lang = getLang();
-    // Prepaid cards have no sub-type, so only debit cards pass cardType.
-    const isPrepaid = cardCategory === 'prepaid-cards';
-    const typeParam = isPrepaid ? '' : `cardType=${cardType};`;
-    const url = `${baseUrl.replace(/;language=[^;?&]*/i, `;language=${lang}`)}cardCategory=${cardCategory};${typeParam}`;
-    const cacheKey = `bbl-dp-cards-${cardCategory}-${isPrepaid ? '' : cardType}-${lang}`;
-    if (!window[cacheKey]) {
-      window[cacheKey] = fetchGet(url, { throwOnError: false })
-        .then(getCardsFromResponse)
-        .catch(() => []);
-    }
-    return window[cacheKey];
-  } catch {
-    return [];
-  }
 }
 
 function buildCardBlock(cards, doc, lang, labels) {
