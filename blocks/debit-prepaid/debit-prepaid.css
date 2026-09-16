@@ -198,12 +198,6 @@
   font-size: var(--bbl-font-size-b1);
 }
 
-@media (width > 64rem) {
-  .debit-prepaid-results .dp-arrow {
-    display: flex;
-  }
-}
-
 @media (width > 47.5rem) {
   .card-list.debit-prepaid-cards .cards-list-inner {
     min-height: 27rem;
@@ -211,6 +205,10 @@
 }
 
 @media (width > 64rem) {
+  .debit-prepaid-results .dp-arrow {
+    display: flex;
+  }
+
   .debit-prepaid-container {
     padding-top: 0;
   }
