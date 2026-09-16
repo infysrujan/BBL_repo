@@ -281,13 +281,9 @@ function initCarousel(viewportEl, trackEl, prevBtn, nextBtn, dotsEl, labels, sig
     return clone;
   };
 
-  // Arrows advance a full page of cards at a time. Capped below `count` so a tiny card
-  // set (2-3 cards) can't step by its own length and land back where it started.
-  const CARDS_PER_STEP = 3;
-  const step = loopEnabled ? Math.min(CARDS_PER_STEP, count - 1) : 0;
-  // One dot per page, not per card — a 5-card set with a 3-card step is 2 pages (0-2, 2-4),
-  // not 5 individual stops. The last page is anchored to end on the final card (rather than
-  // starting a short page) so every page always shows a full `step` cards.
+  const isMobile = window.matchMedia(`(max-width: ${TABLET_MIN})`).matches;
+  const cardsPerStep = isMobile ? 1 : 3;
+  const step = loopEnabled ? Math.min(cardsPerStep, count - 1) : 0;
   const numPages = loopEnabled ? Math.ceil(count / step) : 1;
   const pageStartIndex = (pageIdx) => (loopEnabled ? Math.min(pageIdx * step, count - step) : 0);
   let currentPage = 0;
