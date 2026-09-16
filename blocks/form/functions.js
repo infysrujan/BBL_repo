@@ -506,35 +506,33 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   // Collator gives correct A-Z ordering for both Thai and English labels.
   const collator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
+  // (district, then option label) so everything ends up A-Z.
   const entries = Array.from(selectEl.querySelectorAll('option'))
     .map((opt) => ({
       opt,
-      // Normalise: trim + collapse inner whitespace so "Bang Khae " === "Bang Khae"
-      district: (districtByBranchName[opt.value] || '').replace(/\s+/g, ' ').trim(),
+      district: districtByBranchName[opt.value] || '',
     }))
     .filter((entry) => entry.district !== '');
 
-  // Sort: district A-Z first, then branch name A-Z within each district.
   entries.sort((a, b) => {
     const districtCompare = collator.compare(a.district, b.district);
     if (districtCompare !== 0) return districtCompare;
     return collator.compare(a.opt.textContent, b.opt.textContent);
   });
 
-  // Build a Map keyed by district so same-district entries share one <optgroup>.
-  const groupMap = new Map();
-  entries.forEach(({ opt, district }) => {
-    if (!groupMap.has(district)) {
-      const group = document.createElement('optgroup');
-      group.label = district;
-      group.style.fontWeight = 'bold';
-      groupMap.set(district, group);
-    }
-    groupMap.get(district).appendChild(opt);
-  });
+  let currentGroup = null;
+  let currentDistrict = null;
 
-  // Append the deduplicated, sorted groups to the select.
-  groupMap.forEach((group) => selectEl.appendChild(group));
+  entries.forEach(({ opt, district }) => {
+    if (district !== currentDistrict) {
+      currentGroup = document.createElement('optgroup');
+      currentGroup.label = district;
+      currentGroup.style.fontWeight = 'bold';
+      selectEl.appendChild(currentGroup);
+      currentDistrict = district;
+    }
+    currentGroup.appendChild(opt);
+  });
 }
 
 // Polls briefly for a <select> whose options match this branch dataset,
