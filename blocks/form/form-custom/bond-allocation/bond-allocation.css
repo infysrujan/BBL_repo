@@ -37,10 +37,6 @@
     }
   }
 
-  & .form form .field-subheading.plain-text-wrapper p:last-child p {
-    text-align: center;
-  }
-
   .field-bond-holder-number {
     margin-bottom: 10px;
   }
@@ -366,7 +362,11 @@
   & .form form .field-bond-allocation-notfound .plain-text-wrapper p:last-child p {
     text-align: left;
   }
-  
+
+  & .form form .field-subheading.plain-text-wrapper p:last-child p {
+    text-align: center;
+  }
+
   & .form form .field-loadingtext + fieldset.panel-wrapper.field-button-panel.field-wrapper {
     justify-content: space-between;
     padding: 0 1.375rem;
