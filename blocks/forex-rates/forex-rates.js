@@ -182,6 +182,9 @@ function printForexRates(block) {
     }
     brandLogo = logoClone.outerHTML;
   }
+  if (!brandLogo) {
+    brandLogo = '<img src="/icons/logo.svg" alt="Bangkok Bank" loading="eager">';
+  }
 
   const pageTitle = getPageTitle(doc);
   const documentTitle = doc.title || doc.querySelector('title')?.textContent || pageTitle;
@@ -207,7 +210,7 @@ function printForexRates(block) {
 
     /* Logo */
     .print-logo { margin-bottom: var(--bbl-space-075); }
-    .print-logo img { height: 1.5rem; width: auto; }
+    .print-logo img { height: 1.5rem; width: auto; filter: brightness(0); }
 
     /* Horizontal rule after logo */
     .print-divider { border: none; border-top: 0.0625rem solid var(--bbl-color-grey-125); margin: var(--bbl-space-075) 0 var(--bbl-space-100); }
@@ -286,10 +289,12 @@ function printForexRates(block) {
     }
   `;
 
+  const baseHref = doc.location?.origin || window.location.origin;
   const printHtml = `<!DOCTYPE html>
   <html lang="en">
     <head>
       <meta charset="utf-8"/>
+      <base href="${baseHref}">
       <title>${escapeHtml(documentTitle)}</title>
       <link rel="stylesheet" href="/styles/tokens.css">
       <link rel="stylesheet" href="/styles/fonts.css">
@@ -298,7 +303,7 @@ function printForexRates(block) {
     <body>
       <div class="print-logo">${brandLogo}</div>
       <hr class="print-divider">
-      <h1 class="print-title">${escapeHtml(documentTitle)}</h1>
+      <h1 class="print-title">${escapeHtml(pageTitle)}</h1>
       ${tabsHtml}
       <div class="forex-rates block" data-block-status="loaded">
         ${cloned.outerHTML}
