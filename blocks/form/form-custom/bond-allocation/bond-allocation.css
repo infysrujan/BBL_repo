@@ -37,6 +37,10 @@
     }
   }
 
+  & .form form .field-subheading.plain-text-wrapper p:last-child p {
+    text-align: center;
+  }
+
   .field-bond-holder-number {
     margin-bottom: 10px;
   }
