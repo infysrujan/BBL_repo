@@ -209,6 +209,14 @@
   width: calc(100% + 1px);
 }
 
+.carousel-dotted.show-arrows-dots.mixed-image-slides:has(.simple-carousel):not(:has(.with-default-image, .with-circular-image)) .carousel-track-wrapper .carousel-dotted-item.simple-carousel {
+  margin-bottom: 0;
+}
+
+.carousel-dotted.show-arrows-dots.mixed-image-slides:has(.simple-carousel):not(:has(.with-default-image, .with-circular-image)) .carousel-track-viewport {
+  margin-bottom: 2.125rem;
+}
+
 @media (width > 47.5rem) {
   .carousel-dotted.show-arrows-dots .carousel-dotted-item {
     position: relative;
