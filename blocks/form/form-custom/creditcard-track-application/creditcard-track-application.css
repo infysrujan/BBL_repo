@@ -803,7 +803,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & > .cc-panel-item-timeline-status {
           top: calc(var(--timeline-height) * 0.23);
-          left: 16%;
+          left: 14%;
         }
 
         & > .cc-panel-item-timeline-message {
@@ -858,7 +858,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & > .cc-panel-item-timeline-status {
           top: calc(var(--timeline-height) * 0.07);
-          left: 8%;
+          left: 7%;
         }
 
         & > .cc-panel-item-timeline-message {
@@ -1053,6 +1053,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       }
 
       &:is(.cc-app-denied, .cc-app-cancel, .cc-app-pending, .cc-app-incomplete, .cc-app-callback) {
+        & > .cc-panel-item-timeline-status {
+          left: 16%;
+        }
+
         & > .cc-panel-item-timeline-message {
           left: 16.2%;
           width: 75%;
@@ -1070,6 +1074,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       }
 
       &.cc-app-notfound {
+        & > .cc-panel-item-timeline-status {
+          left: 8%;
+        }
+
         & > .cc-panel-item-timeline-message {
           left: 8%;
           width: 82%;
