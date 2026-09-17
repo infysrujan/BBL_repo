@@ -412,5 +412,11 @@
         & fieldset.panel-wrapper:not(:has(.date-wrapper)):has(> .drop-down-wrapper + .drop-down-wrapper) > legend.field-label {
             font-size: var(--bbl-form-font-size-16);
         }
+
+        /* Select chevron: 9.43 x 6, matching production's bold icon (Chevron-down.svg is a hairline stroke that vanishes at this size) */
+        & select {
+            background-image: url('/icons/icon_chevron_down.svg');
+            background-size: 0.5894rem 0.375rem;
+        }
     }
 }
