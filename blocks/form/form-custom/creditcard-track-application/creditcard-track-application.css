@@ -814,7 +814,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & > .cc-panel-item-timeline-caption {
           top: calc(var(--timeline-height) * 0.63);
-          left: 44%;
+          left: auto;
+          right: 2.0625rem;
           width: min(13.75rem, 58%);
           max-width: none;
         }
@@ -868,7 +869,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
 
         & > .cc-panel-item-timeline-caption {
           top: calc(var(--timeline-height) * 0.79);
-          left: 38%;
+          left: auto;
+          right: 2.0625rem;
           width: min(13.75rem, 58%);
           max-width: none;
         }
@@ -1057,7 +1059,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         }
 
         & > .cc-panel-item-timeline-caption {
-          left: 44%;
+          left: auto;
+          right: 2.0625rem;
           width: 13.75rem;
         }
 
@@ -1073,7 +1076,8 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         }
 
         & > .cc-panel-item-timeline-caption {
-          left: 46%;
+          left: auto;
+          right: 2.0625rem;
           width: 13.75rem;
         }
 
