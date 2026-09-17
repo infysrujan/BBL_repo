@@ -32,6 +32,8 @@
   --bbl-form-margin-10: 0.625rem;                    /* 10px */
   --bbl-form-margin-14: 0.875rem;                    /* 14px */
   --bbl-form-margin-15: 0.9375rem;                   /* 15px */
+  --bbl-form-margin-17: 1.0625rem;                   /* 17px */
+  --bbl-form-margin-19-5: 1.21875rem;                /* 19.5px */
   --bbl-form-margin-30: 1.875rem;                    /* 30px */
   --bbl-form-margin-32: 2rem;                        /* 32px */
 
@@ -167,6 +169,10 @@ main .section.form-container.lead-forms .form form .plain-text-wrapper.field-tex
   font-size: unset;
 }
 
+main .section.form-container.lead-forms .form form .plain-text-wrapper.field-text p:has(> strong):has(~ p:not(:empty)) {
+  margin-bottom: var(--bbl-form-margin-17);
+}
+
 main .lead-forms .form form {
   gap: var(--bbl-form-gap-3);
   max-width: 46.25rem;
@@ -184,7 +190,7 @@ main .lead-forms .form form :is(p, .repeat-wrapper, .field-wrapper) {
 
 main .lead-forms :is(h3, .form form .field-title h2, .form form .field-title .page-header) {
   position: relative;
-  margin: var(--bbl-space-500) 0 var(--bbl-space-300);
+  margin: var(--bbl-space-500) 0 var(--bbl-form-margin-30);
   padding: 0 0 var(--bbl-form-padding-35);
   font-family: var(--bbl-font-family-medium);
   font-weight: var(--bbl-form-font-weight-bold);
@@ -951,6 +957,10 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
     font-size: var(--bbl-font-size-b1-desktop);
     line-height: var(--bbl-form-line-height-22);
+  }
+
+  main .section.form-container.lead-forms .form form .plain-text-wrapper.field-text p:has(> strong):has(~ p:not(:empty)) {
+    margin-bottom: var(--bbl-form-margin-19-5);
   }
 
   main .lead-forms .form form h2{
