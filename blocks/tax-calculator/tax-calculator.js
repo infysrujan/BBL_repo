@@ -1,6 +1,6 @@
 import fetchBlockConfig from '../../scripts/block-config.js';
 import { fetchConfigs } from '../../scripts/config.js';
-import { fetchPost } from '../../scripts/utils/fetchApi.js';
+import { fetchGet, fetchPost } from '../../scripts/utils/fetchApi.js';
 
 // ─── Utilities ─────────────────────────────────────────────────────────────────
 
@@ -59,21 +59,33 @@ function buildNotes(title, noteLines) {
 
 // ─── Data ───────────────────────────────────────────────────────────────────────
 
+// Single source for the tax deduction limits, replacing the individual tax-calculator-*-max configs
+async function fetchTaxLimits(url) {
+  if (!url) return null;
+  try {
+    const response = await fetchGet(url, { throwOnError: false });
+    return response?.data?.TaxReduceLimit?.items?.[0] || null;
+  } catch {
+    return null;
+  }
+}
+
 async function loadData() {
-  const [siteConfig, labels] = await Promise.all([
-    fetchConfigs(),
+  const siteConfig = await fetchConfigs();
+  const [labels, taxLimits] = await Promise.all([
     fetchBlockConfig('/tax-savings-config.json'),
+    fetchTaxLimits(siteConfig.taxCalculatorValuesApi),
   ]);
   return {
     labels,
     apiCalculateTax: siteConfig.taxCalculatorCalculateTaxWithReduce,
     apiCalculateSaving: siteConfig.taxCalculatorCalculateSavingTaxBySelf,
-    combinedInsuranceMax: parseFloat(labels.individualMaxesCombinedLifeHealthMax) || 100000,
-    fatherInsureMax: parseFloat(labels.individualMaxesParentInsurance) || 15000,
-    homeInterestMax: parseFloat(labels.individualMaxesHomeInterest) || 100000,
-    otherDeductionsMax: parseFloat(labels.individualMaxesOtherDeductions) || 1000000,
+    combinedInsuranceMax: parseFloat(taxLimits?.InsureLimit) || 100000,
+    fatherInsureMax: parseFloat(taxLimits?.Father_MotherInsureLimit) || 15000,
+    homeInterestMax: parseFloat(taxLimits?.HomeInterestLimit) || 100000,
+    otherDeductionsMax: parseFloat(taxLimits?.OtherReduceLimit) || 1000000,
     donateMax: parseFloat(labels.individualMaxesDonate) || 999999999,
-    maxChildrenCount: parseInt(labels.individualMaxesChildrenCount, 10) || 10,
+    maxChildrenCount: parseInt(taxLimits?.MaxChildReduce, 10) || 10,
     providentFundMaxPct: parseFloat(labels.individualMaxesProvidentFundPercent) || 15,
   };
 }
