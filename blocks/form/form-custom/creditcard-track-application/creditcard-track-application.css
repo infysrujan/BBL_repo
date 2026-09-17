@@ -677,7 +677,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
           line-height: var(--bbl-text-small-line-height);
           color: var(--bbl-color-grey-28);
           font-weight: var(--bbl-text-small-weight);
-          padding-right:0.75rem;
+          padding-left: 1.0625rem;
         }
 
         & > .cc-panel-item-timeline-muted p {
@@ -926,6 +926,11 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       .cc-app-callback,
       .cc-app-notfound
     ) {
+      & > .cc-panel-item-timeline-caption p {
+        padding-left: 0;
+        padding-right: 0.75rem;
+      }
+
       & > .cc-panel-item-timeline-status.cc-panel-item-timeline-status p {
         font-size: 1.25rem;
         line-height: 1.25rem;
