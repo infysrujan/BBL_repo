@@ -1816,7 +1816,7 @@
         "valueType": "string",
         "name": "heroImage",
         "label": "Hero Image",
-        "description": "To select the smart crop presets, use the fields at the bottom. When this field is selected, it will be used as the default image.",
+        "description": "Select the default image here, but do not choose any presets.For Smart Crop presets, use the separate Desktop and Mobile fields available at the bottom of the page.",
         "multi": false,
         "condition": {
           "or": [
