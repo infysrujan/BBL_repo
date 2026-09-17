@@ -601,7 +601,7 @@
 
 .hero-banner-hero-with-thumbnail-images :has(.hero-banner-video-wrapper) .hero-banner-content-inner {
   margin-top: 0.9375rem;
-  padding-block: 1.25rem 0.375rem;
+  padding-block: 1.25rem 0.5625rem;
 }
 
 .wealth .hero-banner-simple .hero-banner-content-inner-text p{
