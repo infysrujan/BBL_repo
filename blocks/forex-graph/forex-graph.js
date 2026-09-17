@@ -452,7 +452,7 @@ function renderBlock(
 
   const errorStyle = state.error ? '' : ' style="display:none"';
   const dropdownOpen = state.dropdownOpen ? ' is-open' : '';
-  const showNoData = !state.loading && !state.chartData.length;
+  const showNoData = state.hasSearched && !state.loading && !state.chartData.length;
   const noDataStyle = showNoData ? '' : ' style="display:none"';
 
   block.innerHTML = `<section class="forex-graph-content">
@@ -543,6 +543,9 @@ export default async function decorate(block) {
     loading: false,
     error: '',
     chartInstance: null,
+    // False until the user clicks GO: the chart stays blank (no chart drawn, no
+    // "No Data" text). "No Data" only shows after a search returns nothing.
+    hasSearched: false,
   };
 
   let outsideClickHandlers = {};
@@ -577,6 +580,15 @@ export default async function decorate(block) {
   async function drawChart() {
     const canvas = block.querySelector('.forex-graph-canvas');
     if (!canvas) return;
+
+    // Before the first GO, leave the chart area blank (no axes, no "No Data").
+    if (!state.hasSearched) {
+      if (state.chartInstance) {
+        state.chartInstance.destroy();
+        state.chartInstance = null;
+      }
+      return;
+    }
 
     const Chart = await loadChartJs();
 
@@ -1093,6 +1105,7 @@ export default async function decorate(block) {
     if (goButton) {
       goButton.addEventListener('click', async () => {
         if (state.loading) return;
+        state.hasSearched = true;
         await fetchAndRenderChart();
         render({ redrawChart: true });
       });
