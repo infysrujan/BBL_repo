@@ -150,6 +150,5 @@
 @media (width >= 120rem) {
   .menu-cards .tips-insight-quick-access.four-cards {
     grid-template-columns: repeat(4, minmax(16rem, 1fr));
-    gap: var(--bbl-space-300);
   }
 }
