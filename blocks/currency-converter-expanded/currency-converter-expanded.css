@@ -504,4 +504,9 @@
     width: min-content;
     margin-inline: auto;
   }
+
+  :lang(th) .section.currency-converter-expanded-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+    width: fit-content;
+    max-width: 15rem;
+  }
 }
