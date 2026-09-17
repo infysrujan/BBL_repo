@@ -10,6 +10,7 @@
 
   /* font size */
   --bbl-form-font-size-6: 0.375rem;                /* 6px */
+  --bbl-form-font-size-14: 0.875rem;               /* 14px */
   --bbl-form-font-size-21: 1.3125rem;              /* 21px */
 
   /* font weight */
@@ -672,7 +673,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         }
 
         & > .cc-panel-item-timeline-caption p {
-          font-size: var(--bbl-text-small-size);
+          font-size: var(--bbl-form-font-size-14);
           line-height: var(--bbl-text-small-line-height);
           color: var(--bbl-color-grey-28);
           font-weight: var(--bbl-text-small-weight);
