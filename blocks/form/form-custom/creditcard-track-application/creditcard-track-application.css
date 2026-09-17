@@ -677,7 +677,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
           line-height: var(--bbl-text-small-line-height);
           color: var(--bbl-color-grey-28);
           font-weight: var(--bbl-text-small-weight);
-          padding-left: 0.5rem;
+          padding-left: 0.375rem;
         }
 
         & > .cc-panel-item-timeline-muted p {
@@ -872,10 +872,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
           width: min(13.75rem, 58%);
           max-width: none;
         }
-
-        & > .cc-panel-item-timeline-caption.cc-panel-item-timeline-caption p {
-          padding-left: 19px;
-        }
       }
 
       &:is(
@@ -982,6 +978,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
     & .form form fieldset.panel-wrapper.field-thankyou-visible-panel.field-wrapper .plain-text-wrapper p {
         font-size: var(--bbl-font-size-h4-mobile);
     }
+
+    & .form form fieldset.panel-wrapper.field-wrapper.cc-app-notfound > .cc-panel-item-timeline-caption p {
+      padding-left: 1.1875rem;
+    }
   }
 
   & .form form fieldset.panel-wrapper.field-wrapper.cc-app-main-form > .custom-fieldset-approval.cc-panel-item-form-consent :is(.tnc-text-decoration.tnc-text-decoration, fieldset.panel-wrapper .tnc-text-decoration.tnc-text-decoration) {
@@ -1043,6 +1043,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         & > .cc-panel-item-timeline-caption {
           left: 44%;
           width: 12.5rem;
+        }
+
+        & > .cc-panel-item-timeline-caption p {
+          padding-left: 0.375rem;
         }
       }
 
