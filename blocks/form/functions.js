@@ -1191,8 +1191,9 @@ function formatNumberWithCommas(value) {
 
 /**
  * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
- * Only applies to fields where the author has added the "preserve-unit-label"
- * custom CSS class via the component dialog - so this never affects fields
+ * so they remain visible even when the AEM Forms Rule Engine overwrites
+ * Only applies to fields marked with the `preserve-unit-label` CSS class.
+ *
  * @name preserveFieldUnitLabels
  * @returns {void}
  */
@@ -1220,19 +1221,38 @@ function preserveFieldUnitLabels() {
     unitLabel.textContent = unitText;
     unitLabel.style.position = 'absolute';
     unitLabel.style.right = '0';
-    unitLabel.style.top = '0';
+    unitLabel.style.top = '3.2rem';
     unitLabel.style.color = '#767676';
     unitLabel.style.fontSize = '0.875rem';
     unitLabel.style.pointerEvents = 'none';
     unitLabel.style.background = 'transparent';
 
     wrapper.appendChild(unitLabel);
+
+    // Hide the original description text ONLY while it still shows the
+    // original unit text (e.g. "Baht/Month"), so it never overlaps our
+    const originalDescription = wrapper.querySelector('.field-description');
+    if (originalDescription && originalDescription.textContent.trim() === unitText) {
+      originalDescription.style.display = 'none';
+    }
+
     wrapper.dataset.unitLabelInit = 'true';
   };
 
   const scan = () => {
-    // Only fields explicitly marked with the custom class from the dialog
-    document.querySelectorAll('.field-wrapper.preserve-unit-label[data-description]').forEach(initWrapper);
+    document.querySelectorAll('.field-wrapper.preserve-unit-label[data-description]').forEach((wrapper) => {
+      initWrapper(wrapper);
+
+      // Re-check on every scan: toggle the original description's
+      // visibility based on whether it currently holds the original
+      const originalDescription = wrapper.querySelector('.field-description');
+      const unitLabel = wrapper.querySelector('.field-unit-label');
+      if (originalDescription && unitLabel) {
+        const isOriginalText = originalDescription.textContent.trim()
+        === unitLabel.textContent.trim();
+        originalDescription.style.display = isOriginalText ? 'none' : '';
+      }
+    });
   };
 
   scan();
@@ -1240,7 +1260,6 @@ function preserveFieldUnitLabels() {
   const observer = new MutationObserver(() => scan());
   observer.observe(document.body, { childList: true, subtree: true });
 }
-
 preserveFieldUnitLabels();
 
 // eslint-disable-next-line import/prefer-default-export
@@ -1281,5 +1300,4 @@ export {
   validateMaxCheckbox,
   replaceother,
   formatNumberWithCommas,
-  preserveFieldUnitLabels,
 };
