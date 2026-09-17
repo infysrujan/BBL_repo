@@ -1190,8 +1190,25 @@ function formatNumberWithCommas(value) {
 }
 
 /**
+ * Formats a number with comma separators, capping the actual digit count
+ * at maxDigits so the value can never exceed the intended limit - matching
+ * fields like Telephone that silently block further input with no error
+ * message, instead of relying on the dialog's Max Length property (which
+ * would count the added commas and wrongly flag the value as too long).
+ * @name formatCappedNumberWithCommas
+ * @param {string} value - The numeric value to format
+ * @param {number} [maxDigits=12] - Maximum allowed actual digits
+ * @return {string}
+ */
+function formatCappedNumberWithCommas(value, maxDigits = 12) {
+  const digitsOnly = value.toString().replace(/\D/g, '').slice(0, Number(maxDigits));
+  return digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+/**
  * Preserves field unit/description labels (e.g. "Baht/Month", "Baht/Year")
- * so they remain visible even when the AEM Forms Rule Engine overwrites
+ * so they remain visible even when the AEM Forms Rule Engine overwrites the
+ * field's description container with a validation error message.
  * Only applies to fields marked with the `preserve-unit-label` CSS class.
  *
  * @name preserveFieldUnitLabels
@@ -1222,7 +1239,7 @@ function preserveFieldUnitLabels() {
     unitLabel.style.position = 'absolute';
     unitLabel.style.right = '0';
     unitLabel.style.top = '3.2rem';
-    unitLabel.style.color = '#767676';
+    unitLabel.style.color = 'var(--bbl-color-gray-800)';
     unitLabel.style.fontSize = '0.875rem';
     unitLabel.style.pointerEvents = 'none';
     unitLabel.style.background = 'transparent';
@@ -1231,6 +1248,8 @@ function preserveFieldUnitLabels() {
 
     // Hide the original description text ONLY while it still shows the
     // original unit text (e.g. "Baht/Month"), so it never overlaps our
+    // cloned label. Once the Rule Engine overwrites it with a validation
+    // error, its text no longer matches, so it becomes visible again.
     const originalDescription = wrapper.querySelector('.field-description');
     if (originalDescription && originalDescription.textContent.trim() === unitText) {
       originalDescription.style.display = 'none';
@@ -1245,11 +1264,12 @@ function preserveFieldUnitLabels() {
 
       // Re-check on every scan: toggle the original description's
       // visibility based on whether it currently holds the original
+      // unit text or a validation error message.
       const originalDescription = wrapper.querySelector('.field-description');
       const unitLabel = wrapper.querySelector('.field-unit-label');
       if (originalDescription && unitLabel) {
         const isOriginalText = originalDescription.textContent.trim()
-        === unitLabel.textContent.trim();
+          === unitLabel.textContent.trim();
         originalDescription.style.display = isOriginalText ? 'none' : '';
       }
     });
@@ -1300,4 +1320,5 @@ export {
   validateMaxCheckbox,
   replaceother,
   formatNumberWithCommas,
+  formatCappedNumberWithCommas,
 };
