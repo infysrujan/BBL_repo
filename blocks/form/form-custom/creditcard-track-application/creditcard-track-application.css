@@ -936,7 +936,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       }
 
       & > .cc-panel-item-timeline-message.cc-panel-item-timeline-message p {
-        font-size: 1.25rem;
+        font-size: 1.1875rem;
         line-height: 1.5rem;
       }
     }
