@@ -927,8 +927,7 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       .cc-app-notfound
     ) {
       & > .cc-panel-item-timeline-caption p {
-        padding-left: 0;
-        padding-right: 0.75rem;
+        padding-left: 0.5rem;
       }
 
       & > .cc-panel-item-timeline-status.cc-panel-item-timeline-status p {
