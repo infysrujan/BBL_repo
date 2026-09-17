@@ -84,6 +84,7 @@ async function loadData() {
     fatherInsureMax: parseFloat(taxLimits?.Father_MotherInsureLimit) || 15000,
     homeInterestMax: parseFloat(taxLimits?.HomeInterestLimit) || 100000,
     otherDeductionsMax: parseFloat(taxLimits?.OtherReduceLimit) || 1000000,
+    esgMax: parseFloat(taxLimits?.esgreducelimit) || 300000,
     donateMax: parseFloat(labels.individualMaxesDonate) || 999999999,
     maxChildrenCount: parseInt(taxLimits?.MaxChildReduce, 10) || 10,
     providentFundMaxPct: parseFloat(labels.individualMaxesProvidentFundPercent) || 15,
@@ -1153,15 +1154,13 @@ function renderJourney3(block, data, state, onBack, onRecalculate) {
   // ── Invest table (only when tax is payable) ──
   const rmfPensionMax = Math.round(apiResult1.MaxRMFSSFInsure60 || 0);
 
-  const individualMaxesThaiEsg = parseInt(labels.individualMaxesThaiEsg || '300000', 10);
-
   const notesElement = buildNotes(
     getString(labels, 'configNotesTitle', 'Notes'),
     [
       getString(labels, 'configNotesInvestmentCalculation', 'Calculate the maximum amount that you can invest according to the conditions of the Revenue Department.'),
       getString(labels, 'configNotesRmfAndPension', `* The combined amount of RMF and pension insurance premiums must not exceed ${formatNumber(rmfPensionMax)} baht`).replace('{combinedRMFPensionMax}', formatNumber(rmfPensionMax)),
       getString(labels, 'configNotesLifeAndHealthInsurance', `** The combined amount of life insurance premiums and health insurance premiums must not exceed ${formatNumber(data.combinedInsuranceMax)} baht`).replace('{combinedLifeHealthMax}', formatNumber(data.combinedInsuranceMax)),
-      getString(labels, 'configNotesThaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${formatNumber(individualMaxesThaiEsg)} baht whichever is lower`).replace('{thaiEsgMax}', formatNumber(individualMaxesThaiEsg)),
+      getString(labels, 'configNotesThaiEsg', `*** Investing in Thai ESG funds must not exceed 30% of taxable income or ${formatNumber(data.esgMax)} baht whichever is lower`).replace('{thaiEsgMax}', formatNumber(data.esgMax)),
     ],
   );
 
