@@ -452,6 +452,8 @@ function renderBlock(
 
   const errorStyle = state.error ? '' : ' style="display:none"';
   const dropdownOpen = state.dropdownOpen ? ' is-open' : '';
+  const showNoData = !state.loading && !state.chartData.length;
+  const noDataStyle = showNoData ? '' : ' style="display:none"';
 
   block.innerHTML = `<section class="forex-graph-content">
     <div class="forex-graph-controls">
@@ -493,6 +495,7 @@ function renderBlock(
       </div>
     </div>
     <div class="forex-graph-error"${errorStyle}><p class="forex-graph-error-text">${escapeHtml(state.error)}</p></div>
+    <p class="forex-graph-no-data"${noDataStyle}>${escapeHtml(placeholders.noDataLabel || 'No Data')}</p>
     <div class="forex-graph-chart-section">
       <div class="forex-graph-chart-header">
         <h5 class="forex-graph-chart-title">${escapeHtml(graphTitle)}</h5>
@@ -573,7 +576,7 @@ export default async function decorate(block) {
 
   async function drawChart() {
     const canvas = block.querySelector('.forex-graph-canvas');
-    if (!canvas || !state.chartData.length) return;
+    if (!canvas) return;
 
     const Chart = await loadChartJs();
 
@@ -586,8 +589,8 @@ export default async function decorate(block) {
     const buyingData = state.chartData.map((d) => d.buyingRate);
     const sellingData = state.chartData.map((d) => d.sellingRate);
 
-    // Single-day range pins to the axis origin; pad both sides with a blank category to center it.
-    if (labels.length === 1) {
+    // Single-day range (or no data at all) pins to the axis origin;
+    if (labels.length <= 1) {
       labels.unshift('');
       labels.push('');
       buyingData.unshift(null);
@@ -597,8 +600,9 @@ export default async function decorate(block) {
     }
 
     const allValues = [...buyingData, ...sellingData].filter((v) => v !== null);
-    const minVal = Math.min(...allValues) - 0.5;
-    const maxVal = Math.ceil(Math.max(...allValues));
+    const hasData = allValues.length > 0;
+    const minVal = hasData ? Math.min(...allValues) - 0.5 : -1;
+    const maxVal = hasData ? Math.ceil(Math.max(...allValues)) : 1;
 
     // Breakpoints (see forex-graph.css): mobile < 760px, tablet 760–1024px, desktop 1024px+.
     const viewportWidth = window.innerWidth;
@@ -667,6 +671,7 @@ export default async function decorate(block) {
     const pointGridPlugin = {
       id: 'pointGrid',
       beforeDatasetsDraw(chart) {
+        if (!hasData) return; // empty state: horizontal gridlines only, no vertical ticks
         const { ctx, chartArea, scales } = chart;
         const xScale = scales.x;
         const meta = chart.getDatasetMeta(0);
@@ -710,6 +715,9 @@ export default async function decorate(block) {
         ctx.textBaseline = 'middle';
         yScale.ticks.forEach((tick, i) => {
           if (!Number.isInteger(tick.value)) return;
+          // Empty state: don't render negative placeholder ticks (matches the
+          // y-axis callback), so the "No Data" view shows no stray numbers.
+          if (!hasData && tick.value < 0) return;
           ctx.fillText(String(tick.value), 0, yScale.getPixelForTick(i));
         });
         ctx.restore();
@@ -819,12 +827,20 @@ export default async function decorate(block) {
               tickLength: 22,
               tickColor: 'transparent',
             },
+            border: {
+              display: hasData,
+            },
             ticks: {
               stepSize: 1,
               padding: 0,
               font: { size: 13, weight: '700' },
+              // Labels are hidden here and redrawn flush-left by the pointGrid
+              // plugin; transparent keeps their reserved width (and the plot gap).
               color: 'transparent',
-              callback: (value) => (Number.isInteger(value) ? value : null),
+              callback: (value) => {
+                if (!hasData && value < 0) return null;
+                return Number.isInteger(value) ? value : null;
+              },
             },
           },
         },
@@ -1230,9 +1246,8 @@ export default async function decorate(block) {
       state.to.viewYear = year;
       state.to.viewMonth = month;
 
-      // Auto-trigger the GO action so the chart is populated on load,
-      // instead of requiring the user to click GO first.
-      await fetchAndRenderChart();
+      // No auto-generate: the chart stays in its empty "No Data" state until the
+      // user picks a range and clicks GO.
     } finally {
       state.loading = false;
       render({ redrawChart: true });
