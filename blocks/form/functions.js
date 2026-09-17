@@ -1191,9 +1191,6 @@ function formatNumberWithCommas(value) {
 
 /**
  * Formats a number with comma separators, capping the actual digit count
- * at maxDigits so the value can never exceed the intended limit - matching
- * fields like Telephone that silently block further input with no error
- * message, instead of relying on the dialog's Max Length property (which
  * would count the added commas and wrongly flag the value as too long).
  * @name formatCappedNumberWithCommas
  * @param {string} value - The numeric value to format
