@@ -872,6 +872,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
           width: min(13.75rem, 58%);
           max-width: none;
         }
+
+        & > .cc-panel-item-timeline-caption.cc-panel-item-timeline-caption p {
+          padding-left: 19px;
+        }
       }
 
       &:is(
@@ -926,10 +930,6 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
       .cc-app-callback,
       .cc-app-notfound
     ) {
-      & > .cc-panel-item-timeline-caption p {
-        padding-left: 0.5rem;
-      }
-
       & > .cc-panel-item-timeline-status.cc-panel-item-timeline-status p {
         font-size: 1.25rem;
         line-height: 1.25rem;
@@ -1071,6 +1071,10 @@ main .section.form-container.custom-forms:has(.cc-app-main-form) div.default-con
         & > .cc-panel-item-timeline-caption {
           left: 46%;
           width: 13.75rem;
+        }
+
+        & > .cc-panel-item-timeline-caption p {
+          padding-left: 0;
         }
       }
     }
