@@ -32,8 +32,6 @@
   --bbl-form-margin-10: 0.625rem;                    /* 10px */
   --bbl-form-margin-14: 0.875rem;                    /* 14px */
   --bbl-form-margin-15: 0.9375rem;                   /* 15px */
-  --bbl-form-margin-17: 1.0625rem;                   /* 17px */
-  --bbl-form-margin-19-5: 1.21875rem;                /* 19.5px */
   --bbl-form-margin-30: 1.875rem;                    /* 30px */
   --bbl-form-margin-32: 2rem;                        /* 32px */
 
@@ -169,9 +167,7 @@ main .section.form-container.lead-forms .form form .plain-text-wrapper.field-tex
   font-size: unset;
 }
 
-main .section.form-container.lead-forms .form form .plain-text-wrapper.field-text p:has(> strong):has(~ p:not(:empty)) {
-  margin-bottom: var(--bbl-form-margin-17);
-}
+
 
 main .lead-forms .form form {
   gap: var(--bbl-form-gap-3);
@@ -633,6 +629,34 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper {
   padding: 0;
 }
 
+main .section.form-container.lead-forms:has(.field-bottom-10) {
+  padding-inline: 0.9375rem;
+
+  & :is(div.form-wrapper, .form.block, .form) {
+    width: 100%;
+    max-width: none;
+    margin-inline: auto;
+    padding: 0;
+  }
+
+  & .form form,
+  & .form form > fieldset.panel-wrapper.field-wrapper {
+    max-width: none;
+  }
+
+  & .form form fieldset.panel-wrapper.field-main-form-panel {
+    width: 100%;
+    max-width: 46.25rem;
+    margin-inline: auto;
+  }
+
+  & .form form fieldset.panel-wrapper.field-bottom-10 {
+    width: 100%;
+    max-width: 900px;
+    margin-inline: auto;
+  }
+}
+
 main .lead-forms .form form fieldset.panel-wrapper.field-button-panel {
   display: flex;
   flex-direction: row;
@@ -959,9 +983,6 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
     line-height: var(--bbl-form-line-height-22);
   }
 
-  main .section.form-container.lead-forms .form form .plain-text-wrapper.field-text p:has(> strong):has(~ p:not(:empty)) {
-    margin-bottom: var(--bbl-form-margin-19-5);
-  }
 
   main .lead-forms .form form h2{
     padding: 0 var(--bbl-form-padding-10);
