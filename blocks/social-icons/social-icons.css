@@ -8,9 +8,7 @@
   background: var(--bbl-bg-primary);
   overflow: hidden;
   cursor: pointer;
-  transition:
-    width 0.3s ease,
-    border-radius 0.3s ease;
+  transition: width 0.3s ease;
 }
 
 .social-icons.active {
