@@ -29,7 +29,7 @@ async function loadInflationRate(rateListUrl) {
 }
 
 async function loadIcons() {
-  const names = ['goal', 'goal-amount', 'goal-period', 'balance', 'annual-return', 'annual-increase', 'step-up', 'step-up-adjusted', 'chevron-down', 'check'];
+  const names = ['goal', 'goal-amount', 'goal-period', 'balance', 'annual-return', 'annual-increase', 'step-up', 'step-up-adjusted', 'chevron-down', 'check', 'legend-dot-result'];
   await Promise.all(names.map(async (name) => {
     try {
       const resp = await fetch(`${ICON_BASE}/${name}.svg`);
