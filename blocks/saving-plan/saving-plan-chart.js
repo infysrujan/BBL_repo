@@ -311,7 +311,7 @@ function buildChartConfig(originalSeries, newSeries, labels, overlayPlugin, colo
             const top = axis.max;
             const step = niceStep(top / 4);
             const ticks = [];
-            for (let v = 0; v < top - step / 2; v += step) ticks.push({ value: v });
+            for (let v = 0; v <= top - step; v += step) ticks.push({ value: v });
             ticks.push({ value: top });
             axis.ticks = ticks;
           },
