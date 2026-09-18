@@ -186,7 +186,7 @@
 
 .retirement-calculator .rc-income-unit {
   font-family: var(--bbl-font-family-looped);
-  font-size: var(--bbl-font-size-b4);
+  font-size: 9.8px;
   font-weight: 400;
   color: var(--bbl-color-white);
   opacity: 0.8;
@@ -359,7 +359,7 @@
 
 .retirement-calculator .rc-j1-summary-unit {
   font-family: var(--bbl-font-family-looped);
-  font-size: var(--bbl-font-size-b3);
+  font-size: 9.8px;
   font-weight: 400;
   color: var(--bbl-color-gray-121);
 }
@@ -608,7 +608,7 @@
 
 .retirement-calculator .rc-summary-unit {
   font-family: var(--bbl-font-family-looped);
-  font-size: 0.6875rem;
+  font-size: 9.8px;
   font-weight: 400;
   line-height: normal;
   color: var(--bbl-color-grey-60);
@@ -999,6 +999,10 @@
 
   .retirement-calculator .rc-summary-value {
     font-size: 1.5rem;
+  }
+
+  .retirement-calculator .rc-summary-unit {
+    font-size: 9.6px;
   }
 
   .retirement-calculator .rc-savings-card-recommended,
