@@ -64,16 +64,25 @@ function readUrl(row) {
 // ── Data fetching ──────────────────────────────────────────────────────────────
 
 /**
+ * The single combined filtering-matrix sheet now carries both languages in one
+ * file (columns "Fund Name (en)" / "Fund Name (th)"), so the fund-name column is
+ * picked by the current locale instead of fetching separate en/th sheets.
+ */
+function fundNameKey() {
+  return getLang() === 'th' ? 'Fund Name (th)' : 'Fund Name (en)';
+}
+
+/**
  * Fetch the MF filtering matrix sheet.
- * Config key: mf-suggestor-data (→ mfSuggestorData after toCamelCase)
- * Expected columns: Fund Name | Fund Risk Level | Fund Has Exchange Rate Risk
+ * Config key: mf-suggestor (→ mfSuggestor after toCamelCase) — one combined
+ * sheet for both languages.
+ * Expected columns: Fund Name (en) | Fund Name (th) | Fund Risk Level
+ *   | Fund Has Exchange Rate Risk | Is an RMF/SSF/Thai ESG/Thai ESGX Fund
  */
 async function loadMatrix() {
   try {
     const configs = await fetchConfigs();
-    const lang = getLang();
-    const langKey = `mfSuggestorData${lang.charAt(0).toUpperCase() + lang.slice(1)}`;
-    const url = configs[langKey] || configs.mfSuggestorDataEn;
+    const url = configs.mfSuggestor;
     if (!url) return [];
     const json = await fetchGet(url, { throwOnError: false });
     return (json?.data || []).map(normalizeRow);
@@ -184,9 +193,10 @@ function matchesRow(row, { riskLevel, fxRisk, taxBenefit }) {
  * Extract the fund names from matrix rows matched by the filters.
  */
 function getMatchedFundNames(matrix, answers) {
+  const nameKey = fundNameKey();
   return matrix
     .filter((row) => matchesRow(row, answers))
-    .map((row) => norm(row['Fund Name'] || ''))
+    .map((row) => norm(row[nameKey] || ''))
     .filter(Boolean);
 }
 
@@ -209,9 +219,10 @@ function filterFundsByMatrix(funds, matchedNames) {
  * Product Name.
  */
 function sortBySheetOrder(funds, matrix) {
+  const nameKey = fundNameKey();
   const orderMap = {};
   matrix.forEach((row, index) => {
-    const name = norm(row['Fund Name'] || '');
+    const name = norm(row[nameKey] || '');
     if (name && !(name in orderMap)) orderMap[name] = index;
   });
 
