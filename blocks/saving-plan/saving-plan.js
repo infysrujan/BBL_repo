@@ -472,8 +472,8 @@ function buildShellMarkup(data) {
   })}
           </div>
           <div class="saving-plan-form-actions">
-            <button type="button" class="saving-plan-form-btn saving-plan-form-btn-secondary" data-action="clear" disabled>${labels.buttons.clear}</button>
-            <button type="button" class="saving-plan-form-btn saving-plan-form-btn-primary" data-action="calculate" disabled>${labels.buttons.calculate}</button>
+            <button type="button" class="button-m secondary" data-action="clear" disabled>${labels.buttons.clear}</button>
+            <button type="button" class="button-m primary" data-action="calculate" disabled>${labels.buttons.calculate}</button>
           </div>
         </div>
  
