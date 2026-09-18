@@ -185,7 +185,7 @@
 }
 
 .retirement-calculator .rc-income-unit {
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
   font-size: var(--bbl-font-size-b4);
   font-weight: 400;
   color: var(--bbl-color-white);
