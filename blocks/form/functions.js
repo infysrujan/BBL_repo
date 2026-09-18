@@ -1279,6 +1279,26 @@ function preserveFieldUnitLabels() {
 }
 preserveFieldUnitLabels();
 
+/**
+ * Restricts `gpa-only` inputs to digits and one decimal point, max 4 chars.
+ * @name restrictGpaOnlyInputs
+ * @returns {void}
+ */
+function restrictGpaOnlyInputs() {
+  if (typeof document === 'undefined') return;
+  document.addEventListener('keydown', (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || !input.closest('.gpa-only')) return;
+    if (event.ctrlKey || event.metaKey || event.key.length !== 1) return;
+    const value = input.value.slice(0, input.selectionStart)
+    + event.key + input.value.slice(input.selectionEnd);
+    if (!/^[0-9.]{0,4}$/.test(value) || (value.match(/\./g) || []).length > 1) {
+      event.preventDefault();
+    }
+  }, true);
+}
+restrictGpaOnlyInputs();
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
