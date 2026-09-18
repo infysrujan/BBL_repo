@@ -497,10 +497,15 @@ function getBranchEnumNames(province, lang = 'th') {
 
 // Wraps a select's <option> elements into <optgroup> by district, with
 // districts sorted A-Z and branches within each district sorted A-Z.
+// Works for both EN selects (value = BranchName) and TH selects (value = BranchNo).
 function applyBranchDistrictGroupingToSelect(selectEl, data) {
+  // Build lookups by both BranchName and BranchNo so we handle EN and TH selects.
   const districtByBranchName = {};
+  const districtByBranchNo = {};
   data.forEach((item) => {
-    districtByBranchName[item.BranchName] = item.Address3 ? String(item.Address3).trim() : '';
+    const district = item.Address3 ? String(item.Address3).trim() : '';
+    if (item.BranchName) districtByBranchName[item.BranchName] = district;
+    if (item.BranchNo) districtByBranchNo[String(item.BranchNo)] = district;
   });
 
   // Collator gives correct A-Z ordering for both Thai and English labels.
@@ -510,7 +515,7 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   const entries = Array.from(selectEl.querySelectorAll('option'))
     .map((opt) => ({
       opt,
-      district: districtByBranchName[opt.value] || '',
+      district: districtByBranchName[opt.value] || districtByBranchNo[opt.value] || '',
     }))
     .filter((entry) => entry.district !== '');
 
@@ -535,27 +540,45 @@ function applyBranchDistrictGroupingToSelect(selectEl, data) {
   });
 }
 
-// Polls briefly for a <select> whose options match this branch dataset,
-// then groups it.
-function scheduleApplyBranchDistrictGroupingAuto(data) {
+// Tracks selects that have already been grouped so we don't process them twice.
+// Uses a live DOM check: if the select already has <optgroup> children, it is
+// considered grouped. When the form rule engine resets options (stripping
+// optgroups), the check fails and the select is re-grouped automatically.
+
+// Applies branch sorting/grouping to every matching unprocessed <select> in the DOM.
+function applyBranchGroupingToAllMatching(data) {
   if (!data.length) return;
   const branchNames = new Set(data.map((item) => String(item.BranchName)));
-
-  let attempts = 0;
-  const tryApply = () => {
-    attempts += 1;
-    const target = Array.from(document.querySelectorAll('select')).find((sel) => {
-      const optVals = Array.from(sel.options).map((o) => o.value).filter((v) => v !== '');
-      return optVals.length > 0 && optVals.every((v) => branchNames.has(v));
-    });
-
-    if (target) {
-      applyBranchDistrictGroupingToSelect(target, data);
-    } else if (attempts < 20) {
-      setTimeout(tryApply, 100);
+  const branchNos = new Set(data.map((item) => String(item.BranchNo)));
+  Array.from(document.querySelectorAll('select')).forEach((sel) => {
+    // Already grouped — optgroups still in place, nothing to do.
+    if (sel.querySelector('optgroup')) return;
+    const optVals = Array.from(sel.options).map((o) => o.value).filter((v) => v !== '');
+    const isMatch = optVals.length > 0
+      && (optVals.every((v) => branchNames.has(v)) || optVals.every((v) => branchNos.has(v)));
+    if (isMatch) {
+      applyBranchDistrictGroupingToSelect(sel, data);
     }
-  };
-  setTimeout(tryApply, 0);
+  });
+}
+
+// Polls briefly on load, then installs a MutationObserver so any branch
+// <select> that appears later (e.g. conditionally shown by a radio button)
+// is also sorted and grouped.
+function scheduleApplyBranchDistrictGroupingAuto(data) {
+  if (!data.length) return;
+
+  // Initial pass — run shortly after data is available.
+  setTimeout(() => applyBranchGroupingToAllMatching(data), 0);
+
+  // Watch for new/modified selects added to the DOM later.
+  if (typeof MutationObserver !== 'undefined') {
+    const observer = new MutationObserver((mutations) => {
+      const hasNewNodes = mutations.some((m) => m.addedNodes.length > 0 || m.type === 'attributes');
+      if (hasNewNodes) applyBranchGroupingToAllMatching(data);
+    });
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'style', 'class'] });
+  }
 }
 
 // The Rule Engine worker can't touch the DOM, and this form's custom
@@ -574,7 +597,18 @@ if (typeof document !== 'undefined') {
         lastValues.set(key, current);
         ['en', 'th'].forEach((lang) => {
           const data = fetchBranchesByProvince(current, lang);
-          if (data.length) scheduleApplyBranchDistrictGroupingAuto(data);
+          if (data.length) {
+            // A new province was chosen — the branch <select> DOM element is the
+            // same but its options have changed. Evict it from groupedSelects so
+            // applyBranchGroupingToAllMatching re-sorts the fresh options.
+            const branchNames = new Set(data.map((item) => String(item.BranchName)));
+            const branchNos = new Set(data.map((item) => String(item.BranchNo)));
+            document.querySelectorAll('select').forEach((branchSel) => {
+              // No eviction needed — the live optgroup check handles re-grouping
+              // automatically when the form rule engine resets the options.
+            });
+            scheduleApplyBranchDistrictGroupingAuto(data);
+          }
         });
       }
     });
