@@ -29,7 +29,7 @@ async function loadInflationRate(rateListUrl) {
 }
 
 async function loadIcons() {
-  const names = ['goal', 'goal-amount', 'goal-period', 'balance', 'annual-return', 'annual-increase', 'step-up', 'step-up-adjusted', 'chevron-down'];
+  const names = ['goal', 'goal-amount', 'goal-period', 'balance', 'annual-return', 'annual-increase', 'step-up', 'step-up-adjusted', 'chevron-down', 'check'];
   await Promise.all(names.map(async (name) => {
     try {
       const resp = await fetch(`${ICON_BASE}/${name}.svg`);
@@ -381,7 +381,7 @@ function buildDropdownField({
     .map((opt) => `
       <li class="saving-plan-dropdown-option${opt.key === selected?.key ? ' is-selected' : ''}"
           role="option" data-value="${opt.key}" tabindex="-1">
-        <span class="saving-plan-dropdown-option-check icon-check" aria-hidden="true"></span>
+        <span class="saving-plan-dropdown-option-check" aria-hidden="true">${getIcon('check')}</span>
         <span class="saving-plan-dropdown-option-label">${opt.label}</span>
       </li>
     `)
