@@ -358,6 +358,7 @@
 }
 
 .retirement-calculator .rc-j1-summary-unit {
+  font-family: var(--bbl-font-family-looped);
   font-size: var(--bbl-font-size-b3);
   font-weight: 400;
   color: var(--bbl-color-gray-121);
