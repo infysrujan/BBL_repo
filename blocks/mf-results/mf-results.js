@@ -202,6 +202,26 @@ function filterFundsByMatrix(funds, matchedNames) {
   });
 }
 
+/**
+ * Sort funds to match the row order they're authored in the mf-suggestor
+ * filtering-matrix sheet (top-to-bottom, drag-reorderable there) — mirrors
+ * sortBySheetOrder in credit-card-results.js, keyed on Fund Name instead of
+ * Product Name.
+ */
+function sortBySheetOrder(funds, matrix) {
+  const orderMap = {};
+  matrix.forEach((row, index) => {
+    const name = norm(row['Fund Name'] || '');
+    if (name && !(name in orderMap)) orderMap[name] = index;
+  });
+
+  return [...funds].sort((a, b) => {
+    const orderA = orderMap[norm(a.FundName || '')] ?? Number.MAX_SAFE_INTEGER;
+    const orderB = orderMap[norm(b.FundName || '')] ?? Number.MAX_SAFE_INTEGER;
+    return orderA - orderB;
+  });
+}
+
 // ── Fund card DOM builder ──────────────────────────────────────────────────────
 
 /**
@@ -477,7 +497,7 @@ export default async function decorate(block) {
     renderCards([]);
   } else {
     const matchedNames = getMatchedFundNames(matrix, answers);
-    const filteredFunds = filterFundsByMatrix(allFunds, matchedNames);
+    const filteredFunds = sortBySheetOrder(filterFundsByMatrix(allFunds, matchedNames), matrix);
     renderCards(filteredFunds);
   }
 
