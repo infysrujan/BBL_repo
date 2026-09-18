@@ -607,7 +607,7 @@
 }
 
 .retirement-calculator .rc-summary-unit {
-  font-family: var(--bbl-font-family-medium);
+  font-family: var(--bbl-font-family-looped);
   font-size: 0.6875rem;
   font-weight: 400;
   line-height: normal;
