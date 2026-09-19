@@ -6,9 +6,6 @@
 .saving-plan-block {
   display: block;
   width: 100%;
-  font-family: var(--bbl-font-family-primary);
-  font-size: var(--bbl-text-default-size);
-  line-height: var(--bbl-line-height-body);
   background: var(--bbl-color-white);
 }
 
@@ -54,7 +51,7 @@
   font-family: var(--bbl-font-family-medium);
   font-size: var(--bbl-text-thumbnail-title-size);
   font-weight: var(--bbl-text-thumbnail-title-weight);
-  margin: 0 0 1rem;
+  margin: 0 0 var(--bbl-space-200);
   line-height: var(--bbl-heading-h5-line-height);
 }
 
@@ -449,7 +446,8 @@
   align-items: center;
   gap: 0.4375rem;
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b3-mobile);
+  font-size: 0.7875rem;
+  line-height: 1.0625rem;
   font-weight: var(--bbl-font-weight-medium);
   color: var(--bbl-color-active-blue);
 }
@@ -620,8 +618,6 @@
 
 .saving-plan-slider-label {
   font-family: var(--bbl-font-family-medium);
-  font-size: var(--bbl-font-size-b1-mobile);
-  font-weight: var(--bbl-font-weight-regular);
   color: var(--bbl-color-black);
   align-self: start;
   min-height: 0;
@@ -731,7 +727,6 @@
 }
 
 .saving-plan-newplan-future {
-  font-size: var(--bbl-font-size-b1-mobile);
   margin: 0 0 2.625rem;
 }
 
@@ -803,7 +798,7 @@
 }
 
 .saving-plan-disclaimer {
-  margin-top: 1rem;
+  margin-top: var(--bbl-space-200);
 }
 
 .saving-plan-disclaimer-title {
@@ -924,33 +919,6 @@
 
 .saving-plan-container2.is-visible {
   display: revert;
-  max-width: 109.5rem;
-  margin-top: 3.5rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0;
-}
-
-.saving-plan-container2.is-visible .default-content-wrapper,
-.saving-plan-container2.is-visible .card-list-wrapper {
-  max-width: 56.25rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0;
-}
-
-.saving-plan-container2.is-visible .cards-list.scrollable.center.cards-3 {
-  margin: 0 -1.25rem;
-  padding: 0;
-}
-
-.saving-plan-container2.is-visible .cards-list-image.cards-list-image-default {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 272 / 175;
-  max-width: 17rem;
-  margin: 0;
-  padding: 0;
 }
 
 @media (width > 47.5rem) {
@@ -993,9 +961,6 @@
     padding: 0.5rem 1.25rem;
   }
 
-  .saving-plan-chart-legend-item {
-    font-size: var(--bbl-text-body-small-size);
-  }
 
   .saving-plan-chart-canvas-wrap {
     flex: 0 0 auto;
@@ -1059,17 +1024,9 @@
     margin-left: 0.4375rem;
   }
 
-  .saving-plan-slider-min,
-  .saving-plan-slider-value {
-    font-size: var(--bbl-text-default-size);
-  }
 
   .saving-plan-products {
     margin-top: 3.5rem;
-  }
-
-  .saving-plan-products-title {
-    font-size: var(--bbl-font-size-h3-mobile);
   }
 
   .saving-plan-products-grid {
@@ -1098,22 +1055,55 @@
 
   .saving-plan-form-title {
     font-size: var(--bbl-font-size-h3-desktop);
-    margin-bottom: 1rem;
+    margin-bottom: var(--bbl-space-200);
+    line-height: 2.025rem;
+  }
+
+  .saving-plan-form-grid {
+    gap: var(--bbl-space-200);
+    padding-bottom: var(--bbl-space-200);
+  }
+
+  .saving-plan-result-currency {
+    font-size: 0.8rem;
+    line-height: 1.08rem;
+  }
+
+  .saving-plan-chart-legend-item {
+    font-size: 0.9rem;
+    line-height: 1.215rem;
   }
 
   .saving-plan-form-actions {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-block: var(--bbl-space-200);
+    gap: var(--bbl-space-200);
+  }
+
+  .saving-plan-newplan-footnote {
+    margin: 0.25rem 0 0;
+  }
+
+  .saving-plan-newplan-card {
+    padding: var(--bbl-space-200);
   }
 
   .saving-plan-result-title {
     font-size: var(--bbl-font-size-h3-desktop);
-    margin-bottom: 1rem;
+    line-height: 2.025rem;
+    margin-bottom: var(--bbl-space-200);
+  }
+
+  .saving-plan-dropdown-trigger, .saving-plan-field-row {
+    padding: var(--bbl-space-100) var(--bbl-space-200);
+  }
+
+  .saving-plan-field-row {
+    padding: 0 var(--bbl-space-200);
   }
 
   .saving-plan-calculator {
     grid-template-columns: repeat(2, minmax(0, 1fr)) 32%;
-    gap: 1rem;
+    gap: var(--bbl-space-200);
   }
 
   .saving-plan-form {
@@ -1126,7 +1116,7 @@
   }
 
   .saving-plan-result-card {
-    padding: 1rem;
+    padding: var(--bbl-space-200);
     margin-bottom: 0.25rem;
     border: 0.0417rem solid var(--bbl-color-grey-30);
     line-height: var(--bbl-line-height-h3-mobile);
@@ -1146,22 +1136,44 @@
   .saving-plan-chart-row {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: stretch;
+    gap: var(--bbl-space-200);
+    margin-top: var(--bbl-space-400);
+  }
+
+  .saving-plan-tweak-sliders {
+    padding: var(--bbl-space-300) var(--bbl-space-200);
+    gap: 0 var(--bbl-space-500);      
+   }
+
+  .saving-plan-slider:last-child > * {
+    margin-left: var(--bbl-space-100);
   }
 
   .saving-plan-chart-wrap {
     height: 100%;
     align-self: stretch;
-    grid-column: 1 / 3;
+    padding: var(--bbl-space-200);
+  }
+
+  .saving-plan-info-card-slot .category-banner-card {
+    padding: var(--bbl-space-200);
+    gap: var(--bbl-space-200);
+  }
+
+  .saving-plan-tweak {
+    margin-top: var(--bbl-space-400);
   }
 
   .saving-plan-field-text {
     font-size: var(--bbl-font-size-b1-desktop);
   }
 
-  .saving-plan-chart-canvas-wrap {
-    flex: 1 1 0;
-    height: 0;
-    min-height: 11rem;
+  .saving-plan-slider-input {
+    margin: var(--bbl-space-300) 0;
+  }
+      
+  .saving-plan-chart {
+    padding-inline: var(--bbl-space-100);
   }
 
   .saving-plan-info-card {
@@ -1173,12 +1185,12 @@
   }
 
   .saving-plan-newplan-future {
-    font-size: var(--bbl-font-size-b1-desktop);
     margin-bottom: 3rem;
   }
 
   .saving-plan-tweak-header {
     grid-template-columns: minmax(0, 1fr) 32%;
+    margin-bottom: var(--bbl-space-200);
   }
 
   .saving-plan-dropdown-current {
@@ -1186,15 +1198,17 @@
   }
 
   .saving-plan-info-card-slot .category-banner-title {
-    font-size: var(--bbl-font-size-h2-desktop);
+    margin-block: var(--bbl-space-200) 0;
   }
 
   .saving-plan-tweak-title {
     font-size: var(--bbl-font-size-h3-desktop);
+    line-height: 2.025rem;
   }
 
   .saving-plan-newplan-title {
     font-size: var(--bbl-font-size-h3-desktop);
+    line-height: 2.025rem;
   }
 
   .saving-plan-field-input::placeholder {
