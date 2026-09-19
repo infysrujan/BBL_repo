@@ -600,10 +600,6 @@ if (typeof document !== 'undefined') {
         ['en', 'th'].forEach((lang) => {
           const data = fetchBranchesByProvince(current, lang);
           if (data.length) {
-            // A new province was chosen — the branch <select> DOM element is the
-            // same but its options have changed. The live optgroup check in
-            // applyBranchGroupingToAllMatching handles re-grouping automatically
-            // when the form rule engine resets the options, so no eviction needed.
             scheduleApplyBranchDistrictGroupingAuto(data);
           }
         });
