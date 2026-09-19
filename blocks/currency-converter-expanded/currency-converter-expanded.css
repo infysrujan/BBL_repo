@@ -431,6 +431,11 @@
   margin-bottom: 0;
 }
 
+/* Print-only clone of the disclaimer (see currency-converter-expanded.js); hidden on screen */
+.converter-expanded-disclaimer-print {
+  display: none;
+}
+
 
 /* Desktop styles */
 @media (width > 47.5rem) {
@@ -492,6 +497,41 @@
 
   .currency-converter-expanded .converter-expanded-result-content .converter-expanded-result-timestamp p {
     line-height: 1.1206rem;
+  }
+}
+
+/* Print layout: show the disclaimer beside the title instead of below the form */
+@media print {
+  .currency-converter-expanded .converter-expanded-disclaimer {
+    display: none;
+  }
+
+  .section:has(> .currency-converter-expanded) > .default-content-wrapper:has(.converter-expanded-disclaimer-print) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 1.875rem;
+  }
+
+  .section:has(> .currency-converter-expanded) > .default-content-wrapper:has(.converter-expanded-disclaimer-print) > :not(.converter-expanded-disclaimer-print) {
+    grid-column: 1;
+  }
+
+  .converter-expanded-disclaimer-print {
+    display: block;
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    text-align: center;
+    font-weight: var(--bbl-font-weight-regular);
+  }
+
+  .converter-expanded-disclaimer-print p {
+    margin: 0 0 0.5rem;
+  }
+
+  .converter-expanded-disclaimer-print p:last-child {
+    margin-bottom: 0;
   }
 }
 

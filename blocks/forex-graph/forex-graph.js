@@ -138,9 +138,6 @@ function printForexGraph(block, state) {
       .join('')}</div>`;
   })();
 
-  // Currency Calculator second page — a static snapshot of the live
-  // currency-converter-expanded block (from/to currencies + amount box),
-  // matching the client's page 2.
   const calcHtml = (() => {
     const calcBlock = doc.querySelector('.currency-converter-expanded');
     if (!calcBlock) return '';

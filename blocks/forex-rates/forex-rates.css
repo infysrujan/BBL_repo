@@ -4,6 +4,12 @@
    1rem = 16px  |  tokens: colors, border-radius, spacing
    ============================================================ */
 
+/* Mobile tab-dropdown override, scoped to this page only (tabs.css stays untouched) */
+.tabs-container:has(.forex-rates) .tabs-nav-wrapper .tabs-dropdown select {
+  font-size: 0.9375rem;
+  padding-right: 2.0625rem;
+}
+
 /* ── Controls ─────────────────────────────────────────────── */
 
 .forex-rates .forex-rates-control-row {
