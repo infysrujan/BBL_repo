@@ -276,7 +276,7 @@ main .lead-forms .form form .drop-down-wrapper.field-title > .field-label {
   font-weight: var(--bbl-form-font-weight-bold);
   font-size: var(--bbl-font-size-b1-mobile);
   line-height: var(--bbl-form-line-height-1);
-  margin-block: var(--bbl-space-500) 0;
+  margin: 0;
 }
 
 main .lead-forms .form form .field-initialfielditemname.field-invalid > .field-label {
@@ -627,31 +627,36 @@ main .lead-forms .form form fieldset.panel-wrapper.field-wrapper {
   padding: 0;
 }
 
-main .section.form-container.lead-forms:has(.field-bottom-10) {
+main .section.form-container.lead-forms:has(.field-title-30, .field-title-40) {
   padding-inline: 0.9375rem;
-
+ 
   & :is(div.form-wrapper, .form.block, .form) {
     width: 100%;
     max-width: none;
     margin-inline: auto;
     padding: 0;
   }
-
+ 
   & .form form,
   & .form form > fieldset.panel-wrapper.field-wrapper {
     max-width: none;
   }
-
+ 
   & .form form fieldset.panel-wrapper.field-main-form-panel {
     width: 100%;
     max-width: 46.25rem;
     margin-inline: auto;
   }
-
-  & .form form fieldset.panel-wrapper.field-bottom-10 {
+ 
+  & .form form fieldset.panel-wrapper.field-title-30,
+  & .form form fieldset.panel-wrapper.field-title-40 {
     width: 100%;
     max-width: 56.25rem;
     margin-inline: auto;
+  }
+  
+  & .form form fieldset.panel-wrapper.field-title-40 {
+    margin-bottom: var(--bbl-form-margin-10);
   }
 }
 
