@@ -421,7 +421,7 @@
 
 .saving-plan-chart-legend {
   display: grid;
-  grid-template-columns: max-content max-content;
+  grid-template-columns: max-content;
   gap: 0.5rem 1.5rem;
   width: fit-content;
   margin-bottom: 0.4375rem;
@@ -472,10 +472,14 @@
 }
 
 .saving-plan-chart-legend-dot-newplan {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background: var(--sp-chart-new-plan, #0f2a44);
+  width: 1rem;
+  height: 1rem;
+  color: var(--bbl-color-truthful-blue);
+}
+
+.saving-plan-chart-legend-dot-newplan svg {
+  width: 100%;
+  height: 100%;
 }
 
 .saving-plan-chart-legend-icon {
@@ -1185,6 +1189,7 @@
 
   .saving-plan-newplan-amount {
     font-size: var(--bbl-font-size-h1-desktop);
+    line-height: 3.45rem;
   }
 
   .saving-plan-newplan-future {

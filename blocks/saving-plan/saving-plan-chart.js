@@ -14,7 +14,7 @@ export function buildChartLegend(labels, getIcon) {
       </div>
       <div class="saving-plan-chart-legend-row" data-newplan-row hidden>
         <span class="saving-plan-chart-legend-item">
-          <span class="saving-plan-chart-legend-dot saving-plan-chart-legend-dot-newplan"></span>
+          <span class="saving-plan-chart-legend-dot saving-plan-chart-legend-dot-newplan" aria-hidden="true">${getIcon('legend-dot-newplan')}</span>
           <span class="saving-plan-chart-legend-text">${labels.legendNewPlan}</span>
         </span>
         <span class="saving-plan-chart-legend-item">
