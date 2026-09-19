@@ -399,6 +399,10 @@
   .forex-rates .forex-rates-print-btn {
     margin-left: auto;
   }
+
+  .forex-rates .forex-rates-currency-inner {
+    gap: 1.25rem;
+  }
 }
 
 /* ── Desktop: 64rem+ (1024px) ──────────────────────────────── */
