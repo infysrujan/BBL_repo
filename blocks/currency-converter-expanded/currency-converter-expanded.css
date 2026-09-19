@@ -32,7 +32,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
-  padding: 1.25rem 0;
+  padding: 1.25rem 0 1.875rem;
   margin: auto;
   max-width: 22.5rem;
 }
@@ -380,6 +380,10 @@
   padding-bottom: 0;
 }
 
+.section.currency-converter-expanded-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+  padding-bottom: 1.875rem;
+}
+
 /* Disclaimer text */
 .currency-converter-expanded .converter-expanded-disclaimer {
   margin: 0;
@@ -495,4 +499,14 @@
   }
 }
 
+@media (width > 64rem) {
+  .section.currency-converter-expanded-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+    width: min-content;
+    margin-inline: auto;
+  }
 
+  :lang(th) .section.currency-converter-expanded-container .default-content-wrapper > :is(h1, h2, h3, h4, h5, h6):first-child {
+    width: fit-content;
+    max-width: 15rem;
+  }
+}
