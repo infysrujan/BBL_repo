@@ -636,7 +636,7 @@ function renderResult(state, data, calculation) {
   const annualReturn = inputs.annualReturn || data.defaults?.annualReturn || 0;
   const futureText = fillTemplate(data.labels.result.futureValueTemplate, {
     amount: `<strong>${escapeHtml(formatNumber(calculation.FutureValue))}</strong>`,
-    years: `<strong>${escapeHtml(String(goalPeriod))}</strong>`,
+    years: escapeHtml(String(goalPeriod)),
   });
   setHTML(root, '[data-result="future"]', futureText);
   setText(root, '[data-result="monthly"]', formatNumber(calculation.SavingMonth));
@@ -736,11 +736,11 @@ function renderNewPlanPlaceholder(state, data, inputs) {
   };
   setSliderValueText('goalAmount', formatNumber(inputs.goalAmount));
   setSliderValueText('annualReturn', formatDecimal(inputs.annualReturn));
-  setSliderValueText('annualIncrease', formatDecimalSmart(inputs.annualIncrease));
+  setSliderValueText('annualIncrease', formatDecimal(inputs.annualIncrease));
   root.querySelector('.saving-plan-newplan-card')?.classList.add('is-placeholder');
   const futureText = fillTemplate(data.labels.newPlan.futureValueTemplate, {
     amount: '<strong>0</strong>',
-    years: `<strong>${escapeHtml(String(inputs.goalPeriod))}</strong>`,
+    years: escapeHtml(String(inputs.goalPeriod)),
   });
   const futureEl = root.querySelector('[data-newplan="future"]');
   if (futureEl) { futureEl.innerHTML = futureText; futureEl.removeAttribute('hidden'); }
@@ -775,7 +775,7 @@ async function renderNewPlan(state, data, tweakInputs) {
   );
   const futureText = fillTemplate(data.labels.newPlan.futureValueTemplate, {
     amount: `<strong>${escapeHtml(formatNumber(calculation.FutureValue))}</strong>`,
-    years: `<strong>${escapeHtml(String(baseInputs.goalPeriod))}</strong>`,
+    years: escapeHtml(String(baseInputs.goalPeriod)),
   });
   root.querySelector('.saving-plan-newplan-card')?.classList.remove('is-placeholder');
   const futureEl = root.querySelector('[data-newplan="future"]');

@@ -732,11 +732,7 @@
 
 .saving-plan-newplan-future {
   margin: 0 0 2.625rem;
-}
-
-.saving-plan-newplan-future strong {
-  font-weight: 700;
-  color: var(--bbl-color-grey-90);
+  color: var(--bbl-color-gray-95);
 }
 
 .saving-plan-newplan-lead {
