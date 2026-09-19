@@ -109,6 +109,10 @@ main .form-container.lead-forms {
   padding-inline: var(--bbl-space-section-xs);
 }
 
+main .section.form-container.lead-forms.pad-top-30:has(.plain-text-wrapper.field-text) {
+  padding-top: 0;
+}
+
 main .lead-forms .form form p {
   margin-bottom: 0;
   padding: 0;
