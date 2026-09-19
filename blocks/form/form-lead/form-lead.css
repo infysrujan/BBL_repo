@@ -167,8 +167,6 @@ main .section.form-container.lead-forms .form form .plain-text-wrapper.field-tex
   font-size: unset;
 }
 
-
-
 main .lead-forms .form form {
   gap: var(--bbl-form-gap-3);
   max-width: 46.25rem;
@@ -975,7 +973,6 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
   main .section.form-container.lead-forms .form .form-message.success-message {
     font-size: var(--bbl-font-size-b1-desktop);
   }
-
 
 
   main .lead-forms .form form :is(.field-infotext p, .plain-text-wrapper p) {
