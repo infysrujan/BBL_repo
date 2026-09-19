@@ -933,7 +933,7 @@ main .lead-forms .form form :is(.field-wrapper:is(.icon-money, .icon-email),
   width: var(--bbl-space-200);
   height: var(--bbl-space-200);
   line-height: var(--bbl-space-200);
-  top: var(--bbl-space-350);
+  top: 1.875rem;
 }
 
 main .lead-forms .form form fieldset.panel-wrapper.field-wrapper .checkbox-group-wrapper .checkbox-wrapper {
