@@ -900,23 +900,11 @@ p.text-large.text-light {
     color: var(--bbl-color-black);
   }
 
+  .carousel-dotted .carousel-dotted-item.with-circular-image,
   .carousel-dotted .carousel-dotted-item.with-default-image {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-  }
-
-  /* Tablet-only inset to match live site's 60px slide gutter (narrows caption text column) */
-  .carousel-dotted .carousel-dotted-item.with-circular-image {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    box-sizing: border-box;
-    padding: 0 3.75rem;
-  }
-
-  .carousel-dotted .carousel-dotted-item.with-circular-image .caption {
-    padding-right: 0;
   }
 
   .carousel-dotted .carousel-dotted-item.with-default-image .img-thumb {
@@ -964,11 +952,6 @@ p.text-large.text-light {
   .carousel-dotted.all-without-image {
     margin-top: 1.25rem;
     min-height: 30.9375rem;
-  }
-
-  /* Desktop keeps the pre-existing no-inset layout; the 60px gutter above is tablet-only */
-  .carousel-dotted .carousel-dotted-item.with-circular-image {
-    padding: 0;
   }
 
   .carousel-dotted .carousel-dotted-item.with-circular-image .caption {
