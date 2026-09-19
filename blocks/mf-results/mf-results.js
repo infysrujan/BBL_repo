@@ -65,18 +65,18 @@ function readUrl(row) {
 
 /**
  * The single combined filtering-matrix sheet now carries both languages in one
- * file (columns "Fund Name (en)" / "Fund Name (th)"), so the fund-name column is
+ * file (columns "Fund Name (EN)" / "Fund Name (TH)"), so the fund-name column is
  * picked by the current locale instead of fetching separate en/th sheets.
  */
 function fundNameKey() {
-  return getLang() === 'th' ? 'Fund Name (th)' : 'Fund Name (en)';
+  return getLang() === 'th' ? 'Fund Name (TH)' : 'Fund Name (EN)';
 }
 
 /**
  * Fetch the MF filtering matrix sheet.
  * Config key: mf-suggestor (→ mfSuggestor after toCamelCase) — one combined
  * sheet for both languages.
- * Expected columns: Fund Name (en) | Fund Name (th) | Fund Risk Level
+ * Expected columns: Fund Name (EN) | Fund Name (TH) | Fund Risk Level
  *   | Fund Has Exchange Rate Risk | Is an RMF/SSF/Thai ESG/Thai ESGX Fund
  */
 async function loadMatrix() {
