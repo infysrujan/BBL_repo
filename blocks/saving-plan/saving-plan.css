@@ -422,7 +422,7 @@
 .saving-plan-chart-legend {
   display: grid;
   grid-template-columns: max-content;
-  gap: 0.5rem 1.5rem;
+  gap: 0.4375rem 1.5rem;
   width: fit-content;
   margin-bottom: 0.4375rem;
 }
@@ -1133,6 +1133,11 @@
     font-size: var(--bbl-font-size-b1-desktop);
     margin-bottom: 3rem;
     line-height: var(--bbl-line-height-button);
+  }
+
+  .saving-plan-chart-legend {
+    gap: var(--bbl-space-100) 1.5rem;
+    margin-bottom: var(--bbl-space-100);
   }
 
   .saving-plan-result-amount {
