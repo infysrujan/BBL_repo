@@ -320,9 +320,16 @@ body.mobile-app-view main > div:first-child {
   }
 
   .promo-selector-filter-action {
-    padding-inline: var(--bbl-space-250);
     width: 50%;
     box-sizing: border-box;
+  }
+
+  .promo-selector-filter-action.btn-search {
+    padding-inline: var(--bbl-space-250) 0.625rem;
+  }
+
+  .promo-selector-filter-action.btn-reset {
+    padding-inline: 0.625rem var(--bbl-space-250);
   }
 
   .promo-selector-filter-actions .button-m {
