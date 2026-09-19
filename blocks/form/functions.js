@@ -577,7 +577,9 @@ function scheduleApplyBranchDistrictGroupingAuto(data) {
       const hasNewNodes = mutations.some((m) => m.addedNodes.length > 0 || m.type === 'attributes');
       if (hasNewNodes) applyBranchGroupingToAllMatching(data);
     });
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'style', 'class'] });
+    observer.observe(document.body, {
+      childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'style', 'class'],
+    });
   }
 }
 
@@ -599,14 +601,9 @@ if (typeof document !== 'undefined') {
           const data = fetchBranchesByProvince(current, lang);
           if (data.length) {
             // A new province was chosen — the branch <select> DOM element is the
-            // same but its options have changed. Evict it from groupedSelects so
-            // applyBranchGroupingToAllMatching re-sorts the fresh options.
-            const branchNames = new Set(data.map((item) => String(item.BranchName)));
-            const branchNos = new Set(data.map((item) => String(item.BranchNo)));
-            document.querySelectorAll('select').forEach((branchSel) => {
-              // No eviction needed — the live optgroup check handles re-grouping
-              // automatically when the form rule engine resets the options.
-            });
+            // same but its options have changed. The live optgroup check in
+            // applyBranchGroupingToAllMatching handles re-grouping automatically
+            // when the form rule engine resets the options, so no eviction needed.
             scheduleApplyBranchDistrictGroupingAuto(data);
           }
         });
