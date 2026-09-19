@@ -1037,13 +1037,8 @@
 
 
 .saving-plan-container .default-content-wrapper a {
-  color: var(--bbl-text-primary);
   text-decoration: underline;
   text-underline-offset: 0.125rem;
-}
-
-.saving-plan-container .default-content-wrapper a:hover {
-  color: var(--bbl-color-active-blue);
 }
 
 /* ── saving-plan-container2 (adjacent product section) ────────────── */
