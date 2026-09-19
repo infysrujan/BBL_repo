@@ -927,6 +927,14 @@
     gap: 0.875rem;
   }
 
+   .saving-plan-slider-range {
+    margin-bottom: 0;
+  }
+
+  .saving-plan-slider:last-child .saving-plan-slider-range {
+    margin-bottom: 0;
+  }
+
   .saving-plan-form-actions {
     flex-direction: row;
     align-items: center;
@@ -1024,7 +1032,6 @@
     margin-left: 0.4375rem;
   }
 
-
   .saving-plan-products {
     margin-top: 3.5rem;
   }
@@ -1036,10 +1043,6 @@
   .saving-plan-field-input {
     width: 6.25rem;
     min-width: 5rem;
-  }
-
-  .saving-plan-slider-range {
-    margin-bottom: 0;
   }
 }
 
