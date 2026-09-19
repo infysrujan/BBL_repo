@@ -723,7 +723,6 @@ export default async function decorate(block) {
   block.addEventListener('click', (event) => {
     const button = event.target.closest('.button-m.primary');
     if (!button) return;
-    console.log('Hero banner CTA clicked');
     trackLinkClick(
       event,
       button,
@@ -732,4 +731,3 @@ export default async function decorate(block) {
     );
   });
 }
- 
