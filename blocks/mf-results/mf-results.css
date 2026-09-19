@@ -10,7 +10,6 @@
   margin: 0 auto;
   background: var(--bbl-color-white);
   box-sizing: border-box;
-  padding: 0 var(--bbl-space-200);
 }
 
 /* ── Disclaimer ───────────────────────────────────────────────────────────── */
@@ -117,8 +116,6 @@
 /* ── Image area (image layout = "default") ───────────────────────────────── */
 
 .card-list.mf-results .cards-list-image {
-  height: 8.4375rem;
-  max-height: 8.4375rem;
   overflow: hidden;
 }
 
