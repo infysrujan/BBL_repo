@@ -980,7 +980,6 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
     line-height: var(--bbl-form-line-height-22);
   }
 
-  
   main .lead-forms .form form h2{
     padding: 0 var(--bbl-form-padding-10);
   }
