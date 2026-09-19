@@ -650,7 +650,7 @@ main .section.form-container.lead-forms:has(.field-bottom-10) {
 
   & .form form fieldset.panel-wrapper.field-bottom-10 {
     width: 100%;
-    max-width: 900px;
+    max-width: 56.25rem;
     margin-inline: auto;
   }
 }
@@ -980,7 +980,7 @@ main .lead-forms .form form :is(.field-type-of-loan-panel .field-please-specify-
     line-height: var(--bbl-form-line-height-22);
   }
 
-
+  
   main .lead-forms .form form h2{
     padding: 0 var(--bbl-form-padding-10);
   }
