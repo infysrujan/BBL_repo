@@ -113,8 +113,9 @@ fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 label {
   min-width: 0;
   margin: 0 !important;
   font-size: 1.3125rem !important;
-  font-weight: 700 !important;
+  font-weight: 400 !important;
   color: var(--bbl-color-black, #000) !important;
+  white-space: nowrap;
 }
 
 /* Large blue premium value */
@@ -131,11 +132,12 @@ main fieldset[name="css-summaryWithHR"] > .field-wrapper.col-11 input {
   box-shadow: none !important;
   outline: none !important;
   text-align: right;
-  font-weight: 700 !important;
+  font-weight: 400 !important;
   font-size: 1.925rem !important;
   line-height: 1 !important;
   color: var(--bbl-color-active-blue, #0064ff) !important;
   pointer-events: none;
+  margin-left: 0.5rem !important;
 }
 
 /* "บาท/ปี" unit label — col-1 */
