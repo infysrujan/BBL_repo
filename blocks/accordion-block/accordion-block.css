@@ -54,7 +54,6 @@
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-
 .accordion-toolbar-button:hover .accordion-toolbar-icon {
   opacity: 0.7;
 }
