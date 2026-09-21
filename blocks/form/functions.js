@@ -1027,6 +1027,9 @@ function getSelectedLabelFromDropdown(dropdown) {
  * formatDateTime("2024-01-05", "", "30") // returns ""
  */
 function formatDateTime(date, hour, minute) {
+  const parsedDate = new Date(date);
+  date = parsedDate.toISOString().split("T")[0];
+  
   if (!date || !hour || !minute) return '';
   let day;
   let month;
